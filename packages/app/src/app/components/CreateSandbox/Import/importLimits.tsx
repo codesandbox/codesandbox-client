@@ -161,15 +161,14 @@ export const UnauthorizedGitHub = () => {
 
   return (
     <MessageStripe justify="space-between" variant="warning">
-      Adjust your GitHub App permissions to have full access to your
-      repositories.
+      Adjust your GitHub permissions to access your repositories.
       <MessageStripe.Action
         loading={isLoadingGithub}
         // Temporarily ask for private repo access because
         // public access only returns an API error.
         onClick={() => signInGithubClicked('private_repos')}
       >
-        Review GH permissions
+        Review GitHub permissions
       </MessageStripe.Action>
     </MessageStripe>
   );
