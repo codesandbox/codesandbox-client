@@ -5,8 +5,6 @@ Object {
   "aliases": Object {
     "/node_modules/solid-js": "/node_modules/solid-js/dist/solid.cjs",
     "/node_modules/solid-js/dist/*": "/node_modules/solid-js/dist/$1",
-    "/node_modules/solid-js/dist/server.cjs": "/node_modules/solid-js/dist/solid.cjs",
-    "/node_modules/solid-js/dist/server.js": "/node_modules/solid-js/dist/solid.js",
     "/node_modules/solid-js/h": "/node_modules/solid-js/h/dist/h.cjs",
     "/node_modules/solid-js/h/dist/*": "/node_modules/solid-js/h/dist/$1",
     "/node_modules/solid-js/html": "/node_modules/solid-js/html/dist/html.cjs",
@@ -18,6 +16,7 @@ Object {
     "/node_modules/solid-js/web": "/node_modules/solid-js/web/dist/web.cjs",
     "/node_modules/solid-js/web/dist/*": "/node_modules/solid-js/web/dist/$1",
   },
+  "hasExports": true,
 }
 `;
 
@@ -39,6 +38,7 @@ Object {
     "something": "/nested/test.js",
     "something/*": "/nested/test.js/$1",
   },
+  "hasExports": false,
 }
 `;
 
@@ -227,5 +227,6 @@ Object {
     "/node_modules/@babel/runtime/regenerator/": "/node_modules/@babel/runtime/regenerator/",
     "/node_modules/@babel/runtime/regenerator/*.js": "/node_modules/@babel/runtime/regenerator/$1.js",
   },
+  "hasExports": true,
 }
 `;

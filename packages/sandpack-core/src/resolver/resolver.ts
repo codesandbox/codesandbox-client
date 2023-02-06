@@ -22,6 +22,7 @@ export interface IResolveOptionsInput {
   readFile: FnReadFile;
   moduleDirectories?: string[];
   resolverCache?: ResolverCache;
+  pkgJson?: IFoundPackageJSON;
 }
 
 interface IResolveOptions extends IResolveOptionsInput {
@@ -44,6 +45,7 @@ function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
     readFile: opts.readFile,
     moduleDirectories: [...normalizedModuleDirectories],
     resolverCache: opts.resolverCache || new Map(),
+    pkgJson: opts.pkgJson,
   };
 }
 
@@ -53,30 +55,42 @@ interface IFoundPackageJSON {
 }
 
 function* loadPackageJSON(
+  directory: string,
+  opts: IResolveOptions
+): Generator<any, IFoundPackageJSON | null, any> {
+  const packageFilePath = pathUtils.join(directory, 'package.json');
+  let packageContent = opts.resolverCache.get(packageFilePath);
+  if (packageContent === undefined) {
+    try {
+      packageContent = processPackageJSON(
+        JSON.parse(yield* opts.readFile(packageFilePath)),
+        pathUtils.dirname(packageFilePath)
+      );
+      opts.resolverCache.set(packageFilePath, packageContent);
+    } catch (err) {
+      opts.resolverCache.set(packageFilePath, false);
+    }
+  }
+  if (packageContent) {
+    return {
+      filepath: packageFilePath,
+      content: packageContent,
+    };
+  }
+  return null;
+}
+
+function* loadNearestPackageJSON(
   filepath: string,
   opts: IResolveOptions,
   rootDir: string = '/'
 ): Generator<any, IFoundPackageJSON | null, any> {
   const directories = getParentDirectories(filepath, rootDir);
   for (const directory of directories) {
-    const packageFilePath = pathUtils.join(directory, 'package.json');
-    let packageContent = opts.resolverCache.get(packageFilePath);
-    if (packageContent === undefined) {
-      try {
-        packageContent = processPackageJSON(
-          JSON.parse(yield* opts.readFile(packageFilePath)),
-          pathUtils.dirname(packageFilePath)
-        );
-        opts.resolverCache.set(packageFilePath, packageContent);
-      } catch (err) {
-        opts.resolverCache.set(packageFilePath, false);
-      }
-    }
-    if (packageContent) {
-      return {
-        filepath: packageFilePath,
-        content: packageContent,
-      };
+    const foundPackageJSON = yield* loadPackageJSON(directory, opts);
+
+    if (foundPackageJSON) {
+      return foundPackageJSON;
     }
   }
   return null;
@@ -151,10 +165,12 @@ function* resolveModule(
   const dirPath = pathUtils.dirname(opts.filename);
   const filename = resolveFile(moduleSpecifier, dirPath);
   const isAbsoluteFilename = filename[0] === '/';
-  const pkgJson = yield* findPackageJSON(
-    isAbsoluteFilename ? filename : opts.filename,
-    opts
-  );
+  const pkgJson =
+    opts.pkgJson ||
+    (yield* findPackageJSON(
+      isAbsoluteFilename ? filename : opts.filename,
+      opts
+    ));
   return resolveAlias(pkgJson, filename);
 }
 
@@ -184,12 +200,17 @@ function* resolveNodeModule(
 
       try {
         const pkgFilePath = pathUtils.join(rootDir, pkgSpecifierParts.filepath);
-        const pkgJson = yield* loadPackageJSON(pkgFilePath, opts, rootDir);
+        const rootPkgJson = yield* loadPackageJSON(rootDir, opts);
+        const pkgJson =
+          rootPkgJson && rootPkgJson.content.hasExports
+            ? rootPkgJson
+            : yield* loadNearestPackageJSON(pkgFilePath, opts, rootDir);
         if (pkgJson) {
           try {
             return yield* resolver(pkgFilePath, {
               ...opts,
               filename: pkgJson.filepath,
+              pkgJson,
             });
           } catch (err) {
             if (!pkgSpecifierParts.filepath) {
@@ -222,14 +243,15 @@ function* findPackageJSON(
   filepath: string,
   opts: IResolveOptions
 ): Generator<any, IFoundPackageJSON, any> {
-  let pkg = yield* loadPackageJSON(filepath, opts);
+  let pkg = yield* loadNearestPackageJSON(filepath, opts);
   if (!pkg) {
-    pkg = yield* loadPackageJSON('/index', opts);
+    pkg = yield* loadNearestPackageJSON('/index', opts);
     if (!pkg) {
       return {
         filepath: '/package.json',
         content: {
           aliases: {},
+          hasExports: false,
         },
       };
     }
