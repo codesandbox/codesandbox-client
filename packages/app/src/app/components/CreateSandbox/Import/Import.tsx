@@ -63,7 +63,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
 
-  const ghAuth = useGitHubAuthorization();
+  const { allowsPublicRepos } = useGitHubAuthorization();
   const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
 
@@ -153,7 +153,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const limitImportBasedOnSubscription =
     privateRepoFreeAccountError === url.raw;
 
-  const disableImport = hasMaxPublicRepositories || !ghAuth.allowsPublicRepos;
+  const disableImport = hasMaxPublicRepositories || !allowsPublicRepos;
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -170,7 +170,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         Enter the GitHub repository URL to import
       </Text>
       {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
-      {!ghAuth.allowsPublicRepos ? <UnauthorizedGitHub /> : null}
+      {!allowsPublicRepos ? <UnauthorizedGitHub /> : null}
       <Element
         {...(disableImport
           ? {
