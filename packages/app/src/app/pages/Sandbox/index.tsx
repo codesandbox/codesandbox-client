@@ -23,6 +23,11 @@ export const Sandbox = React.memo<Props>(
   ({ match, showNewSandboxModal }) => {
     const state = useAppState();
     const actions = useActions();
+    const { sandboxPageMounted } = actions;
+
+    useEffect(() => {
+      sandboxPageMounted();
+    }, [sandboxPageMounted]);
 
     /**
      * !important Hard bug fix
