@@ -5,6 +5,8 @@ Object {
   "aliases": Object {
     "/node_modules/solid-js": "/node_modules/solid-js/dist/solid.cjs",
     "/node_modules/solid-js/dist/*": "/node_modules/solid-js/dist/$1",
+    "/node_modules/solid-js/dist/server.cjs": "/node_modules/solid-js/dist/solid.cjs",
+    "/node_modules/solid-js/dist/server.js": "/node_modules/solid-js/dist/solid.js",
     "/node_modules/solid-js/h": "/node_modules/solid-js/h/dist/h.cjs",
     "/node_modules/solid-js/h/dist/*": "/node_modules/solid-js/h/dist/$1",
     "/node_modules/solid-js/html": "/node_modules/solid-js/html/dist/html.cjs",
