@@ -319,9 +319,11 @@ export const v2DefaultBranchUrl = (
 ) => {
   const searchParams = new URLSearchParams({
     ...qsObject,
-  });
+  }).toString();
 
-  return `${v2EditorUrl()}github/${owner}/${name}?${searchParams.toString()}`;
+  const queryString = searchParams ? `?${searchParams}` : '';
+
+  return `${v2EditorUrl()}github/${owner}/${name}${queryString}`;
 };
 
 export const v2DraftBranchUrl = (owner: string, name: string) => {
