@@ -42,6 +42,15 @@ export const TerminalUpgradeComponent: React.FC<StyledProps> = ({
             Cloud Sandbox.
           </Text>
           <Text>
+            Cloud Sandboxes are an improved coding experience that run your code
+            in the cloud. They allow you to run Docker, code in new languages,
+            add servers, databases, and much more. See a preview below.
+          </Text>
+          <img
+            alt=""
+            src="/static/img/terminal_upgrade_screenshot.png"
+          />
+          <Text>
             {canConvert
               ? `Do you want to convert it into a Cloud Sandbox?`
               : `Do you want to fork into a Cloud Sandbox?`}

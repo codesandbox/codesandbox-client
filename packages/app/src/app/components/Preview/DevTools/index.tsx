@@ -13,7 +13,6 @@ import { problems } from './Problems';
 import { reactDevTools } from './React-Devtools';
 import { DevToolTabs } from './Tabs';
 import { terminal } from './Terminal';
-import { terminalUpgrade } from './TerminalUpgrade';
 import { tests } from './Tests';
 
 function unFocus(document, window) {
@@ -81,7 +80,6 @@ const VIEWS: IViews = {
   [tests.id]: tests,
   [terminal.id]: terminal,
   [reactDevTools.id]: reactDevTools,
-  [terminalUpgrade.id]: terminalUpgrade,
 };
 
 type Props = {
@@ -108,6 +106,7 @@ type Props = {
   currentDevToolIndex: number;
   currentTabPosition: number;
   disableLogging?: boolean;
+  isOnEmbedPage: boolean;
 };
 type State = {
   status: { [title: string]: Status | undefined };
@@ -541,6 +540,7 @@ export class DevTools extends React.PureComponent<Props, State> {
               moveTab={this.props.moveTab}
               closeTab={this.props.closeTab}
               disableLogging={disableLogging}
+              isOnEmbedPage={this.props.isOnEmbedPage}
             />
 
             {!primary && (

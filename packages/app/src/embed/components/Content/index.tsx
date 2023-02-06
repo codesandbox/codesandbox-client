@@ -622,6 +622,7 @@ export default class Content extends React.PureComponent<Props, State> {
                   currentTabPosition={
                     this.state.currentDevToolPosition.tabPosition
                   }
+                  isOnEmbedPage
                 />
               ))}
             </div>

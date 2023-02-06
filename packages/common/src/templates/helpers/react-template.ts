@@ -7,7 +7,7 @@ export class ReactTemplate extends Template {
         views: [
           { id: 'codesandbox.browser' },
           { id: 'codesandbox.tests' },
-          { id: 'codesandbox.terminalUpgrade' },
+          { id: 'codesandbox.terminalUpgrade', hideOnEmbedPage: true },
         ],
       },
       {
