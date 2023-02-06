@@ -62,7 +62,7 @@ export const TerminalUpgradeComponent: React.FC<StyledProps> = ({
                 paddingRight: '1rem',
               }}
             >
-              Yes, {canConvert ? 'convert' : 'fork'}
+              Yes, {canConvert ? 'convert' : 'fork and convert'}
             </Button>
             <Button
               as="a"
@@ -90,7 +90,6 @@ export const TerminalUpgradeComponent: React.FC<StyledProps> = ({
 export const terminalUpgrade = {
   id: 'codesandbox.terminalUpgrade',
   title: 'Terminal',
-  // @ts-ignore  TODO: fix this
   Content: withTheme(TerminalUpgradeComponent),
   actions: [],
 };
