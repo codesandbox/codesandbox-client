@@ -191,7 +191,7 @@ describe('resolve', () => {
         isFile,
         readFile,
       });
-      expect(resolved).toBe('/node_modules/solid-js/dist/solid.cjs');
+      expect(resolved).toBe('/node_modules/solid-js/dist/dev.js');
     });
 
     it('should fall back to index.js when it cannot find package.main', () => {
