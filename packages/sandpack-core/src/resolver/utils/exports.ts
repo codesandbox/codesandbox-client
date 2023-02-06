@@ -1,7 +1,13 @@
 import { normalizeAliasFilePath } from './alias';
 
-// exports keys, sorted from high to low priority
-const EXPORTS_KEYS = ['browser', 'development', 'default', 'require', 'import'];
+// List of allowed condition keys in pkg#exports field
+const ALLOWED_CONDITIONS = new Set([
+  'browser',
+  'development',
+  'default',
+  'require',
+  'import',
+]);
 
 type PackageExportType =
   | string
@@ -46,13 +52,12 @@ export function extractPathFromExport(
   }
 
   if (typeof exportValue === 'object') {
-    for (const key of EXPORTS_KEYS) {
-      const exportFilename = exportValue[key];
-      if (exportFilename !== undefined) {
-        if (typeof exportFilename === 'string') {
-          return normalizePackageExport(exportFilename, pkgRoot);
+    for (const [key, value] of Object.entries(exportValue)) {
+      if (ALLOWED_CONDITIONS.has(key)) {
+        if (typeof value === 'string') {
+          return normalizePackageExport(value, pkgRoot);
         }
-        return extractPathFromExport(exportFilename, pkgRoot);
+        return extractPathFromExport(value, pkgRoot);
       }
     }
     return false;

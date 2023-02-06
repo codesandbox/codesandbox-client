@@ -1029,13 +1029,19 @@ export class TranspiledModule {
         // of that compilation
         const cache = requiredTranspiledModule.compilation;
 
-        return requiredTranspiledModule.isCompilationCached(globals)
+        const evaluated = requiredTranspiledModule.isCompilationCached(globals)
           ? cache!.exports
           : manager.evaluateTranspiledModule(
               requiredTranspiledModule,
               transpiledModule,
               { force, globals }
             );
+
+        if (path === '@babel/runtime/helpers/interopRequireDefault') {
+          evaluated.default.default = evaluated.default;
+          return evaluated.default;
+        }
+        return evaluated;
       }
 
       // @ts-ignore
