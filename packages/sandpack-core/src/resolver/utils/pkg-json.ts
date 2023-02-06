@@ -23,24 +23,6 @@ export function processPackageJSON(
 
   const aliases: AliasesDict = {};
 
-  // load exports if it's not the root pkg.json
-  if (content.exports && pkgRoot !== '/') {
-    if (typeof content.exports === 'string') {
-      aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
-    } else if (typeof content.exports === 'object') {
-      for (const exportKey of Object.keys(content.exports)) {
-        const exportValue = extractPathFromExport(
-          content.exports[exportKey],
-          pkgRoot
-        );
-        const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
-        aliases[normalizedKey] = exportValue || EMPTY_SHIM;
-      }
-    }
-
-    return { aliases, hasExports: true };
-  }
-
   for (const mainField of MAIN_PKG_FIELDS) {
     if (typeof content[mainField] === 'string') {
       aliases[pkgRoot] = normalizeAliasFilePath(content[mainField], pkgRoot);
@@ -66,6 +48,24 @@ export function processPackageJSON(
         }
       }
     }
+  }
+
+  // load exports if it's not the root pkg.json
+  if (content.exports && pkgRoot !== '/') {
+    if (typeof content.exports === 'string') {
+      aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
+    } else if (typeof content.exports === 'object') {
+      for (const exportKey of Object.keys(content.exports)) {
+        const exportValue = extractPathFromExport(
+          content.exports[exportKey],
+          pkgRoot
+        );
+        const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
+        aliases[normalizedKey] = exportValue || EMPTY_SHIM;
+      }
+    }
+
+    return { aliases, hasExports: true };
   }
 
   return { aliases, hasExports: false };
