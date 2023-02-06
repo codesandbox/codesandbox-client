@@ -258,6 +258,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                         position,
                       })
                     }
+                    isOnEmbedPage={false}
                   />
                 );
               })}

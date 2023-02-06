@@ -108,6 +108,7 @@ type Props = {
   currentDevToolIndex: number;
   currentTabPosition: number;
   disableLogging?: boolean;
+  isOnEmbedPage: boolean;
 };
 type State = {
   status: { [title: string]: Status | undefined };
@@ -541,6 +542,7 @@ export class DevTools extends React.PureComponent<Props, State> {
               moveTab={this.props.moveTab}
               closeTab={this.props.closeTab}
               disableLogging={disableLogging}
+              isOnEmbedPage={this.props.isOnEmbedPage}
             />
 
             {!primary && (
