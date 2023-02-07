@@ -23,6 +23,7 @@ export const Sandbox = React.memo<Props>(
   ({ match, showNewSandboxModal }) => {
     const state = useAppState();
     const actions = useActions();
+    const { sandboxPageMounted } = actions;
 
     /**
      * !important Hard bug fix
@@ -39,6 +40,10 @@ export const Sandbox = React.memo<Props>(
         window.location.reload();
       }
     }, []);
+
+    useEffect(() => {
+      sandboxPageMounted();
+    }, [sandboxPageMounted]);
 
     useEffect(() => {
       if (!showNewSandboxModal) {
