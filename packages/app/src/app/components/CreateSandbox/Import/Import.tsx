@@ -8,7 +8,7 @@ import React from 'react';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
-import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
+import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/githubPermissions';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { useImportAndRedirect } from './useImportAndRedirect';

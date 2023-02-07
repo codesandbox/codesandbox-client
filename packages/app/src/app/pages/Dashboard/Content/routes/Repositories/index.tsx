@@ -9,7 +9,7 @@ import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
-import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
+import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/githubPermissions';
 import { useDismissible } from 'app/hooks';
 import { EmptyRepositories } from './EmptyRepositories';
 
@@ -88,13 +88,13 @@ export const RepositoriesPage = () => {
       />
 
       {hasMaxPublicRepositories || hasMaxPrivateRepositories ? (
-        <Element paddingX={4} paddingY={2}>
+        <Element paddingLeft={4} paddingRight={6} paddingY={4}>
           <MaxReposFreeTeam />
         </Element>
       ) : null}
 
       {restrictsPublicRepos && !dismissedPermissionsBanner ? (
-        <Element paddingX={4} paddingY={2}>
+        <Element paddingLeft={4} paddingRight={6} paddingY={4}>
           <RestrictedPublicReposImport onDismiss={dismissPermissionsBanner} />
         </Element>
       ) : null}
