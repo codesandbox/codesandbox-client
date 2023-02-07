@@ -50,8 +50,9 @@ export const Switcher: React.FC<{
             if (!workspace) return null;
 
             const isAdmin =
-              workspace.userAuthorizations.find(team => team.userId === user.id)
-                .authorization === TeamMemberAuthorization.Admin;
+              workspace.userAuthorizations.find(
+                team => team.userId === user?.id
+              )?.authorization === TeamMemberAuthorization.Admin;
 
             const isPro = [
               SubscriptionType.TeamPro,
