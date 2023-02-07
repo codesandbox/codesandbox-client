@@ -3,6 +3,10 @@ import {
   Element,
   Link as StyledLink,
   MessageStripe,
+  Stack,
+  Text,
+  Button,
+  Icon,
 } from '@codesandbox/components';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
@@ -177,5 +181,34 @@ export const RestrictedPublicReposImport: React.FC = () => {
         Access all repositories
       </MessageStripe.MultiActions>
     </MessageStripe>
+  );
+};
+
+export const RestrictedPrivateReposImport: React.FC = () => {
+  const { signInGithubClicked } = useActions();
+
+  return (
+    <Stack
+      align="center"
+      css={{
+        fontSize: '13px',
+        lineHeight: '18px',
+      }}
+    >
+      <Text>Can&apos;t find a repository?</Text>
+      <Button
+        css={{
+          color: '#FFFFFF',
+          cursor: 'pointer',
+          gap: '8px',
+        }}
+        onClick={() => signInGithubClicked('private_repos')}
+        variant="link"
+        autoWidth
+      >
+        Review your GitHub permissions
+        <Icon name="external" />
+      </Button>
+    </Stack>
   );
 };

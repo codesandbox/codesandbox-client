@@ -15,6 +15,7 @@ import { getOwnerAndRepoFromInput } from './utils';
 import {
   MaxPublicRepos,
   PrivateRepoFreeTeam,
+  RestrictedPrivateReposImport,
   RestrictedPublicReposImport,
 } from './importLimits';
 
@@ -61,7 +62,7 @@ type ImportProps = {
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
-  const { restrictsPublicRepos } = useGitHuPermissions();
+  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
   const importAndRedirect = useImportAndRedirect();
 
   const { isFree } = useWorkspaceSubscription();
@@ -189,7 +190,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             css={{ height: '32px' }}
             disabled={disableImport}
             placeholder="GitHub Repository URL"
-            tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="text"
             value={url.raw}
             onChange={handleUrlInputChange}
@@ -206,7 +206,14 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             {isLoading ? 'Importing...' : 'Import'}
           </Button>
         </Stack>
-        <Element aria-atomic="true" id="form-error" role="alert">
+        <Element
+          aria-atomic="true"
+          css={{
+            marginTop: '8px',
+          }}
+          id="form-error"
+          role="alert"
+        >
           {url.error ||
           githubRepo.state === 'error' ||
           limitImportBasedOnSubscription ? (
@@ -220,7 +227,22 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
               })}
             >
               {url.error}
-              {githubRepo.state === 'error' && githubRepo.error}
+              {/**
+               * If there's a 404 error coming from GitHub and the user has not given
+               * access to private repos, inform that reviewing their GH permissions
+               * might be necessary
+               * */}
+              {githubRepo.state === 'error' &&
+              restrictsPrivateRepos &&
+              githubRepo.code === 'NOT_FOUND' ? (
+                <RestrictedPrivateReposImport />
+              ) : null}
+              {/**
+               * Any other GitHub errors will be displayed as is.
+               * */}
+              {githubRepo.state === 'error' && !restrictsPrivateRepos
+                ? githubRepo.error
+                : null}
               {limitImportBasedOnSubscription && <PrivateRepoFreeTeam />}
             </Text>
           ) : null}
