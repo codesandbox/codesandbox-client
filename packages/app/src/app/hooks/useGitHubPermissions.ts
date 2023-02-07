@@ -1,11 +1,13 @@
 import { useAppState } from 'app/overmind';
 
 const NO_PERMISSIONS = {
+  allowsAllRepos: false,
   restrictsPublicRepos: true,
   restrictsPrivateRepos: true,
 };
 
 export const useGitHuPermissions = (): {
+  allowsAllRepos: boolean;
   restrictsPublicRepos: boolean;
   restrictsPrivateRepos: boolean;
 } => {
@@ -23,6 +25,7 @@ export const useGitHuPermissions = (): {
   const scopes = data.scopes;
 
   return {
+    allowsAllRepos: scopes.includes('repo'),
     restrictsPublicRepos: !(
       scopes.includes('repo') || scopes.includes('public_repo')
     ),

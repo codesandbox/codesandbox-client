@@ -3,6 +3,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import React from 'react';
 import { useActions } from 'app/overmind';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
+import { RestrictedImportDisclaimer } from 'app/pages/Dashboard/Components/shared/githubPermissions';
 import { EmptyPage } from '../../../Components/EmptyPage';
 
 const DESCRIPTION =
@@ -12,12 +13,20 @@ export const EmptyRepositories: React.FC = () => {
   const actions = useActions();
 
   return (
-    <EmptyPage.StyledWrapper>
+    <EmptyPage.StyledWrapper
+      css={{
+        gap: '16px',
+      }}
+    >
       <EmptyPage.StyledDescription
         as="p"
         dangerouslySetInnerHTML={{ __html: DESCRIPTION }}
       />
-      <EmptyPage.StyledGrid>
+      <EmptyPage.StyledGrid
+        css={{
+          marginTop: '16px',
+        }}
+      >
         <CreateCard
           icon="github"
           title="Import from GitHub"
@@ -47,6 +56,7 @@ export const EmptyRepositories: React.FC = () => {
           }
         />
       </EmptyPage.StyledGrid>
+      <RestrictedImportDisclaimer />
     </EmptyPage.StyledWrapper>
   );
 };

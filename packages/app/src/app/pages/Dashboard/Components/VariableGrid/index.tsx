@@ -6,8 +6,6 @@ import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useDismissible } from 'app/hooks';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { Sandbox } from '../Sandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
@@ -264,10 +262,6 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
 }) => {
   const { dashboard } = useAppState();
   const location = useLocation();
-  const [dismissedPermissionsBanner] = useDismissible(
-    'DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER'
-  );
-  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
@@ -443,16 +437,12 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
             }
 
             /**
-             * If it's the repositories page and the banner has been
-             * dismissed but there's no permission to import public repos
-             * or there's permission to import public repos but not private
-             * ones, render a footer to display a disclaimer.
+             * If it's the last item and the state is not loading,
+             * create a footer element.
              */
             if (
-              page === 'repositories' &&
-              ((dismissedPermissionsBanner && restrictsPublicRepos) ||
-                (!restrictsPublicRepos && restrictsPrivateRepos)) &&
-              index === items.length - 1
+              index === items.length - 1 &&
+              items.find(i => i.type === 'skeleton-row') === undefined
             ) {
               // Fill the remaining columns w/ a blank item
               const remainingColumns =
