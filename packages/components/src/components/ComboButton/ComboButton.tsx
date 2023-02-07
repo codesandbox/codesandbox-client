@@ -23,7 +23,6 @@ const ComboButton = ({
       <MenuStyles />
       <Button
         css={{
-          flex: 0,
           borderTopRightRadius: 0,
           borderBottomRightRadius: 0,
           border: '1px solid rgba(0, 0, 0, 0.2)',
@@ -34,6 +33,7 @@ const ComboButton = ({
           color: '#343434',
         }}
         variant={variant}
+        autoWidth
         {...props}
       >
         {children}
