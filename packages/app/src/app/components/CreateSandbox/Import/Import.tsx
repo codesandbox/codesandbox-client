@@ -7,11 +7,16 @@ import React from 'react';
 
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { useImportAndRedirect } from './useImportAndRedirect';
 import { getOwnerAndRepoFromInput } from './utils';
-import { MaxPublicRepos, PrivateRepoFreeTeam } from './importLimits';
+import {
+  MaxPublicRepos,
+  PrivateRepoFreeTeam,
+  RestrictedPublicReposImport,
+} from './importLimits';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
@@ -56,6 +61,7 @@ type ImportProps = {
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
+  const { restrictsPublicRepos } = useGitHuPermissions();
   const importAndRedirect = useImportAndRedirect();
 
   const { isFree } = useWorkspaceSubscription();
@@ -95,6 +101,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     },
   });
 
+  const isLoading = githubRepo.state === 'loading' || isImporting;
+  const limitImportBasedOnSubscription =
+    privateRepoFreeAccountError === url.raw;
+  const disableImport = hasMaxPublicRepositories || restrictsPublicRepos;
+
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (!value) {
@@ -128,7 +139,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (hasMaxPublicRepositories) {
+    if (disableImport) {
       return;
     }
 
@@ -142,10 +153,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   if (!hasLogIn) {
     return <UnauthenticatedImport />;
   }
-
-  const isLoading = githubRepo.state === 'loading' || isImporting;
-  const limitImportBasedOnSubscription =
-    privateRepoFreeAccountError === url.raw;
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -162,6 +169,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         Enter the GitHub repository URL to import
       </Text>
       {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
+      {restrictsPublicRepos ? <RestrictedPublicReposImport /> : null}
       <Element
         {...(hasMaxPublicRepositories
           ? {
@@ -179,6 +187,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             aria-describedby="form-title form-error"
             aria-invalid={Boolean(url.error)}
             css={{ height: '32px' }}
+            disabled={disableImport}
             placeholder="GitHub Repository URL"
             tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="text"
@@ -189,7 +198,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           <Button
             css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
             aria-disabled={hasMaxPublicRepositories}
-            disabled={Boolean(url.error) || isLoading}
+            disabled={Boolean(url.error) || isLoading || disableImport}
             tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="submit"
             autoWidth
