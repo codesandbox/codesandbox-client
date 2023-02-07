@@ -25,12 +25,10 @@ const ComboButton = ({
         css={{
           borderTopRightRadius: 0,
           borderBottomRightRadius: 0,
-          border: '1px solid rgba(0, 0, 0, 0.2)',
           fontWeight: 500,
           fontSize: '12px',
           lineHeight: 1,
           letterSpacing: '-0.02em',
-          color: '#343434',
         }}
         variant={variant}
         autoWidth
@@ -44,8 +42,6 @@ const ComboButton = ({
             css={{
               borderTopLeftRadius: 0,
               borderBottomLeftRadius: 0,
-              border: '1px solid rgba(0, 0, 0, 0.2)',
-              borderLeft: 'none',
 
               '> *': {
                 transform: 'translateY(0)',
@@ -59,7 +55,7 @@ const ComboButton = ({
             }}
             variant={variant}
           >
-            <Icon size={8} name="caret" />
+            <Icon size={8} name="chevronDown" />
           </Menu.Button>
           <Menu.List>{options}</Menu.List>
         </Menu>
