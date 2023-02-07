@@ -22,11 +22,14 @@ export function processPackageJSON(
   }
 
   const aliases: AliasesDict = {};
+  const hasExports = content.exports && pkgRoot !== '/';
 
-  for (const mainField of MAIN_PKG_FIELDS) {
-    if (typeof content[mainField] === 'string') {
-      aliases[pkgRoot] = normalizeAliasFilePath(content[mainField], pkgRoot);
-      break;
+  if (!hasExports) {
+    for (const mainField of MAIN_PKG_FIELDS) {
+      if (typeof content[mainField] === 'string') {
+        aliases[pkgRoot] = normalizeAliasFilePath(content[mainField], pkgRoot);
+        break;
+      }
     }
   }
 
@@ -51,7 +54,7 @@ export function processPackageJSON(
   }
 
   // load exports if it's not the root pkg.json
-  if (content.exports && pkgRoot !== '/') {
+  if (hasExports) {
     if (typeof content.exports === 'string') {
       aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
     } else if (typeof content.exports === 'object') {
@@ -64,9 +67,7 @@ export function processPackageJSON(
         aliases[normalizedKey] = exportValue || EMPTY_SHIM;
       }
     }
-
-    return { aliases, hasExports: true };
   }
 
-  return { aliases, hasExports: false };
+  return { aliases, hasExports };
 }
