@@ -68,7 +68,7 @@ export const ProUpgrade = () => {
   }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
 
   const { isPersonalSpace, isTeamAdmin, isAdmin } = useWorkspaceAuthorization();
-  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isFree, isPro, isEligibleForTrial } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
   // const isPro = true; // DEBUG
 
@@ -107,7 +107,7 @@ export const ProUpgrade = () => {
         isLoading: isCustomerPortalLoading,
       }
     : {
-        text: 'Proceed to checkout',
+        text: isEligibleForTrial ? 'Start free trial' : 'Proceed to checkout',
         href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
         variant: 'highlight',
         isLoading: checkout.state === 'LOADING',
@@ -137,7 +137,7 @@ export const ProUpgrade = () => {
           isLoading: isCustomerPortalLoading,
         }
       : {
-          text: 'Proceed to checkout',
+          text: isEligibleForTrial ? 'Start free trial' : 'Proceed to checkout',
           href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
           variant: 'highlight',
           isLoading: checkout.state === 'LOADING',
