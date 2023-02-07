@@ -12,6 +12,13 @@ export const GithubIntegration: FunctionComponent<Props> = ({
 }) => {
   const { signInGithubClicked, signOutGithubIntegration } = useActions();
   const { isLoadingGithub, user } = useAppState();
+  const userInfo =
+    user?.githubProfile.data && user?.integrations.github
+      ? {
+          ...user.githubProfile.data,
+          email: user.integrations.github.email,
+        }
+      : undefined;
 
   return (
     <Integration
@@ -22,7 +29,7 @@ export const GithubIntegration: FunctionComponent<Props> = ({
       onSignIn={() => signInGithubClicked()}
       onSignOut={() => signOutGithubIntegration()}
       small={small}
-      userInfo={user?.githubProfile.data}
+      userInfo={userInfo}
     />
   );
 };
