@@ -1,8 +1,8 @@
 import { useAppState } from 'app/overmind';
 
 const NO_PERMISSIONS = {
-  restrictsPublicRepos: false,
-  restrictsPrivateRepos: false,
+  restrictsPublicRepos: true,
+  restrictsPrivateRepos: true,
 };
 
 export const useGitHuPermissions = (): {
