@@ -11,12 +11,7 @@ export const GithubIntegration: FunctionComponent<Props> = ({
   small = false,
 }) => {
   const { signInGithubClicked, signOutGithubIntegration } = useActions();
-  const {
-    isLoadingGithub,
-    user: {
-      integrations: { github },
-    },
-  } = useAppState();
+  const { isLoadingGithub, user } = useAppState();
 
   return (
     <Integration
@@ -24,10 +19,10 @@ export const GithubIntegration: FunctionComponent<Props> = ({
       Icon={GitHubLogo}
       loading={isLoadingGithub}
       name="GitHub"
-      onSignIn={() => signInGithubClicked('private_repos')}
+      onSignIn={() => signInGithubClicked()}
       onSignOut={() => signOutGithubIntegration()}
       small={small}
-      userInfo={github}
+      userInfo={user?.githubProfile.data}
     />
   );
 };
