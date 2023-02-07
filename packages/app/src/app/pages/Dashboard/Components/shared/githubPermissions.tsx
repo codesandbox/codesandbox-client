@@ -1,8 +1,8 @@
 import {
   Button,
+  Element,
   Icon,
   MessageStripe,
-  Stack,
   Text,
 } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
@@ -39,17 +39,52 @@ export const RestrictedPublicReposImport: React.FC<{
   );
 };
 
-export const RestrictedImportDisclaimer: React.FC = () => {
+export const RestrictedImportDisclaimer: React.FC<{ insideGrid?: boolean }> = ({
+  insideGrid = false,
+}) => {
   const actions = useActions();
 
   return (
-    <Stack>
-      <Text>Don&apos;t see all your repositories?</Text>
+    <Element
+      css={{
+        display: 'flex',
+        flexDirection: insideGrid ? 'column' : 'row',
+        alignItems: insideGrid ? 'flex-start' : 'center',
+        gap: insideGrid ? 0 : '4px',
+      }}
+    >
+      <Text
+        css={{
+          fontWeight: 400,
+          fontSize: '12px',
+          lineHeight: '16px',
+          letterSpacing: '0.005em',
+          color: '#999999',
+        }}
+      >
+        Don&apos;t see all your repositories?
+      </Text>
       <Button
         css={{
-          color: '#FFFFFF',
-          cursor: 'pointer',
+          display: 'flex',
           gap: '8px',
+          cursor: 'pointer',
+          fontWeight: 500,
+          fontSize: '12px',
+          lineHeight: '20px',
+          letterSpacing: '-0.02em',
+          color: '#EBEBEB',
+          transition: 'color ease-in .3s',
+          padding: `4px ${insideGrid ? 0 : '8px'}`,
+
+          '&:hover:not(:disabled), &:focus:not(:disabled)': {
+            color: '#E0E0E0',
+          },
+
+          '&:focus-within': {
+            outline: '#ac9cff solid 2px',
+            outlineOffset: '-2px',
+          },
         }}
         onClick={() =>
           actions.modalOpened({ modal: 'preferences', itemId: 'integrations' })
@@ -58,8 +93,8 @@ export const RestrictedImportDisclaimer: React.FC = () => {
         autoWidth
       >
         Review your GitHub permissions
-        <Icon name="external" />
+        <Icon name="external" size={12} />
       </Button>
-    </Stack>
+    </Element>
   );
 };

@@ -6,6 +6,8 @@ import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { useDismissible } from 'app/hooks';
+import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { Sandbox } from '../Sandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
@@ -29,6 +31,7 @@ import {
   DashboardNewBranch,
   DashboardImportRepository,
   PageTypes,
+  DashboardFooter,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch } from '../Branch';
@@ -43,8 +46,10 @@ import {
   ITEM_HEIGHT_LIST,
   HEADER_HEIGHT,
   ITEM_VERTICAL_OFFSET,
+  FOOTER_HEIGHT,
 } from './constants';
 import { ActionCard } from '../shared/ActionCard';
+import { RestrictedImportDisclaimer } from '../shared/githubPermissions';
 
 type WindowItemProps = {
   data: {
@@ -83,6 +88,7 @@ interface IComponentForTypes {
   'new-branch': React.FC<DecoratedItemProps<DashboardNewBranch>>;
   repository: React.FC<DecoratedItemProps<DashboardRepository>>;
   'import-repository': React.FC<DecoratedItemProps<DashboardImportRepository>>;
+  footer: React.FC<DecoratedItemProps<DashboardFooter>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -163,6 +169,14 @@ const ComponentForTypes: IComponentForTypes = {
       Import repository
     </ActionCard>
   ),
+  footer: ({ item }) => {
+    if (item.page === 'repositories') {
+      return (
+        <RestrictedImportDisclaimer insideGrid={item.viewMode === 'grid'} />
+      );
+    }
+    return null;
+  },
 };
 
 const Item = React.memo(
@@ -250,6 +264,10 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
 }) => {
   const { dashboard } = useAppState();
   const location = useLocation();
+  const [dismissedPermissionsBanner] = useDismissible(
+    'DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER'
+  );
+  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
@@ -261,8 +279,20 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
     const item = filledItems[rowIndex * columnCount];
 
     if (item.type === 'header') return HEADER_HEIGHT;
+    if (item.type === 'footer') return FOOTER_HEIGHT;
     if (item.type === 'blank') return 0;
+
     return ITEM_HEIGHT + (viewMode === 'list' ? 0 : GUTTER);
+  };
+
+  const getColumnWidth = ({
+    columnCount,
+    width,
+  }: {
+    columnCount: number;
+    width: number;
+  }) => {
+    return width / columnCount;
   };
 
   const onResize = () => {
@@ -411,6 +441,34 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 filledItems.push(blankItem);
               }
             }
+
+            /**
+             * If it's the repositories page and the banner has been
+             * dismissed but there's no permission to import public repos
+             * or there's permission to import public repos but not private
+             * ones, render a footer to display a disclaimer.
+             */
+            if (
+              page === 'repositories' &&
+              ((dismissedPermissionsBanner && restrictsPublicRepos) ||
+                (!restrictsPublicRepos && restrictsPrivateRepos)) &&
+              index === items.length - 1
+            ) {
+              // Fill the remaining columns w/ a blank item
+              const remainingColumns =
+                columnCount - (filledItems.length % columnCount);
+
+              for (let i = 0; i < remainingColumns; i++) {
+                filledItems.push(blankItem);
+              }
+
+              // Push the footer as the last item in its own row
+              filledItems.push({
+                page,
+                type: 'footer',
+                viewMode,
+              });
+            }
           });
 
           filledItemsRef.current = filledItems;
@@ -428,7 +486,12 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 rowCount={Math.ceil(filledItems.length / columnCount)}
                 width={width}
                 height={height}
-                columnWidth={index => width / columnCount}
+                columnWidth={columnIndex =>
+                  getColumnWidth({
+                    columnCount,
+                    width,
+                  })
+                }
                 rowHeight={rowIndex =>
                   getRowHeight(rowIndex, columnCount, filledItems)
                 }
