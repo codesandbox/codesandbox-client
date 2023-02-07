@@ -160,7 +160,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
 };
 
 export const RestrictedPrivateReposImport: React.FC = () => {
-  const { signInGithubClicked } = useActions();
+  const { modalOpened } = useActions();
 
   return (
     <Stack
@@ -175,14 +175,18 @@ export const RestrictedPrivateReposImport: React.FC = () => {
         css={{
           color: '#FFFFFF',
           cursor: 'pointer',
-          gap: '8px',
+          gap: '4px',
         }}
-        onClick={() => signInGithubClicked('private_repos')}
+        onClick={() =>
+          modalOpened({ modal: 'preferences', itemId: 'integrations' })
+        }
         variant="link"
         autoWidth
       >
         Review your GitHub permissions
-        <Icon name="external" />
+        <Element css={{ marginTop: '2px' }}>
+          <Icon name="external" size={12} />
+        </Element>
       </Button>
     </Stack>
   );
