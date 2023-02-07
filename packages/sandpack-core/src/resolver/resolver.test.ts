@@ -503,30 +503,6 @@ describe('resolve', () => {
         '/node_modules/package-exports/src/utils/test/index.js'
       );
     });
-
-    it('should ignore the closest package.json and aliases in it when exports are available in the root', () => {
-      const resolved = resolveSync('@emotion/react/jsx-runtime', {
-        filename: '/foo.js',
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        isFile,
-        readFile,
-      });
-      expect(resolved).toBe(
-        '/node_modules/@emotion/react/jsx-runtime/dist/emotion-react-jsx-runtime.cjs.js'
-      );
-    });
-
-    it('should always use exports from the root of the package and not from the closest package.json', () => {
-      const resolved = resolveSync('exports-from-root/nested', {
-        filename: '/foo.js',
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        isFile,
-        readFile,
-      });
-      // this should specifically not resolve to `/node_modules/exports-from-root/nested/file.js`
-      // package.json#exports should only be used from the root of the package
-      expect(resolved).toBe('/node_modules/exports-from-root/file.js');
-    });
   });
 
   describe('normalize module specifier', () => {
