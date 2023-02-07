@@ -18,7 +18,6 @@ Object {
     "/node_modules/solid-js/web": "/node_modules/solid-js/web/dist/web.cjs",
     "/node_modules/solid-js/web/dist/*": "/node_modules/solid-js/web/dist/$1",
   },
-  "hasExports": true,
 }
 `;
 
@@ -40,7 +39,6 @@ Object {
     "something": "/nested/test.js",
     "something/*": "/nested/test.js/$1",
   },
-  "hasExports": false,
 }
 `;
 
@@ -229,6 +227,5 @@ Object {
     "/node_modules/@babel/runtime/regenerator/": "/node_modules/@babel/runtime/regenerator/",
     "/node_modules/@babel/runtime/regenerator/*.js": "/node_modules/@babel/runtime/regenerator/$1.js",
   },
-  "hasExports": true,
 }
 `;
