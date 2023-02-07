@@ -14,7 +14,7 @@ import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 import { FinalizeSignUpOptions } from './effects/api/types';
-import { AuthOptions } from './utils/auth';
+import { AuthOptions, GHScopeOption } from './utils/auth';
 
 export const internal = internalActions;
 
@@ -386,9 +386,12 @@ export const setPendingUserId = ({ state }: Context, id: string) => {
   state.pendingUserId = id;
 };
 
-export const signInGithubClicked = async ({ state, actions }: Context) => {
+export const signInGithubClicked = async (
+  { state, actions }: Context,
+  includedScopes: GHScopeOption
+) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: true, provider: 'github' });
+  await actions.internal.signIn({ includedScopes, provider: 'github' });
   state.isLoadingGithub = false;
   if (state.editor.currentSandbox?.originalGit) {
     actions.git.loadGitSource();
