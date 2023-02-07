@@ -1,8 +1,7 @@
 import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Button } from '@codesandbox/components';
+import { Button, Stack } from '@codesandbox/components';
 import { Details, Heading, Info, Action } from './elements';
 
 interface IDetailInfoProps {
@@ -19,11 +18,10 @@ export const DetailInfo: React.FC<IDetailInfoProps> = ({
   onSignIn,
 }) => (
   <Details>
-    <Margin right={2}>
+    <Stack direction="vertical" gap={0}>
       <Heading>{heading}</Heading>
       <Info>{info}</Info>
-    </Margin>
-
+    </Stack>
     {onSignOut ? (
       <Tooltip content="Sign out">
         <Action onClick={onSignOut} red>

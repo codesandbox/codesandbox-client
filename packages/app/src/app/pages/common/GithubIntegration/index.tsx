@@ -20,7 +20,6 @@ export const GithubIntegration: FunctionComponent<Props> = ({
 
   return (
     <Integration
-      bgColor="#0971f1"
       description={small ? 'Commits & PRs' : 'Committing & Pull Requests'}
       Icon={GitHubLogo}
       loading={isLoadingGithub}

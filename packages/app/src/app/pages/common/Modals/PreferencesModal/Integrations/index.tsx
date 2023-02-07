@@ -13,9 +13,8 @@ export const Integrations: FunctionComponent = () => (
     </Text>
 
     <Container>
-      <VercelIntegration />
-
       <GithubIntegration />
+      <VercelIntegration />
     </Container>
   </div>
 );
