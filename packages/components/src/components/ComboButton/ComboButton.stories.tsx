@@ -8,6 +8,7 @@ export default {
 
 export const BaseVariant = () => (
   <ComboButton
+    onClick={() => alert('onClick')}
     options={
       <>
         <ComboButton.Item onSelect={() => {}} disabled>

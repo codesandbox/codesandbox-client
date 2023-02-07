@@ -5,12 +5,13 @@ import { Menu, MenuStyles } from '../Menu';
 import { Stack } from '../Stack';
 import { Icon } from '../Icon';
 
+type ButtonProps = React.ComponentProps<typeof Button>;
+
 type ComboButtonProps = {
   children: React.ReactNode;
   disabled?: boolean;
-  variant?: React.ComponentProps<typeof Button>['variant'];
   options: NonNullable<React.ReactNode>;
-};
+} & ButtonProps;
 
 const ComboButton = ({
   children,
