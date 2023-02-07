@@ -159,31 +159,6 @@ export const PrivateRepoFreeTeam: React.FC = () => {
   );
 };
 
-export const RestrictedPublicReposImport: React.FC = () => {
-  const { signInGithubClicked } = useActions();
-  const { isLoadingGithub } = useAppState();
-
-  return (
-    <MessageStripe justify="space-between" variant="warning">
-      Adjust your GitHub permissions to access your repositories.
-      <MessageStripe.MultiActions
-        onClick={() => signInGithubClicked('private_repos')}
-        loading={isLoadingGithub}
-        options={
-          <MessageStripe.MultiActionsItem
-            disabled={isLoadingGithub}
-            onSelect={() => signInGithubClicked('public_repos')}
-          >
-            Access only public repositories
-          </MessageStripe.MultiActionsItem>
-        }
-      >
-        Access all repositories
-      </MessageStripe.MultiActions>
-    </MessageStripe>
-  );
-};
-
 export const RestrictedPrivateReposImport: React.FC = () => {
   const { signInGithubClicked } = useActions();
 

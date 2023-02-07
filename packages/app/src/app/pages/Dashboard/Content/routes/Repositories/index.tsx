@@ -7,7 +7,10 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
+import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
+import { useDismissible } from 'app/hooks';
 import { EmptyRepositories } from './EmptyRepositories';
 
 export const RepositoriesPage = () => {
@@ -16,6 +19,9 @@ export const RepositoriesPage = () => {
     activeTeam,
     dashboard: { repositoriesByTeamId, viewMode },
   } = useAppState();
+  const [dismissedPermissionsBanner, dismissPermissionsBanner] = useDismissible(
+    'DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER'
+  );
 
   const teamRepos = repositoriesByTeamId[activeTeam] || undefined;
 
@@ -34,6 +40,8 @@ export const RepositoriesPage = () => {
     hasMaxPublicRepositories,
     hasMaxPrivateRepositories,
   } = useWorkspaceLimits();
+
+  const { restrictsPublicRepos } = useGitHuPermissions();
 
   const pageType: PageTypes = 'repositories';
 
@@ -82,6 +90,12 @@ export const RepositoriesPage = () => {
       {hasMaxPublicRepositories || hasMaxPrivateRepositories ? (
         <Element paddingX={4} paddingY={2}>
           <MaxReposFreeTeam />
+        </Element>
+      ) : null}
+
+      {restrictsPublicRepos && !dismissedPermissionsBanner ? (
+        <Element paddingX={4} paddingY={2}>
+          <RestrictedPublicReposImport onDismiss={dismissPermissionsBanner} />
         </Element>
       ) : null}
 
