@@ -548,7 +548,7 @@ describe('resolve', () => {
       expect(resolved).toBe('/node_modules/fflate/lib/index.cjs');
     });
 
-    // exports would return invalid value, so aliasing has to happen afterwards to fix this
+    // We should still post process imports using the browser field even when a package has exports
     it('resolve fflate#worker correctly to browser version', () => {
       const resolved = resolveSync('./node-worker.cjs', {
         filename: '/node_modules/fflate/lib/index.cjs',
