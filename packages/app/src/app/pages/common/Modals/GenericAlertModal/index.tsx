@@ -11,6 +11,8 @@ export const GenericAlertModal = () => {
   const {
     title,
     message,
+    cancelMessage,
+    confirmMessage,
     type,
     isCurrent,
     customComponent,
@@ -38,9 +40,9 @@ export const GenericAlertModal = () => {
       <Alert
         title={title}
         description={message}
-        confirmMessage="Confirm"
+        confirmMessage={confirmMessage || 'Confirm'}
         type={type}
-        cancelMessage="Cancel"
+        cancelMessage={cancelMessage || 'Cancel'}
         onPrimaryAction={() => {
           alertModal.close(true);
         }}
