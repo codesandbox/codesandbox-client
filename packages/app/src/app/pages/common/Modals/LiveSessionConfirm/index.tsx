@@ -72,7 +72,7 @@ export const LiveSessionConfirm: React.FC = () => {
         ) : (
           <Button
             as="a"
-            href="/pricing"
+            href="/pro"
             target="_blank"
             variant="secondary"
             autoWidth
