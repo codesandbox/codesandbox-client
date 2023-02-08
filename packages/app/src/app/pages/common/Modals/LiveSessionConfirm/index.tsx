@@ -50,14 +50,19 @@ export const LiveSessionConfirm: React.FC = () => {
           <Button
             loading={checkout.status === 'loading'}
             variant="primary"
-            onClick={() =>
+            onClick={() => {
+              track('Live Session - upgrade clicked', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+
               createCheckout({
                 team_id: activeTeam,
                 recurring_interval: 'month',
                 success_path: sandboxUrl({ id }),
                 cancel_path: sandboxUrl({ id }),
-              })
-            }
+              });
+            }}
             autoWidth
           >
             <Text>
