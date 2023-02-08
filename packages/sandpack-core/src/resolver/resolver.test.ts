@@ -528,7 +528,7 @@ describe('resolve', () => {
       expect(resolved).toBe('/node_modules/exports-from-root/file.js');
     });
 
-    it('should handle its-fine', () => {
+    it('should handle conditional root exports', () => {
       const resolved = resolveSync('its-fine', {
         filename: '/foo.js',
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
