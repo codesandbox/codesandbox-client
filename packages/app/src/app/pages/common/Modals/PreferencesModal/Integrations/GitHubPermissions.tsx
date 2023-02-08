@@ -10,9 +10,22 @@ import {
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useActions } from 'app/overmind';
 
-const GitHubScope: React.FC<{ scope: 'public_repos' | 'private_repos' }> = ({
-  scope,
-}) => {
+const MAP_SCOPE_DESCRIPTION = {
+  public_repos: 'Read and write access to public repositories',
+  repo: 'Read and write access to private repositories',
+  'read:org': 'Read access to your organizations',
+  workflow: 'Update github action workflows',
+};
+
+const GitHubScope: React.FC<{
+  scope: string;
+}> = ({ scope }) => {
+  const scopeDescription = MAP_SCOPE_DESCRIPTION[scope];
+
+  if (!scopeDescription) {
+    return null;
+  }
+
   return (
     <Stack as="li" gap={3}>
       <Element css={{ color: '#B3FBB4', marginTop: '2px' }}>
@@ -23,12 +36,7 @@ const GitHubScope: React.FC<{ scope: 'public_repos' | 'private_repos' }> = ({
           color: '#C5C5C5',
         }}
       >
-        {
-          {
-            public_repos: 'Read and write access to public repositories',
-            private_repos: 'Read and write access to private repositories',
-          }[scope]
-        }
+        {scopeDescription ?? scope}
       </Text>
     </Stack>
   );
@@ -45,12 +53,11 @@ const Details: React.FC = () => {
   if (restrictsPublicRepos) {
     return (
       <Stack direction="vertical" gap={6}>
-        <Stack direction="vertical" gap={0}>
+        <Stack direction="vertical">
           <Text
             css={{
-              marginBottom: '0.25rem',
               color: 'rgba(255, 255, 255, 0.5)',
-              fontSize: '0.75rem',
+              fontSize: '12px',
             }}
           >
             Enables
@@ -99,9 +106,8 @@ const Details: React.FC = () => {
         <Stack direction="vertical" gap={0}>
           <Text
             css={{
-              marginBottom: '0.25rem',
               color: 'rgba(255, 255, 255, 0.5)',
-              fontSize: '0.75rem',
+              fontSize: '12px',
             }}
           >
             Signed in as
@@ -113,8 +119,8 @@ const Details: React.FC = () => {
           css={{
             justifyContent: 'center',
             alignItems: 'center',
-            width: '1.5rem',
-            height: '1.5rem',
+            width: '24px',
+            height: '24px',
             border: '1px solid rgba(255, 0, 0, 0.4)',
             borderRadius: '4px',
             backgroundColor: 'transparent',
@@ -144,7 +150,9 @@ const Details: React.FC = () => {
         gap={3}
       >
         <GitHubScope scope="public_repos" />
-        {!restrictsPrivateRepos && <GitHubScope scope="private_repos" />}
+        {profile.scopes.map(s => (
+          <GitHubScope key={`scope_${s}`} scope={s} />
+        ))}
       </Stack>
       {restrictsPrivateRepos ? (
         <Button
