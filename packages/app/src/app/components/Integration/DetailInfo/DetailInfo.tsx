@@ -18,7 +18,7 @@ export const DetailInfo: React.FC<IDetailInfoProps> = ({
   onSignIn,
 }) => (
   <Details>
-    <Stack direction="vertical" gap={0}>
+    <Stack direction="vertical">
       <Heading>{heading}</Heading>
       <Info>{info}</Info>
     </Stack>
