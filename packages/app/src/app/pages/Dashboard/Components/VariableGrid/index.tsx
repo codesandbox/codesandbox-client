@@ -47,7 +47,10 @@ import {
   FOOTER_HEIGHT,
 } from './constants';
 import { ActionCard } from '../shared/ActionCard';
-import { RestrictedImportDisclaimer } from '../shared/githubPermissions';
+import {
+  ReadOnlyRepoDisclaimer,
+  RestrictedImportDisclaimer,
+} from '../shared/githubPermissions';
 
 type WindowItemProps = {
   data: {
@@ -173,6 +176,11 @@ const ComponentForTypes: IComponentForTypes = {
         <RestrictedImportDisclaimer insideGrid={item.viewMode === 'grid'} />
       );
     }
+
+    if (item.page === 'repository-branches') {
+      return <ReadOnlyRepoDisclaimer insideGrid={item.viewMode === 'grid'} />;
+    }
+
     return null;
   },
 };
