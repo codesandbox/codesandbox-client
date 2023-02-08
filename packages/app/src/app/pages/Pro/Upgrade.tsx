@@ -107,7 +107,7 @@ export const ProUpgrade = () => {
         isLoading: isCustomerPortalLoading,
       }
     : {
-        text: isEligibleForTrial ? 'Start free trial' : 'Proceed to checkout',
+        text: 'Proceed to checkout',
         href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
         variant: 'highlight',
         isLoading: checkout.state === 'LOADING',
