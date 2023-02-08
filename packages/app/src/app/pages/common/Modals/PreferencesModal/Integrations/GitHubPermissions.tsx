@@ -152,8 +152,7 @@ const Details: React.FC = () => {
           variant="primary"
           autoWidth
         >
-          {' '}
-          Autorize access to private repositories{' '}
+          Autorize access to private repositories
         </Button>
       ) : null}
     </Stack>
