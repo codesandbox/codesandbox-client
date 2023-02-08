@@ -1,9 +1,9 @@
 import { Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
-import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { VercelIntegration } from 'app/pages/common/VercelIntegration';
 
+import { GitHubPermissions } from './GitHubPermissions';
 import { Container } from './elements';
 
 export const Integrations: FunctionComponent = () => (
@@ -13,7 +13,7 @@ export const Integrations: FunctionComponent = () => (
     </Text>
 
     <Container>
-      <GithubIntegration />
+      <GitHubPermissions />
       <VercelIntegration />
     </Container>
   </div>
