@@ -18,7 +18,10 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const subscription = activeTeamInfo.subscription;
 
   if (!subscription) {
-    return NO_SUBSCRIPTION;
+    return {
+      ...NO_SUBSCRIPTION,
+      isEligibleForTrial: isTeamSpace, // Currently, only teams are eligible for trial.
+    };
   }
 
   const isPro =
@@ -75,7 +78,6 @@ const NO_SUBSCRIPTION = {
   numberOfSeats: 0,
   isPro: false,
   isFree: true,
-  isEligibleForTrial: true,
   hasActiveTeamTrial: false,
   hasPaymentMethod: false,
   isPatron: false,
@@ -85,7 +87,7 @@ const NO_SUBSCRIPTION = {
 
 export type WorkspaceSubscriptionReturn =
   | typeof NO_WORKSPACE
-  | typeof NO_SUBSCRIPTION
+  | (typeof NO_SUBSCRIPTION & { isEligibleForTrial: boolean })
   | {
       subscription: {
         cancelAt?: string;
