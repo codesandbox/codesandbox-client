@@ -537,6 +537,27 @@ describe('resolve', () => {
       });
       expect(resolved).toBe('/node_modules/its-fine/out/index.cjs');
     });
+
+    it('resolve fflate correctly', () => {
+      const resolved = resolveSync('fflate', {
+        filename: '/node_modules/its-fine/out/index.cjs',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/fflate/lib/index.cjs');
+    });
+
+    // exports would return invalid value, so aliasing has to happen afterwards to fix this
+    it('resolve fflate#worker correctly to browser version', () => {
+      const resolved = resolveSync('./node-worker.cjs', {
+        filename: '/node_modules/fflate/lib/index.cjs',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/fflate/lib/worker.cjs');
+    });
   });
 
   describe('normalize module specifier', () => {

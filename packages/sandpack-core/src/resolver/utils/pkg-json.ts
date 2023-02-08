@@ -13,6 +13,8 @@ export interface ProcessedPackageJSON {
   hasExports: boolean;
 }
 
+// See https://webpack.js.org/guides/package-exports/ for a good reference on how this should work
+// We aren't completely spec compliant but we're trying to match it as close as possible without nuking performance
 export function processPackageJSON(
   content: any,
   pkgRoot: string
@@ -24,31 +26,12 @@ export function processPackageJSON(
   const aliases: AliasesDict = {};
   const hasExports = content.exports && pkgRoot !== '/';
 
+  // If there are exports it should have a main field configured
   if (!hasExports) {
     for (const mainField of MAIN_PKG_FIELDS) {
       if (typeof content[mainField] === 'string') {
         aliases[pkgRoot] = normalizeAliasFilePath(content[mainField], pkgRoot);
         break;
-      }
-    }
-  }
-
-  if (content.browser === false) {
-    aliases[pkgRoot] = EMPTY_SHIM;
-  }
-
-  for (const aliasFieldKey of PKG_ALIAS_FIELDS) {
-    const aliasField = content[aliasFieldKey];
-    if (typeof aliasField === 'object') {
-      for (const key of Object.keys(aliasField)) {
-        const val = aliasField[key] || EMPTY_SHIM;
-        const normalizedKey = normalizeAliasFilePath(key, pkgRoot, false);
-        const normalizedValue = normalizeAliasFilePath(val, pkgRoot, false);
-        aliases[normalizedKey] = normalizedValue;
-
-        if (aliasFieldKey !== 'browser') {
-          aliases[`${normalizedKey}/*`] = `${normalizedValue}/$1`;
-        }
       }
     }
   }
@@ -73,6 +56,28 @@ export function processPackageJSON(
           );
           const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
           aliases[normalizedKey] = exportValue || EMPTY_SHIM;
+        }
+      }
+    }
+  }
+
+  // These aliases should happen as a seperate pass from exports
+  // but let's just give it a higher priority for now, we can refactor it later
+  if (content.browser === false) {
+    aliases[pkgRoot] = EMPTY_SHIM;
+  }
+
+  for (const aliasFieldKey of PKG_ALIAS_FIELDS) {
+    const aliasField = content[aliasFieldKey];
+    if (typeof aliasField === 'object') {
+      for (const key of Object.keys(aliasField)) {
+        const val = aliasField[key] || EMPTY_SHIM;
+        const normalizedKey = normalizeAliasFilePath(key, pkgRoot, false);
+        const normalizedValue = normalizeAliasFilePath(val, pkgRoot, false);
+        aliases[normalizedKey] = normalizedValue;
+
+        if (aliasFieldKey !== 'browser') {
+          aliases[`${normalizedKey}/*`] = `${normalizedValue}/$1`;
         }
       }
     }
