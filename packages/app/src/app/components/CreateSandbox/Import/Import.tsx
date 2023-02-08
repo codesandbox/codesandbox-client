@@ -175,17 +175,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       </Text>
       {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
       {restrictsPublicRepos ? <RestrictedPublicReposImport /> : null}
-      <Element
-        {...(hasMaxPublicRepositories
-          ? {
-              as: 'div',
-              css: {
-                opacity: hasMaxPublicRepositories ? 0.4 : 1,
-                pointerEvents: hasMaxPublicRepositories ? 'none' : 'initial',
-              },
-            }
-          : { as: 'form', onSubmit: handleFormSubmit })}
-      >
+      <Element as="form" onSubmit={handleFormSubmit}>
         <Stack gap={2}>
           <Input
             aria-disabled={hasMaxPublicRepositories}
