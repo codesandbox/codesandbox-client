@@ -9,14 +9,12 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
+import { MaxPublicRepos } from './MaxPublicRepos';
+import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
+import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndRepoFromInput } from './utils';
-import {
-  MaxPublicRepos,
-  PrivateRepoFreeTeam,
-  RestrictedPrivateReposImport,
-} from './importLimits';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
