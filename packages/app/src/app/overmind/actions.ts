@@ -253,7 +253,7 @@ type ModalName =
   | 'share'
   | 'signInForTemplates'
   | 'userSurvey'
-  | 'liveSessionEnded'
+  | 'liveSessionConfirm'
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'

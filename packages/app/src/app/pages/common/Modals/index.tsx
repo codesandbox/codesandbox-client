@@ -22,6 +22,7 @@ import { ExportGitHubModal } from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
+import { LiveSessionConfirm } from './LiveSessionConfirm';
 import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
@@ -144,6 +145,10 @@ const modals = {
   },
   liveSessionEnded: {
     Component: LiveSessionEnded,
+    width: 400,
+  },
+  liveSessionConfirm: {
+    Component: LiveSessionConfirm,
     width: 400,
   },
   liveVersionMismatch: {
