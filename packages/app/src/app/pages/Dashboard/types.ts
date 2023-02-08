@@ -149,6 +149,7 @@ export type DashboardNewBranch = {
     owner: string;
     name: string;
   };
+  workspaceId?: string;
   disabled?: boolean;
 };
 

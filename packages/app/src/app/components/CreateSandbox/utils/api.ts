@@ -78,50 +78,6 @@ export const getTemplateInfosFromAPI = (url: string): Promise<TemplateInfo[]> =>
     .then(res => res.json())
     .then((body: IExploreTemplate[]) => body.map(mapAPIResponseToTemplateInfo));
 
-interface PartialImportedRepository {
-  default_branch: string;
-  is_v2: true;
-  owner: string;
-  repo: string;
-  repo_private: boolean;
-}
-
-type ImportRepositoryFn = (_: {
-  owner: string;
-  name: string;
-  csbTeamId: string;
-}) => Promise<PartialImportedRepository>;
-
-export const importRepository: ImportRepositoryFn = ({
-  owner,
-  name,
-  csbTeamId,
-}) => {
-  // Get the authentication token from local storage if it exists.
-  const token = localStorage.getItem('devJwt');
-
-  return fetch(`/api/beta/import/github/${owner}/${name}`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'x-codesandbox-client': 'legacy-web',
-      authorization: token ? `Bearer ${token}` : '',
-    },
-    method: 'POST',
-    body: JSON.stringify({
-      team_id: csbTeamId,
-    }),
-  })
-    .then(res => {
-      if (!res.ok) {
-        throw Error(res.statusText);
-      }
-
-      return res;
-    })
-    .then(res => res.json());
-};
-
 type ValidateRepositoryDestinationFn = (
   destination: string
 ) => Promise<{ valid: boolean; message?: string }>;
@@ -140,51 +96,6 @@ export const validateRepositoryDestination: ValidateRepositoryDestinationFn = de
       'x-codesandbox-client': 'legacy-web',
       authorization: token ? `Bearer ${token}` : '',
     },
-  })
-    .then(res => {
-      if (!res.ok) {
-        throw Error(res.statusText);
-      }
-
-      return res;
-    })
-    .then(res => res.json());
-};
-
-type Source = {
-  owner: string;
-  name: string;
-};
-type Destination = {
-  organization?: string;
-  name: string;
-  teamId: string;
-};
-type ForkRepositoryFn = (_: {
-  source: Source;
-  destination: Destination;
-}) => Promise<PartialImportedRepository>;
-export const forkRepository: ForkRepositoryFn = ({ source, destination }) => {
-  // Get the authentication token from local storage if it exists.
-  const token = localStorage.getItem('devJwt');
-
-  let body: Record<string, string> = {
-    name: destination.name,
-    team_id: destination.teamId,
-  };
-  if (destination.organization) {
-    body = { ...body, organization: destination.organization };
-  }
-
-  return fetch(`/api/beta/fork/github/${source.owner}/${source.name}`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'x-codesandbox-client': 'legacy-web',
-      authorization: token ? `Bearer ${token}` : '',
-    },
-    method: 'POST',
-    body: JSON.stringify(body),
   })
     .then(res => {
       if (!res.ok) {

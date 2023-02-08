@@ -45,7 +45,10 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
       <Stack direction="vertical" gap={4}>
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
-          href={v2DraftBranchUrl(githubRepo.owner.login, githubRepo.name)}
+          href={v2DraftBranchUrl({
+            owner: githubRepo.owner.login,
+            repoName: githubRepo.name,
+          })}
         >
           <Icon name="contribution" />
           <Text as="span" size={2}>
@@ -55,7 +58,10 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
 
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
-          href={v2DefaultBranchUrl(githubRepo.owner.login, githubRepo.name)}
+          href={v2DefaultBranchUrl({
+            owner: githubRepo.owner.login,
+            repoName: githubRepo.name,
+          })}
         >
           <Icon name="eye" />
           <Text as="span" size={2}>

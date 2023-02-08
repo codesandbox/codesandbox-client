@@ -12,12 +12,20 @@ import {
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
   CuratedAlbumByIdQueryVariables,
+  ProjectFragment,
 } from 'app/graphql/types';
+import {
+  v2BranchUrl,
+  v2DefaultBranchUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import {
   getDecoratedCollection,
   getProjectUniqueKey,
   sortByLastAccessed,
 } from './utils';
+
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
 
@@ -2042,6 +2050,7 @@ export const getRepositoryWithBranches = async (
     const repositoryData = await effects.gql.queries.getRepositoryByDetails({
       owner,
       name,
+      teamId: activeTeam,
     });
     const repository = repositoryData?.project;
     if (!repository) {
@@ -2166,27 +2175,47 @@ export const removeBranchFromRepository = async (
   }
 };
 
-type ProjectToRemove = {
-  owner: string;
-  name: string;
-  teamId: string;
+type RemoveRepositoryParams = {
+  project: ProjectFragment;
   page: PageTypes;
 };
 export const removeRepositoryFromTeam = async (
   { actions, state, effects }: Context,
-  project: ProjectToRemove
+  { project, page }: RemoveRepositoryParams
 ) => {
   const { activeTeam, dashboard } = state;
   if (!activeTeam) {
     return;
   }
 
-  const { owner, name, teamId, page } = project;
+  const { team: assignedTeam } = project;
+  const { owner, name } = project.repository;
 
   dashboard.removingRepository = { owner, name };
 
   try {
-    await effects.api.removeRepositoryFromTeam(owner, name, teamId);
+    if (assignedTeam?.id) {
+      const confirmed = await actions.modals.alertModal.open({
+        title: 'Remove repository',
+        type: 'danger',
+        message:
+          'This action will remove the repository and all the branches from CodeSandbox. Any code that is not pushed on GitHub will be lost.',
+      });
+
+      if (!confirmed) {
+        return;
+      }
+
+      effects.analytics.track('Dashboard - Remove Assigned Repository');
+
+      await effects.gql.mutations.deleteProject({
+        owner,
+        name,
+        teamId: activeTeam,
+      });
+    } else {
+      await effects.api.removeLinkedProjectFromTeam(owner, name, activeTeam);
+    }
 
     // Remove all cached data about repository
     // 1. From repositories list
@@ -2203,7 +2232,7 @@ export const removeRepositoryFromTeam = async (
       };
     }
 
-    const key = getProjectUniqueKey({ teamId, owner, name });
+    const key = getProjectUniqueKey({ teamId: activeTeam, owner, name });
     const repositoryWithBranches = dashboard.repositoriesWithBranches[key];
     if (repositoryWithBranches) {
       dashboard.repositoriesWithBranches = {
@@ -2234,5 +2263,74 @@ export const removeRepositoryFromTeam = async (
     );
   } finally {
     dashboard.removingRepository = null;
+  }
+};
+
+export const importGitHubRepository = async (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { activeTeam } = state;
+  if (!activeTeam) {
+    return;
+  }
+
+  try {
+    await effects.gql.mutations.importProject({
+      name,
+      owner,
+      teamId: activeTeam,
+    });
+
+    window.location.href = v2DefaultBranchUrl({
+      owner,
+      repoName: name,
+      workspaceId: activeTeam,
+      importFlag: true,
+    });
+  } catch (error) {
+    notificationState.addNotification({
+      message: JSON.stringify(error),
+      title: 'Failed to import repository',
+      status: NotificationStatus.ERROR,
+    });
+  }
+};
+
+export type ForkSource = {
+  owner: string;
+  name: string;
+};
+export type ForkDestination = {
+  organization?: string;
+  name: string;
+  teamId: string;
+};
+
+export const forkGitHubRepository = async (
+  { effects }: Context,
+  params: {
+    source: ForkSource;
+    destination: ForkDestination;
+  }
+) => {
+  try {
+    const response = await effects.api.forkRepository(
+      params.source,
+      params.destination
+    );
+    window.location.href = v2BranchUrl({
+      workspaceId: params.destination.teamId,
+      importFlag: true,
+      owner: response.owner,
+      repoName: response.repo,
+      branchName: response.branch,
+    });
+  } catch (error) {
+    notificationState.addNotification({
+      message: JSON.stringify(error),
+      title: 'Failed to fork repository',
+      status: NotificationStatus.ERROR,
+    });
   }
 };

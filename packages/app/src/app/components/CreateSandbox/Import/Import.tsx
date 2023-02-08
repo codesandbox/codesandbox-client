@@ -9,7 +9,6 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
-import { useImportAndRedirect } from './useImportAndRedirect';
 import { getOwnerAndRepoFromInput } from './utils';
 import { MaxPublicRepos, PrivateRepoFreeTeam } from './importLimits';
 
@@ -55,8 +54,10 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
-  const { hasLogIn, activeTeam } = useAppState();
-  const importAndRedirect = useImportAndRedirect();
+  const { hasLogIn } = useAppState();
+  const {
+    dashboard: { importGitHubRepository },
+  } = useActions();
 
   const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
@@ -87,7 +88,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
       if (repo.authorization === GithubRepoAuthorization.Write) {
         setIsImporting(true);
-        await importAndRedirect(repo.owner.login, repo.name, activeTeam);
+        await importGitHubRepository({
+          owner: repo.owner.login,
+          name: repo.name,
+        });
         setIsImporting(false);
       } else {
         onRepoSelect(repo);
