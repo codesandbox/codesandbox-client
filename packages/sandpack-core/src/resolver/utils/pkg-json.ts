@@ -58,13 +58,22 @@ export function processPackageJSON(
     if (typeof content.exports === 'string') {
       aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
     } else if (typeof content.exports === 'object') {
-      for (const exportKey of Object.keys(content.exports)) {
-        const exportValue = extractPathFromExport(
-          content.exports[exportKey],
-          pkgRoot
-        );
-        const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
-        aliases[normalizedKey] = exportValue || EMPTY_SHIM;
+      const exportKeys = Object.keys(content.exports);
+      if (!exportKeys[0].startsWith('.')) {
+        const resolvedExport = extractPathFromExport(content.exports, pkgRoot);
+        if (!resolvedExport) {
+          throw new Error(`Could not find a valid export for ${pkgRoot}`);
+        }
+        aliases[pkgRoot] = resolvedExport;
+      } else {
+        for (const exportKey of exportKeys) {
+          const exportValue = extractPathFromExport(
+            content.exports[exportKey],
+            pkgRoot
+          );
+          const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
+          aliases[normalizedKey] = exportValue || EMPTY_SHIM;
+        }
       }
     }
   }

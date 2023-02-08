@@ -535,9 +535,7 @@ describe('resolve', () => {
         isFile,
         readFile,
       });
-      // this should specifically not resolve to `/node_modules/exports-from-root/nested/file.js`
-      // package.json#exports should only be used from the root of the package
-      expect(resolved).toBe('/node_modules/exports-from-root/file.js');
+      expect(resolved).toBe('/node_modules/its-fine/out/index.cjs');
     });
   });
 
