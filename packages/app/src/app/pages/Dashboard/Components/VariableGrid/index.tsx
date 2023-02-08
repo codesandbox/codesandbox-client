@@ -47,10 +47,8 @@ import {
   FOOTER_HEIGHT,
 } from './constants';
 import { ActionCard } from '../shared/ActionCard';
-import {
-  ReadOnlyRepoDisclaimer,
-  RestrictedImportDisclaimer,
-} from '../shared/githubPermissions';
+import { RestrictedImportDisclaimer } from '../shared/RestrictedImportDisclaimer';
+import { ReadOnlyRepoDisclaimer } from '../shared/ReadOnlyRepoDisclaimer';
 
 type WindowItemProps = {
   data: {

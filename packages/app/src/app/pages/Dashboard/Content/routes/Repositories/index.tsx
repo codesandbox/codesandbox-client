@@ -9,7 +9,7 @@ import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
-import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/githubPermissions';
+import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 import { useDismissible } from 'app/hooks';
 import { EmptyRepositories } from './EmptyRepositories';
 

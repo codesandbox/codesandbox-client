@@ -3,7 +3,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import React from 'react';
 import { useActions } from 'app/overmind';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
-import { RestrictedImportDisclaimer } from 'app/pages/Dashboard/Components/shared/githubPermissions';
+import { RestrictedImportDisclaimer } from 'app/pages/Dashboard/Components/shared/RestrictedImportDisclaimer';
 import { EmptyPage } from '../../../Components/EmptyPage';
 
 const DESCRIPTION =
