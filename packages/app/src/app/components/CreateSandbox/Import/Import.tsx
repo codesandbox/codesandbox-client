@@ -201,9 +201,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           />
           <Button
             css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
-            aria-disabled={hasMaxPublicRepositories}
             disabled={Boolean(url.error) || isLoading || disableImport}
-            tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="submit"
             autoWidth
           >
