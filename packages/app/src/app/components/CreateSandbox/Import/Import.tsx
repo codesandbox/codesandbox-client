@@ -210,11 +210,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         </Stack>
         <Element
           aria-atomic="true"
+          aria-live="polite"
           css={{
             marginTop: '8px',
           }}
           id="form-error"
-          role="alert"
         >
           {url.error ||
           githubRepo.state === 'error' ||
