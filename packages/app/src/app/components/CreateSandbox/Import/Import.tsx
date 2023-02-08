@@ -11,7 +11,6 @@ import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/githubPermissions';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
-import { useImportAndRedirect } from './useImportAndRedirect';
 import { getOwnerAndRepoFromInput } from './utils';
 import {
   MaxPublicRepos,
@@ -61,9 +60,11 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
-  const { hasLogIn, activeTeam } = useAppState();
+  const { hasLogIn } = useAppState();
   const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
-  const importAndRedirect = useImportAndRedirect();
+  const {
+    dashboard: { importGitHubRepository },
+  } = useActions();
 
   const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
@@ -94,7 +95,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
       if (repo.authorization === GithubRepoAuthorization.Write) {
         setIsImporting(true);
-        await importAndRedirect(repo.owner.login, repo.name, activeTeam);
+        await importGitHubRepository({
+          owner: repo.owner.login,
+          name: repo.name,
+        });
         setIsImporting(false);
       } else {
         onRepoSelect(repo);

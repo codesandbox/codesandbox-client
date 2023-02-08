@@ -81,6 +81,10 @@ import {
   UpdateAlbumMutationVariables,
   CreateAlbumMutation,
   CreateAlbumMutationVariables,
+  ImportProjectMutation,
+  ImportProjectMutationVariables,
+  DeleteProjectMutation,
+  DeleteProjectMutationVariables,
   DeleteBranchMutation,
   DeleteBranchMutationVariables,
 } from 'app/graphql/types';
@@ -679,6 +683,26 @@ export const updateAlbum: Query<
     updateAlbum(id: $id, title: $title) {
       id
     }
+  }
+`;
+
+export const importProject: Query<
+  ImportProjectMutation,
+  ImportProjectMutationVariables
+> = gql`
+  mutation importProject($owner: String!, $name: String!, $teamId: ID!) {
+    importProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
+      id
+    }
+  }
+`;
+
+export const deleteProject: Query<
+  DeleteProjectMutation,
+  DeleteProjectMutationVariables
+> = gql`
+  mutation deleteProject($owner: String!, $name: String!, $teamId: ID!) {
+    deleteProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId)
   }
 `;
 

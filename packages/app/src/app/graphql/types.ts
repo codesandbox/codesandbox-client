@@ -2640,6 +2640,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
         GitHubRepository,
         'defaultBranch' | 'name' | 'owner' | 'private'
       >;
+      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
     };
   };
 
@@ -2651,6 +2652,7 @@ export type ProjectFragment = { __typename?: 'Project' } & Pick<
       GitHubRepository,
       'owner' | 'name' | 'defaultBranch' | 'private'
     >;
+    team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
   };
 
 export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
@@ -2659,6 +2661,7 @@ export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
     GitHubRepository,
     'owner' | 'name' | 'defaultBranch' | 'private'
   >;
+  team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
 };
 
 export type _CreateTeamMutationVariables = Exact<{
@@ -3141,6 +3144,27 @@ export type UpdateAlbumMutation = { __typename?: 'RootMutationType' } & {
   updateAlbum: { __typename?: 'Album' } & Pick<Album, 'id'>;
 };
 
+export type ImportProjectMutationVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  teamId: Scalars['ID'];
+}>;
+
+export type ImportProjectMutation = { __typename?: 'RootMutationType' } & {
+  importProject: { __typename?: 'Project' } & Pick<Project, 'id'>;
+};
+
+export type DeleteProjectMutationVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  teamId: Scalars['ID'];
+}>;
+
+export type DeleteProjectMutation = { __typename?: 'RootMutationType' } & Pick<
+  RootMutationType,
+  'deleteProject'
+>;
+
 export type DeleteBranchMutationVariables = Exact<{
   branchId: Scalars['String'];
 }>;
@@ -3603,6 +3627,7 @@ export type RepositoriesByTeamQuery = { __typename?: 'RootQueryType' } & {
 export type RepositoryByDetailsQueryVariables = Exact<{
   owner: Scalars['String'];
   name: Scalars['String'];
+  teamId: Maybe<Scalars['ID']>;
 }>;
 
 export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
