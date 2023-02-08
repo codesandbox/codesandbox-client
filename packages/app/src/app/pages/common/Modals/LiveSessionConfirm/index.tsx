@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useCreateCheckout } from 'app/hooks';
@@ -19,6 +20,13 @@ export const LiveSessionConfirm: React.FC = () => {
   const [checkout, createCheckout] = useCreateCheckout();
   const { isAdmin } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
+
+  React.useEffect(() => {
+    track('Live Session - notice seen', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+  }, []);
 
   return (
     <Alert title="After February 20, Live Sessions will become a Pro feature.">
