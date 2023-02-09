@@ -21,7 +21,7 @@ export const ReadOnlyRepoDisclaimer: React.FC<{ insideGrid?: boolean }> = ({
   return (
     <StyledDisclaimerWrapper insideGrid={insideGrid}>
       <StyledDisclaimerText>
-        Review your GitHub permissions to modify this repository.
+        To make changes, you&apos;ll need to grant access to CodeSandbox.
       </StyledDisclaimerText>
       <StyledDisclaimerButton
         insideGrid={insideGrid}

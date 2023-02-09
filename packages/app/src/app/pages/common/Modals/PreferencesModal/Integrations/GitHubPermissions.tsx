@@ -62,7 +62,7 @@ const Details: React.FC = () => {
           >
             Enables
           </Text>
-          <Text>Committing & Pull Requests</Text>
+          <Text>Repositories &amp; Workflow</Text>
         </Stack>
 
         <Stack

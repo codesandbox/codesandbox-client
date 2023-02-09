@@ -26,7 +26,7 @@ export const RestrictedImportDisclaimer: React.FC<{ insideGrid?: boolean }> = ({
     return (
       <StyledDisclaimerWrapper insideGrid={insideGrid}>
         <StyledDisclaimerText>
-          Don&apos;t see all your repositories?
+          Don&apos;t see all of your imported repositories?
         </StyledDisclaimerText>
         <StyledDisclaimerButton
           insideGrid={insideGrid}

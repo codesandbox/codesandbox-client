@@ -13,7 +13,10 @@ export const RestrictedPrivateReposImport: React.FC = () => {
         lineHeight: '18px',
       }}
     >
-      <Text>Can&apos;t find a repository?</Text>
+      <Text>
+        Repository not found. You may be missing permissions needed to access
+        it.
+      </Text>
       <Button
         css={{
           color: '#FFFFFF',
