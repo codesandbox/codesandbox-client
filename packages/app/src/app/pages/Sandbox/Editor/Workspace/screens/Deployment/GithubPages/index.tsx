@@ -123,7 +123,7 @@ export const GithubPages: FunctionComponent = () => {
           <Button
             autoWidth
             disabled={isLoadingGithub}
-            onClick={() => signInGithubClicked()}
+            onClick={() => signInGithubClicked('private_repos')}
           >
             Sign in
           </Button>

@@ -29,6 +29,7 @@ import {
   DashboardNewBranch,
   DashboardImportRepository,
   PageTypes,
+  DashboardFooter,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch } from '../Branch';
@@ -43,8 +44,11 @@ import {
   ITEM_HEIGHT_LIST,
   HEADER_HEIGHT,
   ITEM_VERTICAL_OFFSET,
+  FOOTER_HEIGHT,
 } from './constants';
 import { ActionCard } from '../shared/ActionCard';
+import { RestrictedImportDisclaimer } from '../shared/RestrictedImportDisclaimer';
+import { ReadOnlyRepoDisclaimer } from '../shared/ReadOnlyRepoDisclaimer';
 
 type WindowItemProps = {
   data: {
@@ -83,6 +87,7 @@ interface IComponentForTypes {
   'new-branch': React.FC<DecoratedItemProps<DashboardNewBranch>>;
   repository: React.FC<DecoratedItemProps<DashboardRepository>>;
   'import-repository': React.FC<DecoratedItemProps<DashboardImportRepository>>;
+  footer: React.FC<DecoratedItemProps<DashboardFooter>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -167,6 +172,19 @@ const ComponentForTypes: IComponentForTypes = {
       Import repository
     </ActionCard>
   ),
+  footer: ({ item }) => {
+    if (item.page === 'repositories') {
+      return (
+        <RestrictedImportDisclaimer insideGrid={item.viewMode === 'grid'} />
+      );
+    }
+
+    if (item.page === 'repository-branches') {
+      return <ReadOnlyRepoDisclaimer insideGrid={item.viewMode === 'grid'} />;
+    }
+
+    return null;
+  },
 };
 
 const Item = React.memo(
@@ -265,8 +283,20 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
     const item = filledItems[rowIndex * columnCount];
 
     if (item.type === 'header') return HEADER_HEIGHT;
+    if (item.type === 'footer') return FOOTER_HEIGHT;
     if (item.type === 'blank') return 0;
+
     return ITEM_HEIGHT + (viewMode === 'list' ? 0 : GUTTER);
+  };
+
+  const getColumnWidth = ({
+    columnCount,
+    width,
+  }: {
+    columnCount: number;
+    width: number;
+  }) => {
+    return width / columnCount;
   };
 
   const onResize = () => {
@@ -415,6 +445,30 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 filledItems.push(blankItem);
               }
             }
+
+            /**
+             * If it's the last item and the state is not loading,
+             * create a footer element.
+             */
+            if (
+              index === items.length - 1 &&
+              items.find(i => i.type === 'skeleton-row') === undefined
+            ) {
+              // Fill the remaining columns w/ a blank item
+              const remainingColumns =
+                columnCount - (filledItems.length % columnCount);
+
+              for (let i = 0; i < remainingColumns; i++) {
+                filledItems.push(blankItem);
+              }
+
+              // Push the footer as the last item in its own row
+              filledItems.push({
+                page,
+                type: 'footer',
+                viewMode,
+              });
+            }
           });
 
           filledItemsRef.current = filledItems;
@@ -432,7 +486,12 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 rowCount={Math.ceil(filledItems.length / columnCount)}
                 width={width}
                 height={height}
-                columnWidth={index => width / columnCount}
+                columnWidth={columnIndex =>
+                  getColumnWidth({
+                    columnCount,
+                    width,
+                  })
+                }
                 rowHeight={rowIndex =>
                   getRowHeight(rowIndex, columnCount, filledItems)
                 }

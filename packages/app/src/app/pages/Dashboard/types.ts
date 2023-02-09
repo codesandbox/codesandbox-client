@@ -164,6 +164,12 @@ export type DashboardImportRepository = {
   onImportClicked: () => void;
 };
 
+export type DashboardFooter = {
+  page: PT;
+  type: 'footer';
+  viewMode: ViewMode;
+};
+
 export type PageTypes = PT;
 
 export type DashboardGridItem =
@@ -184,4 +190,5 @@ export type DashboardGridItem =
   | DashboardBranch
   | DashboardNewBranch
   | DashboardRepository
-  | DashboardImportRepository;
+  | DashboardImportRepository
+  | DashboardFooter;
