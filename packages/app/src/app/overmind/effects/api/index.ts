@@ -58,29 +58,7 @@ export default {
 
     return response.jwt;
   },
-  createPatronSubscription(
-    token: string,
-    amount: number,
-    duration: 'monthly' | 'yearly',
-    coupon: string
-  ) {
-    return api.post<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-        token,
-        duration,
-      },
-    });
-  },
-  updatePatronSubscription(amount: number, coupon: string) {
-    return api.patch<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-      },
-    });
-  },
+  // We only use this function related to current_user/subscription
   cancelPatronSubscription() {
     return api.delete<CurrentUser>('/users/current_user/subscription');
   },
@@ -680,7 +658,38 @@ export default {
       `/teams/${teamId}/customer_portal?return_path=${return_path}`
     );
   },
-  removeRepositoryFromTeam(owner: string, repo: string, teamId: string) {
+  removeBranchFromRepository(
+    workspaceId: string,
+    owner: string,
+    repo: string,
+    branch: string
+  ) {
+    return api.delete(`/beta/sandboxes/github/${owner}/${repo}/${branch}`, {
+      workspace_id: workspaceId,
+    });
+  },
+  removeLinkedProjectFromTeam(owner: string, repo: string, teamId: string) {
     return api.delete(`/beta/repos/link/github/${owner}/${repo}/${teamId}`);
+  },
+  forkRepository(
+    source: { owner: string; name: string },
+    destination: {
+      name: string;
+      teamId: string;
+      organization?: string;
+    }
+  ) {
+    let body: Record<string, string | boolean> = {
+      name: destination.name,
+      team_id: destination.teamId,
+    };
+    if (destination.organization) {
+      body = { ...body, organization: destination.organization };
+    }
+
+    return api.post<{ owner: string; repo: string; branch: string }>(
+      `/beta/fork/github/${source.owner}/${source.name}`,
+      body
+    );
   },
 };

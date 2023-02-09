@@ -30,6 +30,7 @@ const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
 });
 
+// TODO: Move this page to v2 (also, this is a random commit to trigger the re-run of the build)
 export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, activeTeamInfo } = useAppState();
   const { browser, notificationToast } = useEffects();
@@ -63,6 +64,9 @@ export const Dashboard: FunctionComponent = () => {
 
     if (searchParams.get('workspace')) {
       // Change workspace based on workspace param
+
+      // TODO: We might want to update this because this is also triggered in
+      // overmind already? We can check if it is triggered multiple times.
       actions.setActiveTeam({ id: searchParams.get('workspace') });
     }
 

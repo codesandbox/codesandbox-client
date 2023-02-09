@@ -1,4 +1,4 @@
-import { useAppState } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import React, { useEffect } from 'react';
 import {
   Badge,
@@ -18,7 +18,6 @@ import { StyledSelect } from '../elements';
 import { useGithubOrganizations } from './useGithubOrganizations';
 import { useValidateRepoDestination } from './useValidateRepoDestination';
 import { getGihubOrgMatchingCsbTeam } from './utils';
-import { useForkAndRedirect } from './useForkAndRedirect';
 
 const COLORS = {
   INVALID: '#ED6C6C',
@@ -45,8 +44,8 @@ type FromRepoProps = {
 };
 export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
   const { activeTeamInfo, user } = useAppState();
+  const { dashboard } = useActions();
   const githubOrganizations = useGithubOrganizations();
-  const forkAndRedirect = useForkAndRedirect();
 
   const [isForking, setIsForking] = React.useState<boolean>(false);
   const [repoName, setRepoName] = React.useState<string>(repository.name);
@@ -70,7 +69,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
     });
 
     setIsForking(true);
-    await forkAndRedirect({
+    await dashboard.forkGitHubRepository({
       source: { owner: repository.owner.login, name: repository.name },
       destination: {
         teamId: activeTeamInfo.id,

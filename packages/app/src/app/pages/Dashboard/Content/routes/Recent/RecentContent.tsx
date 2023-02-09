@@ -22,13 +22,19 @@ import { DocumentationRow } from './DocumentationRow';
 import { RecentHeader } from './RecentHeader';
 
 const StyledWrapper = styled(Stack)`
-  width: calc(100% - ${2 * GUTTER}px);
+  width: 100%;
   max-width: ${GRID_MAX_WIDTH}px;
-  padding: 0 0 64px;
+  padding: 0 calc(2 * ${GUTTER}px) 64px;
   overflow: auto;
   margin: 28px auto 0;
   flex-direction: column;
   gap: 48px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const StyledItemsWrapper = styled(Element)<{ viewMode: 'grid' | 'list' }>`

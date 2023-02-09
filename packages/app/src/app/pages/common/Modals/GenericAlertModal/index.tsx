@@ -4,13 +4,17 @@ import Modal from 'app/components/Modal';
 import { Alert } from '../Common/Alert';
 import { MemberPaymentConfirmation } from '../MemberPaymentConfirmation';
 
-export const AlertModalComponents = { MemberPaymentConfirmation };
+export const AlertModalComponents = {
+  MemberPaymentConfirmation,
+};
 
 export const GenericAlertModal = () => {
   const { alertModal } = useActions().modals;
   const {
     title,
     message,
+    cancelMessage,
+    confirmMessage,
     type,
     isCurrent,
     customComponent,
@@ -38,9 +42,9 @@ export const GenericAlertModal = () => {
       <Alert
         title={title}
         description={message}
-        confirmMessage="Confirm"
+        confirmMessage={confirmMessage || 'Confirm'}
         type={type}
-        cancelMessage="Cancel"
+        cancelMessage={cancelMessage || 'Cancel'}
         onPrimaryAction={() => {
           alertModal.close(true);
         }}

@@ -530,8 +530,8 @@ export const getRepositoryByDetails: Query<
   RepositoryByDetailsQuery,
   RepositoryByDetailsQueryVariables
 > = gql`
-  query RepositoryByDetails($owner: String!, $name: String!) {
-    project(gitProvider: GITHUB, owner: $owner, repo: $name) {
+  query RepositoryByDetails($owner: String!, $name: String!, $teamId: ID) {
+    project(gitProvider: GITHUB, owner: $owner, repo: $name, team: $teamId) {
       ...projectWithBranches
     }
   }

@@ -175,6 +175,7 @@ export const createRepoClicked = async ({
     window.location.href = CSBProjectGitHubRepository({
       owner: git.username,
       repo: git.repo,
+      welcome: true,
     });
   } catch (error) {
     actions.internal.handleError({
@@ -182,41 +183,6 @@ export const createRepoClicked = async ({
       message:
         'Unable to create the repo. Please refresh and try again or report issue.',
     });
-  }
-};
-
-export const importFromGithub = async (
-  { state, effects, actions }: Context,
-  sandboxUrl: string
-) => {
-  actions.modalClosed();
-  state.currentModal = 'exportGithub';
-  try {
-    effects.analytics.track('Import GitHub Repo', {
-      sandboxUrl,
-    });
-    await actions.editor.forkExternalSandbox({
-      sandboxId: sandboxUrl.replace('/s/', ''),
-    });
-    state.currentModal = null;
-  } catch (e) {
-    if (!state.user || !state.user.integrations?.github) {
-      state.currentModal = null;
-      effects.notificationToast.add({
-        title: 'Can not import repo',
-        message: 'This seems to be a private repo, you have to sign in first',
-        status: NotificationStatus.ERROR,
-        actions: {
-          primary: {
-            label: 'Sign in',
-            run: () => {
-              actions.signInGithubClicked();
-            },
-          },
-        },
-      });
-    }
-    throw e;
   }
 };
 

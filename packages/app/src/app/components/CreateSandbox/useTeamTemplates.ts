@@ -29,11 +29,13 @@ function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
 type UseTeamTemplatesParams = {
   isUser: boolean;
   teamId?: string;
+  hasLogIn: boolean;
 };
 
 export const useTeamTemplates = ({
   isUser,
   teamId,
+  hasLogIn,
 }: UseTeamTemplatesParams): State => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
@@ -46,6 +48,7 @@ export const useTeamTemplates = ({
      */
     variables: {},
     fetchPolicy: 'cache-and-network',
+    skip: !hasLogIn,
   });
 
   if (error) {

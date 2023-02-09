@@ -1,5 +1,4 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
@@ -10,8 +9,7 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
-import { useImportAndRedirect } from './useImportAndRedirect';
-import { getOwnerAndNameFromInput } from './utils';
+import { getOwnerAndRepoFromInput } from './utils';
 import { MaxPublicRepos, PrivateRepoFreeTeam } from './importLimits';
 
 const UnauthenticatedImport: React.FC = () => {
@@ -56,8 +54,10 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
-  const { hasLogIn, activeTeam } = useAppState();
-  const importAndRedirect = useImportAndRedirect();
+  const { hasLogIn } = useAppState();
+  const {
+    dashboard: { importGitHubRepository },
+  } = useActions();
 
   const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
@@ -88,7 +88,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
       if (repo.authorization === GithubRepoAuthorization.Write) {
         setIsImporting(true);
-        await importAndRedirect(repo.owner.login, repo.name, activeTeam);
+        await importGitHubRepository({
+          owner: repo.owner.login,
+          name: repo.name,
+        });
         setIsImporting(false);
       } else {
         onRepoSelect(repo);
@@ -100,19 +103,26 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     const value = event.target.value;
     if (!value) {
       setUrl({ raw: value, parsed: null, error: null });
-    } else if (!gitHubRepoPattern.test(value)) {
+      return;
+    }
+
+    const parsedInput = getOwnerAndRepoFromInput(value);
+    if (!parsedInput) {
       setUrl({
         raw: value,
         parsed: null,
         error: 'The URL provided is not valid.',
       });
     } else {
-      const { owner, name } = getOwnerAndNameFromInput(value.trim());
       setUrl({
         raw: value,
         parsed: {
-          owner,
-          name,
+          // getOwnerAndRepoFromInput might return null
+          // but that won't be the case since there's an
+          // earlier check to see if the input is valid.
+          // using optional chaining to appease typescript.
+          owner: parsedInput?.owner,
+          name: parsedInput?.repo,
         },
         error: null,
       });

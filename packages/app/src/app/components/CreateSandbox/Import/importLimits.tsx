@@ -100,38 +100,42 @@ export const PrivateRepoFreeTeam: React.FC = () => {
     cancel_path: pathname,
   });
 
-  const checkoutURL = React.useMemo(() => {
-    if (isTeamAdmin || isPersonalSpace) {
-      if (checkout.state === 'READY') {
-        return checkout.url;
-      }
-      return '/pro';
-    }
+  let checkoutURL: string;
 
-    return isEligibleForTrial
+  if (isTeamAdmin || isPersonalSpace) {
+    if (checkout.state === 'READY') {
+      checkoutURL = checkout.url;
+    } else {
+      checkoutURL = '/pro';
+    }
+  } else {
+    // Not team admin or personal workspace points to docs
+    checkoutURL = isEligibleForTrial
       ? '/docs/learn/plan-billing/trials'
       : '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
-  }, [checkout, isEligibleForTrial, isTeamAdmin, isPersonalSpace]);
+  }
+
+  const isDashboardLink = checkoutURL.startsWith('/pro');
 
   return (
     <>
       The free plan only allows public repos. For private repositories,{' '}
       <StyledLink
-        {...(checkoutURL.startsWith('/pro')
+        {...(isDashboardLink
           ? {
-              as: 'a',
-              href: checkoutURL,
+              as: RouterLink,
+              to: `${checkoutURL}?utm_source=dashboard_import_limits`,
             }
           : {
-              as: RouterLink,
-              to: '/pro?utm_source=dashboard_import_limits',
+              as: 'a',
+              href: checkoutURL, // goes to either /docs or Stripe
             })}
         css={{
           padding: 0,
         }}
         color="#FFFFFF"
         onClick={() => {
-          if (checkoutURL.startsWith('/pro')) {
+          if (isDashboardLink) {
             modals.newSandboxModal.close();
           }
 

@@ -147,7 +147,11 @@ const ComponentForTypes: IComponentForTypes = {
   repository: ({ item }) => <Repository {...item} />,
   'new-branch': ({ item }) => (
     <ActionCard
-      href={v2DraftBranchUrl(item.repo.owner, item.repo.name)}
+      href={v2DraftBranchUrl({
+        owner: item.repo.owner,
+        repoName: item.repo.name,
+        workspaceId: item.workspaceId,
+      })}
       icon="plus"
       disabled={item.disabled}
     >

@@ -21,11 +21,6 @@ type FeatureComp = {
 };
 const FEATURES: FeatureComp[] = [
   {
-    key: 'editors',
-    pro: 'Up to 20 editors',
-    free: 'Limited to 5 editors',
-  },
-  {
     key: 'sandboxes',
     pro: 'Unlimited private sandboxes',
     free: 'Limited to 20 public sandboxes',
@@ -36,6 +31,11 @@ const FEATURES: FeatureComp[] = [
     free: 'Limited to 3 public repositories',
   },
   {
+    key: 'editors',
+    pro: 'Up to 20 editors',
+    free: 'Limited to 5 editors',
+  },
+  {
     key: 'npm',
     pro: 'Private NPM packages',
     free: 'Limited to public NPM packages',
@@ -43,8 +43,8 @@ const FEATURES: FeatureComp[] = [
   {
     key: 'ram',
     pro: '6GB RAM',
-    free: '4GB RAM',
-    pill: '-33% capacity',
+    free: '3GB RAM',
+    pill: '-50% capacity',
   },
   {
     key: 'cpu',
@@ -55,8 +55,8 @@ const FEATURES: FeatureComp[] = [
   {
     key: 'disk',
     pro: '12GB Disk',
-    free: '4GB Disk',
-    pill: '-67% storage',
+    free: '6GB Disk',
+    pill: '-50% storage',
   },
 ];
 

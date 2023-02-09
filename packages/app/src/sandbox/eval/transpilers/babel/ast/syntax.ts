@@ -35,6 +35,7 @@ export const Syntax = {
   ImportDefaultSpecifier: 'ImportDefaultSpecifier' as 'ImportDefaultSpecifier',
   ImportNamespaceSpecifier: 'ImportNamespaceSpecifier' as 'ImportNamespaceSpecifier',
   ImportSpecifier: 'ImportSpecifier' as 'ImportSpecifier',
+  ImportExpression: 'ImportExpression' as 'ImportExpression',
   LabeledStatement: 'LabeledStatement' as 'LabeledStatement',
   Literal: 'Literal' as 'Literal',
   LogicalExpression: 'LogicalExpression' as 'LogicalExpression',
