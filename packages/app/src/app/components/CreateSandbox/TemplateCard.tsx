@@ -88,8 +88,10 @@ export const TemplateCard = ({
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
           <UserIcon height="20" width="20" />
-          {isOfficial && <Badge>Official</Badge>}
-          {!isOfficial && isV2 && <Badge icon="cloud">Beta</Badge>}
+          {isOfficial && (
+            <Badge icon={isV2 ? 'cloud' : undefined}>Official</Badge>
+          )}
+          {!isOfficial && isV2 && <Badge icon="cloud">Cloud</Badge>}
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text
