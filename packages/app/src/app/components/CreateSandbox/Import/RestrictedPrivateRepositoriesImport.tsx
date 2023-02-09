@@ -11,6 +11,7 @@ export const RestrictedPrivateReposImport: React.FC = () => {
       css={{
         fontSize: '13px',
         lineHeight: '18px',
+        flexWrap: 'wrap',
       }}
     >
       <Text>
@@ -22,6 +23,7 @@ export const RestrictedPrivateReposImport: React.FC = () => {
           color: '#FFFFFF',
           cursor: 'pointer',
           gap: '4px',
+          padding: '4px 0',
         }}
         onClick={() =>
           modalOpened({ modal: 'preferences', itemId: 'integrations' })
