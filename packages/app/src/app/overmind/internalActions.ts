@@ -228,7 +228,9 @@ export const runProviderAuth = (
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
 
-    localStorage.setItem('should-onboarding-user', 'true');
+    // Temporarily hide the editor onboarding for new users
+    // since its UI and contents are outdated.
+    effects.browser.storage.set('should-onboard-user', false);
 
     popup.close();
   });
