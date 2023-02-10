@@ -26,9 +26,9 @@ const OnBoarding = () => {
   const { browser } = useEffects();
 
   useEffect(() => {
-    const shouldOnboarding = browser.storage.get('should-onboard-user');
+    const shouldOnboard = browser.storage.get('should-onboard-user');
 
-    if (shouldOnboarding) {
+    if (shouldOnboard) {
       setVisibility(true);
     }
   }, []);
