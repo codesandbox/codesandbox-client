@@ -719,7 +719,8 @@ export const createZipClicked = ({ state, effects }: Context) => {
   effects.analytics.track('Editor - Click Menu Item - Export as ZIP');
 };
 
-// The forkExternalSandbox only seems to be used inside of the dashboard pages.
+// The forkExternalSandbox only seems to be used inside of the dashboard pages and
+// that seems to be the reason why it's called external.
 // TODO: Move the fork function to the dashboard namespace.
 export const forkExternalSandbox = async (
   { effects, state, actions }: Context,
