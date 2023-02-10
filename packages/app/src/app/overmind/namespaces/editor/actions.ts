@@ -27,7 +27,6 @@ import {
   Authorization,
   CollaboratorFragment,
   InvitationFragment,
-  SubscriptionStatus,
 } from 'app/graphql/types';
 import { Context } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
@@ -740,16 +739,6 @@ export const forkExternalSandbox = async (
 
   if (state.activeTeam) {
     usedBody.teamId = state.activeTeam;
-  }
-
-  const isPro =
-    state.activeTeamInfo?.subscription?.status === SubscriptionStatus.Active ||
-    state.activeTeamInfo?.subscription?.status === SubscriptionStatus.Trialing;
-
-  if (isPro) {
-    // Default privacy to private when creating new sandboxes from the dashboard
-    // if the workspace is pro.
-    usedBody.privacy = 2;
   }
 
   try {
