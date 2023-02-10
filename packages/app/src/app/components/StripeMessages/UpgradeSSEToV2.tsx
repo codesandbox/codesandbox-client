@@ -47,6 +47,8 @@ export const UpgradeSSEToV2Stripe = () => {
 
             window.location.href = sandboxV2Url;
           } else {
+            // Fork the sandbox by creating a new cloud (v2) sandbox with the
+            // same state, meaning that we don't update privacy etc.
             const forkedSandbox = await effects.api.forkSandbox(sandboxId, {
               v2: true,
               teamId: state.activeTeam,
