@@ -84,17 +84,17 @@ const Details: React.FC = () => {
               <ComboButton.Item
                 onSelect={() => signInGithubClicked('private_repos')}
               >
-                Autorize access to all repositories{' '}
+                Authorize access to all repositories{' '}
               </ComboButton.Item>
               <ComboButton.Item
                 onSelect={() => signInGithubClicked('public_repos')}
               >
-                Autorize access only to public repositories{' '}
+                Authorize access only to public repositories{' '}
               </ComboButton.Item>
             </>
           }
         >
-          Autorize access to all repositories{' '}
+          Authorize access to all repositories{' '}
         </ComboButton>
       </Stack>
     );
