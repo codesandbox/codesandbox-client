@@ -3,17 +3,25 @@ import React from 'react';
 import { Element } from '../Element';
 import { Stack } from '../Stack';
 import { Button } from '../Button';
+import { ComboButton } from '../ComboButton/ComboButton';
 import { Text } from '../Text';
 import { IconButton } from '../IconButton';
 
+type ButtonVariant = React.ComponentProps<typeof Button>['variant'];
+
 type Variant = 'trial' | 'warning' | 'primary';
+
+const mapActionVariant: Record<Variant, ButtonVariant> = {
+  trial: 'light',
+  warning: 'dark',
+  primary: 'dark',
+};
 
 interface MessageActionProps
   extends Omit<React.ComponentProps<typeof Button>, 'variant'> {
   children: string;
   variant?: Variant;
 }
-
 export const MessageAction = ({
   children,
   variant,
@@ -21,17 +29,26 @@ export const MessageAction = ({
 }: MessageActionProps) => {
   return (
     <Element as="div" css={{ flexShrink: 0 }}>
-      <Button
-        variant={
-          ({ trial: 'light', warning: 'dark', primary: 'dark' } as const)[
-            variant
-          ]
-        }
-        {...buttonProps}
-      >
+      <Button variant={mapActionVariant[variant]} {...buttonProps}>
         {children}
       </Button>
     </Element>
+  );
+};
+
+interface MessageMultiActionsProps
+  extends Omit<React.ComponentProps<typeof ComboButton>, 'variant'> {
+  variant?: Variant;
+}
+export const MessageMultiActions = ({
+  children,
+  variant,
+  ...props
+}: MessageMultiActionsProps) => {
+  return (
+    <ComboButton variant={mapActionVariant[variant]} {...props}>
+      {children}
+    </ComboButton>
   );
 };
 
@@ -67,6 +84,14 @@ const MessageStripe = ({
       hasAction = true;
 
       return React.cloneElement<Partial<MessageActionProps>>(child, {
+        variant,
+      });
+    }
+
+    if (React.isValidElement(child) && child.type === MessageMultiActions) {
+      hasAction = true;
+
+      return React.cloneElement<Partial<MessageMultiActionsProps>>(child, {
         variant,
       });
     }
@@ -109,5 +134,7 @@ const MessageStripe = ({
 };
 
 MessageStripe.Action = MessageAction;
+MessageStripe.MultiActions = MessageMultiActions;
+MessageStripe.MultiActionsItem = ComboButton.Item;
 
 export { MessageStripe };

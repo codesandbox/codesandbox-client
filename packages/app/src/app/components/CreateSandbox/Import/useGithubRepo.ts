@@ -16,6 +16,7 @@ type State =
   | {
       state: 'error';
       error: string;
+      code?: string;
     };
 export const useGithubRepo = ({
   owner,
@@ -45,9 +46,12 @@ export const useGithubRepo = ({
   }
 
   if (error) {
+    const _error = error.graphQLErrors[0];
+
     return {
       state: 'error',
-      error: error.message,
+      error: _error.message,
+      code: (_error as any)?.code,
     };
   }
 

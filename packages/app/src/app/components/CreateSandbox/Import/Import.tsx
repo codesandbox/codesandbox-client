@@ -7,10 +7,14 @@ import React from 'react';
 
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
+import { MaxPublicRepos } from './MaxPublicRepos';
+import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
+import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndRepoFromInput } from './utils';
-import { MaxPublicRepos, PrivateRepoFreeTeam } from './importLimits';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
@@ -55,6 +59,7 @@ type ImportProps = {
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn } = useAppState();
+  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
   const {
     dashboard: { importGitHubRepository },
   } = useActions();
@@ -99,6 +104,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     },
   });
 
+  const isLoading = githubRepo.state === 'loading' || isImporting;
+  const limitImportBasedOnSubscription =
+    privateRepoFreeAccountError === url.raw;
+  const disableImport = hasMaxPublicRepositories || restrictsPublicRepos;
+
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (!value) {
@@ -132,7 +142,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (hasMaxPublicRepositories) {
+    if (disableImport) {
       return;
     }
 
@@ -146,10 +156,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   if (!hasLogIn) {
     return <UnauthenticatedImport />;
   }
-
-  const isLoading = githubRepo.state === 'loading' || isImporting;
-  const limitImportBasedOnSubscription =
-    privateRepoFreeAccountError === url.raw;
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -166,25 +172,16 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         Enter the GitHub repository URL to import
       </Text>
       {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
-      <Element
-        {...(hasMaxPublicRepositories
-          ? {
-              as: 'div',
-              css: {
-                opacity: hasMaxPublicRepositories ? 0.4 : 1,
-                pointerEvents: hasMaxPublicRepositories ? 'none' : 'initial',
-              },
-            }
-          : { as: 'form', onSubmit: handleFormSubmit })}
-      >
+      {restrictsPublicRepos ? <RestrictedPublicReposImport /> : null}
+      <Element as="form" onSubmit={handleFormSubmit}>
         <Stack gap={2}>
           <Input
             aria-disabled={hasMaxPublicRepositories}
             aria-describedby="form-title form-error"
             aria-invalid={Boolean(url.error)}
             css={{ height: '32px' }}
+            disabled={disableImport}
             placeholder="GitHub Repository URL"
-            tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="text"
             value={url.raw}
             onChange={handleUrlInputChange}
@@ -192,16 +189,21 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           />
           <Button
             css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
-            aria-disabled={hasMaxPublicRepositories}
-            disabled={Boolean(url.error) || isLoading}
-            tabIndex={hasMaxPublicRepositories ? -1 : 0}
+            disabled={Boolean(url.error) || isLoading || disableImport}
             type="submit"
             autoWidth
           >
             {isLoading ? 'Importing...' : 'Import'}
           </Button>
         </Stack>
-        <Element aria-atomic="true" id="form-error" role="alert">
+        <Element
+          aria-atomic="true"
+          aria-live="polite"
+          css={{
+            marginTop: '8px',
+          }}
+          id="form-error"
+        >
           {url.error ||
           githubRepo.state === 'error' ||
           limitImportBasedOnSubscription ? (
@@ -215,7 +217,22 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
               })}
             >
               {url.error}
-              {githubRepo.state === 'error' && githubRepo.error}
+              {/**
+               * If there's a 404 error coming from GitHub and the user has not given
+               * access to private repos, inform that reviewing their GH permissions
+               * might be necessary
+               * */}
+              {githubRepo.state === 'error' &&
+              restrictsPrivateRepos &&
+              githubRepo.code === 'NOT_FOUND' ? (
+                <RestrictedPrivateReposImport />
+              ) : null}
+              {/**
+               * Any other GitHub errors will be displayed as is.
+               * */}
+              {githubRepo.state === 'error' && !restrictsPrivateRepos
+                ? githubRepo.error
+                : null}
               {limitImportBasedOnSubscription && <PrivateRepoFreeTeam />}
             </Text>
           ) : null}

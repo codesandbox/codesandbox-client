@@ -78,6 +78,9 @@ export const MenuStyles = createGlobalStyle(
       paddingY: 2,
       paddingX: 3,
       cursor: 'not-allowed',
+      backgroundColor: 'transparent',
+      color: 'inherit',
+      opacity: 0.5,
     },
     '[data-component=MenuDivider]': {
       margin: 0,
@@ -306,6 +309,7 @@ const MenuLink: React.FunctionComponent<MenuLinkProps> = ({
       </ReachMenu.MenuLink>
     );
   }
+
   return (
     <ReachMenu.MenuLink
       data-component="MenuLink"

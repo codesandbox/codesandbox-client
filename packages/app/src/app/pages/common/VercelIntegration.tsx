@@ -17,7 +17,6 @@ export const VercelIntegration: FunctionComponent<Props> = ({
     <Integration
       name="Vercel"
       small={small}
-      bgColor="black"
       description="Deployments"
       Icon={VercelLogo}
       userInfo={user.integrations.zeit}
