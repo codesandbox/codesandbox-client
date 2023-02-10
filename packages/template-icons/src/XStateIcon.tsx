@@ -1,6 +1,8 @@
 import React from 'react';
 import { SVGIcon, ISVGIconProps } from './SVGIcon';
 
+// CI
+
 export const XStateIcon: React.FC<ISVGIconProps> = ({ ...props }) => (
   <SVGIcon {...props} viewBox="0 0 405 405">
     <g fill="#FFFFFE" fillRule="evenodd">
