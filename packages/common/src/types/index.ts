@@ -422,7 +422,7 @@ export type NpmManifest = {
 // types one on one. Used for the api.forkSandbox method.
 export type ForkSandboxBody = {
   v2?: boolean;
-  teamId?: string;
+  teamId?: string | null;
   privacy?: 0 | 1 | 2;
   collectionId?: string;
   alias?: string;
