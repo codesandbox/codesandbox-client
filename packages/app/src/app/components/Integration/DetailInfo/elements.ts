@@ -3,10 +3,11 @@ import styled, { css } from 'styled-components';
 export const Details = styled.div`
   ${({ theme }) => css`
     display: inline-flex;
+    flex-direction: column;
     flex: 3;
+    gap: 16px;
     justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
+    padding: 32px;
     background-color: ${theme.light
       ? css`rgba(255, 255, 255, 0.3)`
       : css`rgba(0, 0, 0, 0.3)`};

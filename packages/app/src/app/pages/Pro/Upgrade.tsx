@@ -67,8 +67,8 @@ export const ProUpgrade = () => {
     }
   }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
 
-  const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
-  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isPersonalSpace, isTeamAdmin, isAdmin } = useWorkspaceAuthorization();
+  const { isFree, isPro, isEligibleForTrial } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
   // const isPro = true; // DEBUG
 
@@ -80,7 +80,7 @@ export const ProUpgrade = () => {
   const hasCustomSubscription = false;
 
   const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin && isFree ? activeTeam : undefined,
+    team_id: isAdmin && isFree ? activeTeam : undefined,
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: '/pro',
     // recurring_interval: 'year', // TODO: defaulting to year does not enable the interval switch in stripe
@@ -137,7 +137,7 @@ export const ProUpgrade = () => {
           isLoading: isCustomerPortalLoading,
         }
       : {
-          text: 'Proceed to checkout',
+          text: isEligibleForTrial ? 'Start free trial' : 'Proceed to checkout',
           href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
           variant: 'highlight',
           isLoading: checkout.state === 'LOADING',
@@ -261,12 +261,12 @@ export const ProUpgrade = () => {
               >
                 <Stack gap={1} direction="vertical">
                   <Text aria-hidden size={32} weight="500">
-                    $9
+                    $12
                   </Text>
-                  <VisuallyHidden>Nine dollars</VisuallyHidden>
+                  <VisuallyHidden>Twelve dollars</VisuallyHidden>
                   <Text>
                     <div>per month, billed anually</div>{' '}
-                    <div>or $12 per month.</div>
+                    <div>or $15 per month.</div>
                   </Text>
                 </Stack>
               </SubscriptionCard>

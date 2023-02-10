@@ -146,6 +146,7 @@ export type DashboardNewBranch = {
     owner: string;
     name: string;
   };
+  workspaceId?: string;
   disabled?: boolean;
 };
 
@@ -158,6 +159,12 @@ export type DashboardImportRepository = {
   type: 'import-repository';
   disabled?: boolean;
   onImportClicked: () => void;
+};
+
+export type DashboardFooter = {
+  page: PT;
+  type: 'footer';
+  viewMode: ViewMode;
 };
 
 export type PageTypes = PT;
@@ -180,4 +187,5 @@ export type DashboardGridItem =
   | DashboardBranch
   | DashboardNewBranch
   | DashboardRepository
-  | DashboardImportRepository;
+  | DashboardImportRepository
+  | DashboardFooter;

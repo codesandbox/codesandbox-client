@@ -329,7 +329,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     Import from GitHub
                   </Tab>
 
-                  <Element css={{ height: '24px' }} />
+                  <Element css={{ height: '18px' }} />
 
                   {showTeamTemplates ? (
                     <Tab
@@ -361,7 +361,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="cloud-templates"
                   >
-                    Cloud Templates (Beta)
+                    Cloud templates
                   </Tab>
 
                   <Tab
@@ -374,7 +374,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="official-templates"
                   >
-                    Official Templates
+                    Official templates
                   </Tab>
 
                   {essentialState.state === 'success'
@@ -397,15 +397,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                   {!mobileScreenSize && essentialState.state === 'loading' ? (
                     <Stack direction="vertical" css={{ marginTop: 6 }} gap={5}>
-                      <SkeletonText css={{ width: 100 }} />
-                      <SkeletonText css={{ width: 90 }} />
                       <SkeletonText css={{ width: 110 }} />
-                      <SkeletonText css={{ width: 90 }} />
-                      <SkeletonText css={{ width: 130 }} />
-                      <SkeletonText css={{ width: 140 }} />
+                      <SkeletonText css={{ width: 60 }} />
+                      <SkeletonText css={{ width: 50 }} />
                       <SkeletonText css={{ width: 80 }} />
-                      <SkeletonText css={{ width: 90 }} />
-                      <SkeletonText css={{ width: 90 }} />
+                      <SkeletonText css={{ width: 140 }} />
                       <SkeletonText css={{ width: 70 }} />
                     </Stack>
                   ) : null}
@@ -434,6 +430,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   search={searchQuery}
                   onSelectTemplate={selectTemplate}
                   onOpenTemplate={openTemplate}
+                  officialTemplates={officialTemplates}
                 />
               ) : (
                 <>

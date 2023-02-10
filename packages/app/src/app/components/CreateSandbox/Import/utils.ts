@@ -36,3 +36,16 @@ export const getGihubOrgMatchingCsbTeam = (
   );
   return orgs.find(org => org.login === match.bestMatch.target) || orgs[0];
 };
+
+export const getEventName = (
+  isEligibleForTrial: boolean,
+  isTeamAdmin?: boolean
+): string => {
+  if (isTeamAdmin) {
+    return isEligibleForTrial
+      ? 'Limit banner: import - Start Trial'
+      : 'Limit banner: import - Upgrade';
+  }
+
+  return 'Limit banner: import - Learn more';
+};

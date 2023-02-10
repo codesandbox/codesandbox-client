@@ -14,6 +14,7 @@ import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 import { FinalizeSignUpOptions } from './effects/api/types';
+import { AuthOptions, GHScopeOption } from './utils/auth';
 
 export const internal = internalActions;
 
@@ -252,7 +253,7 @@ type ModalName =
   | 'share'
   | 'signInForTemplates'
   | 'userSurvey'
-  | 'liveSessionEnded'
+  | 'liveSessionConfirm'
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
@@ -304,25 +305,9 @@ export const toggleSignInModal = ({ state }: Context) => {
 
 export const signInButtonClicked = async (
   { actions, state }: Context,
-  options: {
-    useExtraScopes?: boolean;
-    provider: 'apple' | 'google' | 'github';
-  }
+  options: AuthOptions
 ) => {
-  const { useExtraScopes, provider } = options || {};
-  if (!useExtraScopes) {
-    await actions.internal.signIn({
-      provider,
-      useExtraScopes: false,
-    });
-    state.signInModalOpen = false;
-    state.cancelOnLogin = null;
-    return;
-  }
-  await actions.internal.signIn({
-    useExtraScopes,
-    provider,
-  });
+  await actions.internal.signIn(options);
   state.signInModalOpen = false;
   state.cancelOnLogin = null;
 };
@@ -401,9 +386,12 @@ export const setPendingUserId = ({ state }: Context, id: string) => {
   state.pendingUserId = id;
 };
 
-export const signInGithubClicked = async ({ state, actions }: Context) => {
+export const signInGithubClicked = async (
+  { state, actions }: Context,
+  includedScopes: GHScopeOption
+) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: true, provider: 'github' });
+  await actions.internal.signIn({ includedScopes, provider: 'github' });
   state.isLoadingGithub = false;
   if (state.editor.currentSandbox?.originalGit) {
     actions.git.loadGitSource();

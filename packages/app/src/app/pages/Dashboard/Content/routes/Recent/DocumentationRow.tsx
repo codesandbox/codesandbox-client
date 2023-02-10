@@ -25,6 +25,12 @@ const DOCS: DocsItem[] = [
     thumbnail: '/static/img/thumbnails/video_1-click-pr.png',
   },
   {
+    label: 'blog_github-app',
+    title: 'Review code faster with our GitHub App',
+    url: 'https://codesandbox.io/post/introducing-the-codesandbox-github-app',
+    thumbnail: '/static/img/thumbnails/blog_github-app.png',
+  },
+  {
     label: 'video_contribution-branches',
     title: 'Easy open source with Contribution branches',
     duration: '5:33',
@@ -49,12 +55,6 @@ const DOCS: DocsItem[] = [
     durationLabel: '1 minute, 18 seconds',
     url: 'https://www.youtube.com/watch?v=ZJ1sNiTZw5M',
     thumbnail: '/static/img/thumbnails/video_auto-deps.png',
-  },
-  {
-    label: 'blog_github-app',
-    title: 'Review code faster with our GitHub App',
-    url: 'https://codesandbox.io/post/introducing-the-codesandbox-github-app',
-    thumbnail: '/static/img/thumbnails/blog_github-app.png',
   },
   {
     label: 'cta_youtube',

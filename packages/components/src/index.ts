@@ -40,6 +40,7 @@ export * from './components/Tooltip';
 export * from './components/Banner/Banner';
 export * from './components/MessageStripe/MessageStripe';
 export * from './components/InteractiveOverlay/InteractiveOverlay';
+export * from './components/ComboButton/ComboButton';
 
 // layout
 export * from './components/Grid';

@@ -18,6 +18,7 @@ import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Context } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
+import { AuthOptions, GH_BASE_SCOPE, MAP_GH_SCOPE_OPTIONS } from './utils/auth';
 
 /**
  * After getting the current user we need to hydrate the app with new data from that user.
@@ -48,10 +49,7 @@ export const initializeNewUser = async ({
 
 export const signIn = async (
   { state, effects, actions }: Context,
-  options: {
-    useExtraScopes?: boolean;
-    provider: 'apple' | 'google' | 'github';
-  }
+  options: AuthOptions
 ) => {
   effects.analytics.track('Sign In', {
     provider: options.provider,
@@ -163,25 +161,41 @@ export const authorize = async ({ state, effects }: Context) => {
 };
 export const runProviderAuth = (
   { effects, state }: Context,
-  {
-    provider,
-    useExtraScopes,
-  }: { useExtraScopes?: boolean; provider?: 'apple' | 'github' | 'google' }
+  options: AuthOptions
 ) => {
-  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  const { provider } = options;
+
+  // When in development, check if there's authentication.
+  const isInitialDevelopmentAuth =
+    process.env.NODE_ENV === 'development' && !state.hasLogIn;
+  // Use dev auth if local server or staging and there's no
+  // authentication or the provider isn't GitHub. This is
+  // needed to allow us to go to GitHub to authorize extra
+  // scopes during development.
+  const useDevAuth =
+    (process.env.LOCAL_SERVER || process.env.STAGING) &&
+    (isInitialDevelopmentAuth || provider !== 'github');
+  // Base path
+  const baseUrl = useDevAuth
+    ? location.origin
+    : process.env.ENDPOINT || 'https://codesandbox.io';
 
   const authPath = new URL(
-    location.origin + (hasDevAuth ? '/auth/dev' : `/auth/${provider}`)
+    baseUrl + (useDevAuth ? '/auth/dev' : `/auth/${provider}`)
   );
 
   authPath.searchParams.set('version', '2');
 
   if (provider === 'github') {
-    if (useExtraScopes) {
-      authPath.searchParams.set('scope', 'user:email,repo,workflow');
-    } else {
-      authPath.searchParams.set('scope', 'user:email');
+    let scope = GH_BASE_SCOPE;
+    if (
+      'includedScopes' in options &&
+      typeof options.includedScopes !== 'undefined'
+    ) {
+      scope =
+        GH_BASE_SCOPE + ',' + MAP_GH_SCOPE_OPTIONS[options.includedScopes];
     }
+    authPath.searchParams.set('scope', scope);
   }
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
@@ -189,7 +203,7 @@ export const runProviderAuth = (
   const signInPromise = effects.browser
     .waitForMessage('signin')
     .then((data: any) => {
-      if (hasDevAuth) {
+      if (useDevAuth) {
         localStorage.setItem('devJwt', data.jwt);
 
         // Today + 30 days

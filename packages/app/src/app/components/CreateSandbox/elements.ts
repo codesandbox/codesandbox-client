@@ -30,7 +30,7 @@ export const ModalBody = styled.div`
 export const ModalSidebar = styled.div`
   width: 176px;
   flex-shrink: 0;
-  padding: 0px 24px 24px;
+  padding: 0px 24px;
   overflow: auto;
 
   @media screen and (max-width: 950px) {

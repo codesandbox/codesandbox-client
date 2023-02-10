@@ -27,6 +27,7 @@ export const PermissionSettings = () => {
   const {
     isTeamSpace,
     isTeamAdmin,
+    isAdmin,
     isPersonalSpace,
   } = useWorkspaceAuthorization();
 
@@ -67,7 +68,7 @@ export const PermissionSettings = () => {
 
       <Grid columnGap={12}>
         <Column span={[12, 12, 6]}>
-          <MinimumPrivacy disabled={isFree || !isTeamAdmin} />
+          <MinimumPrivacy disabled={isFree || !isAdmin} />
         </Column>
         {!isPersonalSpace && (
           <Column span={[12, 12, 6]}>

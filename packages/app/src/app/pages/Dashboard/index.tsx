@@ -30,6 +30,7 @@ const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
 });
 
+// TODO: Move this page to v2 (also, this is a random commit to trigger the re-run of the build)
 export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, activeTeamInfo } = useAppState();
   const { browser, notificationToast } = useEffects();
