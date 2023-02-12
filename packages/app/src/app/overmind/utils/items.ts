@@ -76,6 +76,11 @@ export const COMMENTS: INavigationItem = {
   name: 'Comments',
 };
 
+export const DOCKER: INavigationItem = {
+  id: 'docker',
+  name: 'Docker',
+};
+
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
@@ -107,6 +112,7 @@ export function getDisabledItems(store: any): INavigationItem[] {
   return [];
 }
 
+//
 export default function getItems(
   store: Overmind<typeof config>['state']
 ): INavigationItem[] {
@@ -187,5 +193,6 @@ export default function getItems(
     items.push(LIVE);
   }
 
-  return items;
+  // Add docker as last item in the navigation
+  return [...items, DOCKER];
 }
