@@ -60,6 +60,7 @@ import { ViteIcon } from './ViteIcon';
 import { VueIcon } from './VueIcon';
 import { VuePressIcon } from './VuePressIcon';
 import { WebAssemblyIcon } from './WebAssemblyIcon';
+import { XStateIcon } from './XStateIcon';
 
 export const ColorIcons = {
   AdonisIcon,
@@ -124,6 +125,7 @@ export const ColorIcons = {
   VueIcon,
   VuePressIcon,
   WebAssemblyIcon,
+  XStateIcon,
 };
 
 export const Icons = {
@@ -189,6 +191,7 @@ export const Icons = {
   VueIcon,
   VuePressIcon,
   WebAssemblyIcon,
+  XStateIcon,
 };
 
 export { AdonisIcon } from './AdonisIcon';
@@ -253,3 +256,4 @@ export { ViteIcon } from './ViteIcon';
 export { VueIcon } from './VueIcon';
 export { VuePressIcon } from './VuePressIcon';
 export { WebAssemblyIcon } from './WebAssemblyIcon';
+export { XStateIcon } from './XStateIcon';
