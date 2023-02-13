@@ -12,7 +12,10 @@ import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
-import { requestSandpackSecretFromApp } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/sandpack-secret';
+import {
+  requestSandpackSecretFromApp,
+  removeSandpackSecret,
+} from 'sandpack-core/lib/sandpack-secret';
 
 const host = process.env.CODESANDBOX_HOST;
 const withServiceWorker = !process.env.SANDPACK;
@@ -38,11 +41,7 @@ requirePolyfills().then(() => {
   let isInitializationCompile = true;
   async function handleMessage(data, source) {
     if (source) {
-      if (data.type === 'signin') {
-        await requestSandpackSecretFromApp(
-          'https://5t0o8w-3000.preview.csb.app'
-        );
-      } else if (data.type === 'compile') {
+      if (data.type === 'compile') {
         // In sandpack we always broadcast a compile message from every manager whenever 1 frame reconnects.
         // We do this because the initialized message does comes before the handshake is done, so there's no channel id.
         // To prevent every mounted frame from recompiling, we explicitly flag that this compilation is meant to be the
@@ -73,6 +72,12 @@ requirePolyfills().then(() => {
             data: {},
           });
         }
+      } else if (data.type === 'signin') {
+        await requestSandpackSecretFromApp(
+          'https://5t0o8w-3000.preview.csb.app'
+        );
+      } else if (data.type === 'signout') {
+        removeSandpackSecret();
       }
     }
   }

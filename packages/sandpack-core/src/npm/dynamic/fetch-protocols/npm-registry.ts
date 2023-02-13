@@ -4,7 +4,7 @@ import { FetchProtocol, Meta } from '../fetch-npm-module';
 import {
   getSandpackSecret,
   requestSandpackSecretFromApp,
-} from './sandpack-secret';
+} from '../../../sandpack-secret';
 import { fetchWithRetries } from './utils';
 import { TarStore } from './utils/tar-store';
 
