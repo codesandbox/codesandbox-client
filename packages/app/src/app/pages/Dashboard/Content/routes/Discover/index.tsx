@@ -338,7 +338,6 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
               item={{
                 type: 'community-sandbox',
                 noDrag: true,
-                autoFork: false,
                 sandbox: {
                   ...sandbox,
                   liked: likedSandboxIds.includes(sandbox.id),
@@ -417,7 +416,6 @@ const TrendingSandboxes = () => {
               item={{
                 type: 'community-sandbox',
                 noDrag: true,
-                autoFork: false,
                 sandbox: {
                   ...sandbox,
                   liked: likedSandboxIds.includes(sandbox.id),

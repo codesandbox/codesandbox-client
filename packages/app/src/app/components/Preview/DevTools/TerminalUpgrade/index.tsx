@@ -46,10 +46,7 @@ export const TerminalUpgradeComponent: React.FC<StyledProps> = ({
             in the cloud. They allow you to run Docker, code in new languages,
             add servers, databases, and much more. See a preview below.
           </Text>
-          <img
-            alt=""
-            src="/static/img/terminal_upgrade_screenshot.png"
-          />
+          <img alt="" src="/static/img/terminal_upgrade_screenshot.png" />
           <Text>
             {canConvert
               ? `Do you want to convert it into a Cloud Sandbox?`

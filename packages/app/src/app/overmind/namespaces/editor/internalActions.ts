@@ -407,6 +407,8 @@ export const updateModuleCode = (
   effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
+// TODO: We can make this function simpler or we can also make a different convertSandbox
+// action for when we don't fork it, but change it to a v2 sandbox.
 export const forkSandbox = async (
   { state, effects, actions }: Context,
   {

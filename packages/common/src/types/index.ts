@@ -418,6 +418,16 @@ export type NpmManifest = {
   };
 };
 
+// NOTE: These types are inferred from usage and might not reflect the actual
+// types one on one. Used for the api.forkSandbox method.
+export type ForkSandboxBody = {
+  v2?: boolean;
+  teamId?: string | null;
+  privacy?: 0 | 1 | 2;
+  collectionId?: string;
+  alias?: string;
+};
+
 export type Sandbox = {
   id: string;
   alias: string | null;

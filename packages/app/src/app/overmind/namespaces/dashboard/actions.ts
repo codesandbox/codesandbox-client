@@ -125,17 +125,6 @@ export const viewModeChanged = (
   effects.browser.storage.set('VIEW_MODE_DASHBOARD', mode);
 };
 
-export const createSandboxClicked = (
-  { actions }: Context,
-  {
-    body,
-    sandboxId,
-  }: {
-    body: { collectionId: string };
-    sandboxId: string;
-  }
-) => actions.editor.forkExternalSandbox({ body, sandboxId });
-
 export const deleteTemplate = async (
   { actions, effects, state }: Context,
   {
