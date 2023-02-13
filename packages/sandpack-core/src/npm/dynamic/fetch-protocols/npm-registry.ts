@@ -128,6 +128,14 @@ export class NpmRegistryFetcher implements FetchProtocol {
     const headers = new Headers();
     headers.append('Accept', NPM_REGISTRY_ACCEPT_HEADER);
     headers.append('Content-Type', 'application/json');
+
+    /**
+     * Private packages conditionals:
+     * 1. Explicit token: if `authToken` is provide, add it to the header
+     * 2. Proxy disabled: then it's a custom registry, so do not anything
+     * 3. Proxy is enabled and team-id is provide: it's a private package provided by CSB
+     */
+
     if (this.authToken) {
       headers.append('Authorization', `Bearer ${this.authToken}`);
       /**
@@ -135,15 +143,16 @@ export class NpmRegistryFetcher implements FetchProtocol {
        * it doesn't find secret
        */
     } else {
-      if (!getSandpackSecret()) {
-        const token = await requestSandpackSecretFromApp(
-          'https://pszt7g-3000.preview.csb.app'
-        );
+      let sandpackToken = getSandpackSecret();
+      if (!sandpackToken) {
+        throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
 
-        headers.append('Authorization', `Bearer ${token}`);
-      } else {
-        headers.append('Authorization', `Bearer ${getSandpackSecret()}`);
+        // sandpackToken = await requestSandpackSecretFromApp(
+        //   'https://5t0o8w-3000.preview.csb.app'
+        // );
       }
+
+      headers.append('Authorization', `Bearer ${sandpackToken}`);
     }
 
     return {
