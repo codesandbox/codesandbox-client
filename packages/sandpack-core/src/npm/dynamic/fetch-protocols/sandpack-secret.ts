@@ -67,7 +67,7 @@ function getProtocolAndHostWithSSE() {
 
 export const requestSandpackSecretFromApp = async (
   host: string = getProtocolAndHostWithSSE()
-) => {
+): Promise<string> => {
   return new Promise(resolve => {
     const popup = window.open(
       host + '/auth/sandpack/',
