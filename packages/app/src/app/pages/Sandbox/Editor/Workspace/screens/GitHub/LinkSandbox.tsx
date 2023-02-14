@@ -4,9 +4,11 @@ import { Button, Collapsible, Element, Text } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 
 type LinkSandboxProps = {
+  disabled?: boolean;
   upstreamSandbox: ForkedSandbox;
 };
 export const LinkSandbox: React.FC<LinkSandboxProps> = ({
+  disabled,
   upstreamSandbox,
 }) => {
   const {
@@ -18,8 +20,13 @@ export const LinkSandbox: React.FC<LinkSandboxProps> = ({
   } = useAppState();
 
   return (
-    <Collapsible title="Link to GitHub repository" defaultOpen>
-      <Element paddingX={2}>
+    <Collapsible title="Link to GitHub repository" defaultOpen={!disabled}>
+      <Element
+        css={{
+          opacity: disabled ? 0.6 : 1,
+        }}
+        paddingX={2}
+      >
         <Text variant="muted">If you wish to contribute back to</Text>{' '}
         {upstreamSandbox.git.username}/{upstreamSandbox.git.repo}
         <Text variant="muted">
@@ -27,8 +34,17 @@ export const LinkSandbox: React.FC<LinkSandboxProps> = ({
           you to create commits and open pull requests with this sandbox.
         </Text>
         <Button
+          // Using aria-disabled to have the affordance without
+          // affecting the styles.
+          aria-disabled={disabled}
           marginTop={4}
-          onClick={() => linkToGitSandbox(currentSandbox.id)}
+          onClick={() => {
+            if (disabled) {
+              return;
+            }
+
+            linkToGitSandbox(currentSandbox.id);
+          }}
           loading={isLinkingToGitSandbox}
         >
           Link Sandbox
