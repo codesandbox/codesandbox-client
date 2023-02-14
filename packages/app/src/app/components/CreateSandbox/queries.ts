@@ -118,3 +118,13 @@ export const GET_GITHUB_ORGANIZATIONS = gql`
   ${PROFILE_FRAGMENT}
   ${ORGANIZATION_FRAGMENT}
 `;
+
+export const GET_GITHUB_ORGANIZATION_REPOS = gql`
+  query GetGithubOrganizationRepos {
+    githubOrganizationRepos($organization: String! ,$page: Int, $perPage: Int) {
+      authorization,
+      fullName,
+      private,
+    }
+  }
+`;

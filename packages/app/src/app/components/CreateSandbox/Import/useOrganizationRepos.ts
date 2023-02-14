@@ -17,7 +17,8 @@ export type GithubOrganizationsState =
       state: 'error';
       error: string;
     };
-export const useGithubOrganizations = (): GithubOrganizationsState => {
+    
+export const useOrganizationRepos = (): GithubOrganizationsState => {
   const { data, error } = useQuery<
     GetGithubOrganizationsQuery,
     GetGithubOrganizationsQueryVariables
