@@ -210,38 +210,38 @@ export const GitHub = () => {
 
   // If there's a forkedFromSandbox we use that, otherwise we use the forkedTemplateSandbox
   const upstreamSandbox = forkedFromSandbox || forkedTemplateSandbox;
-  if (!originalGit && upstreamSandbox?.git) {
-    return (
-      <>
-        <LinkSandbox upstreamSandbox={upstreamSandbox} />
-        <CreateRepo />
-      </>
-    );
-  }
 
-  return originalGit ? (
+  return (
     <>
-      <Collapsible title="GitHub repository" defaultOpen>
-        <Element paddingX={2}>
-          <Link
-            target="_blank"
-            rel="noopener noreferrer"
-            href={githubRepoUrl(originalGit)}
-          >
-            <Stack gap={2} marginBottom={6} align="center">
-              <GitHubIcon width={20} />
-              <Text size={2}>
-                {originalGit.username}/{originalGit.repo}
-              </Text>
-            </Stack>
-          </Link>
-          {getText()}
-        </Element>
-      </Collapsible>
-      {getContent()}
+      {originalGit ? (
+        <>
+          <Collapsible title="GitHub repository" defaultOpen>
+            <Element paddingX={2}>
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={githubRepoUrl(originalGit)}
+              >
+                <Stack gap={2} marginBottom={6} align="center">
+                  <GitHubIcon width={20} />
+                  <Text size={2}>
+                    {originalGit.username}/{originalGit.repo}
+                  </Text>
+                </Stack>
+              </Link>
+              {getText()}
+            </Element>
+          </Collapsible>
+          {getContent()}
+        </>
+      ) : null}
+
+      {!originalGit && upstreamSandbox?.git ? (
+        <LinkSandbox upstreamSandbox={upstreamSandbox} />
+      ) : null}
+
+      {/* Always show create repo */}
       <CreateRepo />
     </>
-  ) : (
-    <CreateRepo />
   );
 };
