@@ -112,7 +112,6 @@ export function getDisabledItems(store: any): INavigationItem[] {
   return [];
 }
 
-//
 export default function getItems(
   store: Overmind<typeof config>['state']
 ): INavigationItem[] {
