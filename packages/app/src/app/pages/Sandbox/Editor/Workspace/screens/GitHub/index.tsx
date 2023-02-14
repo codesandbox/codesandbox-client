@@ -1,7 +1,6 @@
 import { GitFileCompare, SandboxGitState } from '@codesandbox/common/lib/types';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
-  Button,
   Collapsible,
   Element,
   Link,
@@ -10,7 +9,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import React from 'react';
 
 import { Changes } from './Changes';
@@ -42,6 +41,7 @@ import { ConflictType } from './types';
 import { getConflictIcon } from './utils/getConflictIcon';
 import { getConflictText } from './utils/getConflictsText';
 import { getConflictType } from './utils/getConflictType';
+import { LinkSandbox } from './LinkSandbox';
 
 export const GitHub = () => {
   const {
@@ -53,11 +53,9 @@ export const GitHub = () => {
       isFetching,
       isExported,
       pr,
-      isLinkingToGitSandbox,
     },
     editor: {
       currentSandbox: {
-        id,
         originalGit,
         baseGit,
         owned,
@@ -71,7 +69,6 @@ export const GitHub = () => {
     isLoggedIn,
     user,
   } = useAppState();
-  const actions = useActions();
 
   const changeCount = gitChanges
     ? gitChanges.added.length +
@@ -216,24 +213,7 @@ export const GitHub = () => {
   if (!originalGit && upstreamSandbox?.git) {
     return (
       <>
-        <Collapsible title="Link to GitHub repository" defaultOpen>
-          <Element paddingX={2}>
-            <Text variant="muted">If you wish to contribute back to</Text>{' '}
-            {upstreamSandbox.git.username}/{upstreamSandbox.git.repo}
-            <Text variant="muted">
-              , you can link this sandbox to the GitHub repository. This will
-              allow you to create commits and open pull requests with this
-              sandbox.
-            </Text>
-            <Button
-              marginTop={4}
-              onClick={() => actions.git.linkToGitSandbox(id)}
-              loading={isLinkingToGitSandbox}
-            >
-              Link Sandbox
-            </Button>
-          </Element>
-        </Collapsible>
+        <LinkSandbox upstreamSandbox={upstreamSandbox} />
         <CreateRepo />
       </>
     );
