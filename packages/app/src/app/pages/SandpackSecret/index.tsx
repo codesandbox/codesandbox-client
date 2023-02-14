@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-
+import { css } from '@styled-system/css';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { Title } from 'app/components/Title';
+import { CodeSandboxIcon } from '@codesandbox/components/lib/components/Icon/icons';
+
+import { Element, Stack, ThemeProvider, Text } from '@codesandbox/components';
 
 // This route is supposed to be opened in a new window.
 // It is called from a sandbox so that we can try to retrieve
@@ -28,6 +28,9 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
     if (hasLogIn) {
       setError(null);
 
+      /**
+       * TODO: call the sandpack token instead of JWT
+       */
       api
         .getJWTToken()
         .then(token => {
@@ -54,11 +57,54 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
   }, [api, props.match.params.id, hasLogIn]);
 
   return hasLogIn ? (
-    <Fullscreen style={{ height: '100vh' }}>
-      <Centered horizontal vertical>
-        <Title>{error ? 'Error: ' + error : 'Fetching...'}</Title>
-      </Centered>
-    </Fullscreen>
+    <ThemeProvider>
+      <Element
+        css={css({
+          backgroundColor: 'sideBar.background',
+          minHeight: '100vh',
+          minWidth: '100vw',
+          display: 'flex',
+        })}
+      >
+        <Stack
+          align="center"
+          css={{
+            margin: 'auto',
+            padding: '48px 0',
+            color: '#fff',
+          }}
+          direction="vertical"
+          justify="space-between"
+          gap={8}
+        >
+          <Stack css={{ gap: '1em' }} align="center">
+            <CodeSandboxIcon width={48} height={48} />
+            <Text
+              as="h1"
+              css={{
+                margin: 0,
+                textAlign: 'center',
+                fontFamily: 'Everett, sans-serif',
+                lineHeight: 1.17,
+                letterSpacing: '-0.018em',
+              }}
+              size={34}
+              weight="medium"
+            >
+              CodeSandbox
+            </Text>
+          </Stack>
+
+          <Text css={{ textAlign: 'center' }}>
+            Hang on, we are authenticating Sandpack.
+            <br />
+            {error
+              ? 'Error: ' + error
+              : 'This page will close automatically in a few seconds.'}
+          </Text>
+        </Stack>
+      </Element>
+    </ThemeProvider>
   ) : (
     <Redirect to={signInPageUrl(location.pathname)} />
   );
