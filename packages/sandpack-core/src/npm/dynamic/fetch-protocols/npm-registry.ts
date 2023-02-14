@@ -146,10 +146,6 @@ export class NpmRegistryFetcher implements FetchProtocol {
       let sandpackToken = getSandpackSecret();
       if (!sandpackToken) {
         throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
-
-        // sandpackToken = await requestSandpackSecretFromApp(
-        //   'https://5t0o8w-3000.preview.csb.app'
-        // );
       }
 
       headers.append('Authorization', `Bearer ${sandpackToken}`);

@@ -74,7 +74,7 @@ requirePolyfills().then(() => {
         }
       } else if (data.type === 'sign-in') {
         await requestSandpackSecretFromApp(
-          'https://5t0o8w-3000.preview.csb.app'
+          'https://6er17b-3000.preview.csb.app'
         );
       } else if (data.type === 'sign-out') {
         removeSandpackSecret();

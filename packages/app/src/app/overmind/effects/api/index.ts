@@ -58,6 +58,14 @@ export default {
 
     return response.jwt;
   },
+  /**
+   * TODO: support parent domain
+   */
+  async getSandpackToken(parentDomain: string): Promise<string> {
+    const response = await api.get<{ jwt: string }>('/auth/jwt');
+
+    return response.jwt;
+  },
   // We only use this function related to current_user/subscription
   cancelPatronSubscription() {
     return api.delete<CurrentUser>('/users/current_user/subscription');

@@ -72,6 +72,22 @@ function getProtocolAndHostWithSSE() {
 export const requestSandpackSecretFromApp = async (
   host: string = getProtocolAndHostWithSSE()
 ): Promise<string> => {
+  const parentDomain = (() => {
+    /**
+     * It gets the all ancestor browsing context of the parent, in reverse order.
+     *
+     * Note: ancestorOrigins is not supported by Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1085214
+     * so it default to `document.referrer`
+     */
+    if (document.location.ancestorOrigins) {
+      return document.location.ancestorOrigins[
+        document.location.ancestorOrigins.length - 1
+      ];
+    }
+
+    return document.referrer;
+  })();
+
   return new Promise(resolve => {
     const popup = window.open(
       host + '/auth/sandpack/',
@@ -81,7 +97,10 @@ export const requestSandpackSecretFromApp = async (
 
     setInterval(() => {
       if (popup) {
-        popup.postMessage({ $type: 'request-sandpack-secret' }, host);
+        popup.postMessage(
+          { $type: 'request-sandpack-secret', parentDomain },
+          host
+        );
       }
     }, 500);
 
