@@ -72,12 +72,13 @@ requirePolyfills().then(() => {
             data: {},
           });
         }
-      } else if (data.type === 'signin') {
+      } else if (data.type === 'sign-in') {
         await requestSandpackSecretFromApp(
           'https://5t0o8w-3000.preview.csb.app'
         );
-      } else if (data.type === 'signout') {
+      } else if (data.type === 'sign-out') {
         removeSandpackSecret();
+        window.location.reload();
       }
     }
   }

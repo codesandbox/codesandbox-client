@@ -337,6 +337,22 @@ async function initializeManager(
 
   // Add the custom registered npm registries
   customNpmRegistries.forEach(registry => {
+    /**
+     * If a team-id is provided, we can mount a registryUrl and proxy
+     * dependencies request through CSB proxy
+     */
+    if (registry.codesandboxTeamId) {
+      registry.registryUrl = `https://5t0o8w-3000.preview.csb.app/api/v1/sandboxes/${registry.codesandboxTeamId}/npm_registry`;
+      registry.proxyEnabled = true;
+      registry.limitToScopes = true;
+    }
+
+    if (!registry.registryUrl) {
+      throw new Error(
+        'Unable to fetch required dependency: neither a `registryUrl` nor a `codesandboxTeamId` was provided.'
+      );
+    }
+
     const cleanUrl = registry.registryUrl.replace(/\/$/, '');
 
     const options: NpmRegistryOpts = { proxyEnabled: registry.proxyEnabled };

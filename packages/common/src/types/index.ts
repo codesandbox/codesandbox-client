@@ -364,6 +364,7 @@ export type NpmRegistry = {
   registryUrl: string;
   proxyEnabled?: boolean;
   registryAuthToken?: string;
+  codesandboxTeamId?: string;
 };
 
 export enum CommentsFilterOption {
