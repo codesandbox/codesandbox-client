@@ -9,6 +9,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
+import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 
@@ -63,12 +64,13 @@ export const GitHub = () => {
         prNumber,
         forkedTemplateSandbox,
         forkedFromSandbox,
+        privacy,
       },
       modulesByPath,
     },
     isLoggedIn,
-    user,
   } = useAppState();
+  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
 
   const changeCount = gitChanges
     ? gitChanges.added.length +
@@ -80,7 +82,6 @@ export const GitHub = () => {
 
   if (!isLoggedIn) return <NotLoggedIn />;
   if (!owned) return <NotOwner />;
-  if (!user.integrations.github) return <GithubLogin />;
   if (isFetching || isExported) return <Loading />;
   if (pr && pr.merged) return <MergedPr />;
   if (pr && pr.state === 'closed') return <ClosedPr />;
@@ -211,11 +212,17 @@ export const GitHub = () => {
   // If there's a forkedFromSandbox we use that, otherwise we use the forkedTemplateSandbox
   const upstreamSandbox = forkedFromSandbox || forkedTemplateSandbox;
 
+  const showGitHubLogin =
+    (privacy === 0 && restrictsPublicRepos) ||
+    (privacy !== 0 && restrictsPrivateRepos);
+
   return (
     <>
+      {showGitHubLogin && <GithubLogin />}
+
       {originalGit ? (
         <>
-          <Collapsible title="GitHub repository" defaultOpen>
+          <Collapsible title="GitHub repository" defaultOpen={!showGitHubLogin}>
             <Element paddingX={2}>
               <Link
                 target="_blank"
@@ -237,11 +244,14 @@ export const GitHub = () => {
       ) : null}
 
       {!originalGit && upstreamSandbox?.git ? (
-        <LinkSandbox upstreamSandbox={upstreamSandbox} />
+        <LinkSandbox
+          disabled={showGitHubLogin}
+          upstreamSandbox={upstreamSandbox}
+        />
       ) : null}
 
       {/* Always show create repo */}
-      <CreateRepo />
+      <CreateRepo disabled={showGitHubLogin} />
     </>
   );
 };
