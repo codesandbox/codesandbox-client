@@ -28,31 +28,37 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
     if (hasLogIn) {
       setError(null);
 
-      /**
-       * TODO: call the sandpack token instead of JWT
-       */
-      api
-        .getJWTToken()
-        .then(token => {
-          const listener = (e: MessageEvent) => {
-            if (e.data && e.data.$type === 'request-sandpack-secret') {
-              (e.source as WindowProxy).postMessage(
-                {
-                  $type: 'sandpack-secret',
-                  token,
-                },
-                '*'
+      const listener = async (event: MessageEvent) => {
+        if (event.data && event.data.$type === 'request-sandpack-secret') {
+          const parentWindow = event.data.parentDomain;
+
+          api
+            .getSandpackToken(parentWindow)
+            .then(token => {
+              /**
+               * TODO: perform this on the backend
+               */
+              const TEMP_ALLOWED_DOMAINS = ['localhost:6000'];
+              const TODO_BACKEND_CHECK = TEMP_ALLOWED_DOMAINS.includes(
+                parentWindow
               );
 
-              window.removeEventListener('message', listener);
-            }
-          };
+              if (TODO_BACKEND_CHECK) {
+                (event.source as WindowProxy).postMessage(
+                  { $type: 'sandpack-secret', token },
+                  parentWindow
+                );
+              }
 
-          window.addEventListener('message', listener);
-        })
-        .catch(e => {
-          setError("We couldn't find the sandbox");
-        });
+              window.removeEventListener('message', listener);
+            })
+            .catch(e => {
+              setError("We couldn't find the sandbox");
+            });
+        }
+      };
+
+      window.addEventListener('message', listener);
     }
   }, [api, props.match.params.id, hasLogIn]);
 

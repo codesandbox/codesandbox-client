@@ -342,7 +342,7 @@ async function initializeManager(
      * dependencies request through CSB proxy
      */
     if (registry.codesandboxTeamId) {
-      registry.registryUrl = `https://5t0o8w-3000.preview.csb.app/api/v1/sandboxes/${registry.codesandboxTeamId}/npm_registry`;
+      registry.registryUrl = `https://6er17b-3000.preview.csb.app/api/v1/sandboxes/${registry.codesandboxTeamId}/npm_registry`;
       registry.proxyEnabled = true;
       registry.limitToScopes = true;
     }
