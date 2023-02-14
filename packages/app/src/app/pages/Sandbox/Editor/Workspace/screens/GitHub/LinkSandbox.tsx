@@ -34,9 +34,7 @@ export const LinkSandbox: React.FC<LinkSandboxProps> = ({
           you to create commits and open pull requests with this sandbox.
         </Text>
         <Button
-          // Using aria-disabled to have the affordance without
-          // affecting the styles.
-          aria-disabled={disabled}
+          disabled={disabled}
           marginTop={4}
           onClick={() => {
             if (disabled) {
