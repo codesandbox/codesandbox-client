@@ -146,6 +146,21 @@ export type CurrentUser = {
   };
   sendSurvey: boolean;
   deletionRequested: boolean;
+  githubProfile:
+    | {
+        data: null;
+        error: { code: string; message: string };
+      }
+    | {
+        data: {
+          avatarUrl: string;
+          id: string;
+          login: string;
+          name?: string;
+          scopes: string[];
+        };
+        error: null;
+      };
 };
 
 export type CustomTemplate = {
@@ -402,6 +417,16 @@ export type NpmManifest = {
   versions: {
     [version: string]: PackageVersionInfo;
   };
+};
+
+// NOTE: These types are inferred from usage and might not reflect the actual
+// types one on one. Used for the api.forkSandbox method.
+export type ForkSandboxBody = {
+  v2?: boolean;
+  teamId?: string | null;
+  privacy?: 0 | 1 | 2;
+  collectionId?: string;
+  alias?: string;
 };
 
 export type Sandbox = {
@@ -803,6 +828,7 @@ export type SandboxUrlSourceData = {
   alias?: string | null;
   git?: GitInfo | null;
   isV2?: boolean;
+  query?: Record<string, string>;
 };
 
 export type DevToolsTabPosition = {

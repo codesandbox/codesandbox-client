@@ -38,7 +38,6 @@ export const Album = ({ match }) => {
     sandbox => ({
       type: 'community-sandbox',
       noDrag: true,
-      autoFork: false,
       sandbox,
     })
   );
@@ -89,7 +88,6 @@ export const Album = ({ match }) => {
                   item={{
                     type: 'community-sandbox',
                     noDrag: true,
-                    autoFork: false,
                     sandbox: {
                       ...sandbox,
                       liked: likedSandboxIds.includes(sandbox.id),

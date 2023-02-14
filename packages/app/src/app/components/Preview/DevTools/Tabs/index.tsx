@@ -22,6 +22,7 @@ interface Props {
   panes: ViewTab[];
   views: IViews;
   disableLogging: boolean;
+  isOnEmbedPage: boolean;
 }
 
 export const DevToolTabs = ({
@@ -36,6 +37,7 @@ export const DevToolTabs = ({
   closeTab,
   disableLogging,
   status,
+  isOnEmbedPage,
 }: Props) => {
   const currentPane = views[panes[currentPaneIndex].id];
   const actions =
@@ -50,52 +52,54 @@ export const DevToolTabs = ({
   return (
     <Container>
       <Tabs>
-        {panes.map((pane, i) => {
-          const active = !hidden && i === currentPaneIndex;
-          const view = views[pane.id];
+        {panes
+          .filter(pane => (isOnEmbedPage ? !pane.hideOnEmbedPage : true))
+          .map((pane, i) => {
+            const active = !hidden && i === currentPaneIndex;
+            const view = views[pane.id];
 
-          const TypedTab = (moveTab
-            ? DraggableTab
-            : (PaneTab as unknown)) as React.SFC<TabProps>;
+            const TypedTab = (moveTab
+              ? DraggableTab
+              : (PaneTab as unknown)) as React.SFC<TabProps>;
 
-          /* eslint-disable react/no-array-index-key */
-          return (
-            <TypedTab
-              disableLogging={disableLogging}
-              canDrag={panes.length !== 1}
-              pane={view}
-              options={pane.options || {}}
-              active={active}
-              onMouseDown={e => {
-                e.stopPropagation();
-              }}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                setPane(i);
-              }}
-              devToolIndex={devToolIndex}
-              moveTab={(prevPos, newPos) => {
-                if (moveTab) {
-                  track('DevTools - Move Pane', {
-                    pane: view.id,
-                  });
-                  moveTab(prevPos, newPos);
+            /* eslint-disable react/no-array-index-key */
+            return (
+              <TypedTab
+                disableLogging={disableLogging}
+                canDrag={panes.length !== 1}
+                pane={view}
+                options={pane.options || {}}
+                active={active}
+                onMouseDown={e => {
+                  e.stopPropagation();
+                }}
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setPane(i);
+                }}
+                devToolIndex={devToolIndex}
+                moveTab={(prevPos, newPos) => {
+                  if (moveTab) {
+                    track('DevTools - Move Pane', {
+                      pane: view.id,
+                    });
+                    moveTab(prevPos, newPos);
+                  }
+                }}
+                closeTab={
+                  pane.closeable && panes.length !== 1 ? closeTab : undefined
                 }
-              }}
-              closeTab={
-                pane.closeable && panes.length !== 1 ? closeTab : undefined
-              }
-              index={i}
-              key={i}
-              status={
-                status
-                  ? status[pane.id] || { unread: 0, type: 'info' }
-                  : undefined
-              }
-            />
-          );
-        })}
+                index={i}
+                key={i}
+                status={
+                  status
+                    ? status[pane.id] || { unread: 0, type: 'info' }
+                    : undefined
+                }
+              />
+            );
+          })}
 
         {moveTab && (
           <TypedTabDropZone

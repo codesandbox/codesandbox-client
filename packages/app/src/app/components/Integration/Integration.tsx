@@ -2,10 +2,9 @@ import React from 'react';
 import { DetailInfo } from './DetailInfo';
 import { Container, IntegrationBlock, Name } from './elements';
 
-interface IIntegrationProps {
+interface IntegrationProps {
   small: boolean;
   loading: boolean;
-  bgColor: string;
   Icon: React.ComponentType;
   name: string;
   onSignOut?: () => void;
@@ -14,10 +13,9 @@ interface IIntegrationProps {
   description: string;
 }
 
-export const Integration: React.FC<IIntegrationProps> = ({
+export const Integration: React.FC<IntegrationProps> = ({
   small = false,
   loading,
-  bgColor,
   Icon,
   name,
   onSignOut,
@@ -26,18 +24,22 @@ export const Integration: React.FC<IIntegrationProps> = ({
   description,
 }) => (
   <Container small={small} loading={loading}>
-    <IntegrationBlock small={small} bgColor={bgColor}>
+    <IntegrationBlock>
       <Icon />
       <Name>{name}</Name>
     </IntegrationBlock>
-    {userInfo ? (
-      <DetailInfo
-        onSignOut={onSignOut}
-        heading="Signed in as"
-        info={userInfo.email || 'Loading...'}
-      />
-    ) : (
-      <DetailInfo onSignIn={onSignIn} heading="Enables" info={description} />
-    )}
+    <DetailInfo
+      {...(userInfo
+        ? {
+            onSignOut,
+            heading: 'Signed in as',
+            info: userInfo.email || 'Loading...',
+          }
+        : {
+            onSignIn,
+            heading: 'Enables',
+            info: description,
+          })}
+    />
   </Container>
 );

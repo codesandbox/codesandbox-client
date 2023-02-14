@@ -1,6 +1,7 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { ArticleCard, VideoCard, Stack } from '@codesandbox/components';
+import { ArticleCard, VideoCard } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
@@ -22,6 +23,12 @@ const DOCS: DocsItem[] = [
     url:
       'https://www.youtube.com/watch?v=YpY8oznHq2I&list=PLdX6VQdTP7GbG1Poi8JN3AJsHAsSM2IlW&index=6',
     thumbnail: '/static/img/thumbnails/video_1-click-pr.png',
+  },
+  {
+    label: 'blog_github-app',
+    title: 'Review code faster with our GitHub App',
+    url: 'https://codesandbox.io/post/introducing-the-codesandbox-github-app',
+    thumbnail: '/static/img/thumbnails/blog_github-app.png',
   },
   {
     label: 'video_contribution-branches',
@@ -50,12 +57,6 @@ const DOCS: DocsItem[] = [
     thumbnail: '/static/img/thumbnails/video_auto-deps.png',
   },
   {
-    label: 'blog_github-app',
-    title: 'Review code faster with our GitHub App',
-    url: 'https://codesandbox.io/post/introducing-the-codesandbox-github-app',
-    thumbnail: '/static/img/thumbnails/blog_github-app.png',
-  },
-  {
     label: 'cta_youtube',
     title: 'More videos and tutorials',
     url: 'https://www.youtube.com/@codesandbox',
@@ -80,41 +81,33 @@ export const DocumentationRow: React.FC = () => {
     });
   };
 
+  const items = DOCS.map(({ label, url, workspaceType, ...item }) => {
+    if (
+      (workspaceType === 'personal' && !isPersonalSpace) ||
+      (workspaceType === 'team' && !isTeamSpace)
+    ) {
+      return null;
+    }
+
+    const urlWithTracking = appendOnboardingTracking(url);
+
+    return {
+      id: label,
+      Component: 'duration' in item ? VideoCard : ArticleCard,
+      props: {
+        onClick: () => handleTrack(label),
+        url: urlWithTracking,
+        ...item,
+      },
+    };
+  }).filter(Boolean);
+
   return (
     <EmptyPage.StyledGridWrapper>
       <EmptyPage.StyledGridTitle>
         Optimize your workflow
       </EmptyPage.StyledGridTitle>
-      <EmptyPage.StyledGrid as="ul">
-        {DOCS.map(({ url, workspaceType, ...item }) => {
-          const urlWithTracking = appendOnboardingTracking(url);
-
-          if (
-            (workspaceType === 'personal' && !isPersonalSpace) ||
-            (workspaceType === 'team' && !isTeamSpace)
-          ) {
-            return null;
-          }
-
-          return (
-            <Stack as="li" key={item.label}>
-              {'duration' in item ? (
-                <VideoCard
-                  onClick={() => handleTrack(item.label)}
-                  url={urlWithTracking}
-                  {...item}
-                />
-              ) : (
-                <ArticleCard
-                  onClick={() => handleTrack(item.label)}
-                  url={urlWithTracking}
-                  {...item}
-                />
-              )}
-            </Stack>
-          );
-        })}
-      </EmptyPage.StyledGrid>
+      <Carousel items={items} />
     </EmptyPage.StyledGridWrapper>
   );
 };

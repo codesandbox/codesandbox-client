@@ -8,6 +8,7 @@ import {
   ModuleTab,
   UserSelection,
   WindowOrientation,
+  ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -718,6 +719,9 @@ export const createZipClicked = ({ state, effects }: Context) => {
   effects.analytics.track('Editor - Click Menu Item - Export as ZIP');
 };
 
+// The forkExternalSandbox only seems to be used inside of the dashboard pages and
+// that seems to be the reason why it's called external.
+// TODO: Move the fork function to the dashboard namespace.
 export const forkExternalSandbox = async (
   { effects, state, actions }: Context,
   {
@@ -732,8 +736,8 @@ export const forkExternalSandbox = async (
 ) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
-  const usedBody: { collectionId?: string; alias?: string; teamId?: string } =
-    body || {};
+  const usedBody: ForkSandboxBody = body || {};
+
   if (state.activeTeam) {
     usedBody.teamId = state.activeTeam;
   }
@@ -753,6 +757,7 @@ export const forkExternalSandbox = async (
   }
 };
 
+// TODO: Look into
 export const forkSandboxClicked = async (
   { state, actions }: Context,
   {

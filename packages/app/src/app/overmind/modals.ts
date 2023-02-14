@@ -46,6 +46,8 @@ export const alertModal: {
     message?: string;
     type?: 'link' | 'primary' | 'danger' | 'secondary';
     customComponent?: keyof typeof AlertModalComponents;
+    cancelMessage?: string;
+    confirmMessage?: string;
   };
   result: boolean;
 } = {

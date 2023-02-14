@@ -61,3 +61,23 @@ export const OnDismissWithActionSpaceBetween = () => (
     <MessageStripe.Action>Update payment</MessageStripe.Action>
   </MessageStripe>
 );
+
+export const WithMultipleActions = () => (
+  <MessageStripe variant="warning" justify="space-between" onDismiss={() => {}}>
+    Adjust your GitHub permissions to access your repositories.
+    <MessageStripe.MultiActions
+      options={
+        <>
+          <MessageStripe.MultiActionsItem onSelect={() => {}}>
+            Access all repositories
+          </MessageStripe.MultiActionsItem>
+          <MessageStripe.MultiActionsItem onSelect={() => {}}>
+            Access only public repositories
+          </MessageStripe.MultiActionsItem>
+        </>
+      }
+    >
+      Review GitHub permissions
+    </MessageStripe.MultiActions>
+  </MessageStripe>
+);

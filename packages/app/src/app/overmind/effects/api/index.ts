@@ -23,6 +23,7 @@ import {
   UserQuery,
   UserSandbox,
   SettingsSync,
+  ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateSandbox/queries';
 import { client } from 'app/graphql/client';
@@ -96,7 +97,7 @@ export default {
     // We need to add client side properties for tracking
     return transformSandbox(sandbox);
   },
-  async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
+  async forkSandbox(id: string, body?: ForkSandboxBody): Promise<Sandbox> {
     const url = id.includes('/')
       ? `/sandboxes/fork/${id}`
       : `/sandboxes/${id}/fork`;
@@ -502,6 +503,10 @@ export default {
   deleteTag(sandboxId: string, tagName: string): Promise<string[]> {
     return api.delete(`/sandboxes/${sandboxId}/tags/${tagName}`);
   },
+  /**
+   * Updates a sandbox. Used to update sandbox metadata but also to convert
+   * a sandbox to a cloud sandbox.
+   */
   updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
     return api.put(`/sandboxes/${sandboxId}`, {
       sandbox: data,
@@ -666,7 +671,38 @@ export default {
       `/teams/${teamId}/customer_portal?return_path=${return_path}`
     );
   },
-  removeRepositoryFromTeam(owner: string, repo: string, teamId: string) {
+  removeBranchFromRepository(
+    workspaceId: string,
+    owner: string,
+    repo: string,
+    branch: string
+  ) {
+    return api.delete(`/beta/sandboxes/github/${owner}/${repo}/${branch}`, {
+      workspace_id: workspaceId,
+    });
+  },
+  removeLinkedProjectFromTeam(owner: string, repo: string, teamId: string) {
     return api.delete(`/beta/repos/link/github/${owner}/${repo}/${teamId}`);
+  },
+  forkRepository(
+    source: { owner: string; name: string },
+    destination: {
+      name: string;
+      teamId: string;
+      organization?: string;
+    }
+  ) {
+    let body: Record<string, string | boolean> = {
+      name: destination.name,
+      team_id: destination.teamId,
+    };
+    if (destination.organization) {
+      body = { ...body, organization: destination.organization };
+    }
+
+    return api.post<{ owner: string; repo: string; branch: string }>(
+      `/beta/fork/github/${source.owner}/${source.name}`,
+      body
+    );
   },
 };

@@ -1,11 +1,7 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
-import {
-  ArticleCard,
-  VideoCard,
-  Stack,
-  CreateCard,
-} from '@codesandbox/components';
+import { ArticleCard, VideoCard, CreateCard } from '@codesandbox/components';
+import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
@@ -50,60 +46,60 @@ export const OpenSourceRow: React.FC = () => {
     });
   };
 
+  const buildItems = () => {
+    const docs = DOCS.map(({ label, url, ...item }) => {
+      const urlWithTracking = appendOnboardingTracking(url);
+
+      return {
+        id: label,
+        Component: 'duration' in item ? VideoCard : ArticleCard,
+        props: {
+          onClick: () => handleTrack(label),
+          url: urlWithTracking,
+          ...item,
+        },
+      };
+    });
+
+    const suggestedRepos = SUGGESTED_REPOS.map(({ owner, name }) => {
+      const slug = `${owner}/${name}`;
+
+      const url = v2DefaultBranchUrl({
+        owner,
+        repoName: name,
+        source: 'dashboard_onboarding',
+      });
+
+      return {
+        id: slug,
+        Component: CreateCard,
+        props: {
+          icon: 'github',
+          label: owner,
+          title: name,
+          onClick: () => {
+            track('Empty State Card - Open suggested repository', {
+              repo: slug,
+              codesandbox: 'V1',
+              event_source: 'UI',
+              card_type: 'get-started-action',
+            });
+
+            window.location.href = url;
+          },
+        },
+      };
+    });
+
+    return [...docs, ...suggestedRepos];
+  };
+
   return (
     <EmptyPage.StyledGridWrapper>
       <EmptyPage.StyledGridTitle>
         Open source development
       </EmptyPage.StyledGridTitle>
-      <EmptyPage.StyledGrid as="ul">
-        {DOCS.map(({ url, ...item }) => {
-          const urlWithTracking = appendOnboardingTracking(url);
-
-          return (
-            <Stack as="li" key={item.label}>
-              {'duration' in item ? (
-                <VideoCard
-                  onClick={() => handleTrack(item.label)}
-                  url={urlWithTracking}
-                  {...item}
-                />
-              ) : (
-                <ArticleCard
-                  onClick={() => handleTrack(item.label)}
-                  url={urlWithTracking}
-                  {...item}
-                />
-              )}
-            </Stack>
-          );
-        })}
-        {SUGGESTED_REPOS.map(({ owner, name }) => {
-          const slug = `${owner}/${name}`;
-          const url = v2DefaultBranchUrl(owner, name, {
-            utm_source: 'dashboard_onboarding',
-          });
-
-          return (
-            <Stack as="li" key={slug}>
-              <CreateCard
-                icon="github"
-                label={owner}
-                title={name}
-                onClick={() => {
-                  track('Empty State Card - Open suggested repository', {
-                    repo: slug,
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                    card_type: 'get-started-action',
-                  });
-
-                  window.location.href = url;
-                }}
-              />
-            </Stack>
-          );
-        })}
-      </EmptyPage.StyledGrid>
+      <Carousel items={buildItems()} />
     </EmptyPage.StyledGridWrapper>
   );
 };

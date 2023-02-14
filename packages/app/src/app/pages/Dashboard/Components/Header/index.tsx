@@ -37,7 +37,7 @@ type Props = {
   albumId?: string;
   activeTeam: string;
   CustomFilters?: React.ReactElement;
-  selectedRepo?: { owner: string; name: string };
+  selectedRepo?: { owner: string; name: string; assignedTeamId?: string };
   loading?: boolean;
   readOnly?: boolean;
 };
@@ -189,7 +189,11 @@ export const Header = ({
           selectedRepo && (
             <Button
               as={readOnly ? undefined : 'a'}
-              href={v2DraftBranchUrl(selectedRepo.owner, selectedRepo.name)}
+              href={v2DraftBranchUrl({
+                owner: selectedRepo.owner,
+                repoName: selectedRepo.name,
+                workspaceId: selectedRepo.assignedTeamId,
+              })}
               variant="link"
               css={css({
                 display: 'flex',

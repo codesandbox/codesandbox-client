@@ -96,6 +96,7 @@ export const RepositoryBranchesPage = () => {
     if (viewMode === 'grid') {
       branchItems.unshift({
         type: 'new-branch',
+        workspaceId: repositoryProject?.team?.id,
         repo: { owner, name },
         disabled: isFree && repositoryProject.repository.private,
       });
@@ -125,6 +126,7 @@ export const RepositoryBranchesPage = () => {
         selectedRepo={{
           owner: repositoryProject?.repository.owner,
           name: repositoryProject?.repository.name,
+          assignedTeamId: repositoryProject?.team?.id,
         }}
         readOnly={isReadOnlyRepo}
       />

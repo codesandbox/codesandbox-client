@@ -8,8 +8,8 @@ import React, {
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import track from '@codesandbox/common/lib/utils/analytics';
-
 import { ThemeProvider, Stack } from '@codesandbox/components';
+import { useEffects } from 'app/overmind';
 
 import data from './data';
 import { Card } from './Card';
@@ -23,18 +23,19 @@ const OnBoarding = () => {
   const [visibility, setVisibility] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(0);
+  const { browser } = useEffects();
 
   useEffect(() => {
-    const shouldOnboarding = localStorage.getItem('should-onboarding-user');
+    const shouldOnboard = browser.storage.get('should-onboard-user');
 
-    if (shouldOnboarding) {
+    if (shouldOnboard) {
       setVisibility(true);
     }
   }, []);
 
   const completeOnboarding = () => {
     setVisibility(false);
-    localStorage.removeItem('should-onboarding-user');
+    browser.storage.set('should-onboard-user', false);
     track('OnBoarding - complete', { slideIndex: currentIndex });
   };
 

@@ -3,11 +3,13 @@ import css from '@styled-system/css';
 import React, { FunctionComponent } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 import { LiveIcon } from '../icons';
 
 export const Owner: FunctionComponent = () => {
-  const { createLiveClicked } = useActions().live;
+  const { live, modalOpened } = useActions();
+  const { isPro } = useWorkspaceSubscription();
   const {
     editor: {
       currentSandbox: { id },
@@ -15,6 +17,15 @@ export const Owner: FunctionComponent = () => {
     },
     live: { isLoading },
   } = useAppState();
+
+  const handleGoLive = () => {
+    if (isPro) {
+      live.createLiveClicked(id);
+      return;
+    }
+
+    modalOpened({ modal: 'liveSessionConfirm' });
+  };
 
   return (
     <>
@@ -30,16 +41,14 @@ export const Owner: FunctionComponent = () => {
 
       <Button
         disabled={!isAllModulesSynced}
-        onClick={() => createLiveClicked(id)}
+        onClick={handleGoLive}
         variant="danger"
       >
         {isLoading ? (
           'Creating session'
         ) : (
           <>
-            <LiveIcon css={css({ marginRight: 2 })} />
-
-            <span>Go Live</span>
+            <LiveIcon css={css({ marginRight: 2 })} /> <span>Go Live</span>
           </>
         )}
       </Button>

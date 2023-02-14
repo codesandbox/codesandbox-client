@@ -19,7 +19,7 @@ export const DuplicateAccount = ({
 
   const handleSignIn = async () => {
     setLoadingAuth('github');
-    await signInButtonClicked({ provider: 'github', useExtraScopes: false });
+    await signInButtonClicked({ provider: 'github' });
     setLoadingAuth('github');
 
     return null;
