@@ -121,6 +121,22 @@ export const Header: React.FC<HeaderProps> = React.memo(
             Create
           </Button>
 
+          <Button
+            variant="ghost"
+            css={css({ width: 'auto' })}
+            onClick={() => {
+              window.open('http://codesandbox.io/discover', '_blank');
+            }}
+          >
+            <Icon
+              name="discover"
+              size={22}
+              title="New"
+              css={css({ paddingRight: 2 })}
+            />
+            Discover
+          </Button>
+
           {hasLogIn && <Notifications dashboard />}
         </Stack>
       </Stack>
