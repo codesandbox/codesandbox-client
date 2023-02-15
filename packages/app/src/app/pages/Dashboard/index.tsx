@@ -100,6 +100,13 @@ export const Dashboard: FunctionComponent = () => {
   }, [location.search, actions, activeTeamInfo, notificationToast]);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (JSON.parse(searchParams.get('create_team'))) {
+      actions.openCreateTeamModal();
+    }
+  }, [actions, location.search]);
+
+  useEffect(() => {
     trackVisit();
   }, []);
 
