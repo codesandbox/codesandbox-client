@@ -103,9 +103,10 @@ const ORGANIZATION_FRAGMENT = gql`
   }
 `;
 
-export const GET_GITHUB_ORGANIZATIONS = gql`
-  query GetGithubOrganizations {
+export const GET_GITHUB_ACCOUNTS = gql`
+  query GetGithubAccounts {
     me {
+      # id
       githubProfile {
         ...Profile
       }
@@ -119,12 +120,63 @@ export const GET_GITHUB_ORGANIZATIONS = gql`
   ${ORGANIZATION_FRAGMENT}
 `;
 
+// TODO: Remove unnecessary fields
+export const GET_GITHUB_ACCOUNT_REPOS = gql`
+  query GetGitHubAccountRepos($perPage: Int, $page: Int) {
+    me {
+      id
+
+      # Need to add githubProfile because not including it overrides the
+      # apollo cache and empties the profile. We use the profile to fetch
+      # these github repos so it will retry to fetch without a profile which
+      # doesn't work.
+      #
+      # More info:
+      # https://stackoverflow.com/questions/52381150/queries-overwriting-with-missing-fields-in-the-apollo-cache
+
+      githubProfile {
+        ...Profile
+      }
+
+      githubRepos(perPage: $perPage, page: $page) {
+        id
+        authorization
+        fullName
+        name
+        updatedAt
+        owner {
+          id
+          login
+          avatarUrl
+        }
+      }
+    }
+  }
+
+  ${PROFILE_FRAGMENT}
+`;
+
+// TODO: Remove unnecessary fields
 export const GET_GITHUB_ORGANIZATION_REPOS = gql`
-  query GetGithubOrganizationRepos {
-    githubOrganizationRepos($organization: String! ,$page: Int, $perPage: Int) {
-      authorization,
-      fullName,
-      private,
+  query GetGitHubOrganizationRepos(
+    $organization: String!
+    $perPage: Int
+    $page: Int
+  ) {
+    githubOrganizationRepos(
+      organization: $organization
+      perPage: $perPage
+      page: $page
+    ) {
+      id
+      authorization
+      fullName
+      name
+      private
+      owner {
+        id
+        login
+      }
     }
   }
 `;

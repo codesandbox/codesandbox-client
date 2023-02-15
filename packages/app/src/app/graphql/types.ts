@@ -102,6 +102,7 @@ export type Branch = {
   project: Project;
   /** Open pull requests from this head branch */
   pullRequests: Array<PullRequest>;
+  settings: BranchSettings;
   /** Information about the underlying git status of this branch */
   status: Maybe<Status>;
   /** Whether or not this branch exists on GitHub. Deduced from local information, so not guaranteed 100% accurate */
@@ -120,6 +121,12 @@ export type BranchLastCommit = {
   __typename?: 'BranchLastCommit';
   branchId: Scalars['String'];
   lastCommit: LastCommit;
+};
+
+/** Settings for this branch. Stored with the branch so does not incur an extra db query */
+export type BranchSettings = {
+  __typename?: 'BranchSettings';
+  protected: Scalars['Boolean'];
 };
 
 /** Subscription update about the underlying git status of a branch */
@@ -508,6 +515,7 @@ export type Limits = {
 
 export type MemberAuthorization = {
   authorization: TeamMemberAuthorization;
+  teamManager: Maybe<Scalars['Boolean']>;
   userId: Scalars['UUID4'];
 };
 
@@ -585,6 +593,19 @@ export type Project = {
   __typename?: 'Project';
   /** Whether the CodeSandbox GitHub App is installed */
   appInstalled: Scalars['Boolean'];
+  /**
+   * Get a CodeSandbox branch related to a particular Project by name
+   *
+   * Projects related to the same Repository may have different branches in CodeSandbox. Some
+   * branches may have been created in CodeSandbox and not yet pushed to the Git provider, and some
+   * may have been imported from the Git provider for some workspaces but not others.
+   *
+   * This field will look for a branch, by name, specifically related to the parent Project. If the
+   * branch does not exist for the parent Project, it will return `null`.
+   *
+   * Contribution branches are not supported by this field.
+   */
+  branchByName: Maybe<Branch>;
   /** Number of branches imported to CodeSandbox for this project. It is asynchronously updated when a create or delete happens. */
   branchCount: Scalars['Int'];
   /** Repository branches that have been imported to (or created in) CodeSandbox */
@@ -627,6 +648,23 @@ export type Project = {
    * This field will be replaced by a single assigned `team` after the workspace transition.
    */
   teams: Array<Team>;
+};
+
+/**
+ * Repository imported to a CodeSandbox team.
+ *
+ * Projects represent a git repository that has been imported to CodeSandbox for collaboration in a
+ * specific team. The assigned team is given by the `team` field. If no `team` is assigned, then the
+ * project is a read-only placeholder for anonymous users.
+ *
+ * A project `id` is unique to the repository-team pair, and should be used any time it is known.
+ * If the project is not known, then the repository `owner`/`name` pair, along with the team `id`,
+ * is roughly equivalent.
+ *
+ * To import a project, see the `importProject` mutation.
+ */
+export type ProjectBranchByNameArgs = {
+  name: Scalars['String'];
 };
 
 export type ProSubscription = {
@@ -840,6 +878,28 @@ export type RootMutationType = {
    * ```
    */
   deleteProject: Scalars['Boolean'];
+  /**
+   * Remove a project from CodeSandbox using its CodeSandbox ID
+   *
+   * Unlike `mutation deleteProject`, this mutation supports deleting projects related to a
+   * repository that has been deleted and recreated with the same name. Otherwise, a matching
+   * project related to the latest known instance of a repository will be deleted.
+   *
+   * The target project must be team-assigned, and the user must have write access on that team.
+   *
+   * Does not affect other copies of the project related to the same repository in other teams, and
+   * does not affect the repository in the git provider. Branches related to the project will be
+   * removed, potentially losing uncommitted work-in-progress.
+   *
+   * Returns the scalar `true` on success, and errors otherwise.
+   *
+   * Example:
+   *
+   * ```gql
+   * mutation deleteProject(id: "9ff91681-5ae9-452c-abaa-f9bf7033d82c")
+   * ```
+   */
+  deleteProjectById: Scalars['Boolean'];
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
   deleteWorkspace: Scalars['String'];
@@ -902,6 +962,8 @@ export type RootMutationType = {
    * ```
    */
   importReadOnlyProject: Project;
+  /** Increments the sandbox version and marks its screenshot as outdated. Requires `write_code` permission or above. */
+  incrementSandboxVersion: Scalars['String'];
   /** Invite someone to a team */
   inviteToTeam: Team;
   /** Invite someone to a team via email */
@@ -935,6 +997,7 @@ export type RootMutationType = {
   revokeSandboxInvitation: Invitation;
   /** Revoke an invitation to a team */
   revokeTeamInvitation: Team;
+  setBranchProtection: Branch;
   /** Set the default authorization for any new members joining this workspace */
   setDefaultTeamMemberAuthorization: WorkspaceSandboxSettings;
   setPreventSandboxesExport: Array<Sandbox>;
@@ -1125,6 +1188,10 @@ export type RootMutationTypeDeleteProjectArgs = {
   team: Scalars['ID'];
 };
 
+export type RootMutationTypeDeleteProjectByIdArgs = {
+  id: Scalars['ID'];
+};
+
 export type RootMutationTypeDeleteSandboxesArgs = {
   sandboxIds: Array<Scalars['ID']>;
 };
@@ -1155,6 +1222,10 @@ export type RootMutationTypeImportReadOnlyProjectArgs = {
   name: Scalars['String'];
   owner: Scalars['String'];
   provider: GitProvider;
+};
+
+export type RootMutationTypeIncrementSandboxVersionArgs = {
+  sandboxId: Scalars['ID'];
 };
 
 export type RootMutationTypeInviteToTeamArgs = {
@@ -1249,6 +1320,11 @@ export type RootMutationTypeRevokeSandboxInvitationArgs = {
 export type RootMutationTypeRevokeTeamInvitationArgs = {
   teamId: Scalars['UUID4'];
   userId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeSetBranchProtectionArgs = {
+  branchId: Scalars['String'];
+  protected: Scalars['Boolean'];
 };
 
 export type RootMutationTypeSetDefaultTeamMemberAuthorizationArgs = {
@@ -1875,6 +1951,7 @@ export type User = {
 export type UserAuthorization = {
   __typename?: 'UserAuthorization';
   authorization: TeamMemberAuthorization;
+  teamManager: Scalars['Boolean'];
   userId: Scalars['UUID4'];
 };
 
@@ -1985,11 +2062,9 @@ export type OrganizationFragment = { __typename?: 'GithubOrganization' } & Pick<
   'id' | 'login'
 >;
 
-export type GetGithubOrganizationsQueryVariables = Exact<{
-  [key: string]: never;
-}>;
+export type GetGithubAccountsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetGithubOrganizationsQuery = { __typename?: 'RootQueryType' } & {
+export type GetGithubAccountsQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       githubProfile: Maybe<{ __typename?: 'GithubProfile' } & ProfileFragment>;
@@ -1997,6 +2072,56 @@ export type GetGithubOrganizationsQuery = { __typename?: 'RootQueryType' } & {
         Array<{ __typename?: 'GithubOrganization' } & OrganizationFragment>
       >;
     }
+  >;
+};
+
+export type GetGitHubAccountReposQueryVariables = Exact<{
+  perPage: Maybe<Scalars['Int']>;
+  page: Maybe<Scalars['Int']>;
+}>;
+
+export type GetGitHubAccountReposQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & Pick<CurrentUser, 'id'> & {
+        githubProfile: Maybe<
+          { __typename?: 'GithubProfile' } & ProfileFragment
+        >;
+        githubRepos: Array<
+          { __typename?: 'GithubRepo' } & Pick<
+            GithubRepo,
+            'id' | 'authorization' | 'fullName' | 'name' | 'updatedAt'
+          > & {
+              owner: { __typename?: 'GithubOrganization' } & Pick<
+                GithubOrganization,
+                'id' | 'login' | 'avatarUrl'
+              >;
+            }
+        >;
+      }
+  >;
+};
+
+export type GetGitHubOrganizationReposQueryVariables = Exact<{
+  organization: Scalars['String'];
+  perPage: Maybe<Scalars['Int']>;
+  page: Maybe<Scalars['Int']>;
+}>;
+
+export type GetGitHubOrganizationReposQuery = {
+  __typename?: 'RootQueryType';
+} & {
+  githubOrganizationRepos: Maybe<
+    Array<
+      { __typename?: 'GithubRepo' } & Pick<
+        GithubRepo,
+        'id' | 'authorization' | 'fullName' | 'name' | 'private'
+      > & {
+          owner: { __typename?: 'GithubOrganization' } & Pick<
+            GithubOrganization,
+            'id' | 'login'
+          >;
+        }
+    >
   >;
 };
 

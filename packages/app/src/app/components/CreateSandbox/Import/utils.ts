@@ -1,5 +1,5 @@
 import { findBestMatch } from 'string-similarity';
-import { State } from './useGithubOrganizations';
+import { GithubOrganizationsState } from './useGithubOrganizations';
 
 // Will match: git@github.com:owner/repository.git
 const REGEX_SSH = /git@github\.com:(?<owner>[\w-]+)\/(?<repo>[\w-]+)\.git$/i;
@@ -28,7 +28,7 @@ export const getOwnerAndRepoFromInput = (input: string) => {
 
 export const getGihubOrgMatchingCsbTeam = (
   teamName: string,
-  orgs: Extract<State, { state: 'ready' }>['data']
+  orgs: Extract<GithubOrganizationsState, { state: 'ready' }>['data']
 ) => {
   const match = findBestMatch(
     teamName,

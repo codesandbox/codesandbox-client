@@ -1,28 +1,34 @@
 import { useQuery } from '@apollo/react-hooks';
 import {
-  GetGithubOrganizationsQuery,
-  GetGithubOrganizationsQueryVariables,
-  ProfileFragment,
-  OrganizationFragment,
+  GetGitHubOrganizationReposQuery,
+  GetGitHubOrganizationReposQueryVariables,
 } from 'app/graphql/types';
-import { GET_GITHUB_ORGANIZATIONS } from '../queries';
+import { GET_GITHUB_ORGANIZATION_REPOS } from '../queries';
 
-export type GithubOrganizationsState =
-  | { state: 'loading' }
-  | {
-      state: 'ready';
-      data: Array<ProfileFragment | OrganizationFragment>;
-    }
-  | {
-      state: 'error';
-      error: string;
-    };
-    
-export const useOrganizationRepos = (): GithubOrganizationsState => {
+/**
+ * The organization property can be undefined because the organization
+ * might still be loading. We can make the organization required when we
+ * use this hook in a component that's conditionally rendered if the
+ * organization is defined.
+ */
+type UseOrganizationReposOptions = {
+  organization?: string;
+};
+
+export const useOrganizationRepos = ({
+  organization,
+}: UseOrganizationReposOptions) => {
   const { data, error } = useQuery<
-    GetGithubOrganizationsQuery,
-    GetGithubOrganizationsQueryVariables
-  >(GET_GITHUB_ORGANIZATIONS, {});
+    GetGitHubOrganizationReposQuery,
+    GetGitHubOrganizationReposQueryVariables
+  >(GET_GITHUB_ORGANIZATION_REPOS, {
+    skip: !organization,
+    variables: {
+      organization,
+      perPage: 10, // TODO determine how much repos
+      page: 1,
+    },
+  });
 
   if (error) {
     return {
@@ -31,7 +37,7 @@ export const useOrganizationRepos = (): GithubOrganizationsState => {
     };
   }
 
-  if (typeof data?.me === 'undefined') {
+  if (typeof data?.githubOrganizationRepos === 'undefined') {
     return {
       state: 'loading',
     };
@@ -39,6 +45,6 @@ export const useOrganizationRepos = (): GithubOrganizationsState => {
 
   return {
     state: 'ready',
-    data: [data.me.githubProfile, ...data.me.githubOrganizations],
+    data: data.githubOrganizationRepos,
   };
 };

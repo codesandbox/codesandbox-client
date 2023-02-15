@@ -15,7 +15,8 @@ import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImp
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndRepoFromInput } from './utils';
-import { useGithubOrganizations } from './useGithubOrganizations';
+import { useGithubAccounts } from './useGithubOrganizations';
+import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
@@ -154,10 +155,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     setShouldFetch(true);
   };
 
-  const githubOrganizations = useGithubOrganizations();
-
-  console.log('git state', githubOrganizations);
-
   if (!hasLogIn) {
     return <UnauthenticatedImport />;
   }
@@ -245,18 +242,58 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           </Element>
         </Element>
       </Stack>
-      {githubOrganizations.state === 'ready' ? (
-        <Stack direction="vertical" gap={3}>
-          <div>
-            {githubOrganizations.data?.map(org => (
-              <div>
-                {org.id}, {org.login}
-              </div>
-            ))}
+      <SuggestedRepos />
+    </Stack>
+  );
+};
+
+const SuggestedRepos = () => {
+  const githubAccounts = useGithubAccounts();
+
+  const selectOptions = githubAccounts.data
+    ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
+    : undefined;
+
+  /**
+   * TypeScript is not properly inferring the type from the conditional
+   * so it's never undefined.
+   */
+  const selectedOrganization =
+    githubAccounts.state === 'ready'
+      ? // githubAccounts.data.organizations[0] // DEBUG CSB
+        githubAccounts.data.personal // DEBUG PERSONAL
+      : undefined;
+
+  // eslint-disable-next-line no-nested-ternary
+  const selectedAccountType = selectedOrganization?.login
+    ? selectedOrganization.login === githubAccounts?.data?.personal?.login
+      ? 'personal'
+      : 'organization'
+    : undefined;
+
+  const githubRepos = useGitHubAccountRepositories({
+    name: selectedOrganization?.login,
+    accountType: selectedAccountType,
+  });
+
+  return githubAccounts.state === 'ready' ? (
+    <Stack direction="vertical" gap={3}>
+      <div>
+        {selectOptions.map(org => (
+          <div key={org.id}>
+            {org.id}, {org.login}
           </div>
-          <div>list</div>
+        ))}
+      </div>
+      {githubRepos.state === 'ready' ? (
+        <Stack direction="vertical" gap={3}>
+          {githubRepos.data?.map(repo => (
+            <div key={repo.id}>
+              {repo.id}, {repo.name}
+            </div>
+          ))}
         </Stack>
       ) : null}
     </Stack>
-  );
+  ) : null;
 };

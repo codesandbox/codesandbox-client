@@ -15,7 +15,7 @@ import styled, { keyframes } from 'styled-components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
-import { useGithubOrganizations } from './useGithubOrganizations';
+import { useGithubAccounts } from './useGithubOrganizations';
 import { useValidateRepoDestination } from './useValidateRepoDestination';
 import { getGihubOrgMatchingCsbTeam } from './utils';
 
@@ -42,10 +42,12 @@ type FromRepoProps = {
   repository: GithubRepoToImport;
   onCancel: () => void;
 };
+
+// TODO: This component is unused and can probably be removed
 export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
   const { activeTeamInfo, user } = useAppState();
   const { dashboard } = useActions();
-  const githubOrganizations = useGithubOrganizations();
+  const githubOrganizations = useGithubAccounts();
 
   const [isForking, setIsForking] = React.useState<boolean>(false);
   const [repoName, setRepoName] = React.useState<string>(repository.name);
