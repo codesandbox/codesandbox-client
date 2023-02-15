@@ -8,7 +8,12 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { absolute } from '@codesandbox/common/lib/utils/path';
 import VERSION from '@codesandbox/common/lib/version';
-import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
+import {
+  actions,
+  clearErrorTransformers,
+  dispatch,
+  reattach,
+} from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, uninject } from 'sandbox-hooks/react-error-overlay/overlay';
@@ -39,6 +44,7 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
+import { getSandpackSecret } from 'sandpack-core/lib/sandpack-secret';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -336,15 +342,33 @@ async function initializeManager(
   );
 
   // Add the custom registered npm registries
-  customNpmRegistries.forEach(registry => {
+  for (let registry of customNpmRegistries) {
     /**
      * If a team-id is provided, we can mount a registryUrl and proxy
      * dependencies request through CSB proxy
      */
     if (registry.codesandboxTeamId) {
-      registry.registryUrl = `https://6er17b-3000.preview.csb.app/api/v1/sandboxes/${registry.codesandboxTeamId}/npm_registry`;
-      registry.proxyEnabled = true;
-      registry.limitToScopes = true;
+      const sandpackToken = getSandpackSecret();
+      if (!sandpackToken) {
+        dispatch({
+          type: 'action',
+          action: 'show-error',
+          message: 'NPM_REGISTRY_UNAUTHENTICATED_REQUEST',
+        });
+
+        throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
+      } else {
+        // TODO: new endpoint
+        // const npmRegistryInfo = await fetch(
+        //   `https://6er17b-3000.preview.csb.app/api/v1/sandboxes/${registry.codesandboxTeamId}`
+        // );
+
+        // TODO: new endpoint
+        registry.registryUrl = `https://6er17b-3000.preview.csb.app/api/v1/sandboxes/${registry.codesandboxTeamId}/npm_registry`;
+        registry.proxyEnabled = true;
+        registry.limitToScopes = true;
+        registry.enabledScopes = ['@codesandbox'];
+      }
     }
 
     if (!registry.registryUrl) {
@@ -382,7 +406,7 @@ async function initializeManager(
       protocol,
       condition: protocol.condition,
     });
-  });
+  }
 
   return newManager;
 }
