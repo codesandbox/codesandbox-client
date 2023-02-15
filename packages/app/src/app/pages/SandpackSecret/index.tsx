@@ -38,7 +38,7 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
               /**
                * TODO: perform this on the backend
                */
-              const TEMP_ALLOWED_DOMAINS = ['localhost:6000'];
+              const TEMP_ALLOWED_DOMAINS = ['http://localhost:6006'];
               const TODO_BACKEND_CHECK = TEMP_ALLOWED_DOMAINS.includes(
                 parentWindow
               );
@@ -46,8 +46,10 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
               if (TODO_BACKEND_CHECK) {
                 (event.source as WindowProxy).postMessage(
                   { $type: 'sandpack-secret', token },
-                  parentWindow
+                  event.origin
                 );
+              } else {
+                setError('Operation not allowed');
               }
 
               window.removeEventListener('message', listener);
