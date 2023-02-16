@@ -594,6 +594,14 @@ export type Project = {
   /** Whether the CodeSandbox GitHub App is installed */
   appInstalled: Scalars['Boolean'];
   /**
+   * Combined permission of the current user on this project
+   *
+   * This includes permissions granted by the git provider, team membership, and any usage limits
+   * faced by the team. This field may be requested even for anonymous users, but the value will
+   * always be READ (or the project itself will fail to resolve).
+   */
+  authorization: ProjectAuthorization;
+  /**
    * Get a CodeSandbox branch related to a particular Project by name
    *
    * Projects related to the same Repository may have different branches in CodeSandbox. Some
@@ -614,8 +622,6 @@ export type Project = {
   connections: Array<Connection>;
   /** Shortcut to retrieve the repository's default branch as it appears on CodeSandbox */
   defaultBranch: Branch;
-  /** @deprecated Use repository->description instead */
-  description: Maybe<Scalars['String']>;
   /** CodeSandbox ID for the project (specific to this repository-team pair) */
   id: Scalars['ID'];
   /** Timestamp of the last time the current user accessed one of this project's branches on CodeSandbox */
@@ -624,8 +630,6 @@ export type Project = {
   lastCommit: Maybe<LastCommit>;
   /** @deprecated Use repository->owner instead */
   owner: Scalars['String'];
-  /** @deprecated Use repository->private instead */
-  private: Scalars['Boolean'];
   /** Open pull requests from head branches in this repository */
   pullRequests: Array<PullRequest>;
   /** @deprecated Use repository->name instead */
@@ -666,6 +670,14 @@ export type Project = {
 export type ProjectBranchByNameArgs = {
   name: Scalars['String'];
 };
+
+/** Combined permission for a project including git provider, team membership, and usage limits */
+export enum ProjectAuthorization {
+  Admin = 'ADMIN',
+  None = 'NONE',
+  Read = 'READ',
+  Write = 'WRITE',
+}
 
 export type ProSubscription = {
   __typename?: 'ProSubscription';
@@ -905,6 +917,29 @@ export type RootMutationType = {
   deleteWorkspace: Scalars['String'];
   /** Enable beta-access for team and all members */
   enableTeamBetaAccess: Team;
+  /**
+   * Import an existing branch from a repository
+   *
+   * This endpoint allows users to import an existing branch from the git provider to CodeSandbox.
+   * To create a new branch on CodeSandbox that may not exist on the git provider, see `mutation
+   * createBranch`.
+   *
+   * A team ID is required for this mutation. To import an existing branch into a read-only project
+   * that is not team-associated, see `mutation importReadOnlyBranch`.
+   *
+   * Example (for `codesandbox/test-repo` branch `test-branch`):
+   *
+   * ```gql
+   * mutation importBranch(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo",
+   *   branch: "test-branch",
+   *   team: "3e0a6cf9-af9c-4a7f-b4fb-1b2040e24a86"
+   * ) { id }
+   * ```
+   */
+  importBranch: Branch;
   /**
    * Import a repository to a specific team
    *
@@ -1202,6 +1237,14 @@ export type RootMutationTypeDeleteWorkspaceArgs = {
 
 export type RootMutationTypeEnableTeamBetaAccessArgs = {
   teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeImportBranchArgs = {
+  branch: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+  team: Scalars['ID'];
 };
 
 export type RootMutationTypeImportProjectArgs = {
@@ -2086,7 +2129,12 @@ export type GetGitHubAccountReposQuery = { __typename?: 'RootQueryType' } & {
         githubRepos: Array<
           { __typename?: 'GithubRepo' } & Pick<
             GithubRepo,
-            'id' | 'authorization' | 'fullName' | 'name' | 'updatedAt'
+            | 'id'
+            | 'authorization'
+            | 'fullName'
+            | 'name'
+            | 'private'
+            | 'updatedAt'
           > & {
               owner: { __typename?: 'GithubOrganization' } & Pick<
                 GithubOrganization,

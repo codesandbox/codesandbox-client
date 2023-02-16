@@ -130,6 +130,7 @@ export const GET_GITHUB_ACCOUNT_REPOS = gql`
         authorization
         fullName
         name
+        private
         updatedAt
         owner {
           id
