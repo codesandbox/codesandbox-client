@@ -158,6 +158,7 @@ export const GET_GITHUB_ORGANIZATION_REPOS = gql`
       fullName
       name
       private
+      updatedAt
       owner {
         id
         login

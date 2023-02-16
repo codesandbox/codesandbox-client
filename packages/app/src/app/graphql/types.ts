@@ -2111,7 +2111,7 @@ export type GetGitHubOrganizationReposQuery = {
     Array<
       { __typename?: 'GithubRepo' } & Pick<
         GithubRepo,
-        'id' | 'authorization' | 'fullName' | 'name' | 'private'
+        'id' | 'authorization' | 'fullName' | 'name' | 'private' | 'updatedAt'
       > & {
           owner: { __typename?: 'GithubOrganization' } & Pick<
             GithubOrganization,

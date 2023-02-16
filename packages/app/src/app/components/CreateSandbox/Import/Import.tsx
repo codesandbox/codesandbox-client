@@ -11,6 +11,8 @@ import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
 import React, { useEffect, useMemo, useState } from 'react';
+import formatDistanceStrict from 'date-fns/formatDistanceStrict';
+import { zonedTimeToUtc } from 'date-fns-tz';
 
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -304,17 +306,46 @@ const SuggestedRepos = () => {
         >
           {selectOptions.map(account => (
             <option key={account.id} value={account.login}>
-              {'name' in account ? account.name : account.login}
+              {account.login}
             </option>
           ))}
         </StyledSelect>
       </Stack>
       {githubRepos.state === 'ready' ? (
-        <Stack direction="vertical" gap={3}>
+        <Stack
+          as="ul"
+          direction="vertical"
+          gap={1}
+          css={{ margin: 0, padding: 0, listStyle: 'none' }}
+        >
           {githubRepos.data?.map(repo => (
-            <div key={repo.id}>
-              {repo.id}, {repo.name}
-            </div>
+            <Element
+              key={repo.id}
+              as="li"
+              padding={4}
+              css={{ backgroundColor: '#1D1D1D', borderRadius: '4px' }}
+            >
+              <Stack
+                gap={4}
+                align="center"
+                css={{ paddingTop: 3, paddingBottom: 3 }}
+              >
+                <Icon name="repository" color="#999999" />
+                <Text size={13}>{repo.name}</Text>
+
+                {repo?.updatedAt ? (
+                  <Text size={13} variant="muted">
+                    {formatDistanceStrict(
+                      zonedTimeToUtc(repo.updatedAt, 'Etc/UTC'),
+                      new Date(),
+                      {
+                        addSuffix: true,
+                      }
+                    )}
+                  </Text>
+                ) : null}
+              </Stack>
+            </Element>
           ))}
         </Stack>
       ) : null}
