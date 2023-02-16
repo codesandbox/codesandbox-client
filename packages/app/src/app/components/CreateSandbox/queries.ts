@@ -93,6 +93,7 @@ const PROFILE_FRAGMENT = gql`
   fragment Profile on GithubProfile {
     id
     login
+    name
   }
 `;
 
@@ -106,7 +107,6 @@ const ORGANIZATION_FRAGMENT = gql`
 export const GET_GITHUB_ACCOUNTS = gql`
   query GetGithubAccounts {
     me {
-      # id
       githubProfile {
         ...Profile
       }

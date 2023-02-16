@@ -10,7 +10,7 @@ import {
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -21,7 +21,7 @@ import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
 import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
-import { getOwnerAndRepoFromInput } from './utils';
+import { fuzzyMatchGithubToCsb, getOwnerAndRepoFromInput } from './utils';
 import { useGithubAccounts } from './useGithubOrganizations';
 import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
 import { StyledSelect } from '../elements';
@@ -256,12 +256,26 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 };
 
 const SuggestedRepos = () => {
+  const { activeTeamInfo } = useAppState();
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
 
-  const selectOptions = githubAccounts.data
-    ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
-    : undefined;
+  const selectOptions = useMemo(
+    () =>
+      githubAccounts.data
+        ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
+        : undefined,
+    [githubAccounts.data]
+  );
+
+  useEffect(() => {
+    // Set initially selected account bazed on fuzzy matching
+    if (githubAccounts.state === 'ready' && selectedAccount === undefined) {
+      const match = fuzzyMatchGithubToCsb(activeTeamInfo?.name, selectOptions);
+
+      setSelectedAccount(match.login);
+    }
+  }, [githubAccounts.state, selectedAccount, activeTeamInfo, selectOptions]);
 
   // eslint-disable-next-line no-nested-ternary
   const selectedAccountType = selectedAccount
@@ -275,9 +289,9 @@ const SuggestedRepos = () => {
     accountType: selectedAccountType,
   });
 
-  return githubAccounts.state === 'ready' ? (
+  return githubAccounts.state === 'ready' && selectedAccount ? (
     <Stack direction="vertical" gap={3}>
-      <div>
+      <Stack justify="space-between">
         <StyledSelect
           css={{
             color: '#e5e5e5',
@@ -288,13 +302,13 @@ const SuggestedRepos = () => {
           }}
           value={selectedAccount}
         >
-          {selectOptions.map(org => (
-            <option key={org.id} value={org.login}>
-              {org.login}
+          {selectOptions.map(account => (
+            <option key={account.id} value={account.login}>
+              {'name' in account ? account.name : account.login}
             </option>
           ))}
         </StyledSelect>
-      </div>
+      </Stack>
       {githubRepos.state === 'ready' ? (
         <Stack direction="vertical" gap={3}>
           {githubRepos.data?.map(repo => (

@@ -1,5 +1,5 @@
+import { OrganizationFragment, ProfileFragment } from 'app/graphql/types';
 import { findBestMatch } from 'string-similarity';
-import { GithubOrganizationsState } from './useGithubOrganizations';
 
 // Will match: git@github.com:owner/repository.git
 const REGEX_SSH = /git@github\.com:(?<owner>[\w-]+)\/(?<repo>[\w-]+)\.git$/i;
@@ -26,15 +26,15 @@ export const getOwnerAndRepoFromInput = (input: string) => {
   return { owner, repo };
 };
 
-export const getGihubOrgMatchingCsbTeam = (
+export const fuzzyMatchGithubToCsb = (
   teamName: string,
-  orgs: Extract<GithubOrganizationsState, { state: 'ready' }>['data']
+  accounts: Array<ProfileFragment | OrganizationFragment>
 ) => {
   const match = findBestMatch(
     teamName,
-    orgs.map(org => org.login)
+    accounts.map(org => org.login)
   );
-  return orgs.find(org => org.login === match.bestMatch.target) || orgs[0];
+  return accounts.find(org => org.login === match.bestMatch.target) || orgs[0];
 };
 
 export const getEventName = (

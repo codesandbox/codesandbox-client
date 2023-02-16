@@ -2054,7 +2054,7 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
 
 export type ProfileFragment = { __typename?: 'GithubProfile' } & Pick<
   GithubProfile,
-  'id' | 'login'
+  'id' | 'login' | 'name'
 >;
 
 export type OrganizationFragment = { __typename?: 'GithubOrganization' } & Pick<
