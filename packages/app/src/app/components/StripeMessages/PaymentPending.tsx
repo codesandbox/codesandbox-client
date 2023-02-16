@@ -6,16 +6,24 @@ import { useAppState } from 'app/overmind';
 import { useLocation } from 'react-router-dom';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useDismissible } from 'app/hooks';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const PaymentPending: React.FC = () => {
   const { activeTeam } = useAppState();
   const { pathname } = useLocation();
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { hasExpiredTeamTrial } = useWorkspaceSubscription();
+  const key = `DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER_${activeTeam}`;
+  const [isDismissed, dismiss] = useDismissible<typeof key>(key);
   const [
     loadingCustomerPortal,
     createCustomerPortal,
   ] = useCreateCustomerPortal({ team_id: activeTeam, return_path: pathname });
+
+  if (isDismissed) {
+    return null;
+  }
 
   const buildCopy = () => {
     const description = {
@@ -33,16 +41,32 @@ export const PaymentPending: React.FC = () => {
   };
 
   return (
-    <MessageStripe variant="warning">
+    <MessageStripe
+      variant="warning"
+      onDismiss={() => {
+        track('Stripe banner - payment pending dismissed', {
+          codesandbox: 'V1',
+          event_source: 'UI',
+        });
+        dismiss();
+      }}
+    >
       {buildCopy()}
       {isTeamAdmin ? (
         <MessageStripe.Action
           loading={loadingCustomerPortal}
-          onClick={createCustomerPortal}
+          onClick={() => {
+            track('Stripe banner - payment pending update details clicked', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+
+            createCustomerPortal();
+          }}
         >
           Update payment
         </MessageStripe.Action>
-      ) : null}{' '}
+      ) : null}
     </MessageStripe>
   );
 };
