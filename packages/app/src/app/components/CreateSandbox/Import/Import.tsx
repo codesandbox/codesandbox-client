@@ -1,9 +1,16 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
+import {
+  Button,
+  Element,
+  Input,
+  Stack,
+  Text,
+  Icon,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -17,6 +24,7 @@ import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndRepoFromInput } from './utils';
 import { useGithubAccounts } from './useGithubOrganizations';
 import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
+import { StyledSelect } from '../elements';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
@@ -248,42 +256,44 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 };
 
 const SuggestedRepos = () => {
+  const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
 
   const selectOptions = githubAccounts.data
     ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
     : undefined;
 
-  /**
-   * TypeScript is not properly inferring the type from the conditional
-   * so it's never undefined.
-   */
-  const selectedOrganization =
-    githubAccounts.state === 'ready'
-      ? // githubAccounts.data.organizations[0] // DEBUG CSB
-        githubAccounts.data.personal // DEBUG PERSONAL
-      : undefined;
-
   // eslint-disable-next-line no-nested-ternary
-  const selectedAccountType = selectedOrganization?.login
-    ? selectedOrganization.login === githubAccounts?.data?.personal?.login
+  const selectedAccountType = selectedAccount
+    ? selectedAccount === githubAccounts?.data?.personal?.login
       ? 'personal'
       : 'organization'
     : undefined;
 
   const githubRepos = useGitHubAccountRepositories({
-    name: selectedOrganization?.login,
+    name: selectedAccount,
     accountType: selectedAccountType,
   });
 
   return githubAccounts.state === 'ready' ? (
     <Stack direction="vertical" gap={3}>
       <div>
-        {selectOptions.map(org => (
-          <div key={org.id}>
-            {org.id}, {org.login}
-          </div>
-        ))}
+        <StyledSelect
+          css={{
+            color: '#e5e5e5',
+          }}
+          icon={() => <Icon css={{ marginLeft: 8 }} name="github" />}
+          onChange={e => {
+            setSelectedAccount(e.target.value);
+          }}
+          value={selectedAccount}
+        >
+          {selectOptions.map(org => (
+            <option key={org.id} value={org.login}>
+              {org.login}
+            </option>
+          ))}
+        </StyledSelect>
       </div>
       {githubRepos.state === 'ready' ? (
         <Stack direction="vertical" gap={3}>
