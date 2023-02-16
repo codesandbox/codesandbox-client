@@ -66,12 +66,7 @@ export const SuggestedRepositories = () => {
         </StyledSelect>
       </Stack>
       {githubRepos.state === 'ready' ? (
-        <Stack
-          as="ul"
-          direction="vertical"
-          gap={1}
-          css={{ margin: 0, padding: 0, listStyle: 'none' }}
-        >
+        <StyledList as="ul" direction="vertical" gap={1}>
           {githubRepos.data?.map(repo => {
             const importUrl = v2DefaultBranchUrl({
               owner: repo.owner.login,
@@ -113,11 +108,17 @@ export const SuggestedRepositories = () => {
               </InteractiveOverlay>
             );
           })}
-        </Stack>
+        </StyledList>
       ) : null}
     </Stack>
   ) : null;
 };
+
+const StyledList = styled(Stack)`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+`;
 
 const StyledItem = styled.li`
   display: flex;
