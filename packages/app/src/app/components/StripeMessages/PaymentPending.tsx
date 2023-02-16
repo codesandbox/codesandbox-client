@@ -25,46 +25,57 @@ export const PaymentPending: React.FC = () => {
     return null;
   }
 
-  const buildCopy = () => {
-    const description = {
-      trial: 'Your free trial has expired',
-      default: 'There are some issues with your payment',
-    };
-    const action = {
-      admin: 'Please update your payment details',
-      default: 'Please contact your team admin to update the payment details',
-    };
+  const handleDismiss = () => {
+    const event = hasExpiredTeamTrial
+      ? 'expired trial dismiss'
+      : 'unpaid - dismiss';
 
-    return `${hasExpiredTeamTrial ? description.trial : description.default}. ${
-      isTeamAdmin ? action.admin : action.default
-    }.`;
+    track(`Stripe banner - ${event}`, {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
+    dismiss();
+  };
+
+  const handleAction = () => {
+    const event = hasExpiredTeamTrial
+      ? 'upgrade after expired trial'
+      : 'unpaid - update payment details';
+
+    track(`Stripe banner - ${event}`, {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
+    createCustomerPortal();
+  };
+
+  const buildCopy = () => {
+    if (hasExpiredTeamTrial) {
+      return `Your trial has expired. ${
+        isTeamAdmin
+          ? 'Upgrade for the full CodeSandbox experience'
+          : 'Contact team admin to upgrade for the full Codesandbox Experience'
+      }.`;
+    }
+
+    return `There are some issues with your payment. ${
+      isTeamAdmin
+        ? 'Please contact your team admin to update the payment details'
+        : 'Please update your payment details'
+    }`;
   };
 
   return (
-    <MessageStripe
-      variant="warning"
-      onDismiss={() => {
-        track('Stripe banner - payment pending dismissed', {
-          codesandbox: 'V1',
-          event_source: 'UI',
-        });
-        dismiss();
-      }}
-    >
+    <MessageStripe variant="warning" onDismiss={handleDismiss}>
       {buildCopy()}
       {isTeamAdmin ? (
         <MessageStripe.Action
           loading={loadingCustomerPortal}
-          onClick={() => {
-            track('Stripe banner - payment pending update details clicked', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-
-            createCustomerPortal();
-          }}
+          onClick={handleAction}
         >
-          Update payment
+          {hasExpiredTeamTrial ? 'Upgrade now' : 'Update payment'}
         </MessageStripe.Action>
       ) : null}
     </MessageStripe>
