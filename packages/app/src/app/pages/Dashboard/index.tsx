@@ -111,7 +111,9 @@ export const Dashboard: FunctionComponent = () => {
   }, []);
 
   if (!hasLogIn) {
-    return <Redirect to={signInPageUrl(location.pathname)} />;
+    return (
+      <Redirect to={signInPageUrl(`${location.pathname}${location.search}`)} />
+    );
   }
 
   return (
