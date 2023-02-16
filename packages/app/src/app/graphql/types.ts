@@ -2083,9 +2083,6 @@ export type GetGitHubAccountReposQueryVariables = Exact<{
 export type GetGitHubAccountReposQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & Pick<CurrentUser, 'id'> & {
-        githubProfile: Maybe<
-          { __typename?: 'GithubProfile' } & ProfileFragment
-        >;
         githubRepos: Array<
           { __typename?: 'GithubRepo' } & Pick<
             GithubRepo,

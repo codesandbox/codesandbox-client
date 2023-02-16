@@ -125,19 +125,6 @@ export const GET_GITHUB_ACCOUNT_REPOS = gql`
   query GetGitHubAccountRepos($perPage: Int, $page: Int) {
     me {
       id
-
-      # Need to add githubProfile because not including it overrides the
-      # apollo cache and empties the profile. We use the profile to fetch
-      # these github repos so it will retry to fetch without a profile which
-      # doesn't work.
-      #
-      # More info:
-      # https://stackoverflow.com/questions/52381150/queries-overwriting-with-missing-fields-in-the-apollo-cache
-
-      githubProfile {
-        ...Profile
-      }
-
       githubRepos(perPage: $perPage, page: $page) {
         id
         authorization
@@ -152,8 +139,6 @@ export const GET_GITHUB_ACCOUNT_REPOS = gql`
       }
     }
   }
-
-  ${PROFILE_FRAGMENT}
 `;
 
 // TODO: Remove unnecessary fields

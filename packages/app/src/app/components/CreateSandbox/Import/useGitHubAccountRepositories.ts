@@ -22,9 +22,6 @@ export const useGitHubAccountRepositories = ({
   name,
   accountType,
 }: UseGitHubAccountRepositoriesOptions) => {
-  console.log('is', accountType);
-  console.log('with name', name);
-
   const skipLoadingPersonal = accountType === 'organization' || !name;
   const skipLoadingOrganization = accountType === 'personal' || !name;
 
@@ -39,6 +36,13 @@ export const useGitHubAccountRepositories = ({
       perPage: 10, // TODO determine how much repos
       page: 1,
     },
+    // Apollo (this version) has weird caching issues where fetching anything from "me" with apollo overrides
+    // the previous result. In this case the githubProfile is overridden and the values are gone. Adding
+    // fetchPolicy: 'no-cache' fixes this. More info:
+    // https://stackoverflow.com/questions/52381150/queries-overwriting-with-missing-fields-in-the-apollo-cache
+    // https://github.com/apollographql/apollo-client/issues/3234
+    // https://kamranicus.com/graphql-apollo-object-caching/
+    fetchPolicy: 'no-cache',
   });
 
   // Query the organization repositories unless the selected github account
