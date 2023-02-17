@@ -14,8 +14,9 @@ export const PaymentPending: React.FC = () => {
   const { pathname } = useLocation();
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { hasExpiredTeamTrial } = useWorkspaceSubscription();
-  const key = `DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER_${activeTeam}`;
-  const [isDismissed, dismiss] = useDismissible<typeof key>(key);
+  const [isDismissed, dismiss] = useDismissible(
+    `DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER_${activeTeam}`
+  );
   const [
     loadingCustomerPortal,
     createCustomerPortal,
