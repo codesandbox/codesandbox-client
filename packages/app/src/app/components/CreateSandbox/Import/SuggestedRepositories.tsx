@@ -20,7 +20,7 @@ import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { fuzzyMatchGithubToCsb } from './utils';
 import { useGithubAccounts } from './useGithubOrganizations';
 import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
-import { StyledSelect } from '../elements';
+import { AccountSelect } from './AccountSelect';
 
 export const SuggestedRepositories = () => {
   const { activeTeamInfo } = useAppState();
@@ -66,22 +66,13 @@ export const SuggestedRepositories = () => {
       css={{ fontFamily: 'Inter', marginBottom: '16px' }}
     >
       <Stack justify="space-between">
-        <StyledSelect
-          css={{
-            color: '#e5e5e5',
-          }}
-          icon={() => <Icon css={{ marginLeft: 8 }} name="github" />}
-          onChange={e => {
-            setSelectedAccount(e.target.value);
-          }}
+        <AccountSelect
+          options={selectOptions}
           value={selectedAccount}
-        >
-          {selectOptions.map(account => (
-            <option key={account.id} value={account.login}>
-              {account.login}
-            </option>
-          ))}
-        </StyledSelect>
+          onChange={(account: string) => {
+            setSelectedAccount(account);
+          }}
+        />
       </Stack>
       {githubRepos.state === 'ready' ? (
         <>
