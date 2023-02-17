@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import {
+  Route,
+  Switch,
+  Redirect,
+  withRouter,
+  useLocation,
+} from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
@@ -25,6 +31,13 @@ import { RepositoryBranchesPage } from './routes/RepositoryBranches';
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
   const { activeTeam } = useAppState();
+  const { search } = useLocation();
+
+  const mapFromSearchParams = {};
+  const searchParams = new URLSearchParams(search);
+  searchParams.forEach((value, key) => {
+    mapFromSearchParams[key] = value;
+  });
 
   useEffect(() => {
     dashboard.dashboardMounted();
@@ -90,7 +103,7 @@ export const Content = withRouter(({ history }) => {
           to="/dashboard/sandboxes/:path*"
         />
         <Redirect from="/dashboard/always-on" to="/dashboard/recent" />
-        <Redirect to={dashboardUrls.recent(activeTeam)} />
+        <Redirect to={dashboardUrls.recent(activeTeam, mapFromSearchParams)} />
       </Switch>
     </Element>
   );

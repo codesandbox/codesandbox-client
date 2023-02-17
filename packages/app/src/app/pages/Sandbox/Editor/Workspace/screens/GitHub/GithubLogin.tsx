@@ -18,6 +18,12 @@ export const GithubLogin = () => {
     },
   } = useAppState();
 
+  const privacyLabel = {
+    0: 'public',
+    1: 'unlisted',
+    2: 'private',
+  }[privacy];
+
   return (
     <Collapsible title="Adjust GitHub permissions" defaultOpen>
       <Stack css={{ padding: '0 12px' }} direction="vertical" gap={4}>
@@ -35,8 +41,10 @@ export const GithubLogin = () => {
             <Icon name="info" size={12} />
           </Element>
           <Text lineHeight="16px" size={12}>
-            CodeSandbox needs access to your public repositories in order to
-            link and/or export a public sandbox.
+            CodeSandbox needs access to your{' '}
+            {privacy === 0 ? 'public' : 'private'} repositories in order to link
+            and/or export {privacyLabel === 'unlisted' ? 'an' : 'a'}{' '}
+            {privacyLabel} sandbox.
           </Text>
         </Stack>
         <Button

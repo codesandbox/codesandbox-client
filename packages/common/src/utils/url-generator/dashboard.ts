@@ -51,8 +51,29 @@ export const syncedSandboxes = (teamId?: string | null) =>
 export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
 
-export const recent = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/recent`, teamId);
+export const recent = (
+  teamId?: string | null,
+  extraParams?: Record<string, string>
+) => {
+  let recentUrl = appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/recent`,
+    teamId
+  );
+
+  if (extraParams && Object.keys(extraParams).length > 0) {
+    const params = new URLSearchParams(extraParams);
+
+    if (recentUrl.includes('?')) {
+      recentUrl += '&';
+    } else {
+      recentUrl += '?';
+    }
+
+    recentUrl += params.toString();
+  }
+
+  return recentUrl;
+};
 
 export const deleted = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/deleted`, teamId);

@@ -1,7 +1,6 @@
 import { GitFileCompare, SandboxGitState } from '@codesandbox/common/lib/types';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
-  Button,
   Collapsible,
   Element,
   Link,
@@ -10,7 +9,8 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useAppState, useActions } from 'app/overmind';
+import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useAppState } from 'app/overmind';
 import React from 'react';
 
 import { Changes } from './Changes';
@@ -42,6 +42,7 @@ import { ConflictType } from './types';
 import { getConflictIcon } from './utils/getConflictIcon';
 import { getConflictText } from './utils/getConflictsText';
 import { getConflictType } from './utils/getConflictType';
+import { LinkSandbox } from './LinkSandbox';
 
 export const GitHub = () => {
   const {
@@ -53,11 +54,9 @@ export const GitHub = () => {
       isFetching,
       isExported,
       pr,
-      isLinkingToGitSandbox,
     },
     editor: {
       currentSandbox: {
-        id,
         originalGit,
         baseGit,
         owned,
@@ -65,13 +64,13 @@ export const GitHub = () => {
         prNumber,
         forkedTemplateSandbox,
         forkedFromSandbox,
+        privacy,
       },
       modulesByPath,
     },
     isLoggedIn,
-    user,
   } = useAppState();
-  const actions = useActions();
+  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
 
   const changeCount = gitChanges
     ? gitChanges.added.length +
@@ -83,7 +82,6 @@ export const GitHub = () => {
 
   if (!isLoggedIn) return <NotLoggedIn />;
   if (!owned) return <NotOwner />;
-  if (!user.integrations.github) return <GithubLogin />;
   if (isFetching || isExported) return <Loading />;
   if (pr && pr.merged) return <MergedPr />;
   if (pr && pr.state === 'closed') return <ClosedPr />;
@@ -213,55 +211,47 @@ export const GitHub = () => {
 
   // If there's a forkedFromSandbox we use that, otherwise we use the forkedTemplateSandbox
   const upstreamSandbox = forkedFromSandbox || forkedTemplateSandbox;
-  if (!originalGit && upstreamSandbox?.git) {
-    return (
-      <>
-        <Collapsible title="Link to GitHub repository" defaultOpen>
-          <Element paddingX={2}>
-            <Text variant="muted">If you wish to contribute back to</Text>{' '}
-            {upstreamSandbox.git.username}/{upstreamSandbox.git.repo}
-            <Text variant="muted">
-              , you can link this sandbox to the GitHub repository. This will
-              allow you to create commits and open pull requests with this
-              sandbox.
-            </Text>
-            <Button
-              marginTop={4}
-              onClick={() => actions.git.linkToGitSandbox(id)}
-              loading={isLinkingToGitSandbox}
-            >
-              Link Sandbox
-            </Button>
-          </Element>
-        </Collapsible>
-        <CreateRepo />
-      </>
-    );
-  }
 
-  return originalGit ? (
+  const showGitHubLogin =
+    (privacy === 0 && restrictsPublicRepos) ||
+    (privacy !== 0 && restrictsPrivateRepos);
+
+  return (
     <>
-      <Collapsible title="GitHub repository" defaultOpen>
-        <Element paddingX={2}>
-          <Link
-            target="_blank"
-            rel="noopener noreferrer"
-            href={githubRepoUrl(originalGit)}
-          >
-            <Stack gap={2} marginBottom={6} align="center">
-              <GitHubIcon width={20} />
-              <Text size={2}>
-                {originalGit.username}/{originalGit.repo}
-              </Text>
-            </Stack>
-          </Link>
-          {getText()}
-        </Element>
-      </Collapsible>
-      {getContent()}
-      <CreateRepo />
+      {showGitHubLogin && <GithubLogin />}
+
+      {originalGit ? (
+        <>
+          <Collapsible title="GitHub repository" defaultOpen={!showGitHubLogin}>
+            <Element paddingX={2}>
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={githubRepoUrl(originalGit)}
+              >
+                <Stack gap={2} marginBottom={6} align="center">
+                  <GitHubIcon width={20} />
+                  <Text size={2}>
+                    {originalGit.username}/{originalGit.repo}
+                  </Text>
+                </Stack>
+              </Link>
+              {getText()}
+            </Element>
+          </Collapsible>
+          {getContent()}
+        </>
+      ) : null}
+
+      {!originalGit && upstreamSandbox?.git ? (
+        <LinkSandbox
+          disabled={showGitHubLogin}
+          upstreamSandbox={upstreamSandbox}
+        />
+      ) : null}
+
+      {/* Always show create repo */}
+      <CreateRepo disabled={showGitHubLogin} />
     </>
-  ) : (
-    <CreateRepo />
   );
 };

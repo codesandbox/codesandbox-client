@@ -127,6 +127,7 @@ export const teamFragmentDashboard = gql`
     userAuthorizations {
       userId
       authorization
+      teamManager
     }
 
     users {
