@@ -5,6 +5,7 @@ const VALID_REPOS = [
   'http://github.com/owner/repo',
   'http://www.github.com/owner/repo',
   'https://github.com/owner/repo',
+  'https://github.com/owner/repo/',
   'https://www.github.com/owner/repo',
   'www.github.com/owner/repo',
   'https://github.com/owner/repo.git',
@@ -15,6 +16,7 @@ const VALID_REPOS = [
 const INVALID_REPOS = [
   'github.com/',
   'github.com/user/',
+  'github.com/user/repo/path/to/file',
   'http://github.com/',
   'http://github.com/user/',
   'http://www.github.com/',
@@ -35,9 +37,45 @@ describe('getOwnerAndRepoFromInput', () => {
     });
   });
 
+  test('owner/repo-dash returns an owner and repo', () => {
+    expect(getOwnerAndRepoFromInput('owner/repo-dash')).toEqual({
+      owner: 'owner',
+      repo: 'repo-dash',
+    });
+  });
+
+  test('owner/repo.dot returns an owner and repo', () => {
+    expect(getOwnerAndRepoFromInput('owner/repo.dot')).toEqual({
+      owner: 'owner',
+      repo: 'repo.dot',
+    });
+  });
+
+  test('https://github.com/owner/repo.com returns an owner and repo', () => {
+    expect(
+      getOwnerAndRepoFromInput('https://github.com/owner/repo.com')
+    ).toEqual({
+      owner: 'owner',
+      repo: 'repo.com',
+    });
+  });
+
+  test('https://github.com/owner/repo-dash returns an owner and repo', () => {
+    expect(
+      getOwnerAndRepoFromInput('https://github.com/owner/repo-dash')
+    ).toEqual({
+      owner: 'owner',
+      repo: 'repo-dash',
+    });
+  });
+
   INVALID_REPOS.forEach(possibleRepo => {
     test(`${possibleRepo} returns null`, () => {
       expect(getOwnerAndRepoFromInput(possibleRepo)).toBeNull();
     });
+  });
+
+  test('owner/repo/branch returns null', () => {
+    expect(getOwnerAndRepoFromInput('owner/repo/branch')).toBeNull();
   });
 });
