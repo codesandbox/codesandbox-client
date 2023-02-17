@@ -32,9 +32,12 @@ export const fuzzyMatchGithubToCsb = (
 ) => {
   const match = findBestMatch(
     teamName,
-    accounts.map(org => org.login)
+    accounts.map(account => account.login)
   );
-  return accounts.find(org => org.login === match.bestMatch.target) || orgs[0];
+  return (
+    accounts.find(account => account.login === match.bestMatch.target) ||
+    accounts[0] // fallback to profile
+  );
 };
 
 export const getEventName = (
