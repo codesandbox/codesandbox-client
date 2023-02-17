@@ -17,7 +17,7 @@ import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
 import { useGithubAccounts } from './useGithubOrganizations';
 import { useValidateRepoDestination } from './useValidateRepoDestination';
-import { getGihubOrgMatchingCsbTeam } from './utils';
+import { fuzzyMatchGithubToCsb } from './utils';
 
 const COLORS = {
   INVALID: '#ED6C6C',
@@ -47,7 +47,7 @@ type FromRepoProps = {
 export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
   const { activeTeamInfo, user } = useAppState();
   const { dashboard } = useActions();
-  const githubOrganizations = useGithubAccounts();
+  const githubAccounts = useGithubAccounts();
 
   const [isForking, setIsForking] = React.useState<boolean>(false);
   const [repoName, setRepoName] = React.useState<string>(repository.name);
@@ -92,16 +92,17 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
     });
   }, []);
 
+  const accountOptions = githubAccounts?.data
+    ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
+    : [];
+
   useEffect(() => {
     setSelectedOrg(
-      'data' in githubOrganizations
-        ? getGihubOrgMatchingCsbTeam(
-            activeTeamInfo.name,
-            githubOrganizations.data
-          ).login
+      'data' in githubAccounts
+        ? fuzzyMatchGithubToCsb(activeTeamInfo.name, accountOptions).login
         : ''
     );
-  }, [activeTeamInfo, githubOrganizations.state]);
+  }, [activeTeamInfo, githubAccounts.state]);
 
   return (
     <Stack
@@ -231,7 +232,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
             <Text as="span" size={2} css={{ color: '#808080' }}>
               Git organization
             </Text>
-            {githubOrganizations.state === 'loading' ? (
+            {githubAccounts.state === 'loading' ? (
               <SkeletonText
                 css={{
                   height: '48px',
@@ -239,7 +240,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
                 }}
               />
             ) : null}
-            {githubOrganizations.state === 'ready' ? (
+            {githubAccounts.state === 'ready' ? (
               <StyledSelect
                 css={{
                   color: '#e5e5e5',
@@ -250,9 +251,9 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
                 }}
                 value={selectedOrg}
               >
-                {githubOrganizations.data.map(org => (
-                  <option key={org.id} value={org.login}>
-                    {org.login}
+                {accountOptions?.map(account => (
+                  <option key={account.id} value={account.login}>
+                    {account.login}
                   </option>
                 ))}
               </StyledSelect>
