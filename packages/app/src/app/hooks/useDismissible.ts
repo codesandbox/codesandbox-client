@@ -1,16 +1,9 @@
 import { useState } from 'react';
 import { useEffects } from 'app/overmind';
 
-/**
- * Localstorage keys used for dismissible modals and banners.
- */
-type DismissibleKeys =
-  | 'DASHBOARD_RECENT_UPGRADE'
-  | 'DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER';
+type Dismissibles = Partial<Record<string, true | string>>;
 
-type Dismissibles = Partial<Record<DismissibleKeys, true>>;
-
-export const useDismissible = (key: DismissibleKeys): [boolean, () => void] => {
+export const useDismissible = (key: string): [boolean, () => void] => {
   const { browser } = useEffects();
   const [isDismissed, setIsDismissed] = useState(() => {
     const dismissibles = browser.storage.get<Dismissibles>('DISMISSIBLES');
