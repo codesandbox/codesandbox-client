@@ -29,7 +29,7 @@ export const LiveSessionConfirm: React.FC = () => {
   }, []);
 
   return (
-    <Alert title="After February 20, Live Sessions will become a Pro feature.">
+    <Alert title="After February 23, Live Sessions will become a Pro feature.">
       {checkout.status === 'error' && (
         <Text marginBottom={8} variant="danger" size={12}>
           An error ocurred while trying to load the checkout. Please try again.
