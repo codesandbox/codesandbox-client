@@ -69,7 +69,7 @@ export const AccountSelect = ({ options, value, onChange }) => {
             <Stack direction="vertical" gap={1}>
               <Text>Review GitHub permissions</Text>
               <Text variant="muted">
-                Only permitted organizations are visible. Some permission
+                Only authorized organizations are visible. Some permission
                 changes require admin approval.
               </Text>
             </Stack>
