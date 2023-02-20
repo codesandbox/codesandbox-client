@@ -1,5 +1,5 @@
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { ModuleNotFoundError } from 'sandpack-core/lib/resolver/errors/ModuleNotFound';
+import { ModuleNotFoundError } from 'sandpack-core/lib/errors/module-not-found';
 
 import getRequireStatements from './simple-get-require-statements';
 import { convertEsModule } from '../ast/convert-esmodule';

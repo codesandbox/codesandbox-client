@@ -29822,6 +29822,11 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
+sandpack-resolver@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/sandpack-resolver/-/sandpack-resolver-0.1.0.tgz#2cc5ad30a98aad2bb385c3a316598c4e7e145531"
+  integrity sha512-uP+0HeM0Mg7NjkNepn/SiertxoUeGdz/9gEeu7eGORekwuUpgLZ+wC3U6Ymn2TYWNmG7LJ+Y+ybNmT/YXEwu3w==
+
 sane@^4.0.3:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/sane/-/sane-4.1.0.tgz#ed881fd922733a6c461bc189dc2b6c006f3ffded"

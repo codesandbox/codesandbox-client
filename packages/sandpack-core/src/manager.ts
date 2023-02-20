@@ -12,7 +12,7 @@ import { endMeasure, now } from '@codesandbox/common/lib/utils/metrics';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
-import { ResolverCache, resolveAsync, resolveSync } from './resolver/resolver';
+import { ResolverCache, resolveAsync, resolveSync } from './resolver';
 import { generateBenchmarkInterface } from './utils/benchmark';
 import { Module } from './types/module';
 import {
@@ -831,8 +831,10 @@ export default class Manager implements IEvaluator {
         resolvedPath = await resolveAsync(shimmedPath, {
           filename: parentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFile,
-          readFile: this.readFile,
+          isFileSync: this._isFileSync,
+          isFile: this._isFileAsync,
+          readFileSync: this._readFileSync,
+          readFile: this._readFileAsync,
           moduleDirectories: this.getModuleDirectories(),
           resolverCache: this.resolverCache,
         });
@@ -976,8 +978,10 @@ export default class Manager implements IEvaluator {
         resolvedPath = resolveSync(shimmedPath, {
           filename: parentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFile,
-          readFile: this.readFile,
+          isFileSync: this._isFileSync,
+          isFile: this._isFileAsync,
+          readFileSync: this._readFileSync,
+          readFile: this._readFileAsync,
           moduleDirectories: this.getModuleDirectories(),
           resolverCache: this.resolverCache,
         });

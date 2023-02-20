@@ -2,6 +2,7 @@ import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import gensync from 'gensync';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
+import { resolveAsync } from 'sandpack-resolver';
 import { Module } from '../../types/module';
 import Manager from '../../manager';
 
@@ -9,7 +10,6 @@ import { getFetchProtocol } from './fetch-protocols';
 import { getDependencyName } from '../../utils/get-dependency-name';
 import { TranspiledModule } from '../../transpiled-module';
 import { DEFAULT_EXTENSIONS } from '../../utils/extensions';
-import { resolveAsync } from '../../resolver/resolver';
 
 export type Meta = {
   [path: string]: true;
