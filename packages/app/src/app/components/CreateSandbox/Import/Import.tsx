@@ -89,7 +89,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       setShouldFetch(false);
 
       if (repo.private && isFree) {
-        // is this still possible?
         setPrivateRepoFreeAccountError(url.raw);
         return;
       }
