@@ -1,5 +1,6 @@
 import { OrganizationFragment, ProfileFragment } from 'app/graphql/types';
 import { findBestMatch } from 'string-similarity';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 // Will match: git@github.com:owner/repository.git
 const REGEX_SSH = /git@github\.com:(?<owner>[\w-]+)\/(?<repo>[\w-]+)\.git$/i;
@@ -34,10 +35,26 @@ export const fuzzyMatchGithubToCsb = (
     teamName,
     accounts.map(account => account.login)
   );
-  return (
-    accounts.find(account => account.login === match.bestMatch.target) ||
-    accounts[0] // fallback to profile
+
+  const bestMatch = accounts.find(
+    account => account.login === match.bestMatch.target
   );
+
+  if (bestMatch) {
+    track('Match GH to CSB - success', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
+    return bestMatch;
+  } else {
+    track('Match GH to CSB - fail', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
+    return accounts[0];
+  }
 };
 
 export const getEventName = (

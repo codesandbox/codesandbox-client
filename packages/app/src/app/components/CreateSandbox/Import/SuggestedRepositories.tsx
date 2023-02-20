@@ -14,6 +14,7 @@ import {
   SkeletonText,
 } from '@codesandbox/components';
 import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useActions, useAppState } from 'app/overmind';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
@@ -74,6 +75,11 @@ export const SuggestedRepositories = () => {
           options={selectOptions}
           value={selectedAccount}
           onChange={(account: string) => {
+            track('Suggested repos - change account', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+
             setSelectedAccount(account);
           }}
         />
