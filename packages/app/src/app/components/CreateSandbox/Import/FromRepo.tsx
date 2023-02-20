@@ -43,7 +43,6 @@ type FromRepoProps = {
   onCancel: () => void;
 };
 
-// TODO: This component is unused and can probably be removed
 export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
   const { activeTeamInfo, user } = useAppState();
   const { dashboard } = useActions();
