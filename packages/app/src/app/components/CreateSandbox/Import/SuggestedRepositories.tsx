@@ -11,6 +11,7 @@ import {
   InteractiveOverlay,
   Button,
   Element,
+  SkeletonText,
 } from '@codesandbox/components';
 import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 
@@ -24,7 +25,6 @@ import { AccountSelect } from './AccountSelect';
 
 export const SuggestedRepositories = () => {
   const { activeTeamInfo } = useAppState();
-  const { signInGithubClicked } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
@@ -59,6 +59,10 @@ export const SuggestedRepositories = () => {
     accountType: selectedAccountType,
   });
 
+  if (githubAccounts.state === 'loading') {
+    return <SkeletonText />;
+  }
+
   return githubAccounts.state === 'ready' && selectedAccount ? (
     <Stack
       direction="vertical"
@@ -74,6 +78,15 @@ export const SuggestedRepositories = () => {
           }}
         />
       </Stack>
+
+      {githubRepos.state === 'loading' ? (
+        <StyledList direction="vertical" gap={1}>
+          <SkeletonText css={{ height: '56px', width: '100%' }} />
+          <SkeletonText css={{ height: '56px', width: '100%' }} />
+          <SkeletonText css={{ height: '56px', width: '100%' }} />
+        </StyledList>
+      ) : null}
+
       {githubRepos.state === 'ready' ? (
         <>
           <StyledList as="ul" direction="vertical" gap={1}>
@@ -119,37 +132,37 @@ export const SuggestedRepositories = () => {
               );
             })}
           </StyledList>
-          {restrictsPrivateRepos ? (
-            <Stack gap={2} align="center">
-              <Text
-                variant="muted"
-                size={12}
-              >{`Don't see all your repositories?`}</Text>
-              <Button
-                onClick={() => signInGithubClicked('private_repos')}
-                variant="link"
-                autoWidth
-                css={{ padding: 0, cursor: 'pointer' }}
-              >
-                <Stack gap={1} align="center" css={{ color: '#FFFFFF' }}>
-                  <Text size={12}>
-                    Authorize access to private repositories
-                  </Text>
-                  <Element css={{ marginTop: '2px' }}>
-                    <Icon
-                      css={{ display: 'block' }}
-                      name="external"
-                      size={12}
-                    />
-                  </Element>
-                </Stack>
-              </Button>
-            </Stack>
-          ) : null}
+          {restrictsPrivateRepos ? <AuthorizeMessage /> : null}
         </>
       ) : null}
     </Stack>
   ) : null;
+};
+
+const AuthorizeMessage = () => {
+  const { signInGithubClicked } = useActions();
+
+  return (
+    <Stack gap={2} align="center">
+      <Text
+        variant="muted"
+        size={12}
+      >{`Don't see all your repositories?`}</Text>
+      <Button
+        onClick={() => signInGithubClicked('private_repos')}
+        variant="link"
+        autoWidth
+        css={{ padding: 0, cursor: 'pointer' }}
+      >
+        <Stack gap={1} align="center" css={{ color: '#FFFFFF' }}>
+          <Text size={12}>Authorize access to private repositories</Text>
+          <Element css={{ marginTop: '2px' }}>
+            <Icon css={{ display: 'block' }} name="external" size={12} />
+          </Element>
+        </Stack>
+      </Button>
+    </Stack>
+  );
 };
 
 const StyledList = styled(Stack)`

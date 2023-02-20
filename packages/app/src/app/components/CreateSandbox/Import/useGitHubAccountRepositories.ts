@@ -70,10 +70,12 @@ export const useGitHubAccountRepositories = ({
 
   const accountData = account?.data?.me?.githubRepos;
   const organizationData = organization?.data?.githubOrganizationRepos;
+  const isLoading = account.loading || organization.loading;
 
   if (
-    typeof accountData === 'undefined' &&
-    typeof organizationData === 'undefined'
+    (typeof accountData === 'undefined' &&
+      typeof organizationData === 'undefined') ||
+    isLoading
   ) {
     return {
       state: 'loading',
