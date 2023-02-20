@@ -47,14 +47,14 @@ export const fuzzyMatchGithubToCsb = (
     });
 
     return bestMatch;
-  } else {
-    track('Match GH to CSB - fail', {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
-
-    return accounts[0];
   }
+
+  track('Match GH to CSB - fail', {
+    codesandbox: 'V1',
+    event_source: 'UI',
+  });
+
+  return accounts[0];
 };
 
 export const getEventName = (
