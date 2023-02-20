@@ -33,6 +33,6 @@
     "source-map": "^0.7.3",
     "strip-json-comments": "3",
     "p-queue": "^6.6.2",
-    "sandpack-resolver": "0.1.0"
+    "sandpack-resolver": "0.2.0"
   }
 }
