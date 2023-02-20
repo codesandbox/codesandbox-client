@@ -18,6 +18,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useActions, useAppState } from 'app/overmind';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
 import { fuzzyMatchGithubToCsb } from './utils';
 import { useGithubAccounts } from './useGithubOrganizations';
@@ -27,6 +28,7 @@ import { AccountSelect } from './AccountSelect';
 export const SuggestedRepositories = () => {
   const { activeTeamInfo } = useAppState();
   const { restrictsPrivateRepos } = useGitHuPermissions();
+  const { isTeamSpace } = useWorkspaceAuthorization();
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -109,7 +111,24 @@ export const SuggestedRepositories = () => {
                   <StyledItem>
                     <Stack gap={4} align="center">
                       <Icon name="repository" color="#999999" />
-                      <InteractiveOverlay.Anchor href={importUrl}>
+                      <InteractiveOverlay.Anchor
+                        href={importUrl}
+                        onClick={() => {
+                          const isPersonalRepository =
+                            repo.owner.login ===
+                            githubAccounts?.data?.personal?.login;
+
+                          if (isPersonalRepository && isTeamSpace) {
+                            track(
+                              'Suggested repos - Imported personal repository into teamspace',
+                              {
+                                codesandbox: 'V1',
+                                event_source: 'UI',
+                              }
+                            );
+                          }
+                        }}
+                      >
                         <VisuallyHidden>Import</VisuallyHidden>
                         <Text size={13}>{repo.name}</Text>
                       </InteractiveOverlay.Anchor>
