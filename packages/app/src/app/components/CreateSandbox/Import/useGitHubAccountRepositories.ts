@@ -36,7 +36,7 @@ export const useGitHubAccountRepositories = ({
       perPage: 10, // TODO determine how much repos
       page: 1,
     },
-    // Apollo (this version) has weird caching issues where fetching anything from "me" with apollo overrides
+    // Apollo (version 2.5.6) has weird caching issues where fetching anything from "me" with apollo overrides
     // the previous result. In this case the githubProfile is overridden and the values are gone. Adding
     // fetchPolicy: 'no-cache' fixes this. More info:
     // https://stackoverflow.com/questions/52381150/queries-overwriting-with-missing-fields-in-the-apollo-cache
