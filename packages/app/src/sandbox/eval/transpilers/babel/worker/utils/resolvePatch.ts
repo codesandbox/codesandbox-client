@@ -1,7 +1,6 @@
-import { resolver } from 'sandpack-core/lib/resolver/resolver';
-import gensync from 'gensync';
+import { resolveSync, IResolveOptionsInput } from 'sandpack-core/lib/resolver';
 
-function transformOptions(opts: any, fs: any): any {
+function transformOptions(opts: any, fs: any): IResolveOptionsInput {
   const isFile = p => {
     try {
       const stats = fs.statSync(p);
@@ -19,12 +18,10 @@ function transformOptions(opts: any, fs: any): any {
       ? opts.extensions
       : ['.js', '.cjs', '.mjs', '.json', '.ts', '.tsx'],
     moduleDirectories: ['node_modules'],
-    isFile: gensync({
-      sync: p => isFile(p),
-    }),
-    readFile: gensync({
-      sync: p => fs.readFileSync(p, 'utf8'),
-    }),
+    isFile: async p => isFile(p),
+    isFileSync: isFile,
+    readFile: async p => fs.readFileSync(p, 'utf8'),
+    readFileSync: p => fs.readFileSync(p, 'utf8'),
   };
 }
 
@@ -39,11 +36,11 @@ export function patchedResolve() {
     get(target, prop) {
       return (p, options) => {
         const resolverOptions = transformOptions(options, fs);
-        const resolved = target.sync(p, resolverOptions);
+        const resolved = resolveSync(p, resolverOptions);
         return resolved;
       };
     },
   };
 
-  return new Proxy(resolver, handler);
+  return new Proxy({ sync: null, async: null }, handler);
 }
