@@ -2,7 +2,7 @@ import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import gensync from 'gensync';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
-import { resolveAsync } from 'sandpack-resolver';
+import { resolveAsync } from '../../resolver';
 import { Module } from '../../types/module';
 import Manager from '../../manager';
 
@@ -242,8 +242,10 @@ function resolvePath(
     moduleDirectories: ['node_modules', manager.envVariables.NODE_PATH].filter(
       Boolean
     ),
-    isFile,
-    readFile,
+    isFile: isFile.async,
+    isFileSync: isFile.sync,
+    readFile: readFile.async,
+    readFileSync: readFile.sync,
   });
 }
 
