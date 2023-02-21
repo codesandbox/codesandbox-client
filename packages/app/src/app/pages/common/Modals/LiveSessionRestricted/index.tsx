@@ -53,10 +53,15 @@ export const LiveSessionRestricted: React.FC = () => {
             loading={checkout.status === 'loading'}
             variant="primary"
             onClick={() => {
-              track('Live Session - upgrade clicked', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
+              track(
+                `Live Session - ${
+                  isEligibleForTrial ? 'trial' : 'upgrade'
+                } clicked`,
+                {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                }
+              );
 
               createCheckout({
                 team_id: activeTeam,
