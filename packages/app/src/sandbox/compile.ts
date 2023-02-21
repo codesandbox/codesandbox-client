@@ -324,10 +324,12 @@ async function initializeManager(
     hasFileResolver = false,
     customNpmRegistries = [],
     reactDevTools,
+    teamId,
   }: {
     hasFileResolver?: boolean;
     customNpmRegistries?: NpmRegistry[];
     reactDevTools?: 'legacy' | 'latest';
+    teamId?: string;
   } = {}
 ) {
   const newManager = new Manager(
@@ -341,36 +343,34 @@ async function initializeManager(
     }
   );
 
-  // Add the custom registered npm registries
-  for (let registry of customNpmRegistries) {
-    /**
-     * If a team-id is provided, we can mount a registryUrl and proxy
-     * dependencies request through CSB proxy
-     */
-    if (registry.codesandboxTeamId) {
-      const sandpackToken = getSandpackSecret();
-      if (!sandpackToken) {
-        dispatch({
-          type: 'action',
-          action: 'show-error',
-          message: 'NPM_REGISTRY_UNAUTHENTICATED_REQUEST',
-        });
+  /**
+   * If a team-id is provided, we can mount a registryUrl and proxy
+   * dependencies request through CSB proxy
+   */
+  if (teamId) {
+    const sandpackToken = getSandpackSecret();
 
-        throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
-      } else {
-        // TODO: new endpoint
-        // const npmRegistryInfo = await fetch(
-        //   `https://6er17b-3000.preview.csb.app/api/v1/sandboxes/${registry.codesandboxTeamId}`
-        // );
+    if (!sandpackToken) {
+      dispatch({
+        type: 'action',
+        action: 'show-error',
+        message: 'NPM_REGISTRY_UNAUTHENTICATED_REQUEST',
+      });
 
-        // TODO: new endpoint
-        registry.registryUrl = `https://6er17b-3000.preview.csb.app/api/v1/sandboxes/${registry.codesandboxTeamId}/npm_registry`;
-        registry.proxyEnabled = true;
-        registry.limitToScopes = true;
-        registry.enabledScopes = ['@codesandbox'];
-      }
+      throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
     }
 
+    // TODO: new endpoint
+    customNpmRegistries.push({
+      registryUrl: `https://6er17b-3000.preview.csb.app/api/v1/sandboxes/${teamId}/npm_registry`,
+      proxyEnabled: true,
+      limitToScopes: true,
+      enabledScopes: ['@codesandbox'],
+    });
+  }
+
+  // Add the custom registered npm registries
+  for (let registry of customNpmRegistries) {
     if (!registry.registryUrl) {
       throw new Error(
         'Unable to fetch required dependency: neither a `registryUrl` nor a `codesandboxTeamId` was provided.'
@@ -513,6 +513,7 @@ interface CompileOptions {
   disableDependencyPreprocessing?: boolean;
   clearConsoleDisabled?: boolean;
   reactDevTools?: 'legacy' | 'latest';
+  teamId?: string;
 }
 
 async function compile(opts: CompileOptions) {
@@ -533,6 +534,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
     reactDevTools,
+    teamId,
   } = opts;
 
   if (firstLoad) {
@@ -601,6 +603,7 @@ async function compile(opts: CompileOptions) {
         hasFileResolver,
         customNpmRegistries,
         reactDevTools,
+        teamId,
       }));
 
     let dependencies: NPMDependencies = getDependencies(
