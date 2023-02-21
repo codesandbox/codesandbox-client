@@ -123,7 +123,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
           <Button
             variant="ghost"
-            css={css({ width: 'auto' })}
+            autoWidth
             onClick={() => {
               window.open('http://codesandbox.io/discover', '_blank');
             }}
