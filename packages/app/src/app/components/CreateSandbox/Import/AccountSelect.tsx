@@ -40,12 +40,13 @@ export const AccountSelect = ({ options, value, onChange }) => {
           </Element>
           {options.map(option => (
             <StyledMenuItem
+              key={option.login}
               {...menu}
               onClick={() => {
                 onChange(option.login);
                 menu.hide();
               }}
-              isSelected={option.login === value}
+              $isSelected={option.login === value}
             >
               <Stack justify="space-between">
                 <Stack gap={2} align="center" css={{ overflow: 'hidden' }}>
@@ -108,13 +109,13 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const StyledMenuItem = styled(MenuItem)<{ isSelected?: boolean }>`
+const StyledMenuItem = styled(MenuItem)<{ $isSelected?: boolean }>`
   all: unset;
   box-sizing: border-box;
   padding: 8px 16px;
   min-width: 220px;
 
-  color: ${({ isSelected }) => (isSelected ? '#E5E5E5' : '#C5C5C5')};
+  color: ${({ $isSelected }) => ($isSelected ? '#E5E5E5' : '#C5C5C5')};
 
   &:hover,
   &:focus {
