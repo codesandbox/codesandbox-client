@@ -23,6 +23,7 @@ import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
 import { LiveSessionConfirm } from './LiveSessionConfirm';
+import { LiveSessionRestricted } from './LiveSessionRestricted';
 import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
@@ -149,6 +150,10 @@ const modals = {
   },
   liveSessionConfirm: {
     Component: LiveSessionConfirm,
+    width: 400,
+  },
+  liveSessionRestricted: {
+    Component: LiveSessionRestricted,
     width: 400,
   },
   liveVersionMismatch: {

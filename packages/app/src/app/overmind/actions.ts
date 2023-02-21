@@ -254,6 +254,7 @@ type ModalName =
   | 'signInForTemplates'
   | 'userSurvey'
   | 'liveSessionConfirm'
+  | 'liveSessionRestricted'
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
