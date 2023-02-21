@@ -132,7 +132,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
               name="discover"
               size={22}
               title="New"
-              css={css({ paddingRight: 2 })}
+              css={{ paddingRight: 2 }}
             />
             Discover
           </Button>
