@@ -76,8 +76,11 @@ requirePolyfills().then(() => {
         await requestSandpackSecretFromApp(
           'https://6er17b-3000.preview.csb.app'
         );
+
+        window.location.reload();
       } else if (data.type === 'sign-out') {
         removeSandpackSecret();
+
         window.location.reload();
       }
     }
