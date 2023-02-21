@@ -508,6 +508,14 @@ export type Sandbox = {
     preventSandboxLeaving: boolean;
     preventSandboxExport: boolean;
   };
+  // New restrictions object. Remove the optional from the properties
+  // when resrcitions are deployed to production.
+  restrictions?: {
+    freePlanEditingRestricted?: boolean;
+    liveSessionsRestricted?: boolean;
+  };
+  // Legacy freePlanEditingRestricted. We can remove this when the
+  // restrictions above have been implemented.
   freePlanEditingRestricted: boolean;
 };
 
