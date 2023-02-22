@@ -128,14 +128,10 @@ export const withOwnedSandbox = <I>(
           sandboxId: sandbox.id,
         });
       } catch (e) {
-        const isAnonServerForkMessage = e.message.includes(
-          'server container as an anonymous user'
-        );
-
         // If we know the error is caused by an anonymous user trying to save a
         // file and fork a server sandbox, we don't want to show the vscode error
         // with the cancelAction and we don't want to continue either.
-        if (isAnonServerForkMessage) {
+        if (e.message === 'ERR_ANON_SSE_FORK') {
           return () => {};
         }
 

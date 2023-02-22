@@ -446,9 +446,7 @@ export const forkSandbox = async (
     // when it tries to execute forkSandbox. When we just return instead of throwing the error
     // is not caught and "withOwnedSandbox" will run its "continueAction" which, in case of the
     // "codeSaved" function will continue to save code, with all kinds of actions and api calls.
-    throw new Error(
-      `Can't fork sandbox executed in a server container as an anonymous user`
-    );
+    throw new Error('ERR_ANON_SSE_FORK');
   }
 
   effects.analytics.track('Fork Sandbox', {
