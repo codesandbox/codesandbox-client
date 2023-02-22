@@ -434,11 +434,21 @@ export const forkSandbox = async (
     sandbox ? sandbox.template : null
   );
 
+  // If the user is not signed in and the sandbox is exectued in a server container
+  // we can't fork.
   if (!state.isLoggedIn && templateDefinition.isServer) {
+    // So we track this happens
     effects.analytics.track('Show Server Fork Sign In Modal');
+    // And open a modal (alert) to show a sign in button
     actions.modalOpened({ modal: 'forkServerModal' });
 
-    return;
+    // Throwing an error here ensures that it get's caught in the "withOwnedSandbox" function
+    // when it tries to execute forkSandbox. When we just return instead of throwing the error
+    // is not caught and "withOwnedSandbox" will run its "continueAction" which, in case of the
+    // "codeSaved" function will continue to save code, with all kinds of actions and api calls.
+    throw new Error(
+      `Can't fork sandbox executed in a server container as an anonymous user`
+    );
   }
 
   effects.analytics.track('Fork Sandbox', {
