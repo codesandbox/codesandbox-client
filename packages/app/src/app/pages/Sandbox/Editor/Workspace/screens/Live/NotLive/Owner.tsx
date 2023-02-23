@@ -11,16 +11,32 @@ export const Owner: FunctionComponent = () => {
   const { live, modalOpened } = useActions();
   const { isPro } = useWorkspaceSubscription();
   const {
-    editor: {
-      currentSandbox: { id },
-      isAllModulesSynced,
-    },
+    editor: { currentSandbox, isAllModulesSynced },
     live: { isLoading },
   } = useAppState();
 
+  const id = currentSandbox.id;
+  const restrictions = currentSandbox?.restrictions;
+
   const handleGoLive = () => {
+    // Check the liveSessionsRestricted flag has been toggled. We can remove this
+    // after we're sure it is turned on.
+    if (typeof restrictions?.liveSessionsRestricted !== 'undefined') {
+      if (restrictions.liveSessionsRestricted) {
+        // Show modal that its restricted
+        modalOpened({ modal: 'liveSessionRestricted' });
+      } else {
+        live.createLiveClicked(id);
+      }
+
+      return;
+    }
+
+    // If liveSessionsRestricted flag has been toggled we can remove the logic
+    // below and rely on that instead.
     if (isPro) {
       live.createLiveClicked(id);
+
       return;
     }
 
