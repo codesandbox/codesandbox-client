@@ -632,7 +632,7 @@ export default {
       sandboxLimit: number;
     }>(`/sandboxes/limits`);
   },
-  prices() {
+  legacyPrices() {
     type Pricing = Record<
       'pro' | 'teamPro',
       Record<'month' | 'year', { currency: string; unitAmount: number }>

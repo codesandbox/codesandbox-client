@@ -12,7 +12,7 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   const {
     activeTeamInfo,
     personalWorkspaceId,
-    pro: { prices },
+    pro: { legacyPrices },
   } = useAppState();
   const actions = useActions();
 
@@ -34,14 +34,14 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
       );
     }
 
-    if (!prices) return null;
+    if (!legacyPrices) return null;
 
     const workspaceType =
       (activeTeamInfo?.id === personalWorkspaceId ? 'pro' : 'teamPro') ?? 'pro';
     const period =
       subscription.billingInterval === 'MONTHLY' ? 'month' : 'year';
 
-    const price = prices[workspaceType][period];
+    const price = legacyPrices[workspaceType][period];
 
     if (!price) return null;
 
@@ -57,7 +57,7 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
     actions.pro.pageMounted();
   }, [actions]);
 
-  if (!prices) return null;
+  if (!legacyPrices) return null;
 
   return (
     <Alert title={title}>

@@ -3,16 +3,16 @@ import { withLoadApp } from 'app/overmind/factories';
 import { SubscriptionInterval } from 'app/graphql/types';
 import { Step, PaymentSummary, PaymentPreview } from './types';
 
-export const getPrices = async ({ state, effects }: Context) => {
+export const getLegacyPrices = async ({ state, effects }: Context) => {
   try {
-    state.pro.prices = await effects.api.prices();
+    state.pro.legacyPrices = await effects.api.legacyPrices();
   } catch (err) {
     // Fail silently.
   }
 };
 
 export const pageMounted = withLoadApp(async ({ effects, state, actions }) => {
-  state.pro.prices = await effects.api.prices();
+  state.pro.legacyPrices = await effects.api.legacyPrices();
 
   actions.getActiveTeamInfo();
 });

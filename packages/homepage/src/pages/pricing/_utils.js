@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
    }
  }
  */
-export const usePricing = () => {
+export const useLegacyPricing = () => {
   const [data, setData] = useState(null);
   const fetchData = async () => {
     try {
