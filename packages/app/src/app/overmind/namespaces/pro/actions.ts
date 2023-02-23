@@ -3,6 +3,7 @@ import { withLoadApp } from 'app/overmind/factories';
 import { SubscriptionInterval } from 'app/graphql/types';
 import { Step, PaymentSummary, PaymentPreview } from './types';
 
+// This exists but doesn't do anything
 export const getLegacyPrices = async ({ state, effects }: Context) => {
   try {
     state.pro.legacyPrices = await effects.api.legacyPrices();
@@ -11,9 +12,22 @@ export const getLegacyPrices = async ({ state, effects }: Context) => {
   }
 };
 
-export const pageMounted = withLoadApp(async ({ effects, state, actions }) => {
-  state.pro.legacyPrices = await effects.api.legacyPrices();
+// This exists but doesn't work. Copied from the function above.
+export const getPrices = async ({ state, effects }) => {
+  try {
+    state.pro.prices = await effects.api.getPrices();
+  } catch (e) {
+    // e
+  }
+};
 
+export const pageMounted = withLoadApp(async ({ effects, state, actions }) => {
+  // We have to call the api effects directly rather than using an action because
+  // for some reason actions don't work.
+  state.pro.legacyPrices = await effects.api.legacyPrices();
+  state.pro.prices = await effects.api.getPrices();
+
+  // Oh this action does work?
   actions.getActiveTeamInfo();
 });
 

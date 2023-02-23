@@ -9,6 +9,7 @@ type State = {
   paymentPreview: PaymentPreview | null;
   updatingSubscription: boolean;
   legacyPrices: LegacyPricing | null;
+  prices: unknown | null;
 };
 
 export const state: State = {
@@ -20,4 +21,5 @@ export const state: State = {
   paymentPreview: null,
   updatingSubscription: false,
   legacyPrices: null,
+  prices: null,
 };

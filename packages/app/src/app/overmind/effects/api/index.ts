@@ -640,6 +640,9 @@ export default {
 
     return api.get<Pricing>(`/prices`);
   },
+  getPrices() {
+    return api.get(`/prices`, undefined, undefined, true);
+  },
   stripeCreateCheckout({
     success_path,
     cancel_path,
