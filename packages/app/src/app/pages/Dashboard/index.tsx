@@ -99,6 +99,8 @@ export const Dashboard: FunctionComponent = () => {
     }
   }, [location.search, actions, activeTeamInfo, notificationToast]);
 
+  const hasTopBarBanner = subscription?.status === SubscriptionStatus.Unpaid;
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     if (JSON.parse(searchParams.get('create_team'))) {
@@ -124,68 +126,62 @@ export const Dashboard: FunctionComponent = () => {
         <Stack
           direction="vertical"
           css={css({
+            position: 'relative',
             fontFamily: "'Inter', sans-serif",
             backgroundColor: 'sideBar.background',
             color: 'sideBar.foreground',
-            width: '100vw',
-            minHeight: '100vh',
+            width: '100%',
+            height: '100%',
           })}
         >
           <SkipNav.Link />
           {subscription?.status === SubscriptionStatus.Unpaid && (
-            <Element
-              css={{
-                paddingBottom: '8px', // Using padding because the margin will get overridden to 0
-              }}
-            >
-              <PaymentPending />
-            </Element>
+            <PaymentPending />
           )}
           <Header onSidebarToggle={onSidebarToggle} />
-          <Stack css={{ flexGrow: 1 }}>
-            <Media
-              query={theme.media
-                .lessThan(theme.sizes.medium)
-                .replace('@media ', '')}
-            >
-              {match =>
-                match ? (
-                  <Element
-                    id="mobile-sidebar"
-                    css={css({ display: ['block', 'block', 'none'] })}
-                  >
-                    <Sidebar
-                      visible={sidebarVisible}
-                      onSidebarToggle={onSidebarToggle}
-                    />
-                  </Element>
-                ) : (
-                  <Element
-                    id="desktop-sidebar"
-                    css={css({ display: ['none', 'none', 'block'] })}
-                  >
-                    <Sidebar
-                      visible
-                      onSidebarToggle={() => {
-                        /* do nothing */
-                      }}
-                    />
-                  </Element>
-                )
-              }
-            </Media>
+          <Media
+            query={theme.media
+              .lessThan(theme.sizes.medium)
+              .replace('@media ', '')}
+          >
+            {match =>
+              match ? (
+                <Element
+                  id="mobile-sidebar"
+                  css={css({ display: ['block', 'block', 'none'] })}
+                >
+                  <Sidebar
+                    visible={sidebarVisible}
+                    onSidebarToggle={onSidebarToggle}
+                  />
+                </Element>
+              ) : (
+                <Element
+                  id="desktop-sidebar"
+                  css={css({ display: ['none', 'none', 'block'] })}
+                >
+                  <Sidebar
+                    visible
+                    onSidebarToggle={() => {
+                      /* do nothing */
+                    }}
+                  />
+                </Element>
+              )
+            }
+          </Media>
 
-            <Element
-              as="main"
-              css={css({
-                width: '100%',
-                height: 'calc(100vh - 48px)',
-                paddingLeft: [0, 0, SIDEBAR_WIDTH + 24],
-              })}
-            >
-              <Content />
-            </Element>
-          </Stack>
+          <Element
+            as="main"
+            css={css({
+              width: '100%',
+              // 100vh - (topbar height - gap between topbar and content) - (banner height or 0)
+              height: `calc(100vh - 32px - ${hasTopBarBanner ? '44' : '0'}px)`,
+              paddingLeft: [0, 0, SIDEBAR_WIDTH + 24],
+            })}
+          >
+            <Content />
+          </Element>
         </Stack>
       </DndProvider>
       <NewTeamModal />
