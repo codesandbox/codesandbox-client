@@ -29822,10 +29822,10 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sandpack-resolver@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/sandpack-resolver/-/sandpack-resolver-0.2.0.tgz#b7f825105b7a2073a9e13a7f7fd43f27583e9265"
-  integrity sha512-PpWWLn1u109R6g0scJ8AqHqYKPZUrG8xA0E95AIpnW79BblAaySKdxtrWnIZZZG+GwITbpMAbZsbvUDAfp8dFA==
+sandpack-resolver@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/sandpack-resolver/-/sandpack-resolver-0.2.1.tgz#b6fdf8ca5799232dedaa5fc645c6c8a1e59f73e8"
+  integrity sha512-nqNsNdnzjgXUMdaoHMTHS4YLfkgkrAit0xG7QQapnK9E/LPDVz9/NiWgc631Lcthiw+qZF8ATAHYZ0gKa+FZrg==
 
 sane@^4.0.3:
   version "4.1.0"
