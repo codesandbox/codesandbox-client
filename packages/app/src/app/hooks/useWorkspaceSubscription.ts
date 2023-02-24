@@ -1,4 +1,5 @@
 import {
+  SubscriptionInterval,
   SubscriptionOrigin,
   SubscriptionPaymentProvider,
   SubscriptionStatus,
@@ -103,6 +104,7 @@ export type WorkspaceSubscriptionReturn =
   | {
       subscription: {
         cancelAt?: string;
+        billingInterval: SubscriptionInterval;
         status: SubscriptionStatus;
         type: SubscriptionType;
         trialEnd?: string;
