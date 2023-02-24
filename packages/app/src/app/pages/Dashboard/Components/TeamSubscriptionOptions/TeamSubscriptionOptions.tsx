@@ -115,7 +115,7 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
       variant={buttonVariant}
       fillSpace
     >
-      {ctaCopy || isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro'}
+      {ctaCopy || (isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro')}
     </ComboButton>
   );
 };
