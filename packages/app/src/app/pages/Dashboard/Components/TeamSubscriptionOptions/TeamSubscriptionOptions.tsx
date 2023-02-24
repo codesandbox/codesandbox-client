@@ -21,15 +21,17 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   const { isAdmin } = useWorkspaceAuthorization();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
 
-  const canSubscribe = isAdmin && isFree;
+  const canSubscribe = isAdmin && isFree && activeTeam !== null;
+  const team_id = canSubscribe ? (activeTeam as string) : undefined;
+
   const monthlyCheckout = useGetCheckoutURL({
-    team_id: canSubscribe ? activeTeam : undefined,
+    team_id,
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: dashboardUrls.settings(activeTeam),
   });
 
   const yearlyCheckout = useGetCheckoutURL({
-    team_id: canSubscribe ? activeTeam : undefined,
+    team_id,
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: dashboardUrls.settings(activeTeam),
     recurring_interval: 'year',

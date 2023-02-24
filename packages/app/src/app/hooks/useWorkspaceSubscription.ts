@@ -104,7 +104,7 @@ export type WorkspaceSubscriptionReturn =
   | {
       subscription: {
         cancelAt?: string;
-        billingInterval: SubscriptionInterval;
+        billingInterval?: SubscriptionInterval | null;
         status: SubscriptionStatus;
         type: SubscriptionType;
         trialEnd?: string;

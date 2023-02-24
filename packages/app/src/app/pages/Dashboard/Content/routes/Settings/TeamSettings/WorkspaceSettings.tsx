@@ -482,7 +482,7 @@ export const WorkspaceSettings = () => {
                 {numberOfEditors}/{numberOfSeats}
               </Text>
             </Stack>
-            {subscription.billingInterval === SubscriptionInterval.Yearly && (
+            {subscription?.billingInterval === SubscriptionInterval.Yearly && (
               <Stack
                 css={{
                   fontSize: '13px',
