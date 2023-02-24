@@ -41,6 +41,11 @@ const FEATURES: FeatureComp[] = [
     free: 'Limited to public NPM packages',
   },
   {
+    key: 'live',
+    pro: 'Live sessions',
+    free: 'No ability to go live',
+  },
+  {
     key: 'ram',
     pro: '6GB RAM',
     free: '2GB RAM',
