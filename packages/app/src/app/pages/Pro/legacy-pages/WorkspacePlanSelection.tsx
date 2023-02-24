@@ -18,6 +18,7 @@ import {
 } from 'app/constants';
 import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
+import type { CTA } from '../components/SubscriptionCard';
 
 const getBillingText = ({
   quantity,
@@ -89,7 +90,7 @@ export const WorkspacePlanSelection: React.FC = () => {
     ),
   ];
 
-  const personalProCta: React.ComponentProps<typeof SubscriptionCard>['cta'] = {
+  const personalProCta: CTA = {
     text: 'Manage subscription',
     onClick: () => {
       modalOpened({ modal: 'legacyPayment' });
@@ -97,36 +98,35 @@ export const WorkspacePlanSelection: React.FC = () => {
     variant: 'light',
   };
 
-  const teamProCta: React.ComponentProps<
-    typeof SubscriptionCard
+  const teamProCta: CTA =
     // eslint-disable-next-line no-nested-ternary
-  >['cta'] = isTeamAdmin
-    ? // Only allowed to change from monthly to yearly
-      subscription.billingInterval === SubscriptionInterval.Monthly
-      ? {
-          text: 'Change to yearly billing',
-          onClick: () => {
-            track('legacy subscription page - change to yearly billing', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
+    isTeamAdmin
+      ? // Only allowed to change from monthly to yearly
+        subscription.billingInterval === SubscriptionInterval.Monthly
+        ? {
+            text: 'Change to yearly billing',
+            onClick: () => {
+              track('legacy subscription page - change to yearly billing', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
 
-            setStep(Step.ConfirmBillingInterval);
-          },
-          variant: 'light',
-        }
-      : {
-          text: 'Contact support',
-          href: 'mailto:support@codesandbox.io',
-          variant: 'light',
-          onClick: () => {
-            track('legacy subscription page - contact support', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-          },
-        }
-    : undefined;
+              setStep(Step.ConfirmBillingInterval);
+            },
+            variant: 'light',
+          }
+        : {
+            text: 'Contact support',
+            href: 'mailto:support@codesandbox.io',
+            variant: 'light',
+            onClick: () => {
+              track('legacy subscription page - contact support', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+            },
+          }
+      : undefined;
 
   return (
     <div>
