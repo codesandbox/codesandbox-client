@@ -22,10 +22,6 @@ export const PaymentPending: React.FC = () => {
     createCustomerPortal,
   ] = useCreateCustomerPortal({ team_id: activeTeam, return_path: pathname });
 
-  if (isDismissed) {
-    return null;
-  }
-
   const handleDismiss = () => {
     const event = hasExpiredTeamTrial
       ? 'expired trial dismiss'
@@ -67,6 +63,23 @@ export const PaymentPending: React.FC = () => {
         : 'Please update your payment details'
     }`;
   };
+
+  React.useEffect(() => {
+    if (isDismissed) {
+      return;
+    }
+
+    const event = hasExpiredTeamTrial ? 'expired trial seen' : 'unpaid - seen';
+
+    track(`Stripe banner - ${event}`, {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+  }, []);
+
+  if (isDismissed) {
+    return null;
+  }
 
   return (
     <MessageStripe variant="warning" onDismiss={handleDismiss}>
