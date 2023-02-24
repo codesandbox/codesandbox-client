@@ -1,4 +1,4 @@
-type Price = { currency: string; amount: number };
+type Price = { currency: string; amount?: number };
 
 export const formatCurrency = ({ currency, amount }: Price) => {
   if (typeof amount === 'undefined') {
