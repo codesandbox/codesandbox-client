@@ -431,17 +431,17 @@ export const WorkspaceSettings = () => {
 
         <ManageSubscription />
       </Element>
+      <Text
+        as="h3"
+        css={{
+          fontWeight: 400,
+          fontSize: '16px',
+          lineHeight: '25px',
+        }}
+      >
+        Team overview
+      </Text>
       <Stack align="center" justify="space-between" gap={2}>
-        <Text
-          css={css({
-            display: 'flex',
-            alignItems: 'center',
-          })}
-          size={4}
-        >
-          Members
-        </Text>
-
         {canInviteOtherMembers && (
           <Stack
             as="form"
