@@ -9,11 +9,13 @@ import track from '@codesandbox/common/lib/utils/analytics';
 
 type TeamSubscriptionOptionsProps = {
   buttonVariant?: React.ComponentProps<typeof ComboButton>['variant'];
+  buttonStyles?: React.ComponentProps<typeof ComboButton>['customStyles'];
   ctaCopy?: string;
   trackingLocation: string;
 };
 export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = ({
   buttonVariant,
+  buttonStyles,
   ctaCopy,
   trackingLocation,
 }) => {
@@ -50,6 +52,7 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   return (
     <ComboButton
       as="a"
+      customStyles={buttonStyles}
       href={monthlyCheckoutUrl}
       onClick={() => {
         track(`${trackingLocation} - Upgrade`, {
