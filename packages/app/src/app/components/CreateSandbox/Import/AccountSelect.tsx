@@ -93,7 +93,6 @@ const StyledMenuButton = styled(MenuDisclosure)`
 
   &:focus-visible {
     outline: #ac9cff solid 2px;
-    // outline-offset: -2px;
   }
 `;
 

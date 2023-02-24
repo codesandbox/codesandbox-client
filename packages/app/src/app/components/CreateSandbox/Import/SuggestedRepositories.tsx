@@ -120,7 +120,7 @@ export const SuggestedRepositories = () => {
 
                           if (isPersonalRepository && isTeamSpace) {
                             track(
-                              'Suggested repos - Imported personal repository into teamspace',
+                              'Suggested repos - Imported personal repository into team space',
                               {
                                 codesandbox: 'V1',
                                 event_source: 'UI',
@@ -169,10 +169,9 @@ const AuthorizeMessage = () => {
 
   return (
     <Stack gap={2} align="center">
-      <Text
-        variant="muted"
-        size={12}
-      >{`Don't see all your repositories?`}</Text>
+      <Text variant="muted" size={12}>
+        Don&apos;t see all your repositories?
+      </Text>
       <Button
         onClick={() => signInGithubClicked('private_repos')}
         variant="link"
