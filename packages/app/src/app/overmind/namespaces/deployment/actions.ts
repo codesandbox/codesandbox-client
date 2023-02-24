@@ -174,6 +174,7 @@ export const deployProductionClicked = async ({
 
   actions.deployment.getDeploys();
 };
+
 export const deploySandboxClicked = async ({
   actions,
   effects,
@@ -199,7 +200,8 @@ export const deploySandboxClicked = async ({
       }
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with Vercel',
+        message:
+          'We were not able to fetch your Vercel user details. You should still be able to deploy to Vercel, please try again if needed.',
         error,
       });
     }
