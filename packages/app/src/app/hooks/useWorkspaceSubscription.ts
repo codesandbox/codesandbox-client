@@ -42,7 +42,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     !hasPaymentMethod && // there's no payment method attached
     isBefore(new Date(subscription.trialEnd), today); // the trial ended before today;
 
-  const numberOfSeats = subscription.quantity || 1;
+  const numberOfSeats =
+    (isFree ? activeTeamInfo.limits.maxEditors : subscription.quantity) || 1;
 
   const isPatron =
     subscription.origin === SubscriptionOrigin.Legacy ||
