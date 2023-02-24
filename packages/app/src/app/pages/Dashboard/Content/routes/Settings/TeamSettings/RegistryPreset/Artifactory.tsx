@@ -33,7 +33,7 @@ export const ArtifactoryRegistryPreset = ({
         <Text size={3} variant="muted">
           Is your registry behind a VPN? Please read these{' '}
           <Link
-            href="https://codesandbox.io/docs/custom-npm-registry"
+            href="https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry"
             target="_blank"
             variant="active"
           >
