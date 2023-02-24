@@ -10,13 +10,19 @@ type ButtonProps = React.ComponentProps<typeof Button>;
 type ComboButtonProps = {
   children: React.ReactNode;
   disabled?: boolean;
+  /**
+   * Workaround to make the button fill the space if needed.
+   * Passing custom CSS is not possible in this case.
+   */
+  fillSpace?: boolean;
   options: NonNullable<React.ReactNode>;
 } & ButtonProps;
 
 const ComboButton = ({
   children,
-  variant = 'primary',
+  fillSpace,
   options,
+  variant = 'primary',
   ...props
 }: ComboButtonProps) => {
   return (
@@ -30,6 +36,7 @@ const ComboButton = ({
           fontSize: '12px',
           lineHeight: 1,
           letterSpacing: '-0.02em',
+          flex: fillSpace ? 1 : 'initial',
         }}
         variant={variant}
         autoWidth
