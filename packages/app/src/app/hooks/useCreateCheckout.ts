@@ -9,7 +9,7 @@ type CheckoutStatus =
 
 type CheckoutOptions = {
   team_id: string | undefined;
-  recurring_interval?: string;
+  recurring_interval?: 'month' | 'year';
   success_path?: string;
   cancel_path?: string;
 };
