@@ -156,7 +156,7 @@ export const RegistryForm = ({
                 </Text>
 
                 <Link
-                  href="https://codesandbox.io/docs/custom-npm-registry"
+                  href="https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry"
                   target="_blank"
                   rel="noreferrer noopener"
                   css={css({

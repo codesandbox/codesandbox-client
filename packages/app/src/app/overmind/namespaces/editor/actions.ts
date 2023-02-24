@@ -183,7 +183,7 @@ export const addNpmDependency = withOwnedSandbox(
                   label: 'Learn More',
                   run: () => {
                     effects.browser.openWindow(
-                      'https://codesandbox.io/docs/custom-npm-registry'
+                      'https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry'
                     );
                   },
                 },
