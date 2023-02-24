@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Button, Stack, Text } from '@codesandbox/components';
+import { ComboButton, Stack, Text } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 
@@ -26,12 +26,30 @@ export const Upgrade = () => {
   const { activeTeam } = useAppState();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
-  const checkout = useGetCheckoutURL({
+  const monthlyCheckout = useGetCheckoutURL({
     team_id:
       (isTeamAdmin || isPersonalSpace) && isFree ? activeTeam : undefined,
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: dashboardUrls.settings(activeTeam),
   });
+
+  const yearlyCheckout = useGetCheckoutURL({
+    team_id:
+      (isTeamAdmin || isPersonalSpace) && isFree ? activeTeam : undefined,
+    success_path: dashboardUrls.settings(activeTeam),
+    cancel_path: dashboardUrls.settings(activeTeam),
+    recurring_interval: 'year',
+  });
+
+  const monthlyCheckoutUrl =
+    monthlyCheckout.state === 'READY'
+      ? monthlyCheckout.url
+      : '/pro?utm_source=settings_upgrade';
+
+  const yearlyCheckoutUrl =
+    yearlyCheckout.state === 'READY'
+      ? yearlyCheckout.url
+      : '/pro?utm_source=settings_upgrade';
 
   return (
     <Card
@@ -65,24 +83,74 @@ export const Upgrade = () => {
           </Text>
         </List>
 
-        <Button
+        <ComboButton
           as="a"
-          href={
-            checkout.state === 'READY'
-              ? checkout.url
-              : '/pro?utm_source=settings_upgrade'
-          }
-          marginTop={2}
-          variant="trial"
+          href={monthlyCheckoutUrl}
           onClick={() => {
             track('Team Settings - Upgrade', {
               codesandbox: 'V1',
               event_source: 'UI',
             });
           }}
+          options={
+            <>
+              {isEligibleForTrial && (
+                <ComboButton.Item
+                  onSelect={() => {
+                    track('Team Settings - Upgrade option - Start free trial', {
+                      codesandbox: 'V1',
+                      event_source: 'UI',
+                    });
+
+                    window.location.href = monthlyCheckoutUrl;
+                  }}
+                >
+                  Start free trial
+                </ComboButton.Item>
+              )}
+              <ComboButton.Item
+                onSelect={() => {
+                  track('Team Settings - Upgrade option - Upgrade to Pro', {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  });
+
+                  window.location.href = monthlyCheckoutUrl;
+                }}
+              >
+                Upgrade to Pro
+              </ComboButton.Item>
+              <ComboButton.Item
+                onSelect={() => {
+                  track('Team Settings - Upgrade option - Custom upgrade', {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  });
+
+                  window.location.href = yearlyCheckoutUrl;
+                }}
+              >
+                <Stack direction="vertical">
+                  <Text>Custom upgrade</Text>
+                  <Text
+                    css={{
+                      fontSize: '11px',
+                      lineHeight: '16px',
+                      color: '#999999',
+                    }}
+                  >
+                    Upgrade with a custom number
+                    <br /> of paid seats. Annual plan only.
+                  </Text>
+                </Stack>
+              </ComboButton.Item>
+            </>
+          }
+          variant="trial"
+          fillSpace
         >
-          {isEligibleForTrial ? 'Start trial' : 'Upgrade to Pro'}
-        </Button>
+          {isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro'}
+        </ComboButton>
       </Stack>
     </Card>
   );
