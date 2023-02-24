@@ -137,7 +137,6 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
 
               createCheckout({
                 team_id: activeTeamInfo.id,
-                recurring_interval: 'month' as string,
                 success_path: dashboard.recent(activeTeamInfo.id),
                 cancel_path: dashboard.recent(activeTeamInfo.id),
               });
