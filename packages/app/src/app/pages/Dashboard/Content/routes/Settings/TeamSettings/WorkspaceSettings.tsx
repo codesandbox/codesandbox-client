@@ -28,6 +28,7 @@ import {
   TeamMemberAuthorization,
   CurrentTeamInfoFragmentFragment,
   SubscriptionOrigin,
+  SubscriptionInterval,
 } from 'app/graphql/types';
 import { MAX_PRO_EDITORS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -481,17 +482,19 @@ export const WorkspaceSettings = () => {
                 {numberOfEditors}/{numberOfSeats}
               </Text>
             </Stack>
-            <Stack
-              css={{
-                fontSize: '13px',
-                lineHeight: '16px',
-                color: '#999999',
-              }}
-              gap={4}
-            >
-              <Text>Available editor seats</Text>
-              <Text color="#B3FBB4">{numberOfSeats - numberOfEditors}</Text>
-            </Stack>
+            {subscription.billingInterval === SubscriptionInterval.Yearly && (
+              <Stack
+                css={{
+                  fontSize: '13px',
+                  lineHeight: '16px',
+                  color: '#999999',
+                }}
+                gap={4}
+              >
+                <Text>Available editor seats</Text>
+                <Text color="#B3FBB4">{numberOfUnusedSeats}</Text>
+              </Stack>
+            )}
           </Stack>
         )}
       </Stack>
