@@ -11,13 +11,15 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   title,
 }) => {
   const {
+    activeTeamInfo,
     pro: { prices },
   } = useAppState();
   const actions = useActions();
   const { isTeamSpace } = useWorkspaceAuthorization();
-  const { isPaddle, subscription } = useWorkspaceSubscription();
+  const { isPaddle } = useWorkspaceSubscription();
 
   const [confirmed, setConfirmed] = React.useState(false);
+  const subscription = activeTeamInfo?.subscription!;
 
   const getValue = () => {
     // This shouldn't occur on this page, but it is still possible that this
