@@ -23,6 +23,7 @@ import {
   PERSONAL_FEATURES,
   PERSONAL_FEATURES_WITH_PILLS,
 } from 'app/constants';
+import { formatCurrency } from 'app/utils/currency';
 
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -30,22 +31,6 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
-
-/**
- * In the future we may add locale and currency as parameters.
- */
-function formatPrice(cents: number) {
-  if (typeof cents === 'undefined') {
-    return;
-  }
-
-  return (cents / 100).toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    // No cents behind the .
-    maximumFractionDigits: 0,
-  });
-}
 
 export const ProUpgrade = () => {
   const {
@@ -276,13 +261,20 @@ export const ProUpgrade = () => {
               >
                 <Stack gap={1} direction="vertical">
                   <Text size={32} weight="500">
-                    {formatPrice(pro?.prices?.individual.year.usd / 12)}
+                    {formatCurrency({
+                      currency: 'USD',
+                      amount: pro?.prices?.individual.year.usd / 12,
+                    })}
                   </Text>
                   <Text>
                     <div>per month, billed anually</div>{' '}
                     <div>
-                      or {formatPrice(pro?.prices?.individual.month.usd)} per
-                      month.
+                      or{' '}
+                      {formatCurrency({
+                        currency: 'USD',
+                        amount: pro?.prices?.individual.month.usd,
+                      })}{' '}
+                      per month.
                     </div>
                   </Text>
                 </Stack>
@@ -299,11 +291,18 @@ export const ProUpgrade = () => {
                 >
                   <Stack gap={1} direction="vertical">
                     <Text size={32} weight="500">
-                      {formatPrice(pro?.prices?.team.year.usd / 12)}
+                      {formatCurrency({
+                        currency: 'USD',
+                        amount: pro?.prices?.team.year.usd / 12,
+                      })}
                     </Text>
                     <Text>
                       per editor per month, billed anually, or{' '}
-                      {formatPrice(pro?.prices?.team.month.usd)} per month.
+                      {formatCurrency({
+                        currency: 'USD',
+                        amount: pro?.prices?.team.month.usd,
+                      })}{' '}
+                      per month.
                     </Text>
                   </Stack>
                 </SubscriptionCard>
