@@ -48,8 +48,8 @@ const FEATURES: Feature[] = [
     label: 'Unlimited private repositories',
   },
   {
-    icon: 'lock',
-    label: 'Advanced privacy settings',
+    icon: 'sharing',
+    label: 'Live sessions',
   },
   {
     icon: 'npm',
