@@ -27,3 +27,17 @@ export type PaymentPreview = {
     currency: string;
   };
 };
+
+type PricingOptions = {
+  month: {
+    [key: string]: number;
+  };
+  year: {
+    [key: string]: number;
+  };
+};
+
+export type Pricing = {
+  individual: PricingOptions;
+  team: PricingOptions;
+};
