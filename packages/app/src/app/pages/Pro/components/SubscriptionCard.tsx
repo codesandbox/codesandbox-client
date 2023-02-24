@@ -78,20 +78,25 @@ type CTAOptional =
       onClick: () => void;
     };
 
-interface SubscriptionCardProps {
+type SubscriptionCardProps = {
   title: string;
   children: React.ReactNode;
   features: Feature[];
-  cta?: CTABase & CTAOptional;
+  // cta?: CTABase & CTAOptional;
   isHighlighted?: boolean;
-}
+} & (
+  | {
+      cta?: CTABase & CTAOptional;
+    }
+  | { customCta: React.ReactNode }
+);
 
 export const SubscriptionCard = ({
   title,
   children,
   features,
-  cta,
   isHighlighted,
+  ...props
 }: SubscriptionCardProps) => {
   return (
     <StyledCard
@@ -129,20 +134,20 @@ export const SubscriptionCard = ({
           </Stack>
         ))}
       </Stack>
-      {cta ? (
+      {'cta' in props ? (
         <StyledSubscriptionLink
-          variant={cta.variant}
-          {...(cta.href
+          variant={props.cta.variant}
+          {...(props.cta.href
             ? {
-                href: cta.href,
-                onClick: cta.onClick,
+                href: props.cta.href,
+                onClick: props.cta.onClick,
               }
             : {
                 as: 'button',
-                onClick: cta.onClick,
+                onClick: props.cta.onClick,
               })}
         >
-          {cta.isLoading ? 'Loading...' : cta.text}
+          {props.cta.isLoading ? 'Loading...' : props.cta.text}
         </StyledSubscriptionLink>
       ) : (
         <Element css={{ height: '48px' }} />
