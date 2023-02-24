@@ -89,6 +89,7 @@ export const WorkspaceSettings = () => {
     cancel_path: dashboard.settings(team?.id),
   });
 
+  const membersCount = team.users.length;
   const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
 
   // We use `role` as the common term when referring to: `admin`, `editor` or `viewer`
@@ -384,8 +385,11 @@ export const WorkspaceSettings = () => {
           >
             <Stack direction="vertical" gap={4}>
               <Text size={4} weight="500">
-                {team.users.length}{' '}
-                {team.users.length === 1 ? 'member' : 'members'}
+                {membersCount}{' '}
+                {pluralize({
+                  word: 'member',
+                  count: membersCount,
+                })}
               </Text>
               <Stack direction="vertical" gap={1}>
                 {isTeamAdmin && (
@@ -435,7 +439,7 @@ export const WorkspaceSettings = () => {
 
         <ManageSubscription />
       </Element>
-      <Stack align="center" justify="space-between" gap={2}>
+      <Stack direction="vertical" gap={3}>
         <Text
           css={css({
             display: 'flex',
@@ -443,71 +447,51 @@ export const WorkspaceSettings = () => {
           })}
           size={4}
         >
-          Members
+          Team overview
         </Text>
 
-        {canInviteOtherMembers && (
-          <Stack
-            as="form"
-            onSubmit={inviteLoading ? undefined : onInviteSubmit}
-            css={{ display: 'flex', flexGrow: 1, maxWidth: 480 }}
-          >
-            <div style={{ position: 'relative', width: '100%' }}>
-              <UserSearchInput
-                inputValue={inviteValue}
-                allowSelf={false}
-                onInputValueChange={val => setInviteValue(val)}
-                style={{ paddingRight: 80 }}
-              />
-
-              <Menu>
-                <Menu.Button
-                  css={css({
-                    fontSize: 3,
-                    fontWeight: 'normal',
-                    paddingX: 0,
-                    position: 'absolute',
-                    top: 0,
-                    right: 2,
-                  })}
-                >
-                  <Text variant="muted">{ROLES_TEXT_MAP[newMemberRole]}</Text>
-                  <Icon name="caret" size={8} marginLeft={1} />
-                </Menu.Button>
-                <Menu.List>
-                  {rolesThatUserCanInvite.map(role => (
-                    <Menu.Item
-                      key={role}
-                      onSelect={() => setNewMemberRole(role)}
-                      style={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <Text style={{ width: '100%' }}>
-                        {ROLES_TEXT_MAP[role]}
-                      </Text>
-                      {newMemberRole === role && (
-                        <Icon name="simpleCheck" size={12} marginLeft={1} />
-                      )}
-                    </Menu.Item>
-                  ))}
-                </Menu.List>
-              </Menu>
-            </div>
-
-            <Button
-              type="submit"
-              loading={inviteLoading}
-              style={{ width: 'auto', marginLeft: 8 }}
+        {isTeamAdmin && (
+          <Stack gap={10}>
+            <Stack
+              css={{
+                fontSize: '13px',
+                lineHeight: '16px',
+                color: '#999999',
+              }}
+              gap={4}
             >
-              Add Member
-            </Button>
-
-            <Button
-              variant="secondary"
-              onClick={onCopyInviteUrl}
-              style={{ width: 'auto', marginLeft: 8 }}
+              <Text>
+                {pluralize({
+                  count: membersCount,
+                  word: 'Member',
+                })}
+              </Text>
+              <Text>{membersCount}</Text>
+            </Stack>
+            <Stack
+              css={{
+                fontSize: '13px',
+                lineHeight: '16px',
+                color: '#999999',
+              }}
+              gap={4}
             >
-              Copy Invite URL
-            </Button>
+              <Text>Current editors</Text>
+              <Text>
+                {numberOfEditors}/{numberOfSeats}
+              </Text>
+            </Stack>
+            <Stack
+              css={{
+                fontSize: '13px',
+                lineHeight: '16px',
+                color: '#999999',
+              }}
+              gap={4}
+            >
+              <Text>Available editor seats</Text>
+              <Text color="#B3FBB4">{numberOfSeats - numberOfEditors}</Text>
+            </Stack>
           </Stack>
         )}
       </Stack>
@@ -557,7 +541,8 @@ export const WorkspaceSettings = () => {
       {/**
        * Soft limit for pro teams.
        */}
-      {numberOfEditors > MAX_PRO_EDITORS &&
+      {isTeamAdmin &&
+        numberOfEditors > MAX_PRO_EDITORS &&
         subscription?.origin !== SubscriptionOrigin.Pilot && (
           <MessageStripe justify="space-between">
             <span>
@@ -576,6 +561,67 @@ export const WorkspaceSettings = () => {
             </MessageStripe.Action>
           </MessageStripe>
         )}
+
+      {canInviteOtherMembers && (
+        <Stack as="form" onSubmit={inviteLoading ? undefined : onInviteSubmit}>
+          <div style={{ position: 'relative', width: '100%' }}>
+            <UserSearchInput
+              inputValue={inviteValue}
+              allowSelf={false}
+              onInputValueChange={val => setInviteValue(val)}
+              style={{ paddingRight: 80 }}
+            />
+
+            <Menu>
+              <Menu.Button
+                css={css({
+                  fontSize: 3,
+                  fontWeight: 'normal',
+                  paddingX: 0,
+                  position: 'absolute',
+                  top: 0,
+                  right: 2,
+                })}
+              >
+                <Text variant="muted">{ROLES_TEXT_MAP[newMemberRole]}</Text>
+                <Icon name="caret" size={8} marginLeft={1} />
+              </Menu.Button>
+              <Menu.List>
+                {rolesThatUserCanInvite.map(role => (
+                  <Menu.Item
+                    key={role}
+                    onSelect={() => setNewMemberRole(role)}
+                    style={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    <Text style={{ width: '100%' }}>
+                      {ROLES_TEXT_MAP[role]}
+                    </Text>
+                    {newMemberRole === role && (
+                      <Icon name="simpleCheck" size={12} marginLeft={1} />
+                    )}
+                  </Menu.Item>
+                ))}
+              </Menu.List>
+            </Menu>
+          </div>
+
+          <Button
+            type="submit"
+            loading={inviteLoading}
+            style={{ width: 'auto', marginLeft: 8 }}
+          >
+            Add Member
+          </Button>
+
+          <Button
+            variant="secondary"
+            onClick={onCopyInviteUrl}
+            style={{ width: 'auto', marginLeft: 8 }}
+          >
+            Copy Invite URL
+          </Button>
+        </Stack>
+      )}
 
       <div>
         <MemberList
