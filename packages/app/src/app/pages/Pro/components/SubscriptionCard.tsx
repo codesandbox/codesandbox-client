@@ -78,17 +78,18 @@ type CTAOptional =
       onClick: () => void;
     };
 
+export type CTA = CTABase & CTAOptional;
+
 type SubscriptionCardProps = {
   title: string;
   children: React.ReactNode;
   features: Feature[];
-  // cta?: CTABase & CTAOptional;
   isHighlighted?: boolean;
 } & (
   | {
-      cta?: CTABase & CTAOptional;
+      cta?: CTA;
     }
-  | { customCta: React.ReactNode }
+  | { customCta?: React.ReactNode }
 );
 
 export const SubscriptionCard = ({
@@ -134,24 +135,29 @@ export const SubscriptionCard = ({
           </Stack>
         ))}
       </Stack>
-      {'cta' in props ? (
-        <StyledSubscriptionLink
-          variant={props.cta.variant}
-          {...(props.cta.href
-            ? {
-                href: props.cta.href,
-                onClick: props.cta.onClick,
-              }
-            : {
-                as: 'button',
-                onClick: props.cta.onClick,
-              })}
-        >
-          {props.cta.isLoading ? 'Loading...' : props.cta.text}
-        </StyledSubscriptionLink>
-      ) : (
-        <Element css={{ height: '48px' }} />
-      )}
+      {
+        // eslint-disable-next-line no-nested-ternary
+        'cta' in props ? (
+          <StyledSubscriptionLink
+            variant={props.cta.variant}
+            {...(props.cta.href
+              ? {
+                  href: props.cta.href,
+                  onClick: props.cta.onClick,
+                }
+              : {
+                  as: 'button',
+                  onClick: props.cta.onClick,
+                })}
+          >
+            {props.cta.isLoading ? 'Loading...' : props.cta.text}
+          </StyledSubscriptionLink>
+        ) : 'customCta' in props ? (
+          props.customCta
+        ) : (
+          <Element css={{ height: '48px' }} />
+        )
+      }
     </StyledCard>
   );
 };
