@@ -35,6 +35,7 @@ import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { pluralize } from 'app/utils/pluralize';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
@@ -395,8 +396,11 @@ export const WorkspaceSettings = () => {
                     </Text>
                     {numberOfUnusedSeats > 0 ? (
                       <Text size={3} variant="muted">
-                        + {numberOfUnusedSeats} unused editor{' '}
-                        {numberOfUnusedSeats > 1 ? 'seats' : 'seat'}
+                        +{numberOfUnusedSeats} unassigned editor{' '}
+                        {pluralize({
+                          word: 'seat',
+                          count: numberOfUnusedSeats,
+                        })}
                       </Text>
                     ) : null}
                   </>
