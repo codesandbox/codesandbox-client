@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import { Button } from '../Button';
 import { Menu, MenuStyles } from '../Menu';
@@ -15,12 +15,14 @@ type ComboButtonProps = {
    * Passing custom CSS is not possible in this case.
    */
   fillSpace?: boolean;
+  customStyles?: CSSProperties;
   options: NonNullable<React.ReactNode>;
 } & ButtonProps;
 
 const ComboButton = ({
   children,
   fillSpace,
+  customStyles = {},
   options,
   variant = 'primary',
   ...props
@@ -37,6 +39,7 @@ const ComboButton = ({
           lineHeight: 1,
           letterSpacing: '-0.02em',
           flex: fillSpace ? 1 : 'initial',
+          ...customStyles,
         }}
         variant={variant}
         autoWidth
@@ -50,6 +53,7 @@ const ComboButton = ({
             css={{
               borderTopLeftRadius: 0,
               borderBottomLeftRadius: 0,
+              height: 'auto',
 
               '> *': {
                 transform: 'translateY(0)',
