@@ -20,6 +20,10 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   const [confirmed, setConfirmed] = React.useState(false);
 
   const getValue = () => {
+    // This shouldn't occur on this page, but it is still possible that this
+    // value is undefined or null, coming from the hook.
+    if (!subscription) return null;
+
     if (isPaddle) {
       return (
         subscription.currency +
