@@ -2097,7 +2097,7 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
 
 export type ProfileFragment = { __typename?: 'GithubProfile' } & Pick<
   GithubProfile,
-  'id' | 'login'
+  'id' | 'login' | 'name'
 >;
 
 export type OrganizationFragment = { __typename?: 'GithubOrganization' } & Pick<
@@ -2105,11 +2105,9 @@ export type OrganizationFragment = { __typename?: 'GithubOrganization' } & Pick<
   'id' | 'login'
 >;
 
-export type GetGithubOrganizationsQueryVariables = Exact<{
-  [key: string]: never;
-}>;
+export type GetGithubAccountsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetGithubOrganizationsQuery = { __typename?: 'RootQueryType' } & {
+export type GetGithubAccountsQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       githubProfile: Maybe<{ __typename?: 'GithubProfile' } & ProfileFragment>;
@@ -2117,6 +2115,58 @@ export type GetGithubOrganizationsQuery = { __typename?: 'RootQueryType' } & {
         Array<{ __typename?: 'GithubOrganization' } & OrganizationFragment>
       >;
     }
+  >;
+};
+
+export type GetGitHubAccountReposQueryVariables = Exact<{
+  perPage: Maybe<Scalars['Int']>;
+  page: Maybe<Scalars['Int']>;
+}>;
+
+export type GetGitHubAccountReposQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & Pick<CurrentUser, 'id'> & {
+        githubRepos: Array<
+          { __typename?: 'GithubRepo' } & Pick<
+            GithubRepo,
+            | 'id'
+            | 'authorization'
+            | 'fullName'
+            | 'name'
+            | 'private'
+            | 'updatedAt'
+          > & {
+              owner: { __typename?: 'GithubOrganization' } & Pick<
+                GithubOrganization,
+                'id' | 'login' | 'avatarUrl'
+              >;
+            }
+        >;
+      }
+  >;
+};
+
+export type GetGitHubOrganizationReposQueryVariables = Exact<{
+  organization: Scalars['String'];
+  perPage: Maybe<Scalars['Int']>;
+  page: Maybe<Scalars['Int']>;
+}>;
+
+export type GetGitHubOrganizationReposQuery = {
+  __typename?: 'RootQueryType';
+} & {
+  githubOrganizationRepos: Maybe<
+    Array<
+      { __typename?: 'GithubRepo' } & Pick<
+        GithubRepo,
+        'id' | 'authorization' | 'fullName' | 'name' | 'private' | 'updatedAt'
+      > & {
+          owner: { __typename?: 'GithubOrganization' } & Pick<
+            GithubOrganization,
+            'id' | 'login'
+          >;
+        }
+    >
   >;
 };
 

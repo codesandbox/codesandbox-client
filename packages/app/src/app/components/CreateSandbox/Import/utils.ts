@@ -1,5 +1,6 @@
+import { OrganizationFragment, ProfileFragment } from 'app/graphql/types';
 import { findBestMatch } from 'string-similarity';
-import { State } from './useGithubOrganizations';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 const REGEX_PLAIN = /(?<owner>^\w+)(?<slash>\/)(?<repo>[\w.-]+$)/g;
 
@@ -59,15 +60,34 @@ export const getOwnerAndRepoFromInput = (input: string) => {
   return null;
 };
 
-export const getGihubOrgMatchingCsbTeam = (
+export const fuzzyMatchGithubToCsb = (
   teamName: string,
-  orgs: Extract<State, { state: 'ready' }>['data']
+  accounts: Array<ProfileFragment | OrganizationFragment>
 ) => {
   const match = findBestMatch(
     teamName,
-    orgs.map(org => org.login)
+    accounts.map(account => account.login)
   );
-  return orgs.find(org => org.login === match.bestMatch.target) || orgs[0];
+
+  const bestMatch = accounts.find(
+    account => account.login === match.bestMatch.target
+  );
+
+  if (bestMatch) {
+    track('Match GH to CSB - success', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
+    return bestMatch;
+  }
+
+  track('Match GH to CSB - fail', {
+    codesandbox: 'V1',
+    event_source: 'UI',
+  });
+
+  return accounts[0];
 };
 
 export const getEventName = (
