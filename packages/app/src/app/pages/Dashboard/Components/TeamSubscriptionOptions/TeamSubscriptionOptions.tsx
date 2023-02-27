@@ -20,10 +20,10 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   trackingLocation,
 }) => {
   const { activeTeam } = useAppState();
-  const { isAdmin } = useWorkspaceAuthorization();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
 
-  const canSubscribe = isAdmin && isFree && activeTeam !== null;
+  const canSubscribe = isTeamAdmin && isFree && activeTeam !== null;
   const team_id = canSubscribe ? (activeTeam as string) : undefined;
 
   const monthlyCheckout = useGetCheckoutURL({
