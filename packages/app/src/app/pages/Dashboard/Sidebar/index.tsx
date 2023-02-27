@@ -197,7 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {isPersonalSpace && (
             <RowItem
-              name="Shared With Me"
+              name="Shared with me"
               page="shared"
               path={dashboardUrls.shared(activeTeam)}
               icon="sharing"
