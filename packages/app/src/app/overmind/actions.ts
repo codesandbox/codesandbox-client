@@ -348,10 +348,10 @@ export const signInVercelClicked = async ({
   state.isLoadingVercel = true;
 
   /**
-   * We're opening a browser popup here with the /auth/zeit page but then do a server
+   * We're opening a browser popup here with the /auth/vercel page but then do a server
    * side redirect to the Vercel sign in page. This only works on production, not locally.
    */
-  const popup = browser.openPopup('/auth/zeit', 'sign in');
+  const popup = browser.openPopup('/auth/vercel', 'sign in');
   const data: { code: string } = await browser.waitForMessage('signin');
 
   popup.close();

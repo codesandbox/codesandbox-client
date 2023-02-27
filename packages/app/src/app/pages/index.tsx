@@ -220,7 +220,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={MobileAuth} />
             <Route path="/vscode/login" component={VSCodeAuth} />
-            <Route path="/auth/zeit" component={VercelSignIn} />
+            <Route path="/auth/vercel" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />

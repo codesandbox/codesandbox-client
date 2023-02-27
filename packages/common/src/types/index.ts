@@ -136,6 +136,9 @@ export type CurrentUser = {
   betaAccess: boolean;
   provider: 'github' | 'google' | 'apple';
   integrations: {
+    // We can not yet update this zeit integration to vercel in the state because
+    // that would mean that we have to update every time we fetch the user we'd also
+    // have to rename zeit to vercel.
     zeit: {
       token: string;
       email?: string;
