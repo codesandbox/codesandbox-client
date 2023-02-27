@@ -3,13 +3,21 @@ import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 
-import { GithubRepoAuthorization } from 'app/graphql/types';
+import {
+  GithubRepoAuthorization,
+  RepositoryTeamsQuery,
+  RepositoryTeamsQueryVariables,
+} from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 
+import { useLazyQuery } from '@apollo/react-hooks';
+import { debounce } from 'lodash';
+import { pluralize } from 'app/utils/pluralize';
+import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { MaxPublicRepos } from './MaxPublicRepos';
 import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
 import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
@@ -17,6 +25,7 @@ import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndNameFromInput } from './utils';
 import { SuggestedRepositories } from './SuggestedRepositories';
+import { GET_REPOSITORY_TEAMS } from '../queries';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
@@ -60,7 +69,7 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
-  const { hasLogIn } = useAppState();
+  const { activeTeam, hasLogIn } = useAppState();
   const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
   const {
     dashboard: { importGitHubRepository },
@@ -68,6 +77,13 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
   const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
+
+  const [
+    getRepositoryTeams,
+    { data: repositoryTeamsData, variables },
+  ] = useLazyQuery<RepositoryTeamsQuery, RepositoryTeamsQueryVariables>(
+    GET_REPOSITORY_TEAMS
+  );
 
   const [isImporting, setIsImporting] = React.useState(false);
   const [shouldFetch, setShouldFetch] = React.useState(false);
@@ -80,6 +96,29 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     parsed: null,
     error: null,
   });
+
+  const existingRepositoryTeams = React.useMemo(() => {
+    if (
+      repositoryTeamsData &&
+      variables.owner === url.parsed?.owner &&
+      variables.name === url.parsed?.name
+    ) {
+      return repositoryTeamsData.projects.reduce((acc, cur) => {
+        if (cur.team && cur.team?.id !== activeTeam) {
+          acc.push(cur.team);
+        }
+
+        return acc;
+      }, []);
+    }
+
+    return null;
+  }, [url.parsed, repositoryTeamsData]);
+
+  const debouncedGetRepositoryTeams = React.useCallback(
+    debounce(getRepositoryTeams, 1000),
+    []
+  );
 
   const githubRepo = useGithubRepo({
     owner: url.parsed?.owner,
@@ -131,6 +170,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         parsed: parsedInput,
         error: null,
       });
+      debouncedGetRepositoryTeams({ variables: parsedInput });
     }
   };
 
@@ -173,7 +213,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           <Stack gap={2}>
             <Input
               aria-disabled={hasMaxPublicRepositories}
-              aria-describedby="form-title form-error"
+              aria-describedby="form-title form-error repo-teams"
               aria-invalid={Boolean(url.error)}
               css={{ height: '32px' }}
               disabled={disableImport}
@@ -226,6 +266,36 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             ) : null}
           </Element>
         </Element>
+        {existingRepositoryTeams && existingRepositoryTeams.length >= 1 ? (
+          <Text color="#F9D685" id="repo-teams">
+            This repository has been imported into{' '}
+            {pluralize({ word: 'team', count: existingRepositoryTeams.length })}
+            :{' '}
+            {existingRepositoryTeams.map((team, teamIndex) => (
+              <>
+                <Button
+                  key={team.id}
+                  as="a"
+                  css={{
+                    display: 'inline-flex',
+                    color: 'inherit',
+                    fontWeight: 500,
+                    textDecoration: 'none',
+                  }}
+                  href={v2DefaultBranchUrl({
+                    owner: variables.owner,
+                    repoName: variables.name,
+                    workspaceId: team.id,
+                  })}
+                  variant="link"
+                >
+                  {team.name}
+                </Button>
+                {teamIndex === existingRepositoryTeams.length - 1 ? '.' : ', '}
+              </>
+            ))}
+          </Text>
+        ) : null}
       </Stack>
       {restrictsPublicRepos ? null : <SuggestedRepositories />}
     </Stack>
