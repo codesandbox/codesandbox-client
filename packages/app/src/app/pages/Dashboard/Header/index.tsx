@@ -114,9 +114,9 @@ export const Header: React.FC<HeaderProps> = React.memo(
           >
             <Icon
               name="plus"
-              size={22}
+              size={16}
               title="New"
-              css={css({ paddingRight: 2 })}
+              css={{ marginRight: '8px' }}
             />
             Create
           </Button>
@@ -130,9 +130,9 @@ export const Header: React.FC<HeaderProps> = React.memo(
           >
             <Icon
               name="discover"
-              size={22}
+              size={16}
               title="New"
-              css={{ paddingRight: 2 }}
+              css={{ marginRight: '8px' }}
             />
             Discover
           </Button>
