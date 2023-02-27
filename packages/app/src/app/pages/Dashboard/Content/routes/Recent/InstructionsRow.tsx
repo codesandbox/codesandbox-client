@@ -24,11 +24,19 @@ const DOCS: DocsItem[] = [
     thumbnail: '/static/img/thumbnails/blog_dashboard-intro.png',
   },
   {
+    label: 'getting_started_new_codesandbox',
+    title: 'Getting started with the new CodeSandbox',
+    duration: '5:58',
+    durationLabel: '5 minutes, 58 seconds',
+    url: 'https://www.youtube.com/watch?v=j8CwqAqdVjc',
+    thumbnail: '/static/img/thumbnails/docs_getting-started.png',
+  },
+  {
     label: 'video_cloud-sandboxes',
-    title: 'What are Cloud Sandboxes?',
-    duration: '3:24',
-    durationLabel: '3 minutes, 24 seconds',
-    url: 'https://www.youtube.com/watch?v=CkpunnSI19U',
+    title: 'Get started with Cloud Sandboxes',
+    duration: '0:48',
+    durationLabel: '48 seconds',
+    url: 'https://www.youtube.com/watch?v=4f1pKKP1NQ0',
     thumbnail: '/static/img/thumbnails/video_cloud-sandboxes.png',
   },
   {
