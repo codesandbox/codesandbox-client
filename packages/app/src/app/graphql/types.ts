@@ -88,6 +88,12 @@ export type Branch = {
   connections: Array<Connection>;
   /** Whether this branch is a contribution branch made by a read-only user */
   contribution: Scalars['Boolean'];
+  /**
+   * Whether the current user is the owner of this contribution branch. Can be
+   *     used to override project-level `READ` authorization. Always returns `false` if the
+   *     current branch is not a contribution branch.
+   */
+  contributionOwner: Scalars['Boolean'];
   /** Alphanumeric short ID of the branch, for use with Pitcher */
   id: Scalars['String'];
   /** Timestamp of the last time the current user accessed this branch on CodeSandbox */
@@ -838,6 +844,27 @@ export type RootMutationType = {
   /** Create a collection */
   createCollection: Collection;
   createComment: Comment;
+  /**
+   * Create a contribution branch on a non-team-assinged project.
+   *
+   * This endpoint allows users to create a contribution branch on a read-only
+   * project. This branch will only be created on CodeSandbox and the branch will
+   * be a _contribution branch_, which will automatically fork a new repository
+   * andproject on the first commit.
+   *
+   * A team ID is not accepted for this mutation. To create a branch on a team-assigned project, see `mutation createBranch`.
+   *
+   * Example (for `codesandbox/test-repo` branch `test-branch`):
+   *
+   * ```gql
+   * mutation createContributionBranch(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo",
+   * ) { id }
+   * ```
+   */
+  createContributionBranch: Branch;
   /** Create or Update a private registry */
   createOrUpdatePrivateNpmRegistry: PrivateRegistry;
   createPreviewComment: Comment;
@@ -915,8 +942,6 @@ export type RootMutationType = {
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
   deleteWorkspace: Scalars['String'];
-  /** Enable beta-access for team and all members */
-  enableTeamBetaAccess: Team;
   /**
    * Import an existing branch from a repository
    *
@@ -1161,6 +1186,13 @@ export type RootMutationTypeCreateCommentArgs = {
   userReferences: Maybe<Array<UserReference>>;
 };
 
+export type RootMutationTypeCreateContributionBranchArgs = {
+  from: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+};
+
 export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
   authType: Maybe<AuthType>;
   enabledScopes: Array<Scalars['String']>;
@@ -1232,10 +1264,6 @@ export type RootMutationTypeDeleteSandboxesArgs = {
 };
 
 export type RootMutationTypeDeleteWorkspaceArgs = {
-  teamId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeEnableTeamBetaAccessArgs = {
   teamId: Scalars['UUID4'];
 };
 
@@ -1538,8 +1566,6 @@ export type RootQueryType = {
    */
   branchByName: Branch;
   curatedAlbums: Array<Album>;
-  /** @deprecated Field no longer supported */
-  featureFlags: Array<FeatureFlag>;
   /** Get git repo and related V1 sandboxes */
   git: Maybe<Git>;
   /**
@@ -1576,7 +1602,8 @@ export type RootQueryType = {
    */
   project: Maybe<Project>;
   /**
-   * Get all projects for the given repository accessible by the current user.
+   * Get all projects for the given repository accessible by the current user. Returns an empty list
+   * if no such projects are available, or no version of this project has been imported yet.
    *
    * Projects are identified by repository-team pairs. For public repositories, there may also be a
    * single project that does not have an associated team. This query returns all of the projects
@@ -1800,7 +1827,7 @@ export type Sandbox = {
   screenshotOutdated: Scalars['Boolean'];
   screenshotUrl: Maybe<Scalars['String']>;
   source: Source;
-  team: Maybe<Team>;
+  team: Maybe<TeamPreview>;
   teamId: Maybe<Scalars['UUID4']>;
   title: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
@@ -1874,8 +1901,6 @@ export enum SubscriptionType {
 export type Team = {
   __typename?: 'Team';
   avatarUrl: Maybe<Scalars['String']>;
-  /** @deprecated Deprecated for open beta */
-  beta: Scalars['Boolean'];
   bookmarkedTemplates: Array<Template>;
   collections: Array<Collection>;
   creatorId: Maybe<Scalars['UUID4']>;
@@ -1951,6 +1976,15 @@ export enum TeamMemberAuthorization {
   /** Permission create and edit team sandboxes (in addition to read). */
   Write = 'WRITE',
 }
+
+export type TeamPreview = {
+  __typename?: 'TeamPreview';
+  avatarUrl: Maybe<Scalars['String']>;
+  description: Maybe<Scalars['String']>;
+  id: Scalars['UUID4'];
+  name: Scalars['String'];
+  shortid: Scalars['String'];
+};
 
 export type TeamUsage = {
   __typename?: 'TeamUsage';
@@ -2032,7 +2066,9 @@ export type TemplateFragment = { __typename?: 'Template' } & Pick<
         | 'updatedAt'
         | 'isV2'
       > & {
-          team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
+          team: Maybe<
+            { __typename?: 'TeamPreview' } & Pick<TeamPreview, 'name'>
+          >;
           author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
           source: { __typename?: 'Source' } & Pick<Source, 'template'>;
         }
@@ -2681,7 +2717,7 @@ export type TemplateFragmentDashboardFragment = {
             'id' | 'username' | 'commitSha' | 'path' | 'repo' | 'branch'
           >
         >;
-        team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
+        team: Maybe<{ __typename?: 'TeamPreview' } & Pick<TeamPreview, 'name'>>;
         author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
         source: { __typename?: 'Source' } & Pick<Source, 'template'>;
       } & SandboxFragmentDashboardFragment
@@ -3802,6 +3838,19 @@ export type RepositoryByDetailsQueryVariables = Exact<{
 
 export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
   project: Maybe<{ __typename?: 'Project' } & ProjectWithBranchesFragment>;
+};
+
+export type RepositoryTeamsQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+export type RepositoryTeamsQuery = { __typename?: 'RootQueryType' } & {
+  projects: Array<
+    { __typename?: 'Project' } & {
+      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+    }
+  >;
 };
 
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<

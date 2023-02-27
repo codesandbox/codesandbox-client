@@ -538,3 +538,14 @@ export const getRepositoryByDetails: Query<
   ${projectWithBranchesFragment}
   ${branchFragment}
 `;
+
+export const getRepositoryTeams = gql`
+  query RepositoryTeams($owner: String!, $name: String!) {
+    projects(owner: $owner, name: $name, provider: GITHUB) {
+      team {
+        id
+        name
+      }
+    }
+  }
+`;
