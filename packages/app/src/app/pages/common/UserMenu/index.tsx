@@ -31,12 +31,6 @@ export const UserMenu: FunctionComponent & {
         <Menu>
           {props.children}
           <Menu.List>
-            <Menu.Link href="http://codesandbox.io/discover">
-              <Stack align="center" gap={2}>
-                <Icon name="discover" size={16} />
-                <Text>Discover</Text>
-              </Stack>
-            </Menu.Link>
             <Menu.Link href={docsUrl()}>
               <Stack align="center" gap={2}>
                 <Icon name="documentation" size={16} />
@@ -81,13 +75,6 @@ export const UserMenu: FunctionComponent & {
             <Stack align="center" gap={2}>
               <Icon name="profile" size={16} />
               <Text>Profile</Text>
-            </Stack>
-          </Menu.Link>
-
-          <Menu.Link href="http://codesandbox.io/discover">
-            <Stack align="center" gap={2}>
-              <Icon name="discover" size={16} />
-              <Text>Discover</Text>
             </Stack>
           </Menu.Link>
 

@@ -201,15 +201,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.recent(activeTeam)}
             icon="clock"
           />
-          <RowItem
-            name="Discover"
-            page="discover"
-            path={dashboardUrls.discover(activeTeam)}
-            icon="discover"
-          />
+
           {isPersonalSpace && (
             <RowItem
-              name="Shared With Me"
+              name="Shared with me"
               page="shared"
               path={dashboardUrls.shared(activeTeam)}
               icon="sharing"
