@@ -2206,6 +2206,19 @@ export type GetGitHubOrganizationReposQuery = {
   >;
 };
 
+export type RepositoryTeamsQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+export type RepositoryTeamsQuery = { __typename?: 'RootQueryType' } & {
+  projects: Array<
+    { __typename?: 'Project' } & {
+      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+    }
+  >;
+};
+
 export type CollaboratorFragment = { __typename?: 'Collaborator' } & Pick<
   Collaborator,
   'id' | 'authorization' | 'lastSeenAt' | 'warning'
@@ -3838,19 +3851,6 @@ export type RepositoryByDetailsQueryVariables = Exact<{
 
 export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
   project: Maybe<{ __typename?: 'Project' } & ProjectWithBranchesFragment>;
-};
-
-export type RepositoryTeamsQueryVariables = Exact<{
-  owner: Scalars['String'];
-  name: Scalars['String'];
-}>;
-
-export type RepositoryTeamsQuery = { __typename?: 'RootQueryType' } & {
-  projects: Array<
-    { __typename?: 'Project' } & {
-      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
-    }
-  >;
 };
 
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
