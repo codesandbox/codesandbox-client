@@ -4,9 +4,8 @@ import { SubscriptionInterval } from 'app/graphql/types';
 import { Step, PaymentSummary, PaymentPreview } from './types';
 
 export const pageMounted = withLoadApp(async ({ effects, state, actions }) => {
-  // We have to call the api effects directly rather than using an action because
-  // for some reason the actions don't work.
-  state.pro.legacyPrices = await effects.api.legacyPrices();
+  // We have to call the api effect directly rather than using an action because
+  // for some reason an action doesn't work.
   state.pro.prices = await effects.api.getPrices();
 
   // This action does work.
