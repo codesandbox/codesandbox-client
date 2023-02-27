@@ -6,7 +6,7 @@ import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
 import chevronRight from './assets/chevronRight.svg';
 
-import { usePricing } from './_utils';
+import { useLegacyPricing } from './_utils';
 import { Intro } from './_intro';
 import { Plans } from './_plans';
 import { Testimonial } from './_testimonials';
@@ -91,7 +91,7 @@ const FAQLink = styled(Title)`
 `;
 
 const Pricing = () => {
-  const plansPayload = usePricing();
+  const plansPayload = useLegacyPricing();
 
   return (
     <Layout noWrapperStyling>

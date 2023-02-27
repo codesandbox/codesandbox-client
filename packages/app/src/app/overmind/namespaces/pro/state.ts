@@ -1,4 +1,10 @@
-import { Step, PaymentSummary, PaymentPreview, Pricing } from './types';
+import {
+  Step,
+  PaymentSummary,
+  PaymentPreview,
+  LegacyPricing,
+  Pricing,
+} from './types';
 
 type State = {
   step: Step;
@@ -8,6 +14,7 @@ type State = {
   summary: PaymentSummary | null;
   paymentPreview: PaymentPreview | null;
   updatingSubscription: boolean;
+  legacyPrices: LegacyPricing | null;
   prices: Pricing | null;
 };
 
@@ -19,5 +26,6 @@ export const state: State = {
   summary: null,
   paymentPreview: null,
   updatingSubscription: false,
+  legacyPrices: null,
   prices: null,
 };

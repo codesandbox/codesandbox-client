@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { sortBy } from 'lodash-es';
-import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { useAppState, useActions } from 'app/overmind';
 import {
   ThemeProvider,
@@ -24,6 +23,7 @@ import {
   PERSONAL_FEATURES,
   PERSONAL_FEATURES_WITH_PILLS,
 } from 'app/constants';
+import { formatCurrency } from 'app/utils/currency';
 
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -44,6 +44,7 @@ export const ProUpgrade = () => {
     hasLoadedApp,
     isLoggedIn,
     personalWorkspaceId,
+    pro,
   } = useAppState();
   const location = useLocation();
 
@@ -242,10 +243,9 @@ export const ProUpgrade = () => {
               }
             >
               <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
-                <Text aria-hidden size={32} weight="400">
+                <Text size={32} weight="400">
                   $0
                 </Text>
-                <VisuallyHidden>Zero dollar</VisuallyHidden>
                 <Text>forever</Text>
               </Stack>
             </SubscriptionCard>
@@ -260,13 +260,22 @@ export const ProUpgrade = () => {
                 isHighlighted
               >
                 <Stack gap={1} direction="vertical">
-                  <Text aria-hidden size={32} weight="500">
-                    $12
+                  <Text size={32} weight="500">
+                    {formatCurrency({
+                      currency: 'USD',
+                      amount: pro?.prices?.individual.year.usd / 12,
+                    })}
                   </Text>
-                  <VisuallyHidden>Twelve dollars</VisuallyHidden>
                   <Text>
                     <div>per month, billed anually</div>{' '}
-                    <div>or $15 per month.</div>
+                    <div>
+                      or{' '}
+                      {formatCurrency({
+                        currency: 'USD',
+                        amount: pro?.prices?.individual.month.usd,
+                      })}{' '}
+                      per month.
+                    </div>
                   </Text>
                 </Stack>
               </SubscriptionCard>
@@ -281,12 +290,19 @@ export const ProUpgrade = () => {
                   isHighlighted={!hasCustomSubscription}
                 >
                   <Stack gap={1} direction="vertical">
-                    <Text aria-hidden size={32} weight="500">
-                      $15
+                    <Text size={32} weight="500">
+                      {formatCurrency({
+                        currency: 'USD',
+                        amount: pro?.prices?.team.year.usd / 12,
+                      })}
                     </Text>
-                    <VisuallyHidden>Fifteen dollars</VisuallyHidden>
                     <Text>
-                      per editor per month, billed anually, or $18 per month.
+                      per editor per month, billed anually, or{' '}
+                      {formatCurrency({
+                        currency: 'USD',
+                        amount: pro?.prices?.team.month.usd,
+                      })}{' '}
+                      per month.
                     </Text>
                   </Stack>
                 </SubscriptionCard>
@@ -325,7 +341,7 @@ export const ProUpgrade = () => {
                   isHighlighted={hasCustomSubscription}
                 >
                   <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
-                    <Text aria-hidden size={32} weight="400">
+                    <Text size={32} weight="400">
                       custom
                     </Text>
                     <Text>
