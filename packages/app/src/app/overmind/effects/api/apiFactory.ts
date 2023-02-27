@@ -4,10 +4,18 @@ import { camelizeKeys, decamelizeKeys } from 'humps';
 
 const API_ROOT = '/api';
 
-// If the path starts with `/beta`, do not append
-// `/v1` to the api root url.
-const getBaseApi = (path: string) =>
-  path.startsWith('/beta') ? API_ROOT : `${API_ROOT}/v1`;
+/**
+ * If the path starts with `/beta`, do not append `/v1` to the api root
+ * url. Alternatively we have the useRoot param for when we just want to
+ * use the root path.
+ */
+const getBaseApi = (path: string, useRoot: boolean = false) => {
+  if (useRoot) {
+    return API_ROOT;
+  }
+
+  return path.startsWith('/beta') ? API_ROOT : `${API_ROOT}/v1`;
+};
 
 export type ApiError = AxiosError<
   { errors: string[] } | { error: string } | any
@@ -22,7 +30,17 @@ type Options = {
 };
 
 export type Api = {
-  get<T>(path: string, params?: Params, options?: Options): Promise<T>;
+  get<T>(
+    path: string,
+    params?: Params,
+    options?: Options,
+    /**
+     * Our API has three different base paths: /beta, /v1 and a path
+     * without one of those. We can use the useRoot parameter to use the
+     * latter.
+     */
+    useRoot?: boolean
+  ): Promise<T>;
   post<T>(path: string, body: any, options?: Options): Promise<T>;
   patch<T>(path: string, body: any, options?: Options): Promise<T>;
   put<T>(path: string, body: any, options?: Options): Promise<T>;
@@ -45,9 +63,9 @@ export default (config: ApiConfig) => {
       : {}),
   });
   const api: Api = {
-    get(path, params, options) {
+    get(path, params, options, useRoot) {
       return axios
-        .get(getBaseApi(path) + path, {
+        .get(getBaseApi(path, useRoot) + path, {
           params,
           headers: createHeaders(config.provideJwtToken),
         })

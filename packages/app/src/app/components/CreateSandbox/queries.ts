@@ -93,6 +93,7 @@ const PROFILE_FRAGMENT = gql`
   fragment Profile on GithubProfile {
     id
     login
+    name
   }
 `;
 
@@ -103,8 +104,8 @@ const ORGANIZATION_FRAGMENT = gql`
   }
 `;
 
-export const GET_GITHUB_ORGANIZATIONS = gql`
-  query GetGithubOrganizations {
+export const GET_GITHUB_ACCOUNTS = gql`
+  query GetGithubAccounts {
     me {
       githubProfile {
         ...Profile
@@ -117,4 +118,52 @@ export const GET_GITHUB_ORGANIZATIONS = gql`
 
   ${PROFILE_FRAGMENT}
   ${ORGANIZATION_FRAGMENT}
+`;
+
+// TODO: Remove unnecessary fields
+export const GET_GITHUB_ACCOUNT_REPOS = gql`
+  query GetGitHubAccountRepos($perPage: Int, $page: Int) {
+    me {
+      id
+      githubRepos(perPage: $perPage, page: $page) {
+        id
+        authorization
+        fullName
+        name
+        private
+        updatedAt
+        owner {
+          id
+          login
+          avatarUrl
+        }
+      }
+    }
+  }
+`;
+
+// TODO: Remove unnecessary fields
+export const GET_GITHUB_ORGANIZATION_REPOS = gql`
+  query GetGitHubOrganizationRepos(
+    $organization: String!
+    $perPage: Int
+    $page: Int
+  ) {
+    githubOrganizationRepos(
+      organization: $organization
+      perPage: $perPage
+      page: $page
+    ) {
+      id
+      authorization
+      fullName
+      name
+      private
+      updatedAt
+      owner {
+        id
+        login
+      }
+    }
+  }
 `;

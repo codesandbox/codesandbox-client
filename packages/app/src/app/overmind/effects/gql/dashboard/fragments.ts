@@ -185,7 +185,7 @@ export const currentTeamInfoFragment = gql`
       defaultAuthorization
     }
 
-    subscription {
+    subscription(includeCancelled: true) {
       billingInterval
       cancelAt
       cancelAtPeriodEnd
