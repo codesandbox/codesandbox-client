@@ -2,9 +2,9 @@ import { OrganizationFragment, ProfileFragment } from 'app/graphql/types';
 import { findBestMatch } from 'string-similarity';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-const REGEX_PLAIN = /(?<owner>^\w+)(?<slash>\/)(?<repo>[\w.-]+$)/g;
+const REGEX_PLAIN = /(?<owner>^\w+)(?<slash>\/)(?<name>[\w.-]+$)/g;
 
-export const getOwnerAndRepoFromInput = (input: string) => {
+export const getOwnerAndNameFromInput = (input: string) => {
   let sanitizedInput = input.replace(/\s/, '');
 
   // Invalidate if input is empty.
@@ -30,13 +30,13 @@ export const getOwnerAndRepoFromInput = (input: string) => {
         .replace(/^\/|(\/$)|(\.git$)/g, '')
         .split('/');
 
-      // If the pathname is correctly formed (owner/repo),
+      // If the pathname is correctly formed (owner/name),
       // the length should equal 2.
       if (pathnameParts.length !== 2) {
         throw new Error('Invalid pathanme.');
       }
 
-      return { owner: pathnameParts[0], repo: pathnameParts[1] };
+      return { owner: pathnameParts[0], name: pathnameParts[1] };
     } catch (error) {
       return null;
     }
@@ -44,16 +44,16 @@ export const getOwnerAndRepoFromInput = (input: string) => {
 
   // Check if the input is a SSH clone url.
   if (sanitizedInput.startsWith('git@')) {
-    // If it's the case, extract the owner and repo
+    // If it's the case, extract the owner and name
     // to be returned in the next step.
     sanitizedInput = sanitizedInput.replace(/^git@github.com:|(\.git$)/g, '');
   }
 
-  // Check if the input matches "owner/repo".
+  // Check if the input matches "owner/name".
   if (sanitizedInput.match(REGEX_PLAIN)) {
     const matches = REGEX_PLAIN.exec(sanitizedInput);
     return matches?.groups
-      ? { owner: matches.groups.owner, repo: matches.groups.repo }
+      ? { owner: matches.groups.owner, name: matches.groups.name }
       : null;
   }
 

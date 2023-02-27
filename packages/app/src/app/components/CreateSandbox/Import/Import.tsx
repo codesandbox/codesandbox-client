@@ -15,7 +15,7 @@ import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
 import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
-import { getOwnerAndRepoFromInput } from './utils';
+import { getOwnerAndNameFromInput } from './utils';
 import { SuggestedRepositories } from './SuggestedRepositories';
 
 const UnauthenticatedImport: React.FC = () => {
@@ -118,7 +118,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       return;
     }
 
-    const parsedInput = getOwnerAndRepoFromInput(value);
+    const parsedInput = getOwnerAndNameFromInput(value);
     if (!parsedInput) {
       setUrl({
         raw: value,
@@ -128,14 +128,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     } else {
       setUrl({
         raw: value,
-        parsed: {
-          // getOwnerAndRepoFromInput might return null
-          // but that won't be the case since there's an
-          // earlier check to see if the input is valid.
-          // using optional chaining to appease typescript.
-          owner: parsedInput?.owner,
-          name: parsedInput?.repo,
-        },
+        parsed: parsedInput,
         error: null,
       });
     }
