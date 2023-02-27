@@ -19,6 +19,7 @@ import { parseConfigurations } from './utils/parse-configurations';
 import { Context } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { AuthOptions, GH_BASE_SCOPE, MAP_GH_SCOPE_OPTIONS } from './utils/auth';
+import { renameZeitToVercel } from './utils/vercel';
 
 /**
  * After getting the current user we need to hydrate the app with new data from that user.
@@ -60,7 +61,10 @@ export const signIn = async (
     state.signInModalOpen = false;
     state.cancelOnLogin = null;
     state.pendingUser = null;
-    state.user = await effects.api.getCurrentUser();
+
+    const currentUser = await effects.api.getCurrentUser();
+    state.user = renameZeitToVercel(currentUser);
+
     await actions.internal.initializeNewUser();
     actions.refetchSandboxInfo();
     state.hasLogIn = true;
