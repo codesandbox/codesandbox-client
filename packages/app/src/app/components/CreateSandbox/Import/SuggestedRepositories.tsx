@@ -175,13 +175,16 @@ export const SuggestedRepositories = () => {
                             <Text
                               size={12}
                               css={{ display: 'block', width: 152 }}
+                              variant="muted"
                             >
                               <VisuallyHidden>
                                 {repo.name} is a private repository.
                               </VisuallyHidden>
-                              {isEligibleForTrial
-                                ? 'Start a free trial '
-                                : 'Upgrade to Pro '}
+                              <Text color="white">
+                                {isEligibleForTrial
+                                  ? 'Start a free trial '
+                                  : 'Upgrade to Pro '}
+                              </Text>
                               to import private repositories.
                             </Text>
                           </Link>
