@@ -3,6 +3,7 @@ import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import styled from 'styled-components';
 import VisuallyHidden from '@reach/visually-hidden';
+import { Link as RouterLink } from 'react-router-dom';
 
 import {
   Stack,
@@ -12,6 +13,7 @@ import {
   Button,
   Element,
   SkeletonText,
+  Link,
 } from '@codesandbox/components';
 import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -19,6 +21,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions, useAppState } from 'app/overmind';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 import { fuzzyMatchGithubToCsb } from './utils';
 import { useGithubAccounts } from './useGithubOrganizations';
@@ -27,8 +30,10 @@ import { AccountSelect } from './AccountSelect';
 
 export const SuggestedRepositories = () => {
   const { activeTeamInfo } = useAppState();
+  const { modals } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
+  const { isFree } = useWorkspaceSubscription();
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -108,30 +113,34 @@ export const SuggestedRepositories = () => {
 
               return (
                 <InteractiveOverlay key={repo.id}>
-                  <StyledItem>
+                  <StyledItem isDisabled={isFree && repo.private}>
                     <Stack gap={4} align="center">
                       <Icon name="repository" color="#999999" />
-                      <InteractiveOverlay.Anchor
-                        href={importUrl}
-                        onClick={() => {
-                          const isPersonalRepository =
-                            repo.owner.login ===
-                            githubAccounts?.data?.personal?.login;
-
-                          if (isPersonalRepository && isTeamSpace) {
-                            track(
-                              'Suggested repos - Imported personal repository into team space',
-                              {
-                                codesandbox: 'V1',
-                                event_source: 'UI',
-                              }
-                            );
-                          }
-                        }}
-                      >
-                        <VisuallyHidden>Import</VisuallyHidden>
+                      {isFree && repo.private ? (
                         <Text size={13}>{repo.name}</Text>
-                      </InteractiveOverlay.Anchor>
+                      ) : (
+                        <InteractiveOverlay.Anchor
+                          href={importUrl}
+                          onClick={() => {
+                            const isPersonalRepository =
+                              repo.owner.login ===
+                              githubAccounts?.data?.personal?.login;
+
+                            if (isPersonalRepository && isTeamSpace) {
+                              track(
+                                'Suggested repos - Imported personal repository into team space',
+                                {
+                                  codesandbox: 'V1',
+                                  event_source: 'UI',
+                                }
+                              );
+                            }
+                          }}
+                        >
+                          <VisuallyHidden>Import</VisuallyHidden>
+                          <Text size={13}>{repo.name}</Text>
+                        </InteractiveOverlay.Anchor>
+                      )}
                       {repo.private ? (
                         <>
                           <VisuallyHidden>Private repository</VisuallyHidden>
@@ -151,7 +160,27 @@ export const SuggestedRepositories = () => {
                         </Text>
                       ) : null}
                     </Stack>
-                    <StyledIndicator aria-hidden>Import</StyledIndicator>
+                    {isFree && repo.private ? (
+                      <Stack direction="vertical" css={{ flexGrow: 0 }}>
+                        <Text size={12} align="right" variant="muted">
+                          Upgrade to import private repositories.
+                        </Text>
+
+                        <Text size={12} align="right">
+                          <Link
+                            as={RouterLink}
+                            to="/pro"
+                            onClick={() => {
+                              modals.newSandboxModal.close();
+                            }}
+                          >
+                            Start free trial
+                          </Link>
+                        </Text>
+                      </Stack>
+                    ) : (
+                      <StyledIndicator aria-hidden>Import</StyledIndicator>
+                    )}
                   </StyledItem>
                 </InteractiveOverlay>
               );
@@ -195,17 +224,25 @@ const StyledList = styled(Stack)`
   list-style: none;
 `;
 
-const StyledItem = styled.li`
+const StyledItem = styled.li<{ isDisabled?: boolean }>`
   display: flex;
   justify-content: space-between;
   padding: 14px;
   background-color: #1d1d1d;
   border-radius: 4px;
 
-  &:hover,
-  &:focus-within {
-    background-color: #252525;
-  }
+  ${({ isDisabled }) =>
+    !isDisabled &&
+    `
+    &:hover,
+    &:focus-within {
+      background-color: #252525;
+      
+      ${StyledIndicator} {
+        opacity: 1;
+      }
+    }
+  `}
 `;
 
 const StyledIndicator = styled.span`
@@ -216,8 +253,4 @@ const StyledIndicator = styled.span`
   background-color: #343434;
   font-size: 12px;
   text-align: center;
-
-  ${StyledItem}:hover &, ${StyledItem}:focus-within & {
-    opacity: 1;
-  }
 `;
