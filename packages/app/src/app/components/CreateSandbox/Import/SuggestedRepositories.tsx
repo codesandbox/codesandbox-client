@@ -169,6 +169,10 @@ export const SuggestedRepositories = () => {
                             as={RouterLink}
                             to="/pro"
                             onClick={() => {
+                              track(x, {
+                                codesandbox: 'V1',
+                                event_source: 'UI',
+                              });
                               modals.newSandboxModal.close();
                             }}
                           >
