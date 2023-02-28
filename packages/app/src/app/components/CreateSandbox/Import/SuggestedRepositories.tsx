@@ -117,7 +117,9 @@ export const SuggestedRepositories = () => {
                     <Stack gap={4} align="center">
                       <Icon name="repository" color="#999999" />
                       {isFree && repo.private ? (
-                        <Text size={13}>{repo.name}</Text>
+                        <Text size={13} variant="muted">
+                          {repo.name}
+                        </Text>
                       ) : (
                         <InteractiveOverlay.Anchor
                           href={importUrl}
