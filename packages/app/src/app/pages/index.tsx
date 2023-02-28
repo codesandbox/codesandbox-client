@@ -227,6 +227,7 @@ const RoutesComponent: React.FC = () => {
             )}
             <Route path="/codesadbox" component={CodeSadbox} />
             <Redirect from="/patron" to="/pro" />
+            <Redirect from="/zeit" to="/vercel" />
             <Route component={NotFound} />
           </Switch>
         </Content>
