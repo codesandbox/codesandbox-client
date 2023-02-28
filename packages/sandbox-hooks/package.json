@@ -21,7 +21,6 @@
     "@babel/core": "^7.6.4",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/runtime": "^7.6.3",
-    "parcel-bundler": "^1.12.5",
-    "deasync": "^0.1.28"
+    "parcel-bundler": "^1.12.5"
   }
 }

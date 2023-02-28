@@ -1045,6 +1045,11 @@
     styled-components "^4.2.0"
     uuid "^3.3.2"
 
+"@codesandbox/template-icons@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.7.1.tgz#18090393b4ff2c614d5fe5b2fdf9f8c6b024de32"
+  integrity sha512-EcFDVIyQY7aaahy63Cpt8seK0I34EsL5GcLRd0YktaIVeIoxMC5/GjG6foI5RLg4zw9XwbTHQaRNM+UG0KlHdQ==
+
 "@emotion/babel-utils@^0.6.4":
   version "0.6.10"
   resolved "https://registry.yarnpkg.com/@emotion/babel-utils/-/babel-utils-0.6.10.tgz#83dbf3dfa933fae9fc566e54fbb45f14674c6ccc"
@@ -3227,7 +3232,7 @@ date-now@^0.1.4:
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
   integrity sha1-6vQ5/U1ISK105cx9vvIAZyueNFs=
 
-deasync@^0.1.14, deasync@^0.1.28:
+deasync@^0.1.14:
   version "0.1.28"
   resolved "https://registry.yarnpkg.com/deasync/-/deasync-0.1.28.tgz#9b447b79b3f822432f0ab6a8614c0062808b5ad2"
   integrity sha512-QqLF6inIDwiATrfROIyQtwOQxjZuek13WRYZ7donU5wJPLoP67MnYxA6QtqdvdBy2mMqv5m3UefBVdJjvevOYg==
