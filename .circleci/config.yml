@@ -49,7 +49,6 @@ aliases:
       - packages/dynamic-pages/node_modules
       - packages/deps/node_modules
       - packages/executors/node_modules
-      - packages/homepage/node_modules
       - packages/node-services/node_modules
       - packages/notifications/node_modules
       - packages/react-embed/node_modules
@@ -75,9 +74,6 @@ aliases:
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
-  - &restore_prod_homepage_cache
-    key: v37-prod-homepage-build-cache-master
-
   - &restore_prod_result
     key:
       v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH
@@ -96,14 +92,6 @@ aliases:
         }}-{{.Environment.CIRCLE_SHA1 }}
       - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
       - v37-prod-build-cache-master-
-
-  # To persist the images built by sharp
-  - &save_prod_homepage_cache
-    key:
-      v37-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
-      .Environment.CIRCLE_SHA1 }}
-    paths:
-      - ./packages/homepage/public
 
   - &save_prod_result
     key:
@@ -187,20 +175,12 @@ commands:
     steps:
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
-      - restore_cache: *restore_prod_homepage_cache
       - restore_cache: *restore_prod_build_cache
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache: *save_prod_build_cache
       - save_cache: *save_prod_result
-      - run:
-          name: Remove non-images from public
-          command: |
-            find packages/homepage/public -name "*.js" -type f -delete
-            find packages/homepage/public -name "*.json" -type f -delete
-            find packages/homepage/public -name "*.js.map" -type f -delete
-      - save_cache: *save_prod_homepage_cache
   test_integrations:
     description:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"

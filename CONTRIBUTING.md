@@ -20,7 +20,6 @@ The CodeSandbox client is currently divided in to 5 parts. We use `lerna` to
 share dependencies between these parts.
 
 - `app`: The editor, the search, profile page, the embed and the sandbox.
-- `homepage`: The Gatsby website of the homepage.
 - `common`: All common parts between these packages, reusable JS.
 - `codesandbox-api`: The npm package that's responsible for communication
   between the sandbox and the editor.
@@ -71,8 +70,6 @@ To install the project you need to have `yarn` and `node`
       available on [http://localhost:3000/s/new](http://localhost:3000/s/new)
     - on subsequent runs you can also bypass dependencies building and use
       `yarn start:fast`
-    - if you want to work on the homepage, start it with `yarn start:home`, it
-      will be available on [http://localhost:8000/](http://localhost:8000/)
 
 > Tip: Keep your `master` branch pointing at the original repository and make
 > pull requests from branches on your fork. To do this, run:
