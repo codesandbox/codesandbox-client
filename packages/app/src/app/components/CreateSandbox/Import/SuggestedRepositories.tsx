@@ -181,7 +181,7 @@ export const SuggestedRepositories = () => {
                               <VisuallyHidden>
                                 {repo.name} is a private repository.
                               </VisuallyHidden>
-                              <Text color="white">
+                              <Text color="#C2C2C2">
                                 {isEligibleForTrial
                                   ? 'Start a free trial '
                                   : 'Upgrade to Pro '}
