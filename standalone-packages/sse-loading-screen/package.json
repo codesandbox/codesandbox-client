@@ -25,7 +25,8 @@
     "babel-preset-react": "^6.24.1",
     "babel-runtime": "^6.26.0",
     "cssnano": "^4.0.5",
-    "parcel-bundler": "^1.9.7",
+    "parcel-bundler": "^1.12.5",
+    "deasync": "^0.1.28",
     "rimraf": "^2.6.2"
   },
   "scripts": {
