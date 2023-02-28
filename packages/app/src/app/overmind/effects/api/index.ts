@@ -538,7 +538,6 @@ export default {
       avatar,
     });
   },
-  // change here
   createVercelIntegration(code: string): Promise<CurrentUserFromAPI> {
     return api.post(`/users/current_user/integrations/vercel`, {
       code,
