@@ -33,7 +33,7 @@ export const SuggestedRepositories = () => {
   const { modals } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -168,17 +168,21 @@ export const SuggestedRepositories = () => {
                           Upgrade to import private repositories.
                         </Text>
 
-                        <Text size={12} align="right">
-                          <Link
-                            as={RouterLink}
-                            to="/pro"
-                            onClick={() => {
-                              modals.newSandboxModal.close();
-                            }}
-                          >
-                            Start free trial
-                          </Link>
-                        </Text>
+                        {isTeamAdmin ? (
+                          <Text size={12} align="right">
+                            <Link
+                              as={RouterLink}
+                              to="/pro"
+                              onClick={() => {
+                                modals.newSandboxModal.close();
+                              }}
+                            >
+                              {isEligibleForTrial
+                                ? 'Start free trial'
+                                : 'Upgrade to Pro'}
+                            </Link>
+                          </Text>
+                        ) : null}
                       </Stack>
                     ) : (
                       <StyledIndicator aria-hidden>Import</StyledIndicator>
