@@ -169,10 +169,13 @@ export const SuggestedRepositories = () => {
                             as={RouterLink}
                             to="/pro"
                             onClick={() => {
-                              track(x, {
-                                codesandbox: 'V1',
-                                event_source: 'UI',
-                              });
+                              track(
+                                'Suggested repos - Upgrade to Pro from private repo',
+                                {
+                                  codesandbox: 'V1',
+                                  event_source: 'UI',
+                                }
+                              );
                               modals.newSandboxModal.close();
                             }}
                           >
