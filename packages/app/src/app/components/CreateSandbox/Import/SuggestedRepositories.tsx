@@ -163,29 +163,34 @@ export const SuggestedRepositories = () => {
                       ) : null}
                     </Stack>
                     {isFree && repo.private ? (
-                      <Stack direction="vertical" css={{ flexGrow: 0 }}>
-                        <Text size={12} align="right" variant="muted">
-                          Upgrade to import private repositories.
-                        </Text>
-
-                        {isTeamAdmin ? (
-                          <Text size={12} align="right">
-                            <Link
-                              as={RouterLink}
-                              to="/pro"
-                              onClick={() => {
-                                modals.newSandboxModal.close();
-                              }}
+                      <StyledIndicator>
+                        <InteractiveOverlay.Item>
+                          <Link
+                            as={RouterLink}
+                            to="/pro"
+                            onClick={() => {
+                              modals.newSandboxModal.close();
+                            }}
+                          >
+                            <Text
+                              size={12}
+                              css={{ display: 'block', width: 152 }}
                             >
+                              <VisuallyHidden>
+                                {repo.name} is a private repository.
+                              </VisuallyHidden>
                               {isEligibleForTrial
-                                ? 'Start free trial'
-                                : 'Upgrade to Pro'}
-                            </Link>
-                          </Text>
-                        ) : null}
-                      </Stack>
+                                ? 'Start a free trial '
+                                : 'Upgrade to Pro '}
+                              to import private repositories.
+                            </Text>
+                          </Link>
+                        </InteractiveOverlay.Item>
+                      </StyledIndicator>
                     ) : (
-                      <StyledIndicator aria-hidden>Import</StyledIndicator>
+                      <StyledIndicator aria-hidden>
+                        <StyledImportIndicator>Import</StyledImportIndicator>
+                      </StyledIndicator>
                     )}
                   </StyledItem>
                 </InteractiveOverlay>
@@ -230,6 +235,10 @@ const StyledList = styled(Stack)`
   list-style: none;
 `;
 
+const StyledIndicator = styled.span`
+  opacity: 0;
+`;
+
 const StyledItem = styled.li<{ isDisabled?: boolean }>`
   display: flex;
   justify-content: space-between;
@@ -237,24 +246,23 @@ const StyledItem = styled.li<{ isDisabled?: boolean }>`
   background-color: #1d1d1d;
   border-radius: 4px;
 
-  ${({ isDisabled }) =>
-    !isDisabled &&
-    `
-    &:hover,
-    &:focus-within {
-      background-color: #252525;
-      
-      ${StyledIndicator} {
-        opacity: 1;
-      }
+  &:hover,
+  &:focus-within {
+    ${({ isDisabled }) =>
+      !isDisabled &&
+      `
+        background-color: #252525;
+      `}
+
+    ${StyledIndicator} {
+      opacity: 1;
     }
-  `}
+  }
 `;
 
-const StyledIndicator = styled.span`
+const StyledImportIndicator = styled.span`
   box-sizing: border-box;
   min-width: 80px;
-  opacity: 0;
   padding: 8px;
   background-color: #343434;
   font-size: 12px;
