@@ -176,6 +176,7 @@ export const SuggestedRepositories = () => {
                               size={12}
                               css={{ display: 'block', width: 152 }}
                               variant="muted"
+                              align="right"
                             >
                               <VisuallyHidden>
                                 {repo.name} is a private repository.
