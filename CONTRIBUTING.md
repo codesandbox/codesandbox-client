@@ -86,9 +86,7 @@ To install the project you need to have `yarn` and `node`
 > can make all of your pull request branches based on this `master` branch.
 > Whenever you want to update your version of `master`, do a regular `git pull`.
 
-5. If you want to debug the state of the app, use `yarn start:overmind` or run
-   `npx overmind-devtools` and make sure that the app is running. Learn more
-   [here](https://overmindjs.org/core/devtools).
+5. If you want to debug the state of the app, use `npx overmind-devtools` and make sure that the app is running. Learn more [here](https://overmindjs.org/core/devtools).
 
 ## Submitting a Pull Request
 

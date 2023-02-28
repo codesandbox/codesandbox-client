@@ -63,7 +63,6 @@
     "start:hot": "cross-env NODE_ENV=development APP_ONLY=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:fast:stream": "cross-env ENDPOINT=https://codesandbox.stream NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:fast:local": "cross-env ENDPOINT=http://localhost:4000 NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
-    "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
     "start:storybook": "lerna run start:storybook --scope=@codesandbox/common --stream",
     "start:test": "lerna run start:test --scope app --stream",
     "start:vscode": "cross-env VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
@@ -102,7 +101,6 @@
     "husky": "^4.3.0",
     "lerna": "^3.16.4",
     "lint-staged": "10.5.4",
-    "overmind-devtools": "^26.0.2",
     "prettier": "2.1.1",
     "pretty-quick": "^3.0.0",
     "typescript": "4.1.2",
@@ -123,7 +121,7 @@
     ]
   },
   "engines": {
-    "node": "^10.22.1"
+    "node": "^16.0.0"
   },
   "collective": {
     "type": "opencollective",
