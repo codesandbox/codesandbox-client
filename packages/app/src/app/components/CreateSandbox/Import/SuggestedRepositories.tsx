@@ -33,7 +33,9 @@ export const SuggestedRepositories = () => {
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
-  const [isImporting, setIsImporting] = useState(false);
+  const [isImporting, setIsImporting] = useState<
+    { owner: string; name: string } | false
+  >(false);
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -120,7 +122,12 @@ export const SuggestedRepositories = () => {
                               return;
                             }
 
-                            setIsImporting(true);
+                            const importInfo = {
+                              owner: repo.owner.login,
+                              name: repo.name,
+                            };
+
+                            setIsImporting(importInfo);
 
                             const isPersonalRepository =
                               repo.owner.login ===
@@ -136,12 +143,9 @@ export const SuggestedRepositories = () => {
                               );
                             }
 
-                            dashboardActions.importGitHubRepository({
-                              owner: repo.owner.login,
-                              name: repo.name,
-                            });
+                            dashboardActions.importGitHubRepository(importInfo);
                           }}
-                          disabled={isImporting}
+                          disabled={Boolean(isImporting)}
                         >
                           <VisuallyHidden>Import</VisuallyHidden>
                           <Text size={13}>{repo.name}</Text>
@@ -204,7 +208,23 @@ export const SuggestedRepositories = () => {
                       </StyledIndicator>
                     ) : (
                       <StyledIndicator aria-hidden>
-                        <StyledImportIndicator>Import</StyledImportIndicator>
+                        <StyledImportIndicator>
+                          {isImporting &&
+                          isImporting.owner === repo.owner.login &&
+                          isImporting.name === repo.name ? (
+                            <Button
+                              css={{
+                                height: '16px', // match the text height so the content doesn't jump around when the state changes.
+                              }}
+                              role="presentation"
+                              variant="ghost"
+                              autoWidth
+                              loading
+                            />
+                          ) : (
+                            'Import'
+                          )}
+                        </StyledImportIndicator>
                       </StyledIndicator>
                     )}
                   </StyledItem>
