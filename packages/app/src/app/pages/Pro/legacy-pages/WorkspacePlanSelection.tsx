@@ -15,13 +15,12 @@ import {
   PERSONAL_FEATURES,
   TEAM_FREE_FEATURES,
   TEAM_PRO_FEATURES,
-  TEAM_PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
-import { formatCurrency } from 'app/utils/currency';
 import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
 import { StyledPricingDetailsText } from '../components/elements';
+import { UpsellTeamPro } from '../components/UpsellTeamPro';
 
 const getBillingText = ({
   quantity,
@@ -48,7 +47,6 @@ export const WorkspacePlanSelection: React.FC = () => {
     activeTeam,
     activeTeamInfo,
     dashboard,
-    pro,
   } = useAppState();
   const {
     setActiveTeam,
@@ -100,18 +98,6 @@ export const WorkspacePlanSelection: React.FC = () => {
       modalOpened({ modal: 'legacyPayment' });
     },
     variant: 'light',
-  };
-
-  const upsellTeamProCta: CTA = {
-    text: 'Upgrade',
-    variant: 'highlight',
-    onClick: () => {
-      track('legacy subscription page - upsell team pro cta clicked', {
-        codesandbox: 'V1',
-        event_source: 'UI',
-      });
-      modalOpened({ modal: 'selectWorkspaceToUpgrade' });
-    },
   };
 
   const teamProCta: CTA =
@@ -225,29 +211,7 @@ export const WorkspacePlanSelection: React.FC = () => {
                   )}
                 </Stack>
               </SubscriptionCard>
-              <SubscriptionCard
-                title="Team Pro"
-                features={TEAM_PRO_FEATURES_WITH_PILLS}
-                isHighlighted
-                cta={upsellTeamProCta}
-              >
-                <Stack gap={1} direction="vertical">
-                  <Text size={32} weight="500">
-                    {formatCurrency({
-                      currency: 'USD',
-                      amount: pro?.prices?.team.year.usd / 12,
-                    })}
-                  </Text>
-                  <StyledPricingDetailsText>
-                    per editor per month, billed anually, or{' '}
-                    {formatCurrency({
-                      currency: 'USD',
-                      amount: pro?.prices?.team.month.usd,
-                    })}{' '}
-                    per month.
-                  </StyledPricingDetailsText>
-                </Stack>
-              </SubscriptionCard>
+              <UpsellTeamPro />
             </>
           ) : (
             <SubscriptionCard
