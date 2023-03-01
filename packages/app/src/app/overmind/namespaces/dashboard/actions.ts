@@ -2325,10 +2325,16 @@ export const forkGitHubRepository = async (
 };
 
 export const createDraftBranch = async (
-  { effects }: Context,
+  { state, effects }: Context,
   { owner, name, teamId }: { owner: string; name: string; teamId: string }
 ) => {
+  if (state.dashboard.creatingBranch) {
+    return;
+  }
+
   try {
+    state.dashboard.creatingBranch = true;
+
     const response = await effects.gql.mutations.createBranch({
       name,
       owner,
@@ -2336,6 +2342,8 @@ export const createDraftBranch = async (
     });
 
     const branchName = response.createBranch.name;
+
+    state.dashboard.creatingBranch = false;
 
     window.location.href = v2BranchUrl({
       workspaceId: teamId,
