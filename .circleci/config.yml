@@ -46,7 +46,6 @@ aliases:
       - packages/components/node_modules
       - packages/template-icons/node_modules
       - packages/common/node_modules
-      - packages/dynamic-pages/node_modules
       - packages/deps/node_modules
       - packages/executors/node_modules
       - packages/node-services/node_modules
