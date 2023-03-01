@@ -17,7 +17,6 @@ export interface Feature {
 }
 
 export const PERSONAL_FREE_FEATURES: Feature[] = [
-  { key: 'editors', label: '1 editor', highlighted: true },
   {
     key: 'limit_sandboxes',
     label: 'Unlimited public sandboxes',
@@ -32,7 +31,6 @@ export const PERSONAL_FREE_FEATURES: Feature[] = [
 ];
 
 export const PERSONAL_FEATURES: Feature[] = [
-  { key: 'editors', label: '1 editor', highlighted: true },
   {
     key: 'limit_sandboxes',
     label: 'Unlimited private sandboxes',
@@ -49,7 +47,6 @@ export const PERSONAL_FEATURES: Feature[] = [
 ];
 
 export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
-  { key: 'editors', label: '1 editor', highlighted: true },
   {
     key: 'limit_sandboxes',
     label: 'Unlimited private sandboxes',
@@ -66,7 +63,6 @@ export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
 ];
 
 export const TEAM_FREE_FEATURES: Feature[] = [
-  { key: 'editors', label: 'Up to 5 editors', highlighted: true },
   {
     key: 'limit_sandboxes',
     label: '20 public sandboxes',
@@ -82,7 +78,6 @@ export const TEAM_FREE_FEATURES: Feature[] = [
 ];
 
 export const TEAM_PRO_FEATURES: Feature[] = [
-  { key: 'editors', label: 'Up to 20 editors', highlighted: true },
   {
     key: 'limit_sandboxes',
     label: 'Unlimited private sandboxes',
@@ -99,7 +94,6 @@ export const TEAM_PRO_FEATURES: Feature[] = [
 ];
 
 export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
-  { key: 'editors', label: 'Up to 20 editors', highlighted: true },
   {
     key: 'limit_sandboxes',
     label: 'Unlimited private sandboxes',
@@ -116,7 +110,6 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
 ];
 
 export const ORG_FEATURES: Feature[] = [
-  { key: 'editors', label: 'Unlimited editors', highlighted: true },
   {
     key: 'limit_sandboxes',
     label: 'Unlimited private sandboxes',

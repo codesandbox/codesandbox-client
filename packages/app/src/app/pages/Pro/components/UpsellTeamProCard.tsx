@@ -61,6 +61,7 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   return (
     <SubscriptionCard
       title="Team Pro"
+      subTitle="Up to 20 editors"
       features={TEAM_PRO_FEATURES_WITH_PILLS}
       isHighlighted
       cta={upsellTeamProCta}

@@ -171,6 +171,7 @@ export const WorkspacePlanSelection: React.FC = () => {
         >
           <SubscriptionCard
             title="Free plan"
+            subTitle="1 editor only"
             features={
               isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
             }
@@ -188,6 +189,7 @@ export const WorkspacePlanSelection: React.FC = () => {
             <>
               <SubscriptionCard
                 title={isPatron ? 'Patron' : 'Personal Pro'}
+                subTitle="1 editor only"
                 features={PERSONAL_FEATURES}
                 cta={personalProCta}
                 isHighlighted
@@ -216,6 +218,7 @@ export const WorkspacePlanSelection: React.FC = () => {
           ) : (
             <SubscriptionCard
               title="Team Pro"
+              subTitle="Up to 20 editors"
               features={TEAM_PRO_FEATURES}
               cta={teamProCta}
               isHighlighted

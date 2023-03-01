@@ -82,6 +82,7 @@ export type CTA = CTABase & CTAOptional;
 
 type SubscriptionCardProps = {
   title: string;
+  subTitle: string;
   children: React.ReactNode;
   features: Feature[];
   isHighlighted?: boolean;
@@ -94,6 +95,7 @@ type SubscriptionCardProps = {
 
 export const SubscriptionCard = ({
   title,
+  subTitle,
   children,
   features,
   isHighlighted,
@@ -106,9 +108,12 @@ export const SubscriptionCard = ({
       gap={9}
       direction="vertical"
     >
-      <Text size={16} weight="500">
-        {title}
-      </Text>
+      <Stack direction="vertical" gap={1}>
+        <Text size={16} weight="500">
+          {title}
+        </Text>
+        <Text size={13}>{subTitle}</Text>
+      </Stack>
       {children}
       <Stack
         as="ul"

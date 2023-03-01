@@ -227,6 +227,7 @@ export const ProUpgrade = () => {
           >
             <SubscriptionCard
               title="Free plan"
+              subTitle="1 editor only"
               features={
                 isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
               }
@@ -243,6 +244,7 @@ export const ProUpgrade = () => {
               <>
                 <SubscriptionCard
                   title="Personal Pro"
+                  subTitle="1 editor only"
                   features={
                     isPro ? PERSONAL_FEATURES : PERSONAL_FEATURES_WITH_PILLS
                   }
@@ -275,6 +277,7 @@ export const ProUpgrade = () => {
               <>
                 <SubscriptionCard
                   title="Team Pro"
+                  subTitle="Up to 20 editors"
                   features={
                     isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
                   }
@@ -319,6 +322,7 @@ export const ProUpgrade = () => {
 
                 <SubscriptionCard
                   title="Organization"
+                  subTitle="Unlimited editors"
                   features={ORG_FEATURES}
                   cta={
                     hasCustomSubscription
