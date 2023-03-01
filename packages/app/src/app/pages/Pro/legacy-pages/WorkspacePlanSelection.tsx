@@ -21,6 +21,7 @@ import { formatCurrency } from 'app/utils/currency';
 import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
+import { StyledPricingDetailsText } from '../components/elements';
 
 const getBillingText = ({
   quantity,
@@ -188,12 +189,12 @@ export const WorkspacePlanSelection: React.FC = () => {
               isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
             }
           >
-            <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+            <Stack gap={1} direction="vertical">
               <Text aria-hidden size={32} weight="400">
                 $0
               </Text>
               <VisuallyHidden>Zero dollar</VisuallyHidden>
-              <Text>forever</Text>
+              <StyledPricingDetailsText>forever</StyledPricingDetailsText>
             </Stack>
           </SubscriptionCard>
 
@@ -211,16 +212,16 @@ export const WorkspacePlanSelection: React.FC = () => {
                   </Text>
                   {subscription.billingInterval ===
                   SubscriptionInterval.Yearly ? (
-                    <Text>
+                    <StyledPricingDetailsText>
                       charged annually on{' '}
                       {format(new Date(subscription.nextBillDate), 'MMM dd')}
-                    </Text>
+                    </StyledPricingDetailsText>
                   ) : (
-                    <Text>
+                    <StyledPricingDetailsText>
                       charged on the{' '}
                       {format(new Date(subscription.nextBillDate), 'do')} of
                       each month
-                    </Text>
+                    </StyledPricingDetailsText>
                   )}
                 </Stack>
               </SubscriptionCard>
@@ -237,14 +238,14 @@ export const WorkspacePlanSelection: React.FC = () => {
                       amount: pro?.prices?.team.year.usd / 12,
                     })}
                   </Text>
-                  <Text>
+                  <StyledPricingDetailsText>
                     per editor per month, billed anually, or{' '}
                     {formatCurrency({
                       currency: 'USD',
                       amount: pro?.prices?.team.month.usd,
                     })}{' '}
                     per month.
-                  </Text>
+                  </StyledPricingDetailsText>
                 </Stack>
               </SubscriptionCard>
             </>
