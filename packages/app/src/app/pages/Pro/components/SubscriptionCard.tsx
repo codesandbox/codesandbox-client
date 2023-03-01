@@ -114,11 +114,13 @@ export const SubscriptionCard = ({
         as="ul"
         direction="vertical"
         gap={1}
-        // Reset ul styles
         css={{
+          // Reset ul styles
           margin: 0,
           padding: 0,
           listStyle: 'none',
+          // Fill up space
+          flex: 1,
         }}
       >
         {features.map(feature => (
