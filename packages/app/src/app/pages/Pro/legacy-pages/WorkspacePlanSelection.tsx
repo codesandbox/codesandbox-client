@@ -15,7 +15,9 @@ import {
   PERSONAL_FEATURES,
   TEAM_FREE_FEATURES,
   TEAM_PRO_FEATURES,
+  TEAM_PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
+import { formatCurrency } from 'app/utils/currency';
 import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
@@ -45,6 +47,7 @@ export const WorkspacePlanSelection: React.FC = () => {
     activeTeam,
     activeTeamInfo,
     dashboard,
+    pro,
   } = useAppState();
   const {
     setActiveTeam,
@@ -96,6 +99,18 @@ export const WorkspacePlanSelection: React.FC = () => {
       modalOpened({ modal: 'legacyPayment' });
     },
     variant: 'light',
+  };
+
+  const upsellTeamProCta: CTA = {
+    text: 'Upgrade',
+    variant: 'highlight',
+    onClick: () => {
+      track('legacy subscription page - upsell team pro cta clicked', {
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
+      modalOpened({ modal: 'selectWorkspaceToUpgrade' });
+    },
   };
 
   const teamProCta: CTA =
@@ -183,31 +198,56 @@ export const WorkspacePlanSelection: React.FC = () => {
           </SubscriptionCard>
 
           {isPersonalSpace ? (
-            <SubscriptionCard
-              title={isPatron ? 'Patron' : 'Personal Pro'}
-              features={PERSONAL_FEATURES}
-              cta={personalProCta}
-              isHighlighted
-            >
-              <Stack gap={1} direction="vertical">
-                <Text size={32} weight="500">
-                  {`${subscription.currency || '$'}${subscription.unitPrice}`}
-                </Text>
-                {subscription.billingInterval ===
-                SubscriptionInterval.Yearly ? (
-                  <Text>
-                    charged annually on{' '}
-                    {format(new Date(subscription.nextBillDate), 'MMM dd')}
+            <>
+              <SubscriptionCard
+                title={isPatron ? 'Patron' : 'Personal Pro'}
+                features={PERSONAL_FEATURES}
+                cta={personalProCta}
+                isHighlighted
+              >
+                <Stack gap={1} direction="vertical">
+                  <Text size={32} weight="500">
+                    {`${subscription.currency || '$'}${subscription.unitPrice}`}
                   </Text>
-                ) : (
-                  <Text>
-                    charged on the{' '}
-                    {format(new Date(subscription.nextBillDate), 'do')} of each
-                    month
+                  {subscription.billingInterval ===
+                  SubscriptionInterval.Yearly ? (
+                    <Text>
+                      charged annually on{' '}
+                      {format(new Date(subscription.nextBillDate), 'MMM dd')}
+                    </Text>
+                  ) : (
+                    <Text>
+                      charged on the{' '}
+                      {format(new Date(subscription.nextBillDate), 'do')} of
+                      each month
+                    </Text>
+                  )}
+                </Stack>
+              </SubscriptionCard>
+              <SubscriptionCard
+                title="Team Pro"
+                features={TEAM_PRO_FEATURES_WITH_PILLS}
+                isHighlighted
+                cta={upsellTeamProCta}
+              >
+                <Stack gap={1} direction="vertical">
+                  <Text size={32} weight="500">
+                    {formatCurrency({
+                      currency: 'USD',
+                      amount: pro?.prices?.team.year.usd / 12,
+                    })}
                   </Text>
-                )}
-              </Stack>
-            </SubscriptionCard>
+                  <Text>
+                    per editor per month, billed anually, or{' '}
+                    {formatCurrency({
+                      currency: 'USD',
+                      amount: pro?.prices?.team.month.usd,
+                    })}{' '}
+                    per month.
+                  </Text>
+                </Stack>
+              </SubscriptionCard>
+            </>
           ) : (
             <SubscriptionCard
               title="Team Pro"
