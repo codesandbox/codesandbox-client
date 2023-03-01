@@ -82,13 +82,10 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
                 padding: 0,
               }}
               onClick={() => {
-                track(
-                  'subscription page - upsell team pro create team clicked',
-                  {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  }
-                );
+                track('upsell team pro - create team clicked', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
 
                 openCreateTeamModal();
               }}
@@ -118,7 +115,7 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
         <Stack gap={2} align="center" justify="flex-end">
           <Button
             onClick={() => {
-              track('subscription page - upsell team pro modal closed', {
+              track('upsell team pro - modal closed', {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });
@@ -138,7 +135,7 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
             loading={checkout.status === 'loading'}
             variant="primary"
             onClick={() => {
-              track('subscription page - upsell team pro checkout clicked', {
+              track('upsell team pro - checkout clicked', {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });
