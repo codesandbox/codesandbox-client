@@ -18,9 +18,8 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
   const { dashboard, personalWorkspaceId, user } = useAppState();
   const { openCreateTeamModal, modalClosed } = useActions();
   const [checkout, createCheckout] = useCreateCheckout();
-  const [selectedTeam, setSelectedTeam] = React.useState(undefined);
 
-  const teamsToShow = dashboard.teams.filter(team => {
+  const upgradeableTeams = dashboard.teams.filter(team => {
     if (
       team.id === personalWorkspaceId ||
       team.subscription?.type === SubscriptionType.TeamPro
@@ -37,11 +36,9 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
     return teamAdmins.includes(user?.id);
   });
 
-  React.useEffect(() => {
-    if (!selectedTeam) {
-      setSelectedTeam(teamsToShow[0]?.id);
-    }
-  }, [selectedTeam, teamsToShow]);
+  const [selectedTeam, setSelectedTeam] = React.useState(
+    upgradeableTeams[0]?.id
+  );
 
   return (
     <Alert title="Choose a team to upgrade">
@@ -61,9 +58,9 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
         >
           Team Pro plan is only available for teams.
         </Text>
-        {teamsToShow.length > 0 ? (
+        {upgradeableTeams.length > 0 ? (
           <Select onChange={e => setSelectedTeam(e.target.value)}>
-            {teamsToShow.map(team => (
+            {upgradeableTeams.map(team => (
               <option key={team.id} value={team.id}>
                 {team.name}
               </option>
