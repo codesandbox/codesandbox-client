@@ -1,10 +1,10 @@
-import { MessageStripe } from '@codesandbox/components';
+import { MessageStripe, Link, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useAppState } from 'app/overmind';
 
@@ -40,7 +40,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
                 href: checkout.url,
               }
             : {
-                as: Link,
+                as: RouterLink,
                 to: '/pro',
               })}
           onClick={() => {
@@ -110,3 +110,24 @@ export const MaxReposFreeTeam: React.FC = () => {
     </MessageStripe>
   );
 };
+
+export const TemporaryWarningForWorkspaceScopesMigration: React.FC<{
+  onDismiss?: () => void;
+}> = ({ onDismiss }) => {
+  return (
+    <MessageStripe
+      justify="space-between"
+      onDismiss={onDismiss}
+      variant="neutral"
+    >
+      <Text>
+        Is your repository gone? It is not deleted, but needs to be re-imported
+        due to a change. If you miss any work in progress, please{' '}
+        <Link href="https://codesandbox.io/support">contact us</Link> to recover
+        it
+      </Text>
+    </MessageStripe>
+  );
+};
+
+//
