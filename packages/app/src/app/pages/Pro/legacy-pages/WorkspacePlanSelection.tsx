@@ -55,10 +55,14 @@ export const WorkspacePlanSelection: React.FC = () => {
   } = useActions();
 
   const location = useLocation();
-  const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
+  const {
+    isPersonalSpace,
+    isTeamSpace,
+    isTeamAdmin,
+  } = useWorkspaceAuthorization();
   // const isPersonalSpace = false; // DEBUG
   // const isTeamAdmin = true; // DEBUG
-  const { subscription, isPatron } = useWorkspaceSubscription();
+  const { subscription, isPatron, isPro, isFree } = useWorkspaceSubscription();
 
   // Based on the 'type' search param we redirect to the personal pro page if
   // it's not yet active.
@@ -149,8 +153,19 @@ export const WorkspacePlanSelection: React.FC = () => {
             align="center"
             lineHeight="56px"
             margin={0}
+            css={{
+              maxWidth: '976px',
+              overflow: 'initial',
+              whiteSpace: 'wrap',
+            }}
           >
-            You have an active Pro subscription.
+            {isPro && isPersonalSpace
+              ? 'You have an active Personal Pro subscription'
+              : null}
+            {isPro && isTeamSpace
+              ? 'You have an active Team Pro subscription'
+              : null}
+            {isFree ? 'Upgrade for Pro features' : null}
           </Text>
         </Stack>
         <Stack

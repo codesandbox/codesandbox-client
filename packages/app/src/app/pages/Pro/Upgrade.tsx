@@ -73,7 +73,12 @@ export const ProUpgrade = () => {
     }
   }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
 
-  const { isPersonalSpace, isTeamAdmin, isAdmin } = useWorkspaceAuthorization();
+  const {
+    isPersonalSpace,
+    isTeamSpace,
+    isTeamAdmin,
+    isAdmin,
+  } = useWorkspaceAuthorization();
   const { isFree, isPro } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
   // const isPro = true; // DEBUG
@@ -202,10 +207,19 @@ export const ProUpgrade = () => {
               align="center"
               lineHeight="56px"
               margin={0}
+              css={{
+                maxWidth: '976px',
+                overflow: 'initial',
+                whiteSpace: 'wrap',
+              }}
             >
-              {isPro
-                ? 'You have an active Pro subscription.'
-                : 'Upgrade for Pro features'}
+              {isPro && isPersonalSpace
+                ? 'You have an active Personal Pro subscription'
+                : null}
+              {isPro && isTeamSpace
+                ? 'You have an active Team Pro subscription'
+                : null}
+              {isFree ? 'Upgrade for Pro features' : null}
             </Text>
           </Stack>
 
@@ -259,12 +273,9 @@ export const ProUpgrade = () => {
                       })}
                     </Text>
                     <StyledPricingDetailsText>
+                      <div>per month,</div>
                       <div>
-                        per month
-                        <br />, billed anually
-                      </div>{' '}
-                      <div>
-                        or{' '}
+                        billed anually, or{' '}
                         {formatCurrency({
                           currency: 'USD',
                           amount: pro?.prices?.individual.month.usd,

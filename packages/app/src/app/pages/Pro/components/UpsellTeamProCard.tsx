@@ -47,7 +47,7 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
           },
         }
       : {
-          text: 'Create team',
+          text: 'Create team and Upgrade',
           variant: 'highlight',
           onClick: () => {
             track(`${trackingLocation} - upsell team pro create team clicked`, {
