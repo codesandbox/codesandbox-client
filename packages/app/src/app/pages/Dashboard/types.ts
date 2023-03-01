@@ -148,6 +148,7 @@ export type DashboardNewBranch = {
   };
   workspaceId?: string;
   disabled?: boolean;
+  onClick: () => void;
 };
 
 export type DashboardRepository = {
