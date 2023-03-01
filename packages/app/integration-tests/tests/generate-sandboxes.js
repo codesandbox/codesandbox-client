@@ -5,7 +5,14 @@ import { exec } from 'child_process';
 
 import { loadSandboxRetry, SECOND } from './utils';
 
-const SANDBOXES = ['gpgpu-curl-noise-yq6y8', 'vx55c'];
+const SANDBOXES = [
+  'faceyspacey-redux-first-router-codesandbox',
+  'mZRjw05yp',
+  'ymjwwrw2rj',
+  'j2wpjwqj93',
+  '31kn7voz4q',
+  'zx22owojr3',
+];
 
 async function runTests() {
   console.log('Launching puppeteer');
@@ -55,4 +62,9 @@ cp.stdout.on('data', data => {
     console.log('CSB: Starting tests');
     runTests();
   }
+});
+
+cp.stderr.on('data', data => {
+  const dataString = data.toString();
+  console.error(dataString);
 });
