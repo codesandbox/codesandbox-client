@@ -120,6 +120,15 @@ export const ProUpgrade = () => {
         },
       };
 
+  // Used in the personal view if the account is free.
+  const upsellTeamProCta: CTA = {
+    text: 'Upgrade',
+    variant: 'highlight',
+    onClick: () => {
+      alert('foo');
+    },
+  };
+
   const teamProCta: CTA =
     isTeamAdmin && !hasCustomSubscription && isPro
       ? {
@@ -237,34 +246,61 @@ export const ProUpgrade = () => {
             </SubscriptionCard>
 
             {isPersonalSpace ? (
-              <SubscriptionCard
-                title="Personal Pro"
-                features={
-                  isPro ? PERSONAL_FEATURES : PERSONAL_FEATURES_WITH_PILLS
-                }
-                cta={personalProCta}
-                isHighlighted
-              >
-                <Stack gap={1} direction="vertical">
-                  <Text size={32} weight="500">
-                    {formatCurrency({
-                      currency: 'USD',
-                      amount: pro?.prices?.individual.year.usd / 12,
-                    })}
-                  </Text>
-                  <Text>
-                    <div>per month, billed anually</div>{' '}
-                    <div>
-                      or{' '}
+              <>
+                <SubscriptionCard
+                  title="Personal Pro"
+                  features={
+                    isPro ? PERSONAL_FEATURES : PERSONAL_FEATURES_WITH_PILLS
+                  }
+                  cta={personalProCta}
+                  isHighlighted
+                >
+                  <Stack gap={1} direction="vertical">
+                    <Text size={32} weight="500">
                       {formatCurrency({
                         currency: 'USD',
-                        amount: pro?.prices?.individual.month.usd,
-                      })}{' '}
-                      per month.
-                    </div>
-                  </Text>
-                </Stack>
-              </SubscriptionCard>
+                        amount: pro?.prices?.individual.year.usd / 12,
+                      })}
+                    </Text>
+                    <Text>
+                      <div>per month, billed anually</div>{' '}
+                      <div>
+                        or{' '}
+                        {formatCurrency({
+                          currency: 'USD',
+                          amount: pro?.prices?.individual.month.usd,
+                        })}{' '}
+                        per month.
+                      </div>
+                    </Text>
+                  </Stack>
+                </SubscriptionCard>
+                {isFree ? (
+                  <SubscriptionCard
+                    title="Team Pro"
+                    features={TEAM_PRO_FEATURES_WITH_PILLS}
+                    isHighlighted
+                    cta={upsellTeamProCta}
+                  >
+                    <Stack gap={1} direction="vertical">
+                      <Text size={32} weight="500">
+                        {formatCurrency({
+                          currency: 'USD',
+                          amount: pro?.prices?.team.year.usd / 12,
+                        })}
+                      </Text>
+                      <Text>
+                        per editor per month, billed anually, or{' '}
+                        {formatCurrency({
+                          currency: 'USD',
+                          amount: pro?.prices?.team.month.usd,
+                        })}{' '}
+                        per month.
+                      </Text>
+                    </Stack>
+                  </SubscriptionCard>
+                ) : null}
+              </>
             ) : (
               <>
                 <SubscriptionCard
