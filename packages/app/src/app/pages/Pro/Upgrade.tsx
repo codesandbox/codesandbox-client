@@ -198,29 +198,25 @@ export const ProUpgrade = () => {
               personalWorkspaceId={personalWorkspaceId}
               activeTeamInfo={activeTeamInfo}
             />
-
-            <Text
-              as="h1"
-              fontFamily="everett"
-              size={48}
-              weight="500"
-              align="center"
-              lineHeight="56px"
-              margin={0}
-              css={{
-                maxWidth: '976px',
-                overflow: 'initial',
-                whiteSpace: 'wrap',
-              }}
-            >
-              {isPro && isPersonalSpace
-                ? 'You have an active Personal Pro subscription'
-                : null}
-              {isPro && isTeamSpace
-                ? 'You have an active Team Pro subscription'
-                : null}
-              {isFree ? 'Upgrade for Pro features' : null}
-            </Text>
+            <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
+              <Text
+                as="h1"
+                fontFamily="everett"
+                size={48}
+                weight="500"
+                align="center"
+                lineHeight="56px"
+                margin={0}
+              >
+                {isPro && isPersonalSpace
+                  ? 'You have an active Personal Pro subscription'
+                  : null}
+                {isPro && isTeamSpace
+                  ? 'You have an active Team Pro subscription'
+                  : null}
+                {isFree ? 'Upgrade for Pro features' : null}
+              </Text>
+            </Element>
           </Stack>
 
           <Stack

@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
-import { Stack, Text } from '@codesandbox/components';
+import { Element, Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
@@ -145,28 +145,25 @@ export const WorkspacePlanSelection: React.FC = () => {
             activeTeamInfo={activeTeamInfo}
           />
 
-          <Text
-            as="h1"
-            fontFamily="everett"
-            size={48}
-            weight="500"
-            align="center"
-            lineHeight="56px"
-            margin={0}
-            css={{
-              maxWidth: '976px',
-              overflow: 'initial',
-              whiteSpace: 'wrap',
-            }}
-          >
-            {isPro && isPersonalSpace
-              ? 'You have an active Personal Pro subscription'
-              : null}
-            {isPro && isTeamSpace
-              ? 'You have an active Team Pro subscription'
-              : null}
-            {isFree ? 'Upgrade for Pro features' : null}
-          </Text>
+          <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
+            <Text
+              as="h1"
+              fontFamily="everett"
+              size={48}
+              weight="500"
+              align="center"
+              lineHeight="56px"
+              margin={0}
+            >
+              {isPro && isPersonalSpace
+                ? 'You have an active Personal Pro subscription'
+                : null}
+              {isPro && isTeamSpace
+                ? 'You have an active Team Pro subscription'
+                : null}
+              {isFree ? 'Upgrade for Pro features' : null}
+            </Text>
+          </Element>
         </Stack>
         <Stack
           gap={2}
