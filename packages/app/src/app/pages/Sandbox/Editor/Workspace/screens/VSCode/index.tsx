@@ -24,7 +24,7 @@ export const VSCode = () => {
           servers, databases, and much more.
         </Text>
         <Text as="p" variant="muted" margin={0}>
-          Don&apos;t worry-this sandbox will not be deleted. After converting,
+          Don&apos;t worry&mdash;this sandbox will not be deleted. After converting,
           you will have both versions.
         </Text>
         <Text as="p" variant="muted" margin={0}>
