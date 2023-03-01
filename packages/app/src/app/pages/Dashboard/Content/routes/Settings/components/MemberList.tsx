@@ -69,7 +69,9 @@ export const MemberList: React.FC<MemberListProps> = ({
                 css={{ height: '100%', width: '100%' }}
               >
                 <Avatar user={user} />
-                <Text size={3}>{user.username}</Text>
+                <Text size={3} style={{ color: 'white' }}>
+                  {user.username}
+                </Text>
               </Stack>
             </Column>
             <Column span={6}>
@@ -82,12 +84,14 @@ export const MemberList: React.FC<MemberListProps> = ({
                   <Menu>
                     <Menu.Button
                       style={{ paddingLeft: 0, paddingRight: 0 }}
-                      css={css({ fontSize: 3, fontWeight: 'normal' })}
+                      css={css({
+                        fontSize: 3,
+                        fontWeight: 'normal',
+                        color: 'grays.200',
+                      })}
                     >
-                      <Text variant="muted">
-                        {permissionMap[getPermission(user)]}
-                      </Text>
-                      <Icon name="caret" size={8} marginLeft={1} />
+                      <Text>{permissionMap[getPermission(user)]}</Text>
+                      <Icon name="chevronDown" size={8} marginLeft={1} />
                     </Menu.Button>
                     <Menu.List>
                       {permissionActions.map(action => (
@@ -119,7 +123,7 @@ export const MemberList: React.FC<MemberListProps> = ({
                   <Menu>
                     <Menu.IconButton
                       name="more"
-                      size={9}
+                      size={14}
                       title="Member options"
                     />
                     <Menu.List>

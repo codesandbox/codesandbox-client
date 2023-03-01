@@ -586,8 +586,8 @@ export const WorkspaceSettings = () => {
                   right: 2,
                 })}
               >
-                <Text variant="muted">{ROLES_TEXT_MAP[newMemberRole]}</Text>
-                <Icon name="caret" size={8} marginLeft={1} />
+                <Text> {ROLES_TEXT_MAP[newMemberRole]}</Text>
+                <Icon name="chevronDown" size={8} marginLeft={1} />
               </Menu.Button>
               <Menu.List>
                 {rolesThatUserCanInvite.map(role => (
@@ -613,7 +613,7 @@ export const WorkspaceSettings = () => {
             loading={inviteLoading}
             style={{ width: 'auto', marginLeft: 8 }}
           >
-            Add Member
+            Add team member
           </Button>
 
           <Button
@@ -621,6 +621,12 @@ export const WorkspaceSettings = () => {
             onClick={onCopyInviteUrl}
             style={{ width: 'auto', marginLeft: 8 }}
           >
+            <Icon
+              name="link"
+              size={20}
+              title="URL"
+              css={css({ paddingRight: 2 })}
+            />
             Copy Invite URL
           </Button>
         </Stack>

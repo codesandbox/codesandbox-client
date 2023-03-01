@@ -104,7 +104,7 @@ export const UserSearchInput = ({
           <InputWithoutTypes
             {...props}
             {...getInputProps({
-              placeholder: 'Enter username or email',
+              placeholder: 'Enter username or email to invite team member',
             })}
             autoFocus
             spellcheck="false"
