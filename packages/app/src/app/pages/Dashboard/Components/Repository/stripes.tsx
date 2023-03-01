@@ -122,14 +122,14 @@ export const TemporaryWarningForWorkspaceScopesMigration: React.FC<{
     >
       <Text>
         Is your repository gone? It is not deleted, but needs to be re-imported
-        due to a change. If you miss any work in progress, please{' '}
+        due to a change. Please{' '}
         <Link
           css={{ textDecoration: 'underline', fontWeight: 'bold' }}
-          href="https://codesandbox.io/support"
+          href="https://www.loom.com/share/a7a7a44e7ef547358ab5696d6d328156"
         >
-          contact us
-        </Link>{' '}
-        to recover it
+          watch this video for more details
+        </Link>
+        .
       </Text>
     </MessageStripe>
   );
