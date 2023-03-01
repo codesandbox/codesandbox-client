@@ -34,6 +34,7 @@ import { SubscriptionCard } from './components/SubscriptionCard';
 import type { CTA } from './components/SubscriptionCard';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
+import { StyledPricingDetailsText } from './components/elements';
 
 export const ProUpgrade = () => {
   const {
@@ -243,11 +244,11 @@ export const ProUpgrade = () => {
                 isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
               }
             >
-              <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+              <Stack gap={1} direction="vertical">
                 <Text size={32} weight="400">
                   $0
                 </Text>
-                <Text>forever</Text>
+                <StyledPricingDetailsText>forever</StyledPricingDetailsText>
               </Stack>
             </SubscriptionCard>
 
@@ -268,7 +269,7 @@ export const ProUpgrade = () => {
                         amount: pro?.prices?.individual.year.usd / 12,
                       })}
                     </Text>
-                    <Text>
+                    <StyledPricingDetailsText>
                       <div>per month, billed anually</div>{' '}
                       <div>
                         or{' '}
@@ -278,7 +279,7 @@ export const ProUpgrade = () => {
                         })}{' '}
                         per month.
                       </div>
-                    </Text>
+                    </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
                 <SubscriptionCard
@@ -294,14 +295,14 @@ export const ProUpgrade = () => {
                         amount: pro?.prices?.team.year.usd / 12,
                       })}
                     </Text>
-                    <Text>
+                    <StyledPricingDetailsText>
                       per editor per month, billed anually, or{' '}
                       {formatCurrency({
                         currency: 'USD',
                         amount: pro?.prices?.team.month.usd,
                       })}{' '}
                       per month.
-                    </Text>
+                    </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
               </>
@@ -340,14 +341,14 @@ export const ProUpgrade = () => {
                         amount: pro?.prices?.team.year.usd / 12,
                       })}
                     </Text>
-                    <Text>
+                    <StyledPricingDetailsText>
                       per editor per month, billed anually, or{' '}
                       {formatCurrency({
                         currency: 'USD',
                         amount: pro?.prices?.team.month.usd,
                       })}{' '}
                       per month.
-                    </Text>
+                    </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
 
@@ -384,14 +385,14 @@ export const ProUpgrade = () => {
                   }
                   isHighlighted={hasCustomSubscription}
                 >
-                  <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+                  <Stack gap={1} direction="vertical">
                     <Text size={32} weight="400">
                       custom
                     </Text>
-                    <Text>
+                    <StyledPricingDetailsText>
                       <div>tailor-made plan.</div>
                       <div>bulk pricing for seats.</div>
-                    </Text>
+                    </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
               </>
