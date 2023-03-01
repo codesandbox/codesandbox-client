@@ -37,6 +37,7 @@ import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptio
 export const ProUpgrade = () => {
   const {
     pro: { pageMounted },
+    modalOpened,
     setActiveTeam,
   } = useActions();
   const {
@@ -125,7 +126,8 @@ export const ProUpgrade = () => {
     text: 'Upgrade',
     variant: 'highlight',
     onClick: () => {
-      alert('foo');
+      track('');
+      modalOpened({ modal: 'selectWorkspaceToUpgrade' });
     },
   };
 
