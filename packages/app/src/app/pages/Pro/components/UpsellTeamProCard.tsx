@@ -4,6 +4,7 @@ import { Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TEAM_PRO_FEATURES_WITH_PILLS } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
+import { SubscriptionType, TeamMemberAuthorization } from 'app/graphql/types';
 
 import { SubscriptionCard } from './SubscriptionCard';
 import type { CTA } from './SubscriptionCard';
@@ -12,20 +13,50 @@ import { StyledPricingDetailsText } from './elements';
 export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   trackingLocation,
 }) => {
-  const { pro } = useAppState();
-  const { modalOpened } = useActions();
+  const { dashboard, pro, personalWorkspaceId, user } = useAppState();
+  const { modalOpened, openCreateTeamModal } = useActions();
 
-  const upsellTeamProCta: CTA = {
-    text: 'Upgrade',
-    variant: 'highlight',
-    onClick: () => {
-      track(`${trackingLocation} - upsell team pro upgrade clicked`, {
-        codesandbox: 'V1',
-        event_source: 'UI',
-      });
-      modalOpened({ modal: 'selectWorkspaceToUpgrade' });
-    },
-  };
+  const upgradeableTeams = dashboard.teams.filter(team => {
+    if (
+      team.id === personalWorkspaceId ||
+      team.subscription?.type === SubscriptionType.TeamPro
+    ) {
+      return false;
+    }
+
+    const teamAdmins = team.userAuthorizations
+      .filter(
+        ({ authorization }) => authorization === TeamMemberAuthorization.Admin
+      )
+      .map(({ userId }) => userId);
+
+    return teamAdmins.includes(user?.id);
+  });
+
+  const upsellTeamProCta: CTA =
+    upgradeableTeams.length > 0
+      ? {
+          text: 'Upgrade',
+          variant: 'highlight',
+          onClick: () => {
+            track(`${trackingLocation} - upsell team pro upgrade clicked`, {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+            modalOpened({ modal: 'selectWorkspaceToUpgrade' });
+          },
+        }
+      : {
+          text: 'Create team',
+          variant: 'highlight',
+          onClick: () => {
+            track(`${trackingLocation} - upsell team pro create team clicked`, {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+            openCreateTeamModal();
+          },
+        };
 
   return (
     <SubscriptionCard
