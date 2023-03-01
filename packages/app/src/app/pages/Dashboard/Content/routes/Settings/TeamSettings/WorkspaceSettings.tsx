@@ -327,7 +327,9 @@ export const WorkspaceSettings = () => {
               <Stack justify="flex-end">
                 <Button
                   variant="link"
-                  css={{ width: 100 }}
+                  css={{
+                    width: 100,
+                  }}
                   disabled={loading}
                   onClick={() => setEditing(false)}
                 >
@@ -619,7 +621,14 @@ export const WorkspaceSettings = () => {
           <Button
             variant="secondary"
             onClick={onCopyInviteUrl}
-            style={{ width: 'auto', marginLeft: 8 }}
+            css={css({
+              width: 'auto',
+              marginLeft: 2,
+              color: '#999',
+              ':hover': {
+                color: '#f5f5f5',
+              },
+            })}
           >
             <Icon
               name="link"
