@@ -2343,8 +2343,6 @@ export const createDraftBranch = async (
 
     const branchName = response.createBranch.name;
 
-    state.dashboard.creatingBranch = false;
-
     window.location.href = v2BranchUrl({
       workspaceId: teamId,
       owner,
