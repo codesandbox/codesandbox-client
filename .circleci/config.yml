@@ -124,7 +124,7 @@ executors:
     working_directory: ~/codesandbox-client
   node-with-puppeteer:
     docker:
-      - image: codesandbox/node-puppeteer
+      - image: ghcr.io/puppeteer/puppeteer:16.1.0
     working_directory: ~/codesandbox-client
   docker_machine:
     machine:
