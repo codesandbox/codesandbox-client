@@ -126,7 +126,10 @@ export const ProUpgrade = () => {
     text: 'Upgrade',
     variant: 'highlight',
     onClick: () => {
-      track('');
+      track('subscription page - upsell team pro cta clicked', {
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
       modalOpened({ modal: 'selectWorkspaceToUpgrade' });
     },
   };
@@ -277,31 +280,29 @@ export const ProUpgrade = () => {
                     </Text>
                   </Stack>
                 </SubscriptionCard>
-                {isFree ? (
-                  <SubscriptionCard
-                    title="Team Pro"
-                    features={TEAM_PRO_FEATURES_WITH_PILLS}
-                    isHighlighted
-                    cta={upsellTeamProCta}
-                  >
-                    <Stack gap={1} direction="vertical">
-                      <Text size={32} weight="500">
-                        {formatCurrency({
-                          currency: 'USD',
-                          amount: pro?.prices?.team.year.usd / 12,
-                        })}
-                      </Text>
-                      <Text>
-                        per editor per month, billed anually, or{' '}
-                        {formatCurrency({
-                          currency: 'USD',
-                          amount: pro?.prices?.team.month.usd,
-                        })}{' '}
-                        per month.
-                      </Text>
-                    </Stack>
-                  </SubscriptionCard>
-                ) : null}
+                <SubscriptionCard
+                  title="Team Pro"
+                  features={TEAM_PRO_FEATURES_WITH_PILLS}
+                  isHighlighted
+                  cta={upsellTeamProCta}
+                >
+                  <Stack gap={1} direction="vertical">
+                    <Text size={32} weight="500">
+                      {formatCurrency({
+                        currency: 'USD',
+                        amount: pro?.prices?.team.year.usd / 12,
+                      })}
+                    </Text>
+                    <Text>
+                      per editor per month, billed anually, or{' '}
+                      {formatCurrency({
+                        currency: 'USD',
+                        amount: pro?.prices?.team.month.usd,
+                      })}{' '}
+                      per month.
+                    </Text>
+                  </Stack>
+                </SubscriptionCard>
               </>
             ) : (
               <>
