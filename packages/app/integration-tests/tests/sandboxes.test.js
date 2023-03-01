@@ -1,4 +1,6 @@
 import puppeteer from 'puppeteer';
+import path from 'path';
+
 import { loadSandboxRetry, SECOND } from './utils';
 
 const SANDBOXES = [
@@ -96,7 +98,7 @@ describe('sandboxes', () => {
             },
             customSnapshotIdentifier: identifier,
           });
-        } catch(err) {
+        } catch (err) {
           const screenshotFilePath = path.join(
             __dirname,
             `__image_snapshots__/__diff_output__`,
