@@ -259,7 +259,10 @@ export const ProUpgrade = () => {
                       })}
                     </Text>
                     <StyledPricingDetailsText>
-                      <div>per month, billed anually</div>{' '}
+                      <div>
+                        per month
+                        <br />, billed anually
+                      </div>{' '}
                       <div>
                         or{' '}
                         {formatCurrency({
@@ -310,7 +313,8 @@ export const ProUpgrade = () => {
                       })}
                     </Text>
                     <StyledPricingDetailsText>
-                      per editor per month, billed anually, or{' '}
+                      per editor per month,
+                      <br /> billed anually, or{' '}
                       {formatCurrency({
                         currency: 'USD',
                         amount: pro?.prices?.team.month.usd,

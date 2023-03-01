@@ -228,7 +228,7 @@ export const WorkspacePlanSelection: React.FC = () => {
                   ${subscription.unitPrice}
                 </Text>
                 <Text>
-                  <div>per editor</div>
+                  <div>per editor{isTeamAdmin ? ',' : null}</div>
                   {isTeamAdmin ? (
                     <div>
                       {getBillingText({

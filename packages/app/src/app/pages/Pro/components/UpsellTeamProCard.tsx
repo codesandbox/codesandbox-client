@@ -74,7 +74,8 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
           })}
         </Text>
         <StyledPricingDetailsText>
-          per editor per month, billed anually, or{' '}
+          per editor per month,
+          <br /> billed anually, or{' '}
           {formatCurrency({
             currency: 'USD',
             amount: pro?.prices?.team.month.usd,
