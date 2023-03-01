@@ -9,7 +9,7 @@ import {
 import { useUpgradeFromV1ToV2 } from 'app/hooks/useUpgradeFromV1ToV2';
 
 export const VSCode = () => {
-  const { perform, loading, canConvert } = useUpgradeFromV1ToV2('Docker menu');
+  const { perform, loading } = useUpgradeFromV1ToV2('VSCode menu', true);
 
   return (
     <Collapsible title="VS Code" defaultOpen>
@@ -28,7 +28,7 @@ export const VSCode = () => {
           you will have both versions.
         </Text>
         <Text as="p" variant="muted" margin={0}>
-          Do you want to convert this sandbox?
+          Do you want to fork this sandbox?
         </Text>
         <Stack align="center" gap={4}>
           <Button
@@ -37,7 +37,7 @@ export const VSCode = () => {
             variant="primary"
             autoWidth
           >
-            Yes, {canConvert ? 'convert' : 'fork and convert'}
+            Yes, fork
           </Button>
           <Link
             href="https://codesandbox.io/docs/learn/sandboxes/overview?tab=cloud"
