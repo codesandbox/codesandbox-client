@@ -194,7 +194,7 @@ commands:
             xdg-utils wget
       - run:
           name: Install puppeteer
-          command: cd ~/ && yarn add puppeteer
+          command: cd ~/ && yarn add puppeteer@5.5.0
       - run:
           name: Start Test Server
           command: yarn start:test
