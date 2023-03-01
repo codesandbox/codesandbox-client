@@ -20,7 +20,7 @@ import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
 import { StyledPricingDetailsText } from '../components/elements';
-import { UpsellTeamPro } from '../components/UpsellTeamPro';
+import { UpsellTeamProCard } from '../components/UpsellTeamProCard';
 
 const getBillingText = ({
   quantity,
@@ -211,7 +211,7 @@ export const WorkspacePlanSelection: React.FC = () => {
                   )}
                 </Stack>
               </SubscriptionCard>
-              <UpsellTeamPro />
+              <UpsellTeamProCard trackingLocation="legacy subscription page" />
             </>
           ) : (
             <SubscriptionCard

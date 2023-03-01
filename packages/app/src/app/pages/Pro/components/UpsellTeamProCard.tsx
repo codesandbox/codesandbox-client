@@ -9,7 +9,9 @@ import { SubscriptionCard } from './SubscriptionCard';
 import type { CTA } from './SubscriptionCard';
 import { StyledPricingDetailsText } from './elements';
 
-export const UpsellTeamPro: React.FC = () => {
+export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
+  trackingLocation,
+}) => {
   const { pro } = useAppState();
   const { modalOpened } = useActions();
 
@@ -17,7 +19,7 @@ export const UpsellTeamPro: React.FC = () => {
     text: 'Upgrade',
     variant: 'highlight',
     onClick: () => {
-      track('subscription page - upsell team pro cta clicked', {
+      track(`${trackingLocation} - upsell team pro upgrade clicked`, {
         codesandbox: 'V1',
         event_source: 'UI',
       });

@@ -31,7 +31,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
-import { UpsellTeamPro } from './components/UpsellTeamPro';
+import { UpsellTeamProCard } from './components/UpsellTeamProCard';
 import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
@@ -269,7 +269,7 @@ export const ProUpgrade = () => {
                     </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
-                <UpsellTeamPro />
+                <UpsellTeamProCard trackingLocation="subscription page" />
               </>
             ) : (
               <>
