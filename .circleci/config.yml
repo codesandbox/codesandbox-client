@@ -105,7 +105,7 @@ aliases:
     path: /tmp/test-results
 
   - &store_artifacts
-    path: packages/app/integration-tests/tests/__image_snapshots__
+    path: packages/app/integration-tests/tests/__image_snapshots__/__diff_output__
     destination: image_snapshot_diff
 
 ################################

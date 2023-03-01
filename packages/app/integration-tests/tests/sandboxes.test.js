@@ -87,13 +87,24 @@ describe('sandboxes', () => {
         const page = await loadSandboxRetry(browser, id, loadTimeout, ATTEMPTS);
 
         const screenshot = await page.screenshot();
+        const identifier = id.split('/').join('-');
 
-        expect(screenshot).toMatchImageSnapshot({
-          customDiffConfig: {
-            threshold,
-          },
-          customSnapshotIdentifier: id.split('/').join('-'),
-        });
+        try {
+          expect(screenshot).toMatchImageSnapshot({
+            customDiffConfig: {
+              threshold,
+            },
+            customSnapshotIdentifier: identifier,
+          });
+        } catch(err) {
+          const screenshotFilePath = path.join(
+            __dirname,
+            `__image_snapshots__/__diff_output__`,
+            `${identifier}-snap.png`
+          );
+          fs.writeFileSync(screenshotFilePath, screenshot);
+          throw err;
+        }
 
         await page.close();
       },
