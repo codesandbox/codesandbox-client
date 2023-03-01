@@ -130,7 +130,12 @@ export const SubscriptionCard = ({
             justify="space-between"
             align="center"
           >
-            <Text css={{ padding: '8px 0' }}>{feature.label}</Text>
+            <Text
+              css={{ padding: '8px 0' }}
+              weight={feature.highlighted ? '700' : '400'}
+            >
+              {feature.label}
+            </Text>
             {feature.pill ? (
               <Badge variant="highlight">{feature.pill}</Badge>
             ) : null}
@@ -139,7 +144,7 @@ export const SubscriptionCard = ({
       </Stack>
       {
         // eslint-disable-next-line no-nested-ternary
-        'cta' in props ? (
+        'cta' in props && typeof props.cta !== 'undefined' ? (
           <StyledSubscriptionLink
             variant={props.cta.variant}
             {...(props.cta.href
@@ -154,7 +159,7 @@ export const SubscriptionCard = ({
           >
             {props.cta.isLoading ? 'Loading...' : props.cta.text}
           </StyledSubscriptionLink>
-        ) : 'customCta' in props ? (
+        ) : 'customCta' in props && typeof props.customCta !== 'undefined' ? (
           props.customCta
         ) : (
           <Element css={{ height: '48px' }} />
