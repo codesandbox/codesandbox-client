@@ -105,7 +105,7 @@ aliases:
     path: /tmp/test-results
 
   - &store_artifacts
-    path: packages/app/integration-tests/tests/__image_snapshots__/__diff_output__
+    path: packages/app/integration-tests/tests/__image_snapshots__
     destination: image_snapshot_diff
 
 ################################
@@ -194,7 +194,7 @@ commands:
             xdg-utils wget libgbm-dev
       - run:
           name: Install puppeteer
-          command: cd ~/ && yarn add puppeteer@18.1.0
+          command: cd ~/ && yarn add puppeteer@18.1.0 -DW
       - run:
           name: Start Test Server
           command: yarn start:test
