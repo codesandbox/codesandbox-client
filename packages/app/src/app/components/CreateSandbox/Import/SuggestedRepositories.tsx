@@ -74,8 +74,8 @@ export const SuggestedRepositories = () => {
   return githubAccounts.state === 'ready' && selectedAccount ? (
     <Stack
       direction="vertical"
-      gap={3}
-      css={{ fontFamily: 'Inter', marginBottom: '16px' }}
+      gap={4}
+      css={{ fontFamily: 'Inter', marginBottom: '16px', fontWeight: '500' }}
     >
       <Stack justify="space-between">
         <AccountSelect
@@ -94,9 +94,9 @@ export const SuggestedRepositories = () => {
 
       {githubRepos.state === 'loading' ? (
         <StyledList direction="vertical" gap={1}>
-          <SkeletonText css={{ height: '56px', width: '100%' }} />
-          <SkeletonText css={{ height: '56px', width: '100%' }} />
-          <SkeletonText css={{ height: '56px', width: '100%' }} />
+          <SkeletonText css={{ height: '64px', width: '100%' }} />
+          <SkeletonText css={{ height: '64px', width: '100%' }} />
+          <SkeletonText css={{ height: '64px', width: '100%' }} />
         </StyledList>
       ) : null}
 
@@ -113,9 +113,16 @@ export const SuggestedRepositories = () => {
 
               return (
                 <InteractiveOverlay key={repo.id}>
-                  <StyledItem isDisabled={isFree && repo.private}>
+                  <StyledItem
+                    isDisabled={isFree && repo.private}
+                    css={{
+                      height: '32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Stack gap={4} align="center">
-                      <Icon name="repository" color="#999999" />
+                      <Icon name="repository" color="#999999B3" />
                       {isFree && repo.private ? (
                         <Text size={13} variant="muted">
                           {repo.name}
@@ -150,7 +157,7 @@ export const SuggestedRepositories = () => {
                         </>
                       ) : null}
                       {repo.updatedAt ? (
-                        <Text size={13} variant="muted">
+                        <Text size={13} color="#999999B3">
                           <VisuallyHidden>Last updated</VisuallyHidden>
                           {formatDistanceStrict(
                             zonedTimeToUtc(repo.updatedAt, 'Etc/UTC'),
@@ -181,8 +188,11 @@ export const SuggestedRepositories = () => {
                           >
                             <Text
                               size={12}
-                              css={{ display: 'block', width: 152 }}
-                              variant="muted"
+                              css={{
+                                display: 'block',
+                                width: 152,
+                                color: '#999999B3',
+                              }}
                               align="right"
                             >
                               <VisuallyHidden>
@@ -253,7 +263,7 @@ const StyledIndicator = styled.span`
 const StyledItem = styled.li<{ isDisabled?: boolean }>`
   display: flex;
   justify-content: space-between;
-  padding: 14px;
+  padding: 16px;
   background-color: #1d1d1d;
   border-radius: 4px;
 
@@ -275,7 +285,9 @@ const StyledImportIndicator = styled.span`
   box-sizing: border-box;
   min-width: 80px;
   padding: 8px;
+  border-radius: 4px;
   background-color: #343434;
+  color: #c2c2c2;
   font-size: 12px;
   text-align: center;
 `;
