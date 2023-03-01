@@ -15,7 +15,6 @@ import {
   SkeletonText,
   Link,
 } from '@codesandbox/components';
-import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useActions, useAppState } from 'app/overmind';
@@ -30,10 +29,11 @@ import { AccountSelect } from './AccountSelect';
 
 export const SuggestedRepositories = () => {
   const { activeTeamInfo } = useAppState();
-  const { modals } = useActions();
+  const { modals, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
+  const [isImporting, setIsImporting] = useState(false);
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -104,13 +104,6 @@ export const SuggestedRepositories = () => {
         <>
           <StyledList as="ul" direction="vertical" gap={1}>
             {githubRepos.data?.map(repo => {
-              const importUrl = v2DefaultBranchUrl({
-                owner: repo.owner.login,
-                repoName: repo.name,
-                workspaceId: activeTeamInfo.id,
-                importFlag: true,
-              });
-
               return (
                 <InteractiveOverlay key={repo.id}>
                   <StyledItem isDisabled={isFree && repo.private}>
@@ -121,9 +114,14 @@ export const SuggestedRepositories = () => {
                           {repo.name}
                         </Text>
                       ) : (
-                        <InteractiveOverlay.Anchor
-                          href={importUrl}
+                        <InteractiveOverlay.Button
                           onClick={() => {
+                            if (isImporting) {
+                              return;
+                            }
+
+                            setIsImporting(true);
+
                             const isPersonalRepository =
                               repo.owner.login ===
                               githubAccounts?.data?.personal?.login;
@@ -137,11 +135,17 @@ export const SuggestedRepositories = () => {
                                 }
                               );
                             }
+
+                            dashboardActions.importGitHubRepository({
+                              owner: repo.owner.login,
+                              name: repo.name,
+                            });
                           }}
+                          disabled={isImporting}
                         >
                           <VisuallyHidden>Import</VisuallyHidden>
                           <Text size={13}>{repo.name}</Text>
-                        </InteractiveOverlay.Anchor>
+                        </InteractiveOverlay.Button>
                       )}
                       {repo.private ? (
                         <>
