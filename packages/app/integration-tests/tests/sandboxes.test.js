@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 import path from 'path';
+import fs from 'fs';
 
 import { loadSandboxRetry, SECOND } from './utils';
 
