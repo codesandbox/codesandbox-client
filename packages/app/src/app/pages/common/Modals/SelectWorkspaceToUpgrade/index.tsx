@@ -16,7 +16,7 @@ import { Alert } from '../Common/Alert';
 
 export const SelectWorkspaceToUpgrade: React.FC = () => {
   const { dashboard, personalWorkspaceId, user } = useAppState();
-  const { modalClosed } = useActions();
+  const { openCreateTeamModal, modalClosed } = useActions();
   const [checkout, createCheckout] = useCreateCheckout();
   const [selectedTeam, setSelectedTeam] = React.useState(undefined);
 
@@ -39,7 +39,7 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
 
   React.useEffect(() => {
     if (!selectedTeam) {
-      setSelectedTeam(teamsToShow[0].id);
+      setSelectedTeam(teamsToShow[0]?.id);
     }
   }, [selectedTeam, teamsToShow]);
 
@@ -61,13 +61,47 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
         >
           Team Pro plan is only available for teams.
         </Text>
-        <Select onChange={e => setSelectedTeam(e.target.value)}>
-          {teamsToShow.map(team => (
-            <option key={team.id} value={team.id}>
-              {team.name}
-            </option>
-          ))}
-        </Select>
+        {teamsToShow.length > 0 ? (
+          <Select onChange={e => setSelectedTeam(e.target.value)}>
+            {teamsToShow.map(team => (
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <Text
+            css={{
+              color: '#808080',
+              fontSize: '13px',
+              lineHeight: '19px',
+            }}
+          >
+            You don&apos;t have any teams to upgrade to Team Pro.
+            <Button
+              css={{
+                display: 'inline',
+                height: 'auto',
+                padding: 0,
+              }}
+              onClick={() => {
+                track(
+                  'subscription page - upsell team pro create team clicked',
+                  {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  }
+                );
+
+                openCreateTeamModal();
+              }}
+              variant="link"
+              autoWidth
+            >
+              Create one and start a free trial.
+            </Button>
+          </Text>
+        )}
       </Stack>
       <Stack direction="vertical" gap={2}>
         {checkout.status === 'error' && (
@@ -87,7 +121,7 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
         <Stack gap={2} align="center" justify="flex-end">
           <Button
             onClick={() => {
-              track('Pro page - upsell team pro modal closed', {
+              track('subscription page - upsell team pro modal closed', {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });
@@ -107,7 +141,7 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
             loading={checkout.status === 'loading'}
             variant="primary"
             onClick={() => {
-              track('Pro page - upsell team pro checkout clicked', {
+              track('subscription page - upsell team pro checkout clicked', {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });
