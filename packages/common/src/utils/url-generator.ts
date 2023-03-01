@@ -350,16 +350,3 @@ export const v2DefaultBranchUrl = (params: {
 }) => {
   return v2EditorBranchUrl(params);
 };
-
-export const v2DraftBranchUrl = (params: {
-  owner: string;
-  repoName: string;
-  workspaceId?: string;
-  importFlag?: boolean;
-  source?: string;
-}) => {
-  return v2EditorBranchUrl({
-    ...params,
-    createDraftBranch: true,
-  });
-};

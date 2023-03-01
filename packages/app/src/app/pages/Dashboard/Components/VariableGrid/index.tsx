@@ -5,7 +5,6 @@ import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Sandbox } from '../Sandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
@@ -151,15 +150,7 @@ const ComponentForTypes: IComponentForTypes = {
   branch: ({ item, page }) => <Branch page={page} {...item} />,
   repository: ({ item }) => <Repository {...item} />,
   'new-branch': ({ item }) => (
-    <ActionCard
-      href={v2DraftBranchUrl({
-        owner: item.repo.owner,
-        repoName: item.repo.name,
-        workspaceId: item.workspaceId,
-      })}
-      icon="plus"
-      disabled={item.disabled}
-    >
+    <ActionCard onClick={item.onClick} icon="plus" disabled={item.disabled}>
       Create branch
     </ActionCard>
   ),

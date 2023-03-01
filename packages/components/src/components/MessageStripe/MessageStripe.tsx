@@ -9,12 +9,13 @@ import { IconButton } from '../IconButton';
 
 type ButtonVariant = React.ComponentProps<typeof Button>['variant'];
 
-type Variant = 'trial' | 'warning' | 'primary';
+type Variant = 'trial' | 'warning' | 'primary' | 'neutral';
 
 const mapActionVariant: Record<Variant, ButtonVariant> = {
   trial: 'light',
   warning: 'dark',
   primary: 'dark',
+  neutral: 'primary',
 };
 
 interface MessageActionProps
@@ -56,12 +57,14 @@ const backgroundVariants: Record<Variant, string> = {
   trial: '#644ED7',
   warning: '#F7CC66',
   primary: 'button.background',
+  neutral: '#1D1D1D',
 };
 
 const colorVariants: Record<Variant, string> = {
   trial: 'inherit',
   warning: '#0E0E0E',
   primary: 'button.foreground',
+  neutral: '#e5e5e5',
 };
 
 interface MessageStripeProps {
@@ -122,7 +125,7 @@ const MessageStripe = ({
           <Element css={{ position: 'absolute', right: '16px' }}>
             <IconButton
               onClick={onDismiss}
-              css={{ color: variant === 'trial' ? '#F5F5F5' : '#0E0E0E' }}
+              css={{ color: colorVariants[variant] }}
               name="cross"
               title="Dismiss"
             />
