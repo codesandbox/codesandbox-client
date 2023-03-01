@@ -102,11 +102,17 @@ export const Dashboard: FunctionComponent = () => {
   const hasTopBarBanner = subscription?.status === SubscriptionStatus.Unpaid;
 
   useEffect(() => {
+    if (!hasLogIn) {
+      return;
+    }
+
     const searchParams = new URLSearchParams(location.search);
     if (JSON.parse(searchParams.get('create_team'))) {
       actions.openCreateTeamModal();
+    } else if (JSON.parse(searchParams.get('import_repo'))) {
+      actions.openCreateSandboxModal({ initialTab: 'import' });
     }
-  }, [actions, location.search]);
+  }, [actions, hasLogIn, location.search]);
 
   useEffect(() => {
     trackVisit();
