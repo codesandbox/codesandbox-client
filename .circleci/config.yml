@@ -115,11 +115,11 @@ aliases:
 executors:
   node:
     docker:
-      - image: circleci/node:16
+      - image: circleci/node:16.13.1
     working_directory: ~/codesandbox-client
   node-xlarge:
     docker:
-      - image: circleci/node:16
+      - image: circleci/node:16.13.1
     resource_class: xlarge
     working_directory: ~/codesandbox-client
   docker_machine:
