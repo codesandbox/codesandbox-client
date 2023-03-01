@@ -33,6 +33,7 @@ import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import type { CTA } from './components/SubscriptionCard';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
+import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 
 export const ProUpgrade = () => {
   const {
@@ -413,6 +414,7 @@ export const ProUpgrade = () => {
           </Stack>
         ) : null}
       </Element>
+      <NewTeamModal />
     </ThemeProvider>
   );
 };
