@@ -58,6 +58,7 @@ export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
     key: 'limit_repositories',
     label: 'Unlimited private repositories',
   },
+  { key: 'npm', label: 'Public NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: '6GB RAM', pill: '3x capacity' },
   { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
