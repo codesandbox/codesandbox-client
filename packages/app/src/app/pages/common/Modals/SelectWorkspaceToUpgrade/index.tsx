@@ -59,6 +59,10 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
           Team Pro plan is only available for teams.
         </Text>
         {upgradeableTeams.length > 0 ? (
+          /**
+           * This should always render because if there are no
+           * upgradeable teams, the CTA will directly open the modal.
+           */
           <Select onChange={e => setSelectedTeam(e.target.value)}>
             {upgradeableTeams.map(team => (
               <option key={team.id} value={team.id}>
