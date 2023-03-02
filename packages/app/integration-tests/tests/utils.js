@@ -38,7 +38,7 @@ export function loadSandbox(page, sandboxId, timeout) {
     });
     await pageLoaded(page);
     clearTimeout(timer);
-    await page.waitFor(2 * SECOND);
+    await page.waitForTimeout(2 * SECOND);
     resolve();
   });
 }
@@ -57,7 +57,7 @@ export async function loadSandboxRetry(browser, sandboxId, timeout, retries) {
       );
       return page;
     } catch (err) {
-      await page.waitFor(SECOND);
+      await page.waitForTimeout(SECOND);
       await page.close();
       /* eslint-enable no-await-in-loop */
       if (i === retries) {
