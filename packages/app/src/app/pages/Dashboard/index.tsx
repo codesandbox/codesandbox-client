@@ -99,7 +99,9 @@ export const Dashboard: FunctionComponent = () => {
     }
   }, [location.search, actions, activeTeamInfo, notificationToast]);
 
-  const hasTopBarBanner = subscription?.status === SubscriptionStatus.Unpaid;
+  const hasUnpaidSubscription =
+    subscription?.status === SubscriptionStatus.Unpaid;
+  const hasTopBarBanner = hasUnpaidSubscription;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -141,9 +143,7 @@ export const Dashboard: FunctionComponent = () => {
           })}
         >
           <SkipNav.Link />
-          {subscription?.status === SubscriptionStatus.Unpaid && (
-            <PaymentPending />
-          )}
+          {hasUnpaidSubscription && <PaymentPending />}
           <Header onSidebarToggle={onSidebarToggle} />
           <Media
             query={theme.media
