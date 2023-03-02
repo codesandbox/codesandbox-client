@@ -46,8 +46,10 @@ aliases:
       - packages/components/node_modules
       - packages/template-icons/node_modules
       - packages/common/node_modules
+      - packages/dynamic-pages/node_modules
       - packages/deps/node_modules
       - packages/executors/node_modules
+      - packages/homepage/node_modules
       - packages/node-services/node_modules
       - packages/notifications/node_modules
       - packages/react-embed/node_modules
@@ -73,6 +75,9 @@ aliases:
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
+  - &restore_prod_homepage_cache
+    key: v37-prod-homepage-build-cache-master
+
   - &restore_prod_result
     key:
       v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH
@@ -91,6 +96,14 @@ aliases:
         }}-{{.Environment.CIRCLE_SHA1 }}
       - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
       - v37-prod-build-cache-master-
+
+  # To persist the images built by sharp
+  - &save_prod_homepage_cache
+    key:
+      v37-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      .Environment.CIRCLE_SHA1 }}
+    paths:
+      - ./packages/homepage/public
 
   - &save_prod_result
     key:
@@ -115,12 +128,16 @@ aliases:
 executors:
   node:
     docker:
-      - image: circleci/node:16.13.1
+      - image: circleci/node:10.24.1
     working_directory: ~/codesandbox-client
   node-xlarge:
     docker:
-      - image: circleci/node:16.13.1
+      - image: circleci/node:10.24.1
     resource_class: xlarge
+    working_directory: ~/codesandbox-client
+  node-with-puppeteer:
+    docker:
+      - image: codesandbox/node-puppeteer
     working_directory: ~/codesandbox-client
   docker_machine:
     machine:
@@ -170,31 +187,26 @@ commands:
     steps:
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
+      - restore_cache: *restore_prod_homepage_cache
       - restore_cache: *restore_prod_build_cache
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache: *save_prod_build_cache
       - save_cache: *save_prod_result
+      - run:
+          name: Remove non-images from public
+          command: |
+            find packages/homepage/public -name "*.js" -type f -delete
+            find packages/homepage/public -name "*.json" -type f -delete
+            find packages/homepage/public -name "*.js.map" -type f -delete
+      - save_cache: *save_prod_homepage_cache
   test_integrations:
     description:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
-      - run:
-          name: Install binaries
-          command:
-            sudo apt-get update && 
-            sudo apt-get install -yq gconf-service libasound2 libatk1.0-0 libc6 
-            libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 
-            libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 
-            libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 
-            libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release 
-            xdg-utils wget libgbm-dev
-      - run:
-          name: Install puppeteer
-          command: cd ~/ && yarn add puppeteer@18.1.0 -DW
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -294,7 +306,7 @@ jobs:
       - checkout_with_cache
       - build_prod
   test-integrations:
-    executor: node-xlarge
+    executor: node-with-puppeteer
     parallelism: 3
     steps:
       - checkout_with_cache

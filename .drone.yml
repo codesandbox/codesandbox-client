@@ -1,0 +1,182 @@
+---
+kind: pipeline
+name: pull_request
+
+steps:
+  - name: restore node_modules cache
+    image: lbogdan/codesandbox-cache-plugin:1
+    settings:
+      restore: true
+    volumes:
+      - name: node_modules-cache
+        path: /cache
+
+  - name: install packages
+    image: node:10.22.1-buster
+    volumes:
+      - name: yarn-cache
+        path: /usr/local/share/.cache/yarn/v4
+    commands:
+      - yarn
+
+  - name: build
+    image: node:10.22.1-buster
+    commands:
+      - export STAGING_BRANCH=pr$DRONE_PULL_REQUEST
+      - yarn build
+
+  - name: deploy
+    image: lbogdan/codesandbox-deploy-plugin:4
+    settings:
+      domain: &domain build.csb.dev
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+      - name: deployments
+        path: /root/docker/deployments
+
+  - name: create github deployment
+    image: lbogdan/github-deployment-plugin:1
+    settings:
+      domain: *domain
+      github_token:
+        from_secret: github_token
+
+  - name: slack notification
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: infra
+      template: >
+        {{#success build.status}}
+          👍 {{repo.owner}}/{{repo.name}} pull request #{{build.pull}} successfully built. Access it at https://pr{{build.pull}}.build.csb.dev/ and see the build logs <{{build.link}}|here>.
+        {{else}}
+          👎 {{repo.owner}}/{{repo.name}} pull request #{{build.pull}} building failed. See what happened <{{build.link}}|here>.
+        {{/success}}
+    when:
+      status:
+        - success
+        - failure
+
+  - name: github comment
+    image: lbogdan/github-comment-plugin:1
+    settings:
+      domain: *domain
+      github_token:
+        from_secret: github_token
+      template: |
+        Build for latest commit https://github.com/{{owner}}/{{repo}}/pull/{{pr}}/commits/{{commitSha}} {{#success}}is at https://pr{{pr}}.{{buildDomain}}/s/new{{/success}}{{^success}}failed{{/success}}.
+    when:
+      status:
+        - success
+        - failure
+
+  - name: rebuild node_modules cache
+    image: lbogdan/codesandbox-cache-plugin:1
+    settings:
+      rebuild: true
+    volumes:
+      - name: node_modules-cache
+        path: /cache
+
+volumes:
+  - name: yarn-cache
+    host:
+      path: /var/lib/docker/volumes/yarn-cache/_data
+  - name: node_modules-cache
+    host:
+      path: /var/lib/docker/volumes/node_modules-cache/_data
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
+  - name: deployments
+    host:
+      path: /root/docker/deployments
+
+trigger:
+  event: pull_request
+---
+kind: pipeline
+name: branch
+
+steps:
+  - name: restore node_modules cache
+    image: lbogdan/codesandbox-cache-plugin:1
+    settings:
+      restore: true
+    volumes:
+      - name: node_modules-cache
+        path: /cache
+
+  - name: install packages
+    image: node:10.22.1-buster
+    volumes:
+      - name: yarn-cache
+        path: /usr/local/share/.cache/yarn/v4
+    commands:
+      - yarn
+
+  - name: build
+    image: node:10.22.1-buster
+    commands:
+      - export STAGING_BRANCH=$DRONE_BRANCH
+      - yarn build
+
+  - name: deploy
+    image: lbogdan/codesandbox-deploy-plugin:4
+    settings:
+      domain: &domain build.csb.dev
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+      - name: deployments
+        path: /root/docker/deployments
+
+  - name: slack notification
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: infra
+      template: >
+        {{#success build.status}}
+          👍 {{repo.owner}}/{{repo.name}} branch {{build.branch}} successfully built. Access it at https://{{build.branch}}.build.csb.dev/ and see the build logs <{{build.link}}|here>.
+        {{else}}
+          👎 {{repo.owner}}/{{repo.name}} branch {{build.branch}} building failed. See what happened <{{build.link}}|here>.
+        {{/success}}
+    when:
+      status:
+        - success
+        - failure
+
+  - name: rebuild node_modules cache
+    image: lbogdan/codesandbox-cache-plugin:1
+    settings:
+      rebuild: true
+    volumes:
+      - name: node_modules-cache
+        path: /cache
+
+volumes:
+  - name: yarn-cache
+    host:
+      path: /var/lib/docker/volumes/yarn-cache/_data
+  - name: node_modules-cache
+    host:
+      path: /var/lib/docker/volumes/node_modules-cache/_data
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
+  - name: deployments
+    host:
+      path: /root/docker/deployments
+
+trigger:
+  event: push
+  branch: master
+---
+kind: signature
+hmac: 277acb64abeb8d7398e7366f0e1497d66376dd487bd08f6b8b13e8c1cf78579a
+
+...

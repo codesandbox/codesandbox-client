@@ -1,0 +1,99 @@
+@font-face {
+  font-family: 'TWKEverett';
+  src: url('../assets/fonts/TWKEverett-Medium-web.woff') format('woff'),
+    url('../assets/fonts/TWKEverett-Medium-web.ttf') format('ttf');
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  height: 100%;
+  background: #030303;
+  font-size: 16px;
+  color: white;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue';
+  /* overflow-x: hidden; */
+  -webkit-font-smoothing: antialiased;
+}
+
+@media screen and (-webkit-max-device-pixel-ratio: 1.3),
+  (max-resolution: 120dpi) {
+  html,
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-smoothing: antialiased;
+  }
+}
+
+* {
+  transition: color, background-color 200ms ease;
+}
+
+input {
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+.disable-hover,
+.disable-hover * {
+  pointer-events: none !important;
+}
+
+iframe {
+  margin-bottom: 0;
+}
+
+a {
+  color: #fff;
+}
+
+.gatsby-resp-image-image {
+  box-shadow: none !important;
+}
+
+.gatsby-resp-image-background-image {
+  background-image: none !important;
+}
+
+twitter-widget {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    transition-duration: 0.001s !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

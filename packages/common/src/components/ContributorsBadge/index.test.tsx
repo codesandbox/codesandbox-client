@@ -3,8 +3,7 @@ import React from 'react';
 import mountWithTheme from '../../test/themeMount';
 import ContributorsBadge from '.';
 
-// This test doesn't actually test anything from what I can tell
-describe.skip('<ContributorsBadge /> rendering', () => {
+describe('<ContributorsBadge /> rendering', () => {
   it('contrib', () => {
     const wrapper = mountWithTheme(
       <ContributorsBadge username="Sara Vieira" />
