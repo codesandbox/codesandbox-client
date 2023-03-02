@@ -2,7 +2,7 @@ import React from 'react';
 import { SVGIcon, ISVGIconProps } from './SVGIcon';
 
 export const NuxtIcon: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon {...props}>
+  <SVGIcon {...props} viewBox="0 0 900 900">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
