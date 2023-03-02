@@ -113,7 +113,8 @@ export const MaxReposFreeTeam: React.FC = () => {
 
 export const TemporaryWarningForWorkspaceScopesMigration: React.FC<{
   onDismiss?: () => void;
-}> = ({ onDismiss }) => {
+  variant?: 'repository' | 'branch';
+}> = ({ onDismiss, variant = 'repository' }) => {
   return (
     <MessageStripe
       justify="space-between"
@@ -121,8 +122,8 @@ export const TemporaryWarningForWorkspaceScopesMigration: React.FC<{
       variant="neutral"
     >
       <Text>
-        Is your repository gone? It is not deleted, but needs to be re-imported
-        due to a change. Please{' '}
+        Can&apos;t find a {variant}? It is not deleted, but needs to be
+        re-imported due to a change. Please{' '}
         <Link
           css={{ textDecoration: 'underline', fontWeight: 'bold' }}
           href="https://www.loom.com/share/a7a7a44e7ef547358ab5696d6d328156"
@@ -134,5 +135,3 @@ export const TemporaryWarningForWorkspaceScopesMigration: React.FC<{
     </MessageStripe>
   );
 };
-
-//
