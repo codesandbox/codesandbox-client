@@ -81,6 +81,11 @@ export const DOCKER: INavigationItem = {
   name: 'Docker',
 };
 
+export const VSCODE: INavigationItem = {
+  id: 'vscode',
+  name: 'VS Code',
+};
+
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
@@ -192,6 +197,6 @@ export default function getItems(
     items.push(LIVE);
   }
 
-  // Add docker as last item in the navigation
-  return [...items, DOCKER];
+  // Add docker and vs code as last item in the navigation
+  return [...items, DOCKER, VSCODE];
 }
