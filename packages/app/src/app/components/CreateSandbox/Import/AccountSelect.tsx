@@ -63,7 +63,7 @@ export const AccountSelect = ({ options, value, onChange }) => {
           <StyledMenuItem
             {...menu}
             onClick={() => {
-              signInGithubClicked('write_org');
+              signInGithubClicked('private_repos');
               menu.hide();
             }}
           >

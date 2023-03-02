@@ -10,18 +10,13 @@ const GH_WORKING_SCOPES = ['workflow', 'read:org'].toString();
 // in public repos only (eg: open source maintainers)
 // don't need to grant access to their private repos
 // if they don't want to.
-const GH_REPO_SCOPE_OPTIONS = [
-  'private_repos',
-  'public_repos',
-  'write_org',
-] as const;
+const GH_REPO_SCOPE_OPTIONS = ['private_repos', 'public_repos'] as const;
 
 export type GHScopeOption = typeof GH_REPO_SCOPE_OPTIONS[number];
 
 export const MAP_GH_SCOPE_OPTIONS: Record<GHScopeOption, string> = {
   public_repos: GH_WORKING_SCOPES + ',public_repo',
   private_repos: GH_WORKING_SCOPES + ',repo',
-  write_org: GH_WORKING_SCOPES + ',write_org',
 };
 
 export type AuthOptions =
