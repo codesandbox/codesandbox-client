@@ -10,13 +10,11 @@ import {
 } from 'reakit/Menu';
 
 import { Stack, Text, Icon, Element } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
 
 // In the new codebase this should be a Radix dropdown menu
 // https://www.radix-ui.com/docs/primitives/components/dropdown-menu
 // also, more composable if it were a design system component
 export const AccountSelect = ({ options, value, onChange }) => {
-  const { signInGithubClicked } = useActions();
   const menu = useMenuState();
 
   return (
@@ -62,8 +60,11 @@ export const AccountSelect = ({ options, value, onChange }) => {
           </Element>
           <StyledMenuItem
             {...menu}
+            as="a"
+            href="/auth/github/oauth-settings"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => {
-              signInGithubClicked('private_repos');
               menu.hide();
             }}
           >
