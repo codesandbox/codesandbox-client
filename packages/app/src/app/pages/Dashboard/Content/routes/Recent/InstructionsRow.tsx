@@ -24,7 +24,7 @@ const DOCS: DocsItem[] = [
     thumbnail: '/static/img/thumbnails/blog_dashboard-intro.png',
   },
   {
-    label: 'getting_started_new_codesandbox',
+    label: 'docs_getting-started',
     title: 'Getting started with the new CodeSandbox',
     duration: '5:58',
     durationLabel: '5 minutes, 58 seconds',
