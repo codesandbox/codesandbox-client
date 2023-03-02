@@ -77,7 +77,7 @@ export const SuggestedRepositories = () => {
     <Stack
       direction="vertical"
       gap={4}
-      css={{ fontFamily: 'Inter', marginBottom: '16px', fontWeight: '500' }}
+      css={{ fontFamily: 'Inter', marginBottom: '16px', fontWeight: 500 }}
     >
       <Stack justify="space-between">
         <AccountSelect
