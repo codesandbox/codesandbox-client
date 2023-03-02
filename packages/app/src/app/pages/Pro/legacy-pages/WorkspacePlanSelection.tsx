@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
-import { Stack, Text } from '@codesandbox/components';
+import { Element, Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
@@ -19,6 +19,8 @@ import {
 import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
+import { StyledPricingDetailsText } from '../components/elements';
+import { UpsellTeamProCard } from '../components/UpsellTeamProCard';
 
 const getBillingText = ({
   quantity,
@@ -53,10 +55,14 @@ export const WorkspacePlanSelection: React.FC = () => {
   } = useActions();
 
   const location = useLocation();
-  const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
+  const {
+    isPersonalSpace,
+    isTeamSpace,
+    isTeamAdmin,
+  } = useWorkspaceAuthorization();
   // const isPersonalSpace = false; // DEBUG
   // const isTeamAdmin = true; // DEBUG
-  const { subscription, isPatron } = useWorkspaceSubscription();
+  const { subscription, isPatron, isPro, isFree } = useWorkspaceSubscription();
 
   // Based on the 'type' search param we redirect to the personal pro page if
   // it's not yet active.
@@ -139,17 +145,25 @@ export const WorkspacePlanSelection: React.FC = () => {
             activeTeamInfo={activeTeamInfo}
           />
 
-          <Text
-            as="h1"
-            fontFamily="everett"
-            size={48}
-            weight="500"
-            align="center"
-            lineHeight="56px"
-            margin={0}
-          >
-            You have an active Pro subscription.
-          </Text>
+          <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
+            <Text
+              as="h1"
+              fontFamily="everett"
+              size={48}
+              weight="500"
+              align="center"
+              lineHeight="56px"
+              margin={0}
+            >
+              {isPro && isPersonalSpace
+                ? 'You have an active Personal Pro subscription'
+                : null}
+              {isPro && isTeamSpace
+                ? 'You have an active Team Pro subscription'
+                : null}
+              {isFree ? 'Upgrade for Pro features' : null}
+            </Text>
+          </Element>
         </Stack>
         <Stack
           gap={2}
@@ -169,48 +183,54 @@ export const WorkspacePlanSelection: React.FC = () => {
         >
           <SubscriptionCard
             title="Free plan"
+            subTitle="1 editor only"
             features={
               isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
             }
           >
-            <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+            <Stack gap={1} direction="vertical">
               <Text aria-hidden size={32} weight="400">
                 $0
               </Text>
               <VisuallyHidden>Zero dollar</VisuallyHidden>
-              <Text>forever</Text>
+              <StyledPricingDetailsText>forever</StyledPricingDetailsText>
             </Stack>
           </SubscriptionCard>
 
           {isPersonalSpace ? (
-            <SubscriptionCard
-              title={isPatron ? 'Patron' : 'Personal Pro'}
-              features={PERSONAL_FEATURES}
-              cta={personalProCta}
-              isHighlighted
-            >
-              <Stack gap={1} direction="vertical">
-                <Text size={32} weight="500">
-                  {`${subscription.currency || '$'}${subscription.unitPrice}`}
-                </Text>
-                {subscription.billingInterval ===
-                SubscriptionInterval.Yearly ? (
-                  <Text>
-                    charged annually on{' '}
-                    {format(new Date(subscription.nextBillDate), 'MMM dd')}
+            <>
+              <SubscriptionCard
+                title={isPatron ? 'Patron' : 'Personal Pro'}
+                subTitle="1 editor only"
+                features={PERSONAL_FEATURES}
+                cta={personalProCta}
+                isHighlighted
+              >
+                <Stack gap={1} direction="vertical">
+                  <Text size={32} weight="500">
+                    {`${subscription.currency || '$'}${subscription.unitPrice}`}
                   </Text>
-                ) : (
-                  <Text>
-                    charged on the{' '}
-                    {format(new Date(subscription.nextBillDate), 'do')} of each
-                    month
-                  </Text>
-                )}
-              </Stack>
-            </SubscriptionCard>
+                  {subscription.billingInterval ===
+                  SubscriptionInterval.Yearly ? (
+                    <StyledPricingDetailsText>
+                      charged annually on{' '}
+                      {format(new Date(subscription.nextBillDate), 'MMM dd')}
+                    </StyledPricingDetailsText>
+                  ) : (
+                    <StyledPricingDetailsText>
+                      charged on the{' '}
+                      {format(new Date(subscription.nextBillDate), 'do')} of
+                      each month
+                    </StyledPricingDetailsText>
+                  )}
+                </Stack>
+              </SubscriptionCard>
+              <UpsellTeamProCard trackingLocation="legacy subscription page" />
+            </>
           ) : (
             <SubscriptionCard
               title="Team Pro"
+              subTitle="Up to 20 editors"
               features={TEAM_PRO_FEATURES}
               cta={teamProCta}
               isHighlighted
@@ -220,7 +240,7 @@ export const WorkspacePlanSelection: React.FC = () => {
                   ${subscription.unitPrice}
                 </Text>
                 <Text>
-                  <div>per editor</div>
+                  <div>per editor{isTeamAdmin ? ',' : null}</div>
                   {isTeamAdmin ? (
                     <div>
                       {getBillingText({

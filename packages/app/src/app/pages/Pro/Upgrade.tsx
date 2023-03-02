@@ -31,8 +31,11 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
+import { UpsellTeamProCard } from './components/UpsellTeamProCard';
 import type { CTA } from './components/SubscriptionCard';
+import { StyledPricingDetailsText } from './components/elements';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
+import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 
 export const ProUpgrade = () => {
   const {
@@ -70,7 +73,12 @@ export const ProUpgrade = () => {
     }
   }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
 
-  const { isPersonalSpace, isTeamAdmin, isAdmin } = useWorkspaceAuthorization();
+  const {
+    isPersonalSpace,
+    isTeamSpace,
+    isTeamAdmin,
+    isAdmin,
+  } = useWorkspaceAuthorization();
   const { isFree, isPro } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
   // const isPro = true; // DEBUG
@@ -190,20 +198,25 @@ export const ProUpgrade = () => {
               personalWorkspaceId={personalWorkspaceId}
               activeTeamInfo={activeTeamInfo}
             />
-
-            <Text
-              as="h1"
-              fontFamily="everett"
-              size={48}
-              weight="500"
-              align="center"
-              lineHeight="56px"
-              margin={0}
-            >
-              {isPro
-                ? 'You have an active Pro subscription.'
-                : 'Upgrade for Pro features'}
-            </Text>
+            <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
+              <Text
+                as="h1"
+                fontFamily="everett"
+                size={48}
+                weight="500"
+                align="center"
+                lineHeight="56px"
+                margin={0}
+              >
+                {isPro && isPersonalSpace
+                  ? 'You have an active Personal Pro subscription'
+                  : null}
+                {isPro && isTeamSpace
+                  ? 'You have an active Team Pro subscription'
+                  : null}
+                {isFree ? 'Upgrade for Pro features' : null}
+              </Text>
+            </Element>
           </Stack>
 
           <Stack
@@ -224,51 +237,57 @@ export const ProUpgrade = () => {
           >
             <SubscriptionCard
               title="Free plan"
+              subTitle="1 editor only"
               features={
                 isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
               }
             >
-              <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+              <Stack gap={1} direction="vertical">
                 <Text size={32} weight="400">
                   $0
                 </Text>
-                <Text>forever</Text>
+                <StyledPricingDetailsText>forever</StyledPricingDetailsText>
               </Stack>
             </SubscriptionCard>
 
             {isPersonalSpace ? (
-              <SubscriptionCard
-                title="Personal Pro"
-                features={
-                  isPro ? PERSONAL_FEATURES : PERSONAL_FEATURES_WITH_PILLS
-                }
-                cta={personalProCta}
-                isHighlighted
-              >
-                <Stack gap={1} direction="vertical">
-                  <Text size={32} weight="500">
-                    {formatCurrency({
-                      currency: 'USD',
-                      amount: pro?.prices?.individual.year.usd / 12,
-                    })}
-                  </Text>
-                  <Text>
-                    <div>per month, billed anually</div>{' '}
-                    <div>
-                      or{' '}
+              <>
+                <SubscriptionCard
+                  title="Personal Pro"
+                  subTitle="1 editor only"
+                  features={
+                    isPro ? PERSONAL_FEATURES : PERSONAL_FEATURES_WITH_PILLS
+                  }
+                  cta={personalProCta}
+                  isHighlighted
+                >
+                  <Stack gap={1} direction="vertical">
+                    <Text size={32} weight="500">
                       {formatCurrency({
                         currency: 'USD',
-                        amount: pro?.prices?.individual.month.usd,
-                      })}{' '}
-                      per month.
-                    </div>
-                  </Text>
-                </Stack>
-              </SubscriptionCard>
+                        amount: pro?.prices?.individual.year.usd / 12,
+                      })}
+                    </Text>
+                    <StyledPricingDetailsText>
+                      <div>per month,</div>
+                      <div>
+                        billed anually, or{' '}
+                        {formatCurrency({
+                          currency: 'USD',
+                          amount: pro?.prices?.individual.month.usd,
+                        })}{' '}
+                        per month.
+                      </div>
+                    </StyledPricingDetailsText>
+                  </Stack>
+                </SubscriptionCard>
+                <UpsellTeamProCard trackingLocation="subscription page" />
+              </>
             ) : (
               <>
                 <SubscriptionCard
                   title="Team Pro"
+                  subTitle="Up to 20 editors"
                   features={
                     isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
                   }
@@ -300,19 +319,21 @@ export const ProUpgrade = () => {
                         amount: pro?.prices?.team.year.usd / 12,
                       })}
                     </Text>
-                    <Text>
-                      per editor per month, billed anually, or{' '}
+                    <StyledPricingDetailsText>
+                      per editor per month,
+                      <br /> billed anually, or{' '}
                       {formatCurrency({
                         currency: 'USD',
                         amount: pro?.prices?.team.month.usd,
                       })}{' '}
                       per month.
-                    </Text>
+                    </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
 
                 <SubscriptionCard
                   title="Organization"
+                  subTitle="Unlimited editors"
                   features={ORG_FEATURES}
                   cta={
                     hasCustomSubscription
@@ -344,14 +365,14 @@ export const ProUpgrade = () => {
                   }
                   isHighlighted={hasCustomSubscription}
                 >
-                  <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+                  <Stack gap={1} direction="vertical">
                     <Text size={32} weight="400">
                       custom
                     </Text>
-                    <Text>
+                    <StyledPricingDetailsText>
                       <div>tailor-made plan.</div>
                       <div>bulk pricing for seats.</div>
-                    </Text>
+                    </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
               </>
@@ -374,6 +395,7 @@ export const ProUpgrade = () => {
           </Stack>
         ) : null}
       </Element>
+      <NewTeamModal />
     </ThemeProvider>
   );
 };
