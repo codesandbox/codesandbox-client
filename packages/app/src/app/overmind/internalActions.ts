@@ -619,7 +619,7 @@ export const setActiveWorkspaceFromUrlOrStore = async ({
 }: Context) => {
   const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
 
-  if (isValid) {
+  if (isValid && id) {
     // Set active team from url or storage.
     actions.setActiveTeam({ id });
   } else {
@@ -643,7 +643,7 @@ export const getTeamIdFromUrlOrStore = async ({
   state,
   effects,
   actions,
-}: Context) => {
+}: Context): Promise<{ id: string | null; isValid: boolean }> => {
   const suggestedTeamId =
     actions.internal.getTeamIdFromUrl() ||
     actions.internal.getTeamIdFromLocalStorage();
@@ -672,12 +672,12 @@ export const getTeamIdFromUrlOrStore = async ({
   );
 
   return {
-    id: suggestedTeamId,
-    isValid: isSuggestedTeamValid,
+    id: suggestedTeamId!,
+    isValid: Boolean(isSuggestedTeamValid),
   };
 };
 
-export const getTeamIdFromUrl = () => {
+export const getTeamIdFromUrl = (): string | null => {
   const url = typeof document === 'undefined' ? null : document.location.href;
 
   if (url) {
@@ -687,7 +687,7 @@ export const getTeamIdFromUrl = () => {
   return null;
 };
 
-export const getTeamIdFromLocalStorage = ({ effects }) => {
+export const getTeamIdFromLocalStorage = ({ effects }): string | null => {
   const localStorageTeamId = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
   const isValidStorageItem = typeof localStorageTeamId === 'string';
 
