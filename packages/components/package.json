@@ -64,7 +64,7 @@
     "@storybook/react": "^5.3.18",
     "@types/color": "3.0.1",
     "@types/lodash": "^4.14.149",
-    "@types/styled-components": "^5.1.4",
+    "@types/styled-components": "^5.1.7",
     "babel-preset-react-app": "^9.1.2",
     "cpx": "^1.5.0",
     "if-env": "^1.0.4",
@@ -80,6 +80,6 @@
     "react-dom": "^16.9.0"
   },
   "engines": {
-    "node": "^10.0.0"
+    "node": "^16.0.0"
   }
 }
