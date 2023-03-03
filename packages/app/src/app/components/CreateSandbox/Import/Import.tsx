@@ -1,7 +1,14 @@
 import React from 'react';
 
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
+import {
+  Button,
+  Element,
+  Input,
+  SkeletonText,
+  Stack,
+  Text,
+} from '@codesandbox/components';
 
 import {
   GithubRepoAuthorization,
@@ -78,11 +85,18 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
 
+  // Use a variable instead of `loading` from `useLazyQuery` because
+  // we want the UI to look like it's loading before the debounced fn
+  // actually performs the query.
+  const [isQueryingTeams, setIsQueryingTeams] = React.useState(false);
   const [
     getRepositoryTeams,
     { data: repositoryTeamsData, variables },
   ] = useLazyQuery<RepositoryTeamsQuery, RepositoryTeamsQueryVariables>(
-    GET_REPOSITORY_TEAMS
+    GET_REPOSITORY_TEAMS,
+    {
+      onCompleted: () => setIsQueryingTeams(false),
+    }
   );
 
   const [isImporting, setIsImporting] = React.useState(false);
@@ -170,6 +184,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         parsed: parsedInput,
         error: null,
       });
+
+      setIsQueryingTeams(true);
       debouncedGetRepositoryTeams({ variables: parsedInput });
     }
   };
@@ -225,7 +241,12 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             />
             <Button
               css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
-              disabled={Boolean(url.error) || isLoading || disableImport}
+              disabled={
+                Boolean(url.error) ||
+                isLoading ||
+                disableImport ||
+                isQueryingTeams
+              }
               type="submit"
               autoWidth
             >
@@ -266,6 +287,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             ) : null}
           </Element>
         </Element>
+        {isQueryingTeams && <SkeletonText />}
         {existingRepositoryTeams && existingRepositoryTeams.length >= 1 ? (
           <Text color="#F9D685" id="repo-teams">
             This repository has been imported into{' '}
