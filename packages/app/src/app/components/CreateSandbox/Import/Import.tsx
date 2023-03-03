@@ -23,7 +23,6 @@ import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shar
 
 import { useLazyQuery } from '@apollo/react-hooks';
 import { debounce } from 'lodash';
-import { pluralize } from 'app/utils/pluralize';
 import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { MaxPublicRepos } from './MaxPublicRepos';
 import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
@@ -88,14 +87,15 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   // Use a variable instead of `loading` from `useLazyQuery` because
   // we want the UI to look like it's loading before the debounced fn
   // actually performs the query.
-  const [isQueryingTeams, setIsQueryingTeams] = React.useState(false);
+  const [isQueryingImports, setIsQueryingImports] = React.useState(false);
   const [
     getRepositoryTeams,
     { data: repositoryTeamsData, variables },
   ] = useLazyQuery<RepositoryTeamsQuery, RepositoryTeamsQueryVariables>(
     GET_REPOSITORY_TEAMS,
     {
-      onCompleted: () => setIsQueryingTeams(false),
+      fetchPolicy: 'cache-and-network',
+      onCompleted: () => setIsQueryingImports(false),
     }
   );
 
@@ -162,6 +162,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const isLoading = githubRepo.state === 'loading' || isImporting;
   const limitImportBasedOnSubscription =
     privateRepoFreeAccountError === url.raw;
+  const hasExistingImports =
+    existingRepositoryTeams && existingRepositoryTeams.length >= 1;
   const disableImport = hasMaxPublicRepositories || restrictsPublicRepos;
 
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,13 +187,15 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         error: null,
       });
 
-      setIsQueryingTeams(true);
+      setIsQueryingImports(true);
       debouncedGetRepositoryTeams({ variables: parsedInput });
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleFormSubmit = (e?: React.FormEvent) => {
+    if (typeof e !== 'undefined') {
+      e.preventDefault();
+    }
 
     if (disableImport) {
       return;
@@ -245,12 +249,13 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
                 Boolean(url.error) ||
                 isLoading ||
                 disableImport ||
-                isQueryingTeams
+                isQueryingImports ||
+                hasExistingImports
               }
               type="submit"
               autoWidth
             >
-              {isLoading ? 'Importing...' : 'Import'}
+              {isLoading && !hasExistingImports ? 'Importing...' : 'Import'}
             </Button>
           </Stack>
           <Element
@@ -287,12 +292,16 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             ) : null}
           </Element>
         </Element>
-        {isQueryingTeams && <SkeletonText />}
-        {existingRepositoryTeams && existingRepositoryTeams.length >= 1 ? (
-          <Text color="#F9D685" id="repo-teams">
+        {/**
+         * We check for hasExistingImports because
+         * to avoid glitches with cached values.
+         */}
+        {isQueryingImports && !hasExistingImports ? <SkeletonText /> : null}
+        {hasExistingImports ? (
+          <Text color="#F9D685" id="repo-teams" size={12}>
             This repository has been imported into{' '}
-            {pluralize({ word: 'team', count: existingRepositoryTeams.length })}
-            :{' '}
+            {existingRepositoryTeams.length === 1 ? 'one' : 'some'} of your
+            teams, open it on:{' '}
             {existingRepositoryTeams.map((team, teamIndex) => (
               <>
                 <Button
@@ -302,7 +311,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
                     display: 'inline-flex',
                     color: 'inherit',
                     fontWeight: 500,
-                    textDecoration: 'none',
+                    transition: 'color 300ms',
+                    '&:hover:not(:disabled)': {
+                      color: '#ffffff',
+                    },
                   }}
                   href={v2DefaultBranchUrl({
                     owner: variables.owner,
@@ -313,9 +325,36 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
                 >
                   {team.name}
                 </Button>
-                {teamIndex === existingRepositoryTeams.length - 1 ? '.' : ', '}
+                {existingRepositoryTeams.length > 1 &&
+                  teamIndex !== existingRepositoryTeams.length - 1 &&
+                  ', '}
               </>
-            ))}
+            ))}{' '}
+            or{' '}
+            <Button
+              css={{
+                color: '#F9D685',
+                fontSize: '12px',
+                padding: 0,
+                textDecoration: 'underline',
+              }}
+              onClick={() => {
+                track(
+                  'Create New - Import repository that exists in other workspaces',
+                  {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  }
+                );
+
+                handleFormSubmit();
+              }}
+              loading={isLoading}
+              variant="link"
+              autoWidth
+            >
+              Import anyway
+            </Button>
           </Text>
         ) : null}
       </Stack>
