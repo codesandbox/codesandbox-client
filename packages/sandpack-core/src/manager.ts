@@ -1080,7 +1080,7 @@ export default class Manager implements IEvaluator {
         ignoredExtensions
       );
       return transpiledModule;
-    } catch (e) {
+    } catch (e: any) {
       if (e.type === 'module-not-found' && e.isDependency) {
         const { queryPath } = splitQueryFromPath(path);
         return this.downloadDependency(

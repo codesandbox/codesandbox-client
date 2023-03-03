@@ -73,7 +73,7 @@ async function requestPackager(
   try {
     const manifest = await callApi(url, method);
     return manifest;
-  } catch (err) {
+  } catch (err: any) {
     console.error({ err });
 
     // If it's a 403 or network error, we retry the fetch

@@ -15,18 +15,13 @@ export type Meta = {
   [path: string]: true;
 };
 
-type Metas = {
-  [dependencyAndVersion: string]: Promise<Meta>;
-};
-
-type Packages = {
-  [path: string]: Promise<Module>;
-};
-
-const metas: Metas = {};
+// dependencyAndVersion => P<Meta>
+const metas = new Map<string, Promise<Meta>>();
 export let combinedMetas: Meta = {}; // eslint-disable-line
 const normalizedMetas: { [key: string]: Meta } = {};
-const packages: Packages = {};
+
+// path => P<Module>
+const packages = new Map<string, Promise<Module>>();
 
 function prependRootPath(meta: Meta, rootPath: string): Meta {
   const newMeta: Meta = {};
@@ -74,8 +69,9 @@ function getMeta(
   const [depName, depVersion] = resolveNPMAlias(name, version);
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
   const id = `${packageJSONPath || depName}@${depVersion}`;
-  if (metas[id]) {
-    return metas[id].then(x => ({
+  const foundMeta = metas.get(id);
+  if (foundMeta) {
+    return foundMeta.then(x => ({
       meta: x,
       fromCache: true,
     }));
@@ -83,13 +79,12 @@ function getMeta(
 
   const protocol = getFetchProtocol(depName, depVersion, useFallback);
 
-  metas[id] = protocol.meta(nameWithoutAlias, depVersion).catch(e => {
-    delete metas[id];
-
+  const newMeta = protocol.meta(nameWithoutAlias, depVersion).catch(e => {
+    metas.delete(id);
     throw e;
   });
-
-  return metas[id].then(x => ({
+  metas.set(id, newMeta);
+  return newMeta.then(x => ({
     meta: x,
     fromCache: false,
   }));
@@ -129,8 +124,9 @@ export function downloadDependency(
 ): Promise<Module> {
   const [depName, depVersion] = resolveNPMAlias(name, version);
   const id = depName + depVersion + path;
-  if (packages[id]) {
-    return packages[id];
+  const foundPkg = packages.get(id);
+  if (foundPkg) {
+    return foundPkg;
   }
 
   const relativePath = path
@@ -145,7 +141,7 @@ export function downloadDependency(
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
   const protocol = getFetchProtocol(depName, depVersion);
 
-  packages[id] = protocol
+  const newPkg = protocol
     .file(nameWithoutAlias, depVersion, relativePath)
     .catch(async () => {
       const fallbackProtocol = getFetchProtocol(
@@ -160,8 +156,8 @@ export function downloadDependency(
       code,
       downloaded: true,
     }));
-
-  return packages[id];
+  packages.set(id, newPkg);
+  return newPkg;
 }
 
 function resolvePath(

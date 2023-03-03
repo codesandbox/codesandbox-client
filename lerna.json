@@ -1,5 +1,4 @@
 {
-  "lerna": "2.4.0",
   "packages": ["packages/*", "standalone-packages/*"],
   "version": "independent"
 }
