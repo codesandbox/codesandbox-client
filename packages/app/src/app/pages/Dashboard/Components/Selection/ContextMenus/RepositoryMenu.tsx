@@ -4,7 +4,7 @@ import { Menu } from '@codesandbox/components';
 import { ProjectFragment } from 'app/graphql/types';
 import {
   dashboard,
-  v2DefaultBranchUrl,
+  v2BranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useActions, useAppState } from 'app/overmind';
 import { quotes } from 'app/utils/quotes';
@@ -44,9 +44,10 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
     name: repository.name,
   });
 
-  const defaultBranchUrl = v2DefaultBranchUrl({
+  const defaultBranchUrl = v2BranchUrl({
     owner: repository.owner,
     repoName: repository.name,
+    branchName: repository.defaultBranch,
     workspaceId: assignedTeam?.id,
   });
 
