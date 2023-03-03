@@ -28,6 +28,7 @@ import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
 import { NUOCT22 } from '../SignIn/Onboarding';
 import { NewTeamModal } from './Components/NewTeamModal';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
@@ -38,12 +39,12 @@ export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, activeTeamInfo } = useAppState();
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
-  const {
-    hasActiveTeamTrial,
-    hasPaymentMethod,
-    subscription,
-  } = useWorkspaceSubscription();
+  const { subscription } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
+  const [
+    showTrialWithoutPaymentInfoBanner,
+    dismissTrialWithoutPaymentInfoBanner,
+  ] = useShowBanner();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -108,8 +109,8 @@ export const Dashboard: FunctionComponent = () => {
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
-  const hasTrialWithoutPaymentInfo = hasActiveTeamTrial && !hasPaymentMethod;
-  const hasTopBarBanner = hasTrialWithoutPaymentInfo || hasUnpaidSubscription;
+  const hasTopBarBanner =
+    showTrialWithoutPaymentInfoBanner || hasUnpaidSubscription;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -152,7 +153,11 @@ export const Dashboard: FunctionComponent = () => {
         >
           <SkipNav.Link />
           {hasUnpaidSubscription && <PaymentPending />}
-          {hasTrialWithoutPaymentInfo && <TrialWithoutPaymentInfo />}
+          {showTrialWithoutPaymentInfoBanner && (
+            <TrialWithoutPaymentInfo
+              onDismiss={dismissTrialWithoutPaymentInfoBanner}
+            />
+          )}
           <Header onSidebarToggle={onSidebarToggle} />
           <Media
             query={theme.media

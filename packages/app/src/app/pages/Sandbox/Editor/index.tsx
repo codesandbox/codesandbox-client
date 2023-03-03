@@ -34,6 +34,7 @@ import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
 import { FixedSignInBanner } from './FixedSignInBanner';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 
 type EditorTypes = { showNewSandboxModal?: boolean };
 
@@ -61,13 +62,11 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     },
     customVSCodeTheme: null,
   });
-  const {
-    hasActiveTeamTrial,
-    hasPaymentMethod,
-    subscription,
-  } = useWorkspaceSubscription();
-
-  const hasTrialWithoutPaymentInfo = hasActiveTeamTrial && !hasPaymentMethod;
+  const { subscription } = useWorkspaceSubscription();
+  const [
+    showTrialWithoutPaymentInfoBanner,
+    dismissTrialWithoutPaymentInfoBanner,
+  ] = useShowBanner();
 
   useEffect(() => {
     let timeout;
@@ -129,7 +128,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     // Has MessageStripe
     if (
       subscription?.status === SubscriptionStatus.Unpaid ||
-      hasTrialWithoutPaymentInfo ||
+      showTrialWithoutPaymentInfoBanner ||
       sandbox?.freePlanEditingRestricted ||
       (state.hasLogIn && sandbox?.isSse)
     ) {
@@ -163,7 +162,11 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               <PaymentPending />
             )}
 
-            {hasTrialWithoutPaymentInfo && <TrialWithoutPaymentInfo />}
+            {showTrialWithoutPaymentInfoBanner && (
+              <TrialWithoutPaymentInfo
+                onDismiss={dismissTrialWithoutPaymentInfoBanner}
+              />
+            )}
 
             {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
             {state.hasLogIn && sandbox?.isSse ? <UpgradeSSEToV2Stripe /> : null}
