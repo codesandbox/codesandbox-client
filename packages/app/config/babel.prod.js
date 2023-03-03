@@ -1,3 +1,5 @@
+const TARGETS = ['>0.25%', 'not ie 11', 'not op_mini all'];
+
 module.exports = {
   // Don't try to find .babelrc because we want to force this configuration.
   babelrc: false,
@@ -10,13 +12,10 @@ module.exports = {
     [
       require.resolve('@babel/preset-env'),
       {
-        targets: {
-          ie: 11,
-        },
+        targets: TARGETS,
         // Disable polyfill transforms
         useBuiltIns: false,
         modules: false,
-        forceAllTransforms: true,
       },
     ],
     // JSX, Flow
@@ -55,13 +54,10 @@ module.exports = {
         [
           require.resolve('@babel/preset-env'),
           {
-            targets: {
-              ie: 11,
-            },
+            targets: TARGETS,
             // Disable polyfill transforms
             useBuiltIns: false,
             modules: false,
-            forceAllTransforms: true,
           },
         ],
       ],
