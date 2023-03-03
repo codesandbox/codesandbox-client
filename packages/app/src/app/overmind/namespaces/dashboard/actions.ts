@@ -2286,6 +2286,30 @@ export const importGitHubRepository = async (
   }
 };
 
+export const importGitHubRepositoryWithoutRedirect = async (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { activeTeam } = state;
+  if (!activeTeam) {
+    return;
+  }
+
+  try {
+    await effects.gql.mutations.importProject({
+      name,
+      owner,
+      teamId: activeTeam,
+    });
+  } catch (error) {
+    notificationState.addNotification({
+      message: JSON.stringify(error),
+      title: 'Failed to import repository',
+      status: NotificationStatus.ERROR,
+    });
+  }
+};
+
 export type ForkSource = {
   owner: string;
   name: string;

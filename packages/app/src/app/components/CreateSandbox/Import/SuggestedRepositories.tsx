@@ -27,7 +27,15 @@ import { useGithubAccounts } from './useGithubOrganizations';
 import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
 import { AccountSelect } from './AccountSelect';
 
-export const SuggestedRepositories = () => {
+type SuggestedRepositoriesProps = {
+  isImportOnly?: boolean;
+  onImportClicked?: () => void;
+};
+
+export const SuggestedRepositories = ({
+  isImportOnly,
+  onImportClicked,
+}: SuggestedRepositoriesProps) => {
   const { activeTeamInfo } = useAppState();
   const { modals, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
@@ -150,7 +158,19 @@ export const SuggestedRepositories = () => {
                               );
                             }
 
-                            dashboardActions.importGitHubRepository(importInfo);
+                            if (isImportOnly) {
+                              dashboardActions.importGitHubRepositoryWithoutRedirect(
+                                importInfo
+                              );
+
+                              if (onImportClicked) {
+                                onImportClicked();
+                              }
+                            } else {
+                              dashboardActions.importGitHubRepository(
+                                importInfo
+                              );
+                            }
                           }}
                           disabled={Boolean(isImporting)}
                         >
