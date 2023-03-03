@@ -99,6 +99,13 @@ export const RepositoryBranchesPage = () => {
         workspaceId: repositoryProject?.team?.id,
         repo: { owner, name },
         disabled: isFree && repositoryProject.repository.private,
+        onClick: () => {
+          actions.dashboard.createDraftBranch({
+            owner,
+            name,
+            teamId: repositoryProject?.team?.id,
+          });
+        },
       });
     }
 

@@ -10,13 +10,11 @@ import {
 } from 'reakit/Menu';
 
 import { Stack, Text, Icon, Element } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
 
 // In the new codebase this should be a Radix dropdown menu
 // https://www.radix-ui.com/docs/primitives/components/dropdown-menu
 // also, more composable if it were a design system component
 export const AccountSelect = ({ options, value, onChange }) => {
-  const { signInGithubClicked } = useActions();
   const menu = useMenuState();
 
   return (
@@ -57,19 +55,22 @@ export const AccountSelect = ({ options, value, onChange }) => {
               </Stack>
             </StyledMenuItem>
           ))}
-          <Element paddingY={1}>
+          <Element paddingY={2}>
             <StyledMenuSeparator {...menu} />
           </Element>
           <StyledMenuItem
             {...menu}
+            as="a"
+            href="/auth/github/oauth-settings"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => {
-              signInGithubClicked('private_repos');
               menu.hide();
             }}
           >
             <Stack direction="vertical" gap={1}>
               <Text>Review GitHub permissions</Text>
-              <Text variant="muted">
+              <Text css={{ color: '#999999B3' }}>
                 Only authorized organizations are visible. Some permission
                 changes require admin approval.
               </Text>
@@ -98,7 +99,7 @@ const StyledMenuButton = styled(MenuDisclosure)`
 
 const StyledMenu = styled(Menu)`
   z-index: 1;
-  background-color: #373737;
+  background-color: #252525;
   font-size: 12px;
   padding: 8px 0;
   max-width: 220px;
@@ -118,7 +119,7 @@ const StyledMenuItem = styled(MenuItem)<{ $isSelected?: boolean }>`
 
   &:hover,
   &:focus {
-    background-color: #252525;
+    background-color: #ffffff0f;
   }
 `;
 
@@ -127,5 +128,5 @@ const StyledMenuSeparator = styled(MenuSeparator)`
   display: block;
   width: 100%;
   height: 1px;
-  background-color: #999999;
+  background-color: #343434;
 `;

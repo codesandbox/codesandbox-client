@@ -78,20 +78,28 @@ type CTAOptional =
       onClick: () => void;
     };
 
-interface SubscriptionCardProps {
+export type CTA = CTABase & CTAOptional;
+
+type SubscriptionCardProps = {
   title: string;
+  subTitle: string;
   children: React.ReactNode;
   features: Feature[];
-  cta?: CTABase & CTAOptional;
   isHighlighted?: boolean;
-}
+} & (
+  | {
+      cta?: CTA;
+    }
+  | { customCta?: React.ReactNode }
+);
 
 export const SubscriptionCard = ({
   title,
+  subTitle,
   children,
   features,
-  cta,
   isHighlighted,
+  ...props
 }: SubscriptionCardProps) => {
   return (
     <StyledCard
@@ -100,19 +108,24 @@ export const SubscriptionCard = ({
       gap={9}
       direction="vertical"
     >
-      <Text size={16} weight="500">
-        {title}
-      </Text>
+      <Stack direction="vertical" gap={1}>
+        <Text size={16} weight="500">
+          {title}
+        </Text>
+        <Text size={13}>{subTitle}</Text>
+      </Stack>
       {children}
       <Stack
         as="ul"
         direction="vertical"
         gap={1}
-        // Reset ul styles
         css={{
+          // Reset ul styles
           margin: 0,
           padding: 0,
           listStyle: 'none',
+          // Fill up space
+          flex: 1,
         }}
       >
         {features.map(feature => (
@@ -122,31 +135,41 @@ export const SubscriptionCard = ({
             justify="space-between"
             align="center"
           >
-            <Text css={{ padding: '8px 0' }}>{feature.label}</Text>
+            <Text
+              css={{ padding: '8px 0' }}
+              weight={feature.highlighted ? '700' : '400'}
+            >
+              {feature.label}
+            </Text>
             {feature.pill ? (
               <Badge variant="highlight">{feature.pill}</Badge>
             ) : null}
           </Stack>
         ))}
       </Stack>
-      {cta ? (
-        <StyledSubscriptionLink
-          variant={cta.variant}
-          {...(cta.href
-            ? {
-                href: cta.href,
-                onClick: cta.onClick,
-              }
-            : {
-                as: 'button',
-                onClick: cta.onClick,
-              })}
-        >
-          {cta.isLoading ? 'Loading...' : cta.text}
-        </StyledSubscriptionLink>
-      ) : (
-        <Element css={{ height: '48px' }} />
-      )}
+      {
+        // eslint-disable-next-line no-nested-ternary
+        'cta' in props && typeof props.cta !== 'undefined' ? (
+          <StyledSubscriptionLink
+            variant={props.cta.variant}
+            {...(props.cta.href
+              ? {
+                  href: props.cta.href,
+                  onClick: props.cta.onClick,
+                }
+              : {
+                  as: 'button',
+                  onClick: props.cta.onClick,
+                })}
+          >
+            {props.cta.isLoading ? 'Loading...' : props.cta.text}
+          </StyledSubscriptionLink>
+        ) : 'customCta' in props && typeof props.customCta !== 'undefined' ? (
+          props.customCta
+        ) : (
+          <Element css={{ height: '48px' }} />
+        )
+      }
     </StyledCard>
   );
 };

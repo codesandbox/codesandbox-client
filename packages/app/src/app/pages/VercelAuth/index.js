@@ -7,6 +7,11 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Title } from 'app/components/Title';
 
+/**
+ * This component is insteresting. We're probably redirecting this page
+ * to the Vercel signin on the server. It doesn't do anything locally but
+ * does redirect on production.
+ */
 const VercelSignIn = () => {
   const [redirect, setRedirect] = useState(null);
   const [jwt] = useState(null);

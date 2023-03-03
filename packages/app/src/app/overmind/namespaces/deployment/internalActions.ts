@@ -17,7 +17,8 @@ export const getVercelUserDetails = async ({
       state.user.integrations.zeit.email = vercelDetails.email;
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with Vercel',
+        message:
+          'We were not able to fetch your Vercel user details. You should still be able to deploy to Vercel, please try again if needed.',
         error,
       });
     }

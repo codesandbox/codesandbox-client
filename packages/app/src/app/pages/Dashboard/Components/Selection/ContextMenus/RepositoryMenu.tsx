@@ -4,8 +4,7 @@ import { Menu } from '@codesandbox/components';
 import { ProjectFragment } from 'app/graphql/types';
 import {
   dashboard,
-  v2DefaultBranchUrl,
-  v2DraftBranchUrl,
+  v2BranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useActions, useAppState } from 'app/overmind';
 import { quotes } from 'app/utils/quotes';
@@ -44,14 +43,11 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
     owner: repository.owner,
     name: repository.name,
   });
-  const branchFromDefaultUrl = v2DraftBranchUrl({
+
+  const defaultBranchUrl = v2BranchUrl({
     owner: repository.owner,
     repoName: repository.name,
-    workspaceId: assignedTeam?.id,
-  });
-  const defaultBranchUrl = v2DefaultBranchUrl({
-    owner: repository.owner,
-    repoName: repository.name,
+    branchName: repository.defaultBranch,
     workspaceId: assignedTeam?.id,
   });
 
@@ -85,7 +81,13 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
       <Menu.Divider />
 
       <MenuItem
-        onSelect={() => window.open(branchFromDefaultUrl, '_blank')}
+        onSelect={() => {
+          actions.dashboard.createDraftBranch({
+            owner: repository.owner,
+            name: repository.name,
+            teamId: assignedTeam?.id,
+          });
+        }}
         disabled={restricted}
       >
         Create branch

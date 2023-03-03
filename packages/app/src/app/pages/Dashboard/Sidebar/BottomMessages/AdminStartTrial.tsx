@@ -51,7 +51,6 @@ export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
 
             createCheckout({
               team_id: activeTeam,
-              recurring_interval: 'month' as string,
               success_path: dashboard.recent(activeTeam),
               cancel_path: dashboard.recent(activeTeam),
             });

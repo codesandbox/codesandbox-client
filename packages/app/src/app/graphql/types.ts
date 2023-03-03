@@ -3370,7 +3370,9 @@ export type ImportProjectMutationVariables = Exact<{
 }>;
 
 export type ImportProjectMutation = { __typename?: 'RootMutationType' } & {
-  importProject: { __typename?: 'Project' } & Pick<Project, 'id'>;
+  importProject: { __typename?: 'Project' } & Pick<Project, 'id'> & {
+      defaultBranch: { __typename?: 'Branch' } & Pick<Branch, 'name'>;
+    };
 };
 
 export type DeleteProjectMutationVariables = Exact<{
@@ -3392,6 +3394,16 @@ export type DeleteBranchMutation = { __typename?: 'RootMutationType' } & Pick<
   RootMutationType,
   'deleteBranch'
 >;
+
+export type CreateBranchMutationVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  teamId: Scalars['ID'];
+}>;
+
+export type CreateBranchMutation = { __typename?: 'RootMutationType' } & {
+  createBranch: { __typename?: 'Branch' } & Pick<Branch, 'id' | 'name'>;
+};
 
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
   [key: string]: never;

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Checkbox, Text, Button, Stack } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import { SubscriptionPaymentProvider } from 'app/graphql/types';
-
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { formatCurrency } from 'app/utils/currency';
+
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Alert } from '../Common/Alert';
 
 export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
@@ -11,20 +12,21 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
 }) => {
   const {
     activeTeamInfo,
-    personalWorkspaceId,
     pro: { prices },
   } = useAppState();
   const actions = useActions();
+  const { isTeamSpace } = useWorkspaceAuthorization();
+  const { isPaddle } = useWorkspaceSubscription();
 
   const [confirmed, setConfirmed] = React.useState(false);
-
   const subscription = activeTeamInfo?.subscription!;
 
   const getValue = () => {
-    if (
-      activeTeamInfo?.subscription?.paymentProvider ===
-      SubscriptionPaymentProvider.Paddle
-    ) {
+    // This shouldn't occur on this page, but it is still possible that this
+    // value is undefined or null, coming from the hook.
+    if (!subscription) return null;
+
+    if (isPaddle) {
       return (
         subscription.currency +
         ' ' +
@@ -36,18 +38,16 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
 
     if (!prices) return null;
 
-    const workspaceType =
-      (activeTeamInfo?.id === personalWorkspaceId ? 'pro' : 'teamPro') ?? 'pro';
     const period =
       subscription.billingInterval === 'MONTHLY' ? 'month' : 'year';
-
-    const price = prices[workspaceType][period];
+    const proType = isTeamSpace ? 'team' : 'individual';
+    const price = prices[proType][period];
 
     if (!price) return null;
 
     return `${formatCurrency({
-      amount: price.unitAmount,
-      currency: price.currency,
+      amount: price.usd,
+      currency: 'USD',
     })}/${subscription.billingInterval?.toLowerCase()}`;
   };
 

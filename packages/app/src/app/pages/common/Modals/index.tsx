@@ -50,6 +50,7 @@ import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 import { SubscriptionCancellationModal } from './SubscriptionCancellation';
+import { SelectWorkspaceToUpgrade } from './SelectWorkspaceToUpgrade';
 
 const modals = {
   preferences: {
@@ -212,6 +213,10 @@ const modals = {
   subscriptionCancellation: {
     Component: SubscriptionCancellationModal,
     width: 444,
+  },
+  selectWorkspaceToUpgrade: {
+    Component: SelectWorkspaceToUpgrade,
+    width: 400,
   },
 };
 

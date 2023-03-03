@@ -2,11 +2,8 @@ import React from 'react';
 import css from '@styled-system/css';
 import styled from 'styled-components';
 
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import { useCreateCheckout } from 'app/hooks';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
@@ -14,6 +11,7 @@ import {
   TEAM_FREE_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
+import { TeamSubscriptionOptions } from '../TeamSubscriptionOptions/TeamSubscriptionOptions';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -30,7 +28,6 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
   const {
     pro: { pageMounted },
   } = useActions();
-  const [checkout, createCheckout] = useCreateCheckout();
 
   React.useEffect(() => {
     pageMounted();
@@ -43,11 +40,7 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
     });
   }, []);
 
-  const { isTeamAdmin } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-
-  const isCheckoutDisabled =
-    !isEligibleForTrial || !isTeamAdmin || checkout.status === 'loading';
 
   if (!activeTeamInfo) {
     return null;
@@ -85,9 +78,7 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
             }}
             size={8}
           >
-            {isEligibleForTrial
-              ? 'Try Team Pro for free'
-              : 'Upgrade to Team Pro'}
+            Unlock more power with Pro
           </Text>
         </Stack>
         {isEligibleForTrial && (
@@ -118,44 +109,17 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
         />
       </Stack>
 
-      <Stack css={{ width: '100%', padding: 24 }} direction="vertical" gap={4}>
-        <Stack direction="vertical" align="center" gap={1}>
-          <Button
-            css={css({
-              height: '32px',
-              maxWidth: '370px',
-            })}
-            onClick={() => {
-              if (isCheckoutDisabled) {
-                return;
-              }
-
-              track('New Team - Start Trial', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-
-              createCheckout({
-                team_id: activeTeamInfo.id,
-                recurring_interval: 'month' as string,
-                success_path: dashboard.recent(activeTeamInfo.id),
-                cancel_path: dashboard.recent(activeTeamInfo.id),
-              });
-            }}
-            loading={checkout.status === 'loading'}
-            disabled={isCheckoutDisabled}
-            type="button"
-          >
-            {isEligibleForTrial
-              ? 'Start 14 day free trial'
-              : 'Proceed to checkout'}
-          </Button>
-          {checkout.status === 'error' && (
-            <Text variant="danger" size={2}>
-              {checkout.error}. Please try again.
-            </Text>
-          )}
-        </Stack>
+      <Stack
+        css={{ width: '100%', maxWidth: '370px', padding: 24 }}
+        direction="vertical"
+        gap={4}
+      >
+        <TeamSubscriptionOptions
+          ctaCopy={
+            isEligibleForTrial ? 'Try Team Pro for free' : 'Upgrade to Team Pro'
+          }
+          trackingLocation="New Team"
+        />
         <Button
           onClick={() => {
             track('New Team - Skip trial', {

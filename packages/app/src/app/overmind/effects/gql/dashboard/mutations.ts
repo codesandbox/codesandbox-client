@@ -87,6 +87,8 @@ import {
   DeleteProjectMutationVariables,
   DeleteBranchMutation,
   DeleteBranchMutationVariables,
+  CreateBranchMutation,
+  CreateBranchMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -693,6 +695,9 @@ export const importProject: Query<
   mutation importProject($owner: String!, $name: String!, $teamId: ID!) {
     importProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
       id
+      defaultBranch {
+        name
+      }
     }
   }
 `;
@@ -712,5 +717,17 @@ export const deleteBranch: Query<
 > = gql`
   mutation deleteBranch($branchId: String!) {
     deleteBranch(id: $branchId)
+  }
+`;
+
+export const createBranch: Query<
+  CreateBranchMutation,
+  CreateBranchMutationVariables
+> = gql`
+  mutation createBranch($owner: String!, $name: String!, $teamId: ID!) {
+    createBranch(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
+      id
+      name
+    }
   }
 `;
