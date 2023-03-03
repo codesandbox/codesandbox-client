@@ -84,7 +84,7 @@ export const TrialWithoutPaymentInfo: React.FC = () => {
   }
 
   return (
-    <MessageStripe variant="trial" onDismiss={handleDismiss}>
+    <MessageStripe corners="straight" variant="trial" onDismiss={handleDismiss}>
       {buildCopy()}
       {isTeamAdmin ? (
         <MessageStripe.Action
