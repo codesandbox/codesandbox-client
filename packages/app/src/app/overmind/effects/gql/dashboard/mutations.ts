@@ -695,6 +695,9 @@ export const importProject: Query<
   mutation importProject($owner: String!, $name: String!, $teamId: ID!) {
     importProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
       id
+      defaultBranch {
+        name
+      }
     }
   }
 `;

@@ -14,10 +14,7 @@ import {
   CuratedAlbumByIdQueryVariables,
   ProjectFragment,
 } from 'app/graphql/types';
-import {
-  v2BranchUrl,
-  v2DefaultBranchUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
@@ -2265,15 +2262,16 @@ export const importGitHubRepository = async (
   }
 
   try {
-    await effects.gql.mutations.importProject({
+    const result = await effects.gql.mutations.importProject({
       name,
       owner,
       teamId: activeTeam,
     });
 
-    window.location.href = v2DefaultBranchUrl({
+    window.location.href = v2BranchUrl({
       owner,
       repoName: name,
+      branchName: result.importProject.defaultBranch.name,
       workspaceId: activeTeam,
       importFlag: true,
     });
