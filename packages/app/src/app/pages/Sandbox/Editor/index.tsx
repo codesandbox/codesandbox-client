@@ -24,6 +24,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
@@ -34,7 +35,6 @@ import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
 import { FixedSignInBanner } from './FixedSignInBanner';
-import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 
 type EditorTypes = { showNewSandboxModal?: boolean };
 
@@ -185,6 +185,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
           )}
 
           <div
+            key={getTopOffset()} // Force re-render when topOffset changes to avoid weird positioning.
             style={{
               position: 'fixed',
               left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { differenceInDays, isBefore, startOfToday } from 'date-fns';
+import { differenceInDays, startOfToday } from 'date-fns';
 
 import { MessageStripe } from '@codesandbox/components';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
@@ -36,9 +36,13 @@ export const TrialWithoutPaymentInfo: React.FC<{ onDismiss: () => void }> = ({
   };
 
   const buildCopy = () => {
-    const firstSentence = `Your trial will expire in ${remainingTrialDays} ${pluralize(
-      { word: 'day', count: remainingTrialDays }
-    )}`;
+    const firstSentence =
+      remainingTrialDays === 0
+        ? 'Your trial expires today'
+        : `Your trial will expire in ${remainingTrialDays} ${pluralize({
+            word: 'day',
+            count: remainingTrialDays,
+          })}`;
 
     if (isTeamAdmin) {
       return `${firstSentence}. Add your payment details to continue with your subscription.`;

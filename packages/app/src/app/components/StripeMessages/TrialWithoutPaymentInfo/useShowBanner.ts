@@ -20,8 +20,6 @@ export const useShowBanner = (): [boolean, () => void] => {
     ? new Date(storage.get(storageKey))
     : null;
 
-  console.log({ hasTrialWithoutPaymentInfo, dismissedBannerAt });
-
   const [showBanner, setShowBanner] = React.useState<boolean>(
     dismissedBannerAt ? isBefore(dismissedBannerAt, today) : true
   );
@@ -36,5 +34,5 @@ export const useShowBanner = (): [boolean, () => void] => {
     setShowBanner(false);
   };
 
-  return [false, dismissBanner];
+  return [hasTrialWithoutPaymentInfo && showBanner, dismissBanner];
 };
