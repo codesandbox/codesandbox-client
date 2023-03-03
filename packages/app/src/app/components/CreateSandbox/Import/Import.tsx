@@ -1,4 +1,7 @@
 import React from 'react';
+import VisuallyHidden from '@reach/visually-hidden';
+import { debounce } from 'lodash';
+import { useLazyQuery } from '@apollo/react-hooks';
 
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
@@ -9,6 +12,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
+import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import {
   GithubRepoAuthorization,
@@ -21,9 +25,6 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 
-import { useLazyQuery } from '@apollo/react-hooks';
-import { debounce } from 'lodash';
-import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { MaxPublicRepos } from './MaxPublicRepos';
 import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
 import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
@@ -229,8 +230,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         </Text>
         {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
         {restrictsPublicRepos ? <RestrictedPublicReposImport /> : null}
-        <Element as="form" onSubmit={handleFormSubmit}>
-          <Stack gap={2}>
+        <Element>
+          <Stack as="form" onSubmit={handleFormSubmit} gap={2}>
             <Input
               aria-disabled={hasMaxPublicRepositories}
               aria-describedby="form-title form-error repo-teams"
@@ -249,13 +250,12 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
                 Boolean(url.error) ||
                 isLoading ||
                 disableImport ||
-                isQueryingImports ||
-                hasExistingImports
+                isQueryingImports
               }
               type="submit"
               autoWidth
             >
-              {isLoading && !hasExistingImports ? 'Importing...' : 'Import'}
+              {isLoading ? 'Importing...' : 'Import'}
             </Button>
           </Stack>
           <Element
@@ -291,72 +291,55 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
               </Text>
             ) : null}
           </Element>
+          {/**
+           * We check for hasExistingImports because
+           * to avoid glitches with cached values.
+           */}
+          {isQueryingImports && !hasExistingImports && !url.error ? (
+            <>
+              <VisuallyHidden>
+                Checking if {url.raw} has been imported into any of your teams
+              </VisuallyHidden>
+              <SkeletonText />
+            </>
+          ) : null}
+          {hasExistingImports ? (
+            <Text color="#F9D685" id="repo-teams" size={12}>
+              This repository has been imported into{' '}
+              {existingRepositoryTeams.length === 1 ? 'one' : 'some'} of your
+              teams, open it on:{' '}
+              {existingRepositoryTeams.map((team, teamIndex) => (
+                <>
+                  <Button
+                    key={team.id}
+                    as="a"
+                    css={{
+                      display: 'inline-flex',
+                      color: 'inherit',
+                      fontWeight: 500,
+                      transition: 'color 300ms',
+                      '&:hover:not(:disabled)': {
+                        color: '#ffffff',
+                      },
+                    }}
+                    href={v2DefaultBranchUrl({
+                      owner: variables.owner,
+                      repoName: variables.name,
+                      workspaceId: team.id,
+                    })}
+                    variant="link"
+                  >
+                    {team.name}
+                  </Button>
+                  {existingRepositoryTeams.length > 1 &&
+                    teamIndex !== existingRepositoryTeams.length - 1 &&
+                    ', '}
+                </>
+              ))}
+              .
+            </Text>
+          ) : null}
         </Element>
-        {/**
-         * We check for hasExistingImports because
-         * to avoid glitches with cached values.
-         */}
-        {isQueryingImports && !hasExistingImports ? <SkeletonText /> : null}
-        {hasExistingImports ? (
-          <Text color="#F9D685" id="repo-teams" size={12}>
-            This repository has been imported into{' '}
-            {existingRepositoryTeams.length === 1 ? 'one' : 'some'} of your
-            teams, open it on:{' '}
-            {existingRepositoryTeams.map((team, teamIndex) => (
-              <>
-                <Button
-                  key={team.id}
-                  as="a"
-                  css={{
-                    display: 'inline-flex',
-                    color: 'inherit',
-                    fontWeight: 500,
-                    transition: 'color 300ms',
-                    '&:hover:not(:disabled)': {
-                      color: '#ffffff',
-                    },
-                  }}
-                  href={v2DefaultBranchUrl({
-                    owner: variables.owner,
-                    repoName: variables.name,
-                    workspaceId: team.id,
-                  })}
-                  variant="link"
-                >
-                  {team.name}
-                </Button>
-                {existingRepositoryTeams.length > 1 &&
-                  teamIndex !== existingRepositoryTeams.length - 1 &&
-                  ', '}
-              </>
-            ))}{' '}
-            or{' '}
-            <Button
-              css={{
-                color: '#F9D685',
-                fontSize: '12px',
-                padding: 0,
-                textDecoration: 'underline',
-              }}
-              onClick={() => {
-                track(
-                  'Create New - Import repository that exists in other workspaces',
-                  {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  }
-                );
-
-                handleFormSubmit();
-              }}
-              loading={isLoading}
-              variant="link"
-              autoWidth
-            >
-              Import anyway
-            </Button>
-          </Text>
-        ) : null}
       </Stack>
       {restrictsPublicRepos ? null : <SuggestedRepositories />}
     </Stack>
