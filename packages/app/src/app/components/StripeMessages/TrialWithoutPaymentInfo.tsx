@@ -73,7 +73,7 @@ export const TrialWithoutPaymentInfo: React.FC = () => {
       return;
     }
 
-    track('Stripe banner - active trial dismiss payment reminde', {
+    track('Stripe banner - active trial seen payment reminder', {
       codesandbox: 'V1',
       event_source: 'UI',
     });
