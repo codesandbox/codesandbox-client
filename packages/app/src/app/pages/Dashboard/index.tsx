@@ -19,6 +19,7 @@ import {
   PaymentPending,
   TrialWithoutPaymentInfo,
 } from 'app/components/StripeMessages';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
@@ -28,7 +29,6 @@ import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
 import { NUOCT22 } from '../SignIn/Onboarding';
 import { NewTeamModal } from './Components/NewTeamModal';
-import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
