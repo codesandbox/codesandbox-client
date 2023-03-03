@@ -175,10 +175,7 @@ module.exports = {
             [
               '@babel/preset-env',
               {
-                targets: {
-                  ie: 11,
-                  esmodules: true,
-                },
+                targets: ['>0.25%', 'not ie 11', 'not op_mini all'],
                 modules: 'umd',
                 useBuiltIns: false,
               },
