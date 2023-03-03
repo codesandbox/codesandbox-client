@@ -10,6 +10,7 @@ import { IconButton } from '../IconButton';
 type ButtonVariant = React.ComponentProps<typeof Button>['variant'];
 
 type Variant = 'trial' | 'warning' | 'primary' | 'neutral';
+type Corners = 'rounded' | 'straight';
 
 const mapActionVariant: Record<Variant, ButtonVariant> = {
   trial: 'light',
@@ -69,13 +70,15 @@ const colorVariants: Record<Variant, string> = {
 
 interface MessageStripeProps {
   children: React.ReactNode;
-  variant?: Variant;
+  corners?: Corners;
   justify?: 'center' | 'space-between';
+  variant?: Variant;
   onDismiss?: () => void;
 }
 
 const MessageStripe = ({
   children,
+  corners = 'rounded', // Opposite of the value in v2 just to not cause regressions.
   variant = 'trial',
   justify = 'center',
   onDismiss,
@@ -115,7 +118,7 @@ const MessageStripe = ({
         backgroundColor: backgroundVariants[variant],
         color: colorVariants[variant],
         position: 'relative',
-        borderRadius: '4px',
+        borderRadius: { rounded: '4px', straight: 0 }[corners],
       }}
     >
       <Stack direction="horizontal" justify={justify} align="center" gap={2}>

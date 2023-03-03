@@ -28,6 +28,14 @@ export const WithoutAction = () => (
   </MessageStripe>
 );
 
+export const WithStraightCorners = () => (
+  <MessageStripe corners="straight" variant="trial">
+    You are no longer in a Pro team. This private repo is in view mode only.
+    Make it public or upgrade.
+    <MessageStripe.Action>Upgrade now</MessageStripe.Action>
+  </MessageStripe>
+);
+
 export const SpaceBetween = () => (
   <MessageStripe variant="trial" justify="space-between">
     There are some issues with your payment. Please update your payment details.
