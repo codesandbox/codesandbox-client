@@ -15,7 +15,10 @@ import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
-import { PaymentPending } from 'app/components/StripeMessages';
+import {
+  PaymentPending,
+  TrialWithoutPaymentInfo,
+} from 'app/components/StripeMessages';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
@@ -35,7 +38,11 @@ export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, activeTeamInfo } = useAppState();
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
-  const { subscription } = useWorkspaceSubscription();
+  const {
+    hasActiveTeamTrial,
+    hasPaymentMethod,
+    subscription,
+  } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
 
   // only used for mobile
@@ -101,7 +108,8 @@ export const Dashboard: FunctionComponent = () => {
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
-  const hasTopBarBanner = hasUnpaidSubscription;
+  const hasTrialWithoutPaymentInfo = hasActiveTeamTrial && !hasPaymentMethod;
+  const hasTopBarBanner = hasTrialWithoutPaymentInfo || hasUnpaidSubscription;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -144,6 +152,7 @@ export const Dashboard: FunctionComponent = () => {
         >
           <SkipNav.Link />
           {hasUnpaidSubscription && <PaymentPending />}
+          {hasTrialWithoutPaymentInfo && <TrialWithoutPaymentInfo />}
           <Header onSidebarToggle={onSidebarToggle} />
           <Media
             query={theme.media

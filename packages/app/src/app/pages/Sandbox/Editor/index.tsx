@@ -11,6 +11,7 @@ import { CreateSandbox } from 'app/components/CreateSandbox';
 import {
   FreeViewOnlyStripe,
   PaymentPending,
+  TrialWithoutPaymentInfo,
 } from 'app/components/StripeMessages';
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
@@ -22,6 +23,7 @@ import styled, { ThemeProvider } from 'styled-components';
 
 import { SubscriptionStatus } from 'app/graphql/types';
 import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
@@ -59,6 +61,13 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     },
     customVSCodeTheme: null,
   });
+  const {
+    hasActiveTeamTrial,
+    hasPaymentMethod,
+    subscription,
+  } = useWorkspaceSubscription();
+
+  const hasTrialWithoutPaymentInfo = hasActiveTeamTrial && !hasPaymentMethod;
 
   useEffect(() => {
     let timeout;
@@ -119,8 +128,8 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
 
     // Has MessageStripe
     if (
-      state.activeTeamInfo?.subscription?.status ===
-        SubscriptionStatus.Unpaid ||
+      subscription?.status === SubscriptionStatus.Unpaid ||
+      hasTrialWithoutPaymentInfo ||
       sandbox?.freePlanEditingRestricted ||
       (state.hasLogIn && sandbox?.isSse)
     ) {
@@ -150,8 +159,11 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
             {!state.hasLogIn && <FixedSignInBanner />}
 
-            {state.activeTeamInfo?.subscription?.status ===
-              SubscriptionStatus.Unpaid && <PaymentPending />}
+            {subscription?.status === SubscriptionStatus.Unpaid && (
+              <PaymentPending />
+            )}
+
+            {hasTrialWithoutPaymentInfo && <TrialWithoutPaymentInfo />}
 
             {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
             {state.hasLogIn && sandbox?.isSse ? <UpgradeSSEToV2Stripe /> : null}
