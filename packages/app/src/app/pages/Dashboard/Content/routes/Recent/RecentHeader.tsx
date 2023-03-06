@@ -2,13 +2,12 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { CreateCard, Stack, Text } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useActions, useAppState } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
-  const { activeTeam } = useAppState();
   const actions = useActions();
   const { isFree } = useWorkspaceSubscription();
   const {
@@ -20,7 +19,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
 
   return (
     <Stack direction="vertical" gap={9}>
-      {showUpgradeBanner && <UpgradeBanner teamId={activeTeam} />}
+      {showUpgradeBanner && <UpgradeBanner />}
       <Text
         as="h1"
         css={{

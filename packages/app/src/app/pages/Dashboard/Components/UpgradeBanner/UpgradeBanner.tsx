@@ -12,13 +12,16 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useCreateCheckout, useDismissible } from 'app/hooks';
+import { useDismissible } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useActions, useAppState } from 'app/overmind';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -26,15 +29,15 @@ const StyledTitle = styled(Text)`
   letter-spacing: -0.019em;
 `;
 
-// When flex wraps and the list of features is
-// shown below the call to action.
+// When flex wraps and the list of features
+// is shown below the call to action.
 const WRAP_WIDTH = 1320;
 
 type Feature = {
   icon: IconNames;
   label: string;
 };
-const FEATURES: Feature[] = [
+const FEATURES_LIST: Feature[] = [
   {
     icon: 'sandbox',
     label: 'Unlimited private sandboxes',
@@ -61,23 +64,156 @@ const FEATURES: Feature[] = [
   },
 ];
 
-type UpgradeBannerProps = {
-  teamId: string;
+const Features: React.FC = () => {
+  return (
+    <Grid
+      as="ul"
+      css={{
+        listStyle: 'none',
+        margin: '0 24px 0 0',
+        padding: 0,
+
+        [`@media screen and (max-width: ${WRAP_WIDTH}px)`]: {
+          marginTop: '40px',
+        },
+      }}
+      columnGap={8}
+      rowGap={4}
+    >
+      {FEATURES_LIST.map(f => (
+        <Column
+          css={{
+            // Manually defining the columns width to ensure that the
+            // columns have visual alignment on multiple breakpoints.
+            gridColumnEnd: 'span 12',
+
+            '@media screen and (min-width: 576px) and (max-width: 885px)': {
+              gridColumnEnd: 'span 6',
+            },
+
+            '@media screen and (min-width: 886px)': {
+              gridColumnEnd: 'span 6',
+            },
+
+            '@media screen and (min-width: 1024px)': {
+              gridColumnEnd: 'span 4',
+            },
+
+            [`@media screen and (min-width: ${WRAP_WIDTH}px)`]: {
+              gridColumnEnd: 'span 6',
+            },
+          }}
+          key={f.icon}
+          as="li"
+        >
+          <Stack css={{ color: '#999' }} gap={3}>
+            <Icon css={{ flexShrink: 0 }} name={f.icon} />
+            <Text size={3}>{f.label}</Text>
+          </Stack>
+        </Column>
+      ))}
+    </Grid>
+  );
 };
-export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
-  const [checkout, createCheckout] = useCreateCheckout();
+
+export const UpgradeBanner: React.FC = () => {
+  const {
+    activeTeam,
+    dashboard: { teams },
+    personalWorkspaceId,
+    user,
+  } = useAppState();
+  const { modalOpened, openCreateTeamModal } = useActions();
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasVisited } = useDashboardVisit();
+
+  const checkout = useGetCheckoutURL({
+    team_id: isTeamAdmin ? activeTeam : undefined,
+    success_path: dashboard.recent(activeTeam),
+    cancel_path: dashboard.recent(activeTeam),
+  });
 
   if (isBannerDismissed || !hasVisited) {
     return null;
   }
 
-  const checkoutBtnDisabled = !isTeamAdmin || checkout.status === 'loading';
+  const checkoutUrl = checkout.state === 'READY' ? checkout.url : '/pro';
+
+  const trialEligibleTeams = teams.filter(team => {
+    if (team.id === personalWorkspaceId || Boolean(team.subscription)) {
+      return false;
+    }
+
+    const teamAdmins = team.userAuthorizations
+      .filter(
+        ({ authorization }) => authorization === TeamMemberAuthorization.Admin
+      )
+      .map(({ userId }) => userId);
+
+    return teamAdmins.includes(user?.id);
+  });
+
+  const renderMainCTA = () => {
+    if (isPersonalSpace) {
+      return (
+        <Button
+          css={{ padding: '4px 20px' }}
+          onClick={() => {
+            if (trialEligibleTeams.length > 0) {
+              track('Home Banner - Start trial from personal workspace', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+
+              modalOpened({ modal: 'selectWorkspaceToStartTrial' });
+            } else {
+              track('Home Banner - Create team from personal workspace', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+
+              openCreateTeamModal();
+            }
+          }}
+          autoWidth
+        >
+          Start 14-day free trial
+        </Button>
+      );
+    }
+
+    if (isTeamAdmin) {
+      return (
+        <Button
+          css={{ padding: '4px 20px' }}
+          onClick={() => {
+            if (isEligibleForTrial) {
+              track('Home Banner - Start trial', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+            } else {
+              track('Home Banner - Upgrade', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+            }
+
+            window.location.href = checkoutUrl;
+          }}
+          autoWidth
+        >
+          {isEligibleForTrial ? 'Start 14-day free trial' : 'Upgrade now'}
+        </Button>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <Banner
@@ -92,7 +228,9 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
     >
       <Element css={{ overflow: 'hidden' }}>
         <StyledTitle color="#EDFFA5" weight="500" block>
-          {isEligibleForTrial ? 'Try Team Pro for free' : 'Upgrade to Team Pro'}
+          {isEligibleForTrial || isPersonalSpace
+            ? 'Try Team Pro for free'
+            : 'Upgrade to Team Pro'}
         </StyledTitle>
         <Stack
           css={{
@@ -102,7 +240,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
         >
           <Stack direction="vertical" justify="space-between">
             <StyledTitle block>
-              {isEligibleForTrial
+              {isEligibleForTrial || isPersonalSpace
                 ? '14 days free trial. No credit card required.'
                 : 'Enjoy the full CodeSandbox experience.'}
             </StyledTitle>
@@ -114,69 +252,24 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
               }}
               direction="vertical"
             >
-              {isTeamAdmin ? (
-                <>
-                  <Stack align="center" gap={6}>
-                    <Button
-                      aria-describedby="checkout-error"
-                      onClick={() => {
-                        if (checkoutBtnDisabled) {
-                          return;
-                        }
-
-                        if (isEligibleForTrial) {
-                          track('Home Banner - Start trial', {
-                            codesandbox: 'V1',
-                            event_source: 'UI',
-                          });
-                        } else {
-                          track('Home Banner - Upgrade', {
-                            codesandbox: 'V1',
-                            event_source: 'UI',
-                          });
-                        }
-
-                        createCheckout({
-                          team_id: teamId,
-                          recurring_interval: 'month',
-                          success_path: dashboard.recent(teamId),
-                          cancel_path: dashboard.recent(teamId),
-                        });
-                      }}
-                      loading={checkout.status === 'loading'}
-                      disabled={checkoutBtnDisabled}
-                      type="button"
-                      css={{ width: '120px' }}
-                    >
-                      {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
-                    </Button>
-
-                    <Link
-                      href="/pricing"
-                      target="_blank"
-                      onClick={() => {
-                        track('Home Banner - Learn More', {
-                          codesandbox: 'V1',
-                          event_source: 'UI',
-                        });
-                      }}
-                    >
-                      <Text color="#999999" size={3}>
-                        Learn more
-                      </Text>
-                    </Link>
-                  </Stack>
-                  {checkout.status === 'error' && (
-                    <Text
-                      css={{ marginTop: '8px' }}
-                      id="checkout-error"
-                      size={2}
-                      variant="danger"
-                    >
-                      {checkout.error}. Please try again.
+              {isTeamAdmin || isPersonalSpace ? (
+                <Stack align="center" gap={6}>
+                  {renderMainCTA()}
+                  <Link
+                    href="/pricing"
+                    target="_blank"
+                    onClick={() => {
+                      track('Home Banner - Learn More', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                  >
+                    <Text color="#999999" size={3}>
+                      Learn more
                     </Text>
-                  )}
-                </>
+                  </Link>
+                </Stack>
               ) : (
                 <Button
                   as="a"
@@ -193,53 +286,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
               )}
             </Stack>
           </Stack>
-          <Grid
-            as="ul"
-            css={{
-              listStyle: 'none',
-              margin: '0 24px 0 0',
-              padding: 0,
-
-              [`@media screen and (max-width: ${WRAP_WIDTH}px)`]: {
-                marginTop: '40px',
-              },
-            }}
-            columnGap={8}
-            rowGap={4}
-          >
-            {FEATURES.map(f => (
-              <Column
-                css={{
-                  // Manually defining the columns width to ensure that the
-                  // columns have visual alignment on multiple breakpoints.
-                  gridColumnEnd: 'span 12',
-
-                  '@media screen and (min-width: 576px) and (max-width: 885px)': {
-                    gridColumnEnd: 'span 6',
-                  },
-
-                  '@media screen and (min-width: 886px)': {
-                    gridColumnEnd: 'span 6',
-                  },
-
-                  '@media screen and (min-width: 1024px)': {
-                    gridColumnEnd: 'span 4',
-                  },
-
-                  [`@media screen and (min-width: ${WRAP_WIDTH}px)`]: {
-                    gridColumnEnd: 'span 6',
-                  },
-                }}
-                key={f.icon}
-                as="li"
-              >
-                <Stack css={{ color: '#999' }} gap={3}>
-                  <Icon css={{ flexShrink: 0 }} name={f.icon} />
-                  <Text size={3}>{f.label}</Text>
-                </Stack>
-              </Column>
-            ))}
-          </Grid>
+          <Features />
         </Stack>
       </Element>
     </Banner>
