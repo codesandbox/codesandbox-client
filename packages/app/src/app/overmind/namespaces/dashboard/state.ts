@@ -95,6 +95,7 @@ export type State = {
    */
   removingRepository: { owner: string; name: string } | null;
   removingBranch: { id: string } | null;
+  creatingBranch: boolean;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -214,4 +215,5 @@ export const state: State = {
   starredRepos: [],
   removingRepository: null,
   removingBranch: null,
+  creatingBranch: false,
 };

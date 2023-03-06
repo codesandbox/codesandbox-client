@@ -50,7 +50,7 @@ export default function (
     (0, eval)(newCode).apply(allGlobals.global, globalsValues);
 
     return module.exports;
-  } catch (e) {
+  } catch (e: any) {
     let error = e;
     if (typeof e === 'string') {
       error = new Error(e);

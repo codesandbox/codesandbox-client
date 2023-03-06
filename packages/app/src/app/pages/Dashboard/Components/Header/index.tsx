@@ -10,7 +10,6 @@ import {
   SkeletonText,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
@@ -188,25 +187,18 @@ export const Header = ({
           dashboard.viewMode === 'list' &&
           selectedRepo && (
             <Button
-              as={readOnly ? undefined : 'a'}
-              href={v2DraftBranchUrl({
-                owner: selectedRepo.owner,
-                repoName: selectedRepo.name,
-                workspaceId: selectedRepo.assignedTeamId,
-              })}
-              variant="link"
+              onClick={() => {
+                dashboardActions.createDraftBranch({
+                  owner: selectedRepo.owner,
+                  name: selectedRepo.name,
+                  teamId: selectedRepo.assignedTeamId,
+                });
+              }}
+              variant="ghost"
               css={css({
-                display: 'flex',
-                alignItems: 'center',
-                textDecoration: 'none',
                 fontSize: 2,
                 color: 'mutedForeground',
                 width: 'auto',
-                transition: `color ease-in`,
-                transitionDuration: theme => theme.speeds[2],
-                '&:hover': {
-                  color: '#e5e5e5',
-                },
               })}
               disabled={readOnly}
             >

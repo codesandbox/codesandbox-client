@@ -24,6 +24,7 @@ import {
   SettingsIcon,
   SearchIcon,
   DockerIcon,
+  VSCodeIcon,
 } from './icons';
 
 const IDS_TO_ICONS = {
@@ -39,6 +40,7 @@ const IDS_TO_ICONS = {
   server: ServerIcon,
   comments: CommentsIcon,
   docker: DockerIcon,
+  vscode: VSCodeIcon,
 };
 
 type IconProps = {

@@ -167,3 +167,14 @@ export const GET_GITHUB_ORGANIZATION_REPOS = gql`
     }
   }
 `;
+
+export const GET_REPOSITORY_TEAMS = gql`
+  query RepositoryTeams($owner: String!, $name: String!) {
+    projects(owner: $owner, name: $name, provider: GITHUB) {
+      team {
+        id
+        name
+      }
+    }
+  }
+`;

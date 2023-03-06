@@ -4,7 +4,10 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-export const useUpgradeFromV1ToV2 = (trackingLocation: string) => {
+export const useUpgradeFromV1ToV2 = (
+  trackingLocation: string,
+  alwaysFork?: boolean
+) => {
   const state = useAppState();
   const effects = useEffects();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +33,7 @@ export const useUpgradeFromV1ToV2 = (trackingLocation: string) => {
       try {
         const sandboxId = state.editor.currentSandbox.id;
 
-        if (canConvert) {
+        if (canConvert && !alwaysFork) {
           const alias = state.editor.currentSandbox.alias;
 
           await updateSandbox(sandboxId, {

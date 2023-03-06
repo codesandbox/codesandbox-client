@@ -3,6 +3,7 @@ import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import styled from 'styled-components';
 import VisuallyHidden from '@reach/visually-hidden';
+import { Link as RouterLink } from 'react-router-dom';
 
 import {
   Stack,
@@ -12,13 +13,14 @@ import {
   Button,
   Element,
   SkeletonText,
+  Link,
 } from '@codesandbox/components';
-import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useActions, useAppState } from 'app/overmind';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 import { fuzzyMatchGithubToCsb } from './utils';
 import { useGithubAccounts } from './useGithubOrganizations';
@@ -27,8 +29,13 @@ import { AccountSelect } from './AccountSelect';
 
 export const SuggestedRepositories = () => {
   const { activeTeamInfo } = useAppState();
+  const { modals, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
+  const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
+  const [isImporting, setIsImporting] = useState<
+    { owner: string; name: string } | false
+  >(false);
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -69,8 +76,8 @@ export const SuggestedRepositories = () => {
   return githubAccounts.state === 'ready' && selectedAccount ? (
     <Stack
       direction="vertical"
-      gap={3}
-      css={{ fontFamily: 'Inter', marginBottom: '16px' }}
+      gap={4}
+      css={{ fontFamily: 'Inter', marginBottom: '16px', fontWeight: 500 }}
     >
       <Stack justify="space-between">
         <AccountSelect
@@ -89,9 +96,9 @@ export const SuggestedRepositories = () => {
 
       {githubRepos.state === 'loading' ? (
         <StyledList direction="vertical" gap={1}>
-          <SkeletonText css={{ height: '56px', width: '100%' }} />
-          <SkeletonText css={{ height: '56px', width: '100%' }} />
-          <SkeletonText css={{ height: '56px', width: '100%' }} />
+          <SkeletonText css={{ height: '64px', width: '100%' }} />
+          <SkeletonText css={{ height: '64px', width: '100%' }} />
+          <SkeletonText css={{ height: '64px', width: '100%' }} />
         </StyledList>
       ) : null}
 
@@ -99,39 +106,58 @@ export const SuggestedRepositories = () => {
         <>
           <StyledList as="ul" direction="vertical" gap={1}>
             {githubRepos.data?.map(repo => {
-              const importUrl = v2DefaultBranchUrl({
-                owner: repo.owner.login,
-                repoName: repo.name,
-                workspaceId: activeTeamInfo.id,
-                importFlag: true,
-              });
-
               return (
                 <InteractiveOverlay key={repo.id}>
-                  <StyledItem>
+                  <StyledItem
+                    isDisabled={isFree && repo.private}
+                    css={{
+                      height: '32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Stack gap={4} align="center">
-                      <Icon name="repository" color="#999999" />
-                      <InteractiveOverlay.Anchor
-                        href={importUrl}
-                        onClick={() => {
-                          const isPersonalRepository =
-                            repo.owner.login ===
-                            githubAccounts?.data?.personal?.login;
+                      <Icon name="repository" color="#999999B3" />
+                      {isFree && repo.private ? (
+                        <Text size={13} variant="muted">
+                          {repo.name}
+                        </Text>
+                      ) : (
+                        <InteractiveOverlay.Button
+                          onClick={() => {
+                            if (isImporting) {
+                              return;
+                            }
 
-                          if (isPersonalRepository && isTeamSpace) {
-                            track(
-                              'Suggested repos - Imported personal repository into team space',
-                              {
-                                codesandbox: 'V1',
-                                event_source: 'UI',
-                              }
-                            );
-                          }
-                        }}
-                      >
-                        <VisuallyHidden>Import</VisuallyHidden>
-                        <Text size={13}>{repo.name}</Text>
-                      </InteractiveOverlay.Anchor>
+                            const importInfo = {
+                              owner: repo.owner.login,
+                              name: repo.name,
+                            };
+
+                            setIsImporting(importInfo);
+
+                            const isPersonalRepository =
+                              repo.owner.login ===
+                              githubAccounts?.data?.personal?.login;
+
+                            if (isPersonalRepository && isTeamSpace) {
+                              track(
+                                'Suggested repos - Imported personal repository into team space',
+                                {
+                                  codesandbox: 'V1',
+                                  event_source: 'UI',
+                                }
+                              );
+                            }
+
+                            dashboardActions.importGitHubRepository(importInfo);
+                          }}
+                          disabled={Boolean(isImporting)}
+                        >
+                          <VisuallyHidden>Import</VisuallyHidden>
+                          <Text size={13}>{repo.name}</Text>
+                        </InteractiveOverlay.Button>
+                      )}
                       {repo.private ? (
                         <>
                           <VisuallyHidden>Private repository</VisuallyHidden>
@@ -139,7 +165,7 @@ export const SuggestedRepositories = () => {
                         </>
                       ) : null}
                       {repo.updatedAt ? (
-                        <Text size={13} variant="muted">
+                        <Text size={13} color="#999999B3">
                           <VisuallyHidden>Last updated</VisuallyHidden>
                           {formatDistanceStrict(
                             zonedTimeToUtc(repo.updatedAt, 'Etc/UTC'),
@@ -151,7 +177,66 @@ export const SuggestedRepositories = () => {
                         </Text>
                       ) : null}
                     </Stack>
-                    <StyledIndicator aria-hidden>Import</StyledIndicator>
+                    {isFree && repo.private ? (
+                      <StyledIndicator>
+                        <InteractiveOverlay.Item>
+                          <Link
+                            as={RouterLink}
+                            to="/pro"
+                            onClick={() => {
+                              track(
+                                'Suggested repos - Upgrade to Pro from private repo',
+                                {
+                                  codesandbox: 'V1',
+                                  event_source: 'UI',
+                                }
+                              );
+                              modals.newSandboxModal.close();
+                            }}
+                          >
+                            <Text
+                              size={12}
+                              css={{
+                                display: 'block',
+                                width: 152,
+                                color: '#999999B3',
+                              }}
+                              align="right"
+                            >
+                              <VisuallyHidden>
+                                {repo.name} is a private repository.
+                              </VisuallyHidden>
+                              <Text color="#C2C2C2">
+                                {isEligibleForTrial
+                                  ? 'Start a free trial '
+                                  : 'Upgrade to Pro '}
+                              </Text>
+                              to import private repositories.
+                            </Text>
+                          </Link>
+                        </InteractiveOverlay.Item>
+                      </StyledIndicator>
+                    ) : (
+                      <StyledIndicator aria-hidden>
+                        <StyledImportIndicator>
+                          {isImporting &&
+                          isImporting.owner === repo.owner.login &&
+                          isImporting.name === repo.name ? (
+                            <Button
+                              css={{
+                                height: '16px', // match the text height so the content doesn't jump around when the state changes.
+                              }}
+                              role="presentation"
+                              variant="ghost"
+                              autoWidth
+                              loading
+                            />
+                          ) : (
+                            'Import'
+                          )}
+                        </StyledImportIndicator>
+                      </StyledIndicator>
+                    )}
                   </StyledItem>
                 </InteractiveOverlay>
               );
@@ -195,29 +280,38 @@ const StyledList = styled(Stack)`
   list-style: none;
 `;
 
-const StyledItem = styled.li`
+const StyledIndicator = styled.span`
+  opacity: 0;
+`;
+
+const StyledItem = styled.li<{ isDisabled?: boolean }>`
   display: flex;
   justify-content: space-between;
-  padding: 14px;
+  padding: 16px;
   background-color: #1d1d1d;
   border-radius: 4px;
 
   &:hover,
   &:focus-within {
-    background-color: #252525;
+    ${({ isDisabled }) =>
+      !isDisabled &&
+      `
+        background-color: #252525;
+      `}
+
+    ${StyledIndicator} {
+      opacity: 1;
+    }
   }
 `;
 
-const StyledIndicator = styled.span`
+const StyledImportIndicator = styled.span`
   box-sizing: border-box;
   min-width: 80px;
-  opacity: 0;
   padding: 8px;
+  border-radius: 4px;
   background-color: #343434;
+  color: #c2c2c2;
   font-size: 12px;
   text-align: center;
-
-  ${StyledItem}:hover &, ${StyledItem}:focus-within & {
-    opacity: 1;
-  }
 `;

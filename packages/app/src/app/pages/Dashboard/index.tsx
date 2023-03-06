@@ -15,7 +15,11 @@ import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
-import { PaymentPending } from 'app/components/StripeMessages';
+import {
+  PaymentPending,
+  TrialWithoutPaymentInfo,
+} from 'app/components/StripeMessages';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
@@ -37,6 +41,10 @@ export const Dashboard: FunctionComponent = () => {
   const actions = useActions();
   const { subscription } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
+  const [
+    showTrialWithoutPaymentInfoBanner,
+    dismissTrialWithoutPaymentInfoBanner,
+  ] = useShowBanner();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -99,14 +107,23 @@ export const Dashboard: FunctionComponent = () => {
     }
   }, [location.search, actions, activeTeamInfo, notificationToast]);
 
-  const hasTopBarBanner = subscription?.status === SubscriptionStatus.Unpaid;
+  const hasUnpaidSubscription =
+    subscription?.status === SubscriptionStatus.Unpaid;
+  const hasTopBarBanner =
+    showTrialWithoutPaymentInfoBanner || hasUnpaidSubscription;
 
   useEffect(() => {
+    if (!hasLogIn) {
+      return;
+    }
+
     const searchParams = new URLSearchParams(location.search);
     if (JSON.parse(searchParams.get('create_team'))) {
       actions.openCreateTeamModal();
+    } else if (JSON.parse(searchParams.get('import_repo'))) {
+      actions.openCreateSandboxModal({ initialTab: 'import' });
     }
-  }, [actions, location.search]);
+  }, [actions, hasLogIn, location.search]);
 
   useEffect(() => {
     trackVisit();
@@ -135,8 +152,11 @@ export const Dashboard: FunctionComponent = () => {
           })}
         >
           <SkipNav.Link />
-          {subscription?.status === SubscriptionStatus.Unpaid && (
-            <PaymentPending />
+          {hasUnpaidSubscription && <PaymentPending />}
+          {showTrialWithoutPaymentInfoBanner && (
+            <TrialWithoutPaymentInfo
+              onDismiss={dismissTrialWithoutPaymentInfoBanner}
+            />
           )}
           <Header onSidebarToggle={onSidebarToggle} />
           <Media

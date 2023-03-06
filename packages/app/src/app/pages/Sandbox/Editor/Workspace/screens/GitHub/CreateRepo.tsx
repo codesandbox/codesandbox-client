@@ -50,7 +50,7 @@ export const CreateRepo: React.FC<CreateRepoProps> = ({ disabled }) => {
 
   return (
     <Collapsible
-      title="Export to new GitHub repository"
+      title="Copy Sandbox as a Repository"
       defaultOpen={!currentSandbox.originalGit && !disabled}
     >
       <Element
@@ -111,7 +111,7 @@ export const CreateRepo: React.FC<CreateRepoProps> = ({ disabled }) => {
           </FormField>
           <Element paddingX={2}>
             <Button type="submit" disabled={disableImport} variant="secondary">
-              Create new repository on GitHub
+              Create repository
             </Button>
           </Element>
         </Stack>

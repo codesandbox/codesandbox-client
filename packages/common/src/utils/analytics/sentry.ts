@@ -76,6 +76,7 @@ export async function initialize(dsn: string) {
         if (
           !(hint.originalException instanceof Error) &&
           typeof hint.originalException === 'object' &&
+          hint.originalException &&
           'error' in hint.originalException
         ) {
           return null;

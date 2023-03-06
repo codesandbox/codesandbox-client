@@ -204,7 +204,10 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
           gap={2}
           onSubmit={event => {
             event.preventDefault();
-            updateAlbum({ id: album.id, title: event.target.title.value });
+            updateAlbum({
+              id: album.id,
+              title: (event.target as any).title.value,
+            });
             setRenaming(false);
           }}
         >
@@ -257,9 +260,9 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
             event.preventDefault();
             addSandboxesToAlbum({
               albumId: album.id,
-              sandboxIds: [event.target.sandboxId.value],
+              sandboxIds: [(event.target as any).sandboxId.value],
             });
-            event.target.sandboxId.value = '';
+            (event.target as any).sandboxId.value = '';
           }}
         >
           <Input id="sandboxId" placeholder="Sandbox id, example: e0res" />
@@ -287,7 +290,7 @@ const CreateNewAlbum = () => {
         gap={2}
         onSubmit={event => {
           event.preventDefault();
-          createAlbum({ title: event.target.title.value });
+          createAlbum({ title: (event.target as any).title.value });
         }}
       >
         <Input

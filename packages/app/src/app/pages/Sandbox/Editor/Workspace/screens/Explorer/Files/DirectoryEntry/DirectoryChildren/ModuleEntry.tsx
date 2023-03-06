@@ -2,7 +2,7 @@ import { Directory, Module } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { useAppState, useEffects } from 'app/overmind';
-import { getType } from 'app/utils/get-type.ts';
+import { getType } from 'app/utils/get-type';
 import React, { useCallback, useMemo } from 'react';
 
 import { Entry } from '../Entry';

@@ -1,18 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Button, Stack, Text } from '@codesandbox/components';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import track from '@codesandbox/common/lib/utils/analytics';
+import { Stack, Text } from '@codesandbox/components';
+import { TeamSubscriptionOptions } from 'app/pages/Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
 
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useAppState } from 'app/overmind';
-
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Card } from '../../components';
 
-const List = styled(Stack)`
+const StyledList = styled(Stack)`
   padding-left: 1em;
   margin: 0;
 
@@ -23,16 +17,6 @@ const List = styled(Stack)`
 `;
 
 export const Upgrade = () => {
-  const { activeTeam } = useAppState();
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
-  const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
-  const checkout = useGetCheckoutURL({
-    team_id:
-      (isTeamAdmin || isPersonalSpace) && isFree ? activeTeam : undefined,
-    success_path: dashboardUrls.settings(activeTeam),
-    cancel_path: dashboardUrls.settings(activeTeam),
-  });
-
   return (
     <Card
       css={{
@@ -45,7 +29,7 @@ export const Upgrade = () => {
         css={css({ color: 'grays.800', fontWeight: '500' })}
       >
         <Text size={4}>Upgrade to Team Pro</Text>
-        <List
+        <StyledList
           direction="vertical"
           gap={1}
           as="ul"
@@ -63,26 +47,12 @@ export const Upgrade = () => {
           <Text as="li" size={3}>
             Centralized billing
           </Text>
-        </List>
+        </StyledList>
 
-        <Button
-          as="a"
-          href={
-            checkout.state === 'READY'
-              ? checkout.url
-              : '/pro?utm_source=settings_upgrade'
-          }
-          marginTop={2}
-          variant="trial"
-          onClick={() => {
-            track('Team Settings - Upgrade', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-          }}
-        >
-          {isEligibleForTrial ? 'Start trial' : 'Upgrade to Pro'}
-        </Button>
+        <TeamSubscriptionOptions
+          buttonVariant="trial"
+          trackingLocation="Team Settings"
+        />
       </Stack>
     </Card>
   );

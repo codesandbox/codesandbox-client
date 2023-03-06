@@ -19,10 +19,15 @@ self.less = {
 self.window = self;
 // @ts-ignore
 self.window.document = {
+  // @ts-ignore
   currentScript: { async: true },
+  // @ts-ignore
   createElement: () => ({ appendChild: () => {} }),
+  // @ts-ignore
   createTextNode: () => ({}),
+  // @ts-ignore
   getElementsByTagName: () => [],
+  // @ts-ignore
   head: { appendChild: () => {}, removeChild: () => {} },
 };
 
