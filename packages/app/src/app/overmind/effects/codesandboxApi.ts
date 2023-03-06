@@ -3,7 +3,7 @@ import { dispatch, listen } from 'codesandbox-api';
 const listeners = new Map();
 
 export default {
-  listen(action: ({ data: any }) => void): () => void {
+  listen(action: ({ data }) => void): () => void {
     if (listeners.get(action)) {
       listeners.get(action)();
     }

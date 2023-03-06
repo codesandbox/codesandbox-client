@@ -58,7 +58,7 @@ const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
 };
 
 const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
-const tick = () => new Promise(r => setTimeout(() => r(), 0));
+const tick = () => new Promise<void>(r => setTimeout(() => r(), 0));
 
 export class ServerExecutor implements IExecutor {
   socket?: SocketIOClient.Socket;
@@ -169,17 +169,23 @@ export class ServerExecutor implements IExecutor {
         sseTerminalMessage(`Sandbox ${this.sandboxId} started`);
       });
 
-      this.socket?.open();
+      if (this.socket) {
+        this.socket.open();
+      }
     });
   }
 
   private async startSandbox() {
     const token = await this.token;
-    this.socket?.emit('sandbox', { id: this.sandboxId, token });
+    if (this.socket) {
+      this.socket.emit('sandbox', { id: this.sandboxId, token });
+    }
 
     debug('Connected to sse manager, sending start signal...');
     sseTerminalMessage(`Starting sandbox ${this.sandboxId}...`);
-    this.socket?.emit('sandbox:start');
+    if (this.socket) {
+      this.socket.emit('sandbox:start');
+    }
   }
 
   private async retrieveSSEToken() {

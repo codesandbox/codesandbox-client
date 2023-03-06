@@ -169,7 +169,7 @@ export async function getDependenciesFromSources(
       ...dynamicLoadedDependencies,
       ...prebundledLoadedDependencies,
     ]);
-  } catch (err) {
+  } catch (err: any) {
     err.message = `Could not fetch dependencies, please try again in a couple seconds: ${err.message}`;
     dispatch(actions.notifications.show(err.message, 'error'));
 
