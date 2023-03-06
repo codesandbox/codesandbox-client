@@ -1,4 +1,4 @@
-import { getOwnerAndRepoFromInput } from './utils';
+import { getOwnerAndNameFromInput } from './utils';
 
 const VALID_REPOS = [
   'github.com/owner/repo',
@@ -27,55 +27,55 @@ const INVALID_REPOS = [
   'www.github.com/user/',
 ];
 
-describe('getOwnerAndRepoFromInput', () => {
+describe('getOwnerAndNameFromInput', () => {
   VALID_REPOS.forEach(possibleRepo => {
     test(`${possibleRepo} returns an owner and repo`, () => {
-      expect(getOwnerAndRepoFromInput(possibleRepo)).toEqual({
+      expect(getOwnerAndNameFromInput(possibleRepo)).toEqual({
         owner: 'owner',
-        repo: 'repo',
+        name: 'repo',
       });
     });
   });
 
   test('owner/repo-dash returns an owner and repo', () => {
-    expect(getOwnerAndRepoFromInput('owner/repo-dash')).toEqual({
+    expect(getOwnerAndNameFromInput('owner/repo-dash')).toEqual({
       owner: 'owner',
-      repo: 'repo-dash',
+      name: 'repo-dash',
     });
   });
 
   test('owner/repo.dot returns an owner and repo', () => {
-    expect(getOwnerAndRepoFromInput('owner/repo.dot')).toEqual({
+    expect(getOwnerAndNameFromInput('owner/repo.dot')).toEqual({
       owner: 'owner',
-      repo: 'repo.dot',
+      name: 'repo.dot',
     });
   });
 
   test('https://github.com/owner/repo.com returns an owner and repo', () => {
     expect(
-      getOwnerAndRepoFromInput('https://github.com/owner/repo.com')
+      getOwnerAndNameFromInput('https://github.com/owner/repo.com')
     ).toEqual({
       owner: 'owner',
-      repo: 'repo.com',
+      name: 'repo.com',
     });
   });
 
   test('https://github.com/owner/repo-dash returns an owner and repo', () => {
     expect(
-      getOwnerAndRepoFromInput('https://github.com/owner/repo-dash')
+      getOwnerAndNameFromInput('https://github.com/owner/repo-dash')
     ).toEqual({
       owner: 'owner',
-      repo: 'repo-dash',
+      name: 'repo-dash',
     });
   });
 
   INVALID_REPOS.forEach(possibleRepo => {
     test(`${possibleRepo} returns null`, () => {
-      expect(getOwnerAndRepoFromInput(possibleRepo)).toBeNull();
+      expect(getOwnerAndNameFromInput(possibleRepo)).toBeNull();
     });
   });
 
   test('owner/repo/branch returns null', () => {
-    expect(getOwnerAndRepoFromInput('owner/repo/branch')).toBeNull();
+    expect(getOwnerAndNameFromInput('owner/repo/branch')).toBeNull();
   });
 });

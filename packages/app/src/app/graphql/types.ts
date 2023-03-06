@@ -2206,6 +2206,19 @@ export type GetGitHubOrganizationReposQuery = {
   >;
 };
 
+export type RepositoryTeamsQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+export type RepositoryTeamsQuery = { __typename?: 'RootQueryType' } & {
+  projects: Array<
+    { __typename?: 'Project' } & {
+      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+    }
+  >;
+};
+
 export type CollaboratorFragment = { __typename?: 'Collaborator' } & Pick<
   Collaborator,
   'id' | 'authorization' | 'lastSeenAt' | 'warning'
