@@ -1,10 +1,12 @@
 import {
+  SubscriptionInterval,
   SubscriptionOrigin,
   SubscriptionPaymentProvider,
   SubscriptionStatus,
   SubscriptionType,
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
+import { isBefore, startOfToday } from 'date-fns';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
@@ -27,14 +29,22 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isPro =
     subscription.status === SubscriptionStatus.Active ||
     subscription.status === SubscriptionStatus.Trialing;
-
   const isFree = !isPro;
+
+  const hasPaymentMethod = subscription.paymentMethodAttached;
+
   const hasActiveTeamTrial =
     isTeamSpace && subscription.status === SubscriptionStatus.Trialing;
 
-  const numberOfSeats = subscription.quantity || 1;
+  const today = startOfToday();
+  const hasExpiredTeamTrial =
+    isTeamSpace && // is a team
+    subscription.status !== SubscriptionStatus.Active && // the subscription isn't active
+    !hasPaymentMethod && // there's no payment method attached
+    isBefore(new Date(subscription.trialEnd), today); // the trial ended before today;
 
-  const hasPaymentMethod = subscription.paymentMethodAttached;
+  const numberOfSeats =
+    (isFree ? activeTeamInfo.limits.maxEditors : subscription.quantity) || 1;
 
   const isPatron =
     subscription.origin === SubscriptionOrigin.Legacy ||
@@ -51,8 +61,9 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     numberOfSeats,
     isPro,
     isFree,
-    isEligibleForTrial: false,
+    isEligibleForTrial: false, // Teams with an active or past subscription are not eligible for trial.
     hasActiveTeamTrial,
+    hasExpiredTeamTrial,
     hasPaymentMethod,
     isPatron,
     isPaddle,
@@ -67,6 +78,7 @@ const NO_WORKSPACE = {
   isFree: undefined,
   isEligibleForTrial: undefined,
   hasActiveTeamTrial: undefined,
+  hasExpiredTeamTrial: undefined,
   hasPaymentMethod: undefined,
   isPatron: undefined,
   isPaddle: undefined,
@@ -79,6 +91,7 @@ const NO_SUBSCRIPTION = {
   isPro: false,
   isFree: true,
   hasActiveTeamTrial: false,
+  hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
   isPatron: false,
   isPaddle: false,
@@ -91,6 +104,7 @@ export type WorkspaceSubscriptionReturn =
   | {
       subscription: {
         cancelAt?: string;
+        billingInterval?: SubscriptionInterval | null;
         status: SubscriptionStatus;
         type: SubscriptionType;
         trialEnd?: string;
@@ -101,6 +115,7 @@ export type WorkspaceSubscriptionReturn =
       isFree: boolean;
       isEligibleForTrial: false;
       hasActiveTeamTrial: boolean;
+      hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;
       isPatron: boolean;
       isPaddle: boolean;

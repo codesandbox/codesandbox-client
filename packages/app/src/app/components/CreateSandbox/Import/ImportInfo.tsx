@@ -1,9 +1,6 @@
 import React from 'react';
 import { Element, Icon, Link, Stack, Text } from '@codesandbox/components';
-import {
-  v2DraftBranchUrl,
-  v2DefaultBranchUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { GithubRepoToImport } from './types';
 
 export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
@@ -43,6 +40,10 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
       </Stack>
 
       <Stack direction="vertical" gap={4}>
+        {/* 
+        TODO: Replace the link to contribution branch creation in the editor
+              with the proper mutation to create a contribution branch before
+              redirecting to the editor
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
           href={v2DraftBranchUrl({
@@ -54,7 +55,7 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
           <Text as="span" size={2}>
             Create contribution branch
           </Text>
-        </Link>
+        </Link> */}
 
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}

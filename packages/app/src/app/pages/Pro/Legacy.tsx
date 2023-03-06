@@ -11,7 +11,9 @@ import { ConfirmBillingInterval } from './legacy-pages/ConfirmBillingInterval';
 import { PaymentSuccess } from './legacy-pages/PaymentSuccess';
 
 export const ProLegacy: React.FC = () => {
-  const { pageMounted } = useActions().pro;
+  const {
+    pro: { pageMounted },
+  } = useActions();
 
   React.useEffect(() => {
     pageMounted();

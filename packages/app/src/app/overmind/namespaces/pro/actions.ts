@@ -3,17 +3,12 @@ import { withLoadApp } from 'app/overmind/factories';
 import { SubscriptionInterval } from 'app/graphql/types';
 import { Step, PaymentSummary, PaymentPreview } from './types';
 
-export const getPrices = async ({ state, effects }: Context) => {
-  try {
-    state.pro.prices = await effects.api.prices();
-  } catch (err) {
-    // Fail silently.
-  }
-};
-
 export const pageMounted = withLoadApp(async ({ effects, state, actions }) => {
-  state.pro.prices = await effects.api.prices();
+  // We have to call the api effect directly rather than using an action because
+  // for some reason an action doesn't work.
+  state.pro.prices = await effects.api.getPrices();
 
+  // This action does work.
   actions.getActiveTeamInfo();
 });
 

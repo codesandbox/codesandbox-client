@@ -40,7 +40,7 @@ export default class Module {
 
       try {
         module.exports = JSON.parse(content);
-      } catch (err) {
+      } catch (err: any) {
         err.message = filename + ': ' + err.message;
         throw err;
       }

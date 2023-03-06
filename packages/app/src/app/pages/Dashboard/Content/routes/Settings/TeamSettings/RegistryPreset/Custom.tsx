@@ -35,7 +35,7 @@ export const CustomRegistryPreset = ({
         <Text size={3} variant="muted">
           Is your registry behind a VPN? Please read these{' '}
           <Link
-            href="https://codesandbox.io/docs/custom-npm-registry"
+            href="https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry"
             target="_blank"
             variant="active"
           >
@@ -64,7 +64,7 @@ export const CustomRegistryPreset = ({
         <Text size={3} variant="muted">
           More information on which one to choose can be found{' '}
           <Link
-            href="https://codesandbox.io/docs/custom-npm-registry#auth-token"
+            href="https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry#auth-token"
             target="_blank"
             variant="active"
           >

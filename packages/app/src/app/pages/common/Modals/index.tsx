@@ -23,6 +23,7 @@ import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
 import { LiveSessionConfirm } from './LiveSessionConfirm';
+import { LiveSessionRestricted } from './LiveSessionRestricted';
 import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
@@ -49,6 +50,7 @@ import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 import { SubscriptionCancellationModal } from './SubscriptionCancellation';
+import { SelectWorkspaceToUpgrade } from './SelectWorkspaceToUpgrade';
 
 const modals = {
   preferences: {
@@ -151,6 +153,10 @@ const modals = {
     Component: LiveSessionConfirm,
     width: 400,
   },
+  liveSessionRestricted: {
+    Component: LiveSessionRestricted,
+    width: 400,
+  },
   liveVersionMismatch: {
     Component: LiveVersionMismatch,
     width: 400,
@@ -207,6 +213,10 @@ const modals = {
   subscriptionCancellation: {
     Component: SubscriptionCancellationModal,
     width: 444,
+  },
+  selectWorkspaceToUpgrade: {
+    Component: SelectWorkspaceToUpgrade,
+    width: 400,
   },
 };
 

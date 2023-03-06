@@ -16,6 +16,8 @@ import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
 import { Search } from './screens/Search';
+import { Docker } from './screens/Docker';
+import { VSCode } from './screens/VSCode';
 
 const workspaceTabs = {
   project: ProjectInfo,
@@ -28,6 +30,8 @@ const workspaceTabs = {
   live: Live,
   server: Server,
   comments: Comments,
+  docker: Docker,
+  vscode: VSCode,
 };
 
 const WorkspaceComponent = ({ theme }) => {

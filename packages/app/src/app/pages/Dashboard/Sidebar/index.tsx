@@ -17,6 +17,7 @@ import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { getDaysUntil } from 'app/utils/dateTime';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { SubscriptionStatus } from 'app/graphql/types';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -114,6 +115,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     trialDaysLeft !== null &&
     trialDaysLeft <= DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE;
 
+  const hasTopBarBanner = subscription?.status === SubscriptionStatus.Unpaid;
+
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
       <Stack
@@ -128,12 +131,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         css={css({
           width: SIDEBAR_WIDTH,
           zIndex: 3,
-          paddingTop: '23px',
+          marginTop: '24px',
+          paddingBottom: '32px',
           // We set sidebar as absolute so that content can
           // take 100% width, this helps us enable dragging
           // sandboxes onto the sidebar more freely.
           position: 'absolute',
-          height: 'calc(100% - 48px)',
+          // 100vh - topbar height - (banner height or 0) - padding bottom
+          height: `calc(100vh - 60px - ${
+            hasTopBarBanner ? '44' : '0'
+          }px - 32px)`,
         })}
       >
         <Stack direction="horizontal">
@@ -194,15 +201,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.recent(activeTeam)}
             icon="clock"
           />
-          <RowItem
-            name="Discover"
-            page="discover"
-            path={dashboardUrls.discover(activeTeam)}
-            icon="discover"
-          />
+
           {isPersonalSpace && (
             <RowItem
-              name="Shared With Me"
+              name="Shared with me"
               page="shared"
               path={dashboardUrls.shared(activeTeam)}
               icon="sharing"
@@ -307,7 +309,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </List>
 
         {teamDataLoaded && isFree ? (
-          <Element css={{ margin: '24px', paddingTop: 0 }}>
+          <Element css={{ margin: 'auto 24px 0' }}>
             {isTeamAdmin && isEligibleForTrial ? (
               <AdminStartTrial activeTeam={activeTeam} />
             ) : null}
@@ -323,7 +325,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : null}
 
         {teamDataLoaded && showDaysLeftMessage ? (
-          <Element css={{ margin: '24px', paddingTop: 0 }}>
+          <Element css={{ margin: 'auto 24px 0' }}>
             <TrialExpiring
               activeTeam={activeTeam}
               cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd}

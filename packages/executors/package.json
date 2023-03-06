@@ -1,6 +1,7 @@
 {
   "name": "@codesandbox/executors",
   "version": "0.1.0",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
@@ -10,13 +11,10 @@
     "dist"
   ],
   "main": "dist/index.js",
-  "umd:main": "dist/codesandboxexecutors.umd.production.js",
-  "module": "dist/codesandboxexecutors.es.production.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsdx build",
-    "build:dev": "yarn build",
-    "start": "tsdx watch"
+    "build": "tsc --outDir dist",
+    "build:dev": "yarn build"
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
@@ -26,10 +24,7 @@
     "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
-    "@types/jest": "24.0.13",
     "@types/socket.io-client": "^1.4.32",
-    "tsdx": "^0.6.1",
-    "tslib": "^1.9.3",
-    "typescript": "4.1.2"
+    "typescript": "^4.9.5"
   }
 }

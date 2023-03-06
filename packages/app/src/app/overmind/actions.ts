@@ -254,10 +254,12 @@ type ModalName =
   | 'signInForTemplates'
   | 'userSurvey'
   | 'liveSessionConfirm'
+  | 'liveSessionRestricted'
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
-  | 'legacyPayment';
+  | 'legacyPayment'
+  | 'selectWorkspaceToUpgrade';
 
 export const modalOpened = (
   { state, effects }: Context,
@@ -345,6 +347,11 @@ export const signInVercelClicked = async ({
   actions,
 }: Context) => {
   state.isLoadingVercel = true;
+
+  /**
+   * We're opening a browser popup here with the /auth/zeit page but then do a server
+   * side redirect to the Vercel sign in page. This only works on production, not locally.
+   */
   const popup = browser.openPopup('/auth/zeit', 'sign in');
   const data: { code: string } = await browser.waitForMessage('signin');
 
@@ -353,10 +360,22 @@ export const signInVercelClicked = async ({
   if (data && data.code) {
     try {
       state.user = await api.createVercelIntegration(data.code);
-      await actions.deployment.internal.getVercelUserDetails();
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with Vercel',
+        message: 'Not able to add a Vercel integration. Please try again.',
+        error,
+      });
+    }
+
+    try {
+      await actions.deployment.internal.getVercelUserDetails();
+
+      // Not sure if we ever reach the catch clause below because the error has already
+      // been caught in getVercelUserDetails.
+    } catch (error) {
+      actions.internal.handleError({
+        message:
+          'We were not able to fetch your Vercel user details. You should still be able to deploy to Vercel, please try again if needed.',
         error,
       });
     }

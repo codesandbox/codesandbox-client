@@ -640,13 +640,8 @@ export default {
       sandboxLimit: number;
     }>(`/sandboxes/limits`);
   },
-  prices() {
-    type Pricing = Record<
-      'pro' | 'teamPro',
-      Record<'month' | 'year', { currency: string; unitAmount: number }>
-    >;
-
-    return api.get<Pricing>(`/prices`);
+  getPrices() {
+    return api.get(`/prices`, undefined, undefined, true);
   },
   stripeCreateCheckout({
     success_path,

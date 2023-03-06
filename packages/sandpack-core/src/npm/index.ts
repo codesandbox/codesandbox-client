@@ -170,7 +170,7 @@ export async function getDependenciesFromSources(
       ...dynamicLoadedDependencies,
       ...prebundledLoadedDependencies,
     ]);
-  } catch (err) {
+  } catch (err: any) {
     if (getSandpackSecret()) {
       removeSandpackSecret();
     }

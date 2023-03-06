@@ -127,6 +127,7 @@ export const teamFragmentDashboard = gql`
     userAuthorizations {
       userId
       authorization
+      teamManager
     }
 
     users {
@@ -184,7 +185,7 @@ export const currentTeamInfoFragment = gql`
       defaultAuthorization
     }
 
-    subscription {
+    subscription(includeCancelled: true) {
       billingInterval
       cancelAt
       cancelAtPeriodEnd

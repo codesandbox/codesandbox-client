@@ -3,11 +3,6 @@ export enum Step {
   ConfirmBillingInterval = 'ConfirmBillingInterval',
 }
 
-export type Pricing = Record<
-  'pro' | 'teamPro',
-  Record<'month' | 'year', { currency: string; unitAmount: number }>
->;
-
 export type PaymentSummary = {
   unitPrice: number;
   unit: number;
@@ -26,4 +21,18 @@ export type PaymentPreview = {
     amount: number;
     currency: string;
   };
+};
+
+type PricingOptions = {
+  month: {
+    [key: string]: number;
+  };
+  year: {
+    [key: string]: number;
+  };
+};
+
+export type Pricing = {
+  individual: PricingOptions;
+  team: PricingOptions;
 };
