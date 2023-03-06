@@ -44,7 +44,7 @@
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:prod": "lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
-    "postinstall": "yarn lerna run install-dependencies --stream --concurrency 1 && opencollective postinstall && patch-package",
+    "postinstall": "yarn lerna run install-dependencies --stream --concurrency 1 && opencollective postinstall",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "lint": "lerna run lint --stream",
@@ -75,7 +75,6 @@
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
     "opencollective": "^1.0.3",
-    "patch-package": "^6.5.0",
     "postinstall-postinstall": "^2.1.0"
   },
   "devDependencies": {
