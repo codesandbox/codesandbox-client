@@ -16,7 +16,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
     isPersonalSpace,
     isTeamViewer,
   } = useWorkspaceAuthorization();
-  const showUpgradeBanner = isFree && isTeamSpace;
+  const showUpgradeBanner = isPersonalSpace || (isFree && isTeamSpace);
 
   return (
     <Stack direction="vertical" gap={9}>

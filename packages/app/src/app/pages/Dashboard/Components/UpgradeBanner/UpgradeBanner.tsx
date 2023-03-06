@@ -92,7 +92,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
     >
       <Element css={{ overflow: 'hidden' }}>
         <StyledTitle color="#EDFFA5" weight="500" block>
-          {isEligibleForTrial ? 'Try Team Pro for free' : 'Upgrade to Pro'}
+          {isEligibleForTrial ? 'Try Team Pro for free' : 'Upgrade to Team Pro'}
         </StyledTitle>
         <Stack
           css={{
