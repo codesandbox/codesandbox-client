@@ -144,7 +144,7 @@ export const teamFragmentDashboard = gql`
       avatarUrl
     }
 
-    subscription {
+    subscription(includeCancelled: true) {
       origin
       type
       paymentProvider
