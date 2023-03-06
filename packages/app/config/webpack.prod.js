@@ -1,27 +1,17 @@
 /* eslint-disable global-require */
 
-// const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const { normalizeName } = require('webpack/lib/optimize/SplitChunksPlugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VERSION = require('@codesandbox/common/lib/version').default;
-// const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
 
 const publicPath = '/';
-// const isMaster =
-//   childProcess
-//     .execSync(`git branch | grep \\* | cut -d ' ' -f2`)
-//     .toString()
-//     .trim() === 'master';
-
-const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
@@ -31,9 +21,6 @@ module.exports = merge(commonConfig, {
   },
   mode: 'production',
   stats: 'verbose',
-  // optimization: {
-  //   minimize: false,
-  // },
 
   optimization: {
     minimize: true,
@@ -91,8 +78,13 @@ module.exports = merge(commonConfig, {
       chunks: 'all',
       maxInitialRequests: 20, // for HTTP2
       maxAsyncRequests: 20, // for HTTP2
-      name(module, chunks, cacheGroup) {
-        const name = normalize(module, chunks, cacheGroup);
+      name(module, chunks, cacheGroupKey) {
+        const moduleFileName = module
+          .identifier()
+          .split('/')
+          .reduceRight(item => item);
+        const allChunksNames = chunks.map(item => item.name).join('~');
+        const name = `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
 
         if (name === 'vendors~app~embed~sandbox') {
           return 'common-sandbox';
@@ -101,6 +93,7 @@ module.exports = merge(commonConfig, {
         if (name === 'vendors~app~embed') {
           return 'common';
         }
+
         // generate a chunk name using default strategy...
         return name;
       },
