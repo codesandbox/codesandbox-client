@@ -24,7 +24,8 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       t =>
         t.subscription &&
         t.subscription.type === SubscriptionType.TeamPro &&
-        t.subscription.status === SubscriptionStatus.Active
+        (t.subscription.status === SubscriptionStatus.Active ||
+          t.subscription.status === SubscriptionStatus.Trialing)
     ) === undefined;
   const showUpgradeBanner =
     (isPersonalSpace && allTeamsNotOnPro) || (isFree && isTeamSpace);
