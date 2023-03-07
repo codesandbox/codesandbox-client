@@ -51,6 +51,7 @@ import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 import { SubscriptionCancellationModal } from './SubscriptionCancellation';
 import { SelectWorkspaceToUpgrade } from './SelectWorkspaceToUpgrade';
+import { SelectWorkspaceToStartTrial } from './SelectWorkspaceToStartTrial';
 
 const modals = {
   preferences: {
@@ -216,6 +217,10 @@ const modals = {
   },
   selectWorkspaceToUpgrade: {
     Component: SelectWorkspaceToUpgrade,
+    width: 400,
+  },
+  selectWorkspaceToStartTrial: {
+    Component: SelectWorkspaceToStartTrial,
     width: 400,
   },
 };

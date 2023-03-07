@@ -109,6 +109,8 @@ export type Branch = {
   /** Open pull requests from this head branch */
   pullRequests: Array<PullRequest>;
   settings: BranchSettings;
+  /** The name of the branch the current branch was created from. Only available if this branch was created via CodeSandbox. */
+  sourceBranch: Maybe<Scalars['String']>;
   /** Information about the underlying git status of this branch */
   status: Maybe<Status>;
   /** Whether or not this branch exists on GitHub. Deduced from local information, so not guaranteed 100% accurate */
@@ -2768,7 +2770,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        'origin' | 'type' | 'paymentProvider'
+        'origin' | 'type' | 'status' | 'paymentProvider'
       >
     >;
   };

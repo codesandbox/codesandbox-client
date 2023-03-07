@@ -260,7 +260,8 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'selectWorkspaceToUpgrade';
+  | 'selectWorkspaceToUpgrade'
+  | 'selectWorkspaceToStartTrial';
 
 export const modalOpened = (
   { state, effects }: Context,
