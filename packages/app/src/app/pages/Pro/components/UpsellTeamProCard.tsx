@@ -86,9 +86,9 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
           css={{
             position: 'absolute',
             right: 0,
-            transform: 'translate(50%, -30%)',
-            width: '137px',
-            height: '149px',
+            transform: 'translate(50%, -40%)',
+            width: '158px',
+            height: '180px',
           }}
           src="/static/img/collaboration-sticker.png"
         />
