@@ -38,7 +38,7 @@ export const SelectWorkspaceToStartTrial: React.FC = () => {
   );
 
   return (
-    <Alert title="Choose a team to start a 14-day free trial">
+    <Alert title="Select a team to trial on pro">
       <Stack
         css={{
           marginBottom: '52px',
@@ -46,15 +46,6 @@ export const SelectWorkspaceToStartTrial: React.FC = () => {
         direction="vertical"
         gap={4}
       >
-        <Text
-          css={{
-            color: '#808080',
-            fontSize: '13px',
-            lineHeight: '19px',
-          }}
-        >
-          Team Pro trials are only available for teams.
-        </Text>
         {trialEligibleTeams.length > 0 ? (
           /**
            * This should always render because if there are no
