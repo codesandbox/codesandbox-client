@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 import { css } from '@styled-system/css';
+import { useParams } from 'react-router-dom';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { CodeSandboxIcon } from '@codesandbox/components/lib/components/Icon/icons';
@@ -17,6 +18,7 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
   const { hasLogIn } = useAppState();
   const { api } = useEffects();
   const { genericPageMounted } = useActions();
+  const params: { teamId?: string } = useParams();
 
   const [error, setError] = React.useState<string>();
 
@@ -31,14 +33,17 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
       const listener = async (event: MessageEvent) => {
         if (event.data && event.data.$type === 'request-sandpack-secret') {
           const parentWindow = event.data.parentDomain;
+          const teamId = params.teamId;
 
           api
-            .getSandpackToken(parentWindow)
-            .then(token => {
+            .getSandpackTokenFromTeam(teamId)
+            .then(async token => {
               /**
                * TODO: perform this on the backend
                */
-              const TEMP_ALLOWED_DOMAINS = ['http://localhost:6006'];
+              const foo = await api.getSandpackTrustedDomains();
+              console.log(foo);
+              const TEMP_ALLOWED_DOMAINS = ['http://localhost:6001'];
               const TODO_BACKEND_CHECK = TEMP_ALLOWED_DOMAINS.includes(
                 parentWindow
               );
