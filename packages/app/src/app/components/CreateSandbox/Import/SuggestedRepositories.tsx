@@ -85,7 +85,15 @@ export const SuggestedRepositories = ({
     <Stack
       direction="vertical"
       gap={4}
-      css={{ fontFamily: 'Inter', marginBottom: '16px', fontWeight: 500 }}
+      css={{
+        fontFamily: 'Inter',
+        marginBottom: '16px',
+        fontWeight: 500,
+        // Conditionally spreading an object doesn't work for some reason so
+        // I had to move the conditional to separate properties.
+        maxHeight: isImportOnly ? '400px' : undefined,
+        overflow: isImportOnly ? 'auto' : undefined,
+      }}
     >
       <Stack justify="space-between">
         <AccountSelect
