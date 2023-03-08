@@ -27,7 +27,10 @@ import {
   NpmRegistryFetcher,
   NpmRegistryOpts,
 } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
-import { getSandpackSecret } from 'sandpack-core/lib/sandpack-secret';
+import {
+  getSandpackSecret,
+  getProtocolAndHostWithSSE,
+} from 'sandpack-core/lib/sandpack-secret';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -355,10 +358,12 @@ async function initializeManager(
       throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
     }
 
-    const responseRegistry = await fetch(
-      'https://6er17b-3000.preview.csb.app/api/v1/sandpack/registry',
-      { headers: { Authorization: `Bearer ${sandpackToken}` } }
-    );
+    const domain = getProtocolAndHostWithSSE();
+
+    const responseRegistry = await fetch(`${domain}/api/v1/sandpack/registry`, {
+      headers: { Authorization: `Bearer ${sandpackToken}` },
+    });
+
     const registry = (await responseRegistry.json()) as {
       auth_type: string;
       enabled_scopes: string[];
@@ -374,8 +379,7 @@ async function initializeManager(
       limitToScopes: registry.limit_to_scopes,
       proxyEnabled: registry.proxy_enabled,
       registryUrl:
-        registry.registry_url ||
-        'https://6er17b-3000.preview.csb.app/api/v1/sandpack/package_info/',
+        registry.registry_url || `${domain}/api/v1/sandpack/package_info/`,
       registryAuthToken: registry.registry_auth_key || sandpackToken,
     });
   }

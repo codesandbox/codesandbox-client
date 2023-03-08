@@ -56,12 +56,11 @@ function getPopupDimensions() {
   return `width=${width},height=${height},top=${top},left=${left}`;
 }
 
-/**
- * This helper function is purely there to also work when we're building
- * for SSE, which means that the env vars are not set and we thus don't
- * know the host.
- */
-function getProtocolAndHostWithSSE() {
+export function getProtocolAndHostWithSSE() {
+  if (document.location.host.startsWith('localhost')) {
+    return 'https://6er17b-3000.preview.csb.app';
+  }
+
   if (document.location.host.endsWith('.io')) {
     return 'https://codesandbox.io';
   }
@@ -70,8 +69,8 @@ function getProtocolAndHostWithSSE() {
 }
 
 export const requestSandpackSecretFromApp = async (
-  host: string = getProtocolAndHostWithSSE(),
-  teamId: string
+  teamId: string,
+  host: string = getProtocolAndHostWithSSE()
 ): Promise<string> => {
   const parentDomain = (() => {
     /**

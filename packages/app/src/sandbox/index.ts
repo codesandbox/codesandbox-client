@@ -73,10 +73,7 @@ requirePolyfills().then(() => {
           });
         }
       } else if (data.type === 'sign-in') {
-        await requestSandpackSecretFromApp(
-          'https://6er17b-3000.preview.csb.app',
-          data.teamId
-        );
+        await requestSandpackSecretFromApp(data.teamId);
 
         window.location.reload();
       } else if (data.type === 'sign-out') {
