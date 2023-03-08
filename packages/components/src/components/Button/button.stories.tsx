@@ -36,6 +36,15 @@ export const Disabled = () => (
     <Button disabled variant="danger">
       Go live
     </Button>
+    <Button disabled variant="light">
+      Light variant
+    </Button>
+    <Button disabled variant="dark">
+      Dark variant
+    </Button>
+    <Button disabled variant="trial">
+      Trial variant
+    </Button>
   </Stack>
 );
 
@@ -52,6 +61,15 @@ export const Loading = () => (
     </Button>
     <Button loading variant="danger">
       Go live
+    </Button>
+    <Button loading variant="light">
+      Light variant
+    </Button>
+    <Button loading variant="dark">
+      Dark variant
+    </Button>
+    <Button loading variant="trial">
+      Trial variant
     </Button>
   </Stack>
 );
