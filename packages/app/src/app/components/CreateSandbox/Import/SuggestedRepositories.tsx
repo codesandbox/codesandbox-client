@@ -28,7 +28,10 @@ import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
 import { AccountSelect } from './AccountSelect';
 
 export const SuggestedRepositories = () => {
-  const { activeTeamInfo } = useAppState();
+  const {
+    activeTeamInfo,
+    dashboard: { repositoriesByTeamId },
+  } = useAppState();
   const { modals, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
@@ -36,6 +39,16 @@ export const SuggestedRepositories = () => {
   const [isImporting, setIsImporting] = useState<
     { owner: string; name: string } | false
   >(false);
+
+  const teamId = activeTeamInfo?.id;
+
+  const importedRepos = useMemo(() => {
+    if (!teamId) {
+      return undefined;
+    }
+
+    return repositoriesByTeamId[teamId];
+  }, [teamId, repositoriesByTeamId]);
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -56,6 +69,15 @@ export const SuggestedRepositories = () => {
       setSelectedAccount(match.login);
     }
   }, [githubAccounts.state, selectedAccount, activeTeamInfo, selectOptions]);
+
+  useEffect(() => {
+    if (!importedRepos) {
+      dashboardActions.getRepositoriesByTeam({
+        teamId,
+        fetchCachedDataFirst: true,
+      });
+    }
+  }, []);
 
   // eslint-disable-next-line no-nested-ternary
   const selectedAccountType = selectedAccount
