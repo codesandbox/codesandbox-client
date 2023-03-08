@@ -27,6 +27,7 @@ import {
   NpmRegistryFetcher,
   NpmRegistryOpts,
 } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
+import { getSandpackSecret } from 'sandpack-core/lib/sandpack-secret';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -39,7 +40,6 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
-import { getSandpackSecret } from 'sandpack-core/lib/sandpack-secret';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -355,17 +355,33 @@ async function initializeManager(
       throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
     }
 
-    // TODO: new endpoint
+    const responseRegistry = await fetch(
+      'https://6er17b-3000.preview.csb.app/api/v1/sandpack/registry',
+      { headers: { Authorization: `Bearer ${sandpackToken}` } }
+    );
+    const registry = (await responseRegistry.json()) as {
+      auth_type: string;
+      enabled_scopes: string[];
+      limit_to_scopes: true;
+      proxy_enabled: false;
+      registry_auth_key: string;
+      registry_type: string;
+      registry_url: string;
+    };
+
     customNpmRegistries.push({
-      registryUrl: `https://6er17b-3000.preview.csb.app/api/v1/sandboxes/${teamId}/npm_registry`,
-      proxyEnabled: true,
-      limitToScopes: true,
-      enabledScopes: ['@codesandbox'],
+      enabledScopes: registry.enabled_scopes,
+      limitToScopes: registry.limit_to_scopes,
+      proxyEnabled: registry.proxy_enabled,
+      registryUrl:
+        registry.registry_url ||
+        'https://6er17b-3000.preview.csb.app/api/v1/sandpack/package_info/',
+      registryAuthToken: registry.registry_auth_key || sandpackToken,
     });
   }
 
   // Add the custom registered npm registries
-  for (let registry of customNpmRegistries) {
+  for (const registry of customNpmRegistries) {
     if (!registry.registryUrl) {
       throw new Error(
         'Unable to fetch required dependency: neither a `registryUrl` nor a `codesandboxTeamId` was provided.'
