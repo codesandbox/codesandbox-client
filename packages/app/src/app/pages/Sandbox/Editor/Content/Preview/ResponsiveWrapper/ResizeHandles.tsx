@@ -24,8 +24,8 @@ type ResizeHandlesProps = {
     { x: number; y: number } | null,
     ({ x, y }: { x: number; y: number }) => void
   ];
-  widthResizer: [{ x: number } | null, ({ x: number }) => void];
-  heightResizer: [{ y: number } | null, ({ y: number }) => void];
+  widthResizer: [{ x: number } | null, ({ x }: { x: number }) => void];
+  heightResizer: [{ y: number } | null, ({ y }: { y: number }) => void];
   setResolution: (resolution: [number, number]) => void;
   children: React.ReactNode;
   setIsResizing: (isResizing: boolean) => void;
@@ -43,7 +43,7 @@ const resize = (
     offset,
     resizer: [_, setSize],
     setResolution,
-    setIsResizing
+    setIsResizing,
   }: {
     resolution: [number, number];
     // Holds the actual mouse position and its offset on the 4px handle to determine
@@ -135,7 +135,7 @@ export const ResizeHandles = ({
   widthResizer,
   heightResizer,
   children,
-  setIsResizing
+  setIsResizing,
 }: ResizeHandlesProps) => (
   <Styled on={on} id="styled-resize-wrapper">
     <div>
@@ -151,7 +151,7 @@ export const ResizeHandles = ({
                 initialMousePosition: { x: event.clientX, y: event.clientY },
                 resizer: widthAndHeightResizer,
                 setResolution,
-                setIsResizing
+                setIsResizing,
               });
             }}
             style={{
@@ -169,7 +169,7 @@ export const ResizeHandles = ({
                 initialMousePosition: { x: event.clientX },
                 resizer: widthResizer,
                 setResolution,
-                setIsResizing
+                setIsResizing,
               });
             }}
             style={{
@@ -189,7 +189,7 @@ export const ResizeHandles = ({
                 initialMousePosition: { y: event.clientY },
                 resizer: heightResizer,
                 setResolution,
-                setIsResizing
+                setIsResizing,
               });
             }}
             style={{

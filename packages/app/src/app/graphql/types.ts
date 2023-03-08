@@ -109,6 +109,8 @@ export type Branch = {
   /** Open pull requests from this head branch */
   pullRequests: Array<PullRequest>;
   settings: BranchSettings;
+  /** The name of the branch the current branch was created from. Only available if this branch was created via CodeSandbox. */
+  sourceBranch: Maybe<Scalars['String']>;
   /** Information about the underlying git status of this branch */
   status: Maybe<Status>;
   /** Whether or not this branch exists on GitHub. Deduced from local information, so not guaranteed 100% accurate */
@@ -2206,6 +2208,19 @@ export type GetGitHubOrganizationReposQuery = {
   >;
 };
 
+export type RepositoryTeamsQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+export type RepositoryTeamsQuery = { __typename?: 'RootQueryType' } & {
+  projects: Array<
+    { __typename?: 'Project' } & {
+      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+    }
+  >;
+};
+
 export type CollaboratorFragment = { __typename?: 'Collaborator' } & Pick<
   Collaborator,
   'id' | 'authorization' | 'lastSeenAt' | 'warning'
@@ -2755,7 +2770,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        'origin' | 'type' | 'paymentProvider'
+        'origin' | 'type' | 'status' | 'paymentProvider'
       >
     >;
   };
@@ -3357,7 +3372,9 @@ export type ImportProjectMutationVariables = Exact<{
 }>;
 
 export type ImportProjectMutation = { __typename?: 'RootMutationType' } & {
-  importProject: { __typename?: 'Project' } & Pick<Project, 'id'>;
+  importProject: { __typename?: 'Project' } & Pick<Project, 'id'> & {
+      defaultBranch: { __typename?: 'Branch' } & Pick<Branch, 'name'>;
+    };
 };
 
 export type DeleteProjectMutationVariables = Exact<{

@@ -24,6 +24,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
@@ -61,13 +62,11 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     },
     customVSCodeTheme: null,
   });
-  const {
-    hasActiveTeamTrial,
-    hasPaymentMethod,
-    subscription,
-  } = useWorkspaceSubscription();
-
-  const hasTrialWithoutPaymentInfo = hasActiveTeamTrial && !hasPaymentMethod;
+  const { subscription } = useWorkspaceSubscription();
+  const [
+    showTrialWithoutPaymentInfoBanner,
+    dismissTrialWithoutPaymentInfoBanner,
+  ] = useShowBanner();
 
   useEffect(() => {
     let timeout;
@@ -129,7 +128,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     // Has MessageStripe
     if (
       subscription?.status === SubscriptionStatus.Unpaid ||
-      hasTrialWithoutPaymentInfo ||
+      showTrialWithoutPaymentInfoBanner ||
       sandbox?.freePlanEditingRestricted ||
       (state.hasLogIn && sandbox?.isSse)
     ) {
@@ -163,7 +162,11 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               <PaymentPending />
             )}
 
-            {hasTrialWithoutPaymentInfo && <TrialWithoutPaymentInfo />}
+            {showTrialWithoutPaymentInfoBanner && (
+              <TrialWithoutPaymentInfo
+                onDismiss={dismissTrialWithoutPaymentInfoBanner}
+              />
+            )}
 
             {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
             {state.hasLogIn && sandbox?.isSse ? <UpgradeSSEToV2Stripe /> : null}
@@ -182,6 +185,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
           )}
 
           <div
+            key={getTopOffset()} // Force re-render when topOffset changes to avoid weird positioning.
             style={{
               position: 'fixed',
               left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',

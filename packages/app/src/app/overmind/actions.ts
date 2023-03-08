@@ -15,6 +15,7 @@ import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 import { FinalizeSignUpOptions } from './effects/api/types';
 import { AuthOptions, GHScopeOption } from './utils/auth';
+import { renameZeitToVercel } from './utils/vercel';
 
 export const internal = internalActions;
 
@@ -87,7 +88,7 @@ export const onInitializeOvermind = async (
 
   effects.vercel.initialize({
     getToken() {
-      return state.user?.integrations.zeit?.token ?? null;
+      return state.user?.integrations.vercel?.token ?? null;
     },
   });
 
@@ -259,7 +260,8 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'selectWorkspaceToUpgrade';
+  | 'selectWorkspaceToUpgrade'
+  | 'selectWorkspaceToStartTrial';
 
 export const modalOpened = (
   { state, effects }: Context,
@@ -351,6 +353,8 @@ export const signInVercelClicked = async ({
   /**
    * We're opening a browser popup here with the /auth/zeit page but then do a server
    * side redirect to the Vercel sign in page. This only works on production, not locally.
+   * We also can't rename the zeit route to vercel (yet) because the server will throw an
+   * invalid redirect_uri error.
    */
   const popup = browser.openPopup('/auth/zeit', 'sign in');
   const data: { code: string } = await browser.waitForMessage('signin');
@@ -359,7 +363,8 @@ export const signInVercelClicked = async ({
 
   if (data && data.code) {
     try {
-      state.user = await api.createVercelIntegration(data.code);
+      const currentUser = await api.createVercelIntegration(data.code);
+      state.user = renameZeitToVercel(currentUser);
     } catch (error) {
       actions.internal.handleError({
         message: 'Not able to add a Vercel integration. Please try again.',
@@ -387,9 +392,9 @@ export const signInVercelClicked = async ({
 };
 
 export const signOutVercelClicked = async ({ state, effects }: Context) => {
-  if (state.user?.integrations?.zeit) {
+  if (state.user?.integrations?.vercel) {
     await effects.api.signoutVercel();
-    state.user.integrations.zeit = null;
+    state.user.integrations.vercel = null;
   }
 };
 

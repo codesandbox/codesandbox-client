@@ -112,6 +112,8 @@ export type Badge = {
   visible: boolean;
 };
 
+// This is the CurrentUser that is used everywhere, the CurrentUser coming from
+// the GraphQL type is never used, except in GraphQL context.
 export type CurrentUser = {
   id: string;
   email: string;
@@ -136,7 +138,7 @@ export type CurrentUser = {
   betaAccess: boolean;
   provider: 'github' | 'google' | 'apple';
   integrations: {
-    zeit: {
+    vercel: {
       token: string;
       email?: string;
     } | null;
@@ -161,6 +163,16 @@ export type CurrentUser = {
         };
         error: null;
       };
+};
+
+// The zeit property comes from the API, but we want to rename it to vercel in the
+// frontend. In the future we want to rename zeit coming from the API too.
+export type CurrentUserFromAPI = Omit<CurrentUser, 'integrations'> & {
+  // Omitting the vercel key from CurrentUser
+  integrations: Omit<CurrentUser['integrations'], 'vercel'> & {
+    // And replacing it with a zeit key with the same type
+    zeit: CurrentUser['integrations']['vercel'];
+  };
 };
 
 export type CustomTemplate = {

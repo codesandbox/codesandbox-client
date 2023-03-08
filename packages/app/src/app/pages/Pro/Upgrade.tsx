@@ -176,6 +176,8 @@ export const ProUpgrade = () => {
           backgroundColor: '#0E0E0E',
           color: '#E5E5E5',
           width: '100%',
+          maxWidth: '100vw',
+          overflowX: 'hidden',
           minHeight: '100vh',
           fontFamily: 'Inter, sans-serif',
         }}

@@ -729,9 +729,14 @@ async function compile(opts: CompileOptions) {
         // preferred.
         const serverProvidedHTML =
           modules[htmlEntries[0]] || manager.preset.htmlDisabled;
+        // If it has the loading screen element, it definitely didn't server-render
+        const isLoadingScreen = Boolean(
+          document.getElementById('csb-loading-screen')
+        );
         if (
           !serverProvidedHTML ||
           !firstLoad ||
+          isLoadingScreen ||
           process.env.LOCAL_SERVER ||
           process.env.SANDPACK
         ) {

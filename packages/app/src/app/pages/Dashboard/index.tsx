@@ -19,6 +19,7 @@ import {
   PaymentPending,
   TrialWithoutPaymentInfo,
 } from 'app/components/StripeMessages';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
@@ -38,12 +39,12 @@ export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, activeTeamInfo } = useAppState();
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
-  const {
-    hasActiveTeamTrial,
-    hasPaymentMethod,
-    subscription,
-  } = useWorkspaceSubscription();
+  const { subscription } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
+  const [
+    showTrialWithoutPaymentInfoBanner,
+    dismissTrialWithoutPaymentInfoBanner,
+  ] = useShowBanner();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -108,8 +109,8 @@ export const Dashboard: FunctionComponent = () => {
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
-  const hasTrialWithoutPaymentInfo = hasActiveTeamTrial && !hasPaymentMethod;
-  const hasTopBarBanner = hasTrialWithoutPaymentInfo || hasUnpaidSubscription;
+  const hasTopBarBanner =
+    showTrialWithoutPaymentInfoBanner || hasUnpaidSubscription;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -152,7 +153,11 @@ export const Dashboard: FunctionComponent = () => {
         >
           <SkipNav.Link />
           {hasUnpaidSubscription && <PaymentPending />}
-          {hasTrialWithoutPaymentInfo && <TrialWithoutPaymentInfo />}
+          {showTrialWithoutPaymentInfoBanner && (
+            <TrialWithoutPaymentInfo
+              onDismiss={dismissTrialWithoutPaymentInfoBanner}
+            />
+          )}
           <Header onSidebarToggle={onSidebarToggle} />
           <Media
             query={theme.media

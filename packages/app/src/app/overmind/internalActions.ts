@@ -19,6 +19,7 @@ import { parseConfigurations } from './utils/parse-configurations';
 import { Context } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { AuthOptions, GH_BASE_SCOPE, MAP_GH_SCOPE_OPTIONS } from './utils/auth';
+import { renameZeitToVercel } from './utils/vercel';
 
 /**
  * After getting the current user we need to hydrate the app with new data from that user.
@@ -60,7 +61,10 @@ export const signIn = async (
     state.signInModalOpen = false;
     state.cancelOnLogin = null;
     state.pendingUser = null;
-    state.user = await effects.api.getCurrentUser();
+
+    const currentUser = await effects.api.getCurrentUser();
+    state.user = renameZeitToVercel(currentUser);
+
     await actions.internal.initializeNewUser();
     actions.refetchSandboxInfo();
     state.hasLogIn = true;
@@ -619,7 +623,7 @@ export const setActiveWorkspaceFromUrlOrStore = async ({
 }: Context) => {
   const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
 
-  if (isValid) {
+  if (isValid && id) {
     // Set active team from url or storage.
     actions.setActiveTeam({ id });
   } else {
@@ -643,7 +647,7 @@ export const getTeamIdFromUrlOrStore = async ({
   state,
   effects,
   actions,
-}: Context) => {
+}: Context): Promise<{ id: string | null; isValid: boolean }> => {
   const suggestedTeamId =
     actions.internal.getTeamIdFromUrl() ||
     actions.internal.getTeamIdFromLocalStorage();
@@ -672,12 +676,12 @@ export const getTeamIdFromUrlOrStore = async ({
   );
 
   return {
-    id: suggestedTeamId,
-    isValid: isSuggestedTeamValid,
+    id: suggestedTeamId!,
+    isValid: Boolean(isSuggestedTeamValid),
   };
 };
 
-export const getTeamIdFromUrl = () => {
+export const getTeamIdFromUrl = (): string | null => {
   const url = typeof document === 'undefined' ? null : document.location.href;
 
   if (url) {
@@ -687,7 +691,7 @@ export const getTeamIdFromUrl = () => {
   return null;
 };
 
-export const getTeamIdFromLocalStorage = ({ effects }) => {
+export const getTeamIdFromLocalStorage = ({ effects }): string | null => {
   const localStorageTeamId = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
   const isValidStorageItem = typeof localStorageTeamId === 'string';
 

@@ -112,7 +112,7 @@ export default function loader(
         babelParserPlugins: options.babelParserPlugins,
         id,
       });
-    } catch (e) {
+    } catch (e: any) {
       loaderContext.emitError(e);
     }
 

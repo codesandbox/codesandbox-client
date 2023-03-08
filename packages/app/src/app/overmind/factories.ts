@@ -5,6 +5,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { IState, derived, ContextFunction } from 'overmind';
 import { Context } from '.';
+import { renameZeitToVercel } from './utils/vercel';
 
 /*
   Ensures that we have loaded the app with the initial user
@@ -65,7 +66,7 @@ export const withLoadApp = <I>(
     try {
       await Promise.all([
         effects.api.getCurrentUser().then(user => {
-          state.user = user;
+          state.user = renameZeitToVercel(user);
         }),
       ]);
 
