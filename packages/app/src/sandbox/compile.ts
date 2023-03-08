@@ -381,6 +381,7 @@ async function initializeManager(
       registryUrl:
         registry.registry_url || `${domain}/api/v1/sandpack/package_info/`,
       registryAuthToken: registry.registry_auth_key || sandpackToken,
+      registryAuthType: registry.auth_type,
     });
   }
 

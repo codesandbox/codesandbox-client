@@ -379,6 +379,7 @@ export type NpmRegistry = {
   registryUrl: string;
   proxyEnabled?: boolean;
   registryAuthToken?: string;
+  registryAuthType?: string;
 };
 
 export enum CommentsFilterOption {

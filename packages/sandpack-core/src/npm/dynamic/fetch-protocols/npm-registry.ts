@@ -68,6 +68,7 @@ export type NpmRegistryOpts = {
    */
   scopeWhitelist?: string[];
 
+  authType?: string;
   authToken?: string;
 
   /**
@@ -91,6 +92,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
   private authToken: string | undefined;
   private provideTarballUrl?: TarbalUrlTransformer;
   private proxyEnabled?: boolean = false;
+  private authType: string;
 
   constructor(private registryLocation: string, config: NpmRegistryOpts) {
     this.proxyUrl = config.proxyUrl;
@@ -98,6 +100,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
     this.authToken = config.authToken;
     this.provideTarballUrl = config.provideTarballUrl;
     this.proxyEnabled = config.proxyEnabled;
+    this.authType = config.authType || 'Bearer';
   }
 
   private getProxiedUrl(url: string) {
@@ -121,7 +124,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
     return this.getProxiedUrl(join(this.registryLocation, encodedName));
   }
 
-  private async getRequestInit(): Promise<RequestInit> {
+  private getRequestInit(): RequestInit {
     const headers = new Headers();
     headers.append('Accept', NPM_REGISTRY_ACCEPT_HEADER);
     headers.append('Content-Type', 'application/json');
@@ -134,17 +137,15 @@ export class NpmRegistryFetcher implements FetchProtocol {
      */
 
     if (this.authToken) {
-      headers.append('Authorization', `Bearer ${this.authToken}`);
-      /**
-       * @TODO: scoped conditional and throws an error if
-       * it doesn't find secret
-       */
+      // Custom registry url
+      headers.append('Authorization', `${this.authType} ${this.authToken}`);
     } else {
-      let sandpackToken = getSandpackSecret();
+      const sandpackToken = getSandpackSecret();
       if (!sandpackToken) {
         throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
       }
 
+      // CSB proxy
       headers.append('Authorization', `Bearer ${sandpackToken}`);
     }
 
@@ -156,8 +157,8 @@ export class NpmRegistryFetcher implements FetchProtocol {
     };
   }
 
-  private async fetchRegistry(url: string): Promise<PackageRegistryInfo> {
-    return fetchWithRetries(url, 3, await this.getRequestInit())
+  private fetchRegistry(url: string): Promise<PackageRegistryInfo> {
+    return fetchWithRetries(url, 3, this.getRequestInit())
       .then(x => x.json())
       .catch(async e => {
         let errorMessage = 'Make sure the right auth token and URL are set';
@@ -242,7 +243,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       versionInfo.version,
       versionInfo.dist.tarball
     );
-    return this.tarStore.file(name, tarball, path, await this.getRequestInit());
+    return this.tarStore.file(name, tarball, path, this.getRequestInit());
   }
 
   public async meta(name: string, version: string): Promise<Meta> {
@@ -253,7 +254,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       versionInfo.version,
       versionInfo.dist.tarball
     );
-    return this.tarStore.meta(name, tarball, await this.getRequestInit());
+    return this.tarStore.meta(name, tarball, this.getRequestInit());
   }
 
   public async massFiles(name: string, version: string): Promise<Module[]> {
@@ -264,7 +265,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       versionInfo.version,
       versionInfo.dist.tarball
     );
-    return this.tarStore.massFiles(name, tarball, await this.getRequestInit());
+    return this.tarStore.massFiles(name, tarball, this.getRequestInit());
   }
 
   public condition = (name: string, version: string): boolean => {
