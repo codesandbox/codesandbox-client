@@ -16,6 +16,9 @@ export const Variants = () => (
     <Button variant="secondary">Save as Template</Button>
     <Button variant="link">Open sandbox</Button>
     <Button variant="danger">Go live</Button>
+    <Button variant="light">Light variant</Button>
+    <Button variant="dark">Dark variant</Button>
+    <Button variant="trial">Trial variant</Button>
   </Stack>
 );
 
