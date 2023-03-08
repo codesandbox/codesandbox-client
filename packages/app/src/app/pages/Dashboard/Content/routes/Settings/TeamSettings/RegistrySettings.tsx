@@ -40,11 +40,16 @@ export const RegistrySettings = () => {
   }, [setLoading, actions.dashboard, activeTeam]);
 
   useEffect(() => {
-    loadCurrentNpmRegistry();
+    if (isPro && isTeamAdmin) {
+      loadCurrentNpmRegistry();
+    } else {
+      setLoading(false);
+    }
   }, [loadCurrentNpmRegistry]);
 
   const onSubmit = async (params: CreateRegistryParams) => {
     setSubmitting(true);
+
     try {
       await actions.dashboard.createOrUpdateCurrentNpmRegistry(params);
     } finally {
