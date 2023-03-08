@@ -25,16 +25,6 @@ export const Horizontal = () => (
   </Element>
 );
 
-export const WithBadge = () => (
-  <Element
-    css={{ width: 200, border: '1px solid', borderColor: 'sideBar.border' }}
-  >
-    <FormField label="Frozen" badge="Beta" direction="horizontal">
-      <Switch defaultOn />
-    </FormField>
-  </Element>
-);
-
 export const Vertical = () => (
   <Element
     css={{ width: 200, border: '1px solid', borderColor: 'sideBar.border' }}
