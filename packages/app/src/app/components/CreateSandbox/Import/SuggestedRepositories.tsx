@@ -71,6 +71,8 @@ export const SuggestedRepositories = () => {
   }, [githubAccounts.state, selectedAccount, activeTeamInfo, selectOptions]);
 
   useEffect(() => {
+    // This is needed if the import is opened before the user
+    // visits the repositories page.
     if (!importedRepos) {
       dashboardActions.getRepositoriesByTeam({
         teamId,
@@ -89,6 +91,7 @@ export const SuggestedRepositories = () => {
   const githubRepos = useGitHubAccountRepositories({
     name: selectedAccount,
     accountType: selectedAccountType,
+    teamRepos: importedRepos,
   });
 
   if (githubAccounts.state === 'loading') {

@@ -4,6 +4,7 @@ import {
   GetGitHubAccountReposQueryVariables,
   GetGitHubOrganizationReposQuery,
   GetGitHubOrganizationReposQueryVariables,
+  ProjectFragment,
 } from 'app/graphql/types';
 import {
   GET_GITHUB_ACCOUNT_REPOS,
@@ -16,14 +17,20 @@ import {
 type UseGitHubAccountRepositoriesOptions = {
   name?: string;
   accountType?: 'personal' | 'organization';
+  teamRepos?: ProjectFragment[];
 };
 
 export const useGitHubAccountRepositories = ({
   name,
   accountType,
+  teamRepos,
 }: UseGitHubAccountRepositoriesOptions) => {
   const skipLoadingPersonal = accountType === 'organization' || !name;
   const skipLoadingOrganization = accountType === 'personal' || !name;
+
+  const currentAccountRepos = teamRepos
+    ?.filter(({ repository }) => repository.owner === name)
+    .map(({ repository }) => repository.name);
 
   // Query the personal repositories unless the selected github account
   // is an organization
@@ -84,6 +91,8 @@ export const useGitHubAccountRepositories = ({
 
   return {
     state: 'ready',
-    data: accountData || organizationData,
+    data: (accountData || organizationData).filter(
+      repository => !currentAccountRepos?.includes(repository.name)
+    ),
   };
 };
