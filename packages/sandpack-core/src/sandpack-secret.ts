@@ -70,7 +70,8 @@ function getProtocolAndHostWithSSE() {
 }
 
 export const requestSandpackSecretFromApp = async (
-  host: string = getProtocolAndHostWithSSE()
+  host: string = getProtocolAndHostWithSSE(),
+  teamId: string
 ): Promise<string> => {
   const parentDomain = (() => {
     /**
@@ -90,7 +91,7 @@ export const requestSandpackSecretFromApp = async (
 
   return new Promise(resolve => {
     const popup = window.open(
-      host + '/auth/sandpack/',
+      host + '/auth/sandpack/' + teamId,
       '',
       `scrollbars=no,toolbar=no,location=no,titlebar=no,directories=no,status=no,menubar=no, ${getPopupDimensions()}`
     );

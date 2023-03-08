@@ -11,11 +11,11 @@ import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
-import compile, { getCurrentManager } from './compile';
 import {
   requestSandpackSecretFromApp,
   removeSandpackSecret,
 } from 'sandpack-core/lib/sandpack-secret';
+import compile, { getCurrentManager } from './compile';
 
 const host = process.env.CODESANDBOX_HOST;
 const withServiceWorker = !process.env.SANDPACK;
@@ -74,7 +74,8 @@ requirePolyfills().then(() => {
         }
       } else if (data.type === 'sign-in') {
         await requestSandpackSecretFromApp(
-          'https://6er17b-3000.preview.csb.app'
+          'https://6er17b-3000.preview.csb.app',
+          data.teamId
         );
 
         window.location.reload();

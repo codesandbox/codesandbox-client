@@ -8,12 +8,7 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { absolute } from '@codesandbox/common/lib/utils/path';
 import VERSION from '@codesandbox/common/lib/version';
-import {
-  actions,
-  clearErrorTransformers,
-  dispatch,
-  reattach,
-} from 'codesandbox-api';
+import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, uninject } from 'sandbox-hooks/react-error-overlay/overlay';
