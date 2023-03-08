@@ -31,6 +31,7 @@ export const CustomFormField = (
     css={css({ paddingX: 0, label: { marginBottom: 1 } })}
     direction={props.direction || 'vertical'}
     label={props.label}
+    badge={props.badge}
   >
     {props.children}
   </FormField>
@@ -98,22 +99,9 @@ export const RegistryForm = ({
   const [proxyEnabled, setProxyEnabled] = React.useState(
     registry?.proxyEnabled
   );
-
-  const addScope = () => {
-    setScopes(oldScopes => [...oldScopes, '']);
-  };
-
-  const removeScope = (index: number) => {
-    setScopes(oldScopes => oldScopes.filter((_is, i) => i !== index));
-  };
-
-  const editScope = (scope: string, index: number) => {
-    setScopes(s => {
-      const copiedScopes = [...s];
-      copiedScopes[index] = scope;
-      return copiedScopes;
-    });
-  };
+  const [trustedDomains, setTrustedDomains] = React.useState<string[]>(
+    registry?.trustedDomains || []
+  );
 
   const serializeValues = (): CreateRegistryParams => ({
     registryAuthKey: authKey,
@@ -123,6 +111,7 @@ export const RegistryForm = ({
     registryAuthType: authenticationType,
     registryUrl,
     proxyEnabled,
+    trustedDomains,
   });
 
   // We make sure to always show one input field
@@ -296,17 +285,25 @@ export const RegistryForm = ({
                             }
                           }}
                           onChange={e => {
-                            editScope(e.target.value, i);
+                            setScopes(s => {
+                              const copiedScopes = [...s];
+                              copiedScopes[i] = e.target.value;
+                              return copiedScopes;
+                            });
                           }}
                           onBlur={e => {
                             if (e.target.value.trim() === '') {
-                              removeScope(i);
+                              setScopes(oldScopes =>
+                                oldScopes.filter((_is, index) => index !== i)
+                              );
                             }
                           }}
                         />
                         <IconButton
                           onClick={() => {
-                            removeScope(i);
+                            setScopes(oldScopes =>
+                              oldScopes.filter((_is, index) => index !== i)
+                            );
                           }}
                           title="Remove Scope"
                           size={9}
@@ -320,8 +317,8 @@ export const RegistryForm = ({
                       variant="link"
                       disabled={disabled}
                       type="submit"
-                      onClick={e => {
-                        addScope();
+                      onClick={() => {
+                        setScopes(oldScopes => [...oldScopes, '']);
                       }}
                       autoWidth
                     >
@@ -330,6 +327,71 @@ export const RegistryForm = ({
                   </Stack>
                 </CustomFormField>
               )}
+
+              <CustomFormField label="Trusted domains" badge="Beta">
+                <Stack
+                  gap={2}
+                  css={css({ width: '100%' })}
+                  direction="vertical"
+                >
+                  {trustedDomains.map((domain, i) => (
+                    <Stack
+                      align="center"
+                      direction="horizontal"
+                      css={css({ width: '100%' })}
+                    >
+                      <Input
+                        required
+                        pattern="@[\w-_]+"
+                        css={css({ width: '100%' })}
+                        placeholder="Enter a domain (http://*.example.com / mail.example.com:443)"
+                        disabled={disabled}
+                        value={domain}
+                        onInput={e => {
+                          e.target.setCustomValidity('');
+                        }}
+                        onChange={e => {
+                          setTrustedDomains(s => {
+                            const copiedScopes = [...s];
+                            copiedScopes[i] = e.target.value;
+                            return copiedScopes;
+                          });
+                        }}
+                        onBlur={e => {
+                          if (e.target.value.trim() === '') {
+                            setTrustedDomains(oldScopes =>
+                              oldScopes.filter((_is, index) => index !== i)
+                            );
+                          }
+                        }}
+                      />
+                      <IconButton
+                        onClick={() => {
+                          setTrustedDomains(oldScopes =>
+                            oldScopes.filter((_is, index) => index !== i)
+                          );
+                        }}
+                        title="Remove domain"
+                        size={9}
+                        name="cross"
+                        disabled={disabled}
+                      />
+                    </Stack>
+                  ))}
+
+                  <Button
+                    variant="link"
+                    disabled={disabled}
+                    type="submit"
+                    onClick={() => {
+                      setTrustedDomains(oldScopes => [...oldScopes, '']);
+                    }}
+                    autoWidth
+                  >
+                    Add domain
+                  </Button>
+                </Stack>
+              </CustomFormField>
             </Stack>
           </Stack>
 

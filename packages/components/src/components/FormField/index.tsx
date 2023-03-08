@@ -1,12 +1,13 @@
 import React from 'react';
 import VisuallyHidden from '@reach/visually-hidden';
 import { useId } from '@reach/auto-id';
-import { Element, Stack, Label } from '../../index';
+import { Element, Stack, Label, Badge } from '../../index';
 
 interface IFormFieldProps {
   id?: string;
   // always ask for a label
   label: string;
+  badge?: string;
   // sometimes you don't need to show the label to a visual user
   // because the section header and description give enough context.
   // this however is not true for a user that's using a screen reader
@@ -19,6 +20,7 @@ interface IFormFieldProps {
 
 export const FormField: React.FC<IFormFieldProps> = ({
   label,
+  badge,
   id,
   hideLabel = false,
   direction = 'horizontal',
@@ -44,7 +46,15 @@ export const FormField: React.FC<IFormFieldProps> = ({
       >
         <LabelWrapper>
           <Label htmlFor={inputId} size={3}>
-            {label}
+            {badge ? (
+              <Stack align="center" gap={2}>
+                <span>{label}</span>
+
+                {badge && <Badge>{badge}</Badge>}
+              </Stack>
+            ) : (
+              label
+            )}
           </Label>
         </LabelWrapper>
         {InputElement}

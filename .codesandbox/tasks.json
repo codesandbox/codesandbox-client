@@ -22,7 +22,7 @@
       "command": "yarn build:deps"
     },
     "app:fast": {
-      "name": "Application (fast)",
+      "name": "Application (fast + production)",
       "command": "yarn start:fast",
       "runAtStart": true,
       "preview": {
@@ -40,15 +40,6 @@
       },
       "restartOn": {
         "files": ["yarn.lock", "packages/app/scripts/*"]
-      }
-    },
-    "app:home:fast": {
-      "name": "Application home (fast)",
-      "command": "yarn start:home:fast",
-      "runAtStart": false,
-      "preview": {
-        "port": 8000,
-        "prLink": "redirect"
       }
     },
     "storybook": {
