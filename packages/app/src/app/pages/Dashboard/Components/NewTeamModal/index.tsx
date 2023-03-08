@@ -35,8 +35,7 @@ type NewTeamProps = {
 const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
   const { activeTeamInfo } = useAppState();
   const [currentStep, setCurrentStep] = React.useState<TeamStep>(
-    // step ?? 'info'
-    'import'
+    step ?? 'info'
   );
 
   const nextStep =
