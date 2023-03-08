@@ -61,18 +61,11 @@ export default {
   },
   async getSandpackTokenFromTeam(teamId: string): Promise<string> {
     const response = await api.post<{ token: string }>(
-      `/sandpack/token${teamId}`,
+      `/sandpack/token/${teamId}`,
       {}
     );
 
     return response.token;
-  },
-  async getSandpackTrustedDomains(): Promise<string[]> {
-    const response = await api.get<{ domains: string[] }>(
-      '/sandpack/trusted_domains'
-    );
-
-    return response.domains;
   },
   // We only use this function related to current_user/subscription
   cancelPatronSubscription() {

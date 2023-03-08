@@ -32,42 +32,29 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
 
       const listener = async (event: MessageEvent) => {
         if (event.data && event.data.$type === 'request-sandpack-secret') {
-          const parentWindow = event.data.parentDomain;
           const teamId = params.teamId;
 
           api
             .getSandpackTokenFromTeam(teamId)
             .then(async token => {
-              /**
-               * TODO: perform this on the backend
-               */
-              const foo = await api.getSandpackTrustedDomains();
-              console.log(foo);
-              const TEMP_ALLOWED_DOMAINS = ['http://localhost:6001'];
-              const TODO_BACKEND_CHECK = TEMP_ALLOWED_DOMAINS.includes(
-                parentWindow
+              (event.source as WindowProxy).postMessage(
+                { $type: 'sandpack-secret', token },
+                event.origin
               );
-
-              if (TODO_BACKEND_CHECK) {
-                (event.source as WindowProxy).postMessage(
-                  { $type: 'sandpack-secret', token },
-                  event.origin
-                );
-              } else {
-                setError('Operation not allowed');
-              }
 
               window.removeEventListener('message', listener);
             })
             .catch(e => {
-              setError("We couldn't find the sandbox");
+              setError(
+                "CodeSandbox couldn't authenticate. Make sure you belong to this team."
+              );
             });
         }
       };
 
       window.addEventListener('message', listener);
     }
-  }, [api, props.match.params.id, hasLogIn]);
+  }, [hasLogIn]);
 
   return hasLogIn ? (
     <ThemeProvider>
