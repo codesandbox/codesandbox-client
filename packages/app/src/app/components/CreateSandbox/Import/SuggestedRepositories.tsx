@@ -207,19 +207,12 @@ export const SuggestedRepositories = ({
                     </Stack>
                     {isFree && repo.private ? (
                       <StyledIndicator>
-                        <InteractiveOverlay.Item>
-                          <Link
-                            as={RouterLink}
-                            to="/pro"
+                        {isImportOnly ? (
+                          <InteractiveOverlay.Button
                             onClick={() => {
-                              track(
-                                'Suggested repos - Upgrade to Pro from private repo',
-                                {
-                                  codesandbox: 'V1',
-                                  event_source: 'UI',
-                                }
-                              );
-                              modals.newSandboxModal.close();
+                              if (onImportClicked) {
+                                onImportClicked();
+                              }
                             }}
                           >
                             <Text
@@ -234,15 +227,52 @@ export const SuggestedRepositories = ({
                               <VisuallyHidden>
                                 {repo.name} is a private repository.
                               </VisuallyHidden>
-                              <Text color="#C2C2C2">
+                              <Text color="#EDFFA5">
                                 {isEligibleForTrial
                                   ? 'Start a free trial '
                                   : 'Upgrade to Pro '}
                               </Text>
                               to import private repositories.
                             </Text>
-                          </Link>
-                        </InteractiveOverlay.Item>
+                          </InteractiveOverlay.Button>
+                        ) : (
+                          <InteractiveOverlay.Item>
+                            <Link
+                              as={RouterLink}
+                              to="/pro"
+                              onClick={() => {
+                                track(
+                                  'Suggested repos - Upgrade to Pro from private repo',
+                                  {
+                                    codesandbox: 'V1',
+                                    event_source: 'UI',
+                                  }
+                                );
+                                modals.newSandboxModal.close();
+                              }}
+                            >
+                              <Text
+                                size={12}
+                                css={{
+                                  display: 'block',
+                                  width: 152,
+                                  color: '#999999B3',
+                                }}
+                                align="right"
+                              >
+                                <VisuallyHidden>
+                                  {repo.name} is a private repository.
+                                </VisuallyHidden>
+                                <Text color="#C2C2C2">
+                                  {isEligibleForTrial
+                                    ? 'Start a free trial '
+                                    : 'Upgrade to Pro '}
+                                </Text>
+                                to import private repositories.
+                              </Text>
+                            </Link>
+                          </InteractiveOverlay.Item>
+                        )}
                       </StyledIndicator>
                     ) : (
                       <StyledIndicator aria-hidden>
