@@ -28,9 +28,9 @@ export const useGitHubAccountRepositories = ({
   const skipLoadingPersonal = accountType === 'organization' || !name;
   const skipLoadingOrganization = accountType === 'personal' || !name;
 
-  const currentAccountRepos = teamRepos
-    ?.filter(({ repository }) => repository.owner === name)
-    .map(({ repository }) => repository.name);
+  const currentAccountRepos = teamRepos?.map(
+    ({ repository }) => `${repository.owner}/${repository.name}`
+  );
 
   // Query the personal repositories unless the selected github account
   // is an organization
@@ -91,8 +91,8 @@ export const useGitHubAccountRepositories = ({
 
   return {
     state: 'ready',
-    data: (accountData || organizationData).filter(
-      repository => !currentAccountRepos?.includes(repository.name)
-    ),
+    data: (accountData || organizationData).filter(repository => {
+      return !currentAccountRepos?.includes(repository.fullName);
+    }),
   };
 };
