@@ -27,7 +27,15 @@ import { useGithubAccounts } from './useGithubOrganizations';
 import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
 import { AccountSelect } from './AccountSelect';
 
-export const SuggestedRepositories = () => {
+type SuggestedRepositoriesProps = {
+  isImportOnly?: boolean;
+  onImportClicked?: () => void;
+};
+
+export const SuggestedRepositories = ({
+  isImportOnly,
+  onImportClicked,
+}: SuggestedRepositoriesProps) => {
   const { activeTeamInfo } = useAppState();
   const { modals, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
@@ -42,16 +50,26 @@ export const SuggestedRepositories = () => {
 
   const selectOptions = useMemo(
     () =>
-      githubAccounts.data
-        ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
+      githubAccounts.data && githubAccounts.data.personal
+        ? [
+            githubAccounts.data.personal,
+            ...(githubAccounts.data.organizations || []),
+          ]
         : undefined,
     [githubAccounts.data]
   );
 
   useEffect(() => {
     // Set initially selected account bazed on fuzzy matching
-    if (githubAccounts.state === 'ready' && selectedAccount === undefined) {
-      const match = fuzzyMatchGithubToCsb(activeTeamInfo?.name, selectOptions);
+    if (
+      githubAccounts.state === 'ready' &&
+      // Adding selectOptions to this if statement to satisfy TypeScript, because it does not
+      // know that when githubAccounts.state !== 'ready' the fuzzy functions isn't executed.
+      selectOptions &&
+      activeTeamInfo?.name &&
+      selectedAccount === undefined
+    ) {
+      const match = fuzzyMatchGithubToCsb(activeTeamInfo.name, selectOptions);
 
       setSelectedAccount(match.login);
     }
@@ -77,7 +95,15 @@ export const SuggestedRepositories = () => {
     <Stack
       direction="vertical"
       gap={4}
-      css={{ fontFamily: 'Inter', marginBottom: '16px', fontWeight: 500 }}
+      css={{
+        fontFamily: 'Inter',
+        marginBottom: '16px',
+        fontWeight: 500,
+        // Conditionally spreading an object doesn't work for some reason so
+        // I had to move the conditional to separate properties.
+        maxHeight: isImportOnly ? '300px' : undefined,
+        overflow: isImportOnly ? 'auto' : undefined,
+      }}
     >
       <Stack justify="space-between">
         <AccountSelect
@@ -108,14 +134,7 @@ export const SuggestedRepositories = () => {
             {githubRepos.data?.map(repo => {
               return (
                 <InteractiveOverlay key={repo.id}>
-                  <StyledItem
-                    isDisabled={isFree && repo.private}
-                    css={{
-                      height: '32px',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <StyledItem isDisabled={isFree && repo.private}>
                     <Stack gap={4} align="center">
                       <Icon name="repository" color="#999999B3" />
                       {isFree && repo.private ? (
@@ -124,7 +143,7 @@ export const SuggestedRepositories = () => {
                         </Text>
                       ) : (
                         <InteractiveOverlay.Button
-                          onClick={() => {
+                          onClick={async () => {
                             if (isImporting) {
                               return;
                             }
@@ -150,7 +169,17 @@ export const SuggestedRepositories = () => {
                               );
                             }
 
-                            dashboardActions.importGitHubRepository(importInfo);
+                            const importResult = await dashboardActions.importGitHubRepository(
+                              {
+                                ...importInfo,
+                                redirect: !isImportOnly,
+                              }
+                            );
+
+                            // If we don't redirect and we get confirmation that the import succeeded
+                            if (importResult && onImportClicked) {
+                              onImportClicked();
+                            }
                           }}
                           disabled={Boolean(isImporting)}
                         >
@@ -179,19 +208,12 @@ export const SuggestedRepositories = () => {
                     </Stack>
                     {isFree && repo.private ? (
                       <StyledIndicator>
-                        <InteractiveOverlay.Item>
-                          <Link
-                            as={RouterLink}
-                            to="/pro"
+                        {isImportOnly ? (
+                          <InteractiveOverlay.Button
                             onClick={() => {
-                              track(
-                                'Suggested repos - Upgrade to Pro from private repo',
-                                {
-                                  codesandbox: 'V1',
-                                  event_source: 'UI',
-                                }
-                              );
-                              modals.newSandboxModal.close();
+                              if (onImportClicked) {
+                                onImportClicked();
+                              }
                             }}
                           >
                             <Text
@@ -206,15 +228,52 @@ export const SuggestedRepositories = () => {
                               <VisuallyHidden>
                                 {repo.name} is a private repository.
                               </VisuallyHidden>
-                              <Text color="#C2C2C2">
+                              <Text color="#EDFFA5">
                                 {isEligibleForTrial
                                   ? 'Start a free trial '
                                   : 'Upgrade to Pro '}
                               </Text>
                               to import private repositories.
                             </Text>
-                          </Link>
-                        </InteractiveOverlay.Item>
+                          </InteractiveOverlay.Button>
+                        ) : (
+                          <InteractiveOverlay.Item>
+                            <Link
+                              as={RouterLink}
+                              to="/pro"
+                              onClick={() => {
+                                track(
+                                  'Suggested repos - Upgrade to Pro from private repo',
+                                  {
+                                    codesandbox: 'V1',
+                                    event_source: 'UI',
+                                  }
+                                );
+                                modals.newSandboxModal.close();
+                              }}
+                            >
+                              <Text
+                                size={12}
+                                css={{
+                                  display: 'block',
+                                  width: 152,
+                                  color: '#999999B3',
+                                }}
+                                align="right"
+                              >
+                                <VisuallyHidden>
+                                  {repo.name} is a private repository.
+                                </VisuallyHidden>
+                                <Text color="#C2C2C2">
+                                  {isEligibleForTrial
+                                    ? 'Start a free trial '
+                                    : 'Upgrade to Pro '}
+                                </Text>
+                                to import private repositories.
+                              </Text>
+                            </Link>
+                          </InteractiveOverlay.Item>
+                        )}
                       </StyledIndicator>
                     ) : (
                       <StyledIndicator aria-hidden>
@@ -290,6 +349,8 @@ const StyledItem = styled.li<{ isDisabled?: boolean }>`
   padding: 16px;
   background-color: #1d1d1d;
   border-radius: 4px;
+  height: 32px;
+  align-items: center;
 
   &:hover,
   &:focus-within {
