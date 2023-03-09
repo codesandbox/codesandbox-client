@@ -51,15 +51,25 @@ export const SuggestedRepositories = ({
   const selectOptions = useMemo(
     () =>
       githubAccounts.data
-        ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
+        ? [
+            githubAccounts.data.personal,
+            ...(githubAccounts.data.organizations || []),
+          ]
         : undefined,
     [githubAccounts.data]
   );
 
   useEffect(() => {
     // Set initially selected account bazed on fuzzy matching
-    if (githubAccounts.state === 'ready' && selectedAccount === undefined) {
-      const match = fuzzyMatchGithubToCsb(activeTeamInfo?.name, selectOptions);
+    if (
+      githubAccounts.state === 'ready' &&
+      // Adding selectOptions to this if statement to satisfy TypeScript, because it does not
+      // know that when githubAccounts.state !== 'ready' the fuzzy functions isn't executed.
+      selectOptions &&
+      activeTeamInfo?.name &&
+      selectedAccount === undefined
+    ) {
+      const match = fuzzyMatchGithubToCsb(activeTeamInfo.name, selectOptions);
 
       setSelectedAccount(match.login);
     }
