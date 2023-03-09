@@ -2254,11 +2254,16 @@ export const removeRepositoryFromTeam = async (
 
 export const importGitHubRepository = async (
   { state, effects }: Context,
-  { owner, name }: { owner: string; name: string }
+  {
+    owner,
+    name,
+    redirect = true,
+  }: { owner: string; name: string; redirect?: boolean }
 ) => {
   const { activeTeam } = state;
+
   if (!activeTeam) {
-    return;
+    return undefined;
   }
 
   try {
@@ -2268,13 +2273,17 @@ export const importGitHubRepository = async (
       teamId: activeTeam,
     });
 
-    window.location.href = v2BranchUrl({
-      owner,
-      repoName: name,
-      branchName: result.importProject.defaultBranch.name,
-      workspaceId: activeTeam,
-      importFlag: true,
-    });
+    if (redirect) {
+      window.location.href = v2BranchUrl({
+        owner,
+        repoName: name,
+        branchName: result.importProject.defaultBranch.name,
+        workspaceId: activeTeam,
+        importFlag: true,
+      });
+    } else {
+      return result;
+    }
   } catch (error) {
     notificationState.addNotification({
       message: JSON.stringify(error),
@@ -2282,30 +2291,8 @@ export const importGitHubRepository = async (
       status: NotificationStatus.ERROR,
     });
   }
-};
 
-export const importGitHubRepositoryWithoutRedirect = async (
-  { state, effects }: Context,
-  { owner, name }: { owner: string; name: string }
-) => {
-  const { activeTeam } = state;
-  if (!activeTeam) {
-    return;
-  }
-
-  try {
-    await effects.gql.mutations.importProject({
-      name,
-      owner,
-      teamId: activeTeam,
-    });
-  } catch (error) {
-    notificationState.addNotification({
-      message: JSON.stringify(error),
-      title: 'Failed to import repository',
-      status: NotificationStatus.ERROR,
-    });
-  }
+  return undefined;
 };
 
 export type ForkSource = {

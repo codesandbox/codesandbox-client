@@ -140,7 +140,7 @@ export const SuggestedRepositories = ({
                         </Text>
                       ) : (
                         <InteractiveOverlay.Button
-                          onClick={() => {
+                          onClick={async () => {
                             if (isImporting) {
                               return;
                             }
@@ -166,18 +166,16 @@ export const SuggestedRepositories = ({
                               );
                             }
 
-                            if (isImportOnly) {
-                              dashboardActions.importGitHubRepositoryWithoutRedirect(
-                                importInfo
-                              );
-
-                              if (onImportClicked) {
-                                onImportClicked();
+                            const importResult = await dashboardActions.importGitHubRepository(
+                              {
+                                ...importInfo,
+                                redirect: !isImportOnly,
                               }
-                            } else {
-                              dashboardActions.importGitHubRepository(
-                                importInfo
-                              );
+                            );
+
+                            // If we don't redirect and we get confirmation that the import succeeded
+                            if (importResult && onImportClicked) {
+                              onImportClicked();
                             }
                           }}
                           disabled={Boolean(isImporting)}
