@@ -93,7 +93,7 @@ export const useGitHubAccountRepositories = ({
 
   return {
     state: 'ready',
-    data: (accountData || organizationData).filter(repository => {
+    data: (accountData || organizationData)?.filter(repository => {
       return !currentAccountRepos?.includes(repository.fullName);
     }),
   };
