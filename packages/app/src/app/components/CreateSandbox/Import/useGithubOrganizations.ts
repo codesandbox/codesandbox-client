@@ -11,8 +11,8 @@ export const useGithubAccounts = (): {
   state: 'error' | 'loading' | 'ready';
   error?: string;
   data?: {
-    personal?: ProfileFragment;
-    organizations?: OrganizationFragment[];
+    personal?: ProfileFragment | null;
+    organizations?: OrganizationFragment[] | null;
   };
 } => {
   const { data, error } = useQuery<

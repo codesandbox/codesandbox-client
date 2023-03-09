@@ -50,7 +50,7 @@ export const SuggestedRepositories = ({
 
   const selectOptions = useMemo(
     () =>
-      githubAccounts.data
+      githubAccounts.data && githubAccounts.data.personal
         ? [
             githubAccounts.data.personal,
             ...(githubAccounts.data.organizations || []),
@@ -134,14 +134,7 @@ export const SuggestedRepositories = ({
             {githubRepos.data?.map(repo => {
               return (
                 <InteractiveOverlay key={repo.id}>
-                  <StyledItem
-                    isDisabled={isFree && repo.private}
-                    css={{
-                      height: '32px',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <StyledItem isDisabled={isFree && repo.private}>
                     <Stack gap={4} align="center">
                       <Icon name="repository" color="#999999B3" />
                       {isFree && repo.private ? (
@@ -356,6 +349,8 @@ const StyledItem = styled.li<{ isDisabled?: boolean }>`
   padding: 16px;
   background-color: #1d1d1d;
   border-radius: 4px;
+  height: 32px;
+  align-items: center;
 
   &:hover,
   &:focus-within {
