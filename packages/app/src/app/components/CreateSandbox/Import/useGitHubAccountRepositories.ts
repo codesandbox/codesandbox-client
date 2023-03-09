@@ -60,7 +60,9 @@ export const useGitHubAccountRepositories = ({
   >(GET_GITHUB_ORGANIZATION_REPOS, {
     skip: skipLoadingOrganization,
     variables: {
-      organization: name,
+      // The name can be null, but if it is we skip. Typescript doesn't know this and expects a string, so we
+      // satisfy TypeScript by defaulting to an empty string.
+      organization: name || '',
       perPage: 10, // TODO determine how much repos
       page: 1,
     },

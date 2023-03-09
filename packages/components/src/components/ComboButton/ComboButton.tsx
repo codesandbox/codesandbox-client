@@ -39,6 +39,12 @@ const ComboButton = ({
           lineHeight: 1,
           letterSpacing: '-0.02em',
           flex: fillSpace ? 1 : 'initial',
+          position: 'relative',
+
+          '&:focus': {
+            // Allow box-shadow to appear on the right side.
+            zIndex: 1,
+          },
           ...customStyles,
         }}
         variant={variant}
