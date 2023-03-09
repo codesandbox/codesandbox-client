@@ -91,7 +91,7 @@ export const SuggestedRepositories = ({
         fontWeight: 500,
         // Conditionally spreading an object doesn't work for some reason so
         // I had to move the conditional to separate properties.
-        maxHeight: isImportOnly ? '400px' : undefined,
+        maxHeight: isImportOnly ? '300px' : undefined,
         overflow: isImportOnly ? 'auto' : undefined,
       }}
     >

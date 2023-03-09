@@ -19,33 +19,46 @@ export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
   };
 
   return (
-    <Element css={{ width: '100%' }} padding={8}>
-      <Stack align="center" direction="vertical" gap={12}>
-        <Text
-          as="h2"
-          size={32}
-          weight="500"
+    <Element css={{ width: '100%', height: '546px' }} padding={8}>
+      <Stack
+        align="center"
+        direction="vertical"
+        gap={12}
+        justify="space-between"
+        css={{ height: '100%', width: '100%' }}
+      >
+        <Stack
           align="center"
-          css={{
-            margin: 0,
-            color: '#ffffff',
-            fontFamily: 'Everett, sans-serif',
-            lineHeight: '42px',
-            letterSpacing: '-0.01em',
-          }}
+          direction="vertical"
+          gap={12}
+          css={{ width: '100%' }}
         >
-          Import from GitHub
-        </Text>
-        {restrictsPublicRepos ? (
-          <RestrictedPublicReposImport />
-        ) : (
-          <Element css={{ width: '100%' }}>
-            <SuggestedRepositories
-              isImportOnly
-              onImportClicked={handleImportClicked}
-            />
-          </Element>
-        )}
+          <Text
+            as="h2"
+            size={32}
+            weight="500"
+            align="center"
+            css={{
+              margin: 0,
+              color: '#ffffff',
+              fontFamily: 'Everett, sans-serif',
+              lineHeight: '42px',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Import from GitHub
+          </Text>
+          {restrictsPublicRepos ? (
+            <RestrictedPublicReposImport />
+          ) : (
+            <Element css={{ width: '100%' }}>
+              <SuggestedRepositories
+                isImportOnly
+                onImportClicked={handleImportClicked}
+              />
+            </Element>
+          )}
+        </Stack>
         <Button
           css={{ width: 'auto' }}
           onClick={() => {
