@@ -8,7 +8,7 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
 const EVENT_NAME = 'Side banner - Start Trial';
 
-export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
+export const StartTrial: React.FC<{ activeTeam: string }> = ({
   activeTeam,
 }) => {
   const { isAdmin } = useWorkspaceAuthorization();
