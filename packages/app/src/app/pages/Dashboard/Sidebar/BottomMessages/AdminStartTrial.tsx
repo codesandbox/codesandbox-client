@@ -2,7 +2,7 @@ import { Stack, Text, Button } from '@codesandbox/components';
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
 const EVENT_NAME = 'Side banner - Start Trial';

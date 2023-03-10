@@ -12,14 +12,13 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useDismissible } from 'app/hooks';
+import { useDismissible, useGetCheckoutURL } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useActions, useAppState } from 'app/overmind';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 

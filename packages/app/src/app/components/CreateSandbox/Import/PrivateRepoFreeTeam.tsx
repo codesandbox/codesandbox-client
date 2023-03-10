@@ -1,6 +1,6 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Element, Link as StyledLink } from '@codesandbox/components';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions } from 'app/overmind';

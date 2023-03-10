@@ -7,7 +7,7 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { Alert } from '../Common/Alert';
 
 const EVENT_PARAMS = {

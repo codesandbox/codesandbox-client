@@ -5,7 +5,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { useAppState } from 'app/overmind';
 
 const getEventName = (isEligibleForTrial: boolean, isAdmin: boolean) => {
