@@ -11,6 +11,7 @@ import {
   Link,
   Tooltip,
   Switch,
+  Badge,
 } from '@codesandbox/components';
 import {
   AuthType,
@@ -98,22 +99,9 @@ export const RegistryForm = ({
   const [proxyEnabled, setProxyEnabled] = React.useState(
     registry?.proxyEnabled
   );
-
-  const addScope = () => {
-    setScopes(oldScopes => [...oldScopes, '']);
-  };
-
-  const removeScope = (index: number) => {
-    setScopes(oldScopes => oldScopes.filter((_is, i) => i !== index));
-  };
-
-  const editScope = (scope: string, index: number) => {
-    setScopes(s => {
-      const copiedScopes = [...s];
-      copiedScopes[index] = scope;
-      return copiedScopes;
-    });
-  };
+  const [trustedDomains, setTrustedDomains] = React.useState<string[]>(
+    registry?.trustedDomains || []
+  );
 
   const serializeValues = (): CreateRegistryParams => ({
     registryAuthKey: authKey,
@@ -123,6 +111,7 @@ export const RegistryForm = ({
     registryAuthType: authenticationType,
     registryUrl,
     proxyEnabled,
+    trustedDomains,
   });
 
   // We make sure to always show one input field
@@ -242,38 +231,101 @@ export const RegistryForm = ({
                 })}
               />
             </Stack>
-            <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
-              <Text size={4} weight="500">
-                Scopes
-              </Text>
-
-              {/* <div>
-                <CustomFormField
-                  direction="horizontal"
-                  label="Enable registry for specific npm scopes"
-                >
-                  <Switch
-                    onChange={() => {
-                      setIsLimitedToScopes(s => !s);
-                    }}
-                    on={isLimitedToScopes}
-                    disabled={disabled}
-                  />
-                </CustomFormField>
-                <Text size={3} variant="muted">
-                  Enabling the registry for specific scopes will improve sandbox
-                  load performance.
+            <Stack css={css({ width: '100%' })} gap={7} direction="vertical">
+              <Stack gap={5} direction="vertical">
+                <Text size={4} weight="500">
+                  Scopes
                 </Text>
-              </div> */}
 
-              {isLimitedToScopes && (
-                <CustomFormField label="Enabled Scopes">
+                {isLimitedToScopes && (
+                  <CustomFormField label="Enabled Scopes">
+                    <Stack
+                      gap={2}
+                      css={css({ width: '100%' })}
+                      direction="vertical"
+                    >
+                      {prefilledScopes.map((scope, i) => (
+                        <Stack
+                          align="center"
+                          direction="horizontal"
+                          css={css({ width: '100%' })}
+                        >
+                          <Input
+                            required
+                            pattern="@[\w-_]+"
+                            css={css({ width: '100%' })}
+                            placeholder="Enter a scope (@acme)"
+                            disabled={disabled}
+                            value={scope}
+                            onInput={e => {
+                              if (e.target.validity.patternMismatch) {
+                                e.target.setCustomValidity(
+                                  "Scope has to start with an '@' and have no slashes"
+                                );
+                              } else {
+                                e.target.setCustomValidity('');
+                              }
+                            }}
+                            onChange={e => {
+                              const value = e.target.value;
+                              setScopes(s => {
+                                const copiedScopes = [...s];
+                                copiedScopes[i] = value;
+                                return copiedScopes;
+                              });
+                            }}
+                            onBlur={e => {
+                              if (e.target.value.trim() === '') {
+                                setScopes(oldScopes =>
+                                  oldScopes.filter((_is, index) => index !== i)
+                                );
+                              }
+                            }}
+                          />
+                          <IconButton
+                            onClick={() => {
+                              setScopes(oldScopes =>
+                                oldScopes.filter((_is, index) => index !== i)
+                              );
+                            }}
+                            title="Remove Scope"
+                            size={9}
+                            name="cross"
+                            disabled={disabled}
+                          />
+                        </Stack>
+                      ))}
+
+                      <Button
+                        variant="secondary"
+                        disabled={disabled}
+                        type="submit"
+                        onClick={() => {
+                          setScopes(oldScopes => [...oldScopes, '']);
+                        }}
+                        autoWidth
+                      >
+                        Add Scope
+                      </Button>
+                    </Stack>
+                  </CustomFormField>
+                )}
+              </Stack>
+
+              <Stack gap={5} direction="vertical">
+                <Stack direction="horizontal" align="center" gap={2}>
+                  <Text size={4} weight="500">
+                    Sandpack
+                  </Text>
+                  <Badge>Beta</Badge>
+                </Stack>
+                <CustomFormField label="Trusted domains" badge="Beta">
                   <Stack
                     gap={2}
                     css={css({ width: '100%' })}
                     direction="vertical"
                   >
-                    {prefilledScopes.map((scope, i) => (
+                    {trustedDomains.map((domain, i) => (
                       <Stack
                         align="center"
                         direction="horizontal"
@@ -283,32 +335,35 @@ export const RegistryForm = ({
                           required
                           pattern="@[\w-_]+"
                           css={css({ width: '100%' })}
-                          placeholder="Enter a scope (@acme)"
+                          placeholder="Enter a domain (http://*.example.com / mail.example.com:443)"
                           disabled={disabled}
-                          value={scope}
+                          value={domain}
                           onInput={e => {
-                            if (e.target.validity.patternMismatch) {
-                              e.target.setCustomValidity(
-                                "Scope has to start with an '@' and have no slashes"
-                              );
-                            } else {
-                              e.target.setCustomValidity('');
-                            }
+                            e.target.setCustomValidity('');
                           }}
                           onChange={e => {
-                            editScope(e.target.value, i);
+                            const value = e.target.value;
+                            setTrustedDomains(s => {
+                              const copiedScopes = [...s];
+                              copiedScopes[i] = value;
+                              return copiedScopes;
+                            });
                           }}
                           onBlur={e => {
                             if (e.target.value.trim() === '') {
-                              removeScope(i);
+                              setTrustedDomains(oldScopes =>
+                                oldScopes.filter((_is, index) => index !== i)
+                              );
                             }
                           }}
                         />
                         <IconButton
                           onClick={() => {
-                            removeScope(i);
+                            setTrustedDomains(oldScopes =>
+                              oldScopes.filter((_is, index) => index !== i)
+                            );
                           }}
-                          title="Remove Scope"
+                          title="Remove domain"
                           size={9}
                           name="cross"
                           disabled={disabled}
@@ -317,19 +372,19 @@ export const RegistryForm = ({
                     ))}
 
                     <Button
-                      variant="link"
+                      variant="secondary"
                       disabled={disabled}
                       type="submit"
-                      onClick={e => {
-                        addScope();
+                      onClick={() => {
+                        setTrustedDomains(oldScopes => [...oldScopes, '']);
                       }}
                       autoWidth
                     >
-                      Add Scope
+                      Add domain
                     </Button>
                   </Stack>
                 </CustomFormField>
-              )}
+              </Stack>
             </Stack>
           </Stack>
 
