@@ -379,7 +379,7 @@ async function initializeManager(
       limitToScopes: registry.limit_to_scopes,
       proxyEnabled: registry.proxy_enabled,
       registryUrl:
-        registry.registry_url || `${domain}/api/v1/sandpack/package_info/`,
+        registry.registry_url || `${domain}/api/v1/sandpack/registry/`,
       registryAuthToken: registry.registry_auth_key || sandpackToken,
       registryAuthType: registry.auth_type,
     });
