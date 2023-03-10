@@ -8,43 +8,50 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useAppState } from 'app/overmind';
 
-const getEventName = (isEligibleForTrial: boolean) =>
-  isEligibleForTrial
-    ? 'Limit banner: repos - Start Trial'
-    : 'Limit banner: repos - Upgrade';
+const getEventName = (isEligibleForTrial: boolean, isAdmin: boolean) => {
+  if (isEligibleForTrial) {
+    const event = 'Limit banner: repos - Start Trial';
+    return isAdmin ? event : `${event} - As non-admin`;
+  }
+  return 'Limit banner: repos - Upgrade';
+};
 
 export const PrivateRepoFreeTeam: React.FC = () => {
-  const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isAdmin } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
   const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
     success_path: pathname,
     cancel_path: pathname,
   });
 
+  let checkoutUrl: string | null = null;
+  if (checkout) {
+    checkoutUrl =
+      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
+  }
+
   return (
     <MessageStripe
-      justify={isTeamAdmin ? 'space-between' : 'center'}
+      justify={checkout ? 'space-between' : 'center'}
       variant="trial"
     >
       This repository is in view mode only. Upgrade your account for unlimited
       repositories.
-      {isTeamAdmin && (
+      {checkoutUrl && (
         <MessageStripe.Action
-          {...(checkout.state === 'READY'
+          {...(checkoutUrl.startsWith('/pro')
             ? {
                 as: 'a',
-                href: checkout.url,
+                href: checkoutUrl,
               }
             : {
                 as: RouterLink,
-                to: '/pro',
+                to: checkoutUrl,
               })}
           onClick={() => {
-            track(getEventName(isEligibleForTrial), {
+            track(getEventName(isEligibleForTrial, isAdmin), {
               codesandbox: 'V1',
               event_source: 'UI',
             });
@@ -60,31 +67,36 @@ export const PrivateRepoFreeTeam: React.FC = () => {
 export const MaxReposFreeTeam: React.FC = () => {
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isAdmin } = useWorkspaceAuthorization();
 
   const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
     success_path: dashboardUrls.repositories(activeTeam),
     cancel_path: dashboardUrls.repositories(activeTeam),
   });
+
+  let checkoutUrl: string | null = null;
+  if (checkout) {
+    checkoutUrl =
+      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
+  }
 
   return (
     <MessageStripe justify="space-between" variant="trial">
       Free teams are limited to 3 public repositories. Upgrade for unlimited
       public and private repositories.
-      {isTeamAdmin ? (
+      {checkoutUrl ? (
         <MessageStripe.Action
-          {...(checkout.state === 'READY'
+          {...(checkoutUrl.startsWith('/pro')
             ? {
                 as: 'a',
-                href: checkout.url,
+                href: checkoutUrl,
               }
             : {
                 as: Link,
                 to: '/pro',
               })}
           onClick={() =>
-            track(getEventName(isEligibleForTrial), {
+            track(getEventName(isEligibleForTrial, isAdmin), {
               codesandbox: 'V1',
               event_source: 'UI',
             })

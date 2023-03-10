@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useEffects } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useWorkspaceSubscription } from './useWorkspaceSubscription';
+import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
 type CheckoutStatus =
   | { status: 'idle' }
@@ -30,6 +32,10 @@ const addStripeSuccessParam = (pathNameAndSearch: string): string => {
   }
 };
 
+// TODO: replace useCreateCheckout usages
+// with useGetCheckoutURL to remove the
+// loading state when redirecting users
+// to the checkout page.
 export const useCreateCheckout = (): [
   CheckoutStatus,
   (args: CheckoutOptions) => void
@@ -72,46 +78,52 @@ export const useCreateCheckout = (): [
   return [status, createCheckout];
 };
 
+const FALLBACK_URL = '/pro';
+
 type CheckoutState =
-  | { state: 'IDLE' }
+  | { state: 'IDLE'; defaultUrl: string }
   | {
       state: 'READY';
       url: string;
     }
-  | { state: 'LOADING' }
-  | { state: 'ERROR'; error: string };
+  | { state: 'LOADING'; defaultUrl: string }
+  | { state: 'ERROR'; defaultUrl: string; error: string };
 
-// TODO: replace useCreateCheckout usages
-// with useGetCheckoutURL to remove the
-// loading state when redirecting users
-// to the checkout page.
+/**
+ * useGetCheckoutURL checks if the current user can perform the checkout action,
+ * which is either if they are an admin or if they are eligible for a trial. If
+ * they are allowed, it returns explicit states, otherwise it returns null.
+ */
 export const useGetCheckoutURL = ({
-  team_id,
-  success_path = dashboard.settings(team_id) + '&payment_pending=true',
+  success_path,
   cancel_path = '/pro',
   recurring_interval = 'month',
-}: CheckoutOptions): CheckoutState => {
-  const [checkout, setCheckout] = useState<CheckoutState>({ state: 'IDLE' });
+}: Omit<CheckoutOptions, 'team_id'>): CheckoutState | null => {
+  const { activeTeam } = useAppState();
   const { api } = useEffects();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
+  const { isAdmin } = useWorkspaceAuthorization();
 
-  const getCheckoutUrl = async () => {
-    if (!team_id) {
-      setCheckout({
-        state: 'IDLE',
-      });
+  const canCheckout = useState(isAdmin || isEligibleForTrial);
+  const [checkout, setCheckout] = useState<CheckoutState>({
+    state: 'IDLE',
+    defaultUrl: FALLBACK_URL,
+  });
 
-      return;
-    }
-
+  const getCheckoutUrl = async (teamId: string) => {
     try {
       setCheckout({
         state: 'LOADING',
+        defaultUrl: FALLBACK_URL,
       });
 
       const payload = await api.stripeCreateCheckout({
-        success_path: addStripeSuccessParam(success_path),
+        success_path: addStripeSuccessParam(
+          success_path ??
+            `${dashboard.settings(teamId)} + '&payment_pending=true'`
+        ),
         cancel_path,
-        team_id,
+        team_id: teamId,
         recurring_interval,
       });
 
@@ -125,15 +137,18 @@ export const useGetCheckoutURL = ({
       setCheckout({
         state: 'ERROR',
         error:
-          JSON.stringify(error?.messagge || error) ??
+          JSON.stringify(error?.message || error) ??
           'Failed to get checkout URL.',
+        defaultUrl: FALLBACK_URL,
       });
     }
   };
 
   useEffect(() => {
-    getCheckoutUrl();
-  }, [team_id]);
+    if (canCheckout && activeTeam) {
+      getCheckoutUrl(activeTeam);
+    }
+  }, [activeTeam, canCheckout]);
 
-  return checkout;
+  return canCheckout ? checkout : null;
 };

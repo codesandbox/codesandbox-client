@@ -77,7 +77,6 @@ export const ProUpgrade = () => {
     isPersonalSpace,
     isTeamSpace,
     isTeamAdmin,
-    isAdmin,
   } = useWorkspaceAuthorization();
   const { isFree, isPro } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
@@ -91,9 +90,7 @@ export const ProUpgrade = () => {
   const hasCustomSubscription = false;
 
   const checkout = useGetCheckoutURL({
-    team_id: isAdmin && isFree ? activeTeam : undefined,
     success_path: dashboardUrls.settings(activeTeam),
-    cancel_path: '/pro',
     // recurring_interval: 'year', // TODO: defaulting to year does not enable the interval switch in stripe
   });
 
@@ -117,7 +114,7 @@ export const ProUpgrade = () => {
       }
     : {
         text: 'Proceed to checkout',
-        href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
+        href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback? (We are already on /pro, so the defaultUrl won't work here)
         variant: 'highlight',
         isLoading: checkout.state === 'LOADING',
         onClick: () => {

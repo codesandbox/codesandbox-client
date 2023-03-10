@@ -132,7 +132,6 @@ export const UpgradeBanner: React.FC = () => {
   const { hasVisited } = useDashboardVisit();
 
   const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin ? activeTeam : undefined,
     success_path: dashboard.recent(activeTeam),
     cancel_path: dashboard.recent(activeTeam),
   });
@@ -141,7 +140,8 @@ export const UpgradeBanner: React.FC = () => {
     return null;
   }
 
-  const checkoutUrl = checkout.state === 'READY' ? checkout.url : '/pro';
+  const checkoutUrl =
+    checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
 
   const trialEligibleTeams = teams.filter(team => {
     if (team.id === personalWorkspaceId || Boolean(team.subscription)) {
@@ -186,13 +186,14 @@ export const UpgradeBanner: React.FC = () => {
       );
     }
 
-    if (isTeamAdmin) {
+    if (checkoutUrl) {
       return (
         <Button
           css={{ padding: '4px 20px' }}
           onClick={() => {
             if (isEligibleForTrial) {
-              track('Home Banner - Start trial', {
+              const event = 'Home Banner - Start trial';
+              track(isTeamAdmin ? event : `${event} - As non-admin`, {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });
@@ -252,7 +253,7 @@ export const UpgradeBanner: React.FC = () => {
               }}
               direction="vertical"
             >
-              {isTeamAdmin || isPersonalSpace ? (
+              {checkoutUrl || isPersonalSpace ? (
                 <Stack align="center" gap={6}>
                   {renderMainCTA()}
                   <Link

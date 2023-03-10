@@ -10,42 +10,50 @@ import React from 'react';
 
 export const RestrictionsBanner: React.FC = () => {
   const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
   const { activeTeam } = useAppState();
 
   const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin && isFree ? activeTeam : undefined,
     success_path: dashboardUrls.sandboxes(activeTeam),
     cancel_path: dashboardUrls.sandboxes(activeTeam),
   });
+
+  let checkoutUrl: string | null = null;
+  if (checkout) {
+    checkoutUrl =
+      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
+  }
 
   return (
     <Element paddingX={4} paddingY={2}>
       <MessageStripe justify="space-between">
         Free teams are limited to 20 public sandboxes. Upgrade for unlimited
         public and private sandboxes.
-        {isTeamAdmin ? (
+        {checkoutUrl ? (
           <MessageStripe.Action
-            {...(checkout.state === 'READY'
+            {...(checkoutUrl.startsWith('/pro')
               ? {
                   as: 'a',
-                  href: checkout.url,
+                  href: checkoutUrl,
                 }
               : {
                   as: Link,
                   to: '/pro',
                 })}
-            onClick={() =>
-              isEligibleForTrial
-                ? track('Limit banner: sandboxes - Start Trial', {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  })
-                : track('Limit banner: sandboxes - Upgrade', {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  })
-            }
+            onClick={() => {
+              if (isEligibleForTrial) {
+                const event = 'Limit banner: sandboxes - Start Trial';
+                track(isTeamAdmin ? event : `${event} - As non-admin`, {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+              } else {
+                track('Limit banner: sandboxes - Upgrade', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+              }
+            }}
           >
             {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
           </MessageStripe.Action>

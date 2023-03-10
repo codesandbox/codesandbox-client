@@ -16,9 +16,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useLocation } from 'react-router-dom';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import {
   Container,
   Tab,
@@ -182,17 +180,16 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     }
   }, [tabState.selectedId]);
 
-  const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
-
   const checkout = useGetCheckoutURL({
-    team_id:
-      isTeamAdmin && hasMaxPublicSandboxes ? activeTeamInfo?.id : undefined,
     success_path: pathname,
     cancel_path: pathname,
   });
 
-  const checkoutUrl = checkout.state === 'READY' ? checkout.url : undefined;
+  let checkoutUrl: string | null = null;
+  if (checkout) {
+    checkoutUrl =
+      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
+  }
 
   const createFromTemplate = (
     template: TemplateFragment,
