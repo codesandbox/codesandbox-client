@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import { css } from '@styled-system/css';
 import { useParams } from 'react-router-dom';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -9,12 +9,7 @@ import { CodeSandboxIcon } from '@codesandbox/components/lib/components/Icon/ico
 
 import { Element, Stack, ThemeProvider, Text } from '@codesandbox/components';
 
-// This route is supposed to be opened in a new window.
-// It is called from a sandbox so that we can try to retrieve
-// a sandbox from the root domain and return the preview secret.
-// This is purely used to auth a sandbox. It should return a postMessage
-// with the previewSecret to the parent
-const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
+const SandpackSecret = () => {
   const { hasLogIn } = useAppState();
   const { api } = useEffects();
   const { genericPageMounted } = useActions();
@@ -56,7 +51,11 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
     }
   }, [hasLogIn]);
 
-  return hasLogIn ? (
+  if (!hasLogIn) {
+    return <Redirect to={signInPageUrl(location.pathname)} />;
+  }
+
+  return (
     <ThemeProvider>
       <Element
         css={css({
@@ -105,8 +104,6 @@ const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
         </Stack>
       </Element>
     </ThemeProvider>
-  ) : (
-    <Redirect to={signInPageUrl(location.pathname)} />
   );
 };
 
