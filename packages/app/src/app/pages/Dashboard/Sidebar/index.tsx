@@ -316,7 +316,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <AdminUpgradeToTeamPro />
             ) : null}
 
-            {isTeamSpace && !isTeamAdmin ? <UserUpgradeToTeamPro /> : null}
+            {isTeamSpace && !isTeamAdmin && !isEligibleForTrial ? (
+              <UserUpgradeToTeamPro />
+            ) : null}
 
             {isPersonalSpace ? <UpgradeToPersonalPro /> : null}
           </Element>
