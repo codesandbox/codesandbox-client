@@ -1,11 +1,10 @@
+import React from 'react';
 import { ComboButton, Stack, Text } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
-import React from 'react';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
 const DEFAULT_SEARCH_PARAMS = '?utm_source=settings_upgrade';
 
@@ -34,7 +33,6 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
 }) => {
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
 
   const _monthlyCheckoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.settings(activeTeam),
@@ -95,37 +93,32 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
           >
             Upgrade to Pro
           </ComboButton.Item>
-          {isTeamAdmin ? (
-            <ComboButton.Item
-              onSelect={() => {
-                if (yearlyCheckoutUrl) {
-                  track(
-                    `${trackingLocation} - Upgrade option - Custom upgrade`,
-                    {
-                      codesandbox: 'V1',
-                      event_source: 'UI',
-                    }
-                  );
+          <ComboButton.Item
+            onSelect={() => {
+              if (yearlyCheckoutUrl) {
+                track(`${trackingLocation} - Upgrade option - Custom upgrade`, {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
 
-                  window.location.href = yearlyCheckoutUrl;
-                }
-              }}
-            >
-              <Stack direction="vertical">
-                <Text>Custom upgrade</Text>
-                <Text
-                  css={{
-                    fontSize: '11px',
-                    lineHeight: '16px',
-                    color: '#999999',
-                  }}
-                >
-                  Upgrade with a custom number
-                  <br /> of paid seats. Annual plan only.
-                </Text>
-              </Stack>
-            </ComboButton.Item>
-          ) : null}
+                window.location.href = yearlyCheckoutUrl;
+              }
+            }}
+          >
+            <Stack direction="vertical">
+              <Text>Custom upgrade</Text>
+              <Text
+                css={{
+                  fontSize: '11px',
+                  lineHeight: '16px',
+                  color: '#999999',
+                }}
+              >
+                Upgrade with a custom number
+                <br /> of paid seats. Annual plan only.
+              </Text>
+            </Stack>
+          </ComboButton.Item>
         </>
       }
       variant={buttonVariant}
