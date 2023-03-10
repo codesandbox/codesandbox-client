@@ -21,20 +21,14 @@ export const PrivateRepoFreeTeam: React.FC = () => {
   const { isAdmin } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: pathname,
     cancel_path: pathname,
   });
 
-  let checkoutUrl: string | null = null;
-  if (checkout) {
-    checkoutUrl =
-      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
-  }
-
   return (
     <MessageStripe
-      justify={checkout ? 'space-between' : 'center'}
+      justify={checkoutUrl ? 'space-between' : 'center'}
       variant="trial"
     >
       This repository is in view mode only. Upgrade your account for unlimited
@@ -69,16 +63,10 @@ export const MaxReposFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isAdmin } = useWorkspaceAuthorization();
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.repositories(activeTeam),
     cancel_path: dashboardUrls.repositories(activeTeam),
   });
-
-  let checkoutUrl: string | null = null;
-  if (checkout) {
-    checkoutUrl =
-      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
-  }
 
   return (
     <MessageStripe justify="space-between" variant="trial">

@@ -130,7 +130,7 @@ export const UpgradeBanner: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasVisited } = useDashboardVisit();
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: dashboard.recent(activeTeam),
     cancel_path: dashboard.recent(activeTeam),
   });
@@ -138,9 +138,6 @@ export const UpgradeBanner: React.FC = () => {
   if (isBannerDismissed || !hasVisited) {
     return null;
   }
-
-  const checkoutUrl =
-    checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
 
   const trialEligibleTeams = teams.filter(team => {
     if (team.id === personalWorkspaceId || Boolean(team.subscription)) {

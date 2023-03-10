@@ -22,16 +22,10 @@ export const ManageSubscription = () => {
 
   const [paymentPending, setPaymentPending] = useState(false);
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: dashboard.recent(activeTeamInfo.id),
     cancel_path: dashboard.settings(activeTeamInfo.id),
   });
-
-  let checkoutUrl: string | null = null;
-  if (checkout) {
-    checkoutUrl =
-      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
-  }
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);

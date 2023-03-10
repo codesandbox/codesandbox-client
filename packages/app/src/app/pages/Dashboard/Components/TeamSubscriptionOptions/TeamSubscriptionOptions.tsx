@@ -8,6 +8,17 @@ import track from '@codesandbox/common/lib/utils/analytics';
 
 const DEFAULT_SEARCH_PARAMS = '?utm_source=settings_upgrade';
 
+const buildCheckoutUrl = (baseUrl: string | null) => {
+  if (!baseUrl) {
+    return;
+  }
+
+  if (baseUrl.startsWith('/pro')) {
+    return `${baseUrl}${DEFAULT_SEARCH_PARAMS}`;
+  }
+  return baseUrl;
+};
+
 type TeamSubscriptionOptionsProps = {
   buttonVariant?: React.ComponentProps<typeof ComboButton>['variant'];
   buttonStyles?: React.ComponentProps<typeof ComboButton>['customStyles'];
@@ -23,32 +34,18 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
-  const monthlyCheckout = useGetCheckoutURL({
+  const _monthlyCheckoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: dashboardUrls.settings(activeTeam),
   });
+  const monthlyCheckoutUrl = buildCheckoutUrl(_monthlyCheckoutUrl);
 
-  const yearlyCheckout = useGetCheckoutURL({
+  const _yearlyCheckoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: dashboardUrls.settings(activeTeam),
     recurring_interval: 'year',
   });
-
-  const monthlyCheckoutUrl =
-    // eslint-disable-next-line no-nested-ternary
-    monthlyCheckout !== null
-      ? monthlyCheckout.state === 'READY'
-        ? monthlyCheckout.url
-        : `${monthlyCheckout.defaultUrl}${DEFAULT_SEARCH_PARAMS}`
-      : null;
-
-  const yearlyCheckoutUrl =
-    // eslint-disable-next-line no-nested-ternary
-    yearlyCheckout !== null
-      ? yearlyCheckout.state === 'READY'
-        ? yearlyCheckout.url
-        : `${yearlyCheckout.defaultUrl}${DEFAULT_SEARCH_PARAMS}`
-      : null;
+  const yearlyCheckoutUrl = buildCheckoutUrl(_yearlyCheckoutUrl);
 
   return (
     <ComboButton

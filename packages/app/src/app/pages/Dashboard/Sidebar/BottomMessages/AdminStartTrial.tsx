@@ -1,5 +1,6 @@
-import { Stack, Text, Button } from '@codesandbox/components';
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Stack, Text, Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useGetCheckoutURL } from 'app/hooks';
@@ -14,14 +15,7 @@ export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
   const checkout = useGetCheckoutURL({
     success_path: dashboard.recent(activeTeam),
     cancel_path: dashboard.recent(activeTeam),
-  });
-
-  if (!checkout) {
-    return null;
-  }
-
-  const checkoutUrl =
-    checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
+  }) as string;
 
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
@@ -30,8 +24,15 @@ export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
       </Text>
 
       <Button
-        as="a"
-        href={checkoutUrl}
+        {...(checkout.startsWith('/pro')
+          ? {
+              as: RouterLink,
+              to: `${checkout}?utm_source=dashboard_import_limits`,
+            }
+          : {
+              as: 'a',
+              href: checkout, // goes to either /docs or Stripe
+            })}
         variant="link"
         onClick={() => {
           track(isAdmin ? EVENT_NAME : `${EVENT_NAME} - As non-admin`, {

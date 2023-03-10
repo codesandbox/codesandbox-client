@@ -18,16 +18,11 @@ export const MaxPublicRepos: React.FC = () => {
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: pathname,
     cancel_path: pathname,
   });
 
-  let checkoutUrl: string | null = null;
-  if (checkout) {
-    checkoutUrl =
-      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
-  }
   return (
     <MessageStripe justify="space-between">
       You&apos;ve reached the maximum amount of free repositories. Upgrade for

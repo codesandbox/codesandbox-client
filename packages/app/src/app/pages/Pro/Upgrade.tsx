@@ -89,7 +89,7 @@ export const ProUpgrade = () => {
    */
   const hasCustomSubscription = false;
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.settings(activeTeam),
     // recurring_interval: 'year', // TODO: defaulting to year does not enable the interval switch in stripe
   });
@@ -114,9 +114,8 @@ export const ProUpgrade = () => {
       }
     : {
         text: 'Proceed to checkout',
-        href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback? (We are already on /pro, so the defaultUrl won't work here)
+        href: checkoutUrl ?? '', // TODO: Fallback?
         variant: 'highlight',
-        isLoading: checkout.state === 'LOADING',
         onClick: () => {
           track('subscription page - personal pro checkout', {
             codesandbox: 'V1',

@@ -85,7 +85,7 @@ export const WorkspaceSettings = () => {
   } = useWorkspaceLimits();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     cancel_path: dashboard.settings(team?.id),
   });
 
@@ -501,7 +501,7 @@ export const WorkspaceSettings = () => {
       {/**
        * Limit free plan amount of editors.
        */}
-      {checkout && (numberOfEditorsIsOverTheLimit || hasMaxNumberOfEditors) && (
+      {checkoutUrl && (numberOfEditorsIsOverTheLimit || hasMaxNumberOfEditors) && (
         <MessageStripe justify="space-between">
           <span>
             {numberOfEditorsIsOverTheLimit && (
@@ -518,14 +518,14 @@ export const WorkspaceSettings = () => {
             )}
           </span>
           <MessageStripe.Action
-            {...(checkout.state === 'READY'
+            {...(checkoutUrl.startsWith('/pro')
               ? {
                   as: 'a',
-                  href: checkout.url,
+                  href: checkoutUrl,
                 }
               : {
                   as: RouterLink,
-                  to: `${checkout.defaultUrl}?utm_source=dashboard_workspace_settings`,
+                  to: `${checkoutUrl}?utm_source=dashboard_workspace_settings`,
                 })}
             onClick={() => {
               if (isEligibleForTrial) {

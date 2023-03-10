@@ -1,4 +1,4 @@
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
@@ -9,20 +9,13 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 
 export const RestrictionsBanner: React.FC = () => {
+  const { activeTeam } = useAppState();
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { activeTeam } = useAppState();
-
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.sandboxes(activeTeam),
     cancel_path: dashboardUrls.sandboxes(activeTeam),
   });
-
-  let checkoutUrl: string | null = null;
-  if (checkout) {
-    checkoutUrl =
-      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
-  }
 
   return (
     <Element paddingX={4} paddingY={2}>

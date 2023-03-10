@@ -180,16 +180,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     }
   }, [tabState.selectedId]);
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: pathname,
     cancel_path: pathname,
   });
-
-  let checkoutUrl: string | null = null;
-  if (checkout) {
-    checkoutUrl =
-      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
-  }
 
   const createFromTemplate = (
     template: TemplateFragment,

@@ -14,21 +14,14 @@ export const PrivateRepoFreeTeam: React.FC = () => {
   const { pathname } = useLocation();
   const { modals } = useActions();
 
-  const checkout = useGetCheckoutURL({
+  const _checkoutUrl = useGetCheckoutURL({
     success_path: pathname,
     cancel_path: pathname,
   });
 
-  let checkoutUrl: string | null = null;
-  if (checkout) {
-    checkoutUrl =
-      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
-  } else {
-    checkoutUrl = isEligibleForTrial
-      ? '/docs/learn/plan-billing/trials'
-      : '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
-  }
-
+  const checkoutUrl =
+    _checkoutUrl ??
+    '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
   const isDashboardLink = checkoutUrl.startsWith('/pro');
 
   return (

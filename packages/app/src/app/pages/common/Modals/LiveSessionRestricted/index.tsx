@@ -24,16 +24,10 @@ export const LiveSessionRestricted: React.FC = () => {
   const { isAdmin } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
-  const checkout = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: sandboxUrl({ id }),
     cancel_path: sandboxUrl({ id }),
   });
-
-  let checkoutUrl: string | null = null;
-  if (checkout) {
-    checkoutUrl =
-      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
-  }
 
   return (
     <Alert title="Upgrade to Pro to start a Live Session">
