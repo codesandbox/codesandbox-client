@@ -8,7 +8,7 @@ import { Element, MessageStripe } from '@codesandbox/components';
 import { Link } from 'react-router-dom';
 import React from 'react';
 
-export const RestrictionsBanner: React.FC = () => {
+export const SandboxesRestrictionsBanner: React.FC = () => {
   const { activeTeam } = useAppState();
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
