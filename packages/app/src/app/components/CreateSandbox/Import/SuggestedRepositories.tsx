@@ -31,12 +31,14 @@ type SuggestedRepositoriesProps = {
   isImportOnly?: boolean;
   onImportClicked?: () => void;
 };
-
 export const SuggestedRepositories = ({
   isImportOnly,
   onImportClicked,
 }: SuggestedRepositoriesProps) => {
-  const { activeTeamInfo } = useAppState();
+  const {
+    activeTeamInfo,
+    dashboard: { repositoriesByTeamId },
+  } = useAppState();
   const { modals, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
@@ -44,6 +46,16 @@ export const SuggestedRepositories = ({
   const [isImporting, setIsImporting] = useState<
     { owner: string; name: string } | false
   >(false);
+
+  const teamId = activeTeamInfo?.id;
+
+  const importedRepos = useMemo(() => {
+    if (!teamId) {
+      return undefined;
+    }
+
+    return repositoriesByTeamId[teamId];
+  }, [teamId, repositoriesByTeamId]);
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -75,6 +87,17 @@ export const SuggestedRepositories = ({
     }
   }, [githubAccounts.state, selectedAccount, activeTeamInfo, selectOptions]);
 
+  useEffect(() => {
+    // This is needed if the import is opened before the user
+    // visits the repositories page.
+    if (!importedRepos) {
+      dashboardActions.getRepositoriesByTeam({
+        teamId,
+        fetchCachedDataFirst: true,
+      });
+    }
+  }, []);
+
   // eslint-disable-next-line no-nested-ternary
   const selectedAccountType = selectedAccount
     ? selectedAccount === githubAccounts?.data?.personal?.login
@@ -85,6 +108,7 @@ export const SuggestedRepositories = ({
   const githubRepos = useGitHubAccountRepositories({
     name: selectedAccount,
     accountType: selectedAccountType,
+    teamRepos: importedRepos,
   });
 
   if (githubAccounts.state === 'loading') {
