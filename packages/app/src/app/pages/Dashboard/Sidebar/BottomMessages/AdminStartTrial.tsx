@@ -1,71 +1,55 @@
 import { Stack, Text, Button } from '@codesandbox/components';
 import React from 'react';
-import { useCreateCheckout } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-import { useActions } from 'app/overmind';
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+
+const EVENT_NAME = 'Side banner - Start Trial';
 
 export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
   activeTeam,
 }) => {
-  const [checkout, createCheckout] = useCreateCheckout();
-  const { modalOpened } = useActions();
+  const { isAdmin } = useWorkspaceAuthorization();
+  const checkout = useGetCheckoutURL({
+    success_path: dashboard.recent(activeTeam),
+    cancel_path: dashboard.recent(activeTeam),
+  });
+
+  if (!checkout) {
+    return null;
+  }
+
+  const checkoutUrl =
+    checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
 
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
       <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
         Upgrade to Team PRO for the full CodeSandbox Experience.
       </Text>
-      {checkout.status === 'error' ? (
-        <Text variant="danger" css={{ fontWeight: 400, fontSize: 12 }}>
-          An error ocurred while trying to load the trial subscription. Please
-          try again later and{' '}
-          <Button
-            variant="link"
-            css={{
-              color: 'inherit',
-              textDecoration: 'underline',
-              padding: '0',
-              display: 'inline',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => {
-              modalOpened({ modal: 'feedback' });
-            }}
-          >
-            report the issue
-          </Button>{' '}
-          if it persists.
-        </Text>
-      ) : (
-        <Button
-          autoWidth
-          variant="link"
-          loading={checkout.status === 'loading'}
-          onClick={() => {
-            track('Side banner - Start Trial', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
 
-            createCheckout({
-              team_id: activeTeam,
-              success_path: dashboard.recent(activeTeam),
-              cancel_path: dashboard.recent(activeTeam),
-            });
-          }}
-          css={{
-            fontSize: '12px',
-            fontWeight: 500,
-            color: '#EDFFA5',
-            textDecoration: 'none',
-            padding: '4px 0',
-          }}
-        >
-          Start trial
-        </Button>
-      )}
+      <Button
+        as="a"
+        href={checkoutUrl}
+        variant="link"
+        onClick={() => {
+          track(isAdmin ? EVENT_NAME : `${EVENT_NAME} - As non-admin`, {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+        }}
+        css={{
+          fontSize: '12px',
+          fontWeight: 500,
+          color: '#EDFFA5',
+          textDecoration: 'none',
+          padding: '4px 0',
+        }}
+        autoWidth
+      >
+        Start trial
+      </Button>
     </Stack>
   );
 };

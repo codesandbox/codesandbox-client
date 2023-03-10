@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useAppState } from 'app/overmind';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Stack, Text } from '@codesandbox/components';
-
-import { useCreateCheckout } from 'app/hooks';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { Patron } from './Patron';
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
@@ -17,11 +17,21 @@ import { ProcessingPayment } from '../../components/ProcessingPayment';
 export const ManageSubscription = () => {
   const { activeTeamInfo, user } = useAppState();
   const { isFree, isPaddle, isPatron, isStripe } = useWorkspaceSubscription();
-  const [checkout, createCheckout] = useCreateCheckout();
   const location = useLocation();
   const history = useHistory();
 
   const [paymentPending, setPaymentPending] = useState(false);
+
+  const checkout = useGetCheckoutURL({
+    success_path: dashboard.recent(activeTeamInfo.id),
+    cancel_path: dashboard.settings(activeTeamInfo.id),
+  });
+
+  let checkoutUrl: string | null = null;
+  if (checkout) {
+    checkoutUrl =
+      checkout.state === 'READY' ? checkout.url : checkout.defaultUrl;
+  }
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -40,14 +50,17 @@ export const ManageSubscription = () => {
 
     return (
       <Upgrade
-        loading={checkout.status === 'loading'}
+        disabled={!checkoutUrl}
         onUpgrade={() => {
-          createCheckout({
-            team_id: activeTeamInfo.id,
-            recurring_interval: 'month',
-            success_path: dashboard.recent(activeTeamInfo.id),
-            cancel_path: dashboard.settings(activeTeamInfo.id),
+          if (!checkoutUrl) {
+            return;
+          }
+
+          track('User settings - Upgrade to Pro clicked', {
+            codesandbox: 'V1',
+            event_source: 'UI',
           });
+          window.location.href = checkoutUrl;
         }}
       />
     );
