@@ -5,7 +5,7 @@ import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { getEventName } from './utils';
 
 const EVENT_PROPS = {
@@ -29,8 +29,15 @@ export const MaxPublicRepos: React.FC = () => {
       more.
       {checkoutUrl ? (
         <MessageStripe.Action
-          as="a"
-          href={checkoutUrl}
+          {...(checkoutUrl.startsWith('/pro')
+            ? {
+                as: RouterLink,
+                to: '/pro',
+              }
+            : {
+                as: 'a',
+                href: checkoutUrl,
+              })}
           onClick={() => {
             track(getEventName(isEligibleForTrial, isTeamAdmin), EVENT_PROPS);
           }}

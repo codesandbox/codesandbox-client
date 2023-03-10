@@ -1,6 +1,7 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { MessageStripe } from '@codesandbox/components';
-import React from 'react';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 
 const getEventName = (isEligibleForTrial: boolean, isTeamAdmin: boolean) => {
@@ -33,8 +34,15 @@ export const MaxPublicSandboxes: React.FC<MaxPublicReposProps> = ({
       more.
       {checkoutUrl ? (
         <MessageStripe.Action
-          as="a"
-          href={checkoutUrl}
+          {...(checkoutUrl.startsWith('/pro')
+            ? {
+                as: Link,
+                to: `${checkoutUrl}?utm_source=dashboard_upgrade_banner`,
+              }
+            : {
+                as: 'a',
+                href: checkoutUrl,
+              })}
           onClick={() => {
             track(getEventName(isEligibleForTrial, isTeamAdmin), EVENT_PROPS);
           }}

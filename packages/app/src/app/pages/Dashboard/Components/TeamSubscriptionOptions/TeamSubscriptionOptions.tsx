@@ -62,6 +62,7 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
         <>
           {isEligibleForTrial && (
             <ComboButton.Item
+              disabled={!monthlyCheckoutUrl}
               onSelect={() => {
                 if (monthlyCheckoutUrl) {
                   track(
@@ -80,6 +81,7 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
             </ComboButton.Item>
           )}
           <ComboButton.Item
+            disabled={!monthlyCheckoutUrl}
             onSelect={() => {
               if (monthlyCheckoutUrl) {
                 track(`${trackingLocation} - Upgrade option - Upgrade to Pro`, {
@@ -94,6 +96,7 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
             Upgrade to Pro
           </ComboButton.Item>
           <ComboButton.Item
+            disabled={!yearlyCheckoutUrl}
             onSelect={() => {
               if (yearlyCheckoutUrl) {
                 track(`${trackingLocation} - Upgrade option - Custom upgrade`, {

@@ -26,12 +26,12 @@ export const SandboxesRestrictionsBanner: React.FC = () => {
           <MessageStripe.Action
             {...(checkoutUrl.startsWith('/pro')
               ? {
-                  as: 'a',
-                  href: checkoutUrl,
+                  as: Link,
+                  to: checkoutUrl,
                 }
               : {
-                  as: Link,
-                  to: '/pro',
+                  as: 'a',
+                  href: checkoutUrl,
                 })}
             onClick={() => {
               if (isEligibleForTrial) {
