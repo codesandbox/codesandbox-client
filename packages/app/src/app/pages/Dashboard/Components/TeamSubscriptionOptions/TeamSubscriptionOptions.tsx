@@ -13,7 +13,7 @@ const buildCheckoutUrl = (baseUrl: string | null) => {
     return;
   }
 
-  if (baseUrl.startsWith('/pro')) {
+  if (baseUrl.startsWith('/')) {
     return `${baseUrl}${DEFAULT_SEARCH_PARAMS}`;
   }
   return baseUrl;

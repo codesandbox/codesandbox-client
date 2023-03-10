@@ -35,14 +35,14 @@ export const PrivateRepoFreeTeam: React.FC = () => {
       repositories.
       {checkoutUrl && (
         <MessageStripe.Action
-          {...(checkoutUrl.startsWith('/pro')
+          {...(checkoutUrl.startsWith('/')
             ? {
-                as: 'a',
-                href: checkoutUrl,
-              }
-            : {
                 as: RouterLink,
                 to: checkoutUrl,
+              }
+            : {
+                as: 'a',
+                href: checkoutUrl,
               })}
           onClick={() => {
             track(getEventName(isEligibleForTrial, isAdmin), {
@@ -74,14 +74,14 @@ export const MaxReposFreeTeam: React.FC = () => {
       public and private repositories.
       {checkoutUrl ? (
         <MessageStripe.Action
-          {...(checkoutUrl.startsWith('/pro')
+          {...(checkoutUrl.startsWith('/')
             ? {
-                as: 'a',
-                href: checkoutUrl,
-              }
-            : {
                 as: Link,
                 to: '/pro',
+              }
+            : {
+                as: 'a',
+                href: checkoutUrl,
               })}
           onClick={() =>
             track(getEventName(isEligibleForTrial, isAdmin), {

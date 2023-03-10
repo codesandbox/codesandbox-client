@@ -24,7 +24,7 @@ export const SandboxesRestrictionsBanner: React.FC = () => {
         public and private sandboxes.
         {checkoutUrl ? (
           <MessageStripe.Action
-            {...(checkoutUrl.startsWith('/pro')
+            {...(checkoutUrl.startsWith('/')
               ? {
                   as: Link,
                   to: checkoutUrl,

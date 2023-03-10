@@ -22,7 +22,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
   const checkoutUrl =
     _checkoutUrl ??
     '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
-  const isDashboardLink = checkoutUrl.startsWith('/pro');
+  const isDashboardLink = checkoutUrl.startsWith('/');
 
   return (
     <>

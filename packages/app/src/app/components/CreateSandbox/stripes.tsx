@@ -34,7 +34,7 @@ export const MaxPublicSandboxes: React.FC<MaxPublicReposProps> = ({
       more.
       {checkoutUrl ? (
         <MessageStripe.Action
-          {...(checkoutUrl.startsWith('/pro')
+          {...(checkoutUrl.startsWith('/')
             ? {
                 as: Link,
                 to: `${checkoutUrl}?utm_source=dashboard_upgrade_banner`,

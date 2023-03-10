@@ -29,10 +29,10 @@ export const MaxPublicRepos: React.FC = () => {
       more.
       {checkoutUrl ? (
         <MessageStripe.Action
-          {...(checkoutUrl.startsWith('/pro')
+          {...(checkoutUrl.startsWith('/')
             ? {
                 as: RouterLink,
-                to: '/pro',
+                to: checkoutUrl,
               }
             : {
                 as: 'a',

@@ -522,14 +522,14 @@ export const WorkspaceSettings = () => {
             )}
           </span>
           <MessageStripe.Action
-            {...(checkoutUrl.startsWith('/pro')
+            {...(checkoutUrl.startsWith('/')
               ? {
-                  as: 'a',
-                  href: checkoutUrl,
-                }
-              : {
                   as: RouterLink,
                   to: `${checkoutUrl}?utm_source=dashboard_workspace_settings`,
+                }
+              : {
+                  as: 'a',
+                  href: checkoutUrl,
                 })}
             onClick={() => {
               if (isEligibleForTrial) {

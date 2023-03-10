@@ -24,7 +24,7 @@ export const StartTrial: React.FC<{ activeTeam: string }> = ({
       </Text>
 
       <Button
-        {...(checkout.startsWith('/pro')
+        {...(checkout.startsWith('/')
           ? {
               as: RouterLink,
               to: `${checkout}?utm_source=dashboard_import_limits`,
