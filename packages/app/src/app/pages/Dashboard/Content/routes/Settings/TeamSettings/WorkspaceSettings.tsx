@@ -242,7 +242,11 @@ export const WorkspaceSettings = () => {
           },
         }}
       >
-        <Card css={{ 'grid-column': isTeamAdmin ? 'auto' : '1/3' }}>
+        <Card
+          css={{
+            'grid-column': isTeamAdmin || isEligibleForTrial ? 'auto' : '1/3',
+          }}
+        >
           {editing ? (
             <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
               <Stack gap={4}>

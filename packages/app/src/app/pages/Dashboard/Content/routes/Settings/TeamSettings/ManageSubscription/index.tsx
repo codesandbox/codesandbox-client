@@ -23,6 +23,7 @@ export const ManageSubscription = () => {
     isStripe,
     subscription,
     hasPaymentMethod,
+    isEligibleForTrial,
   } = useWorkspaceSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
@@ -38,7 +39,7 @@ export const ManageSubscription = () => {
     }
   }, [location, history]);
 
-  if (!isTeamAdmin) {
+  if (!(isTeamAdmin || isEligibleForTrial)) {
     return null;
   }
 
