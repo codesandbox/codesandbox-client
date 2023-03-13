@@ -34,18 +34,18 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
-  const _monthlyCheckoutUrl = useGetCheckoutURL({
+  const monthlyCheckoutData = useGetCheckoutURL({
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: dashboardUrls.settings(activeTeam),
   });
-  const monthlyCheckoutUrl = buildCheckoutUrl(_monthlyCheckoutUrl);
+  const monthlyCheckoutUrl = buildCheckoutUrl(monthlyCheckoutData);
 
-  const _yearlyCheckoutUrl = useGetCheckoutURL({
+  const yearlyCheckoutData = useGetCheckoutURL({
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: dashboardUrls.settings(activeTeam),
     recurring_interval: 'year',
   });
-  const yearlyCheckoutUrl = buildCheckoutUrl(_yearlyCheckoutUrl);
+  const yearlyCheckoutUrl = buildCheckoutUrl(yearlyCheckoutData);
 
   return (
     <ComboButton

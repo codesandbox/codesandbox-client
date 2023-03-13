@@ -14,15 +14,15 @@ export const PrivateRepoFreeTeam: React.FC = () => {
   const { pathname } = useLocation();
   const { modals } = useActions();
 
-  const _checkoutUrl = useGetCheckoutURL({
+  const checkoutUrl = useGetCheckoutURL({
     success_path: pathname,
     cancel_path: pathname,
   });
 
-  const checkoutUrl =
-    _checkoutUrl ??
+  const ctaUrl =
+    checkoutUrl ??
     '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
-  const isDashboardLink = checkoutUrl.startsWith('/');
+  const isDashboardLink = ctaUrl.startsWith('/');
 
   return (
     <>
@@ -31,11 +31,11 @@ export const PrivateRepoFreeTeam: React.FC = () => {
         {...(isDashboardLink
           ? {
               as: RouterLink,
-              to: `${checkoutUrl}?utm_source=dashboard_import_limits`,
+              to: `${ctaUrl}?utm_source=dashboard_import_limits`,
             }
           : {
               as: 'a',
-              href: checkoutUrl, // goes to either /docs or Stripe
+              href: ctaUrl, // goes to either /docs or Stripe
             })}
         css={{
           padding: 0,

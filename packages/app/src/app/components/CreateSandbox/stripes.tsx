@@ -18,12 +18,12 @@ const EVENT_PROPS = {
   event_source: 'UI',
 };
 
-type MaxPublicReposProps = {
-  checkoutUrl: string | undefined;
+type MaxPublicSandboxesProps = {
+  checkoutUrl: string | null;
   isTeamAdmin: boolean;
   isEligibleForTrial: boolean;
 };
-export const MaxPublicSandboxes: React.FC<MaxPublicReposProps> = ({
+export const MaxPublicSandboxes: React.FC<MaxPublicSandboxesProps> = ({
   checkoutUrl,
   isEligibleForTrial,
   isTeamAdmin,
