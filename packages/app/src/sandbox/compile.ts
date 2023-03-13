@@ -29,6 +29,7 @@ import {
 } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
 import {
   getSandpackSecret,
+  removeSandpackSecret,
   getProtocolAndHostWithSSE,
 } from 'sandpack-core/lib/sandpack-secret';
 import {
@@ -362,6 +363,9 @@ async function initializeManager(
 
     const responseRegistry = await fetch(`${domain}/api/v1/sandpack/registry`, {
       headers: { Authorization: `Bearer ${sandpackToken}` },
+    }).catch(() => {
+      removeSandpackSecret();
+      throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
     });
 
     const registry = (await responseRegistry.json()) as {
