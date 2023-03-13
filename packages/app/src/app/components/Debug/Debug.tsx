@@ -12,7 +12,7 @@ export const Debug: React.FC = () => {
   } = useEffects();
   const showDebugPanel = storage.get<boolean>(KEY) ?? false;
 
-  if (!showDebugPanel) {
+  if (!showDebugPanel || process.env.NODE_ENV === 'production') {
     return null;
   }
 
@@ -38,7 +38,7 @@ export const Debug: React.FC = () => {
           },
         }}
       >
-        <Leva hidden={!showDebugPanel} oneLineLabels />
+        <Leva oneLineLabels />
       </Element>
     </Portal>
   );

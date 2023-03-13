@@ -8,55 +8,42 @@ import {
 import { useAppState } from 'app/overmind';
 import { isBefore, startOfToday } from 'date-fns';
 import { useControls } from 'leva';
+import { useEffect } from 'react';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
 enum SubscriptionDebugStatus {
-  'DEFAULT',
-  'TRIAL_ELIGIBLE',
-}
-
-const useDebugSubscription = ({ hasActiveWorkspace, isPersonalWorkspace }) => {
-  const options: Record<string, SubscriptionDebugStatus> = {
-    Default: SubscriptionDebugStatus.DEFAULT,
-  };
-
-  if (hasActiveWorkspace) {
-    // Adds trial options if the workspace is not personal. 
-    if (!isPersonalWorkspace) {
-      options['Trial eligible'] = SubscriptionDebugStatus.TRIAL_ELIGIBLE;
-    }
-  }
-
-  return useControls("Subscription", {
-    debugStatus: {
-      label: 'Status',
-      value: SubscriptionDebugStatus.DEFAULT,
-      options
-    },
-  });
+  'DEFAULT' = 'Default (use API data)',
+  'NO_SUBSCRIPTION' = 'Free (without prior subscription)',
 }
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { activeTeamInfo } = useAppState();
-  const { isTeamSpace, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isTeamSpace } = useWorkspaceAuthorization();
 
-  const { debugStatus } = useDebugSubscription({
-    hasActiveWorkspace: !!activeTeamInfo,
-    isPersonalWorkspace: isPersonalSpace,
-  });
+  const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
+
+  if (activeTeamInfo) {
+    options.push(SubscriptionDebugStatus.NO_SUBSCRIPTION);
+  }
+
+  const { debugStatus } = useControls("Subscription", {
+    debugStatus: {
+      label: 'Status',
+      value: SubscriptionDebugStatus.DEFAULT,
+      options,
+    },
+  }, [options])
+
+  useEffect(() => {
+
+  }, []);
+
 
   if (!activeTeamInfo) {
     return NO_WORKSPACE;
   }
 
-  if (debugStatus === SubscriptionDebugStatus.TRIAL_ELIGIBLE) {
-    return {
-      ...NO_SUBSCRIPTION,
-      isEligibleForTrial: true,
-    };
-  }
-
-  const subscription = activeTeamInfo.subscription;
+  const subscription = debugStatus === SubscriptionDebugStatus.NO_SUBSCRIPTION ? null : activeTeamInfo.subscription;
 
   if (!subscription) {
     return {
