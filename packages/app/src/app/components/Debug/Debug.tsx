@@ -27,6 +27,7 @@ export const Debug: React.FC = () => {
           bottom: 0,
           top: 0,
           pointerEvents: 'none',
+          zIndex: 10,
 
           '> *': {
             pointerEvents: 'auto',
