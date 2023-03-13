@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { logError } from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useEffects } from 'app/overmind';
 import { CheckoutOptions, addStripeSuccessParam } from './useCreateCheckout';
 import { useWorkspaceSubscription } from './useWorkspaceSubscription';
@@ -19,37 +20,40 @@ export const useGetCheckoutURL = ({
 }: Omit<CheckoutOptions, 'team_id'>): string | null => {
   const { activeTeam } = useAppState();
   const { api } = useEffects();
-  const { isEligibleForTrial } = useWorkspaceSubscription();
+  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
   const { isAdmin } = useWorkspaceAuthorization();
 
-  const canCheckout = useState(isAdmin || isEligibleForTrial);
+  const canCheckout = (isFree && isAdmin) || isEligibleForTrial;
   const [url, setUrl] = useState<string>(FALLBACK_URL);
 
-  const getCheckoutUrl = async (teamId: string) => {
-    try {
-      const payload = await api.stripeCreateCheckout({
-        success_path: addStripeSuccessParam(
-          success_path ??
-            `${dashboard.settings(teamId)} + '&payment_pending=true'`
-        ),
-        cancel_path,
-        team_id: teamId,
-        recurring_interval,
-      });
+  const getCheckoutUrl = useCallback(
+    async (teamId: string) => {
+      try {
+        const payload = await api.stripeCreateCheckout({
+          success_path: addStripeSuccessParam(
+            success_path ??
+              `${dashboard.settings(teamId)} + '&payment_pending=true'`
+          ),
+          cancel_path,
+          team_id: teamId,
+          recurring_interval,
+        });
 
-      if (payload.stripeCheckoutUrl) {
-        setUrl(payload.stripeCheckoutUrl);
+        if (payload.stripeCheckoutUrl) {
+          setUrl(payload.stripeCheckoutUrl);
+        }
+      } catch (error) {
+        logError(error);
       }
-    } catch (error) {
-      // Fail silently.
-    }
-  };
+    },
+    [api, cancel_path, recurring_interval, success_path]
+  );
 
   useEffect(() => {
     if (canCheckout && activeTeam) {
       getCheckoutUrl(activeTeam);
     }
-  }, [activeTeam, canCheckout]);
+  }, [activeTeam, canCheckout, getCheckoutUrl]);
 
   return canCheckout ? url : null;
 };
