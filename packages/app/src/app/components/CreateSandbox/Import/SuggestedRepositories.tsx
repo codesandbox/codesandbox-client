@@ -21,10 +21,10 @@ import { useActions, useAppState } from 'app/overmind';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
+import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 
-import { fuzzyMatchGithubToCsb } from './utils';
-import { useGithubAccounts } from './useGithubOrganizations';
-import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
 import { AccountSelect } from './AccountSelect';
 
 type SuggestedRepositoriesProps = {
