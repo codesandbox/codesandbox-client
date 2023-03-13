@@ -21,18 +21,23 @@ export const Debug: React.FC = () => {
       <Element
         css={{
           position: 'fixed',
+          overflow: 'hidden',
+          left: 0,
           right: 0,
           bottom: 0,
-          width: '260px',
+          top: 0,
           pointerEvents: 'none',
-          zIndex: 10,
 
           '> *': {
             pointerEvents: 'auto',
+            top: 'auto',
+            right: 0,
+            bottom: 0,
+            left: 'auto',
           },
         }}
       >
-        <Leva hidden={!showDebugPanel} />
+        <Leva hidden={!showDebugPanel} oneLineLabels />
       </Element>
     </Portal>
   );
