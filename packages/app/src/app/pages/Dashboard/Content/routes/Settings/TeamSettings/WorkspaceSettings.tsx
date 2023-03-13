@@ -244,7 +244,7 @@ export const WorkspaceSettings = () => {
       >
         <Card
           css={{
-            'grid-column': checkoutUrl ? 'auto' : '1/3',
+            'grid-column': isTeamAdmin || isEligibleForTrial ? 'auto' : '1/3',
           }}
         >
           {editing ? (
