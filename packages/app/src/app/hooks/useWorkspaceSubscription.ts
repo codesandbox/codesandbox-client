@@ -37,11 +37,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     [options]
   );
 
-  useEffect(() => {
-
-  }, []);
-
-
   if (!activeTeamInfo) {
     return NO_WORKSPACE;
   }
