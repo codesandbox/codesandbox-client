@@ -23,6 +23,7 @@ import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPayment
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
+import { Debug } from 'app/components/Debug';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
@@ -205,6 +206,7 @@ export const Dashboard: FunctionComponent = () => {
         </Stack>
       </DndProvider>
       <NewTeamModal />
+      <Debug />
     </ThemeProvider>
   );
 };
