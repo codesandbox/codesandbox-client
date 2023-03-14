@@ -332,7 +332,7 @@ export const SuggestedRepositories = ({
   ) : null;
 };
 
-const AuthorizeMessage = () => {
+export const AuthorizeMessage = () => {
   const { signInGithubClicked } = useActions();
 
   return (
