@@ -7,44 +7,17 @@ import {
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { isBefore, startOfToday } from 'date-fns';
-import { useControls } from 'leva';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
-
-enum SubscriptionDebugStatus {
-  'DEFAULT' = 'Default (use API data)',
-  'NO_SUBSCRIPTION' = 'Free (without prior subscription)',
-}
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { activeTeamInfo } = useAppState();
   const { isTeamSpace } = useWorkspaceAuthorization();
 
-  const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
-
-  if (activeTeamInfo) {
-    options.push(SubscriptionDebugStatus.NO_SUBSCRIPTION);
-  }
-
-  const { debugStatus } = useControls(
-    'Subscription',
-    {
-      debugStatus: {
-        label: 'Status',
-        value: SubscriptionDebugStatus.DEFAULT,
-        options,
-      },
-    },
-    [options]
-  );
-
   if (!activeTeamInfo) {
     return NO_WORKSPACE;
   }
 
-  const subscription =
-    debugStatus === SubscriptionDebugStatus.NO_SUBSCRIPTION
-      ? null
-      : activeTeamInfo.subscription;
+  const subscription = activeTeamInfo.subscription;
 
   if (!subscription) {
     return {
