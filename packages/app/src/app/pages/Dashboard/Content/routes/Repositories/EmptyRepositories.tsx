@@ -189,7 +189,10 @@ const Suggested = () => {
       ) : null}
 
       {githubRepos.state === 'ready' && githubRepos.data.length > 0 ? (
-        <EmptyPage.StyledGrid as="ul">
+        <EmptyPage.StyledGrid
+          as="ul"
+          css={{ opacity: isImporting ? '0.8' : 1 }}
+        >
           {githubRepos.data.map(repo => {
             const updatedAt = formatDistanceStrict(
               zonedTimeToUtc(repo.updatedAt, 'Etc/UTC'),
