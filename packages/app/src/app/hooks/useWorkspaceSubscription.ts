@@ -8,7 +8,6 @@ import {
 import { useAppState } from 'app/overmind';
 import { isBefore, startOfToday } from 'date-fns';
 import { useControls } from 'leva';
-import { useEffect } from 'react';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
 enum SubscriptionDebugStatus {
@@ -26,13 +25,17 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     options.push(SubscriptionDebugStatus.NO_SUBSCRIPTION);
   }
 
-  const { debugStatus } = useControls("Subscription", {
-    debugStatus: {
-      label: 'Status',
-      value: SubscriptionDebugStatus.DEFAULT,
-      options,
+  const { debugStatus } = useControls(
+    'Subscription',
+    {
+      debugStatus: {
+        label: 'Status',
+        value: SubscriptionDebugStatus.DEFAULT,
+        options,
+      },
     },
-  }, [options])
+    [options]
+  );
 
   useEffect(() => {
 
@@ -43,7 +46,10 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     return NO_WORKSPACE;
   }
 
-  const subscription = debugStatus === SubscriptionDebugStatus.NO_SUBSCRIPTION ? null : activeTeamInfo.subscription;
+  const subscription =
+    debugStatus === SubscriptionDebugStatus.NO_SUBSCRIPTION
+      ? null
+      : activeTeamInfo.subscription;
 
   if (!subscription) {
     return {
@@ -128,22 +134,22 @@ export type WorkspaceSubscriptionReturn =
   | typeof NO_WORKSPACE
   | (typeof NO_SUBSCRIPTION & { isEligibleForTrial: boolean })
   | {
-    subscription: {
-      cancelAt?: string;
-      billingInterval?: SubscriptionInterval | null;
-      status: SubscriptionStatus;
-      type: SubscriptionType;
-      trialEnd?: string;
-      trialStart?: string;
+      subscription: {
+        cancelAt?: string;
+        billingInterval?: SubscriptionInterval | null;
+        status: SubscriptionStatus;
+        type: SubscriptionType;
+        trialEnd?: string;
+        trialStart?: string;
+      };
+      numberOfSeats: number;
+      isPro: boolean;
+      isFree: boolean;
+      isEligibleForTrial: false;
+      hasActiveTeamTrial: boolean;
+      hasExpiredTeamTrial: boolean;
+      hasPaymentMethod: boolean;
+      isPatron: boolean;
+      isPaddle: boolean;
+      isStripe: boolean;
     };
-    numberOfSeats: number;
-    isPro: boolean;
-    isFree: boolean;
-    isEligibleForTrial: false;
-    hasActiveTeamTrial: boolean;
-    hasExpiredTeamTrial: boolean;
-    hasPaymentMethod: boolean;
-    isPatron: boolean;
-    isPaddle: boolean;
-    isStripe: boolean;
-  };
