@@ -256,7 +256,6 @@ const SuggestionCard = ({
             <Text size={12} color="#999999">
               {owner}
             </Text>
-            {/* TODO: CTA to upgrade or start trial if free */}
             <InteractiveOverlay.Button onClick={onClick}>
               <VisuallyHidden>Import </VisuallyHidden>
               <Text size={13} color="#EBEBEB">
