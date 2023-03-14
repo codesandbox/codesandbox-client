@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
+import { Link as RouterLink } from 'react-router-dom';
 
 import {
   ArticleCard,
@@ -12,6 +13,7 @@ import {
   Text,
   Icon,
   Element,
+  Link,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 
@@ -28,6 +30,7 @@ import { ProjectFragment as Repository } from 'app/graphql/types';
 import { AuthorizeMessage } from 'app/components/CreateSandbox/Import/SuggestedRepositories';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 import { EmptyPage } from '../../../Components/EmptyPage';
 
@@ -96,6 +99,7 @@ const Suggested = () => {
   const githubAccounts = useGithubAccounts();
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
+  const { isFree } = useWorkspaceSubscription();
 
   const selectOptions = useMemo(
     () =>
@@ -221,6 +225,7 @@ const Suggested = () => {
         <Text>No GitHub repositories found to import.</Text>
       ) : null}
 
+      {isFree ? <UpgradeMessage /> : null}
       {restrictsPrivateRepos ? <AuthorizeMessage /> : null}
     </>
   );
@@ -266,5 +271,34 @@ const SuggestionCard = ({
         </Stack>
       </StyledCard>
     </InteractiveOverlay>
+  );
+};
+
+const UpgradeMessage = () => {
+  const { isEligibleForTrial } = useWorkspaceSubscription();
+
+  return (
+    <Text color="#999999" size={12}>
+      <Link
+        as={RouterLink}
+        to="/pro"
+        onClick={() => {
+          track(
+            `Suggested repos - ${
+              isEligibleForTrial ? 'Start a trial' : 'Upgrade to Pro'
+            } from empty repositories page`,
+            {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            }
+          );
+        }}
+      >
+        <Text color="#EDFFA5">
+          {isEligibleForTrial ? 'Start a free trial' : 'Upgrade to Pro'}{' '}
+        </Text>
+      </Link>{' '}
+      to import private repositories.
+    </Text>
   );
 };
