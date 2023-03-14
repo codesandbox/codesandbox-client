@@ -149,10 +149,21 @@ const Suggested = () => {
       repo.owner === githubAccounts?.data?.personal?.login;
 
     if (isPersonalRepository && isTeamSpace) {
-      track('Suggested repos - Imported personal repository into team space', {
-        codesandbox: 'V1',
-        event_source: 'UI',
-      });
+      track(
+        'Suggested repos empty page - Imported personal repository into team space',
+        {
+          codesandbox: 'V1',
+          event_source: 'UI',
+        }
+      );
+    } else {
+      track(
+        'Suggested repos empty page - Imported organization repository into team space',
+        {
+          codesandbox: 'V1',
+          event_source: 'UI',
+        }
+      );
     }
 
     await dashboardActions.importGitHubRepository(repo);

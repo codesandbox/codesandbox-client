@@ -185,7 +185,23 @@ export const SuggestedRepositories = ({
 
                             if (isPersonalRepository && isTeamSpace) {
                               track(
-                                'Suggested repos - Imported personal repository into team space',
+                                `Suggested repos ${
+                                  isImportOnly
+                                    ? 'create team modal'
+                                    : 'create new modal'
+                                } - Imported personal repository into team space`,
+                                {
+                                  codesandbox: 'V1',
+                                  event_source: 'UI',
+                                }
+                              );
+                            } else {
+                              track(
+                                `Suggested repos ${
+                                  isImportOnly
+                                    ? 'create team modal'
+                                    : 'create new modal'
+                                } - Imported organization repository into team space`,
                                 {
                                   codesandbox: 'V1',
                                   event_source: 'UI',
