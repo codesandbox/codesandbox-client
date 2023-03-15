@@ -11,7 +11,6 @@ import {
   Icon,
   InteractiveOverlay,
   Button,
-  Element,
   SkeletonText,
   Link,
 } from '@codesandbox/components';
@@ -26,6 +25,7 @@ import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountReposito
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 
 import { AccountSelect } from './AccountSelect';
+import { AuthorizeForSuggested } from './AuthorizeForSuggested';
 
 type SuggestedRepositoriesProps = {
   isImportOnly?: boolean;
@@ -341,36 +341,11 @@ export const SuggestedRepositories = ({
               );
             })}
           </StyledList>
-          {restrictsPrivateRepos ? <AuthorizeMessage /> : null}
+          {restrictsPrivateRepos ? <AuthorizeForSuggested /> : null}
         </>
       ) : null}
     </Stack>
   ) : null;
-};
-
-export const AuthorizeMessage = () => {
-  const { signInGithubClicked } = useActions();
-
-  return (
-    <Stack gap={2} align="center">
-      <Text variant="muted" size={12}>
-        Don&apos;t see all your repositories?
-      </Text>
-      <Button
-        onClick={() => signInGithubClicked('private_repos')}
-        variant="link"
-        autoWidth
-        css={{ padding: 0, cursor: 'pointer' }}
-      >
-        <Stack gap={1} align="center" css={{ color: '#FFFFFF' }}>
-          <Text size={12}>Authorize access to private repositories</Text>
-          <Element css={{ marginTop: '2px' }}>
-            <Icon css={{ display: 'block' }} name="external" size={12} />
-          </Element>
-        </Stack>
-      </Button>
-    </Stack>
-  );
 };
 
 const StyledList = styled(Stack)`

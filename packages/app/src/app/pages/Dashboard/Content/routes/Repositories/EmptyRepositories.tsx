@@ -27,7 +27,7 @@ import { AccountSelect } from 'app/components/CreateSandbox/Import/AccountSelect
 import { StyledCard } from 'app/pages/Dashboard/Components/shared/StyledCard';
 import { SolidSkeleton } from 'app/pages/Dashboard/Components/Skeleton';
 import { ProjectFragment as Repository } from 'app/graphql/types';
-import { AuthorizeMessage } from 'app/components/CreateSandbox/Import/SuggestedRepositories';
+import { AuthorizeForSuggested } from 'app/components/CreateSandbox/Import/AuthorizeForSuggested';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -240,7 +240,7 @@ const Suggested = () => {
       ) : null}
 
       {isFree ? <UpgradeMessage /> : null}
-      {restrictsPrivateRepos ? <AuthorizeMessage /> : null}
+      {restrictsPrivateRepos ? <AuthorizeForSuggested /> : null}
     </>
   );
 };
