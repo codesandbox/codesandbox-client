@@ -129,7 +129,7 @@ export const SuggestedRepositories = ({
         overflow: isImportOnly ? 'auto' : undefined,
       }}
     >
-      <Stack justify="space-between">
+      <Stack justify="space-between" css={{ fontSize: '13px' }}>
         <AccountSelect
           options={selectOptions}
           value={selectedAccount}
