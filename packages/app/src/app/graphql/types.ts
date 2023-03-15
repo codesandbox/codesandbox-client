@@ -871,6 +871,7 @@ export type RootMutationType = {
   createOrUpdatePrivateNpmRegistry: PrivateRegistry;
   createPreviewComment: Comment;
   createSandboxInvitation: Invitation;
+  createSandpackTrustedDomain: SandpackTrustedDomain;
   /** Create a team */
   createTeam: Team;
   deleteAlbum: Scalars['String'];
@@ -943,6 +944,7 @@ export type RootMutationType = {
   deleteProjectById: Scalars['Boolean'];
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
+  deleteSandpackTrustedDomain: Scalars['Boolean'];
   deleteWorkspace: Scalars['String'];
   /**
    * Import an existing branch from a repository
@@ -1089,6 +1091,7 @@ export type RootMutationType = {
   updateNotificationPreferences: NotificationPreferences;
   /** Update notification read status */
   updateNotificationReadStatus: Notification;
+  updateSandpackTrustedDomain: SandpackTrustedDomain;
   /** update subscription details (not billing details) */
   updateSubscription: ProSubscription;
   updateSubscriptionBillingInterval: ProSubscription;
@@ -1223,6 +1226,12 @@ export type RootMutationTypeCreateSandboxInvitationArgs = {
   sandboxId: Scalars['ID'];
 };
 
+export type RootMutationTypeCreateSandpackTrustedDomainArgs = {
+  comment: Maybe<Scalars['String']>;
+  domainName: Scalars['String'];
+  teamId: Scalars['UUID4'];
+};
+
 export type RootMutationTypeCreateTeamArgs = {
   name: Scalars['String'];
   pilot: Maybe<Scalars['Boolean']>;
@@ -1263,6 +1272,10 @@ export type RootMutationTypeDeleteProjectByIdArgs = {
 
 export type RootMutationTypeDeleteSandboxesArgs = {
   sandboxIds: Array<Scalars['ID']>;
+};
+
+export type RootMutationTypeDeleteSandpackTrustedDomainArgs = {
+  sandpackTrustedDomainId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeDeleteWorkspaceArgs = {
@@ -1502,6 +1515,12 @@ export type RootMutationTypeUpdateNotificationPreferencesArgs = {
 export type RootMutationTypeUpdateNotificationReadStatusArgs = {
   notificationId: Scalars['UUID4'];
   read: Scalars['Boolean'];
+};
+
+export type RootMutationTypeUpdateSandpackTrustedDomainArgs = {
+  comment: Maybe<Scalars['String']>;
+  domainName: Maybe<Scalars['String']>;
+  sandpackTrustedDomainId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeUpdateSubscriptionArgs = {
@@ -1847,6 +1866,15 @@ export type SandboxProtectionSettings = {
   preventSandboxLeaving: Scalars['Boolean'];
 };
 
+/** A domain trusted for private sandpack rendering */
+export type SandpackTrustedDomain = {
+  __typename?: 'SandpackTrustedDomain';
+  comment: Maybe<Scalars['String']>;
+  domainName: Scalars['String'];
+  id: Scalars['UUID4'];
+  teamId: Scalars['UUID4'];
+};
+
 export type Source = {
   __typename?: 'Source';
   id: Maybe<Scalars['UUID4']>;
@@ -1929,6 +1957,7 @@ export type Team = {
    */
   projects: Array<Project>;
   sandboxes: Array<Sandbox>;
+  sandpackTrustedDomains: Array<SandpackTrustedDomain>;
   settings: Maybe<WorkspaceSandboxSettings>;
   shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
@@ -2852,6 +2881,10 @@ export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
   | 'teamId'
 >;
 
+export type SandpackTrustedDomainsFragment = {
+  __typename?: 'SandpackTrustedDomain';
+} & Pick<SandpackTrustedDomain, 'id' | 'domainName' | 'comment' | 'teamId'>;
+
 export type BranchFragment = { __typename?: 'Branch' } & Pick<
   Branch,
   'id' | 'name' | 'contribution' | 'lastAccessedAt' | 'upstream'
@@ -3763,6 +3796,11 @@ export type GetPrivateNpmRegistryQuery = { __typename?: 'RootQueryType' } & {
         { __typename?: 'Team' } & {
           privateRegistry: Maybe<
             { __typename?: 'PrivateRegistry' } & NpmRegistryFragment
+          >;
+          sandpackTrustedDomains: Array<
+            {
+              __typename?: 'SandpackTrustedDomain';
+            } & SandpackTrustedDomainsFragment
           >;
         }
       >;

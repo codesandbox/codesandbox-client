@@ -67,6 +67,7 @@ import {
   branchFragment,
   projectFragment,
   projectWithBranchesFragment,
+  sandpackTrustedDomainsFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -431,10 +432,14 @@ export const getPrivateNpmRegistry: Query<
         privateRegistry {
           ...npmRegistry
         }
+        sandpackTrustedDomains {
+          ...sandpackTrustedDomains
+        }
       }
     }
   }
   ${npmRegistryFragment}
+  ${sandpackTrustedDomainsFragment}
 `;
 
 export const alwaysOnTeamSandboxes: Query<

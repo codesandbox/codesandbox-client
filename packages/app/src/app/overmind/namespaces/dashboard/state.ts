@@ -7,6 +7,7 @@ import {
   BranchFragment as Branch,
   ProjectFragment as Repository,
   ProjectWithBranchesFragment as RepositoryWithBranches,
+  SandpackTrustedDomain,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -45,7 +46,9 @@ export type State = {
   sandboxes: DashboardSandboxStructure;
   teams: Array<TeamFragmentDashboardFragment>;
   workspaceSettings: {
-    npmRegistry: NpmRegistryFragment | null;
+    npmRegistry:
+      | (NpmRegistryFragment & { trustedDomains: SandpackTrustedDomain })
+      | null;
   };
   allCollections: DELETE_ME_COLLECTION[] | null;
   selectedSandboxes: string[];

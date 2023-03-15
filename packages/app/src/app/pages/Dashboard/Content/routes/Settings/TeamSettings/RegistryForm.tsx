@@ -18,6 +18,7 @@ import {
   CreateOrUpdateNpmRegistryMutationVariables,
   NpmRegistryFragment,
   RegistryType,
+  SandpackTrustedDomain,
 } from 'app/graphql/types';
 
 import css from '@styled-system/css';
@@ -43,7 +44,9 @@ export type CreateRegistryParams = Omit<
 >;
 
 type RegistryFormProps = {
-  registry: NpmRegistryFragment | null;
+  registry:
+    | (NpmRegistryFragment & { trustedDomains: SandpackTrustedDomain[] })
+    | null;
   onCancel: () => void;
   onSubmit: (params: CreateRegistryParams) => void;
   isSubmitting: boolean;
@@ -99,9 +102,10 @@ export const RegistryForm = ({
   const [proxyEnabled, setProxyEnabled] = React.useState(
     registry?.proxyEnabled
   );
-  const [trustedDomains, setTrustedDomains] = React.useState<string[]>(
-    registry?.trustedDomains || []
-  );
+
+  const [trustedDomains, setTrustedDomains] = React.useState<
+    Partial<SandpackTrustedDomain>[]
+  >(registry.trustedDomains || []);
 
   const serializeValues = (): CreateRegistryParams => ({
     registryAuthKey: authKey,
@@ -111,7 +115,6 @@ export const RegistryForm = ({
     registryAuthType: authenticationType,
     registryUrl,
     proxyEnabled,
-    trustedDomains,
   });
 
   // We make sure to always show one input field
@@ -337,7 +340,7 @@ export const RegistryForm = ({
                           css={css({ width: '100%' })}
                           placeholder="Enter a domain (http://*.example.com / mail.example.com:443)"
                           disabled={disabled}
-                          value={domain}
+                          value={domain.domainName}
                           onInput={e => {
                             e.target.setCustomValidity('');
                           }}
@@ -376,7 +379,10 @@ export const RegistryForm = ({
                       disabled={disabled}
                       type="submit"
                       onClick={() => {
-                        setTrustedDomains(oldScopes => [...oldScopes, '']);
+                        setTrustedDomains(oldScopes => [
+                          ...oldScopes,
+                          { domainName: '' },
+                        ]);
                       }}
                       autoWidth
                     >

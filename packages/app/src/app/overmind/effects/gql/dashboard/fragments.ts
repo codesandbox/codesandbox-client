@@ -236,6 +236,15 @@ export const npmRegistryFragment = gql`
   }
 `;
 
+export const sandpackTrustedDomainsFragment = gql`
+  fragment sandpackTrustedDomains on SandpackTrustedDomain {
+    id
+    domainName
+    comment
+    teamId
+  }
+`;
+
 export const branchFragment = gql`
   fragment branch on Branch {
     id

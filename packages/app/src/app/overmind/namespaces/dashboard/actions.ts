@@ -1502,8 +1502,13 @@ export const fetchCurrentNpmRegistry = async ({
 
     // Check if active team is still the same
     if (activeTeam === state.activeTeam) {
-      state.dashboard.workspaceSettings.npmRegistry =
-        data.me?.team?.privateRegistry || null;
+      state.dashboard.workspaceSettings.npmRegistry = data.me?.team
+        ?.privateRegistry
+        ? {
+            ...data.me.team.privateRegistry,
+            trustedDomains: data.me.team.sandpackTrustedDomains,
+          }
+        : null;
     }
   } catch (error) {
     actions.internal.handleError({
