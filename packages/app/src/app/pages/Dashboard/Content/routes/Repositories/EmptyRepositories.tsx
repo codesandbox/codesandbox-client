@@ -172,7 +172,7 @@ const Suggested = () => {
   return (
     <>
       <Stack gap={2}>
-        <Text size={16}>Import from </Text>
+        <Text size={16}>Start by importing from </Text>
         {githubAccounts.state === 'loading' ? (
           <SkeletonText />
         ) : (
