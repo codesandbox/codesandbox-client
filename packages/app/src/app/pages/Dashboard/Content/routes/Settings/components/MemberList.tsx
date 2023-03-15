@@ -10,7 +10,9 @@ import {
   Menu,
   Text,
   Icon,
+  Badge,
 } from '@codesandbox/components';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
 const permissionMap = {
   ADMIN: 'Admin',
@@ -50,6 +52,7 @@ export const MemberList: React.FC<MemberListProps> = ({
   <List>
     {users.map(user => {
       const actions = getActions(user);
+      const userPermission = getPermission(user);
       const permissionActions = getPermissionOptions(user);
 
       return (
@@ -71,12 +74,15 @@ export const MemberList: React.FC<MemberListProps> = ({
                 css={{ height: '100%', width: '100%' }}
               >
                 <Avatar user={user} />
-                <Stack gap={2}>
+                <Stack align="center" gap={2}>
                   <Text size={3}>{user.username}</Text>
                   {user.id === currentUserId ? (
                     <Text size={3} variant="muted">
                       (You)
                     </Text>
+                  ) : null}
+                  {userPermission === TeamMemberAuthorization.Admin ? (
+                    <Badge>Admin</Badge>
                   ) : null}
                 </Stack>
               </Stack>
@@ -94,7 +100,7 @@ export const MemberList: React.FC<MemberListProps> = ({
                       css={css({ fontSize: 3, fontWeight: 'normal' })}
                     >
                       <Text variant="muted">
-                        {permissionMap[getPermission(user)]}
+                        {permissionMap[userPermission]}
                       </Text>
                       <Icon name="caret" size={8} marginLeft={1} />
                     </Menu.Button>
@@ -106,8 +112,7 @@ export const MemberList: React.FC<MemberListProps> = ({
                           style={{ display: 'flex', alignItems: 'center' }}
                         >
                           <Text style={{ width: '100%' }}>{action.label}</Text>
-                          {action.label ===
-                            permissionMap[getPermission(user)] && (
+                          {action.label === permissionMap[userPermission] && (
                             <Icon
                               style={{}}
                               name="simpleCheck"
