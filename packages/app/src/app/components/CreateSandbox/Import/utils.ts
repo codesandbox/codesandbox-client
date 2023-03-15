@@ -92,13 +92,12 @@ export const fuzzyMatchGithubToCsb = (
 
 export const getEventName = (
   isEligibleForTrial: boolean,
-  isTeamAdmin?: boolean
+  isTeamAdmin: boolean
 ): string => {
-  if (isTeamAdmin) {
-    return isEligibleForTrial
-      ? 'Limit banner: import - Start Trial'
-      : 'Limit banner: import - Upgrade';
+  if (isEligibleForTrial) {
+    const event = 'Limit banner: import - Start trial';
+    return isTeamAdmin ? event : `${event} - As non-admin`;
   }
 
-  return 'Limit banner: import - Learn more';
+  return 'Limit banner: import - Upgrade';
 };

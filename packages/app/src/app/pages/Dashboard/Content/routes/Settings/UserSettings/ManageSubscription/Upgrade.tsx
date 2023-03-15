@@ -16,9 +16,9 @@ const List = styled(Stack)`
 `;
 
 export const Upgrade: React.FC<{
-  loading: boolean;
+  disabled?: boolean;
   onUpgrade: () => void;
-}> = ({ loading, onUpgrade }) => {
+}> = ({ disabled, onUpgrade }) => {
   return (
     <Card
       css={{
@@ -46,7 +46,7 @@ export const Upgrade: React.FC<{
           </Text>
         </List>
 
-        <Button loading={loading} onClick={onUpgrade} variant="trial">
+        <Button disabled={disabled} onClick={onUpgrade} variant="trial">
           Upgrade to Pro
         </Button>
       </Stack>

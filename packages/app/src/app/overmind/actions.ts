@@ -254,7 +254,6 @@ type ModalName =
   | 'share'
   | 'signInForTemplates'
   | 'userSurvey'
-  | 'liveSessionConfirm'
   | 'liveSessionRestricted'
   | 'sandboxPicker'
   | 'minimumPrivacy'

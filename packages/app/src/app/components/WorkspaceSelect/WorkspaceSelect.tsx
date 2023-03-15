@@ -11,6 +11,8 @@ import {
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { SubscriptionStatus } from 'app/graphql/types';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -23,6 +25,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const state = useAppState();
     const { dashboard, user } = state;
     const { openCreateTeamModal } = useActions();
+    const { isFree } = useWorkspaceSubscription();
 
     if (dashboard.teams.length === 0 || !state.personalWorkspaceId) return null;
 
@@ -93,9 +96,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   {isPersonalTeam ? 'Personal' : selectedTeam?.name}
                 </Text>
 
-                {!selectedTeam?.subscription && (
-                  <Badge variant="trial">Free</Badge>
-                )}
+                {isFree && <Badge variant="trial">Free</Badge>}
               </Stack>
 
               <Icon name="chevronDown" size={8} />
@@ -110,47 +111,55 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 backgroundColor: '#242424',
               }}
             >
-              {workspaces.map(team => (
-                <Stack
-                  as={Menu.Item}
-                  key={team.id}
-                  align="center"
-                  gap={2}
-                  css={{ borderBottom: '1px solid #343434' }}
-                  onSelect={() => {
-                    track('Workspace Selector - Change Active Team', {
-                      codesandbox: 'V1',
-                      event_source: 'UI',
-                    });
-                    onSelect(team.id);
-                  }}
-                >
-                  <TeamAvatar
-                    avatar={
-                      team.id === state.personalWorkspaceId && user
-                        ? user.avatarUrl
-                        : team.avatarUrl
-                    }
-                    name={team.name}
-                    size="small"
-                    style={{ overflow: 'hidden' }}
-                  />
-                  <Stack
-                    align="center"
-                    justify="space-between"
-                    css={{ flex: 1 }}
-                    gap={1}
-                  >
-                    <Text css={{ width: '100%' }} size={3}>
-                      {team.id === state.personalWorkspaceId
-                        ? 'Personal'
-                        : team.name}
-                    </Text>
+              {workspaces.map(team => {
+                const subscriptionStatus = team.subscription?.status;
+                const isTeamFree = !(
+                  subscriptionStatus === SubscriptionStatus.Active ||
+                  subscriptionStatus === SubscriptionStatus.Trialing
+                );
 
-                    {!team.subscription && <Badge variant="trial">Free</Badge>}
+                return (
+                  <Stack
+                    as={Menu.Item}
+                    key={team.id}
+                    align="center"
+                    gap={2}
+                    css={{ borderBottom: '1px solid #343434' }}
+                    onSelect={() => {
+                      track('Workspace Selector - Change Active Team', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                      onSelect(team.id);
+                    }}
+                  >
+                    <TeamAvatar
+                      avatar={
+                        team.id === state.personalWorkspaceId && user
+                          ? user.avatarUrl
+                          : team.avatarUrl
+                      }
+                      name={team.name}
+                      size="small"
+                      style={{ overflow: 'hidden' }}
+                    />
+                    <Stack
+                      align="center"
+                      justify="space-between"
+                      css={{ flex: 1 }}
+                      gap={1}
+                    >
+                      <Text css={{ width: '100%' }} size={3}>
+                        {team.id === state.personalWorkspaceId
+                          ? 'Personal'
+                          : team.name}
+                      </Text>
+
+                      {isTeamFree && <Badge variant="trial">Free</Badge>}
+                    </Stack>
                   </Stack>
-                </Stack>
-              ))}
+                );
+              })}
 
               <Stack
                 as={Menu.Item}

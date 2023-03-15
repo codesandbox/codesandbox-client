@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useEffects } from 'app/overmind';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
@@ -7,7 +7,7 @@ type CheckoutStatus =
   | { status: 'loading' }
   | { status: 'error'; error: string };
 
-type CheckoutOptions = {
+export type CheckoutOptions = {
   team_id: string | undefined;
   recurring_interval?: 'month' | 'year';
   success_path?: string;
@@ -18,7 +18,7 @@ type CheckoutOptions = {
  * @param {string} pathNameAndSearch The pathname and search params you want to add the stripe
  * success param to, for example  `/dashboard?workspace=xxxx`. Exclude the url base.
  */
-const addStripeSuccessParam = (pathNameAndSearch: string): string => {
+export const addStripeSuccessParam = (pathNameAndSearch: string): string => {
   try {
     const newUrl = new URL(pathNameAndSearch, window.location.origin);
     newUrl.searchParams.append('stripe', 'success');
@@ -70,70 +70,4 @@ export const useCreateCheckout = (): [
   };
 
   return [status, createCheckout];
-};
-
-type CheckoutState =
-  | { state: 'IDLE' }
-  | {
-      state: 'READY';
-      url: string;
-    }
-  | { state: 'LOADING' }
-  | { state: 'ERROR'; error: string };
-
-// TODO: replace useCreateCheckout usages
-// with useGetCheckoutURL to remove the
-// loading state when redirecting users
-// to the checkout page.
-export const useGetCheckoutURL = ({
-  team_id,
-  success_path = dashboard.settings(team_id) + '&payment_pending=true',
-  cancel_path = '/pro',
-  recurring_interval = 'month',
-}: CheckoutOptions): CheckoutState => {
-  const [checkout, setCheckout] = useState<CheckoutState>({ state: 'IDLE' });
-  const { api } = useEffects();
-
-  const getCheckoutUrl = async () => {
-    if (!team_id) {
-      setCheckout({
-        state: 'IDLE',
-      });
-
-      return;
-    }
-
-    try {
-      setCheckout({
-        state: 'LOADING',
-      });
-
-      const payload = await api.stripeCreateCheckout({
-        success_path: addStripeSuccessParam(success_path),
-        cancel_path,
-        team_id,
-        recurring_interval,
-      });
-
-      if (payload.stripeCheckoutUrl) {
-        setCheckout({
-          state: 'READY',
-          url: payload.stripeCheckoutUrl,
-        });
-      }
-    } catch (error) {
-      setCheckout({
-        state: 'ERROR',
-        error:
-          JSON.stringify(error?.messagge || error) ??
-          'Failed to get checkout URL.',
-      });
-    }
-  };
-
-  useEffect(() => {
-    getCheckoutUrl();
-  }, [team_id]);
-
-  return checkout;
 };

@@ -32,7 +32,7 @@ import {
 } from 'app/graphql/types';
 import { MAX_PRO_EDITORS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
@@ -85,8 +85,7 @@ export const WorkspaceSettings = () => {
   } = useWorkspaceLimits();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
 
-  const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin ? team?.id : undefined,
+  const checkoutUrl = useGetCheckoutURL({
     cancel_path: dashboard.settings(team?.id),
   });
 
@@ -243,7 +242,11 @@ export const WorkspaceSettings = () => {
           },
         }}
       >
-        <Card css={{ 'grid-column': isTeamAdmin ? 'auto' : '1/3' }}>
+        <Card
+          css={{
+            'grid-column': isTeamAdmin || isEligibleForTrial ? 'auto' : '1/3',
+          }}
+        >
           {editing ? (
             <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
               <Stack gap={4}>
@@ -502,7 +505,7 @@ export const WorkspaceSettings = () => {
       {/**
        * Limit free plan amount of editors.
        */}
-      {isTeamAdmin && (numberOfEditorsIsOverTheLimit || hasMaxNumberOfEditors) && (
+      {checkoutUrl && (numberOfEditorsIsOverTheLimit || hasMaxNumberOfEditors) && (
         <MessageStripe justify="space-between">
           <span>
             {numberOfEditorsIsOverTheLimit && (
@@ -519,22 +522,29 @@ export const WorkspaceSettings = () => {
             )}
           </span>
           <MessageStripe.Action
-            {...(checkout.state === 'READY'
+            {...(checkoutUrl.startsWith('/')
               ? {
-                  as: 'a',
-                  href: checkout.url,
+                  as: RouterLink,
+                  to: `${checkoutUrl}?utm_source=dashboard_workspace_settings`,
                 }
               : {
-                  as: RouterLink,
-                  to: '/pro?utm_source=dashboard_workspace_settings',
+                  as: 'a',
+                  href: checkoutUrl,
                 })}
-            onClick={() =>
-              track(
-                isEligibleForTrial
-                  ? 'Limit banner: team editors - Start Trial'
-                  : 'Limit banner: team editors - Upgrade'
-              )
-            }
+            onClick={() => {
+              if (isEligibleForTrial) {
+                const event = 'Limit banner: team editors - Start trial';
+                track(isTeamAdmin ? event : `${event} - As non-admin`, {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+              } else {
+                track('Limit banner: team editors - Upgrade', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+              }
+            }}
           >
             {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
           </MessageStripe.Action>

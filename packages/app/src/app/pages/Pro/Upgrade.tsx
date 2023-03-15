@@ -25,7 +25,7 @@ import {
 } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
 
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Switcher } from './components/Switcher';
@@ -77,7 +77,6 @@ export const ProUpgrade = () => {
     isPersonalSpace,
     isTeamSpace,
     isTeamAdmin,
-    isAdmin,
   } = useWorkspaceAuthorization();
   const { isFree, isPro } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
@@ -90,10 +89,8 @@ export const ProUpgrade = () => {
    */
   const hasCustomSubscription = false;
 
-  const checkout = useGetCheckoutURL({
-    team_id: isAdmin && isFree ? activeTeam : undefined,
+  const checkoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.settings(activeTeam),
-    cancel_path: '/pro',
     // recurring_interval: 'year', // TODO: defaulting to year does not enable the interval switch in stripe
   });
 
@@ -117,9 +114,8 @@ export const ProUpgrade = () => {
       }
     : {
         text: 'Proceed to checkout',
-        href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
+        href: checkoutUrl ?? '', // TODO: Fallback?
         variant: 'highlight',
-        isLoading: checkout.state === 'LOADING',
         onClick: () => {
           track('subscription page - personal pro checkout', {
             codesandbox: 'V1',

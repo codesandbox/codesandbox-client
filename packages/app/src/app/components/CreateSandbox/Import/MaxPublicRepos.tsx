@@ -1,23 +1,24 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { MessageStripe } from '@codesandbox/components';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { getEventName } from './utils';
 
+const EVENT_PROPS = {
+  codesandbox: 'V1',
+  event_source: 'UI',
+};
+
 export const MaxPublicRepos: React.FC = () => {
-  const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
-  const { modals } = useActions();
 
-  const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin ? activeTeam : undefined,
+  const checkoutUrl = useGetCheckoutURL({
     success_path: pathname,
     cancel_path: pathname,
   });
@@ -26,30 +27,19 @@ export const MaxPublicRepos: React.FC = () => {
     <MessageStripe justify="space-between">
       You&apos;ve reached the maximum amount of free repositories. Upgrade for
       more.
-      {isTeamAdmin ? (
+      {checkoutUrl ? (
         <MessageStripe.Action
-          {...(checkout.state === 'READY'
+          {...(checkoutUrl.startsWith('/')
             ? {
-                as: 'a',
-                href: checkout.url,
+                as: RouterLink,
+                to: checkoutUrl,
               }
             : {
-                as: RouterLink,
-                to: '/pro',
+                as: 'a',
+                href: checkoutUrl,
               })}
           onClick={() => {
-            // If we don't have a checkout URL, we
-            // default to `/pro` which uses a link
-            // from react router so we have to
-            // imperatively close the modal.
-            if (checkout.state !== 'READY') {
-              modals.newSandboxModal.close();
-            }
-
-            track(getEventName(isEligibleForTrial), {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
+            track(getEventName(isEligibleForTrial, isTeamAdmin), EVENT_PROPS);
           }}
         >
           {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
@@ -63,6 +53,9 @@ export const MaxPublicRepos: React.FC = () => {
               : SUBSCRIPTION_DOCS_URLS.teams.non_trial
           }
           target="_blank"
+          onClick={() =>
+            track('Limit banner: create sandbox - Learn more', EVENT_PROPS)
+          }
         >
           Learn more
         </MessageStripe.Action>

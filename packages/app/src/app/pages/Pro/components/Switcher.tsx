@@ -54,12 +54,16 @@ export const Switcher: React.FC<{
                 team => team.userId === user?.id
               )?.authorization === TeamMemberAuthorization.Admin;
 
+            const isTrialEligible =
+              workspace.id !== personalWorkspaceId &&
+              workspace.subscription === null;
+
             const isPro = [
               SubscriptionType.TeamPro,
               SubscriptionType.PersonalPro,
             ].includes(workspace.subscription?.type);
 
-            const disabled = !isAdmin;
+            const disabled = !(isAdmin || isTrialEligible);
 
             return (
               <MenuItem

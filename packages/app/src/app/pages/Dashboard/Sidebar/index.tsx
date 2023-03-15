@@ -26,7 +26,7 @@ import { AdminUpgradeToTeamPro } from './BottomMessages/AdminUpgradeToTeamPro';
 import { UserUpgradeToTeamPro } from './BottomMessages/UserUpgradeToTeamPro';
 import { TrialExpiring } from './BottomMessages/TrialExpiring';
 import { UpgradeToPersonalPro } from './BottomMessages/UpgradeToPersonalPro';
-import { AdminStartTrial } from './BottomMessages/AdminStartTrial';
+import { StartTrial } from './BottomMessages/StartTrial';
 import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
@@ -310,15 +310,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && isFree ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isTeamAdmin && isEligibleForTrial ? (
-              <AdminStartTrial activeTeam={activeTeam} />
-            ) : null}
+            {isEligibleForTrial ? <StartTrial activeTeam={activeTeam} /> : null}
 
             {isTeamAdmin && !isEligibleForTrial ? (
               <AdminUpgradeToTeamPro />
             ) : null}
 
-            {isTeamSpace && !isTeamAdmin ? <UserUpgradeToTeamPro /> : null}
+            {isTeamSpace && !isTeamAdmin && !isEligibleForTrial ? (
+              <UserUpgradeToTeamPro />
+            ) : null}
 
             {isPersonalSpace ? <UpgradeToPersonalPro /> : null}
           </Element>

@@ -1,4 +1,4 @@
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
@@ -8,13 +8,11 @@ import { Element, MessageStripe } from '@codesandbox/components';
 import { Link } from 'react-router-dom';
 import React from 'react';
 
-export const RestrictionsBanner: React.FC = () => {
-  const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
+export const SandboxesRestrictionsBanner: React.FC = () => {
   const { activeTeam } = useAppState();
-
-  const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin && isFree ? activeTeam : undefined,
+  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
+  const checkoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.sandboxes(activeTeam),
     cancel_path: dashboardUrls.sandboxes(activeTeam),
   });
@@ -24,28 +22,31 @@ export const RestrictionsBanner: React.FC = () => {
       <MessageStripe justify="space-between">
         Free teams are limited to 20 public sandboxes. Upgrade for unlimited
         public and private sandboxes.
-        {isTeamAdmin ? (
+        {checkoutUrl ? (
           <MessageStripe.Action
-            {...(checkout.state === 'READY'
+            {...(checkoutUrl.startsWith('/')
               ? {
-                  as: 'a',
-                  href: checkout.url,
+                  as: Link,
+                  to: checkoutUrl,
                 }
               : {
-                  as: Link,
-                  to: '/pro',
+                  as: 'a',
+                  href: checkoutUrl,
                 })}
-            onClick={() =>
-              isEligibleForTrial
-                ? track('Limit banner: sandboxes - Start Trial', {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  })
-                : track('Limit banner: sandboxes - Upgrade', {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  })
-            }
+            onClick={() => {
+              if (isEligibleForTrial) {
+                const event = 'Limit banner: sandboxes - Start Trial';
+                track(isTeamAdmin ? event : `${event} - As non-admin`, {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+              } else {
+                track('Limit banner: sandboxes - Upgrade', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+              }
+            }}
           >
             {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
           </MessageStripe.Action>

@@ -1,55 +1,53 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { MessageStripe } from '@codesandbox/components';
-import { Link } from 'react-router-dom';
-import React from 'react';
-import { useActions } from 'app/overmind';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 
-const getEventName = (isEligibleForTrial: boolean) =>
-  isEligibleForTrial
-    ? 'Limit banner: create sandbox - Start trial'
-    : 'Limit banner: create sandbox - Upgrade';
+const getEventName = (isEligibleForTrial: boolean, isTeamAdmin: boolean) => {
+  if (isEligibleForTrial) {
+    const event = 'Limit banner: create sandbox - Start trial';
+    return isTeamAdmin ? event : `${event} - As non-admin`;
+  }
+
+  return 'Limit banner: create sandbox - Upgrade';
+};
 
 const EVENT_PROPS = {
   codesandbox: 'V1',
   event_source: 'UI',
 };
 
-type MaxPublicReposProps = {
-  checkoutUrl?: string;
+type MaxPublicSandboxesProps = {
+  checkoutUrl: string | null;
   isTeamAdmin: boolean;
   isEligibleForTrial: boolean;
 };
-export const MaxPublicSandboxes: React.FC<MaxPublicReposProps> = ({
+export const MaxPublicSandboxes: React.FC<MaxPublicSandboxesProps> = ({
   checkoutUrl,
   isEligibleForTrial,
   isTeamAdmin,
 }) => {
-  const { newSandboxModal } = useActions().modals;
-
   return (
     <MessageStripe justify="space-between">
       You&apos;ve reached the maximum amount of free sandboxes. Upgrade for
       more.
-      {isTeamAdmin ? (
+      {checkoutUrl ? (
         <MessageStripe.Action
-          {...(checkoutUrl
+          {...(checkoutUrl.startsWith('/')
             ? {
-                as: 'a',
-                href: checkoutUrl,
+                as: Link,
+                to: `${checkoutUrl}?utm_source=dashboard_upgrade_banner`,
               }
             : {
-                as: Link,
-                to: '/pro?utm_source=dashboard_upgrade_banner',
+                as: 'a',
+                href: checkoutUrl,
               })}
           onClick={() => {
-            if (!checkoutUrl) {
-              newSandboxModal.close();
-            }
-            track(getEventName(isEligibleForTrial), EVENT_PROPS);
+            track(getEventName(isEligibleForTrial, isTeamAdmin), EVENT_PROPS);
           }}
         >
-          {isTeamAdmin ? 'Upgrade now' : 'Learn more'}
+          {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
         </MessageStripe.Action>
       ) : (
         <MessageStripe.Action
