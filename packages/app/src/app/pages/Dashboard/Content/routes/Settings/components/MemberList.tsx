@@ -12,6 +12,13 @@ import {
   Icon,
 } from '@codesandbox/components';
 
+const permissionMap = {
+  ADMIN: 'Admin',
+  WRITE: 'Editor',
+  READ: 'Viewer',
+  PENDING: 'Pending...',
+};
+
 export type User = {
   id: string;
   avatarUrl: string;
@@ -30,25 +37,20 @@ interface MemberListProps {
   getPermissionOptions: getActionsType;
   getActions: getActionsType;
   users: User[];
+  currentUserId?: string;
 }
 
 export const MemberList: React.FC<MemberListProps> = ({
   getPermission,
   getPermissionOptions,
-  users,
   getActions,
+  users,
+  currentUserId,
 }) => (
   <List>
     {users.map(user => {
       const actions = getActions(user);
       const permissionActions = getPermissionOptions(user);
-
-      const permissionMap = {
-        ADMIN: 'Admin',
-        WRITE: 'Editor',
-        READ: 'Viewer',
-        PENDING: 'Pending...',
-      };
 
       return (
         <ListAction
@@ -69,7 +71,14 @@ export const MemberList: React.FC<MemberListProps> = ({
                 css={{ height: '100%', width: '100%' }}
               >
                 <Avatar user={user} />
-                <Text size={3}>{user.username}</Text>
+                <Stack gap={2}>
+                  <Text size={3}>{user.username}</Text>
+                  {user.id === currentUserId ? (
+                    <Text size={3} variant="muted">
+                      (You)
+                    </Text>
+                  ) : null}
+                </Stack>
               </Stack>
             </Column>
             <Column span={6}>

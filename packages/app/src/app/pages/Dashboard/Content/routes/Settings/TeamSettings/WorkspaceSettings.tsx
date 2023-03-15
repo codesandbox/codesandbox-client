@@ -712,6 +712,7 @@ export const WorkspaceSettings = () => {
             return options;
           }}
           users={sortBy(team.users, 'username')}
+          currentUserId={currentUser.id}
         />
 
         <MemberList
