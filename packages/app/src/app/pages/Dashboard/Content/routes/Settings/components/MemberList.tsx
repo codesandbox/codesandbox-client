@@ -27,7 +27,10 @@ type Action = {
   onSelect: () => void;
 };
 
-type Role = Exclude<TeamMemberAuthorization, TeamMemberAuthorization.Admin>;
+export type Role = Exclude<
+  TeamMemberAuthorization,
+  TeamMemberAuthorization.Admin
+>;
 
 const ROLE_MAP: Record<Role, string> = {
   WRITE: 'Editor',
@@ -51,7 +54,12 @@ export const MembersList: React.FC<MemberListProps> = ({
 }) => {
   const { activeTeamInfo, user: currentUser } = useAppState();
   const {
-    dashboard: { changeAuthorization, leaveTeam, removeFromTeam },
+    dashboard: {
+      changeAuthorization,
+      leaveTeam,
+      removeFromTeam,
+      revokeTeamInvitation,
+    },
   } = useActions();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
@@ -60,11 +68,7 @@ export const MembersList: React.FC<MemberListProps> = ({
   }
 
   const currentUserId = currentUser?.id;
-  const {
-    // invitees,
-    users,
-    userAuthorizations,
-  } = activeTeamInfo;
+  const { invitees, users, userAuthorizations } = activeTeamInfo;
 
   const authorizationsMap = userAuthorizations.reduce((acc, auth) => {
     const { userId, authorization, teamManager } = auth;
@@ -79,6 +83,14 @@ export const MembersList: React.FC<MemberListProps> = ({
 
     return acc;
   }, {} as AuthorizationsMap);
+
+  const teamAdminsCount = Object.values(authorizationsMap).filter(
+    auth => auth.teamAdmin
+  ).length;
+
+  const teamManagersCount = Object.values(authorizationsMap).filter(
+    auth => auth.teamManager
+  ).length;
 
   // Returns either options for the role dropdown or a string
   // to render if the user is not allowed to change the role.
@@ -121,25 +133,25 @@ export const MembersList: React.FC<MemberListProps> = ({
   const buildMemberActions = (member: User): Action[] => {
     const memberAuth = authorizationsMap[member.id];
 
-    if (member.id === currentUserId) {
-      // TO DO: prevent leaving team if you are the only admin.
-      return [
-        {
-          name: 'Leave team',
-          onSelect: leaveTeam,
-        },
-      ];
-    }
-
-    // If the member isn't the current user or the current
-    // user is not an admin, no actions are allowed.
     if (!isTeamAdmin) {
+      // If the user is not the team admin, the only possible
+      // action is to leave the team.
+      if (member.id === currentUser) {
+        return [
+          {
+            name: 'Leave team',
+            onSelect: leaveTeam,
+          },
+        ];
+      }
       return [];
     }
 
     const actions = [];
 
-    if (memberAuth.teamAdmin) {
+    // If the user is not the only team admin, their rights
+    // can be revoked.
+    if (memberAuth.teamAdmin && teamAdminsCount > 1) {
       actions.push({
         name: 'Revoke admin rights',
         onSelect: () =>
@@ -149,7 +161,7 @@ export const MembersList: React.FC<MemberListProps> = ({
             teamManager: memberAuth.teamManager,
           }),
       });
-    } else {
+    } else if (!memberAuth.teamAdmin) {
       actions.push({
         name: 'Grant admin rights',
         onSelect: () =>
@@ -166,7 +178,10 @@ export const MembersList: React.FC<MemberListProps> = ({
     const mappedMemberAuthorization = memberAuth.teamAdmin
       ? TeamMemberAuthorization.Admin
       : memberAuth.role;
-    if (memberAuth.teamManager) {
+
+    // If the user is not the only team manager, their rights
+    // can be revoked.
+    if (memberAuth.teamManager && teamManagersCount > 1) {
       actions.push({
         name: 'Revoke billing rights',
         onSelect: () =>
@@ -176,7 +191,7 @@ export const MembersList: React.FC<MemberListProps> = ({
             teamManager: false,
           }),
       });
-    } else {
+    } else if (!memberAuth.teamManager) {
       actions.push({
         name: 'Grant billing rights',
         onSelect: () =>
@@ -188,10 +203,19 @@ export const MembersList: React.FC<MemberListProps> = ({
       });
     }
 
-    actions.push({
-      name: 'Remove member',
-      onSelect: () => removeFromTeam(member.id),
-    });
+    // If the user is not the only team admin, they can leave the team.
+    if (member.id === currentUserId && teamAdminsCount > 1) {
+      actions.push({
+        name: 'Leave team',
+        onSelect: leaveTeam,
+      });
+    } else if (member.id !== currentUserId) {
+      actions.push({
+        name: 'Remove member',
+        onSelect: () => removeFromTeam(member.id),
+      });
+    }
+
     return actions;
   };
 
@@ -286,6 +310,46 @@ export const MembersList: React.FC<MemberListProps> = ({
           </ListAction>
         );
       })}
+      {invitees.map(invitee => (
+        <ListAction
+          key={invitee.id}
+          align="center"
+          justify="space-between"
+          css={{
+            height: 64,
+            borderBottom: '1px solid #242424',
+          }}
+        >
+          <Grid css={{ width: '100%', alignItems: 'center' }}>
+            <Column span={6}>
+              <Stack align="center" gap={6}>
+                <Avatar user={invitee} />
+                <Text size={3}>{invitee.username}</Text>
+              </Stack>
+            </Column>
+            <Column span={5}>
+              <Text size={3}>Pending...</Text>
+            </Column>
+            <Column span={1}>
+              <Menu>
+                <Menu.IconButton name="more" size={9} title="Member options" />
+                <Menu.List>
+                  <Menu.Item
+                    onSelect={() =>
+                      revokeTeamInvitation({
+                        teamId: activeTeamInfo.id,
+                        userId: invitee.id,
+                      })
+                    }
+                  >
+                    Revoke invitation
+                  </Menu.Item>
+                </Menu.List>
+              </Menu>
+            </Column>
+          </Grid>
+        </ListAction>
+      ))}
     </List>
   );
 };
