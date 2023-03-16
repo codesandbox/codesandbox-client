@@ -136,7 +136,7 @@ export const MembersList: React.FC<MemberListProps> = ({
     if (!isTeamAdmin) {
       // If the user is not the team admin, the only possible
       // action is to leave the team.
-      if (member.id === currentUser) {
+      if (member.id === currentUserId) {
         return [
           {
             name: 'Leave team',
@@ -310,46 +310,52 @@ export const MembersList: React.FC<MemberListProps> = ({
           </ListAction>
         );
       })}
-      {invitees.map(invitee => (
-        <ListAction
-          key={invitee.id}
-          align="center"
-          justify="space-between"
-          css={{
-            height: 64,
-            borderBottom: '1px solid #242424',
-          }}
-        >
-          <Grid css={{ width: '100%', alignItems: 'center' }}>
-            <Column span={6}>
-              <Stack align="center" gap={6}>
-                <Avatar user={invitee} />
-                <Text size={3}>{invitee.username}</Text>
-              </Stack>
-            </Column>
-            <Column span={5}>
-              <Text size={3}>Pending...</Text>
-            </Column>
-            <Column span={1}>
-              <Menu>
-                <Menu.IconButton name="more" size={9} title="Member options" />
-                <Menu.List>
-                  <Menu.Item
-                    onSelect={() =>
-                      revokeTeamInvitation({
-                        teamId: activeTeamInfo.id,
-                        userId: invitee.id,
-                      })
-                    }
-                  >
-                    Revoke invitation
-                  </Menu.Item>
-                </Menu.List>
-              </Menu>
-            </Column>
-          </Grid>
-        </ListAction>
-      ))}
+      {invitees && invitees.length > 0
+        ? invitees.map(invitee => (
+            <ListAction
+              key={invitee.id}
+              align="center"
+              justify="space-between"
+              css={{
+                height: 64,
+                borderBottom: '1px solid #242424',
+              }}
+            >
+              <Grid css={{ width: '100%', alignItems: 'center' }}>
+                <Column span={6}>
+                  <Stack align="center" gap={6}>
+                    <Avatar user={invitee} />
+                    <Text size={3}>{invitee.username}</Text>
+                  </Stack>
+                </Column>
+                <Column span={5}>
+                  <Text size={3}>Pending...</Text>
+                </Column>
+                <Column span={1}>
+                  <Menu>
+                    <Menu.IconButton
+                      name="more"
+                      size={9}
+                      title="Member options"
+                    />
+                    <Menu.List>
+                      <Menu.Item
+                        onSelect={() =>
+                          revokeTeamInvitation({
+                            teamId: activeTeamInfo.id,
+                            userId: invitee.id,
+                          })
+                        }
+                      >
+                        Revoke invitation
+                      </Menu.Item>
+                    </Menu.List>
+                  </Menu>
+                </Column>
+              </Grid>
+            </ListAction>
+          ))
+        : null}
     </List>
   );
 };
