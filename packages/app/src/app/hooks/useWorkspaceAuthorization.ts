@@ -24,7 +24,7 @@ export const useWorkspaceAuthorization = () => {
    * Team states
    */
 
-  const isTeamSpace = activeTeam !== null && !isPersonalSpace;
+  const isTeamSpace = activeTeamInfo !== null && !isPersonalSpace;
 
   const isTeamAdmin = isTeamSpace && isAdmin;
 
@@ -39,7 +39,7 @@ export const useWorkspaceAuthorization = () => {
     isTeamSpace,
     isTeamAdmin,
     isTeamEditor,
-    isBillingManager: Boolean(teamManager),
+    isBillingManager: Boolean(teamManager) || isTeamAdmin,
     isTeamViewer,
     isAdmin,
     userRole: authorization ?? null,
