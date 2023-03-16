@@ -23,7 +23,6 @@ type User = CurrentTeamInfoFragmentFragment['users'][number];
 
 type Action = {
   name: string;
-  disabled?: boolean;
   onSelect: () => void;
 };
 
@@ -47,10 +46,21 @@ type AuthorizationsMap = {
 };
 
 type MemberListProps = {
+  /**
+   * If a free team has reached the max number of editors,
+   * it's not possible to change a viewer to an editor.
+   */
+  canPerformRoleChange: boolean;
+  /**
+   * If a paid team has filled their seats, warn them that
+   * changing an user from viewer to editor will increase
+   * their bill.
+   */
   shouldConfirmRoleChange: boolean;
 };
 export const MembersList: React.FC<MemberListProps> = ({
   shouldConfirmRoleChange,
+  canPerformRoleChange,
 }) => {
   const { activeTeamInfo, user: currentUser } = useAppState();
   const {
@@ -100,7 +110,11 @@ export const MembersList: React.FC<MemberListProps> = ({
       return 'Editor';
     }
 
-    if (!isTeamAdmin) {
+    if (
+      !isTeamAdmin ||
+      (!canPerformRoleChange &&
+        memberAuth.role === TeamMemberAuthorization.Read)
+    ) {
       return ROLE_MAP[memberAuth.role];
     }
 
@@ -270,8 +284,8 @@ export const MembersList: React.FC<MemberListProps> = ({
                       {roleOptions.map(action => (
                         <Menu.Item
                           key={action.name}
+                          disabled={action.disabled}
                           onSelect={action.onSelect}
-                          style={{ display: 'flex', alignItems: 'center' }}
                         >
                           <Text style={{ width: '100%' }}>{action.name}</Text>
                           {action.name === ROLE_MAP[authorization.role] && (
@@ -298,7 +312,11 @@ export const MembersList: React.FC<MemberListProps> = ({
                     />
                     <Menu.List>
                       {actions.map(action => (
-                        <Menu.Item key={action.name} onSelect={action.onSelect}>
+                        <Menu.Item
+                          key={action.name}
+                          disabled={action.disabled}
+                          onSelect={action.onSelect}
+                        >
                           {action.name}
                         </Menu.Item>
                       ))}

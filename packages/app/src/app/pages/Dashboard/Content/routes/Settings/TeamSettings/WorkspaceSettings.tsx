@@ -157,8 +157,8 @@ export const WorkspaceSettings = () => {
   };
 
   const created = team.users.find(user => user.id === team.creatorId);
-  // const canConvertViewersToEditors =
-  //   !hasMaxNumberOfEditors && !numberOfEditorsIsOverTheLimit;
+  const canConvertViewersToEditors =
+    !hasMaxNumberOfEditors && !numberOfEditorsIsOverTheLimit;
 
   return (
     <>
@@ -439,6 +439,7 @@ export const WorkspaceSettings = () => {
       )}
 
       <MembersList
+        canPerformRoleChange={canConvertViewersToEditors}
         shouldConfirmRoleChange={isPro && numberOfUnusedSeats === 0}
       />
     </>
