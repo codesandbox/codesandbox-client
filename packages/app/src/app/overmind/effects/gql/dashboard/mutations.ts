@@ -382,11 +382,15 @@ export const changeTeamMemberAuthorization: Query<
     $teamId: UUID4!
     $userId: UUID4!
     $authorization: TeamMemberAuthorization!
-    $teamManager: boolean
+    $teamManager: Boolean
   ) {
     changeTeamMemberAuthorizations(
       teamId: $teamId
-      memberAuthorizations: { userId: $userId, authorization: $authorization, teamManager: $teamManager }
+      memberAuthorizations: {
+        userId: $userId
+        authorization: $authorization
+        teamManager: $teamManager
+      }
     ) {
       id
     }
