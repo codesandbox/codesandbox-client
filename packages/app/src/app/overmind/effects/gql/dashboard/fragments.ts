@@ -177,6 +177,7 @@ export const currentTeamInfoFragment = gql`
     userAuthorizations {
       userId
       authorization
+      teamManager
     }
 
     settings {
