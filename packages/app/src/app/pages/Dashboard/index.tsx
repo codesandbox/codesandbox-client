@@ -172,16 +172,20 @@ export const Dashboard: FunctionComponent = () => {
                 >
                   <Sidebar
                     visible={sidebarVisible}
+                    hasTopBarBanner={hasTopBarBanner}
                     onSidebarToggle={onSidebarToggle}
                   />
                 </Element>
               ) : (
                 <Element
                   id="desktop-sidebar"
-                  css={css({ display: ['none', 'none', 'block'] })}
+                  css={css({
+                    display: ['none', 'none', 'block'],
+                  })}
                 >
                   <Sidebar
                     visible
+                    hasTopBarBanner={hasTopBarBanner}
                     onSidebarToggle={() => {
                       /* do nothing */
                     }}

@@ -17,7 +17,6 @@ import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { getDaysUntil } from 'app/utils/dateTime';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { SubscriptionStatus } from 'app/graphql/types';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -35,11 +34,13 @@ const DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE = 5;
 
 interface SidebarProps {
   visible: boolean;
+  hasTopBarBanner?: boolean;
   onSidebarToggle: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   visible,
+  hasTopBarBanner,
   onSidebarToggle,
 }) => {
   const history = useHistory();
@@ -114,8 +115,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const showDaysLeftMessage =
     trialDaysLeft !== null &&
     trialDaysLeft <= DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE;
-
-  const hasTopBarBanner = subscription?.status === SubscriptionStatus.Unpaid;
 
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
