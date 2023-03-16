@@ -167,28 +167,30 @@ import {
   // Icon,
   List,
   ListAction,
-  // Menu,
+  Menu,
   Stack,
   Text,
 } from '@codesandbox/components';
 import {
+  useActions,
   // useActions,
   useAppState,
 } from 'app/overmind';
 import {
-  // CurrentTeamInfoFragmentFragment,
+  CurrentTeamInfoFragmentFragment,
   TeamMemberAuthorization,
 } from 'app/graphql/types';
 import { sortBy } from 'lodash-es';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 // import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
-// type User = CurrentTeamInfoFragmentFragment['users'][number];
+type User = CurrentTeamInfoFragmentFragment['users'][number];
 
-// type Action = {
-//   name: string;
-//   disabled?: boolean;
-//   onSelect: () => void;
-// };
+type Action = {
+  name: string;
+  disabled?: boolean;
+  onSelect: () => void;
+};
 
 type Role = Exclude<TeamMemberAuthorization, TeamMemberAuthorization.Admin>;
 
@@ -211,7 +213,14 @@ type AuthorizationsMap = {
 // };
 export const MembersList: React.FC = () => {
   const { activeTeamInfo, user: currentUser } = useAppState();
-  // const { isTeamAdmin } = useWorkspaceAuthorization();
+  const {
+    dashboard: {
+      // changeAuthorization,
+      leaveTeam,
+      removeFromTeam,
+    },
+  } = useActions();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
 
   if (activeTeamInfo === null) {
     return null;
@@ -238,10 +247,54 @@ export const MembersList: React.FC = () => {
     return acc;
   }, {} as AuthorizationsMap);
 
+  const buildMemberActions = (member: User): Action[] => {
+    if (member.id === currentUserId) {
+      // TO DO: prevent leaving team if you are the only admin.
+      return [
+        {
+          name: 'Leave team',
+          onSelect: leaveTeam,
+        },
+      ];
+    }
+
+    if (isTeamAdmin) {
+      const actions = [];
+      const memberAuth = authorizationsMap[member.id];
+
+      if (memberAuth.teamAdmin) {
+        actions.push({
+          name: 'Revoke admin rights',
+          onSelect: () => ({}),
+          // changeAuthorization({
+          //   userId: member.id,
+          //   authorization: TeamMemberAuthorization.Write,
+          // }),
+        });
+      }
+
+      if (memberAuth.teamManager) {
+        actions.push({
+          name: 'Revoke billing rights',
+          onSelect: () => ({}),
+        });
+      }
+
+      actions.push({
+        name: 'Remove member',
+        onSelect: () => removeFromTeam(member.id),
+      });
+      return actions;
+    }
+
+    return [];
+  };
+
   return (
     <List>
       {sortBy(users, u => u.id !== currentUserId).map(user => {
         const authorization = authorizationsMap[user.id];
+        const actions = buildMemberActions(user);
 
         return (
           <ListAction
@@ -272,7 +325,24 @@ export const MembersList: React.FC = () => {
               <Column span={5}>
                 <Text size={3}>{ROLE_MAP[authorization.role]}</Text>
               </Column>
-              <Column span={1} />
+              <Column span={1}>
+                {actions.length > 0 ? (
+                  <Menu>
+                    <Menu.IconButton
+                      name="more"
+                      size={9}
+                      title="Member options"
+                    />
+                    <Menu.List>
+                      {actions.map(action => (
+                        <Menu.Item key={action.name} onSelect={action.onSelect}>
+                          {action.name}
+                        </Menu.Item>
+                      ))}
+                    </Menu.List>
+                  </Menu>
+                ) : null}
+              </Column>
             </Grid>
           </ListAction>
         );
