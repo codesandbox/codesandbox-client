@@ -208,17 +208,15 @@ type AuthorizationsMap = {
   };
 };
 
-// type MemberListProps = {
-//   availableEditorSeats: number;
-// };
-export const MembersList: React.FC = () => {
+type MemberListProps = {
+  shouldConfirmRoleChange: boolean;
+};
+export const MembersList: React.FC<MemberListProps> = ({
+  shouldConfirmRoleChange,
+}) => {
   const { activeTeamInfo, user: currentUser } = useAppState();
   const {
-    dashboard: {
-      // changeAuthorization,
-      leaveTeam,
-      removeFromTeam,
-    },
+    dashboard: { changeAuthorization, leaveTeam, removeFromTeam },
   } = useActions();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
@@ -247,7 +245,10 @@ export const MembersList: React.FC = () => {
     return acc;
   }, {} as AuthorizationsMap);
 
+  // Used in the "more" menu at the end of the row.
   const buildMemberActions = (member: User): Action[] => {
+    const memberAuth = authorizationsMap[member.id];
+
     if (member.id === currentUserId) {
       // TO DO: prevent leaving team if you are the only admin.
       return [
@@ -258,36 +259,68 @@ export const MembersList: React.FC = () => {
       ];
     }
 
-    if (isTeamAdmin) {
-      const actions = [];
-      const memberAuth = authorizationsMap[member.id];
-
-      if (memberAuth.teamAdmin) {
-        actions.push({
-          name: 'Revoke admin rights',
-          onSelect: () => ({}),
-          // changeAuthorization({
-          //   userId: member.id,
-          //   authorization: TeamMemberAuthorization.Write,
-          // }),
-        });
-      }
-
-      if (memberAuth.teamManager) {
-        actions.push({
-          name: 'Revoke billing rights',
-          onSelect: () => ({}),
-        });
-      }
-
-      actions.push({
-        name: 'Remove member',
-        onSelect: () => removeFromTeam(member.id),
-      });
-      return actions;
+    // If the member isn't the current user or the current
+    // user is not an admin, no actions are allowed.
+    if (!isTeamAdmin) {
+      return [];
     }
 
-    return [];
+    const actions = [];
+
+    if (memberAuth.teamAdmin) {
+      actions.push({
+        name: 'Revoke admin rights',
+        onSelect: () =>
+          changeAuthorization({
+            userId: member.id,
+            authorization: TeamMemberAuthorization.Write,
+            teamManager: memberAuth.teamManager,
+          }),
+      });
+    } else {
+      actions.push({
+        name: 'Grant admin rights',
+        onSelect: () =>
+          changeAuthorization({
+            userId: member.id,
+            authorization: TeamMemberAuthorization.Admin,
+            teamManager: memberAuth.teamManager,
+            confirm: shouldConfirmRoleChange,
+          }),
+      });
+    }
+
+    // Get the original authorization to pass to the API.
+    const mappedMemberAuthorization = memberAuth.teamAdmin
+      ? TeamMemberAuthorization.Admin
+      : memberAuth.role;
+    if (memberAuth.teamManager) {
+      actions.push({
+        name: 'Revoke billing rights',
+        onSelect: () =>
+          changeAuthorization({
+            userId: member.id,
+            authorization: mappedMemberAuthorization,
+            teamManager: false,
+          }),
+      });
+    } else {
+      actions.push({
+        name: 'Grant billing rights',
+        onSelect: () =>
+          changeAuthorization({
+            userId: member.id,
+            authorization: mappedMemberAuthorization,
+            teamManager: true,
+          }),
+      });
+    }
+
+    actions.push({
+      name: 'Remove member',
+      onSelect: () => removeFromTeam(member.id),
+    });
+    return actions;
   };
 
   return (

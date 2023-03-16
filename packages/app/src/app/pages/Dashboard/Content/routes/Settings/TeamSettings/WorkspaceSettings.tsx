@@ -116,7 +116,6 @@ export const WorkspaceSettings = () => {
     isPro &&
     numberOfUnusedSeats === 0 &&
     newMemberRole !== TeamMemberAuthorization.Read;
-  // const confirmMemberRoleChange = isPro && numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();
@@ -441,8 +440,8 @@ export const WorkspaceSettings = () => {
         </Stack>
       )}
 
-      <div>
-        <MembersList
+      <MembersList
+        shouldConfirmRoleChange={isPro && numberOfUnusedSeats === 0}
         // getPermission={user => getRole(user, team)}
         // getPermissionOptions={user => {
         //   const userRoleIsViewer =
@@ -512,8 +511,7 @@ export const WorkspaceSettings = () => {
         // }}
         // users={sortBy(team.users, 'username')}
         // currentUserId={currentUser.id}
-        />
-      </div>
+      />
     </>
   );
 };
