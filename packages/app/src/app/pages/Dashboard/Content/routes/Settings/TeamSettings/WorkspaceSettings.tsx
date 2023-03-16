@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { sortBy } from 'lodash-es';
 
 import {
   Button,
@@ -21,7 +20,6 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import {
   TeamMemberAuthorization,
-  CurrentTeamInfoFragmentFragment,
   SubscriptionOrigin,
   SubscriptionInterval,
 } from 'app/graphql/types';
@@ -33,7 +31,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { pluralize } from 'app/utils/pluralize';
 import { Card } from '../components';
-import { MemberList, User } from '../components/MemberList';
+import { MembersList } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
 import { TeamInfo } from '../components/TeamInfo';
 
@@ -118,7 +116,7 @@ export const WorkspaceSettings = () => {
     isPro &&
     numberOfUnusedSeats === 0 &&
     newMemberRole !== TeamMemberAuthorization.Read;
-  const confirmMemberRoleChange = isPro && numberOfUnusedSeats === 0;
+  // const confirmMemberRoleChange = isPro && numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();
@@ -162,8 +160,8 @@ export const WorkspaceSettings = () => {
   };
 
   const created = team.users.find(user => user.id === team.creatorId);
-  const canConvertViewersToEditors =
-    !hasMaxNumberOfEditors && !numberOfEditorsIsOverTheLimit;
+  // const canConvertViewersToEditors =
+  //   !hasMaxNumberOfEditors && !numberOfEditorsIsOverTheLimit;
 
   return (
     <>
@@ -444,108 +442,88 @@ export const WorkspaceSettings = () => {
       )}
 
       <div>
-        <MemberList
-          getPermission={user => getRole(user, team)}
-          getPermissionOptions={user => {
-            const userRoleIsViewer =
-              getRole(user, team) === TeamMemberAuthorization.Read;
+        <MembersList
+        // getPermission={user => getRole(user, team)}
+        // getPermissionOptions={user => {
+        //   const userRoleIsViewer =
+        //     getRole(user, team) === TeamMemberAuthorization.Read;
 
-            // if changing the role will lead to extra seats, we want to
-            // confirm any payment changes if required
-            const confirmChange = confirmMemberRoleChange && userRoleIsViewer;
+        //   // if changing the role will lead to extra seats, we want to
+        //   // confirm any payment changes if required
+        //   const confirmChange = confirmMemberRoleChange && userRoleIsViewer;
 
-            return isTeamAdmin &&
-              user.id !== currentUser.id &&
-              (!userRoleIsViewer ||
-                (userRoleIsViewer && canConvertViewersToEditors))
-              ? [
-                  {
-                    label: 'Admin',
-                    onSelect: () => {
-                      actions.dashboard.changeAuthorization({
-                        userId: user.id,
-                        authorization: TeamMemberAuthorization.Admin,
-                        confirm: confirmChange,
-                      });
-                    },
-                  },
-                  {
-                    label: 'Editor',
-                    onSelect: () => {
-                      actions.dashboard.changeAuthorization({
-                        userId: user.id,
-                        authorization: TeamMemberAuthorization.Write,
-                        confirm: confirmChange,
-                      });
-                    },
-                  },
-                  {
-                    label: 'Viewer',
-                    onSelect: () => {
-                      actions.dashboard.changeAuthorization({
-                        userId: user.id,
-                        authorization: TeamMemberAuthorization.Read,
-                      });
-                    },
-                  },
-                ]
-              : [];
-          }}
-          getActions={user => {
-            const you = currentUser.id === user.id;
+        //   return isTeamAdmin &&
+        //     user.id !== currentUser.id &&
+        //     (!userRoleIsViewer ||
+        //       (userRoleIsViewer && canConvertViewersToEditors))
+        //     ? [
+        //         {
+        //           label: 'Admin',
+        //           onSelect: () => {
+        //             actions.dashboard.changeAuthorization({
+        //               userId: user.id,
+        //               authorization: TeamMemberAuthorization.Admin,
+        //               confirm: confirmChange,
+        //             });
+        //           },
+        //         },
+        //         {
+        //           label: 'Editor',
+        //           onSelect: () => {
+        //             actions.dashboard.changeAuthorization({
+        //               userId: user.id,
+        //               authorization: TeamMemberAuthorization.Write,
+        //               confirm: confirmChange,
+        //             });
+        //           },
+        //         },
+        //         {
+        //           label: 'Viewer',
+        //           onSelect: () => {
+        //             actions.dashboard.changeAuthorization({
+        //               userId: user.id,
+        //               authorization: TeamMemberAuthorization.Read,
+        //             });
+        //           },
+        //         },
+        //       ]
+        //     : [];
+        // }}
+        // getActions={user => {
+        //   const you = currentUser.id === user.id;
 
-            const options = [];
+        //   const options = [];
 
-            if (you) {
-              options.push({
-                label: 'Leave Workspace',
-                onSelect: () => actions.dashboard.leaveTeam(),
-              });
-            }
+        //   if (you) {
+        //     options.push({
+        //       label: 'Leave Workspace',
+        //       onSelect: () => actions.dashboard.leaveTeam(),
+        //     });
+        //   }
 
-            if (!you && isTeamAdmin) {
-              options.push({
-                label: 'Remove Member',
-                onSelect: () => actions.dashboard.removeFromTeam(user.id),
-              });
-            }
+        //   if (!you && isTeamAdmin) {
+        //     options.push({
+        //       label: 'Remove Member',
+        //       onSelect: () => actions.dashboard.removeFromTeam(user.id),
+        //     });
+        //   }
 
-            return options;
-          }}
-          users={sortBy(team.users, 'username')}
-          currentUserId={currentUser.id}
-        />
-
-        <MemberList
-          getPermission={() => 'PENDING'}
-          getPermissionOptions={() => []}
-          getActions={user =>
-            canInviteOtherMembers
-              ? [
-                  {
-                    label: 'Revoke Invitation',
-                    onSelect: () =>
-                      actions.dashboard.revokeTeamInvitation({
-                        teamId: team.id,
-                        userId: user.id,
-                      }),
-                  },
-                ]
-              : []
-          }
-          users={sortBy(team.invitees, 'username')}
+        //   return options;
+        // }}
+        // users={sortBy(team.users, 'username')}
+        // currentUserId={currentUser.id}
         />
       </div>
     </>
   );
 };
 
-const getRole = (
-  user: User,
-  team: CurrentTeamInfoFragmentFragment
-): TeamMemberAuthorization => {
-  const role = team.userAuthorizations.find(auth => auth.userId === user.id)
-    .authorization;
+// const getRole = (
+//   user: User,
+//   team: CurrentTeamInfoFragmentFragment
+// ): TeamMemberAuthorization => {
+//   const role = team.userAuthorizations.find(auth => auth.userId === user.id)
+//     .authorization;
 
-  return role;
-};
+//   return role;
+// };
