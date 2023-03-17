@@ -23,14 +23,11 @@ import { initializeReactDevToolsLatest } from './utils/initLatestDevTools';
 import { createRefreshEntry } from './utils/createRefreshEntry';
 import base64Transpiler from '../../transpilers/base64';
 
-const BASE_REACT_BABEL_PLUGINS = [
+export const BASE_REACT_BABEL_PLUGINS = [
   'transform-flow-strip-types',
   ['proposal-decorators', { legacy: true }],
   '@babel/plugin-transform-react-jsx-source',
-  'transform-destructuring',
   'babel-plugin-macros',
-  ['proposal-class-properties', { loose: true }],
-  ['proposal-object-rest-spread', { useBuiltIns: true }],
   [
     'transform-runtime',
     {
@@ -39,12 +36,10 @@ const BASE_REACT_BABEL_PLUGINS = [
       regenerator: true,
     },
   ],
-  '@babel/plugin-proposal-optional-chaining',
-  '@babel/plugin-proposal-nullish-coalescing-operator',
   'syntax-dynamic-import',
 ];
 
-const BASE_REACT_PRESETS_CONFIG = [
+export const BASE_REACT_PRESETS_CONFIG = [
   [
     'env',
     {
@@ -59,6 +54,8 @@ const BASE_REACT_PRESETS_CONFIG = [
       useBuiltIns: false,
       // Do not transform modules to CJS
       modules: false,
+      // Enable loose transforms, these are enabled for proposal-class-properties
+      loose: true,
     },
   ],
   'typescript',
