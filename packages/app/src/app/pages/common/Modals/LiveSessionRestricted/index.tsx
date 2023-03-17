@@ -49,7 +49,12 @@ export const LiveSessionRestricted: React.FC = () => {
             Learn more
           </Button>
           {isPersonalSpace ? (
-            <Button as="a" href="/pro" variant="primary" autoWidth>
+            <Button
+              as="a"
+              href="/pro?utm_source=v1_live_session_upgrade"
+              variant="primary"
+              autoWidth
+            >
               Upgrade to Pro
             </Button>
           ) : (

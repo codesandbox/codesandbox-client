@@ -37,7 +37,7 @@ export const FreeViewOnlyStripe = () => {
       {isPersonalSpace || isTeamAdmin ? (
         <MessageStripe.Action
           as="a"
-          href="/pro"
+          href="/pro?utm_source=v1_sandbox_view_only_upgrade"
           onClick={() => {
             track('Limit banner: editor - Upgrade', {
               codesandbox: 'V1',

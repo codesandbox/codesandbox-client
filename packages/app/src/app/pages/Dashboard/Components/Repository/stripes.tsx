@@ -26,7 +26,9 @@ export const PrivateRepoFreeTeam: React.FC = () => {
     cancel_path: pathname,
   });
 
-  const ctaURl = isPersonalSpace ? '/pro' : checkoutUrl;
+  const ctaURl = `${
+    isPersonalSpace ? '/pro' : checkoutUrl
+  }?utm_source=dashboard_private_repo_upgrade`;
 
   return (
     <MessageStripe
