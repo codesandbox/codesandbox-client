@@ -1,8 +1,8 @@
 import React from 'react';
+import { Leva } from 'leva';
 import { useEffects } from 'app/overmind';
 import Portal from '@codesandbox/common/lib/components/Portal';
 import { Element } from '@codesandbox/components';
-import { Leva } from 'leva';
 
 const KEY = 'CSB_DEBUG';
 
@@ -11,10 +11,7 @@ export const Debug: React.FC = () => {
     browser: { storage },
   } = useEffects();
   const showDebugPanel = storage.get<boolean>(KEY) ?? false;
-
-  if (!showDebugPanel || process.env.NODE_ENV === 'production') {
-    return null;
-  }
+  const isProd = process.env.NODE_ENV === 'production';
 
   return (
     <Portal>
@@ -38,7 +35,12 @@ export const Debug: React.FC = () => {
           },
         }}
       >
-        <Leva oneLineLabels />
+        <Leva
+          // We can't return early because instances of `useControls`
+          // will render the panel, so we need to explicitly hide it.
+          hidden={isProd || !showDebugPanel}
+          oneLineLabels
+        />
       </Element>
     </Portal>
   );
