@@ -10,7 +10,7 @@ import { getEventName } from './utils';
 
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
   const { modals } = useActions();
 
@@ -19,9 +19,10 @@ export const PrivateRepoFreeTeam: React.FC = () => {
     cancel_path: pathname,
   });
 
-  const ctaUrl =
-    checkoutUrl ??
-    '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
+  const ctaUrl = isPersonalSpace
+    ? '/pro'
+    : checkoutUrl ??
+      '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
   const isDashboardLink = ctaUrl.startsWith('/');
 
   return (
