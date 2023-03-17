@@ -5,7 +5,7 @@ import {
   ProfileFragment,
   OrganizationFragment,
 } from 'app/graphql/types';
-import { GET_GITHUB_ACCOUNTS } from '../queries';
+import { GET_GITHUB_ACCOUNTS } from '../components/CreateSandbox/queries';
 
 export const useGithubAccounts = (): {
   state: 'error' | 'loading' | 'ready';

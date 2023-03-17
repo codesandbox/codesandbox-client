@@ -13,11 +13,11 @@ import {
 } from '@codesandbox/components';
 import styled, { keyframes } from 'styled-components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
-import { useGithubAccounts } from './useGithubOrganizations';
 import { useValidateRepoDestination } from './useValidateRepoDestination';
-import { fuzzyMatchGithubToCsb } from './utils';
 
 const COLORS = {
   INVALID: '#ED6C6C',

@@ -9,7 +9,7 @@ import {
 import {
   GET_GITHUB_ACCOUNT_REPOS,
   GET_GITHUB_ORGANIZATION_REPOS,
-} from '../queries';
+} from '../components/CreateSandbox/queries';
 
 // GitHub makes a distinction between personal and organization accounts
 // both are accounts, so I'm calling them that.
