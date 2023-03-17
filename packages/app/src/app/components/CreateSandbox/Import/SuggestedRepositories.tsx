@@ -90,7 +90,7 @@ export const SuggestedRepositories = ({
   useEffect(() => {
     // This is needed if the import is opened before the user
     // visits the repositories page.
-    if (!importedRepos) {
+    if (!importedRepos && teamId) {
       dashboardActions.getRepositoriesByTeam({
         teamId,
         fetchCachedDataFirst: true,
