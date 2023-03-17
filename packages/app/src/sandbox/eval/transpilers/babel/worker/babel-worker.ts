@@ -454,7 +454,6 @@ function getCustomConfig(
           'transform-flow-strip-types',
           'babel-plugin-csb-rename-import',
           'transform-modules-commonjs',
-          'proposal-class-properties',
           '@babel/plugin-transform-runtime',
           ...codeSandboxPlugins,
         ],
