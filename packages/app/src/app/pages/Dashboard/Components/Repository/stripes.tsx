@@ -26,13 +26,13 @@ export const PrivateRepoFreeTeam: React.FC = () => {
     cancel_path: pathname,
   });
 
-  const ctaURl = `${
+  const ctaUrl = `${
     isPersonalSpace ? '/pro' : checkoutUrl
   }?utm_source=dashboard_private_repo_upgrade`;
 
   return (
     <MessageStripe
-      justify={ctaURl ? 'space-between' : 'center'}
+      justify={ctaUrl ? 'space-between' : 'center'}
       variant="trial"
     >
       This repository is in view mode only. Upgrade your account for unlimited
@@ -42,11 +42,11 @@ export const PrivateRepoFreeTeam: React.FC = () => {
           {...(checkoutUrl.startsWith('/')
             ? {
                 as: RouterLink,
-                to: ctaURl,
+                to: ctaUrl,
               }
             : {
                 as: 'a',
-                href: ctaURl,
+                href: ctaUrl,
               })}
           onClick={() => {
             track(getEventName(isEligibleForTrial, isAdmin), {
