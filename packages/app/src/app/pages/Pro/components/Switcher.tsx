@@ -49,10 +49,14 @@ export const Switcher: React.FC<{
           {workspaces.map(workspace => {
             if (!workspace) return null;
 
-            const isAdmin =
-              workspace.userAuthorizations.find(
-                team => team.userId === user?.id
-              )?.authorization === TeamMemberAuthorization.Admin;
+            const billingManagers = workspace.userAuthorizations
+              .filter(
+                ({ authorization, teamManager }) =>
+                  authorization === TeamMemberAuthorization.Admin || teamManager
+              )
+              .map(({ userId }) => userId);
+
+            const isBillingManager = billingManagers.includes(user?.id);
 
             const isTrialEligible =
               workspace.id !== personalWorkspaceId &&
@@ -63,7 +67,7 @@ export const Switcher: React.FC<{
               SubscriptionType.PersonalPro,
             ].includes(workspace.subscription?.type);
 
-            const disabled = !(isAdmin || isTrialEligible);
+            const disabled = !(isBillingManager || isTrialEligible);
 
             return (
               <MenuItem
