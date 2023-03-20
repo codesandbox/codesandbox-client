@@ -22,6 +22,7 @@ import {
 } from 'app/components/StripeMessages';
 import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { useDismissible } from 'app/hooks';
@@ -54,6 +55,7 @@ export const Dashboard: FunctionComponent = () => {
   const [isMidTrialReminderDismissed] = useDismissible(
     'DASHBOARD_MID_TRIAL_REMINDER'
   );
+  const { isTeamAdmin } = useWorkspaceAuthorization();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -140,6 +142,7 @@ export const Dashboard: FunctionComponent = () => {
 
   useEffect(() => {
     if (
+      isTeamAdmin &&
       hasActiveTeamTrial &&
       hasPaymentMethod === false &&
       subscription.trialEnd &&
@@ -158,6 +161,7 @@ export const Dashboard: FunctionComponent = () => {
       }
     }
   }, [
+    isTeamAdmin,
     actions,
     hasActiveTeamTrial,
     hasPaymentMethod,
