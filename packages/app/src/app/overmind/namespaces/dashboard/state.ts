@@ -7,6 +7,7 @@ import {
   BranchFragment as Branch,
   ProjectFragment as Repository,
   ProjectWithBranchesFragment as RepositoryWithBranches,
+  Limits,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -96,6 +97,12 @@ export type State = {
   removingRepository: { owner: string; name: string } | null;
   removingBranch: { id: string } | null;
   creatingBranch: boolean;
+
+  /**
+   * General limits for different types of subscription. Not related to any
+   * current user or team.
+   */
+  limits?: Limits;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
