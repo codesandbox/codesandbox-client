@@ -14,6 +14,7 @@ import {
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
+import { differenceInDays, startOfToday } from 'date-fns';
 
 import {
   PaymentPending,
@@ -23,6 +24,7 @@ import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPayment
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
+import { useDismissible } from 'app/hooks';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
@@ -39,12 +41,19 @@ export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, activeTeamInfo } = useAppState();
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
-  const { subscription } = useWorkspaceSubscription();
+  const {
+    subscription,
+    hasActiveTeamTrial,
+    hasPaymentMethod,
+  } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
   const [
     showTrialWithoutPaymentInfoBanner,
     dismissTrialWithoutPaymentInfoBanner,
   ] = useShowBanner();
+  const [isMidTrialReminderDismissed] = useDismissible(
+    'DASHBOARD_MID_TRIAL_REMINDER'
+  );
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -128,6 +137,33 @@ export const Dashboard: FunctionComponent = () => {
   useEffect(() => {
     trackVisit();
   }, []);
+
+  useEffect(() => {
+    if (
+      hasActiveTeamTrial &&
+      hasPaymentMethod === false &&
+      subscription.trialEnd &&
+      !isMidTrialReminderDismissed
+    ) {
+      const today = startOfToday();
+      const trialEndDate = new Date(subscription.trialEnd);
+
+      // const testValue = '2023-03-27T15:00:18.000000Z';
+      // const trialEndDate = new Date(testValue);
+
+      const remainingTrialDays = differenceInDays(trialEndDate, today);
+
+      if (remainingTrialDays <= 7) {
+        actions.modalOpened({ modal: 'midTrial' });
+      }
+    }
+  }, [
+    actions,
+    hasActiveTeamTrial,
+    hasPaymentMethod,
+    isMidTrialReminderDismissed,
+    subscription,
+  ]);
 
   if (!hasLogIn) {
     return (

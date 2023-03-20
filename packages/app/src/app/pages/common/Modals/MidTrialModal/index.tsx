@@ -13,7 +13,7 @@ import {
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
-import { useGetCheckoutURL } from 'app/hooks';
+import { useDismissible, useGetCheckoutURL } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
 
 export const MidTrialModal = () => {
@@ -25,6 +25,9 @@ export const MidTrialModal = () => {
     setExperimentValue,
   ] = useState<ExperimentValues | null>(null);
   const experimentPromise = useExperimentResult('mid-trial-modal');
+  const [, dismissMidTrialReminder] = useDismissible(
+    'DASHBOARD_MID_TRIAL_REMINDER'
+  );
 
   useEffect(() => {
     experimentPromise.then(experiment => {
@@ -48,10 +51,13 @@ export const MidTrialModal = () => {
       event_source: 'UI',
     });
 
+    dismissMidTrialReminder();
     modalClosed();
   };
 
-  const trackUpgrade = () => {
+  const handleUpgrade = () => {
+    dismissMidTrialReminder();
+
     track('Mid trial reminder: upgrade to pro', {
       codesandbox: 'V1',
       event_source: 'UI',
@@ -76,8 +82,14 @@ export const MidTrialModal = () => {
             One week left on your trial.
           </Text>
           <Text as="p" size={19} color="#C2C2C2" align="center">
-            You will lose access to all Pro features when your trial expires.
-            {/* You will need a Team Pro subscription to continue using Pro features. */}
+            {!experimentValue ? <SkeletonText /> : null}
+
+            {experimentValue === ExperimentValues.A
+              ? 'You will lose access to all Pro features when your trial expires.'
+              : null}
+            {experimentValue === ExperimentValues.B
+              ? 'You will need a Team Pro subscription to continue using Pro features.'
+              : null}
           </Text>
         </Stack>
 
@@ -106,7 +118,7 @@ export const MidTrialModal = () => {
           <Button
             as="a"
             href={checkoutUrl}
-            onClick={trackUpgrade}
+            onClick={handleUpgrade}
             variant="primary"
           >
             Upgrade to pro
