@@ -8,29 +8,19 @@ import {
   Text,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-
+import { getTrialEligibleTeams } from 'app/utils/teams';
 import { useCreateCheckout } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
-import { TeamMemberAuthorization } from 'app/graphql/types';
 import { Alert } from '../Common/Alert';
 
 export const SelectWorkspaceToStartTrial: React.FC = () => {
-  const { dashboard, personalWorkspaceId, user } = useAppState();
+  const { dashboard, personalWorkspaceId } = useAppState();
   const { openCreateTeamModal, modalClosed } = useActions();
   const [checkout, createCheckout] = useCreateCheckout();
 
-  const trialEligibleTeams = dashboard.teams.filter(team => {
-    if (team.id === personalWorkspaceId || Boolean(team.subscription)) {
-      return false;
-    }
-
-    const teamAdmins = team.userAuthorizations
-      .filter(
-        ({ authorization }) => authorization === TeamMemberAuthorization.Admin
-      )
-      .map(({ userId }) => userId);
-
-    return teamAdmins.includes(user?.id);
+  const trialEligibleTeams = getTrialEligibleTeams({
+    teams: dashboard.teams,
+    personalWorkspaceId,
   });
 
   const [selectedTeam, setSelectedTeam] = React.useState(

@@ -30,3 +30,18 @@ export const getUpgradeableTeams = ({
 
     return billingManagers.includes(userId);
   });
+
+export const getTrialEligibleTeams = ({
+  teams,
+  personalWorkspaceId,
+}: {
+  teams: TeamFragmentDashboardFragment[];
+  personalWorkspaceId: string | undefined;
+}) =>
+  teams.filter(team => {
+    if (team.id === personalWorkspaceId || Boolean(team.subscription)) {
+      return false;
+    }
+
+    return true;
+  });

@@ -20,6 +20,7 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { useActions, useAppState } from 'app/overmind';
+import { getTrialEligibleTeams } from 'app/utils/teams';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -137,12 +138,9 @@ export const UpgradeBanner: React.FC = () => {
     return null;
   }
 
-  const trialEligibleTeams = teams.filter(team => {
-    if (team.id === personalWorkspaceId || Boolean(team.subscription)) {
-      return false;
-    }
-
-    return true;
+  const trialEligibleTeams = getTrialEligibleTeams({
+    teams,
+    personalWorkspaceId,
   });
 
   const renderMainCTA = () => {
