@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { differenceInDays, startOfToday } from 'date-fns';
 
 import {
   Text,
@@ -15,6 +16,7 @@ import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { useDismissible, useGetCheckoutURL } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const MidTrialModal = () => {
   const { modalClosed } = useActions();
@@ -27,6 +29,11 @@ export const MidTrialModal = () => {
   const [, dismissMidTrialReminder] = useDismissible(
     'DASHBOARD_MID_TRIAL_REMINDER'
   );
+  const { subscription } = useWorkspaceSubscription();
+
+  const today = startOfToday();
+  const trialEndDate = new Date(subscription.trialEnd);
+  const remainingTrialDays = differenceInDays(trialEndDate, today);
 
   useEffect(() => {
     experimentPromise.then(experiment => {
@@ -73,7 +80,10 @@ export const MidTrialModal = () => {
             css={{ marginTop: 0 }}
             fontFamily="everett"
           >
-            One week left on your trial.
+            {remainingTrialDays === 7
+              ? 'One week'
+              : `${remainingTrialDays} days`}{' '}
+            left on your trial.
           </Text>
           <Text as="p" size={19} color="#C2C2C2" align="center">
             {!experimentValue ? <SkeletonText /> : null}
