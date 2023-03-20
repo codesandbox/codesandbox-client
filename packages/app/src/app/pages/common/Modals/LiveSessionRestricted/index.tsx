@@ -21,13 +21,17 @@ export const LiveSessionRestricted: React.FC = () => {
       currentSandbox: { id },
     },
   } = useAppState();
-  const { isAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const checkoutUrl = useGetCheckoutURL({
     success_path: sandboxUrl({ id }),
     cancel_path: sandboxUrl({ id }),
   });
+
+  const docsUrl = isEligibleForTrial
+    ? SUBSCRIPTION_DOCS_URLS.teams.trial
+    : SUBSCRIPTION_DOCS_URLS.teams.non_trial;
 
   return (
     <Alert title="Upgrade to Pro to start a Live Session">
@@ -36,11 +40,7 @@ export const LiveSessionRestricted: React.FC = () => {
           <Button
             as="a"
             variant="link"
-            href={
-              isEligibleForTrial
-                ? SUBSCRIPTION_DOCS_URLS.teams.trial
-                : SUBSCRIPTION_DOCS_URLS.teams.non_trial
-            }
+            href={docsUrl}
             onClick={() => {
               track('Live Session - learn more clicked', EVENT_PARAMS);
             }}
@@ -54,7 +54,7 @@ export const LiveSessionRestricted: React.FC = () => {
               if (isEligibleForTrial) {
                 const event = 'Live Session - trial clicked';
                 track(
-                  isAdmin ? event : `${event} - As non-admin`,
+                  isBillingManager ? event : `${event} - As non-admin`,
                   EVENT_PARAMS
                 );
               } else {
@@ -79,11 +79,7 @@ export const LiveSessionRestricted: React.FC = () => {
             <Button
               as="a"
               variant="secondary"
-              href={
-                isEligibleForTrial
-                  ? SUBSCRIPTION_DOCS_URLS.teams.trial
-                  : SUBSCRIPTION_DOCS_URLS.teams.non_trial
-              }
+              href={docsUrl}
               onClick={() => {
                 track('Live Session - learn more clicked', EVENT_PARAMS);
               }}
