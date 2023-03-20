@@ -15,7 +15,7 @@ export const TrialWithoutPaymentInfo: React.FC<{ onDismiss: () => void }> = ({
 }) => {
   const { activeTeam } = useAppState();
   const { pathname } = useLocation();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const { subscription } = useWorkspaceSubscription();
   const [
     loadingCustomerPortal,
@@ -44,7 +44,7 @@ export const TrialWithoutPaymentInfo: React.FC<{ onDismiss: () => void }> = ({
             count: remainingTrialDays,
           })}`;
 
-    if (isTeamAdmin) {
+    if (isBillingManager) {
       return `${firstSentence}. Add your payment details to continue with your subscription.`;
     }
 
@@ -61,7 +61,7 @@ export const TrialWithoutPaymentInfo: React.FC<{ onDismiss: () => void }> = ({
   return (
     <MessageStripe corners="straight" variant="trial" onDismiss={onDismiss}>
       {buildCopy()}
-      {isTeamAdmin ? (
+      {isBillingManager ? (
         <MessageStripe.Action
           loading={loadingCustomerPortal}
           onClick={handleAction}
