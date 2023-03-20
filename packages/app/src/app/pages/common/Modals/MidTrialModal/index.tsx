@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import {
@@ -8,8 +8,10 @@ import {
   Badge,
   Button,
   IconButton,
+  SkeletonText,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { useGetCheckoutURL } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
@@ -18,6 +20,17 @@ export const MidTrialModal = () => {
   const { dashboard: dashboardState } = useAppState();
   const { dashboard: dashboardActions, modalClosed } = useActions();
   const { pathname } = useLocation();
+  const [
+    experimentValue,
+    setExperimentValue,
+  ] = useState<ExperimentValues | null>(null);
+  const experimentPromise = useExperimentResult('mid-trial-modal');
+
+  useEffect(() => {
+    experimentPromise.then(experiment => {
+      setExperimentValue(experiment);
+    });
+  }, [experimentPromise]);
 
   const checkoutUrl = useGetCheckoutURL({
     success_path: pathname,
@@ -68,8 +81,20 @@ export const MidTrialModal = () => {
           </Text>
         </Stack>
 
-        {/* <LoseAfterTrial /> */}
-        <KeepWithTrial />
+        {!experimentValue ? (
+          <Stack direction="vertical" gap={4}>
+            <SkeletonText />
+            <SkeletonText />
+            <SkeletonText />
+            <SkeletonText />
+            <SkeletonText />
+            <SkeletonText />
+            <SkeletonText />
+          </Stack>
+        ) : null}
+
+        {experimentValue === ExperimentValues.A ? <LoseAfterTrial /> : null}
+        {experimentValue === ExperimentValues.B ? <KeepWithTrial /> : null}
       </Stack>
       <Stack gap={4} justify="space-between">
         <Element css={{ flexGrow: 1 }}>
