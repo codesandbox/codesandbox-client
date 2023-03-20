@@ -17,8 +17,7 @@ import { useDismissible, useGetCheckoutURL } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
 
 export const MidTrialModal = () => {
-  const { dashboard: dashboardState } = useAppState();
-  const { dashboard: dashboardActions, modalClosed } = useActions();
+  const { modalClosed } = useActions();
   const { pathname } = useLocation();
   const [
     experimentValue,
@@ -39,11 +38,6 @@ export const MidTrialModal = () => {
     success_path: pathname,
     cancel_path: pathname,
   });
-
-  if (!dashboardState.limits) {
-    // TODO we do this statically in subscriptioncancellation
-    dashboardActions.getLimits();
-  }
 
   const handleClose = () => {
     track('Mid trial reminder: close modal', {
