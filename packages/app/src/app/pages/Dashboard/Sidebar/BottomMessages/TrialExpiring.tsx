@@ -6,12 +6,12 @@ import track from '@codesandbox/common/lib/utils/analytics';
 export const TrialExpiring: React.FC<{
   activeTeam: string;
   daysLeft: number;
-  isAdmin: boolean;
+  isBillingManager: boolean;
   cancelAtPeriodEnd: boolean;
   hasPaymentMethod: boolean;
 }> = ({
   daysLeft,
-  isAdmin,
+  isBillingManager,
   activeTeam,
   cancelAtPeriodEnd,
   hasPaymentMethod,
@@ -40,7 +40,7 @@ export const TrialExpiring: React.FC<{
         </Text>
       )}
 
-      {isAdmin && (
+      {isBillingManager && (
         <Button
           autoWidth
           variant="link"
