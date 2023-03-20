@@ -21,7 +21,7 @@ const getEventName = (
 
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isBillingManager } = useWorkspaceAuthorization();
+  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
   const checkoutUrl = useGetCheckoutURL({
@@ -29,9 +29,13 @@ export const PrivateRepoFreeTeam: React.FC = () => {
     cancel_path: pathname,
   });
 
+  const ctaUrl = `${
+    isPersonalSpace ? '/pro' : checkoutUrl
+  }?utm_source=dashboard_private_repo_upgrade`;
+
   return (
     <MessageStripe
-      justify={checkoutUrl ? 'space-between' : 'center'}
+      justify={ctaUrl ? 'space-between' : 'center'}
       variant="trial"
     >
       This repository is in view mode only. Upgrade your account for unlimited
@@ -41,11 +45,11 @@ export const PrivateRepoFreeTeam: React.FC = () => {
           {...(checkoutUrl.startsWith('/')
             ? {
                 as: RouterLink,
-                to: checkoutUrl,
+                to: ctaUrl,
               }
             : {
                 as: 'a',
-                href: checkoutUrl,
+                href: ctaUrl,
               })}
           onClick={() => {
             track(getEventName(isEligibleForTrial, isBillingManager), {
@@ -80,7 +84,7 @@ export const MaxReposFreeTeam: React.FC = () => {
           {...(checkoutUrl.startsWith('/')
             ? {
                 as: Link,
-                to: '/pro',
+                to: checkoutUrl,
               }
             : {
                 as: 'a',

@@ -21,7 +21,7 @@ export const LiveSessionRestricted: React.FC = () => {
       currentSandbox: { id },
     },
   } = useAppState();
-  const { isBillingManager } = useWorkspaceAuthorization();
+  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const checkoutUrl = useGetCheckoutURL({
@@ -48,27 +48,37 @@ export const LiveSessionRestricted: React.FC = () => {
           >
             Learn more
           </Button>
-          <Button
-            variant="primary"
-            onClick={() => {
-              if (isEligibleForTrial) {
-                const event = 'Live Session - trial clicked';
-                track(
-                  isBillingManager ? event : `${event} - As non-admin`,
-                  EVENT_PARAMS
-                );
-              } else {
-                track('Live Session - upgrade clicked', EVENT_PARAMS);
-              }
-
-              window.location.href = checkoutUrl;
-            }}
-            autoWidth
-          >
-            <Text>
-              {isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro'}
-            </Text>
-          </Button>
+          {isPersonalSpace ? (
+            <Button
+              as="a"
+              href="/pro?utm_source=v1_live_session_upgrade"
+              variant="primary"
+              autoWidth
+            >
+              Upgrade to Pro
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              onClick={() => {
+                if (isEligibleForTrial) {
+                  const event = 'Live Session - trial clicked';
+                  track(
+                    isBillingManager ? event : `${event} - As non-admin`,
+                    EVENT_PARAMS
+                  );
+                } else {
+                  track('Live Session - upgrade clicked', EVENT_PARAMS);
+                }
+                window.location.href = checkoutUrl;
+              }}
+              autoWidth
+            >
+              <Text>
+                {isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro'}
+              </Text>
+            </Button>
+          )}
         </Stack>
       ) : (
         <Stack direction="vertical" gap={6}>

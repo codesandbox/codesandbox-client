@@ -24,7 +24,7 @@ export const AccountSelect = ({ options, value, onChange }) => {
           <Icon name="github" />
           <Stack gap={2} align="center">
             <VisuallyHidden>Select GitHub account.</VisuallyHidden>
-            <Text size={13}>
+            <Text>
               {value} <VisuallyHidden>is currently selected</VisuallyHidden>
             </Text>
             <Icon name="chevronDown" size={8} />

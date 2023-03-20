@@ -19,7 +19,6 @@ import {
 import { isPreact10 } from '@codesandbox/common/lib/utils/is-preact-10';
 import { PackageJSON } from '@codesandbox/common/lib/types';
 import { reactPreset } from './presets/create-react-app';
-import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
 import { preactPreset, preactPresetV8 } from './presets/preact-cli';
 import sveltePreset from './presets/svelte';
@@ -35,6 +34,7 @@ import solidPreset from './presets/solid';
 export default async function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
     case esmReact.name:
+    case reactTs.name:
     case react.name: {
       const preset = await reactPreset(pkg);
       if (template === esmReact.name) {
@@ -47,8 +47,6 @@ export default async function getPreset(template: string, pkg: PackageJSON) {
         return preactPreset();
       }
       return preactPresetV8();
-    case reactTs.name:
-      return reactTsPreset();
     case reason.name:
       return reasonPreset();
     case vue.name:

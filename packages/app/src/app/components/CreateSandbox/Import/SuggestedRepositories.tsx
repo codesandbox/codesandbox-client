@@ -11,7 +11,6 @@ import {
   Icon,
   InteractiveOverlay,
   Button,
-  Element,
   SkeletonText,
   Link,
 } from '@codesandbox/components';
@@ -21,11 +20,12 @@ import { useActions, useAppState } from 'app/overmind';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
+import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 
-import { fuzzyMatchGithubToCsb } from './utils';
-import { useGithubAccounts } from './useGithubOrganizations';
-import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
 import { AccountSelect } from './AccountSelect';
+import { AuthorizeForSuggested } from './AuthorizeForSuggested';
 
 type SuggestedRepositoriesProps = {
   isImportOnly?: boolean;
@@ -90,7 +90,7 @@ export const SuggestedRepositories = ({
   useEffect(() => {
     // This is needed if the import is opened before the user
     // visits the repositories page.
-    if (!importedRepos) {
+    if (!importedRepos && teamId) {
       dashboardActions.getRepositoriesByTeam({
         teamId,
         fetchCachedDataFirst: true,
@@ -129,7 +129,7 @@ export const SuggestedRepositories = ({
         overflow: isImportOnly ? 'auto' : undefined,
       }}
     >
-      <Stack justify="space-between">
+      <Stack justify="space-between" css={{ fontSize: '13px' }}>
         <AccountSelect
           options={selectOptions}
           value={selectedAccount}
@@ -185,7 +185,23 @@ export const SuggestedRepositories = ({
 
                             if (isPersonalRepository && isTeamSpace) {
                               track(
-                                'Suggested repos - Imported personal repository into team space',
+                                `Suggested repos ${
+                                  isImportOnly
+                                    ? 'create team modal'
+                                    : 'create new modal'
+                                } - Imported personal repository into team space`,
+                                {
+                                  codesandbox: 'V1',
+                                  event_source: 'UI',
+                                }
+                              );
+                            } else {
+                              track(
+                                `Suggested repos ${
+                                  isImportOnly
+                                    ? 'create team modal'
+                                    : 'create new modal'
+                                } - Imported organization repository into team space`,
                                 {
                                   codesandbox: 'V1',
                                   event_source: 'UI',
@@ -325,36 +341,11 @@ export const SuggestedRepositories = ({
               );
             })}
           </StyledList>
-          {restrictsPrivateRepos ? <AuthorizeMessage /> : null}
+          {restrictsPrivateRepos ? <AuthorizeForSuggested /> : null}
         </>
       ) : null}
     </Stack>
   ) : null;
-};
-
-const AuthorizeMessage = () => {
-  const { signInGithubClicked } = useActions();
-
-  return (
-    <Stack gap={2} align="center">
-      <Text variant="muted" size={12}>
-        Don&apos;t see all your repositories?
-      </Text>
-      <Button
-        onClick={() => signInGithubClicked('private_repos')}
-        variant="link"
-        autoWidth
-        css={{ padding: 0, cursor: 'pointer' }}
-      >
-        <Stack gap={1} align="center" css={{ color: '#FFFFFF' }}>
-          <Text size={12}>Authorize access to private repositories</Text>
-          <Element css={{ marginTop: '2px' }}>
-            <Icon css={{ display: 'block' }} name="external" size={12} />
-          </Element>
-        </Stack>
-      </Button>
-    </Stack>
-  );
 };
 
 const StyledList = styled(Stack)`
