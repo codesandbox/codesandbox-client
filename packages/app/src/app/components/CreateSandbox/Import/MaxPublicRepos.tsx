@@ -15,7 +15,7 @@ const EVENT_PROPS = {
 
 export const MaxPublicRepos: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
   const checkoutUrl = useGetCheckoutURL({
@@ -39,7 +39,10 @@ export const MaxPublicRepos: React.FC = () => {
                 href: checkoutUrl,
               })}
           onClick={() => {
-            track(getEventName(isEligibleForTrial, isTeamAdmin), EVENT_PROPS);
+            track(
+              getEventName(isEligibleForTrial, isBillingManager),
+              EVENT_PROPS
+            );
           }}
         >
           {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
