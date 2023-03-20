@@ -4,7 +4,7 @@ import FolderIcon from 'react-icons/lib/md/folder';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import RenameIcon from 'react-icons/lib/md/mode-edit';
 import TrashIcon from 'react-icons/lib/md/delete';
-import { Mutation } from 'react-apollo';
+import { Mutation } from '@apollo/client/react/components';
 import { DropTarget, DragSource } from 'react-dnd';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { withRouter } from 'react-router-dom';

@@ -9,7 +9,7 @@ import {
   Button,
 } from '@codesandbox/components';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { Helmet } from 'react-helmet';
 import {

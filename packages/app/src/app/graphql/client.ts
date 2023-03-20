@@ -1,12 +1,11 @@
-import { ApolloClient } from 'apollo-client';
-import { ApolloLink } from 'apollo-link';
-import { BatchHttpLink } from 'apollo-link-batch-http';
-import { setContext } from 'apollo-link-context';
+import { ApolloClient, ApolloLink } from '@apollo/client';
+import { BatchHttpLink } from '@apollo/client/link/batch-http';
+import { setContext } from '@apollo/client/link/context';
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
-} from 'apollo-cache-inmemory';
-import { onError } from 'apollo-link-error';
+} from 'apollo-cache-inmemory'; // TODO: This package isn't installed?
+import { onError } from 'apollo-link-error'; // TODO: This package isn't installed?
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import introspectionQueryResultData from './introspection-result';

@@ -1,7 +1,7 @@
 import React from 'react';
 import VisuallyHidden from '@reach/visually-hidden';
 import { debounce } from 'lodash';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/client';
 
 import track from '@codesandbox/common/lib/utils/analytics';
 import {

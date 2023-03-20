@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mutation } from 'react-apollo';
+import { Mutation } from '@apollo/client/react/components';
 import { join } from 'path';
 
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';

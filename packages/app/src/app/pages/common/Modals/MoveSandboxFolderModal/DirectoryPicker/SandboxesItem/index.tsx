@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
-import { Query } from 'react-apollo';
+import { Query } from '@apollo/client/react/components';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import { Icon } from '@codesandbox/components';
 import { Container } from './elements';

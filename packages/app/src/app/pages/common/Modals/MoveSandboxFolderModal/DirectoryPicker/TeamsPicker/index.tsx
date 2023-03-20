@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import React, { FunctionComponent } from 'react';
 
 import { TEAMS_QUERY } from 'app/pages/Dashboard/queries';

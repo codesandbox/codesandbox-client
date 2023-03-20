@@ -8,7 +8,7 @@ import {
 import history from 'app/utils/history';
 import { Element, Button, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 
 export const TeamInviteModal = () => {

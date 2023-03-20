@@ -1,9 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  useLazyQuery,
-  useMutation,
-  MutationHookOptions,
-} from '@apollo/react-hooks';
+import { useLazyQuery, useMutation, MutationHookOptions } from '@apollo/client';
 import { useAppState } from 'app/overmind';
 import {
   BookmarkedSandboxInfoQuery,

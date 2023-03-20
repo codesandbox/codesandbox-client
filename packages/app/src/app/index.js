@@ -4,7 +4,7 @@ import 'normalize.css';
 
 import './split-pane.css';
 
-import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
+import { ApolloProvider } from '@apollo/client';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import theme from '@codesandbox/common/lib/theme';
@@ -25,7 +25,6 @@ import history from 'app/utils/history';
 import { createOvermind } from 'overmind';
 import { Provider as ActualOvermindProvider } from 'overmind-react';
 import React from 'react';
-import { ApolloProvider } from 'react-apollo';
 import { DndProvider } from 'react-dnd';
 import { render } from 'react-dom';
 import { Router } from 'react-router-dom';
@@ -176,15 +175,13 @@ overmind.initialized.then(() => {
         <ApolloProvider client={client}>
           <ActualOvermindProvider value={overmind}>
             <OvermindProvider value={overmind}>
-              <HooksProvider client={client}>
-                <ThemeProvider theme={theme}>
-                  <DndProvider backend={HTML5Backend}>
-                    <Router history={history}>
-                      <App />
-                    </Router>
-                  </DndProvider>
-                </ThemeProvider>
-              </HooksProvider>
+              <ThemeProvider theme={theme}>
+                <DndProvider backend={HTML5Backend}>
+                  <Router history={history}>
+                    <App />
+                  </Router>
+                </DndProvider>
+              </ThemeProvider>
             </OvermindProvider>
           </ActualOvermindProvider>
         </ApolloProvider>,
@@ -215,15 +212,13 @@ if (module.hot) {
       <ApolloProvider client={client}>
         <ActualOvermindProvider value={newOvermind}>
           <OvermindProvider value={newOvermind}>
-            <HooksProvider client={client}>
-              <ThemeProvider theme={theme}>
-                <DndProvider backend={HTML5Backend}>
-                  <Router history={history}>
-                    <App />
-                  </Router>
-                </DndProvider>
-              </ThemeProvider>
-            </HooksProvider>
+            <ThemeProvider theme={theme}>
+              <DndProvider backend={HTML5Backend}>
+                <Router history={history}>
+                  <App />
+                </Router>
+              </DndProvider>
+            </ThemeProvider>
           </OvermindProvider>
         </ActualOvermindProvider>
       </ApolloProvider>,
