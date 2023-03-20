@@ -83,7 +83,12 @@ export const WorkspaceSettings = () => {
     hasMaxNumberOfEditors,
     numberOfEditorsIsOverTheLimit,
   } = useWorkspaceLimits();
-  const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
+  const {
+    isBillingManager,
+    isTeamAdmin,
+    userRole,
+    isTeamEditor,
+  } = useWorkspaceAuthorization();
 
   const checkoutUrl = useGetCheckoutURL({
     cancel_path: dashboard.settings(team?.id),
@@ -244,7 +249,8 @@ export const WorkspaceSettings = () => {
       >
         <Card
           css={{
-            'grid-column': isTeamAdmin || isEligibleForTrial ? 'auto' : '1/3',
+            'grid-column':
+              isBillingManager || isEligibleForTrial ? 'auto' : '1/3',
           }}
         >
           {editing ? (
@@ -396,7 +402,7 @@ export const WorkspaceSettings = () => {
                 })}
               </Text>
               <Stack direction="vertical" gap={1}>
-                {isTeamAdmin && (
+                {isBillingManager && (
                   <>
                     <Text size={3} variant="muted">
                       {numberOfEditors}{' '}
@@ -454,7 +460,7 @@ export const WorkspaceSettings = () => {
           Team overview
         </Text>
 
-        {isTeamAdmin && (
+        {isBillingManager && (
           <Stack gap={10}>
             <Stack
               css={{
@@ -534,7 +540,7 @@ export const WorkspaceSettings = () => {
             onClick={() => {
               if (isEligibleForTrial) {
                 const event = 'Limit banner: team editors - Start trial';
-                track(isTeamAdmin ? event : `${event} - As non-admin`, {
+                track(isBillingManager ? event : `${event} - As non-admin`, {
                   codesandbox: 'V1',
                   event_source: 'UI',
                 });
@@ -554,7 +560,7 @@ export const WorkspaceSettings = () => {
       {/**
        * Soft limit for pro teams.
        */}
-      {isTeamAdmin &&
+      {isBillingManager &&
         numberOfEditors > MAX_PRO_EDITORS &&
         subscription?.origin !== SubscriptionOrigin.Pilot && (
           <MessageStripe justify="space-between">
