@@ -8,17 +8,20 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useGetCheckoutURL } from 'app/hooks';
 import { useAppState } from 'app/overmind';
 
-const getEventName = (isEligibleForTrial: boolean, isAdmin: boolean) => {
+const getEventName = (
+  isEligibleForTrial: boolean,
+  isBillingManager: boolean
+) => {
   if (isEligibleForTrial) {
     const event = 'Limit banner: repos - Start Trial';
-    return isAdmin ? event : `${event} - As non-admin`;
+    return isBillingManager ? event : `${event} - As non-admin`;
   }
   return 'Limit banner: repos - Upgrade';
 };
 
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
   const checkoutUrl = useGetCheckoutURL({
@@ -45,7 +48,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
                 href: checkoutUrl,
               })}
           onClick={() => {
-            track(getEventName(isEligibleForTrial, isAdmin), {
+            track(getEventName(isEligibleForTrial, isBillingManager), {
               codesandbox: 'V1',
               event_source: 'UI',
             });
@@ -61,7 +64,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
 export const MaxReposFreeTeam: React.FC = () => {
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   const checkoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.repositories(activeTeam),
@@ -84,7 +87,7 @@ export const MaxReposFreeTeam: React.FC = () => {
                 href: checkoutUrl,
               })}
           onClick={() =>
-            track(getEventName(isEligibleForTrial, isAdmin), {
+            track(getEventName(isEligibleForTrial, isBillingManager), {
               codesandbox: 'V1',
               event_source: 'UI',
             })
