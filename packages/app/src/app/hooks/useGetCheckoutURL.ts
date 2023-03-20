@@ -21,9 +21,9 @@ export const useGetCheckoutURL = ({
   const { activeTeam } = useAppState();
   const { api } = useEffects();
   const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
-  const { isAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
-  const canCheckout = (isFree && isAdmin) || isEligibleForTrial;
+  const canCheckout = (isFree && isBillingManager) || isEligibleForTrial;
   const [url, setUrl] = useState<string>(FALLBACK_URL);
 
   const getCheckoutUrl = useCallback(
