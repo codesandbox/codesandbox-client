@@ -150,10 +150,6 @@ export const Dashboard: FunctionComponent = () => {
     ) {
       const today = startOfToday();
       const trialEndDate = new Date(subscription.trialEnd);
-
-      // const testValue = '2023-03-27T15:00:18.000000Z';
-      // const trialEndDate = new Date(testValue);
-
       const remainingTrialDays = differenceInDays(trialEndDate, today);
 
       if (remainingTrialDays <= 7) {
