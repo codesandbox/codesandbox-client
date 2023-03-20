@@ -58,10 +58,10 @@ export const WorkspacePlanSelection: React.FC = () => {
   const {
     isPersonalSpace,
     isTeamSpace,
-    isTeamAdmin,
+    isBillingManager,
   } = useWorkspaceAuthorization();
   // const isPersonalSpace = false; // DEBUG
-  // const isTeamAdmin = true; // DEBUG
+  // const isBillingManager = true; // DEBUG
   const { subscription, isPatron, isPro, isFree } = useWorkspaceSubscription();
 
   // Based on the 'type' search param we redirect to the personal pro page if
@@ -106,7 +106,7 @@ export const WorkspacePlanSelection: React.FC = () => {
 
   const teamProCta: CTA =
     // eslint-disable-next-line no-nested-ternary
-    isTeamAdmin
+    isBillingManager
       ? // Only allowed to change from monthly to yearly
         subscription.billingInterval === SubscriptionInterval.Monthly
         ? {
@@ -240,8 +240,8 @@ export const WorkspacePlanSelection: React.FC = () => {
                   ${subscription.unitPrice}
                 </Text>
                 <Text>
-                  <div>per editor{isTeamAdmin ? ',' : null}</div>
-                  {isTeamAdmin ? (
+                  <div>per editor{isBillingManager ? ',' : null}</div>
+                  {isBillingManager ? (
                     <div>
                       {getBillingText({
                         quantity: subscription.quantity,
