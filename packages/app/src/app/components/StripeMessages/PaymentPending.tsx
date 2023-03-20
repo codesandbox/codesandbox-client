@@ -12,7 +12,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 export const PaymentPending: React.FC = () => {
   const { activeTeam } = useAppState();
   const { pathname } = useLocation();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const { hasExpiredTeamTrial } = useWorkspaceSubscription();
   const [isDismissed, dismiss] = useDismissible(
     `DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER_${activeTeam}`
@@ -51,14 +51,14 @@ export const PaymentPending: React.FC = () => {
   const buildCopy = () => {
     if (hasExpiredTeamTrial) {
       return `Your trial has expired. ${
-        isTeamAdmin
+        isBillingManager
           ? 'Upgrade for the full CodeSandbox experience'
           : 'Contact team admin to upgrade for the full Codesandbox Experience'
       }.`;
     }
 
     return `There are some issues with your payment. ${
-      isTeamAdmin
+      isBillingManager
         ? 'Please contact your team admin to update the payment details'
         : 'Please update your payment details'
     }`;
@@ -84,7 +84,7 @@ export const PaymentPending: React.FC = () => {
   return (
     <MessageStripe variant="warning" onDismiss={handleDismiss}>
       {buildCopy()}
-      {isTeamAdmin ? (
+      {isBillingManager ? (
         <MessageStripe.Action
           loading={loadingCustomerPortal}
           onClick={handleAction}
