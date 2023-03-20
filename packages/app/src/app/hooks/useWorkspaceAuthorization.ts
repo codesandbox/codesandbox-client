@@ -1,7 +1,18 @@
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 
-export const useWorkspaceAuthorization = () => {
+type WorkspaceAuthorizationReturn = {
+  isAdmin: boolean;
+  isBillingManager: boolean;
+  isPersonalSpace: boolean;
+  isTeamSpace: boolean;
+  isTeamAdmin: boolean;
+  isTeamEditor: boolean;
+  isTeamViewer: boolean;
+  userRole: TeamMemberAuthorization | null;
+};
+
+export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
   const { activeTeamInfo, personalWorkspaceId, user } = useAppState();
 
   const { authorization, teamManager } =
@@ -35,13 +46,13 @@ export const useWorkspaceAuthorization = () => {
     isTeamSpace && authorization === TeamMemberAuthorization.Read;
 
   return {
+    isBillingManager: Boolean(teamManager) || isAdmin,
+    isAdmin,
     isPersonalSpace,
     isTeamSpace,
     isTeamAdmin,
     isTeamEditor,
-    isBillingManager: Boolean(teamManager) || isTeamAdmin,
     isTeamViewer,
-    isAdmin,
     userRole: authorization ?? null,
   };
 };
