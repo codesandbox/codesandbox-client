@@ -5,8 +5,7 @@ import { Element, Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TEAM_PRO_FEATURES_WITH_PILLS } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
-import { SubscriptionType, TeamMemberAuthorization } from 'app/graphql/types';
-
+import { getUpgradeableTeams } from 'app/utils/teams';
 import { SubscriptionCard } from './SubscriptionCard';
 import type { CTA } from './SubscriptionCard';
 import { StyledPricingDetailsText } from './elements';
@@ -19,21 +18,10 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   const { modalOpened, openCreateTeamModal } = useActions();
   const [showSticker, setShowSticker] = React.useState(false);
 
-  const upgradeableTeams = dashboard.teams.filter(team => {
-    if (
-      team.id === personalWorkspaceId ||
-      team.subscription?.type === SubscriptionType.TeamPro
-    ) {
-      return false;
-    }
-
-    const teamAdmins = team.userAuthorizations
-      .filter(
-        ({ authorization }) => authorization === TeamMemberAuthorization.Admin
-      )
-      .map(({ userId }) => userId);
-
-    return teamAdmins.includes(user?.id);
+  const upgradeableTeams = getUpgradeableTeams({
+    teams: dashboard.teams,
+    personalWorkspaceId,
+    userId: user?.id,
   });
 
   const buildEventName = (event: string) => {
