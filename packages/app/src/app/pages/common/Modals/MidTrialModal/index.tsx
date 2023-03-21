@@ -17,6 +17,7 @@ import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import { useDismissible, useGetCheckoutURL } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { pluralize } from 'app/utils/pluralize';
 
 export const MidTrialModal = () => {
   const { modalClosed } = useActions();
