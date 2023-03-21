@@ -51,6 +51,7 @@ import { CropThumbnail } from './CropThumbnail';
 import { SubscriptionCancellationModal } from './SubscriptionCancellation';
 import { SelectWorkspaceToUpgrade } from './SelectWorkspaceToUpgrade';
 import { SelectWorkspaceToStartTrial } from './SelectWorkspaceToStartTrial';
+import { MidTrialModal } from './MidTrialModal';
 
 const modals = {
   preferences: {
@@ -217,6 +218,10 @@ const modals = {
   selectWorkspaceToStartTrial: {
     Component: SelectWorkspaceToStartTrial,
     width: 400,
+  },
+  midTrial: {
+    Component: MidTrialModal,
+    width: 600,
   },
 };
 

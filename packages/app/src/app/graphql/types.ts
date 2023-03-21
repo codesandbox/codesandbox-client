@@ -2885,6 +2885,15 @@ export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
   team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
 };
 
+export type TeamLimitsFragment = { __typename?: 'TeamLimits' } & Pick<
+  TeamLimits,
+  | 'maxEditors'
+  | 'maxPrivateProjects'
+  | 'maxPrivateSandboxes'
+  | 'maxPublicProjects'
+  | 'maxPublicSandboxes'
+>;
+
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -3865,6 +3874,17 @@ export type RepositoryByDetailsQueryVariables = Exact<{
 
 export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
   project: Maybe<{ __typename?: 'Project' } & ProjectWithBranchesFragment>;
+};
+
+export type LimitsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LimitsQuery = { __typename?: 'RootQueryType' } & {
+  limits: { __typename?: 'Limits' } & {
+    personalFree: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+    personalPro: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+    teamFree: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+    teamPro: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+  };
 };
 
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<

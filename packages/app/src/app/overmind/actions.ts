@@ -260,7 +260,8 @@ type ModalName =
   | 'addMemberToWorkspace'
   | 'legacyPayment'
   | 'selectWorkspaceToUpgrade'
-  | 'selectWorkspaceToStartTrial';
+  | 'selectWorkspaceToStartTrial'
+  | 'midTrial';
 
 export const modalOpened = (
   { state, effects }: Context,

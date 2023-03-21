@@ -14,6 +14,7 @@ import {
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
+import { differenceInDays, startOfToday } from 'date-fns';
 
 import {
   PaymentPending,
@@ -21,8 +22,10 @@ import {
 } from 'app/components/StripeMessages';
 import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
+import { useDismissible } from 'app/hooks';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
@@ -36,15 +39,23 @@ const GlobalStyles = createGlobalStyle({
 
 // TODO: Move this page to v2 (also, this is a random commit to trigger the re-run of the build)
 export const Dashboard: FunctionComponent = () => {
-  const { hasLogIn, activeTeamInfo } = useAppState();
+  const { hasLogIn, activeTeamInfo, activeTeam } = useAppState();
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
-  const { subscription } = useWorkspaceSubscription();
+  const {
+    subscription,
+    hasActiveTeamTrial,
+    hasPaymentMethod,
+  } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
   const [
     showTrialWithoutPaymentInfoBanner,
     dismissTrialWithoutPaymentInfoBanner,
   ] = useShowBanner();
+  const [isMidTrialReminderDismissed] = useDismissible(
+    `DASHBOARD_MID_TRIAL_REMINDER_${activeTeam}`
+  );
+  const { isTeamAdmin } = useWorkspaceAuthorization();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -128,6 +139,31 @@ export const Dashboard: FunctionComponent = () => {
   useEffect(() => {
     trackVisit();
   }, []);
+
+  useEffect(() => {
+    if (
+      isTeamAdmin &&
+      hasActiveTeamTrial &&
+      hasPaymentMethod === false &&
+      subscription.trialEnd &&
+      !isMidTrialReminderDismissed
+    ) {
+      const today = startOfToday();
+      const trialEndDate = new Date(subscription.trialEnd);
+      const remainingTrialDays = differenceInDays(trialEndDate, today);
+
+      if (remainingTrialDays <= 7) {
+        actions.modalOpened({ modal: 'midTrial' });
+      }
+    }
+  }, [
+    isTeamAdmin,
+    actions,
+    hasActiveTeamTrial,
+    hasPaymentMethod,
+    isMidTrialReminderDismissed,
+    subscription,
+  ]);
 
   if (!hasLogIn) {
     return (
