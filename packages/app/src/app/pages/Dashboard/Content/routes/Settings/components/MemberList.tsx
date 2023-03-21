@@ -93,7 +93,7 @@ export const MembersList: React.FC<MemberListProps> = ({
       revokeTeamInvitation,
     },
   } = useActions();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isTeamAdmin, isTeamViewer } = useWorkspaceAuthorization();
 
   const currentUserId = user?.id;
   const invitees = activeTeamInfo?.invitees;
@@ -396,12 +396,17 @@ export const MembersList: React.FC<MemberListProps> = ({
                     />
                     <Menu.List>
                       <Menu.Item
-                        onSelect={() =>
+                        disabled
+                        onSelect={() => {
+                          if (isTeamViewer) {
+                            return;
+                          }
+
                           revokeTeamInvitation({
                             teamId: activeTeamInfo.id,
                             userId: invitee.id,
-                          })
-                        }
+                          });
+                        }}
                       >
                         Revoke invitation
                       </Menu.Item>
