@@ -16,8 +16,12 @@ import {
   CurrentTeamInfoFragmentFragment,
   TeamMemberAuthorization,
 } from 'app/graphql/types';
-import { sortBy } from 'lodash-es';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+
+enum Role {
+  Editor = 'EDITOR',
+  Viewer = 'VIEWER',
+}
 
 type User = CurrentTeamInfoFragmentFragment['users'][number];
 
@@ -27,23 +31,40 @@ type Action = {
   disabled?: boolean;
 };
 
-export type Role = Exclude<
-  TeamMemberAuthorization,
-  TeamMemberAuthorization.Admin
->;
-
-const ROLE_MAP: Record<Role, string> = {
-  WRITE: 'Editor',
-  READ: 'Viewer',
-};
-
 type AuthorizationsMap = {
   [userId: string]: {
-    userId: string;
-    teamManager: boolean;
+    /**
+     * Defines if the user is allowed to perform payment-related actions. All
+     * admins are billing managers but not all billing managers are admins.
+     */
+    billingManager: boolean;
+    /**
+     * Has the highest clearance, is always a billing manager and can perform
+     * administrative actions such as token management and team deletion.
+     */
     teamAdmin: boolean;
+    /**
+     * How the user is allowed to interact with the sandboxes and repositories.
+     */
     role: Role;
+    /**
+     * 1:1 map of the authorization from the API, used to perform the mutations.
+     */
+    authorization: TeamMemberAuthorization;
   };
+};
+
+type Member = User & AuthorizationsMap[keyof AuthorizationsMap];
+
+const MAP_ROLES_TO_LABEL: Record<Role, string> = {
+  EDITOR: 'Editor',
+  VIEWER: 'Viewer',
+};
+
+const MAP_AUTHORIZATION_TO_ROLE: Record<TeamMemberAuthorization, Role> = {
+  [TeamMemberAuthorization.Admin]: Role.Editor,
+  [TeamMemberAuthorization.Write]: Role.Editor,
+  [TeamMemberAuthorization.Read]: Role.Viewer,
 };
 
 type MemberListProps = {
@@ -60,10 +81,10 @@ type MemberListProps = {
   shouldConfirmRoleChange: boolean;
 };
 export const MembersList: React.FC<MemberListProps> = ({
-  shouldConfirmRoleChange,
   canPerformRoleChange,
+  shouldConfirmRoleChange,
 }) => {
-  const { activeTeamInfo, user: currentUser } = useAppState();
+  const { activeTeamInfo, user } = useAppState();
   const {
     dashboard: {
       changeAuthorization,
@@ -74,49 +95,70 @@ export const MembersList: React.FC<MemberListProps> = ({
   } = useActions();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
-  if (activeTeamInfo === null) {
-    return null;
-  }
+  const currentUserId = user?.id;
+  const invitees = activeTeamInfo?.invitees;
+  const authorizations = React.useMemo(() => {
+    return (activeTeamInfo?.userAuthorizations ?? []).reduce((acc, cur) => {
+      const { userId, authorization, teamManager } = cur;
+      const isAdmin = authorization === TeamMemberAuthorization.Admin;
 
-  const currentUserId = currentUser?.id;
-  const { invitees, users, userAuthorizations } = activeTeamInfo;
+      acc[userId] = {
+        billingManager: isAdmin || teamManager,
+        teamAdmin: isAdmin,
+        role: MAP_AUTHORIZATION_TO_ROLE[authorization],
+        authorization,
+      };
 
-  const authorizationsMap = userAuthorizations.reduce((acc, auth) => {
-    const { userId, authorization, teamManager } = auth;
-    const isAdmin = authorization === TeamMemberAuthorization.Admin;
+      return acc;
+    }, {} as AuthorizationsMap);
+  }, [activeTeamInfo]);
 
-    acc[userId] = {
-      userId,
-      teamManager,
-      teamAdmin: isAdmin,
-      role: isAdmin ? TeamMemberAuthorization.Write : authorization,
-    };
+  const members = React.useMemo<Member[]>(() => {
+    return (activeTeamInfo?.users ?? [])
+      .map(member => {
+        const authorization = authorizations[member.id];
 
-    return acc;
-  }, {} as AuthorizationsMap);
+        return { ...member, ...authorization };
+      })
+      .sort((a, b) => {
+        // Show team admins first, then billing managers and then
+        // the other members. Each group is sorted alphabetically.
+        if (a.teamAdmin && !b.teamAdmin) {
+          return -1;
+        }
+        if (!a.teamAdmin && b.teamAdmin) {
+          return 1;
+        }
+        if (a.billingManager && !b.billingManager) {
+          return -1;
+        }
 
-  const teamAdminsCount = Object.values(authorizationsMap).filter(
+        if (!a.billingManager && b.billingManager) {
+          return 1;
+        }
+
+        return a.username.localeCompare(b.username);
+      });
+  }, [activeTeamInfo, authorizations]);
+
+  const teamAdminsCount = Object.values(authorizations).filter(
     auth => auth.teamAdmin
   ).length;
 
-  const teamManagersCount = Object.values(authorizationsMap).filter(
-    auth => auth.teamManager
-  ).length;
-
-  // Returns either options for the role dropdown or a string
-  // to render if the user is not allowed to change the role.
-  const buildRoleOptions = (member: User): Action[] | string => {
-    const memberAuth = authorizationsMap[member.id];
-    if (memberAuth.teamAdmin) {
+  /**
+   * Returns either options for the role dropdown or a string to render
+   * if the user is not allowed to change the role.
+   */
+  const buildRoleOptions = (member: Member): Action[] | string => {
+    if (member.teamAdmin) {
       return 'Editor';
     }
 
     if (
       !isTeamAdmin ||
-      (!canPerformRoleChange &&
-        memberAuth.role === TeamMemberAuthorization.Read)
+      (!canPerformRoleChange && member.role === Role.Viewer)
     ) {
-      return ROLE_MAP[memberAuth.role];
+      return MAP_ROLES_TO_LABEL[member.role];
     }
 
     return [
@@ -126,7 +168,7 @@ export const MembersList: React.FC<MemberListProps> = ({
           changeAuthorization({
             userId: member.id,
             authorization: TeamMemberAuthorization.Write,
-            teamManager: memberAuth.teamManager,
+            teamManager: member.billingManager,
             confirm: shouldConfirmRoleChange,
           });
         },
@@ -137,17 +179,14 @@ export const MembersList: React.FC<MemberListProps> = ({
           changeAuthorization({
             userId: member.id,
             authorization: TeamMemberAuthorization.Read,
-            teamManager: memberAuth.teamManager,
+            teamManager: member.billingManager,
           });
         },
       },
     ];
   };
 
-  // Used in the "more" menu at the end of the row.
-  const buildMemberActions = (member: User): Action[] => {
-    const memberAuth = authorizationsMap[member.id];
-
+  const buildMemberActions = (member: Member): Action[] => {
     if (!isTeamAdmin) {
       // If the user is not the team admin, the only possible
       // action is to leave the team.
@@ -159,60 +198,57 @@ export const MembersList: React.FC<MemberListProps> = ({
           },
         ];
       }
+
       return [];
     }
 
     const actions = [];
 
-    // If the user is not the only team admin, their rights
-    // can be revoked.
-    if (memberAuth.teamAdmin && teamAdminsCount > 1) {
+    // If the member is a team admin and there's more than
+    // one admin, their admin rights can be revoked.
+    if (member.teamAdmin && teamAdminsCount > 1) {
       actions.push({
         name: 'Revoke admin rights',
         onSelect: () =>
           changeAuthorization({
             userId: member.id,
             authorization: TeamMemberAuthorization.Write,
-            teamManager: memberAuth.teamManager,
+            teamManager: false,
           }),
       });
-    } else if (!memberAuth.teamAdmin) {
+    } else if (!member.teamAdmin) {
       actions.push({
         name: 'Grant admin rights',
+        // If the team has reached the maximum amount of editors, disable this action.
+        disabled: member.role === Role.Viewer && !canPerformRoleChange,
         onSelect: () =>
           changeAuthorization({
             userId: member.id,
             authorization: TeamMemberAuthorization.Admin,
-            teamManager: memberAuth.teamManager,
-            confirm: shouldConfirmRoleChange,
+            teamManager: true,
+            // Show confirmation prompt if the team has filled their seats.
+            confirm: member.role === Role.Viewer && shouldConfirmRoleChange,
           }),
       });
     }
 
-    // Get the original authorization to pass to the API.
-    const mappedMemberAuthorization = memberAuth.teamAdmin
-      ? TeamMemberAuthorization.Admin
-      : memberAuth.role;
-
-    // If the user is not the only team manager, their rights
-    // can be revoked.
-    if (memberAuth.teamManager && teamManagersCount > 1) {
+    if (member.billingManager && !member.teamAdmin) {
       actions.push({
         name: 'Revoke billing rights',
         onSelect: () =>
           changeAuthorization({
             userId: member.id,
-            authorization: mappedMemberAuthorization,
+            authorization: member.authorization,
             teamManager: false,
           }),
       });
-    } else if (!memberAuth.teamManager) {
+    } else if (!member.billingManager) {
       actions.push({
         name: 'Grant billing rights',
         onSelect: () =>
           changeAuthorization({
             userId: member.id,
-            authorization: mappedMemberAuthorization,
+            authorization: member.authorization,
             teamManager: true,
           }),
       });
@@ -236,14 +272,13 @@ export const MembersList: React.FC<MemberListProps> = ({
 
   return (
     <List>
-      {sortBy(users, u => u.id !== currentUserId).map(user => {
-        const authorization = authorizationsMap[user.id];
-        const actions = buildMemberActions(user);
-        const roleOptions = buildRoleOptions(user);
+      {members.map(member => {
+        const roleOptions = buildRoleOptions(member);
+        const memberActions = buildMemberActions(member);
 
         return (
           <ListAction
-            key={user.id}
+            key={member.id}
             align="center"
             justify="space-between"
             css={{
@@ -254,16 +289,16 @@ export const MembersList: React.FC<MemberListProps> = ({
             <Grid css={{ width: '100%', alignItems: 'center' }}>
               <Column span={6}>
                 <Stack align="center" gap={6}>
-                  <Avatar user={user} />
+                  <Avatar user={member} />
                   <Stack align="center" gap={2}>
-                    <Text size={3}>{user.username}</Text>
-                    {user.id === currentUserId ? (
+                    <Text size={3}>{member.username}</Text>
+                    {member.id === currentUserId ? (
                       <Text size={3} variant="muted">
                         (You)
                       </Text>
                     ) : null}
-                    {authorization.teamAdmin ? <Badge>Admin</Badge> : null}
-                    {authorization.teamManager && !authorization.teamAdmin ? (
+                    {member.teamAdmin ? <Badge>Admin</Badge> : null}
+                    {member.billingManager && !member.teamAdmin ? (
                       <Badge>Billing</Badge>
                     ) : null}
                   </Stack>
@@ -271,7 +306,7 @@ export const MembersList: React.FC<MemberListProps> = ({
               </Column>
               <Column span={5}>
                 {typeof roleOptions === 'string' ? (
-                  <Text size={3}>{ROLE_MAP[authorization.role]}</Text>
+                  <Text size={3}>{roleOptions}</Text>
                 ) : (
                   <Menu>
                     <Menu.Button
@@ -279,7 +314,7 @@ export const MembersList: React.FC<MemberListProps> = ({
                       css={{ fontSize: '13px', fontWeight: 'normal' }}
                     >
                       <Text variant="muted">
-                        {ROLE_MAP[authorization.role]}
+                        {MAP_ROLES_TO_LABEL[member.role]}
                       </Text>
                       <Icon name="chevronDown" size={8} marginLeft={1} />
                     </Menu.Button>
@@ -291,7 +326,7 @@ export const MembersList: React.FC<MemberListProps> = ({
                           onSelect={action.onSelect}
                         >
                           <Text style={{ width: '100%' }}>{action.name}</Text>
-                          {action.name === ROLE_MAP[authorization.role] && (
+                          {action.name === MAP_ROLES_TO_LABEL[member.role] && (
                             <Icon
                               style={{}}
                               name="simpleCheck"
@@ -306,7 +341,7 @@ export const MembersList: React.FC<MemberListProps> = ({
                 )}
               </Column>
               <Column span={1}>
-                {actions.length > 0 ? (
+                {memberActions.length > 0 ? (
                   <Menu>
                     <Menu.IconButton
                       name="more"
@@ -314,7 +349,7 @@ export const MembersList: React.FC<MemberListProps> = ({
                       title="Member options"
                     />
                     <Menu.List>
-                      {actions.map(action => (
+                      {memberActions.map(action => (
                         <Menu.Item
                           key={action.name}
                           disabled={action.disabled}

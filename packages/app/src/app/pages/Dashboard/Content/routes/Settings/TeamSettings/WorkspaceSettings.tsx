@@ -31,11 +31,11 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { pluralize } from 'app/utils/pluralize';
 import { Card } from '../components';
-import { MembersList, Role } from '../components/MemberList';
+import { MembersList } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
 import { TeamInfo } from '../components/TeamInfo';
 
-const INVITE_ROLES_MAP: Record<TeamMemberAuthorization, Role[]> = {
+const INVITE_ROLES_MAP = {
   [TeamMemberAuthorization.Admin]: [
     TeamMemberAuthorization.Write,
     TeamMemberAuthorization.Read,
@@ -45,7 +45,7 @@ const INVITE_ROLES_MAP: Record<TeamMemberAuthorization, Role[]> = {
   [TeamMemberAuthorization.Read]: [],
 };
 
-const ROLES_TEXT_MAP: Record<Role, string> = {
+const ROLES_TEXT_MAP = {
   [TeamMemberAuthorization.Write]: 'Editor',
   [TeamMemberAuthorization.Read]: 'Viewer',
 };
