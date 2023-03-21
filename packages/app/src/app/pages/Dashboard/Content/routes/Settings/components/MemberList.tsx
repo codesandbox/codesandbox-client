@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions, useAppState } from 'app/overmind';
 import {
   CurrentTeamInfoFragmentFragment,
@@ -165,6 +166,11 @@ export const MembersList: React.FC<MemberListProps> = ({
       {
         name: 'Editor',
         onSelect: () => {
+          track('Change role to editor', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+
           changeAuthorization({
             userId: member.id,
             authorization: TeamMemberAuthorization.Write,
@@ -176,6 +182,11 @@ export const MembersList: React.FC<MemberListProps> = ({
       {
         name: 'Viewer',
         onSelect: () => {
+          track('Change role to viewer', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+
           changeAuthorization({
             userId: member.id,
             authorization: TeamMemberAuthorization.Read,
@@ -209,48 +220,71 @@ export const MembersList: React.FC<MemberListProps> = ({
     if (member.teamAdmin && teamAdminsCount > 1) {
       actions.push({
         name: 'Revoke admin rights',
-        onSelect: () =>
+        onSelect: () => {
+          track('Revoke admin rights', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+
           changeAuthorization({
             userId: member.id,
             authorization: TeamMemberAuthorization.Write,
             teamManager: false,
-          }),
+          });
+        },
       });
     } else if (!member.teamAdmin) {
       actions.push({
         name: 'Grant admin rights',
         // If the team has reached the maximum amount of editors, disable this action.
         disabled: member.role === Role.Viewer && !canPerformRoleChange,
-        onSelect: () =>
+        onSelect: () => {
+          track('Grant admin rights', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+
           changeAuthorization({
             userId: member.id,
             authorization: TeamMemberAuthorization.Admin,
             teamManager: true,
             // Show confirmation prompt if the team has filled their seats.
             confirm: member.role === Role.Viewer && shouldConfirmRoleChange,
-          }),
+          });
+        },
       });
     }
 
     if (member.billingManager && !member.teamAdmin) {
       actions.push({
         name: 'Revoke billing rights',
-        onSelect: () =>
+        onSelect: () => {
+          track('Revoke billing rights', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+
           changeAuthorization({
             userId: member.id,
             authorization: member.authorization,
             teamManager: false,
-          }),
+          });
+        },
       });
     } else if (!member.billingManager) {
       actions.push({
         name: 'Grant billing rights',
-        onSelect: () =>
+        onSelect: () => {
+          track('Grant billing rights', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
           changeAuthorization({
             userId: member.id,
             authorization: member.authorization,
             teamManager: true,
-          }),
+          });
+        },
       });
     }
 
@@ -258,12 +292,24 @@ export const MembersList: React.FC<MemberListProps> = ({
     if (member.id === currentUserId && teamAdminsCount > 1) {
       actions.push({
         name: 'Leave team',
-        onSelect: leaveTeam,
+        onSelect: () => {
+          track('Leave team', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+          leaveTeam();
+        },
       });
     } else if (member.id !== currentUserId) {
       actions.push({
         name: 'Remove member',
-        onSelect: () => removeFromTeam(member.id),
+        onSelect: () => {
+          track('Remove member', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+          removeFromTeam(member.id);
+        },
       });
     }
 
@@ -402,6 +448,10 @@ export const MembersList: React.FC<MemberListProps> = ({
                             return;
                           }
 
+                          track('Revoke pending invitation', {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                          });
                           revokeTeamInvitation({
                             teamId: activeTeamInfo.id,
                             userId: invitee.id,
