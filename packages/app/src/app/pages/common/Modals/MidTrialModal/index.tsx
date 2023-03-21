@@ -20,6 +20,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const MidTrialModal = () => {
   const { modalClosed } = useActions();
+  const { activeTeam } = useAppState();
   const { pathname } = useLocation();
   const [
     experimentValue,
@@ -27,7 +28,7 @@ export const MidTrialModal = () => {
   ] = useState<ExperimentValues | null>(null);
   const experimentPromise = useExperimentResult('mid-trial-modal');
   const [, dismissMidTrialReminder] = useDismissible(
-    'DASHBOARD_MID_TRIAL_REMINDER'
+    `DASHBOARD_MID_TRIAL_REMINDER_${activeTeam}`
   );
   const { subscription } = useWorkspaceSubscription();
 

@@ -39,7 +39,7 @@ const GlobalStyles = createGlobalStyle({
 
 // TODO: Move this page to v2 (also, this is a random commit to trigger the re-run of the build)
 export const Dashboard: FunctionComponent = () => {
-  const { hasLogIn, activeTeamInfo } = useAppState();
+  const { hasLogIn, activeTeamInfo, activeTeam } = useAppState();
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
   const {
@@ -53,7 +53,7 @@ export const Dashboard: FunctionComponent = () => {
     dismissTrialWithoutPaymentInfoBanner,
   ] = useShowBanner();
   const [isMidTrialReminderDismissed] = useDismissible(
-    'DASHBOARD_MID_TRIAL_REMINDER'
+    `DASHBOARD_MID_TRIAL_REMINDER_${activeTeam}`
   );
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
