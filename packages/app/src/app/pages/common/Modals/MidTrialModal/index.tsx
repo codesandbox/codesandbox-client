@@ -58,12 +58,12 @@ export const MidTrialModal = () => {
   };
 
   const handleUpgrade = () => {
-    dismissMidTrialReminder();
-
     track('Mid trial reminder: upgrade to pro', {
       codesandbox: 'V1',
       event_source: 'UI',
     });
+
+    dismissMidTrialReminder();
   };
 
   return (
