@@ -24,6 +24,7 @@ type User = CurrentTeamInfoFragmentFragment['users'][number];
 type Action = {
   name: string;
   onSelect: () => void;
+  disabled?: boolean;
 };
 
 export type Role = Exclude<
@@ -262,7 +263,9 @@ export const MembersList: React.FC<MemberListProps> = ({
                       </Text>
                     ) : null}
                     {authorization.teamAdmin ? <Badge>Admin</Badge> : null}
-                    {authorization.teamManager ? <Badge>Billing</Badge> : null}
+                    {authorization.teamManager && !authorization.teamAdmin ? (
+                      <Badge>Billing</Badge>
+                    ) : null}
                   </Stack>
                 </Stack>
               </Column>
