@@ -10,7 +10,7 @@ import { getEventName } from './utils';
 
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
   const { modals } = useActions();
 
@@ -47,7 +47,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
             modals.newSandboxModal.close();
           }
 
-          track(getEventName(isEligibleForTrial, isTeamAdmin), {
+          track(getEventName(isEligibleForTrial, isBillingManager), {
             codesandbox: 'V1',
             event_source: 'UI',
           });

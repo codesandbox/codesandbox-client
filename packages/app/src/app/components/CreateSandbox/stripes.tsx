@@ -4,10 +4,13 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { MessageStripe } from '@codesandbox/components';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 
-const getEventName = (isEligibleForTrial: boolean, isTeamAdmin: boolean) => {
+const getEventName = (
+  isEligibleForTrial: boolean,
+  isBillingManager: boolean
+) => {
   if (isEligibleForTrial) {
     const event = 'Limit banner: create sandbox - Start trial';
-    return isTeamAdmin ? event : `${event} - As non-admin`;
+    return isBillingManager ? event : `${event} - As non-admin`;
   }
 
   return 'Limit banner: create sandbox - Upgrade';
@@ -20,13 +23,13 @@ const EVENT_PROPS = {
 
 type MaxPublicSandboxesProps = {
   checkoutUrl: string | null;
-  isTeamAdmin: boolean;
+  isBillingManager: boolean;
   isEligibleForTrial: boolean;
 };
 export const MaxPublicSandboxes: React.FC<MaxPublicSandboxesProps> = ({
   checkoutUrl,
   isEligibleForTrial,
-  isTeamAdmin,
+  isBillingManager,
 }) => {
   return (
     <MessageStripe justify="space-between">
@@ -44,7 +47,10 @@ export const MaxPublicSandboxes: React.FC<MaxPublicSandboxesProps> = ({
                 href: checkoutUrl,
               })}
           onClick={() => {
-            track(getEventName(isEligibleForTrial, isTeamAdmin), EVENT_PROPS);
+            track(
+              getEventName(isEligibleForTrial, isBillingManager),
+              EVENT_PROPS
+            );
           }}
         >
           {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}

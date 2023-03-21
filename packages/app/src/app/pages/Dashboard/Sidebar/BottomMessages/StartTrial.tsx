@@ -11,7 +11,7 @@ const EVENT_NAME = 'Side banner - Start Trial';
 export const StartTrial: React.FC<{ activeTeam: string }> = ({
   activeTeam,
 }) => {
-  const { isAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const checkout = useGetCheckoutURL({
     success_path: dashboard.recent(activeTeam),
     cancel_path: dashboard.recent(activeTeam),
@@ -35,10 +35,13 @@ export const StartTrial: React.FC<{ activeTeam: string }> = ({
             })}
         variant="link"
         onClick={() => {
-          track(isAdmin ? EVENT_NAME : `${EVENT_NAME} - As non-admin`, {
-            codesandbox: 'V1',
-            event_source: 'UI',
-          });
+          track(
+            isBillingManager ? EVENT_NAME : `${EVENT_NAME} - As non-admin`,
+            {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            }
+          );
         }}
         css={{
           fontSize: '12px',

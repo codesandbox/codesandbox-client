@@ -10,7 +10,7 @@ import React from 'react';
 
 export const SandboxesRestrictionsBanner: React.FC = () => {
   const { activeTeam } = useAppState();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const checkoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.sandboxes(activeTeam),
@@ -36,7 +36,7 @@ export const SandboxesRestrictionsBanner: React.FC = () => {
             onClick={() => {
               if (isEligibleForTrial) {
                 const event = 'Limit banner: sandboxes - Start Trial';
-                track(isTeamAdmin ? event : `${event} - As non-admin`, {
+                track(isBillingManager ? event : `${event} - As non-admin`, {
                   codesandbox: 'V1',
                   event_source: 'UI',
                 });

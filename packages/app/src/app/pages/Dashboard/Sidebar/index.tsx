@@ -96,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const {
     isPersonalSpace,
     isTeamSpace,
-    isTeamAdmin,
+    isBillingManager,
   } = useWorkspaceAuthorization();
 
   const {
@@ -311,11 +311,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Element css={{ margin: 'auto 24px 0' }}>
             {isEligibleForTrial ? <StartTrial activeTeam={activeTeam} /> : null}
 
-            {isTeamAdmin && !isEligibleForTrial ? (
+            {isBillingManager && isTeamSpace && !isEligibleForTrial ? (
               <AdminUpgradeToTeamPro />
             ) : null}
 
-            {isTeamSpace && !isTeamAdmin && !isEligibleForTrial ? (
+            {isTeamSpace && !isBillingManager && !isEligibleForTrial ? (
               <UserUpgradeToTeamPro />
             ) : null}
 
@@ -330,7 +330,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd}
               hasPaymentMethod={hasPaymentMethod}
               daysLeft={trialDaysLeft}
-              isAdmin={isTeamAdmin}
+              isBillingManager={isBillingManager}
             />
           </Element>
         ) : null}

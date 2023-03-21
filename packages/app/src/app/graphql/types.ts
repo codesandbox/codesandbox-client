@@ -2788,7 +2788,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     userAuthorizations: Array<
       { __typename?: 'UserAuthorization' } & Pick<
         UserAuthorization,
-        'userId' | 'authorization'
+        'userId' | 'authorization' | 'teamManager'
       >
     >;
     settings: Maybe<

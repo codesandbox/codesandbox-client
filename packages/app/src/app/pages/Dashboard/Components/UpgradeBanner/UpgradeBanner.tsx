@@ -20,7 +20,7 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { useActions, useAppState } from 'app/overmind';
-import { TeamMemberAuthorization } from 'app/graphql/types';
+import { getTrialEligibleTeams } from 'app/utils/teams';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -120,13 +120,12 @@ export const UpgradeBanner: React.FC = () => {
     activeTeam,
     dashboard: { teams },
     personalWorkspaceId,
-    user,
   } = useAppState();
   const { modalOpened, openCreateTeamModal } = useActions();
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasVisited } = useDashboardVisit();
 
@@ -139,18 +138,9 @@ export const UpgradeBanner: React.FC = () => {
     return null;
   }
 
-  const trialEligibleTeams = teams.filter(team => {
-    if (team.id === personalWorkspaceId || Boolean(team.subscription)) {
-      return false;
-    }
-
-    const teamAdmins = team.userAuthorizations
-      .filter(
-        ({ authorization }) => authorization === TeamMemberAuthorization.Admin
-      )
-      .map(({ userId }) => userId);
-
-    return teamAdmins.includes(user?.id);
+  const trialEligibleTeams = getTrialEligibleTeams({
+    teams,
+    personalWorkspaceId,
   });
 
   const renderMainCTA = () => {
@@ -189,7 +179,7 @@ export const UpgradeBanner: React.FC = () => {
           onClick={() => {
             if (isEligibleForTrial) {
               const event = 'Home Banner - Start trial';
-              track(isTeamAdmin ? event : `${event} - As non-admin`, {
+              track(isBillingManager ? event : `${event} - As non-admin`, {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });

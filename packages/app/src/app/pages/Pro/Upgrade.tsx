@@ -76,7 +76,7 @@ export const ProUpgrade = () => {
   const {
     isPersonalSpace,
     isTeamSpace,
-    isTeamAdmin,
+    isBillingManager,
   } = useWorkspaceAuthorization();
   const { isFree, isPro } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
@@ -125,7 +125,7 @@ export const ProUpgrade = () => {
       };
 
   const teamProCta: CTA =
-    isTeamAdmin && !hasCustomSubscription && isPro
+    isBillingManager && !hasCustomSubscription && isPro
       ? {
           text: 'Manage subscription',
           onClick: () => {

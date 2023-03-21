@@ -11,7 +11,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useCreateCheckout } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
-import { SubscriptionType, TeamMemberAuthorization } from 'app/graphql/types';
+import { getUpgradeableTeams } from 'app/utils/teams';
 import { Alert } from '../Common/Alert';
 
 export const SelectWorkspaceToUpgrade: React.FC = () => {
@@ -19,21 +19,10 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
   const { openCreateTeamModal, modalClosed } = useActions();
   const [checkout, createCheckout] = useCreateCheckout();
 
-  const upgradeableTeams = dashboard.teams.filter(team => {
-    if (
-      team.id === personalWorkspaceId ||
-      team.subscription?.type === SubscriptionType.TeamPro
-    ) {
-      return false;
-    }
-
-    const teamAdmins = team.userAuthorizations
-      .filter(
-        ({ authorization }) => authorization === TeamMemberAuthorization.Admin
-      )
-      .map(({ userId }) => userId);
-
-    return teamAdmins.includes(user?.id);
+  const upgradeableTeams = getUpgradeableTeams({
+    teams: dashboard.teams,
+    personalWorkspaceId,
+    userId: user?.id,
   });
 
   const [selectedTeam, setSelectedTeam] = React.useState(
