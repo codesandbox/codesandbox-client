@@ -396,7 +396,7 @@ export const MembersList: React.FC<MemberListProps> = ({
                     />
                     <Menu.List>
                       <Menu.Item
-                        disabled
+                        disabled={isTeamViewer}
                         onSelect={() => {
                           if (isTeamViewer) {
                             return;
