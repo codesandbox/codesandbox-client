@@ -46,7 +46,7 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
     isTeamSpace && authorization === TeamMemberAuthorization.Read;
 
   return {
-    isBillingManager: Boolean(teamManager) || isPersonalSpace,
+    isBillingManager: Boolean(teamManager) || isAdmin,
     isAdmin,
     isPersonalSpace,
     isTeamSpace,

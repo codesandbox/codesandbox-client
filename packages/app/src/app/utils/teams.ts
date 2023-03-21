@@ -21,14 +21,14 @@ export const getUpgradeableTeams = ({
       return false;
     }
 
-    const billingManagers = team.userAuthorizations
-      .filter(
-        ({ authorization, teamManager }) =>
-          authorization === TeamMemberAuthorization.Admin || teamManager
-      )
-      .map(auth => auth.userId);
+    const userAuthorization = team.userAuthorizations.find(
+      auth => auth.userId === userId
+    );
 
-    return billingManagers.includes(userId);
+    return (
+      userAuthorization?.authorization === TeamMemberAuthorization.Admin ||
+      userAuthorization?.teamManager
+    );
   });
 
 export const getTrialEligibleTeams = ({
