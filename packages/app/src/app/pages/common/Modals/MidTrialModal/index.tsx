@@ -83,7 +83,10 @@ export const MidTrialModal = () => {
           >
             {remainingTrialDays === 7
               ? 'One week'
-              : `${remainingTrialDays} days`}{' '}
+              : `${remainingTrialDays} ${pluralize({
+                  word: 'day',
+                  count: remainingTrialDays,
+                })}`}{' '}
             left on your trial.
           </Text>
           <Text as="p" size={19} color="#C2C2C2" align="center">
