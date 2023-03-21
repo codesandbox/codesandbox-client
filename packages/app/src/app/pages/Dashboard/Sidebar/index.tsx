@@ -311,7 +311,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Element css={{ margin: 'auto 24px 0' }}>
             {isEligibleForTrial ? <StartTrial activeTeam={activeTeam} /> : null}
 
-            {isBillingManager && !isEligibleForTrial ? (
+            {isBillingManager && isTeamSpace && !isEligibleForTrial ? (
               <AdminUpgradeToTeamPro />
             ) : null}
 
