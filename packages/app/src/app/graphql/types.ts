@@ -3139,6 +3139,7 @@ export type ChangeTeamMemberAuthorizationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   userId: Scalars['UUID4'];
   authorization: TeamMemberAuthorization;
+  teamManager: Maybe<Scalars['Boolean']>;
 }>;
 
 export type ChangeTeamMemberAuthorizationMutation = {

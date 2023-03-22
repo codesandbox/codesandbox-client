@@ -13,6 +13,7 @@ import {
   DeleteNpmRegistryMutationVariables,
   CuratedAlbumByIdQueryVariables,
   ProjectFragment,
+  ChangeTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -616,18 +617,18 @@ export const deleteTemplateFromState = (
     if (sandboxes.TEMPLATE_HOME) {
       sandboxes.TEMPLATE_HOME = sandboxes.TEMPLATE_HOME
         ? sandboxes.TEMPLATE_HOME.filter(
-            ({ sandbox }: TemplateFragmentDashboardFragment) =>
-              sandbox && sandbox.id !== id
-          )
+          ({ sandbox }: TemplateFragmentDashboardFragment) =>
+            sandbox && sandbox.id !== id
+        )
         : null;
     }
 
     if (sandboxes.TEMPLATES) {
       sandboxes.TEMPLATES = sandboxes.TEMPLATES
         ? sandboxes.TEMPLATES.filter(
-            ({ sandbox }: TemplateFragmentDashboardFragment) =>
-              sandbox && sandbox.id !== id
-          )
+          ({ sandbox }: TemplateFragmentDashboardFragment) =>
+            sandbox && sandbox.id !== id
+        )
         : null;
     }
 
@@ -1359,17 +1360,17 @@ export const changeAuthorizationInState = (
   state.activeTeamInfo!.userAuthorizations = userAuthorizations;
 };
 
+type ChangeAuthorizationParams = Omit<ChangeTeamMemberAuthorizationMutationVariables, 'teamId'> & {
+  confirm?: boolean;
+}
 export const changeAuthorization = async (
   { state, effects, actions }: Context,
   {
     userId,
     authorization,
     confirm,
-  }: {
-    userId: string;
-    authorization: TeamMemberAuthorization;
-    confirm?: Boolean;
-  }
+    teamManager
+  }: ChangeAuthorizationParams
 ) => {
   if (confirm) {
     const confirmed = await actions.modals.alertModal.open({
@@ -1393,6 +1394,7 @@ export const changeAuthorization = async (
       teamId: state.activeTeam!,
       userId,
       authorization,
+      teamManager,
     });
     actions.getActiveTeamInfo();
   } catch (e) {
