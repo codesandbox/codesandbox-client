@@ -409,6 +409,8 @@ export type GithubRepo = {
   /** Whether the repository is marked as private */
   private: Scalars['Boolean'];
   /** ISO 8601 datetime */
+  pushedAt: Maybe<Scalars['String']>;
+  /** ISO 8601 datetime */
   updatedAt: Scalars['String'];
 };
 
@@ -1933,6 +1935,7 @@ export type Team = {
   shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
   templates: Array<Template>;
+  type: TeamType;
   usage: TeamUsage;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
@@ -1987,6 +1990,11 @@ export type TeamPreview = {
   name: Scalars['String'];
   shortid: Scalars['String'];
 };
+
+export enum TeamType {
+  Personal = 'PERSONAL',
+  Team = 'TEAM',
+}
 
 export type TeamUsage = {
   __typename?: 'TeamUsage';
@@ -2123,7 +2131,12 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
   githubRepo: Maybe<
     { __typename?: 'GithubRepo' } & Pick<
       GithubRepo,
-      'name' | 'fullName' | 'updatedAt' | 'authorization' | 'private'
+      | 'name'
+      | 'fullName'
+      | 'updatedAt'
+      | 'pushedAt'
+      | 'authorization'
+      | 'private'
     > & {
         owner: { __typename?: 'GithubOrganization' } & Pick<
           GithubOrganization,
@@ -2173,6 +2186,7 @@ export type GetGitHubAccountReposQuery = { __typename?: 'RootQueryType' } & {
             | 'name'
             | 'private'
             | 'updatedAt'
+            | 'pushedAt'
           > & {
               owner: { __typename?: 'GithubOrganization' } & Pick<
                 GithubOrganization,
@@ -2197,7 +2211,13 @@ export type GetGitHubOrganizationReposQuery = {
     Array<
       { __typename?: 'GithubRepo' } & Pick<
         GithubRepo,
-        'id' | 'authorization' | 'fullName' | 'name' | 'private' | 'updatedAt'
+        | 'id'
+        | 'authorization'
+        | 'fullName'
+        | 'name'
+        | 'private'
+        | 'updatedAt'
+        | 'pushedAt'
       > & {
           owner: { __typename?: 'GithubOrganization' } & Pick<
             GithubOrganization,

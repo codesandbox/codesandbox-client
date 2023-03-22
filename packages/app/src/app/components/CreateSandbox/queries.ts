@@ -78,6 +78,7 @@ export const GET_GITHUB_REPO = gql`
       name
       fullName
       updatedAt
+      pushedAt
       authorization
       private
       owner {
@@ -132,6 +133,7 @@ export const GET_GITHUB_ACCOUNT_REPOS = gql`
         name
         private
         updatedAt
+        pushedAt
         owner {
           id
           login
@@ -160,6 +162,7 @@ export const GET_GITHUB_ORGANIZATION_REPOS = gql`
       name
       private
       updatedAt
+      pushedAt
       owner {
         id
         login
