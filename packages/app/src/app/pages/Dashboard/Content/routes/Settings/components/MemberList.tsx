@@ -235,11 +235,11 @@ export const MembersList: React.FC<MemberListProps> = ({
       });
     } else if (!member.teamAdmin) {
       actions.push({
-        name: 'Grant admin rights',
+        name: 'Make user an admin',
         // If the team has reached the maximum amount of editors, disable this action.
         disabled: member.role === Role.Viewer && !canPerformRoleChange,
         onSelect: () => {
-          track('Grant admin rights', {
+          track('Make user an admin', {
             codesandbox: 'V1',
             event_source: 'UI',
           });
@@ -273,9 +273,9 @@ export const MembersList: React.FC<MemberListProps> = ({
       });
     } else if (!member.billingManager) {
       actions.push({
-        name: 'Grant billing rights',
+        name: 'Assign billing rights',
         onSelect: () => {
-          track('Grant billing rights', {
+          track('Assign billing rights', {
             codesandbox: 'V1',
             event_source: 'UI',
           });
