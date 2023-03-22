@@ -233,11 +233,11 @@ export const SuggestedRepositories = ({
                           <Icon name="lock" color="#999999" />
                         </>
                       ) : null}
-                      {repo.updatedAt ? (
+                      {repo.pushedAt ? (
                         <Text size={13} color="#999999B3">
                           <VisuallyHidden>Last updated</VisuallyHidden>
                           {formatDistanceStrict(
-                            zonedTimeToUtc(repo.updatedAt, 'Etc/UTC'),
+                            zonedTimeToUtc(repo.pushedAt, 'Etc/UTC'),
                             new Date(),
                             {
                               addSuffix: true,
