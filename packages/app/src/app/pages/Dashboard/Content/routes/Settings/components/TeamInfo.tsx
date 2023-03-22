@@ -85,7 +85,8 @@ export const TeamInfo: React.FC = () => {
       description,
       file,
     });
-    setEditing(false);
+    setEditing(false); // Return to the previous UI.
+    setLoading(false); // Set loading to false.
   };
 
   if (editing) {
