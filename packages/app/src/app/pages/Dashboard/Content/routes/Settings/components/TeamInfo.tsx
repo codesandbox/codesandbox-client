@@ -15,10 +15,7 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
 
-type TeamInfoProps = {
-  onLoadingChange: (loading: boolean) => void;
-};
-export const TeamInfo: React.FC<TeamInfoProps> = ({ onLoadingChange }) => {
+export const TeamInfo: React.FC = () => {
   const [editing, setEditing] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [file, setFile] = React.useState<{ name: string; url: string } | null>(
@@ -90,10 +87,6 @@ export const TeamInfo: React.FC<TeamInfoProps> = ({ onLoadingChange }) => {
     });
     setEditing(false);
   };
-
-  React.useEffect(() => {
-    onLoadingChange(loading);
-  }, [loading, onLoadingChange]);
 
   if (editing) {
     return (

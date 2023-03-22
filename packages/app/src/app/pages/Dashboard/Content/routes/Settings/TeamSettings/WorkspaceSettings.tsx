@@ -55,8 +55,6 @@ export const WorkspaceSettings = () => {
   const effects = useEffects();
   const { user: currentUser, activeTeamInfo: team } = useAppState();
 
-  const [teamInfoLoading, setLoading] = useState(false);
-
   const {
     isPro,
     isEligibleForTrial,
@@ -180,7 +178,7 @@ export const WorkspaceSettings = () => {
               isBillingManager || isEligibleForTrial ? 'auto' : '1/3',
           }}
         >
-          <TeamInfo onLoadingChange={setLoading} />
+          <TeamInfo />
         </Card>
 
         <Card>
@@ -226,7 +224,6 @@ export const WorkspaceSettings = () => {
               <Button
                 autoWidth
                 variant="link"
-                disabled={teamInfoLoading}
                 css={css({
                   height: 'auto',
                   fontSize: 3,
