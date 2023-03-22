@@ -129,10 +129,13 @@ export const Dashboard: FunctionComponent = () => {
     }
 
     const searchParams = new URLSearchParams(location.search);
+
     if (JSON.parse(searchParams.get('create_team'))) {
       actions.openCreateTeamModal();
     } else if (JSON.parse(searchParams.get('import_repo'))) {
       actions.openCreateSandboxModal({ initialTab: 'import' });
+    } else if (JSON.parse(searchParams.get('create_sandbox'))) {
+      actions.openCreateSandboxModal();
     }
   }, [actions, hasLogIn, location.search]);
 
