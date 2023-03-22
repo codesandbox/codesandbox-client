@@ -1,8 +1,6 @@
 /* eslint-disable global-require, no-console, no-use-before-define */
 import { flatten } from 'lodash-es';
 import refreshBabelPlugin from 'react-refresh/babel';
-import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
-import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
@@ -713,38 +711,10 @@ async function initBabel(opts) {
     }
 
     if (
-      (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
-        flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >
-          -1) &&
-      Object.keys(Babel.availablePlugins).indexOf(
-        'proposal-optional-chaining'
-      ) === -1
-    ) {
-      Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
-    }
-
-    if (
       flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
       Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') === -1
     ) {
       Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
-    }
-
-    const coalescingInPlugins =
-      flattenedPlugins.indexOf('proposal-nullish-coalescing-operator') > -1 ||
-      flattenedPlugins.indexOf(
-        '@babel/plugin-proposal-nullish-coalescing-operator'
-      ) > -1;
-    if (
-      coalescingInPlugins &&
-      Object.keys(Babel.availablePlugins).indexOf(
-        'proposal-nullish-coalescing-operator'
-      ) === -1
-    ) {
-      Babel.registerPlugin(
-        'proposal-nullish-coalescing-operator',
-        coalescingPlugin
-      );
     }
 
     if (
