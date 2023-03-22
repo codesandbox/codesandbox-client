@@ -1,5 +1,5 @@
 /* eslint-disable global-require, no-console, no-use-before-define */
-import { flatten } from 'lodash-es';
+import flatten from 'lodash-es/flatten';
 import refreshBabelPlugin from 'react-refresh/babel';
 
 import delay from '@codesandbox/common/lib/utils/delay';
