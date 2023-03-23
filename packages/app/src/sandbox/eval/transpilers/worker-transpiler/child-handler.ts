@@ -27,6 +27,10 @@ export class ChildHandler {
     self.addEventListener('message', evt => {
       this.handleMessage(evt.data).catch(console.error);
     });
+    self.postMessage({
+      type: 'worker_started',
+      codesandbox: true,
+    });
   }
 
   registerFunction(method: string, fn: ChildFunc) {
