@@ -62,7 +62,7 @@ export const MidTrialModal = () => {
       event_source: 'UI',
     });
 
-    // Custom implementation based on useGetCheckoutURL hook because the modal
+    // Custom implementation based on useCreateCustomerPortal hook because the modal
     // needs to be dismissed before redirecting.
     try {
       setLoadingPortal(true);
