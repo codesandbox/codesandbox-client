@@ -70,12 +70,13 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
     });
 
     setIsForking(true);
+
     await dashboard.forkGitHubRepository({
       source: { owner: repository.owner.login, name: repository.name },
       destination: {
         teamId: activeTeamInfo.id,
         organization:
-          destinationValidation.owner !== user.githubProfile?.login
+          destinationValidation.owner !== user.githubProfile?.data?.login
             ? destinationValidation.owner
             : undefined,
         name: destinationValidation.name,
