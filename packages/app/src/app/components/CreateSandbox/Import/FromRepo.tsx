@@ -230,7 +230,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
 
           <Label css={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <Text as="span" size={2} css={{ color: '#808080' }}>
-              Git organization
+              PPersonal or organization GitHub account
             </Text>
             {githubAccounts.state === 'loading' ? (
               <SkeletonText
