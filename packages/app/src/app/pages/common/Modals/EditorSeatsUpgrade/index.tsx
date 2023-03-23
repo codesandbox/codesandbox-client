@@ -22,7 +22,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
     : SUBSCRIPTION_DOCS_URLS.teams.non_trial;
 
   return (
-    <Alert title="Upgrade to Pro to add more seats">
+    <Alert title="Upgrade to Pro to add more editor seats">
       {checkoutUrl ? (
         <Stack gap={2} align="center" justify="flex-end">
           <Button
