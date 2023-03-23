@@ -5,14 +5,13 @@ import * as util from 'util';
 import { dirname, basename } from 'path';
 import isESModule from 'sandbox/eval/utils/is-es-module';
 import evaluateCode from 'sandpack-core/lib/runner/eval';
-import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
 
 import { patchedResolve } from './utils/resolvePatch';
 import { getBabelTypes } from './utils/babelTypes';
 
 let cache = {};
 let cachedPaths = {};
-let transpileBeforeExec = detectOldBrowser();
+let transpileBeforeExec = false;
 
 export const resetCache = () => {
   cache = {};

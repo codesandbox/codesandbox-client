@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import React from 'react';
+import type React from 'react';
 
-import { TemplateType } from '../templates';
+import type { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
   | 'initializing'

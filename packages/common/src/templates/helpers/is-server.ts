@@ -1,4 +1,4 @@
-import { TemplateType } from '..';
+import type { TemplateType } from '..';
 
 const SERVER_TEMPLATE_NAMES = [
   'adonis',

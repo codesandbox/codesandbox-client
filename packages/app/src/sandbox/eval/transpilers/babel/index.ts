@@ -23,7 +23,6 @@ interface TranspilationResult {
   transpiledCode: string;
 }
 
-const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
 
 interface IDep {
@@ -66,7 +65,7 @@ class BabelTranspiler extends WorkerTranspiler {
       // @ts-ignore
       async () => {
         let iteration = 0;
-        while (typeof global.babelworkers === 'undefined') {
+        while (typeof globalThis.babelworkers === 'undefined') {
           if (iteration >= MAX_WORKER_ITERS) {
             throw new Error('Could not load Babel worker');
           }
@@ -74,12 +73,12 @@ class BabelTranspiler extends WorkerTranspiler {
           iteration++;
         }
 
-        if (global.babelworkers.length === 0) {
+        if (globalThis.babelworkers.length === 0) {
           return BabelWorker();
         }
 
         // We set these up in startup.ts.
-        return global.babelworkers.pop();
+        return globalThis.babelworkers.pop();
       },
       {
         maxWorkerCount: WORKER_COUNT,

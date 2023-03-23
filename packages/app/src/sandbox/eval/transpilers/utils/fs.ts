@@ -1,4 +1,4 @@
-import { Module } from 'sandpack-core/lib/types/module';
+import type { Module } from 'sandpack-core/lib/types/module';
 import { ChildHandler } from '../worker-transpiler/child-handler';
 
 export async function getModulesFromMainThread(opts: {

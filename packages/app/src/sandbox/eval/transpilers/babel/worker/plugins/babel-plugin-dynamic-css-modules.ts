@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { extname } from 'path';
+import { extname } from '@codesandbox/common/lib/utils/path';
 import detectiveListener from './wrap-listener';
 
 const LOADERS = {
