@@ -209,7 +209,7 @@ const modals = {
   },
   subscriptionCancellation: {
     Component: SubscriptionCancellationModal,
-    width: 444,
+    width: 600,
   },
   selectWorkspaceToUpgrade: {
     Component: SelectWorkspaceToUpgrade,
