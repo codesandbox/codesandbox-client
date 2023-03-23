@@ -17,9 +17,11 @@ export const EditorSeatsUpgrade: React.FC = () => {
   const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
-  const docsUrl = isEligibleForTrial
-    ? SUBSCRIPTION_DOCS_URLS.teams.trial
-    : SUBSCRIPTION_DOCS_URLS.teams.non_trial;
+  const docsUrl = `${
+    isEligibleForTrial
+      ? SUBSCRIPTION_DOCS_URLS.teams.trial
+      : SUBSCRIPTION_DOCS_URLS.teams.non_trial
+  }?utm_source=editor_seats_upgrade`;
 
   return (
     <Alert title="Upgrade to Pro to add more editor seats">
@@ -39,7 +41,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
           {isPersonalSpace ? (
             <Button
               as="a"
-              href="/pro?utm_source=v1_live_session_upgrade"
+              href="/pro?utm_source=editor_seats_upgrade"
               variant="primary"
               autoWidth
             >
@@ -79,7 +81,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
               variant="secondary"
               href={docsUrl}
               onClick={() => {
-                track('Live Session - learn more clicked', EVENT_PARAMS);
+                track('Editor seats modal - learn more clicked', EVENT_PARAMS);
               }}
               autoWidth
             >
