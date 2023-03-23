@@ -75,7 +75,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
       destination: {
         teamId: activeTeamInfo.id,
         organization:
-          destinationValidation.owner !== user.username
+          destinationValidation.owner !== user.githubProfile?.login
             ? destinationValidation.owner
             : undefined,
         name: destinationValidation.name,
