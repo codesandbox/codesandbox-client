@@ -173,9 +173,9 @@ const Suggested = () => {
     <>
       <Stack gap={2}>
         <Text size={16}>Start by importing from </Text>
-        {githubAccounts.state === 'loading' ? (
-          <SkeletonText />
-        ) : (
+        {githubAccounts.state === 'loading' ? <SkeletonText /> : null}
+
+        {githubAccounts.state === 'ready' && selectedAccount ? (
           <AccountSelect
             options={selectOptions}
             value={selectedAccount}
@@ -188,7 +188,7 @@ const Suggested = () => {
               setSelectedAccount(account);
             }}
           />
-        )}
+        ) : null}
       </Stack>
 
       {githubRepos.state === 'loading' ? (
