@@ -90,7 +90,14 @@ export const MidTrialModal = () => {
                 })}`}{' '}
             left on your trial.
           </Text>
-          <Text as="p" size={19} color="#C2C2C2" align="center">
+          <Text
+            as="p"
+            size={19}
+            color="#C2C2C2"
+            align="center"
+            lineHeight="28px"
+            css={{ margin: 0 }}
+          >
             {!experimentValue ? <SkeletonText /> : null}
 
             {experimentValue === ExperimentValues.A
@@ -228,7 +235,7 @@ const LoseAfterTrial = () => {
               <Text size={16} color="#FFFFFF" lineHeight="24px">
                 {feature.free}
               </Text>
-              {pillValue ? <Badge variant="error">{pillValue}</Badge> : null}
+              {pillValue ? <Badge variant="warning">{pillValue}</Badge> : null}
             </Stack>
           </div>
         );

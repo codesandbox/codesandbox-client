@@ -4,7 +4,7 @@ import { Stack } from '../Stack';
 import { Text } from '../Text';
 
 export interface BadgeProps {
-  variant?: 'trial' | 'neutral' | 'warning' | 'highlight' | 'error';
+  variant?: 'trial' | 'neutral' | 'warning' | 'highlight';
   icon?: IconNames;
 }
 
@@ -13,7 +13,6 @@ const BG_MAP: Record<BadgeProps['variant'], string> = {
   neutral: '#2e2e2e',
   warning: 'rgba(255, 255, 255, 0.06)',
   highlight: '#edffa5',
-  error: '#EF7A7A',
 };
 
 const COLOR_MAP: Record<BadgeProps['variant'], string> = {
@@ -21,7 +20,6 @@ const COLOR_MAP: Record<BadgeProps['variant'], string> = {
   neutral: 'inherit',
   warning: '#ef7a7a',
   highlight: 'inherit',
-  error: '#0E0E0E',
 };
 
 export const Badge: React.FC<BadgeProps> = ({
