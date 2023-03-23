@@ -14,14 +14,15 @@ import {
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
-import { useDismissible, useGetCheckoutURL } from 'app/hooks';
-import { useActions, useAppState } from 'app/overmind';
+import { useDismissible } from 'app/hooks';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { pluralize } from 'app/utils/pluralize';
 import { LoseFeatures } from 'app/components/LoseFeatures/LoseFeatures';
 
 export const MidTrialModal = () => {
   const { modalClosed } = useActions();
+  const { api } = useEffects();
   const { activeTeam } = useAppState();
   const { pathname } = useLocation();
   const [
@@ -33,6 +34,7 @@ export const MidTrialModal = () => {
     `DASHBOARD_MID_TRIAL_REMINDER_${activeTeam}`
   );
   const { subscription } = useWorkspaceSubscription();
+  const [loadingPortal, setLoadingPortal] = useState(false);
 
   const today = startOfToday();
   const trialEndDate = new Date(subscription?.trialEnd);
@@ -44,11 +46,6 @@ export const MidTrialModal = () => {
     });
   }, [experimentPromise]);
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: pathname,
-    cancel_path: pathname,
-  });
-
   const handleClose = () => {
     track('Mid trial reminder: close modal', {
       codesandbox: 'V1',
@@ -59,13 +56,26 @@ export const MidTrialModal = () => {
     modalClosed();
   };
 
-  const handleUpgrade = () => {
+  const handleUpgrade = async () => {
     track('Mid trial reminder: upgrade to pro', {
       codesandbox: 'V1',
       event_source: 'UI',
     });
 
-    dismissMidTrialReminder();
+    // Custom implementation based on useGetCheckoutURL hook because the modal
+    // needs to be dismissed before redirecting.
+    try {
+      setLoadingPortal(true);
+      const payload = await api.stripeCustomerPortal(activeTeam, pathname);
+
+      if (payload.stripeCustomerPortalUrl) {
+        dismissMidTrialReminder();
+        window.location.href = payload.stripeCustomerPortalUrl;
+      }
+    } catch (err) {
+      setLoadingPortal(false);
+      console.error(err);
+    }
   };
 
   return (
@@ -135,10 +145,9 @@ export const MidTrialModal = () => {
         </Element>
         <Element css={{ flexGrow: 1 }}>
           <Button
-            as="a"
-            href={checkoutUrl}
             onClick={handleUpgrade}
             variant="primary"
+            loading={loadingPortal}
           >
             Upgrade to pro
           </Button>
