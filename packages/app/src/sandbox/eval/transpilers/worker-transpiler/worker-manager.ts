@@ -38,6 +38,7 @@ export interface WorkerManagerOptions {
 }
 
 export class WorkerManager {
+  firstLoadPromise: Promise<void> | null = null;
   pendingCalls: Array<WorkerCall> = [];
   activeCalls: Map<number, WorkerCall> = new Map();
   callId: number = 0;
@@ -79,7 +80,10 @@ export class WorkerManager {
 
   initialize() {
     for (let i = this.workerCount; i < this.maxWorkerCount; i++) {
-      this.loadWorker().catch(console.error);
+      const p = this.loadWorker().catch(console.error);
+      if (!this.firstLoadPromise) {
+        this.firstLoadPromise = p;
+      }
     }
   }
 
@@ -98,16 +102,6 @@ export class WorkerManager {
   }
 
   handleMessage(workerData: WorkerData, msg: any): void {
-    if (typeof msg !== 'object' || !msg.codesandbox) {
-      if (!msg.browserfsMessage) {
-        console.warn(
-          `Invalid message from worker ${this.name}#${workerData.workerId}`,
-          msg
-        );
-      }
-      return;
-    }
-
     switch (msg.type) {
       case 'ready':
         this.handleWorkerReady(workerData);
@@ -121,38 +115,61 @@ export class WorkerManager {
     }
   }
 
-  async loadWorker() {
+  async loadWorker(): Promise<void> {
     if (this.workerCount >= this.maxWorkerCount) {
-      return;
+      return Promise.resolve();
+    }
+
+    if (this.firstLoadPromise) {
+      await this.firstLoadPromise;
     }
 
     const workerId = this.workerCount++;
     const startedAt = Date.now();
     const worker = await this.workerFactory();
-    const workerdata: WorkerData = {
-      workerId,
-      status: WorkerStatus.Initializing,
-      startedAt,
-      activeCalls: 0,
-      worker,
-    };
-    this.workers.set(workerId, workerdata);
-    worker.addEventListener('message', evt => {
-      this.handleMessage(workerdata, evt.data);
+    return new Promise((resolve, reject) => {
+      try {
+        const workerdata: WorkerData = {
+          workerId,
+          status: WorkerStatus.Initializing,
+          startedAt,
+          activeCalls: 0,
+          worker,
+        };
+        this.workers.set(workerId, workerdata);
+        worker.addEventListener('message', evt => {
+          const data = evt.data;
+          if (typeof data === 'object') {
+            if (data.codesandbox) {
+              if (data.type === 'worker_started') {
+                resolve();
+              } else {
+                this.handleMessage(workerdata, data);
+              }
+            } else if (!data.browserfsMessage)
+              console.warn(
+                `Invalid message from worker ${this.name}#${workerId}`,
+                data
+              );
+          }
+        });
+
+        // TODO: Move this to onReady, not sure why that doesn't work...
+        if (this.hasFS) {
+          // Register file system that syncs with filesystem in manager
+          // @ts-ignore
+          BrowserFS.FileSystem.WorkerFS.attachRemoteListener(workerdata.worker);
+          workerdata.worker.postMessage({
+            type: 'initialize-fs',
+            codesandbox: true,
+          });
+        }
+
+        worker.postMessage({ type: 'ping', codesandbox: true });
+      } catch (err) {
+        reject(err);
+      }
     });
-
-    // TODO: Move this to onReady, now sure why that doesn't work...
-    if (this.hasFS) {
-      // Register file system that syncs with filesystem in manager
-      // @ts-ignore
-      BrowserFS.FileSystem.WorkerFS.attachRemoteListener(workerdata.worker);
-      workerdata.worker.postMessage({
-        type: 'initialize-fs',
-        codesandbox: true,
-      });
-    }
-
-    worker.postMessage({ type: 'ping', codesandbox: true });
   }
 
   executeRemainingTasks() {
