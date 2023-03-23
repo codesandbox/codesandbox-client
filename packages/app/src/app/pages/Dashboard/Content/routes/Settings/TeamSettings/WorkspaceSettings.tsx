@@ -59,8 +59,8 @@ export const WorkspaceSettings: React.FC = () => {
   const numberOfUnusedSeats = numberOfSeats - numberOfEditors;
 
   const created = team.users.find(user => user.id === team.creatorId);
-  const canConvertViewersToEditors =
-    !hasMaxNumberOfEditors && !numberOfEditorsIsOverTheLimit;
+  const restrictNewEditors =
+    hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit;
 
   if (!team || !currentUser) {
     return <Header title="Team Settings" activeTeam={null} />;
@@ -210,9 +210,12 @@ export const WorkspaceSettings: React.FC = () => {
       </Stack>
 
       {/**
-       * Limit free plan amount of editors.
+       * Limit free plan amount of editors. The banner is shown if
+       * the user is the admin or can start a free trial, otherwise
+       * the user can only invite viewers and the banner isn't
+       * relevant.
        */}
-      {checkoutUrl && (numberOfEditorsIsOverTheLimit || hasMaxNumberOfEditors) && (
+      {checkoutUrl && restrictNewEditors && (
         <MessageStripe justify="space-between">
           <span>
             {numberOfEditorsIsOverTheLimit && (
@@ -286,12 +289,13 @@ export const WorkspaceSettings: React.FC = () => {
         <InviteMember
           isPro={isPro}
           numberOfUnusedSeats={numberOfUnusedSeats}
+          restrictNewEditors={restrictNewEditors}
           team={team}
         />
       )}
 
       <MembersList
-        canPerformRoleChange={canConvertViewersToEditors}
+        restrictNewEditors={restrictNewEditors}
         shouldConfirmRoleChange={isPro && numberOfUnusedSeats === 0}
       />
     </>

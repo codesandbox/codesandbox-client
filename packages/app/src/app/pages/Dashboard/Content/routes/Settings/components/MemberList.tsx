@@ -73,7 +73,7 @@ type MemberListProps = {
    * If a free team has reached the max number of editors,
    * it's not possible to change a viewer to an editor.
    */
-  canPerformRoleChange: boolean;
+  restrictNewEditors: boolean;
   /**
    * If a paid team has filled their seats, warn them that
    * changing an user from viewer to editor will increase
@@ -82,7 +82,7 @@ type MemberListProps = {
   shouldConfirmRoleChange: boolean;
 };
 export const MembersList: React.FC<MemberListProps> = ({
-  canPerformRoleChange,
+  restrictNewEditors,
   shouldConfirmRoleChange,
 }) => {
   const { activeTeamInfo, user } = useAppState();
@@ -93,6 +93,7 @@ export const MembersList: React.FC<MemberListProps> = ({
       removeFromTeam,
       revokeTeamInvitation,
     },
+    modalOpened,
   } = useActions();
   const { isTeamAdmin, isTeamViewer } = useWorkspaceAuthorization();
 
@@ -155,17 +156,19 @@ export const MembersList: React.FC<MemberListProps> = ({
       return 'Editor';
     }
 
-    if (
-      !isTeamAdmin ||
-      (!canPerformRoleChange && member.role === Role.Viewer)
-    ) {
-      return MAP_ROLES_TO_LABEL[member.role];
-    }
-
     return [
       {
         name: 'Editor',
         onSelect: () => {
+          if (member.role === Role.Editor) {
+            return;
+          }
+
+          if (restrictNewEditors) {
+            modalOpened({ modal: 'editorSeatsUpgrade' });
+            return;
+          }
+
           track('Change role to editor', {
             codesandbox: 'V1',
             event_source: 'UI',
@@ -236,13 +239,16 @@ export const MembersList: React.FC<MemberListProps> = ({
     } else if (!member.teamAdmin) {
       actions.push({
         name: 'Make user an admin',
-        // If the team has reached the maximum amount of editors, disable this action.
-        disabled: member.role === Role.Viewer && !canPerformRoleChange,
         onSelect: () => {
           track('Make user an admin', {
             codesandbox: 'V1',
             event_source: 'UI',
           });
+
+          if (member.role === Role.Viewer && restrictNewEditors) {
+            modalOpened({ modal: 'editorSeatsUpgrade' });
+            return;
+          }
 
           changeAuthorization({
             userId: member.id,

@@ -28,6 +28,7 @@ const ROLES_TEXT_MAP = {
 type InviteMemberProps = {
   isPro: boolean;
   numberOfUnusedSeats: number;
+  restrictNewEditors: boolean;
   team: CurrentTeamInfoFragmentFragment;
 };
 export const InviteMember: React.FC<InviteMemberProps> = ({
@@ -41,6 +42,9 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
 
   const [inviteValue, setInviteValue] = React.useState('');
   const [inviteLoading, setInviteLoading] = React.useState(false);
+  const inviteLink = React.useMemo(() => teamInviteLink(team.inviteToken), [
+    team.inviteToken,
+  ]);
 
   // We use `role` as the common term when referring to: `admin`, `editor` or `viewer`
   // But away from the team settings page and on the BE, the term `authorization` is used
@@ -65,10 +69,13 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
 
   const onInviteSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (newMemberRole === TeamMemberAuthorization.Write) {
+      actions.modalOpened({ modal: 'editorSeatsUpgrade' });
+      return;
+    }
+
     setInviteLoading(true);
-
-    const inviteLink = teamInviteLink(team.inviteToken);
-
     await actions.dashboard.inviteToTeam({
       value: inviteValue,
       authorization: newMemberRole,
@@ -92,8 +99,6 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
       });
       if (!confirmed) return;
     }
-
-    const inviteLink = teamInviteLink(team.inviteToken);
 
     actions.track({
       name: 'Dashboard - Copied Team Invite URL',
