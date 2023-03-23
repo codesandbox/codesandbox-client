@@ -30,7 +30,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
             variant="link"
             href={docsUrl}
             onClick={() => {
-              track('Live Session - learn more clicked', EVENT_PARAMS);
+              track('Editor seats modal - learn more clicked', EVENT_PARAMS);
             }}
             autoWidth
           >
@@ -50,13 +50,13 @@ export const EditorSeatsUpgrade: React.FC = () => {
               variant="primary"
               onClick={() => {
                 if (isEligibleForTrial) {
-                  const event = 'Live Session - trial clicked';
+                  const event = 'Editor seats modal - trial clicked';
                   track(
                     isBillingManager ? event : `${event} - As non-admin`,
                     EVENT_PARAMS
                   );
                 } else {
-                  track('Live Session - upgrade clicked', EVENT_PARAMS);
+                  track('Editor seats modal - upgrade clicked', EVENT_PARAMS);
                 }
                 window.location.href = checkoutUrl;
               }}
