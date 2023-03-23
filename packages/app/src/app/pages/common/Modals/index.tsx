@@ -52,6 +52,7 @@ import { SubscriptionCancellationModal } from './SubscriptionCancellation';
 import { SelectWorkspaceToUpgrade } from './SelectWorkspaceToUpgrade';
 import { SelectWorkspaceToStartTrial } from './SelectWorkspaceToStartTrial';
 import { MidTrialModal } from './MidTrialModal';
+import { EditorSeatsUpgrade } from './EditorSeatsUpgrade';
 
 const modals = {
   preferences: {
@@ -222,6 +223,10 @@ const modals = {
   midTrial: {
     Component: MidTrialModal,
     width: 600,
+  },
+  editorSeatsUpgrade: {
+    Component: EditorSeatsUpgrade,
+    width: 400,
   },
 };
 
