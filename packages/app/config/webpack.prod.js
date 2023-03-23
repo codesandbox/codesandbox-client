@@ -230,9 +230,10 @@ module.exports = merge(commonConfig, {
         // },
         {
           urlPattern: /api\/v1\/dependencies/,
-          handler: 'fastest',
+          handler: 'cacheFirst',
           options: {
             cache: {
+              // A day
               maxAgeSeconds: 60 * 60 * 24,
               name: 'dependency-version-cache',
             },
@@ -242,7 +243,7 @@ module.exports = merge(commonConfig, {
           // These should be dynamic, since it's not loaded from this domain
           // But from the root domain
           urlPattern: /codesandbox\.io\/static\/js\//,
-          handler: 'fastest',
+          handler: 'cacheFirst',
           options: {
             cache: {
               // A day
@@ -253,7 +254,7 @@ module.exports = merge(commonConfig, {
         },
         {
           urlPattern: /\.amazonaws\.com\/prod\/package/,
-          handler: 'fastest',
+          handler: 'cacheFirst',
           options: {
             cache: {
               // a week
@@ -264,9 +265,10 @@ module.exports = merge(commonConfig, {
         },
         {
           urlPattern: /prod-packager-packages\.codesandbox\.io/,
-          handler: 'fastest',
+          handler: 'cacheFirst',
           options: {
             cache: {
+              // a week
               maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-files-cache',
             },

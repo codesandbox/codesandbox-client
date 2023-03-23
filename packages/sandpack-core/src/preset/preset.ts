@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash-es';
+import orderBy from 'lodash-es/orderBy';
 import querystring from 'querystring';
 import { NPMDependencies } from '../npm';
 import { Module } from '../types/module';
