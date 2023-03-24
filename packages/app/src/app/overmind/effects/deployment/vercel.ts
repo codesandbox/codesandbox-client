@@ -149,7 +149,7 @@ export default (() => {
       return Promise.all(deploysNoAlias.map(assignAlias));
     },
     async getUser(): Promise<VercelUser> {
-      const response = await axios.get('https://api.vercel.com/www/user', {
+      const response = await axios.get('https://api.vercel.com/v2/user', {
         headers: getDefaultHeaders(),
       });
 
