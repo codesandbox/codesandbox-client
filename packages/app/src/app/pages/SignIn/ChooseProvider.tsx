@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {
   Button as MainButton,
   Element,
+  Icon,
   Input,
   Stack,
   Text,
@@ -37,8 +38,15 @@ const StyledGhostButton = styled(MainButton)`
   }
 `;
 
+type ValidationState =
+  | { state: 'IDLE' }
+  | { state: 'LOADING' }
+  | { state: 'VALID' }
+  | { state: 'INVALID'; error: string };
+
 const SSOSignIn: React.FC = () => {
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const [validationState] = React.useState<ValidationState>({ state: 'IDLE' });
 
   React.useEffect(() => {
     const inputElement = inputRef.current;
@@ -58,16 +66,56 @@ const SSOSignIn: React.FC = () => {
         direction="vertical"
         gap={2}
       >
-        <Element css={{ position: 'relative', height: '48px' }}>
-          <Input
-            aria-labelledby="heading"
-            css={{ height: '100%' }}
-            placeholder="Enter your email"
-            ref={inputRef}
-            type="email"
-            required
-          />
-        </Element>
+        <Stack direction="vertical" gap={1}>
+          <Element css={{ position: 'relative', height: '48px' }}>
+            <Input
+              aria-labelledby="heading"
+              css={{ height: '100%', padding: '16px' }}
+              placeholder="Enter your email"
+              ref={inputRef}
+              type="email"
+              required
+            />
+            <Element
+              css={{
+                position: 'absolute',
+                display: 'flexflexflex',
+                height: 'fit-content',
+                background: '#252525',
+                padding: '2px',
+                right: '16px',
+                left: 'auto',
+                top: 0,
+                bottom: 0,
+                margin: 'auto 0',
+              }}
+            >
+              {
+                {
+                  VALID: <Icon css={{ color: '#B3FBB4' }} name="simpleCheck" />,
+                  INVALID: (
+                    <Icon css={{ color: '#ED6C6C' }} name="infoOutline" />
+                  ),
+                }[validationState.state]
+              }
+            </Element>
+          </Element>
+          <Element aria-live="polite">
+            {validationState.state === 'INVALID' ? (
+              <Text
+                css={{
+                  fontSize: '12px',
+                  lineHeight: '16px',
+                  letterSpacing: '0.005em',
+                  color: '#EF7A7A',
+                }}
+              >
+                {validationState.error}
+              </Text>
+            ) : null}
+          </Element>
+        </Stack>
+
         <Button
           css={{
             width: '100%',
