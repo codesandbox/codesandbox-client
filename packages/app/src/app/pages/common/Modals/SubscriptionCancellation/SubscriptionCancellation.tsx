@@ -41,11 +41,11 @@ export const SubscriptionCancellationModal: React.FC = () => {
           </Stack>
           <Text
             as="h2"
-            size={32}
-            color="#FFFFFF"
+            size={19}
+            color="#C2C2C2"
             align="center"
-            css={{ marginTop: 0 }}
-            fontFamily="everett"
+            lineHeight="28px"
+            css={{ margin: 0 }}
           >
             You&apos;ll lose access to all Pro features
           </Text>
