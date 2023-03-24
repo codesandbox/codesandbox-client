@@ -39,16 +39,20 @@ export const SubscriptionCancellationModal: React.FC = () => {
           <Stack justify="flex-end">
             <IconButton name="cross" title="Close" onClick={handleCloseModal} />
           </Stack>
-          <Text
-            as="h2"
-            size={32}
-            color="#FFFFFF"
-            align="center"
-            css={{ marginTop: 0 }}
-            fontFamily="everett"
-          >
-            You&apos;ll lose access to all Pro features
-          </Text>
+          <Stack justify="center">
+            <Text
+              as="h2"
+              size={19}
+              color="#C2C2C2"
+              align="center"
+              lineHeight="28px"
+              css={{ margin: 0, maxWidth: '400px' }}
+              weight="400"
+            >
+              Are you sure you want to cancel? You&apos;ll lose access to all
+              Pro features
+            </Text>
+          </Stack>
         </Stack>
         <LoseFeatures />
       </Stack>
@@ -89,7 +93,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
               }}
               variant="primary"
             >
-              Cancel {hasActiveTeamTrial ? 'trial' : 'subscription'}
+              OK
             </Button>
           )}
         </Element>

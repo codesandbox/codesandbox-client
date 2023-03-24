@@ -80,7 +80,7 @@ export const LoseFeatures = () => {
         return (
           <div key={feature.key}>
             <Text
-              size={16}
+              size={14}
               color="#999999"
               lineHeight="24px"
               css={{ textDecoration: 'line-through' }}
@@ -88,10 +88,10 @@ export const LoseFeatures = () => {
               {lostFeature}
             </Text>
             <Stack align="center" gap={3} justify="center">
-              <Text size={16} color="#FFFFFF" lineHeight="24px">
+              <Text size={14} color="#FFFFFF" lineHeight="24px">
                 {feature.free}
               </Text>
-              {pillValue ? <Badge variant="warning">{pillValue}</Badge> : null}
+              {pillValue ? <Badge variant="error">{pillValue}</Badge> : null}
             </Stack>
           </div>
         );

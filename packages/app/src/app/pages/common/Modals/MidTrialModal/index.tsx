@@ -149,7 +149,7 @@ export const MidTrialModal = () => {
             variant="primary"
             loading={loadingPortal}
           >
-            Upgrade to pro
+            Upgrade to Pro
           </Button>
         </Element>
       </Stack>
