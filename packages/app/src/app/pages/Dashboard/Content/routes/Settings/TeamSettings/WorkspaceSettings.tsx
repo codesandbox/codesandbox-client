@@ -1,28 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useAppState, useActions, useEffects } from 'app/overmind';
-
+import css from '@styled-system/css';
 import {
   Button,
   Element,
   Stack,
   Text,
-  Menu,
-  Icon,
   MessageStripe,
 } from '@codesandbox/components';
-import css from '@styled-system/css';
-import { UserSearchInput } from 'app/components/UserSearchInput';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
-import {
-  dashboard,
-  teamInviteLink,
-} from '@codesandbox/common/lib/utils/url-generator';
-import {
-  TeamMemberAuthorization,
-  SubscriptionOrigin,
-  SubscriptionInterval,
-} from 'app/graphql/types';
+import { SubscriptionOrigin, SubscriptionInterval } from 'app/graphql/types';
 import { MAX_PRO_EDITORS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useGetCheckoutURL } from 'app/hooks';
@@ -34,25 +23,10 @@ import { Card } from '../components';
 import { MembersList } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
 import { TeamInfo } from '../components/TeamInfo';
+import { InviteMember } from '../components/InviteMember';
 
-const INVITE_ROLES_MAP = {
-  [TeamMemberAuthorization.Admin]: [
-    TeamMemberAuthorization.Write,
-    TeamMemberAuthorization.Read,
-  ],
-  [TeamMemberAuthorization.Write]: [TeamMemberAuthorization.Read],
-
-  [TeamMemberAuthorization.Read]: [],
-};
-
-const ROLES_TEXT_MAP = {
-  [TeamMemberAuthorization.Write]: 'Editor',
-  [TeamMemberAuthorization.Read]: 'Viewer',
-};
-
-export const WorkspaceSettings = () => {
+export const WorkspaceSettings: React.FC = () => {
   const actions = useActions();
-  const effects = useEffects();
   const { user: currentUser, activeTeamInfo: team } = useAppState();
 
   const {
@@ -69,7 +43,6 @@ export const WorkspaceSettings = () => {
   const {
     isBillingManager,
     isTeamAdmin,
-    userRole,
     isTeamEditor,
   } = useWorkspaceAuthorization();
 
@@ -80,83 +53,18 @@ export const WorkspaceSettings = () => {
   const membersCount = team.users.length;
   const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
 
-  // We use `role` as the common term when referring to: `admin`, `editor` or `viewer`
-  // But away from the team settings page and on the BE, the term `authorization` is used
-  const rolesThatUserCanInvite =
-    hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit
-      ? // If team has reached the limit, only allow viewer roles to be invited
-        [TeamMemberAuthorization.Read]
-      : INVITE_ROLES_MAP[userRole];
-
-  const [inviteValue, setInviteValue] = useState('');
-  const [inviteLoading, setInviteLoading] = useState(false);
-
-  const defaultRoleToInvite = rolesThatUserCanInvite.includes(
-    team?.settings.defaultAuthorization
-  )
-    ? team?.settings.defaultAuthorization
-    : TeamMemberAuthorization.Read;
-
-  const [newMemberRole, setNewMemberRole] = React.useState<
-    TeamMemberAuthorization
-  >(defaultRoleToInvite);
-
   // A team can have unused seats in their subscription
   // if they have already paid for X editors for the YEARLY plan
   // then removed some members from the team
   const numberOfUnusedSeats = numberOfSeats - numberOfEditors;
 
-  // if the user is going to be charged for adding a member
-  // throw them a confirmation modal
-  const confirmNewMemberAddition =
-    isPro &&
-    numberOfUnusedSeats === 0 &&
-    newMemberRole !== TeamMemberAuthorization.Read;
-
-  const onInviteSubmit = async event => {
-    event.preventDefault();
-    setInviteLoading(true);
-
-    const inviteLink = teamInviteLink(team.inviteToken);
-
-    await actions.dashboard.inviteToTeam({
-      value: inviteValue,
-      authorization: newMemberRole,
-      confirm: confirmNewMemberAddition,
-      triggerPlace: 'settings',
-      inviteLink,
-    });
-    setInviteLoading(false);
-  };
+  const created = team.users.find(user => user.id === team.creatorId);
+  const restrictNewEditors =
+    hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit;
 
   if (!team || !currentUser) {
     return <Header title="Team Settings" activeTeam={null} />;
   }
-
-  const onCopyInviteUrl = async event => {
-    event.preventDefault();
-
-    if (confirmNewMemberAddition) {
-      const confirmed = await actions.modals.alertModal.open({
-        title: 'Invite New Member',
-        customComponent: 'MemberPaymentConfirmation',
-      });
-      if (!confirmed) return;
-    }
-
-    const inviteLink = teamInviteLink(team.inviteToken);
-
-    actions.track({
-      name: 'Dashboard - Copied Team Invite URL',
-      data: { place: 'settings', inviteLink },
-    });
-    effects.browser.copyToClipboard(inviteLink);
-    effects.notificationToast.success('Copied Team Invite URL!');
-  };
-
-  const created = team.users.find(user => user.id === team.creatorId);
-  const canConvertViewersToEditors =
-    !hasMaxNumberOfEditors && !numberOfEditorsIsOverTheLimit;
 
   return (
     <>
@@ -302,9 +210,12 @@ export const WorkspaceSettings = () => {
       </Stack>
 
       {/**
-       * Limit free plan amount of editors.
+       * Limit free plan amount of editors. The banner is shown if
+       * the user is the admin or can start a free trial, otherwise
+       * the user can only invite viewers and the banner isn't
+       * relevant.
        */}
-      {checkoutUrl && (numberOfEditorsIsOverTheLimit || hasMaxNumberOfEditors) && (
+      {checkoutUrl && restrictNewEditors && (
         <MessageStripe justify="space-between">
           <span>
             {numberOfEditorsIsOverTheLimit && (
@@ -375,68 +286,16 @@ export const WorkspaceSettings = () => {
         )}
 
       {canInviteOtherMembers && (
-        <Stack as="form" onSubmit={inviteLoading ? undefined : onInviteSubmit}>
-          <div style={{ position: 'relative', width: '100%' }}>
-            <UserSearchInput
-              inputValue={inviteValue}
-              allowSelf={false}
-              onInputValueChange={val => setInviteValue(val)}
-              style={{ paddingRight: 80 }}
-            />
-
-            <Menu>
-              <Menu.Button
-                css={css({
-                  fontSize: 3,
-                  fontWeight: 'normal',
-                  paddingX: 0,
-                  position: 'absolute',
-                  top: 0,
-                  right: 2,
-                })}
-              >
-                <Text variant="muted">{ROLES_TEXT_MAP[newMemberRole]}</Text>
-                <Icon name="caret" size={8} marginLeft={1} />
-              </Menu.Button>
-              <Menu.List>
-                {rolesThatUserCanInvite.map(role => (
-                  <Menu.Item
-                    key={role}
-                    onSelect={() => setNewMemberRole(role)}
-                    style={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    <Text style={{ width: '100%' }}>
-                      {ROLES_TEXT_MAP[role]}
-                    </Text>
-                    {newMemberRole === role && (
-                      <Icon name="simpleCheck" size={12} marginLeft={1} />
-                    )}
-                  </Menu.Item>
-                ))}
-              </Menu.List>
-            </Menu>
-          </div>
-
-          <Button
-            type="submit"
-            loading={inviteLoading}
-            style={{ width: 'auto', marginLeft: 8 }}
-          >
-            Add Member
-          </Button>
-
-          <Button
-            variant="secondary"
-            onClick={onCopyInviteUrl}
-            style={{ width: 'auto', marginLeft: 8 }}
-          >
-            Copy Invite URL
-          </Button>
-        </Stack>
+        <InviteMember
+          isPro={isPro}
+          numberOfUnusedSeats={numberOfUnusedSeats}
+          restrictNewEditors={restrictNewEditors}
+          team={team}
+        />
       )}
 
       <MembersList
-        canPerformRoleChange={canConvertViewersToEditors}
+        restrictNewEditors={restrictNewEditors}
         shouldConfirmRoleChange={isPro && numberOfUnusedSeats === 0}
       />
     </>

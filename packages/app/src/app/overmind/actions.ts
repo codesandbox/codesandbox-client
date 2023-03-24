@@ -261,7 +261,8 @@ type ModalName =
   | 'legacyPayment'
   | 'selectWorkspaceToUpgrade'
   | 'selectWorkspaceToStartTrial'
-  | 'midTrial';
+  | 'midTrial'
+  | 'editorSeatsUpgrade';
 
 export const modalOpened = (
   { state, effects }: Context,

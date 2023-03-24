@@ -10,7 +10,7 @@ import { isBefore, startOfToday } from 'date-fns';
 import { useControls } from 'leva';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
-enum SubscriptionDebugStatus {
+export enum SubscriptionDebugStatus {
   'DEFAULT' = 'Default (use API data)',
   'NO_SUBSCRIPTION' = 'Free (without prior subscription)',
 }
