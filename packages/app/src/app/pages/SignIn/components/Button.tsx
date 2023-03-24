@@ -11,8 +11,7 @@ type Props = {
    */
   onClick?: () => void;
   secondary?: boolean;
-  type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
-};
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Button = ({ children, secondary, loading, ...props }: Props) => (
   <BaseButton
