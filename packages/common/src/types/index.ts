@@ -702,26 +702,12 @@ export type ServerPort = {
   name?: string;
 };
 
+/**
+ * The VercelUser types are a selection of what we use and what is or can be returned from
+ * the user endpoint. The whole list of types can be found in the Vercel docs: https://vercel.com/docs/rest-api/interfaces#authuser
+ */
 export type VercelUser = {
-  uid: string;
   email: string;
-  name: string;
-  username: string;
-  avatar: string;
-  platformVersion: number;
-  billing: {
-    plan: string;
-    period: string;
-    trial: string;
-    cancelation: string;
-    addons: string;
-  };
-  bio: string;
-  website: string;
-  profiles: Array<{
-    service: string;
-    link: string;
-  }>;
 };
 
 export type VercelCreator = {
