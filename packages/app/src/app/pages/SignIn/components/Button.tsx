@@ -6,9 +6,12 @@ import { css } from '@styled-system/css';
 type Props = {
   children: React.ReactNode;
   loading?: boolean;
-  onClick: () => void;
+  /**
+   * If the button type is "submit", the onClick isn't needed.
+   */
+  onClick?: () => void;
   secondary?: boolean;
-};
+} & React.ComponentProps<typeof BaseButton>;
 
 export const Button = ({ children, secondary, loading, ...props }: Props) => (
   <BaseButton
