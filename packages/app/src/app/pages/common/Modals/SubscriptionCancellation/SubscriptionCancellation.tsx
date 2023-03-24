@@ -89,7 +89,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
               }}
               variant="primary"
             >
-              Cancel {hasActiveTeamTrial ? 'trial' : 'subscription'}
+              OK
             </Button>
           )}
         </Element>
