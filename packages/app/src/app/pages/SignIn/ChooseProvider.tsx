@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Button as MainButton,
   Element,
@@ -55,8 +56,23 @@ const SSOSignIn: React.FC = () => {
     }
   }, []);
 
+  const handleFormSubmit = React.useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+    },
+    []
+  );
+
   return (
-    <Stack align="center" direction="vertical" gap={8}>
+    <Stack
+      as={motion.div}
+      align="center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      direction="vertical"
+      gap={8}
+    >
       <StyledHeading as="h1" id="heading">
         Sign in with SSO login
       </StyledHeading>
@@ -64,6 +80,7 @@ const SSOSignIn: React.FC = () => {
         as="form"
         css={{ width: '100%', maxWidth: '420px' }}
         direction="vertical"
+        onSubmit={handleFormSubmit}
         gap={2}
       >
         <Stack direction="vertical" gap={1}>
@@ -121,6 +138,7 @@ const SSOSignIn: React.FC = () => {
             width: '100%',
             height: '48px',
           }}
+          disabled={validationState.state !== 'IDLE'}
           type="submit"
         >
           <Text
@@ -131,7 +149,9 @@ const SSOSignIn: React.FC = () => {
             size={4}
             weight="medium"
           >
-            Continue with SSO
+            {validationState.state === 'LOADING'
+              ? 'Signin in...'
+              : 'Continue with SSO'}
           </Text>
         </Button>
       </Stack>
@@ -146,10 +166,12 @@ enum SignInMode {
 
 type ChooseProviderProps = {
   redirectTo?: string;
+  ssoMode?: SignInMode;
   onSignIn?: () => void;
 };
 export const ChooseProvider: React.FC<ChooseProviderProps> = ({
   redirectTo,
+  ssoMode,
   onSignIn,
 }) => {
   const {
@@ -160,7 +182,7 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
   const { loadingAuth, cancelOnLogin } = useAppState();
 
   const [signInMode, setSignInMode] = React.useState<SignInMode>(
-    SignInMode.SSO
+    ssoMode ? SignInMode.SSO : SignInMode.Default
   );
 
   const handleSignIn = async (provider: 'github' | 'google' | 'apple') => {
@@ -185,179 +207,188 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
     setLoadingAuth(provider);
   };
   return (
-    <Stack
-      as="section"
-      align="center"
-      css={{
-        width: '100%',
-        height: '100%',
-        padding: '48px 0',
-        color: '#fff',
-      }}
-      direction="vertical"
-      justify="space-between"
-    >
-      <CodeSandboxIcon width={48} height={48} />
-      {signInMode === SignInMode.Default && (
-        <Stack direction="vertical" gap={8}>
-          <Stack direction="vertical" gap={3}>
-            <StyledHeading
-              as="h1"
-              css={{
-                maxWidth: '396px',
-              }}
-            >
-              Sign in to CodeSandbox
-            </StyledHeading>
-            <Text
-              css={{
-                textAlign: 'center',
-                lineHeight: 1.5,
-                opacity: 0.6,
-              }}
-              size={4}
-            >
-              Login or register to start building your projects today.
-            </Text>
-          </Stack>
-          <Stack direction="vertical" gap={3}>
-            <Button
-              css={{
-                width: '100%',
-                height: '48px',
-              }}
-              loading={loadingAuth.github}
-              onClick={() => handleSignIn('github')}
-            >
-              <GitHubIcon />
-              <Text
-                as="span"
+    <AnimatePresence>
+      <Stack
+        as="section"
+        align="center"
+        css={{
+          width: '100%',
+          height: '100%',
+          padding: '48px 0',
+          color: '#fff',
+        }}
+        direction="vertical"
+        justify="space-between"
+      >
+        <CodeSandboxIcon width={48} height={48} />
+        {signInMode === SignInMode.Default && (
+          <Stack
+            as={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            direction="vertical"
+            gap={8}
+          >
+            <Stack direction="vertical" gap={3}>
+              <StyledHeading
+                as="h1"
                 css={{
-                  lineHeight: 1,
+                  maxWidth: '396px',
+                }}
+              >
+                Sign in to CodeSandbox
+              </StyledHeading>
+              <Text
+                css={{
+                  textAlign: 'center',
+                  lineHeight: 1.5,
+                  opacity: 0.6,
                 }}
                 size={4}
-                weight="medium"
               >
-                Sign in with GitHub
+                Login or register to start building your projects today.
               </Text>
-            </Button>
-            <Stack
-              css={{
-                '@media screen and (max-width: 440px)': {
-                  flexDirection: 'column',
-                },
-              }}
-              gap={3}
-            >
-              <Button
-                css={{
-                  width: '100%',
-                  height: '40px',
-                  flex: 1,
-                }}
-                loading={loadingAuth.google}
-                onClick={() => handleSignIn('google')}
-                secondary
-              >
-                <GoogleIcon />
-                <Text
-                  as="span"
-                  css={{ lineHeight: 1 }}
-                  size={3}
-                  weight="medium"
-                >
-                  Sign in with Google
-                </Text>
-              </Button>
-              <Button
-                css={{
-                  width: '100%',
-                  height: '40px',
-                  flex: 1,
-                }}
-                loading={loadingAuth.apple}
-                onClick={() => handleSignIn('apple')}
-                secondary
-              >
-                <AppleIcon />
-                <Text
-                  as="span"
-                  css={{ lineHeight: 1 }}
-                  size={3}
-                  weight="medium"
-                >
-                  Sign in with Apple
-                </Text>
-              </Button>
             </Stack>
+            <Stack direction="vertical" gap={3}>
+              <Button
+                css={{
+                  width: '100%',
+                  height: '48px',
+                }}
+                loading={loadingAuth.github}
+                onClick={() => handleSignIn('github')}
+              >
+                <GitHubIcon />
+                <Text
+                  as="span"
+                  css={{
+                    lineHeight: 1,
+                  }}
+                  size={4}
+                  weight="medium"
+                >
+                  Sign in with GitHub
+                </Text>
+              </Button>
+              <Stack
+                css={{
+                  '@media screen and (max-width: 440px)': {
+                    flexDirection: 'column',
+                  },
+                }}
+                gap={3}
+              >
+                <Button
+                  css={{
+                    width: '100%',
+                    height: '40px',
+                    flex: 1,
+                  }}
+                  loading={loadingAuth.google}
+                  onClick={() => handleSignIn('google')}
+                  secondary
+                >
+                  <GoogleIcon />
+                  <Text
+                    as="span"
+                    css={{ lineHeight: 1 }}
+                    size={3}
+                    weight="medium"
+                  >
+                    Sign in with Google
+                  </Text>
+                </Button>
+                <Button
+                  css={{
+                    width: '100%',
+                    height: '40px',
+                    flex: 1,
+                  }}
+                  loading={loadingAuth.apple}
+                  onClick={() => handleSignIn('apple')}
+                  secondary
+                >
+                  <AppleIcon />
+                  <Text
+                    as="span"
+                    css={{ lineHeight: 1 }}
+                    size={3}
+                    weight="medium"
+                  >
+                    Sign in with Apple
+                  </Text>
+                </Button>
+              </Stack>
+            </Stack>
+            {cancelOnLogin && (
+              <MainButton
+                variant="link"
+                type="button"
+                onClick={() => {
+                  cancelOnLogin();
+                  toggleSignInModal();
+                }}
+              >
+                <Text>Continue without an account</Text>
+              </MainButton>
+            )}
           </Stack>
-          {cancelOnLogin && (
-            <MainButton
-              variant="link"
-              type="button"
-              onClick={() => {
-                cancelOnLogin();
-                toggleSignInModal();
-              }}
+        )}
+        {signInMode === SignInMode.SSO && <SSOSignIn />}
+
+        <Stack as="footer" align="center" direction="vertical">
+          {signInMode === SignInMode.Default && (
+            <StyledGhostButton
+              onClick={() => setSignInMode(SignInMode.SSO)}
+              variant="ghost"
             >
-              <Text>Continue without an account</Text>
-            </MainButton>
+              Sign in with SSO login
+            </StyledGhostButton>
           )}
+          {signInMode === SignInMode.SSO && (
+            <StyledGhostButton
+              onClick={() => setSignInMode(SignInMode.Default)}
+              variant="ghost"
+            >
+              Not SSO? Sign in
+            </StyledGhostButton>
+          )}
+
+          <Text
+            css={{
+              lineHeight: '13px',
+              maxWidth: '240px',
+              margin: '24px 0 0 0',
+
+              a: {
+                color: 'inherit',
+              },
+            }}
+            variant="muted"
+            align="center"
+            size={12}
+            block
+          >
+            By continuing, you agree to CodeSandbox{' '}
+            <a
+              href="https://codesandbox.io/legal/terms"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Terms of Service
+            </a>
+            ,{' '}
+            <a
+              href="https://codesandbox.io/legal/privacy"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Privacy Policy
+            </a>
+          </Text>
         </Stack>
-      )}
-      {signInMode === SignInMode.SSO && <SSOSignIn />}
-
-      <Stack as="footer" align="center" direction="vertical">
-        {signInMode === SignInMode.Default && (
-          <StyledGhostButton
-            onClick={() => setSignInMode(SignInMode.SSO)}
-            variant="ghost"
-          >
-            Sign in with SSO login
-          </StyledGhostButton>
-        )}
-        {signInMode === SignInMode.SSO && (
-          <StyledGhostButton
-            onClick={() => setSignInMode(SignInMode.Default)}
-            variant="ghost"
-          >
-            Not SSO? Sign in
-          </StyledGhostButton>
-        )}
-
-        <Text
-          css={{
-            lineHeight: '13px',
-            maxWidth: '240px',
-            margin: '24px 0 0 0',
-
-            a: {
-              color: 'inherit',
-            },
-          }}
-          variant="muted"
-          align="center"
-          size={12}
-          block
-        >
-          By continuing, you agree to CodeSandbox{' '}
-          <a
-            href="https://codesandbox.io/legal/terms"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Terms of Service
-          </a>
-          ,{' '}
-          <a
-            href="https://codesandbox.io/legal/privacy"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Privacy Policy
-          </a>
-        </Text>
       </Stack>
-    </Stack>
+    </AnimatePresence>
   );
 };

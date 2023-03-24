@@ -74,7 +74,6 @@ export const SignInModal = () => {
                 })}
               >
                 <Stack direction="vertical" gap={64}>
-                  {/* <Element paddingBottom={6}>Welcome</Element> */}
                   <SignIn redirectTo={redirectOnLogin} />
                 </Stack>
               </Element>

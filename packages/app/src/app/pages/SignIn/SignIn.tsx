@@ -10,7 +10,7 @@ interface SignInProps {
   onSignIn?: () => void;
 }
 
-export const SignIn = ({ redirectTo, onSignIn }: SignInProps) => {
+export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
   const { duplicateAccountStatus, pendingUser, pendingUserId } = useAppState();
   const { getPendingUser } = useActions();
 
