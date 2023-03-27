@@ -202,7 +202,7 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
         path={path}
         folderPath={folderPath}
         page="sandboxes"
-        icon="folder"
+        icon={nestingLevel === 0 ? 'sandbox' : 'folder'}
         nestingLevel={nestingLevel}
         setFoldersVisibility={setFoldersVisibility}
       >
@@ -274,7 +274,10 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 marginRight: '8px',
               }}
             >
-              <Icon name="folder" size={16} />
+              <Icon
+                name={nestingLevel === 0 ? 'sandbox' : 'folder'}
+                size={16}
+              />
             </Stack>
 
             {isRenaming || isNewFolder ? (
