@@ -53,22 +53,6 @@ export default (() => {
     };
   }
 
-  async function deploysByID(id) {
-    try {
-      const response = await axios.get(
-        `https://api.vercel.com/v2/now/deployments/${id}/aliases`,
-        {
-          headers: getDefaultHeaders(),
-        }
-      );
-
-      return response.data;
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-  }
-
   return {
     initialize(options: Options) {
       _options = options;
@@ -107,6 +91,7 @@ export default (() => {
       return null;
     },
     getConfig(sandbox: Sandbox): VercelConfig {
+      // Rename to vercelConfigs?
       const nowConfigs = sandbox.modules
         .filter(
           m =>
@@ -125,28 +110,17 @@ export default (() => {
     },
     async getDeployments(name: string): Promise<VercelDeployment[]> {
       const response = await axios.get<{ deployments: VercelDeployment[] }>(
-        'https://api.vercel.com/v4/now/deployments',
+        'https://api.vercel.com/v6/deployments',
         {
           headers: getDefaultHeaders(),
         }
       );
 
-      const deploysNoAlias = response.data.deployments
+      const deploys = response.data.deployments
         .filter(d => d.name === name)
         .sort((a, b) => (a.created < b.created ? 1 : -1));
 
-      const assignAlias = async d => {
-        const alias = await deploysByID(d.uid);
-        if (alias) {
-          // eslint-disable-next-line
-          d.alias = alias.aliases;
-        } else {
-          d.alias = [];
-        }
-        return d;
-      };
-
-      return Promise.all(deploysNoAlias.map(assignAlias));
+      return Promise.all(deploys);
     },
     async getUser(): Promise<VercelUser> {
       const response = await axios.get('https://api.vercel.com/v2/user', {
@@ -177,20 +151,6 @@ export default (() => {
       );
 
       return `https://${response.data.url}`;
-    },
-    async aliasDeployment(
-      id: string,
-      vercelConfig: VercelConfig
-    ): Promise<string> {
-      const response = await axios.post(
-        `https://api.vercel.com/v2/now/deployments/${id}/aliases`,
-        { alias: vercelConfig.alias },
-        {
-          headers: getDefaultHeaders(),
-        }
-      );
-
-      return `https://${response.data.alias}`;
     },
   };
 })();
