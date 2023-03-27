@@ -41,7 +41,7 @@ const StyledGhostButton = styled(MainButton)`
 
 type ValidationState =
   | { state: 'IDLE' }
-  | { state: 'LOADING' }
+  | { state: 'VALIDATING' }
   | { state: 'VALID' }
   | { state: 'INVALID'; error: string };
 
@@ -51,8 +51,7 @@ type SSOSignInProps = {
 const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [validationState] = React.useState<ValidationState>({
-    state: 'INVALID',
-    error: 'This email is not configured for SSO login',
+    state: 'IDLE',
   });
 
   React.useEffect(() => {
@@ -66,7 +65,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
     },
-    []
+    [validationState]
   );
 
   return (
@@ -92,8 +91,15 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
         <Stack direction="vertical" gap={1}>
           <Element css={{ position: 'relative', height: '48px' }}>
             <Input
-              aria-labelledby="heading"
-              css={{ height: '100%', padding: '16px' }}
+              aria-describedby="heading error"
+              css={{
+                height: '100%',
+                padding: '16px',
+
+                // Want the affordances but not the styling.
+                ':disabled': { opacity: 1 },
+              }}
+              disabled={validationState.state !== 'IDLE'}
               placeholder="Enter your email"
               ref={inputRef}
               type="email"
@@ -123,17 +129,15 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
               }
             </Element>
           </Element>
-          <Element aria-live="polite">
+          <Element aria-live="polite" id="error">
             {validationState.state === 'INVALID' ? (
               <Text
-                as={motion.p}
                 css={{
                   fontSize: '12px',
                   lineHeight: '16px',
                   letterSpacing: '0.005em',
                   color: '#EF7A7A',
                 }}
-                layout
               >
                 {validationState.error}. Please contact your team admin or{' '}
                 <MainButton
@@ -152,7 +156,6 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
             ) : null}
           </Element>
         </Stack>
-
         <Button
           css={{
             width: '100%',
@@ -169,7 +172,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
             size={4}
             weight="medium"
           >
-            {validationState.state === 'LOADING'
+            {['VALIDATING', 'VALID'].includes(validationState.state)
               ? 'Signin in...'
               : 'Continue with SSO'}
           </Text>
@@ -200,6 +203,8 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
     toggleSignInModal,
   } = useActions();
   const { loadingAuth, cancelOnLogin } = useAppState();
+  // const location = useLocation();
+  // const history = useHistory();
 
   const [signInMode, setSignInMode] = React.useState<SignInMode>(
     ssoMode ? SignInMode.SSO : SignInMode.Default
@@ -226,6 +231,7 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
 
     setLoadingAuth(provider);
   };
+
   return (
     <AnimatePresence>
       <Stack

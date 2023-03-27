@@ -7,7 +7,7 @@ type Props = {
   children: React.ReactNode;
   loading?: boolean;
   secondary?: boolean;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+} & React.ComponentProps<typeof BaseButton>;
 
 export const Button = ({ children, secondary, loading, ...props }: Props) => (
   <BaseButton
