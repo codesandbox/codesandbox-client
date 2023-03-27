@@ -29,24 +29,24 @@ const LOSE_DEFAULT = [
     pro: 'Live sessions',
     free: 'No ability to go live',
   },
-  {
-    key: 'ram',
-    pro: '6GB RAM',
-    free: '2GB RAM',
-    pill: '-66% capacity',
-  },
-  {
-    key: 'cpu',
-    pro: '4 vCPUs',
-    free: '2 vCPUs',
-    pill: '-2 vCPUs',
-  },
-  {
-    key: 'disk',
-    pro: '12GB Disk',
-    free: '6GB Disk',
-    pill: '-50% storage',
-  },
+  // {
+  //   key: 'ram',
+  //   pro: '6GB RAM',
+  //   free: '2GB RAM',
+  //   pill: '-66% capacity',
+  // },
+  // {
+  //   key: 'cpu',
+  //   pro: '4 vCPUs',
+  //   free: '2 vCPUs',
+  //   pill: '-2 vCPUs',
+  // },
+  // {
+  //   key: 'disk',
+  //   pro: '12GB Disk',
+  //   free: '6GB Disk',
+  //   pill: '-50% storage',
+  // },
 ];
 
 export const LoseFeatures = () => {
