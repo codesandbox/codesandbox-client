@@ -63,10 +63,10 @@ export default (() => {
         [key: string]: string;
       }
     ) {
-      const nowData = this.getConfig(sandbox);
-      if (!nowData || !nowData.env) return null;
-      const all = Object.keys(nowData.env).map(async envVar => {
-        const name = nowData.env[envVar].split('@')[1];
+      const vercelConfig = this.getConfig(sandbox);
+      if (!vercelConfig || !vercelConfig.env) return null;
+      const all = Object.keys(vercelConfig.env).map(async envVar => {
+        const name = vercelConfig.env[envVar].split('@')[1];
 
         if (envVars[envVar]) {
           try {
@@ -91,8 +91,7 @@ export default (() => {
       return null;
     },
     getConfig(sandbox: Sandbox): VercelConfig {
-      // Rename to vercelConfigs?
-      const nowConfigs = sandbox.modules
+      const vercelConfigFiles = sandbox.modules
         .filter(
           m =>
             m.title === 'vercel.json' ||
@@ -100,13 +99,13 @@ export default (() => {
             (m.title === 'package.json' && JSON.parse(m.code).now)
         )
         .map(c => JSON.parse(c.code));
-      const nowData = nowConfigs[0] || {};
+      const vercelConfig = vercelConfigFiles[0] || {};
 
-      if (!nowData.name) {
-        nowData.name = `csb-${sandbox.id}`;
+      if (!vercelConfig.name) {
+        vercelConfig.name = `csb-${sandbox.id}`;
       }
 
-      return nowData;
+      return vercelConfig;
     },
     async getDeployments(name: string): Promise<VercelDeployment[]> {
       const response = await axios.get<{ deployments: VercelDeployment[] }>(
