@@ -45,9 +45,15 @@ type ValidationState =
   | { state: 'VALID' }
   | { state: 'INVALID'; error: string };
 
-const SSOSignIn: React.FC = () => {
+type SSOSignInProps = {
+  changeSignInMode: () => void;
+};
+const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [validationState] = React.useState<ValidationState>({ state: 'IDLE' });
+  const [validationState] = React.useState<ValidationState>({
+    state: 'INVALID',
+    error: 'This email is not configured for SSO login',
+  });
 
   React.useEffect(() => {
     const inputElement = inputRef.current;
@@ -120,14 +126,28 @@ const SSOSignIn: React.FC = () => {
           <Element aria-live="polite">
             {validationState.state === 'INVALID' ? (
               <Text
+                as={motion.p}
                 css={{
                   fontSize: '12px',
                   lineHeight: '16px',
                   letterSpacing: '0.005em',
                   color: '#EF7A7A',
                 }}
+                layout
               >
-                {validationState.error}
+                {validationState.error}. Please contact your team admin or{' '}
+                <MainButton
+                  css={{
+                    all: 'unset',
+                    textDecoration: 'underline',
+                    transition: 'color .3s',
+                  }}
+                  onClick={changeSignInMode}
+                  variant="link"
+                >
+                  sign in through a different method
+                </MainButton>
+                .
               </Text>
             ) : null}
           </Element>
@@ -335,7 +355,11 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
             )}
           </Stack>
         )}
-        {signInMode === SignInMode.SSO && <SSOSignIn />}
+        {signInMode === SignInMode.SSO && (
+          <SSOSignIn
+            changeSignInMode={() => setSignInMode(SignInMode.Default)}
+          />
+        )}
 
         <Stack as="footer" align="center" direction="vertical">
           {signInMode === SignInMode.Default && (
