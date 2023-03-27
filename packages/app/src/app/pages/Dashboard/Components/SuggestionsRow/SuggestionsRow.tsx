@@ -108,7 +108,7 @@ export const SuggestionsRow = () => {
   };
 
   return (
-    <>
+    <EmptyPage.StyledGridWrapper>
       <Stack gap={2}>
         <Text size={16}>Start by importing from </Text>
         {githubAccounts.state === 'loading' ? <SkeletonText /> : null}
@@ -179,7 +179,7 @@ export const SuggestionsRow = () => {
 
       {isFree ? <UpgradeMessage /> : null}
       {restrictsPrivateRepos ? <AuthorizeForSuggested /> : null}
-    </>
+    </EmptyPage.StyledGridWrapper>
   );
 };
 
