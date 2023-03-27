@@ -20,6 +20,10 @@ export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
     }
   }, [getPendingUser, pendingUserId]);
 
+  const ssoMode = JSON.parse(
+    new URL(location.href).searchParams.get('sso_mode')
+  );
+
   /**
    * 🚧 Utility to debug Duplicate Account
    */
@@ -49,5 +53,11 @@ export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
   /**
    * ⬇️ Sign in provider
    */
-  return <ChooseProvider redirectTo={redirectTo} onSignIn={onSignIn} />;
+  return (
+    <ChooseProvider
+      redirectTo={redirectTo}
+      onSignIn={onSignIn}
+      ssoMode={ssoMode}
+    />
+  );
 };

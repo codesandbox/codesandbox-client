@@ -73,9 +73,7 @@ export const SignInModal = () => {
                   boxShadow: '2',
                 })}
               >
-                <Stack direction="vertical" gap={64}>
-                  <SignIn redirectTo={redirectOnLogin} />
-                </Stack>
+                <SignIn redirectTo={redirectOnLogin} />
               </Element>
             </OutsideClickHandler>
           </Stack>
