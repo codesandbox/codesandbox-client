@@ -54,9 +54,9 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
               codesandbox: 'V1',
               event_source: 'UI',
               card_type: 'get-started-action',
-              tab: 'github',
+              tab: 'default',
             });
-            actions.openCreateSandboxModal({ initialTab: 'import' });
+            actions.openCreateSandboxModal();
           }}
         >
           <Icon name="sandbox" /> New sandbox
@@ -89,7 +89,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
               });
             }}
           >
-            <Icon name="team" /> Invite team members
+            <Icon name="addMember" /> Invite team members
           </ButtonInverseLarge>
         ) : null}
 
