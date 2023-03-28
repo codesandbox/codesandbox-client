@@ -702,44 +702,26 @@ export type ServerPort = {
   name?: string;
 };
 
+/**
+ * The VercelUser type is a selection of what we use and what is or can be returned from
+ * the user endpoint. The whole list of types can be found in the Vercel docs: https://vercel.com/docs/rest-api/interfaces#authuser
+ */
 export type VercelUser = {
-  uid: string;
   email: string;
-  name: string;
-  username: string;
-  avatar: string;
-  platformVersion: number;
-  billing: {
-    plan: string;
-    period: string;
-    trial: string;
-    cancelation: string;
-    addons: string;
-  };
-  bio: string;
-  website: string;
-  profiles: Array<{
-    service: string;
-    link: string;
-  }>;
 };
 
+/**
+ * The VercelCreator type is a selection of what we use and what is or can be returned for
+ * the creator property on the deployments endpoint.
+ */
 export type VercelCreator = {
   uid: string;
 };
 
-export type VercelScale = {
-  current: number;
-  min: number;
-  max: number;
-};
-
-export type VercelAlias = {
-  alias: string;
-  created: string;
-  uid: string;
-};
-
+/**
+ * Can't find where these types are documented on the Vercel side, but we're using these states
+ * to show active deployment status to the user.
+ */
 export enum VercelDeploymentState {
   DEPLOYING = 'DEPLOYING',
   INITIALIZING = 'INITIALIZING',
@@ -752,29 +734,25 @@ export enum VercelDeploymentState {
   ERROR = 'ERROR',
 }
 
-export enum VercelDeploymentType {
-  'NPM',
-  'DOCKER',
-  'STATIC',
-  'LAMBDAS',
-}
-
+/**
+ * The VercelDeployment type is a selection of what we use and what is or can be returned from
+ * the deployments endpoint.
+ */
 export type VercelDeployment = {
   uid: string;
   name: string;
   url: string;
   created: number;
   state: VercelDeploymentState;
-  instanceCount: number;
-  alias: VercelAlias[];
-  scale: VercelScale;
-  createor: VercelCreator;
-  type: VercelDeploymentType;
 };
 
+/**
+ * The VercelConfig type is a selection of (now legacy) properties we use from the vercel configuration
+ * file. More info can be found in the Vercel docs: https://vercel.com/docs/concepts/projects/project-configuration#legacy
+ */
 export type VercelConfig = {
   name?: string;
-  alias?: string;
+  env?: string;
 };
 
 export type NetlifySite = {
