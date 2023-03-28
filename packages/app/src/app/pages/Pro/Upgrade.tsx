@@ -40,7 +40,7 @@ import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 const useCurrencyFromTimeZone = () => {
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  if (timeZone === 'Asia/Kolkata') {
+  if (timeZone === 'Asia/Kolkata' || timeZone === 'Asia/Calcutta') {
     return 'INR';
   } else {
     return 'USD';
