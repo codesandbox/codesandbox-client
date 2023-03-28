@@ -130,7 +130,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
       </Stack>
       <DocumentationRow />
       <TemplatesRow />
-      <SuggestionsRow />
+      <SuggestionsRow page="recent" />
     </StyledWrapper>
   );
 };

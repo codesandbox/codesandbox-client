@@ -29,7 +29,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 import { EmptyPage } from '../EmptyPage';
 
-export const SuggestionsRow = () => {
+export const SuggestionsRow = ({ page }: { page: string }) => {
   const { activeTeamInfo } = useAppState();
   const { dashboard: dashboardActions } = useActions();
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
@@ -88,7 +88,7 @@ export const SuggestionsRow = () => {
 
     if (isPersonalRepository && isTeamSpace) {
       track(
-        'Suggested repos empty page - Imported personal repository into team space',
+        `Suggested repos ${page} page - Imported personal repository into team space`,
         {
           codesandbox: 'V1',
           event_source: 'UI',
@@ -96,7 +96,7 @@ export const SuggestionsRow = () => {
       );
     } else {
       track(
-        'Suggested repos empty page - Imported organization repository into team space',
+        `Suggested repos ${page} page - Imported organization repository into team space`,
         {
           codesandbox: 'V1',
           event_source: 'UI',
@@ -177,7 +177,7 @@ export const SuggestionsRow = () => {
         <Text>No GitHub repositories found to import.</Text>
       ) : null}
 
-      {isFree ? <UpgradeMessage /> : null}
+      {isFree ? <UpgradeMessage page={page} /> : null}
       {restrictsPrivateRepos ? <AuthorizeForSuggested /> : null}
     </EmptyPage.StyledGridWrapper>
   );
@@ -225,7 +225,7 @@ const SuggestionCard = ({
   );
 };
 
-const UpgradeMessage = () => {
+const UpgradeMessage = ({ page }: { page: string }) => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   return (
@@ -237,7 +237,7 @@ const UpgradeMessage = () => {
           track(
             `Suggested repos - ${
               isEligibleForTrial ? 'Start a trial' : 'Upgrade to Pro'
-            } from empty repositories page`,
+            } from ${page} page`,
             {
               codesandbox: 'V1',
               event_source: 'UI',
