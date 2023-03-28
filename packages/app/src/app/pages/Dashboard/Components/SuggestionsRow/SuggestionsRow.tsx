@@ -110,7 +110,9 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
   return (
     <EmptyPage.StyledGridWrapper>
       <Stack gap={2}>
-        <Text size={16}>Start by importing from </Text>
+        <Text size={16}>
+          {page === 'empty repositories' ? 'Start by importing' : 'Import'} from{' '}
+        </Text>
         {githubAccounts.state === 'loading' ? <SkeletonText /> : null}
 
         {githubAccounts.state === 'ready' && selectedAccount ? (
