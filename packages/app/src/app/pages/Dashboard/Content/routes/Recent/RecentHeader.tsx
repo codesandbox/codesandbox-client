@@ -72,7 +72,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
             actions.openCreateSandboxModal({ initialTab: 'import' });
           }}
         >
-          <Icon name="repository" /> Import repository
+          <Icon name="github" /> Import repository
         </ButtonInverseLarge>
 
         {isTeamSpace && !isTeamViewer ? (
