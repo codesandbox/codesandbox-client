@@ -34,6 +34,7 @@ type InviteMemberProps = {
 export const InviteMember: React.FC<InviteMemberProps> = ({
   isPro,
   numberOfUnusedSeats,
+  restrictNewEditors,
   team,
 }) => {
   const effects = useEffects();
@@ -70,7 +71,7 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
   const onInviteSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (newMemberRole === TeamMemberAuthorization.Write) {
+    if (newMemberRole === TeamMemberAuthorization.Write && restrictNewEditors) {
       actions.modalOpened({ modal: 'editorSeatsUpgrade' });
       return;
     }
