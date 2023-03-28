@@ -50,7 +50,7 @@ type SSOSignInProps = {
 };
 const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [validationState] = React.useState<ValidationState>({
+  const [validation] = React.useState<ValidationState>({
     state: 'IDLE',
   });
 
@@ -65,7 +65,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
     },
-    [validationState]
+    [validation]
   );
 
   return (
@@ -79,7 +79,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
       gap={8}
     >
       <StyledHeading as="h1" id="heading">
-        Sign in with SSO login
+        Sign in with SSO
       </StyledHeading>
       <Stack
         as="form"
@@ -91,7 +91,8 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
         <Stack direction="vertical" gap={1}>
           <Element css={{ position: 'relative', height: '48px' }}>
             <Input
-              aria-describedby="heading error"
+              aria-labelledby="heading"
+              aria-describedby="error"
               css={{
                 height: '100%',
                 padding: '16px',
@@ -99,7 +100,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
                 // Want the affordances but not the styling.
                 ':disabled': { opacity: 1 },
               }}
-              disabled={validationState.state !== 'IDLE'}
+              disabled={validation.state !== 'IDLE'}
               placeholder="Enter your email"
               ref={inputRef}
               type="email"
@@ -125,12 +126,12 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
                   INVALID: (
                     <Icon css={{ color: '#ED6C6C' }} name="infoOutline" />
                   ),
-                }[validationState.state]
+                }[validation.state]
               }
             </Element>
           </Element>
           <Element aria-live="polite" id="error">
-            {validationState.state === 'INVALID' ? (
+            {validation.state === 'INVALID' ? (
               <Text
                 css={{
                   fontSize: '12px',
@@ -139,7 +140,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
                   color: '#EF7A7A',
                 }}
               >
-                {validationState.error}. Please contact your team admin or{' '}
+                {validation.error}. Please contact your team admin or{' '}
                 <MainButton
                   css={{
                     all: 'unset',
@@ -161,7 +162,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
             width: '100%',
             height: '48px',
           }}
-          disabled={validationState.state !== 'IDLE'}
+          disabled={validation.state !== 'IDLE'}
           type="submit"
         >
           <Text
@@ -172,7 +173,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
             size={4}
             weight="medium"
           >
-            {['VALIDATING', 'VALID'].includes(validationState.state)
+            {['VALIDATING', 'VALID'].includes(validation.state)
               ? 'Signin in...'
               : 'Continue with SSO'}
           </Text>
@@ -373,16 +374,19 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
               onClick={() => setSignInMode(SignInMode.SSO)}
               variant="ghost"
             >
-              Sign in with SSO login
+              Sign in with SSO
             </StyledGhostButton>
           )}
           {signInMode === SignInMode.SSO && (
-            <StyledGhostButton
-              onClick={() => setSignInMode(SignInMode.Default)}
-              variant="ghost"
-            >
-              Not SSO? Sign in
-            </StyledGhostButton>
+            <Text lineHeight="16px" size={13} variant="muted">
+              Not SSO?{''}
+              <StyledGhostButton
+                onClick={() => setSignInMode(SignInMode.Default)}
+                variant="ghost"
+              >
+                Sign in
+              </StyledGhostButton>
+            </Text>
           )}
 
           <Text
