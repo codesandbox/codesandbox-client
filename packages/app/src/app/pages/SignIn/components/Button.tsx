@@ -6,9 +6,8 @@ import { css } from '@styled-system/css';
 type Props = {
   children: React.ReactNode;
   loading?: boolean;
-  onClick: () => void;
   secondary?: boolean;
-};
+} & React.ComponentProps<typeof BaseButton>;
 
 export const Button = ({ children, secondary, loading, ...props }: Props) => (
   <BaseButton

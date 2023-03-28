@@ -1314,3 +1314,20 @@ export const team = props => (
     />
   </Element>
 );
+
+export const infoOutline = props => (
+  <Element
+    as="svg"
+    fill="none"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M15.667 8A7.167 7.167 0 1 1 1.333 8a7.167 7.167 0 0 1 14.334 0ZM8.5 14.167a6.167 6.167 0 1 0 0-12.334 6.167 6.167 0 0 0 0 12.334Zm0-2.333a.5.5 0 0 1-.5-.5v-.084a.5.5 0 0 1 1 0v.084a.5.5 0 0 1-.5.5Zm0-3.317a.5.5 0 0 1-.5-.5V4.683a.5.5 0 0 1 1 0v3.334a.5.5 0 0 1-.5.5Z"
+      clipRule="evenodd"
+    />
+  </Element>
+);

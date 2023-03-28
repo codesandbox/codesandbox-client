@@ -10,7 +10,7 @@ interface SignInProps {
   onSignIn?: () => void;
 }
 
-export const SignIn = ({ redirectTo, onSignIn }: SignInProps) => {
+export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
   const { duplicateAccountStatus, pendingUser, pendingUserId } = useAppState();
   const { getPendingUser } = useActions();
 
@@ -19,6 +19,10 @@ export const SignIn = ({ redirectTo, onSignIn }: SignInProps) => {
       getPendingUser();
     }
   }, [getPendingUser, pendingUserId]);
+
+  const ssoMode = JSON.parse(
+    new URL(location.href).searchParams.get('sso_mode')
+  );
 
   /**
    * 🚧 Utility to debug Duplicate Account
@@ -49,5 +53,11 @@ export const SignIn = ({ redirectTo, onSignIn }: SignInProps) => {
   /**
    * ⬇️ Sign in provider
    */
-  return <ChooseProvider redirectTo={redirectTo} onSignIn={onSignIn} />;
+  return (
+    <ChooseProvider
+      redirectTo={redirectTo}
+      onSignIn={onSignIn}
+      ssoMode={ssoMode}
+    />
+  );
 };
