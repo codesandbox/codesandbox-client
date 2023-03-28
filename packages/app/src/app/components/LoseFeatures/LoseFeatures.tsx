@@ -3,7 +3,13 @@ import React from 'react';
 import { Stack, Badge, Text } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 
-const LOSE_DEFAULT = [
+type Feature = {
+  key: string;
+  pro: string;
+  free: string;
+  pill?: string;
+};
+const LOSE_DEFAULT: Feature[] = [
   {
     key: 'editors',
     pro: 'Up to 20 editors',
