@@ -15,7 +15,11 @@ import {
   CodeSandboxIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
-import { useActions, useAppState } from 'app/overmind';
+import {
+  useActions,
+  useAppState,
+  //  useEffects
+} from 'app/overmind';
 import history from 'app/utils/history';
 import { Button } from './components/Button';
 
@@ -49,23 +53,16 @@ type SSOSignInProps = {
   changeSignInMode: () => void;
 };
 const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  // const { api } = useEffects();
   const [validation] = React.useState<ValidationState>({
     state: 'IDLE',
   });
-
-  React.useEffect(() => {
-    const inputElement = inputRef.current;
-    if (inputElement) {
-      inputElement.focus();
-    }
-  }, []);
 
   const handleFormSubmit = React.useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
     },
-    [validation]
+    []
   );
 
   return (
@@ -102,8 +99,8 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
               }}
               disabled={validation.state !== 'IDLE'}
               placeholder="Enter your email"
-              ref={inputRef}
               type="email"
+              autoFocus
               required
             />
             <Element
