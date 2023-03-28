@@ -37,6 +37,16 @@ import { StyledPricingDetailsText } from './components/elements';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 
+const useCurrencyFromTimeZone = () => {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  if (timeZone === 'Asia/Kolkata') {
+    return 'INR';
+  } else {
+    return 'USD';
+  }
+};
+
 export const ProUpgrade = () => {
   const {
     pro: { pageMounted },
@@ -52,6 +62,7 @@ export const ProUpgrade = () => {
     pro,
   } = useAppState();
   const location = useLocation();
+  const currency = useCurrencyFromTimeZone();
 
   useEffect(() => {
     pageMounted();
@@ -162,6 +173,24 @@ export const ProUpgrade = () => {
       team.subscription?.paymentProvider === SubscriptionPaymentProvider.Paddle
   );
 
+  const getPricePerMonth = (
+    type: 'individual' | 'team',
+    period: 'year' | 'month'
+  ) => {
+    const priceInCurrency =
+      pro?.prices?.[type]?.[period]?.[currency.toLowerCase()] ||
+      pro?.prices?.[type]?.[period]?.usd; // fallback to usd
+
+    // Divide by 12 if the period is year to get monthly price for yearly
+    // subscriptions
+    const price = period === 'year' ? priceInCurrency / 12 : priceInCurrency;
+
+    return formatCurrency({
+      currency: priceInCurrency ? currency : 'USD',
+      amount: price,
+    });
+  };
+
   return (
     <ThemeProvider>
       <Helmet>
@@ -261,20 +290,13 @@ export const ProUpgrade = () => {
                 >
                   <Stack gap={1} direction="vertical">
                     <Text size={32} weight="500">
-                      {formatCurrency({
-                        currency: 'USD',
-                        amount: pro?.prices?.individual.year.usd / 12,
-                      })}
+                      {getPricePerMonth('individual', 'year')}
                     </Text>
                     <StyledPricingDetailsText>
                       <div>per month,</div>
                       <div>
                         billed annually, or{' '}
-                        {formatCurrency({
-                          currency: 'USD',
-                          amount: pro?.prices?.individual.month.usd,
-                        })}{' '}
-                        per month.
+                        {getPricePerMonth('individual', 'month')} per month.
                       </div>
                     </StyledPricingDetailsText>
                   </Stack>
@@ -312,19 +334,12 @@ export const ProUpgrade = () => {
                 >
                   <Stack gap={1} direction="vertical">
                     <Text size={32} weight="500">
-                      {formatCurrency({
-                        currency: 'USD',
-                        amount: pro?.prices?.team.year.usd / 12,
-                      })}
+                      {getPricePerMonth('team', 'year')}
                     </Text>
                     <StyledPricingDetailsText>
                       per editor per month,
                       <br /> billed annually, or{' '}
-                      {formatCurrency({
-                        currency: 'USD',
-                        amount: pro?.prices?.team.month.usd,
-                      })}{' '}
-                      per month.
+                      {getPricePerMonth('team', 'month')} per month.
                     </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
