@@ -42,9 +42,9 @@ const useCurrencyFromTimeZone = () => {
 
   if (timeZone === 'Asia/Kolkata' || timeZone === 'Asia/Calcutta') {
     return 'INR';
-  } else {
-    return 'USD';
   }
+
+  return 'USD';
 };
 
 export const ProUpgrade = () => {
