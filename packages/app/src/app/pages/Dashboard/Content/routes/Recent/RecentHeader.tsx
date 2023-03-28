@@ -126,7 +126,7 @@ const StyledButton = styled.button`
   all: unset;
   display: flex;
   align-items: center;
-  gap: 24px; // In case of icons
+  gap: 12px; // In case of icons
   padding: 20px 24px;
   border-radius: 4px;
   background-color: #ffffff;
