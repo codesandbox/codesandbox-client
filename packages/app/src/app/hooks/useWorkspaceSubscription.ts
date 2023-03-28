@@ -1,3 +1,4 @@
+import { TEAM_FREE_LIMITS } from 'app/constants';
 import {
   SubscriptionInterval,
   SubscriptionOrigin,
@@ -50,7 +51,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     return {
       ...NO_SUBSCRIPTION,
       isEligibleForTrial: isTeamSpace, // Currently, only teams are eligible for trial.
-      numberOfSeats: activeTeamInfo.limits.maxEditors,
+      numberOfSeats:
+        activeTeamInfo.limits.maxEditors ?? TEAM_FREE_LIMITS.editors,
     };
   }
 
@@ -115,7 +117,6 @@ const NO_WORKSPACE = {
 
 const NO_SUBSCRIPTION = {
   subscription: null,
-  numberOfSeats: 0,
   isPro: false,
   isFree: true,
   hasActiveTeamTrial: false,
@@ -128,7 +129,10 @@ const NO_SUBSCRIPTION = {
 
 export type WorkspaceSubscriptionReturn =
   | typeof NO_WORKSPACE
-  | (typeof NO_SUBSCRIPTION & { isEligibleForTrial: boolean })
+  | (typeof NO_SUBSCRIPTION & {
+      isEligibleForTrial: boolean;
+      numberOfSeats: number;
+    })
   | {
       subscription: {
         cancelAt?: string;
