@@ -137,6 +137,8 @@ const StyledButton = styled.button`
 
   &:hover {
     background-color: #ebebeb;
+    cursor: pointer;
+    transition: background-color 75ms ease;
   }
 
   &:focus-visible {
