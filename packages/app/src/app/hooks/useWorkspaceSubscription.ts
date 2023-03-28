@@ -50,6 +50,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     return {
       ...NO_SUBSCRIPTION,
       isEligibleForTrial: isTeamSpace, // Currently, only teams are eligible for trial.
+      numberOfSeats: activeTeamInfo.limits.maxEditors,
     };
   }
 
