@@ -44,18 +44,26 @@ export const DeploymentModal: FunctionComponent = () => {
           >
             Deployed!
           </Text>
-          <Link variant="muted" block size={3} align="center" href={url}>
+          <Link
+            variant="muted"
+            block
+            size={3}
+            align="center"
+            href={url}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             {url}
           </Link>
           <Text paddingTop={4} block size={3} align="center">
-            You can manage your deployments{' '}
+            You can{' '}
             <Link
               variant="muted"
               href="https://vercel.com/dashboard"
               target="_blank"
               rel="noreferrer noopener"
             >
-              here
+              manage your deployments here
             </Link>
             .
           </Text>

@@ -277,7 +277,8 @@ export const RegistryForm = ({
                       <Stack
                         align="center"
                         direction="horizontal"
-                        css={css({ width: '100%' })}
+                        key={scope}
+                        css={{ width: '100%' }}
                       >
                         <Input
                           required

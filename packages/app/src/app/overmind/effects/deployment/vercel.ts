@@ -53,22 +53,6 @@ export default (() => {
     };
   }
 
-  async function deploysByID(id) {
-    try {
-      const response = await axios.get(
-        `https://api.vercel.com/v2/now/deployments/${id}/aliases`,
-        {
-          headers: getDefaultHeaders(),
-        }
-      );
-
-      return response.data;
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-  }
-
   return {
     initialize(options: Options) {
       _options = options;
@@ -79,10 +63,10 @@ export default (() => {
         [key: string]: string;
       }
     ) {
-      const nowData = this.getConfig(sandbox);
-      if (!nowData || !nowData.env) return null;
-      const all = Object.keys(nowData.env).map(async envVar => {
-        const name = nowData.env[envVar].split('@')[1];
+      const vercelConfig = this.getConfig(sandbox);
+      if (!vercelConfig || !vercelConfig.env) return null;
+      const all = Object.keys(vercelConfig.env).map(async envVar => {
+        const name = vercelConfig.env[envVar].split('@')[1];
 
         if (envVars[envVar]) {
           try {
@@ -107,7 +91,7 @@ export default (() => {
       return null;
     },
     getConfig(sandbox: Sandbox): VercelConfig {
-      const nowConfigs = sandbox.modules
+      const vercelConfigFiles = sandbox.modules
         .filter(
           m =>
             m.title === 'vercel.json' ||
@@ -115,41 +99,30 @@ export default (() => {
             (m.title === 'package.json' && JSON.parse(m.code).now)
         )
         .map(c => JSON.parse(c.code));
-      const nowData = nowConfigs[0] || {};
+      const vercelConfig = vercelConfigFiles[0] || {};
 
-      if (!nowData.name) {
-        nowData.name = `csb-${sandbox.id}`;
+      if (!vercelConfig.name) {
+        vercelConfig.name = `csb-${sandbox.id}`;
       }
 
-      return nowData;
+      return vercelConfig;
     },
     async getDeployments(name: string): Promise<VercelDeployment[]> {
       const response = await axios.get<{ deployments: VercelDeployment[] }>(
-        'https://api.vercel.com/v4/now/deployments',
+        'https://api.vercel.com/v6/deployments',
         {
           headers: getDefaultHeaders(),
         }
       );
 
-      const deploysNoAlias = response.data.deployments
+      const deploys = response.data.deployments
         .filter(d => d.name === name)
         .sort((a, b) => (a.created < b.created ? 1 : -1));
 
-      const assignAlias = async d => {
-        const alias = await deploysByID(d.uid);
-        if (alias) {
-          // eslint-disable-next-line
-          d.alias = alias.aliases;
-        } else {
-          d.alias = [];
-        }
-        return d;
-      };
-
-      return Promise.all(deploysNoAlias.map(assignAlias));
+      return Promise.all(deploys);
     },
     async getUser(): Promise<VercelUser> {
-      const response = await axios.get('https://api.vercel.com/www/user', {
+      const response = await axios.get('https://api.vercel.com/v2/user', {
         headers: getDefaultHeaders(),
       });
 
@@ -177,20 +150,6 @@ export default (() => {
       );
 
       return `https://${response.data.url}`;
-    },
-    async aliasDeployment(
-      id: string,
-      vercelConfig: VercelConfig
-    ): Promise<string> {
-      const response = await axios.post(
-        `https://api.vercel.com/v2/now/deployments/${id}/aliases`,
-        { alias: vercelConfig.alias },
-        {
-          headers: getDefaultHeaders(),
-        }
-      );
-
-      return `https://${response.data.alias}`;
     },
   };
 })();

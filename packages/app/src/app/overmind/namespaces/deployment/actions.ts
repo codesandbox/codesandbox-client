@@ -77,7 +77,6 @@ export const getDeploys = async ({ state, actions, effects }: Context) => {
   try {
     const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
 
-    state.deployment.vercel.hasAlias = !!vercelConfig.alias;
     if (vercelConfig.name) {
       state.deployment.vercel.deploys = await effects.vercel.getDeployments(
         vercelConfig.name
@@ -244,29 +243,6 @@ export const deleteDeployment = async ({
     state.deployment.vercel.deploysBeingDeleted.indexOf(id),
     1
   );
-};
-
-export const aliasDeployment = async (
-  { state, effects, actions }: Context,
-  id: string
-) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-
-  const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
-
-  try {
-    const url = await effects.vercel.aliasDeployment(id, vercelConfig);
-
-    effects.notificationToast.success(`Deployed to ${url}`);
-    actions.deployment.getDeploys();
-  } catch (error) {
-    actions.internal.handleError({
-      message: 'An unknown error occurred when aliasing your deployment',
-      error,
-    });
-  }
 };
 
 export const deployWithGitHubPages = async ({
