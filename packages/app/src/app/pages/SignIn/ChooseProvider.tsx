@@ -204,8 +204,6 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
     toggleSignInModal,
   } = useActions();
   const { loadingAuth, cancelOnLogin } = useAppState();
-  // const location = useLocation();
-  // const history = useHistory();
 
   const [signInMode, setSignInMode] = React.useState<SignInMode>(
     ssoMode ? SignInMode.SSO : SignInMode.Default
