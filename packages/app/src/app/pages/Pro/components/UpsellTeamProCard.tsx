@@ -72,7 +72,7 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
     type: 'individual' | 'team',
     period: 'year' | 'month'
   ) => {
-    if (!pro?.prices?.[type]?.[period]) {
+    if (!pro?.prices) {
       return null; // still loading
     }
 

@@ -9,6 +9,7 @@ import {
   Element,
   Text,
   Icon,
+  SkeletonText,
 } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
@@ -168,9 +169,19 @@ export const ProUpgrade = () => {
     type: 'individual' | 'team',
     period: 'year' | 'month'
   ) => {
-    const priceInCurrency =
-      pro?.prices?.[type]?.[period]?.[currency.toLowerCase()] ||
-      pro?.prices?.[type]?.[period]?.usd; // fallback to usd
+    if (!pro?.prices) {
+      return null; // still loading
+    }
+
+    let priceInCurrency =
+      pro.prices?.[type]?.[period]?.[currency.toLowerCase()];
+
+    const hasPriceInCurrency = priceInCurrency !== null && priceInCurrency >= 0;
+
+    if (!hasPriceInCurrency) {
+      // Fallback to USD
+      priceInCurrency = pro?.prices?.[type]?.[period]?.usd;
+    }
 
     // Divide by 12 if the period is year to get monthly price for yearly
     // subscriptions
@@ -326,12 +337,27 @@ export const ProUpgrade = () => {
                 >
                   <Stack gap={1} direction="vertical">
                     <Text size={32} weight="500">
-                      {getPricePerMonth('team', 'year')}
+                      {pro?.prices ? (
+                        getPricePerMonth('team', 'year')
+                      ) : (
+                        <SkeletonText css={{ width: '60px', height: '40px' }} />
+                      )}
                     </Text>
                     <StyledPricingDetailsText>
                       per editor per month,
                       <br /> billed annually, or{' '}
-                      {getPricePerMonth('team', 'month')} per month.
+                      {pro?.prices ? (
+                        getPricePerMonth('team', 'month')
+                      ) : (
+                        <SkeletonText
+                          css={{
+                            display: 'inline-block',
+                            marginBottom: '-4px',
+                            width: '20px',
+                          }}
+                        />
+                      )}{' '}
+                      per month.
                     </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
