@@ -72,12 +72,18 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
     type: 'individual' | 'team',
     period: 'year' | 'month'
   ) => {
-    const priceInCurrency =
-      pro?.prices?.[type]?.[period]?.[currency.toLowerCase()] ||
-      pro?.prices?.[type]?.[period]?.usd; // fallback to usd
+    if (!pro?.prices?.[type]?.[period]) {
+      return null; // still loading
+    }
 
-    if (!priceInCurrency) {
-      return null;
+    let priceInCurrency =
+      pro.prices?.[type]?.[period]?.[currency.toLowerCase()];
+
+    const hasPriceInCurrency = priceInCurrency !== null && priceInCurrency >= 0;
+
+    if (!hasPriceInCurrency) {
+      // Fallback to USD
+      priceInCurrency = pro?.prices?.[type]?.[period]?.usd;
     }
 
     // Divide by 12 if the period is year to get monthly price for yearly
@@ -86,7 +92,7 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
 
     // The formatCurrency function will divide the amount by 100
     return formatCurrency({
-      currency: priceInCurrency ? currency : 'USD',
+      currency: hasPriceInCurrency ? currency : 'USD',
       amount: price,
     });
   };
