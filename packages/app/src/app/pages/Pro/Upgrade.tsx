@@ -293,13 +293,28 @@ export const ProUpgrade = () => {
                 >
                   <Stack gap={1} direction="vertical">
                     <Text size={32} weight="500">
-                      {getPricePerMonth('individual', 'year')}
+                      {pro?.prices ? (
+                        getPricePerMonth('individual', 'year')
+                      ) : (
+                        <SkeletonText css={{ width: '60px', height: '40px' }} />
+                      )}
                     </Text>
                     <StyledPricingDetailsText>
                       <div>per month,</div>
                       <div>
                         billed annually, or{' '}
-                        {getPricePerMonth('individual', 'month')} per month.
+                        {pro?.prices ? (
+                          getPricePerMonth('individual', 'month')
+                        ) : (
+                          <SkeletonText
+                            css={{
+                              display: 'inline-block',
+                              marginBottom: '-4px',
+                              width: '20px',
+                            }}
+                          />
+                        )}{' '}
+                        per month.
                       </div>
                     </StyledPricingDetailsText>
                   </Stack>
