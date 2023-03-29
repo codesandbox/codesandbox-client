@@ -1,11 +1,13 @@
 import React from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
-import { Element, Stack, Text } from '@codesandbox/components';
+import { Element, Stack, Text, SkeletonText } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TEAM_PRO_FEATURES_WITH_PILLS } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
 import { getUpgradeableTeams } from 'app/utils/teams';
+import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
+
 import { SubscriptionCard } from './SubscriptionCard';
 import type { CTA } from './SubscriptionCard';
 import { StyledPricingDetailsText } from './elements';
@@ -17,6 +19,7 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   const { dashboard, pro, personalWorkspaceId, user } = useAppState();
   const { modalOpened, openCreateTeamModal } = useActions();
   const [showSticker, setShowSticker] = React.useState(false);
+  const currency = useCurrencyFromTimeZone();
 
   const upgradeableTeams = getUpgradeableTeams({
     teams: dashboard.teams,
@@ -65,6 +68,29 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
     });
   }, [experimentPromise]);
 
+  const getPricePerMonth = (
+    type: 'individual' | 'team',
+    period: 'year' | 'month'
+  ) => {
+    const priceInCurrency =
+      pro?.prices?.[type]?.[period]?.[currency.toLowerCase()] ||
+      pro?.prices?.[type]?.[period]?.usd; // fallback to usd
+
+    if (!priceInCurrency) {
+      return null;
+    }
+
+    // Divide by 12 if the period is year to get monthly price for yearly
+    // subscriptions
+    const price = period === 'year' ? priceInCurrency / 12 : priceInCurrency;
+
+    // The formatCurrency function will divide the amount by 100
+    return formatCurrency({
+      currency: priceInCurrency ? currency : 'USD',
+      amount: price,
+    });
+  };
+
   return (
     <Element css={{ position: 'relative' }}>
       {showSticker && (
@@ -90,18 +116,26 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
       >
         <Stack gap={1} direction="vertical">
           <Text size={32} weight="500">
-            {formatCurrency({
-              currency: 'USD',
-              amount: pro?.prices?.team.year.usd / 12,
-            })}
+            {pro?.prices ? (
+              getPricePerMonth('team', 'year')
+            ) : (
+              <SkeletonText css={{ width: '60px', height: '40px' }} />
+            )}
           </Text>
           <StyledPricingDetailsText>
             per editor per month,
             <br /> billed annually, or{' '}
-            {formatCurrency({
-              currency: 'USD',
-              amount: pro?.prices?.team.month.usd,
-            })}{' '}
+            {pro?.prices ? (
+              getPricePerMonth('team', 'month')
+            ) : (
+              <SkeletonText
+                css={{
+                  display: 'inline-block',
+                  marginBottom: '-4px',
+                  width: '20px',
+                }}
+              />
+            )}{' '}
             per month.
           </StyledPricingDetailsText>
         </Stack>

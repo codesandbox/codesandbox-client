@@ -28,6 +28,7 @@ import { formatCurrency } from 'app/utils/currency';
 import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
@@ -36,16 +37,6 @@ import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
-
-const useCurrencyFromTimeZone = () => {
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  if (timeZone === 'Asia/Kolkata' || timeZone === 'Asia/Calcutta') {
-    return 'INR';
-  }
-
-  return 'USD';
-};
 
 export const ProUpgrade = () => {
   const {
@@ -185,6 +176,7 @@ export const ProUpgrade = () => {
     // subscriptions
     const price = period === 'year' ? priceInCurrency / 12 : priceInCurrency;
 
+    // The formatCurrency function will divide the amount by 100
     return formatCurrency({
       currency: priceInCurrency ? currency : 'USD',
       amount: price,

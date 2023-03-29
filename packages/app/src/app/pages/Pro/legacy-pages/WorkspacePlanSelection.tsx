@@ -219,7 +219,7 @@ export const WorkspacePlanSelection: React.FC = () => {
                     {subscription ? (
                       getPrice()
                     ) : (
-                      <SkeletonText css={{ width: '60px', height: '38px' }} />
+                      <SkeletonText css={{ width: '60px', height: '40px' }} />
                     )}
                   </Text>
                   {isYearlyInterval ? (
