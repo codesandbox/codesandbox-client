@@ -1,13 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import css from '@styled-system/css';
-import {
-  IconButton,
-  Stack,
-  Element,
-  Text,
-  ThemeProvider,
-} from '@codesandbox/components';
+import { Stack, Element, ThemeProvider } from '@codesandbox/components';
+import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import Modal from 'app/components/Modal';
 import { useActions, useAppState } from 'app/overmind';
@@ -27,13 +22,61 @@ const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
   subscription: null,
 };
 
+const Indicator = ({
+  isActive,
+  isCompleted,
+}: {
+  isActive: boolean;
+  isCompleted: boolean;
+}) => {
+  return (
+    <Element
+      css={{
+        width: '6px',
+        height: '6px',
+        borderRadius: '50%',
+        border: '1px solid #999999',
+        background: isActive ? 'transparent' : '#999999',
+        opacity: isActive || isCompleted ? 1 : 0.5,
+      }}
+    />
+  );
+};
+
+const ProgressIndicator = ({ activeStep }: { activeStep: TeamStep }) => {
+  const allSteps = Object.keys(NEXT_STEP);
+  const activeStepNumber = allSteps.indexOf(activeStep);
+
+  return (
+    <>
+      <Stack gap={3} justify="center" aria-hidden>
+        {allSteps.map((step, index) => {
+          const isActive = step === activeStep;
+          const isCompleted = index < activeStepNumber;
+
+          return (
+            <Indicator
+              key={step}
+              isActive={isActive}
+              isCompleted={isCompleted}
+            />
+          );
+        })}
+      </Stack>
+      <VisuallyHidden>
+        Step {activeStepNumber + 1} of {allSteps.length}.
+      </VisuallyHidden>
+    </>
+  );
+};
+
 type NewTeamProps = {
   step?: TeamStep;
   hasNextStep?: boolean;
   onClose: () => void;
 };
+
 const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
-  const { activeTeamInfo } = useAppState();
   const [currentStep, setCurrentStep] = React.useState<TeamStep>(
     step ?? 'info'
   );
@@ -52,53 +95,35 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
   };
 
   return (
-    <>
-      <Element padding={6}>
-        <Stack align="center" justify="space-between">
-          <Text
-            css={css({
-              color: '#808080',
-            })}
-            size={3}
-          >
-            {activeTeamInfo && currentStep !== 'info'
-              ? activeTeamInfo.name
-              : 'New team'}
-          </Text>
-          <IconButton
-            name="cross"
-            variant="square"
-            size={16}
-            title="Close modal"
-            onClick={onClose}
-          />
-        </Stack>
-      </Element>
-      <Stack
-        css={css({
-          flex: 1,
-        })}
-        align="center"
-        direction="vertical"
-        justify="center"
-      >
-        {
+    <Element padding={10} css={{ height: '660px' }}>
+      <Stack direction="vertical" gap={10}>
+        <ProgressIndicator activeStep={currentStep} />
+        <Stack
+          css={css({
+            flex: 1,
+          })}
+          align="center"
+          direction="vertical"
+          justify="center"
+        >
           {
-            info: <TeamInfo onComplete={handleStepCompletion} />,
-            members: (
-              <TeamMembers
-                hideSkip={!nextStep}
-                onComplete={handleStepCompletion}
-              />
-            ),
-            import: <TeamImport onComplete={handleStepCompletion} />,
-            subscription: (
-              <TeamSubscription onComplete={handleStepCompletion} />
-            ),
-          }[currentStep]
-        }
+            {
+              info: <TeamInfo onComplete={handleStepCompletion} />,
+              members: (
+                <TeamMembers
+                  hideSkip={!nextStep}
+                  onComplete={handleStepCompletion}
+                />
+              ),
+              import: <TeamImport onComplete={handleStepCompletion} />,
+              subscription: (
+                <TeamSubscription onComplete={handleStepCompletion} />
+              ),
+            }[currentStep]
+          }
+        </Stack>
       </Stack>
-    </>
+    </Element>
   );
 };
 
