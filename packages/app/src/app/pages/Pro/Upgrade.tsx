@@ -9,6 +9,7 @@ import {
   Element,
   Text,
   Icon,
+  SkeletonText,
 } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
@@ -28,6 +29,7 @@ import { formatCurrency } from 'app/utils/currency';
 import { useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
@@ -52,6 +54,7 @@ export const ProUpgrade = () => {
     pro,
   } = useAppState();
   const location = useLocation();
+  const currency = useCurrencyFromTimeZone();
 
   useEffect(() => {
     pageMounted();
@@ -162,6 +165,35 @@ export const ProUpgrade = () => {
       team.subscription?.paymentProvider === SubscriptionPaymentProvider.Paddle
   );
 
+  const getPricePerMonth = (
+    type: 'individual' | 'team',
+    period: 'year' | 'month'
+  ) => {
+    if (!pro?.prices) {
+      return null; // still loading
+    }
+
+    let priceInCurrency =
+      pro.prices?.[type]?.[period]?.[currency.toLowerCase()];
+
+    const hasPriceInCurrency = priceInCurrency !== null && priceInCurrency >= 0;
+
+    if (!hasPriceInCurrency) {
+      // Fallback to USD
+      priceInCurrency = pro?.prices?.[type]?.[period]?.usd;
+    }
+
+    // Divide by 12 if the period is year to get monthly price for yearly
+    // subscriptions
+    const price = period === 'year' ? priceInCurrency / 12 : priceInCurrency;
+
+    // The formatCurrency function will divide the amount by 100
+    return formatCurrency({
+      currency: priceInCurrency ? currency : 'USD',
+      amount: price,
+    });
+  };
+
   return (
     <ThemeProvider>
       <Helmet>
@@ -261,19 +293,27 @@ export const ProUpgrade = () => {
                 >
                   <Stack gap={1} direction="vertical">
                     <Text size={32} weight="500">
-                      {formatCurrency({
-                        currency: 'USD',
-                        amount: pro?.prices?.individual.year.usd / 12,
-                      })}
+                      {pro?.prices ? (
+                        getPricePerMonth('individual', 'year')
+                      ) : (
+                        <SkeletonText css={{ width: '60px', height: '40px' }} />
+                      )}
                     </Text>
                     <StyledPricingDetailsText>
                       <div>per month,</div>
                       <div>
                         billed annually, or{' '}
-                        {formatCurrency({
-                          currency: 'USD',
-                          amount: pro?.prices?.individual.month.usd,
-                        })}{' '}
+                        {pro?.prices ? (
+                          getPricePerMonth('individual', 'month')
+                        ) : (
+                          <SkeletonText
+                            css={{
+                              display: 'inline-block',
+                              marginBottom: '-4px',
+                              width: '20px',
+                            }}
+                          />
+                        )}{' '}
                         per month.
                       </div>
                     </StyledPricingDetailsText>
@@ -312,18 +352,26 @@ export const ProUpgrade = () => {
                 >
                   <Stack gap={1} direction="vertical">
                     <Text size={32} weight="500">
-                      {formatCurrency({
-                        currency: 'USD',
-                        amount: pro?.prices?.team.year.usd / 12,
-                      })}
+                      {pro?.prices ? (
+                        getPricePerMonth('team', 'year')
+                      ) : (
+                        <SkeletonText css={{ width: '60px', height: '40px' }} />
+                      )}
                     </Text>
                     <StyledPricingDetailsText>
                       per editor per month,
                       <br /> billed annually, or{' '}
-                      {formatCurrency({
-                        currency: 'USD',
-                        amount: pro?.prices?.team.month.usd,
-                      })}{' '}
+                      {pro?.prices ? (
+                        getPricePerMonth('team', 'month')
+                      ) : (
+                        <SkeletonText
+                          css={{
+                            display: 'inline-block',
+                            marginBottom: '-4px',
+                            width: '20px',
+                          }}
+                        />
+                      )}{' '}
                       per month.
                     </StyledPricingDetailsText>
                   </Stack>
