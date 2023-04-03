@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useActions, useAppState } from 'app/overmind';
-import css from '@styled-system/css';
-import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
+import { Stack, Text, Button } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
-import { StyledButton } from 'app/components/dashboard/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
-  onComplete,
-}) => {
+export const TeamInfo: React.FC<{
+  onComplete: () => void;
+  onClose: () => void;
+}> = ({ onComplete, onClose }) => {
   const { dashboard } = useAppState();
   const actions = useActions();
   const [loading, setLoading] = useState(false);
@@ -63,101 +62,72 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
     <Stack
       align="center"
       direction="vertical"
-      gap={6}
-      css={{
-        padding: '60px 0',
-        maxWidth: '370px',
-        width: '100%',
-      }}
+      gap={10}
+      css={{ width: '400px' }}
     >
-      <Stack align="center" direction="vertical" gap={2}>
-        <Text
-          as="h2"
-          size={32}
-          weight="500"
-          align="center"
-          css={{
-            margin: 0,
-            color: '#ffffff',
-            fontFamily: 'Everett, sans-serif',
-            lineHeight: '42px',
-            letterSpacing: '-0.01em',
-          }}
-        >
-          Create team
-        </Text>
-        <Text
-          as="p"
-          size={13}
-          css={css({
-            color: '#999999',
-            margin: '0',
-            lineHeight: '16px',
-          })}
-        >
-          Teams are the best way of collaborating in CodeSandbox.
-        </Text>
-      </Stack>
+      <Text
+        as="h2"
+        size={32}
+        weight="500"
+        align="center"
+        css={{
+          margin: 0,
+          color: '#ffffff',
+          fontFamily: 'Everett, sans-serif',
+          lineHeight: '42px',
+          letterSpacing: '-0.01em',
+        }}
+      >
+        Create team
+      </Text>
       <Stack
         as="form"
         onSubmit={onSubmit}
         direction="vertical"
-        gap={6}
+        gap={10}
         css={{ width: '100%' }}
       >
-        <InputText
-          label="Team name"
-          id="teamname"
-          name="name"
-          required
-          autoFocus
-          onChange={handleInput}
-        />
+        <Stack direction="vertical" gap={2}>
+          <InputText
+            label="Team name"
+            id="teamname"
+            name="name"
+            required
+            autoFocus
+            onChange={handleInput}
+            isFullWidth
+          />
 
-        {existingTeamError && (
-          <Text size={2} variant="danger">
-            Name already taken, please choose a new name.
-          </Text>
-        )}
+          {existingTeamError && (
+            <Text size={2} variant="danger">
+              Name already taken, please choose a new name.
+            </Text>
+          )}
 
-        {error && (
-          <Text size={2} variant="danger">
-            {error}
-          </Text>
-        )}
+          {error && (
+            <Text size={2} variant="danger">
+              {error}
+            </Text>
+          )}
+        </Stack>
 
-        <StyledButton
-          loading={loading}
-          disabled={loading || existingTeamError}
-          type="submit"
+        <Stack
+          direction="vertical"
+          gap={6}
+          css={{ width: '200px', alignSelf: 'center' }}
         >
-          Create Team
-        </StyledButton>
-      </Stack>
-      <Element paddingTop={10}>
-        <Link
-          href="https://codesandbox.io/docs/learn/introduction/workspace"
-          target="_blank"
-          rel="noreferrer"
-          onClick={() => {
-            track('New Team - Learn More', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-          }}
-        >
-          <Stack
-            css={{
-              color: '#999999',
-            }}
-            gap={3}
-            justify="center"
+          <Button
+            loading={loading}
+            disabled={loading || existingTeamError}
+            type="submit"
           >
-            <Text size={2}>More about teams and workspaces</Text>
-            <Icon name="external" size={16} />
-          </Stack>
-        </Link>
-      </Element>
+            Continue
+          </Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+        </Stack>
+      </Stack>
     </Stack>
   );
 };

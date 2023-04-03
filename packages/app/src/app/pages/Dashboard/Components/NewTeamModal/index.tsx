@@ -96,7 +96,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
 
   return (
     <Element padding={10} css={{ height: '660px' }}>
-      <Stack direction="vertical" gap={10}>
+      <Stack direction="vertical" gap={10} css={{ height: '100%' }}>
         <ProgressIndicator activeStep={currentStep} />
         <Stack
           css={css({
@@ -108,7 +108,9 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
         >
           {
             {
-              info: <TeamInfo onComplete={handleStepCompletion} />,
+              info: (
+                <TeamInfo onComplete={handleStepCompletion} onClose={onClose} />
+              ),
               members: (
                 <TeamMembers
                   hideSkip={!nextStep}

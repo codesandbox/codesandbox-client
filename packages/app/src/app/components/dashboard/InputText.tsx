@@ -29,6 +29,7 @@ interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   name: string;
   isInvalid?: boolean;
+  isFullWidth?: boolean;
 }
 
 export const InputText = ({
@@ -36,9 +37,14 @@ export const InputText = ({
   label,
   name,
   isInvalid,
+  isFullWidth,
   ...restProps
 }: InputTextProps) => (
-  <Stack gap={2} direction="vertical">
+  <Stack
+    gap={2}
+    direction="vertical"
+    css={isFullWidth ? { width: '100%' } : undefined}
+  >
     <Label htmlFor={id}>{label}</Label>
     <StyledInput
       id={id}
