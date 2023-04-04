@@ -12,6 +12,7 @@ export const TeamInfo: React.FC<{
   const actions = useActions();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasTeamName, setTeamName] = useState<boolean>(false);
   const [existingTeamError, setExistingTeamError] = useState(false);
 
   const onSubmit = async event => {
@@ -41,6 +42,9 @@ export const TeamInfo: React.FC<{
 
   const handleInput = e => {
     const { value } = e.target;
+
+    // Determine if input is filled.
+    setTeamName(value);
 
     // Get the input and remove any whitespace from both ends.
     const trimmedName = value?.trim() ?? '';
@@ -118,7 +122,7 @@ export const TeamInfo: React.FC<{
         >
           <Button
             loading={loading}
-            disabled={loading || existingTeamError}
+            disabled={!hasTeamName || loading || existingTeamError}
             type="submit"
           >
             Continue
