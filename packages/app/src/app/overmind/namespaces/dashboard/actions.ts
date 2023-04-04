@@ -13,6 +13,7 @@ import {
   DeleteNpmRegistryMutationVariables,
   CuratedAlbumByIdQueryVariables,
   ProjectFragment,
+  ChangeTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -569,7 +570,7 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
      * For now we decided to NOT show the templates on the home page
      * But I would keep this code as it is referenced in a lot of places and (TEMPLATE_HOME)
      * and we might bring it back later on.
-     
+
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
       teamId: state.activeTeam,
     });
@@ -1359,17 +1360,15 @@ export const changeAuthorizationInState = (
   state.activeTeamInfo!.userAuthorizations = userAuthorizations;
 };
 
+type ChangeAuthorizationParams = Omit<
+  ChangeTeamMemberAuthorizationMutationVariables,
+  'teamId'
+> & {
+  confirm?: boolean;
+};
 export const changeAuthorization = async (
   { state, effects, actions }: Context,
-  {
-    userId,
-    authorization,
-    confirm,
-  }: {
-    userId: string;
-    authorization: TeamMemberAuthorization;
-    confirm?: Boolean;
-  }
+  { userId, authorization, confirm, teamManager }: ChangeAuthorizationParams
 ) => {
   if (confirm) {
     const confirmed = await actions.modals.alertModal.open({
@@ -1393,6 +1392,7 @@ export const changeAuthorization = async (
       teamId: state.activeTeam!,
       userId,
       authorization,
+      teamManager,
     });
     actions.getActiveTeamInfo();
   } catch (e) {
@@ -1504,10 +1504,7 @@ export const fetchCurrentNpmRegistry = async ({
     if (activeTeam === state.activeTeam) {
       state.dashboard.workspaceSettings.npmRegistry = data.me?.team
         ?.privateRegistry
-        ? {
-            ...data.me.team.privateRegistry,
-            trustedDomains: data.me.team.sandpackTrustedDomains,
-          }
+        ? data.me.team.privateRegistry
         : null;
     }
   } catch (error) {
@@ -2259,11 +2256,16 @@ export const removeRepositoryFromTeam = async (
 
 export const importGitHubRepository = async (
   { state, effects }: Context,
-  { owner, name }: { owner: string; name: string }
+  {
+    owner,
+    name,
+    redirect = true,
+  }: { owner: string; name: string; redirect?: boolean }
 ) => {
   const { activeTeam } = state;
+
   if (!activeTeam) {
-    return;
+    return undefined;
   }
 
   try {
@@ -2273,13 +2275,17 @@ export const importGitHubRepository = async (
       teamId: activeTeam,
     });
 
-    window.location.href = v2BranchUrl({
-      owner,
-      repoName: name,
-      branchName: result.importProject.defaultBranch.name,
-      workspaceId: activeTeam,
-      importFlag: true,
-    });
+    if (redirect) {
+      window.location.href = v2BranchUrl({
+        owner,
+        repoName: name,
+        branchName: result.importProject.defaultBranch.name,
+        workspaceId: activeTeam,
+        importFlag: true,
+      });
+    } else {
+      return result;
+    }
   } catch (error) {
     notificationState.addNotification({
       message: JSON.stringify(error),
@@ -2287,6 +2293,8 @@ export const importGitHubRepository = async (
       status: NotificationStatus.ERROR,
     });
   }
+
+  return undefined;
 };
 
 export type ForkSource = {
@@ -2359,4 +2367,14 @@ export const createDraftBranch = async (
       status: NotificationStatus.ERROR,
     });
   }
+};
+
+export const getLimits = async ({ state, effects }: Context) => {
+  const { limits } = await effects.gql.queries.getLimits({});
+
+  if (!limits) {
+    return;
+  }
+
+  state.dashboard.limits = limits;
 };

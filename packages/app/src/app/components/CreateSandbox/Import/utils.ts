@@ -1,7 +1,3 @@
-import { OrganizationFragment, ProfileFragment } from 'app/graphql/types';
-import { findBestMatch } from 'string-similarity';
-import track from '@codesandbox/common/lib/utils/analytics';
-
 const REGEX_PLAIN = /(?<owner>^\w+)(?<slash>\/)(?<name>[\w.-]+$)/g;
 
 export const getOwnerAndNameFromInput = (input: string) => {
@@ -60,45 +56,14 @@ export const getOwnerAndNameFromInput = (input: string) => {
   return null;
 };
 
-export const fuzzyMatchGithubToCsb = (
-  teamName: string,
-  accounts: Array<ProfileFragment | OrganizationFragment>
-) => {
-  const match = findBestMatch(
-    teamName,
-    accounts.map(account => account.login)
-  );
-
-  const bestMatch = accounts.find(
-    account => account.login === match.bestMatch.target
-  );
-
-  if (bestMatch) {
-    track('Match GH to CSB - success', {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
-
-    return bestMatch;
-  }
-
-  track('Match GH to CSB - fail', {
-    codesandbox: 'V1',
-    event_source: 'UI',
-  });
-
-  return accounts[0];
-};
-
 export const getEventName = (
   isEligibleForTrial: boolean,
-  isTeamAdmin?: boolean
+  isBillingManager: boolean
 ): string => {
-  if (isTeamAdmin) {
-    return isEligibleForTrial
-      ? 'Limit banner: import - Start Trial'
-      : 'Limit banner: import - Upgrade';
+  if (isEligibleForTrial) {
+    const event = 'Limit banner: import - Start trial';
+    return isBillingManager ? event : `${event} - As non-admin`;
   }
 
-  return 'Limit banner: import - Learn more';
+  return 'Limit banner: import - Upgrade';
 };

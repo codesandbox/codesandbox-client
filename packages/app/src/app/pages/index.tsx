@@ -12,12 +12,12 @@ import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { CreateSandboxModal } from 'app/components/CreateSandbox/CreateSandboxModal';
+import { Debug } from 'app/components/Debug';
 import { initializeExperimentStore } from '@codesandbox/ab';
 import {
   getExperimentUserId,
   AB_TESTING_URL,
 } from '@codesandbox/common/lib/config/env';
-
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
@@ -240,6 +240,7 @@ const RoutesComponent: React.FC = () => {
         {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
           <MoveSandboxFolderModal />
         )}
+        <Debug />
       </Boundary>
     </Container>
   );

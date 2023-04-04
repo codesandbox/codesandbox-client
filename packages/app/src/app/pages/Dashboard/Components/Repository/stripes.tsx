@@ -5,46 +5,54 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useGetCheckoutURL } from 'app/hooks';
 import { useAppState } from 'app/overmind';
 
-const getEventName = (isEligibleForTrial: boolean) =>
-  isEligibleForTrial
-    ? 'Limit banner: repos - Start Trial'
-    : 'Limit banner: repos - Upgrade';
+const getEventName = (
+  isEligibleForTrial: boolean,
+  isBillingManager: boolean
+) => {
+  if (isEligibleForTrial) {
+    const event = 'Limit banner: repos - Start Trial';
+    return isBillingManager ? event : `${event} - As non-admin`;
+  }
+  return 'Limit banner: repos - Upgrade';
+};
 
 export const PrivateRepoFreeTeam: React.FC = () => {
-  const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
-  const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
+  const checkoutUrl = useGetCheckoutURL({
     success_path: pathname,
     cancel_path: pathname,
   });
 
+  const ctaUrl = `${
+    isPersonalSpace ? '/pro' : checkoutUrl
+  }?utm_source=dashboard_private_repo_upgrade`;
+
   return (
     <MessageStripe
-      justify={isTeamAdmin ? 'space-between' : 'center'}
+      justify={ctaUrl ? 'space-between' : 'center'}
       variant="trial"
     >
       This repository is in view mode only. Upgrade your account for unlimited
       repositories.
-      {isTeamAdmin && (
+      {checkoutUrl && (
         <MessageStripe.Action
-          {...(checkout.state === 'READY'
+          {...(checkoutUrl.startsWith('/')
             ? {
-                as: 'a',
-                href: checkout.url,
+                as: RouterLink,
+                to: ctaUrl,
               }
             : {
-                as: RouterLink,
-                to: '/pro',
+                as: 'a',
+                href: ctaUrl,
               })}
           onClick={() => {
-            track(getEventName(isEligibleForTrial), {
+            track(getEventName(isEligibleForTrial, isBillingManager), {
               codesandbox: 'V1',
               event_source: 'UI',
             });
@@ -60,10 +68,9 @@ export const PrivateRepoFreeTeam: React.FC = () => {
 export const MaxReposFreeTeam: React.FC = () => {
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
-  const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
+  const checkoutUrl = useGetCheckoutURL({
     success_path: dashboardUrls.repositories(activeTeam),
     cancel_path: dashboardUrls.repositories(activeTeam),
   });
@@ -72,19 +79,19 @@ export const MaxReposFreeTeam: React.FC = () => {
     <MessageStripe justify="space-between" variant="trial">
       Free teams are limited to 3 public repositories. Upgrade for unlimited
       public and private repositories.
-      {isTeamAdmin ? (
+      {checkoutUrl ? (
         <MessageStripe.Action
-          {...(checkout.state === 'READY'
+          {...(checkoutUrl.startsWith('/')
             ? {
-                as: 'a',
-                href: checkout.url,
+                as: Link,
+                to: checkoutUrl,
               }
             : {
-                as: Link,
-                to: '/pro',
+                as: 'a',
+                href: checkoutUrl,
               })}
           onClick={() =>
-            track(getEventName(isEligibleForTrial), {
+            track(getEventName(isEligibleForTrial, isBillingManager), {
               codesandbox: 'V1',
               event_source: 'UI',
             })

@@ -3,13 +3,14 @@ import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
-import { Element, Stack, Text } from '@codesandbox/components';
+import { Element, Stack, Text, SkeletonText } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
 import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { formatCurrency } from 'app/utils/currency';
 import {
   PERSONAL_FREE_FEATURES,
   PERSONAL_FEATURES,
@@ -21,24 +22,6 @@ import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
 import { StyledPricingDetailsText } from '../components/elements';
 import { UpsellTeamProCard } from '../components/UpsellTeamProCard';
-
-const getBillingText = ({
-  quantity,
-  unitPrice,
-  billingInterval,
-}: {
-  quantity: number;
-  unitPrice: number;
-  billingInterval: SubscriptionInterval;
-}) => {
-  const isMonthly = billingInterval === SubscriptionInterval.Monthly;
-  const multiplier = isMonthly ? 1 : 12;
-  const price = quantity * unitPrice * multiplier;
-
-  return `a total of $${price} will be billed each ${
-    isMonthly ? 'month' : 'year'
-  }`;
-};
 
 // TODO: Rename
 export const WorkspacePlanSelection: React.FC = () => {
@@ -58,10 +41,10 @@ export const WorkspacePlanSelection: React.FC = () => {
   const {
     isPersonalSpace,
     isTeamSpace,
-    isTeamAdmin,
+    isBillingManager,
   } = useWorkspaceAuthorization();
   // const isPersonalSpace = false; // DEBUG
-  // const isTeamAdmin = true; // DEBUG
+  // const isBillingManager = true; // DEBUG
   const { subscription, isPatron, isPro, isFree } = useWorkspaceSubscription();
 
   // Based on the 'type' search param we redirect to the personal pro page if
@@ -106,7 +89,7 @@ export const WorkspacePlanSelection: React.FC = () => {
 
   const teamProCta: CTA =
     // eslint-disable-next-line no-nested-ternary
-    isTeamAdmin
+    isBillingManager
       ? // Only allowed to change from monthly to yearly
         subscription.billingInterval === SubscriptionInterval.Monthly
         ? {
@@ -133,6 +116,31 @@ export const WorkspacePlanSelection: React.FC = () => {
             },
           }
       : undefined;
+
+  const isYearlyInterval =
+    subscription.billingInterval === SubscriptionInterval.Yearly;
+
+  const getPrice = (options?: { perEditor?: boolean }) => {
+    if (!subscription) {
+      return null;
+    }
+
+    const multiplier = isYearlyInterval ? 12 : 1;
+    const quantity = options?.perEditor ? 1 : subscription.quantity;
+    const price = quantity * subscription.unitPrice * multiplier;
+
+    // A Paddle subscription returns the currency in uppercase EUR. A Stripe
+    // subscription returns the currency in lowercase usd. The formatCurrency
+    // function expects the currency in uppercase.
+    const currency = subscription.currency?.toUpperCase() || 'USD';
+
+    // The formatCurrency function will divide the price by 100 to make sure
+    // the cents are converted to full currency.
+    return formatCurrency({
+      currency,
+      amount: price,
+    });
+  };
 
   return (
     <div>
@@ -208,10 +216,13 @@ export const WorkspacePlanSelection: React.FC = () => {
               >
                 <Stack gap={1} direction="vertical">
                   <Text size={32} weight="500">
-                    {`${subscription.currency || '$'}${subscription.unitPrice}`}
+                    {subscription ? (
+                      getPrice()
+                    ) : (
+                      <SkeletonText css={{ width: '60px', height: '40px' }} />
+                    )}
                   </Text>
-                  {subscription.billingInterval ===
-                  SubscriptionInterval.Yearly ? (
+                  {isYearlyInterval ? (
                     <StyledPricingDetailsText>
                       charged annually on{' '}
                       {format(new Date(subscription.nextBillDate), 'MMM dd')}
@@ -237,17 +248,29 @@ export const WorkspacePlanSelection: React.FC = () => {
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="500">
-                  ${subscription.unitPrice}
+                  {subscription ? (
+                    getPrice({ perEditor: true })
+                  ) : (
+                    <SkeletonText css={{ width: '60px', height: '40px' }} />
+                  )}
                 </Text>
                 <Text>
-                  <div>per editor{isTeamAdmin ? ',' : null}</div>
-                  {isTeamAdmin ? (
+                  <div>per editor{isBillingManager ? ',' : null}</div>
+                  {isBillingManager ? (
                     <div>
-                      {getBillingText({
-                        quantity: subscription.quantity,
-                        unitPrice: subscription.unitPrice,
-                        billingInterval: subscription.billingInterval,
-                      })}
+                      a total of{' '}
+                      {subscription ? (
+                        getPrice()
+                      ) : (
+                        <SkeletonText
+                          css={{
+                            display: 'inline-block',
+                            marginBottom: '-4px',
+                            width: '20px',
+                          }}
+                        />
+                      )}{' '}
+                      will be billed each {isYearlyInterval ? 'year' : 'month'}
                     </div>
                   ) : null}
                 </Text>

@@ -12,7 +12,7 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
-import { RestrictionsBanner } from './RestrictionsBanner';
+import { SandboxesRestrictionsBanner } from './RestrictionsBanner';
 
 export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
@@ -89,7 +89,7 @@ export const SandboxesPage = () => {
         showSortOptions={!isEmpty && Boolean(currentPath)}
       />
 
-      {hasMaxPublicSandboxes ? <RestrictionsBanner /> : null}
+      {hasMaxPublicSandboxes ? <SandboxesRestrictionsBanner /> : null}
 
       {isEmpty ? (
         <EmptyPage.StyledWrapper>

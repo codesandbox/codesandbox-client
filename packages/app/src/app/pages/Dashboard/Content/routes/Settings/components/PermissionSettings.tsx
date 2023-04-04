@@ -26,7 +26,7 @@ export const PermissionSettings = () => {
   const { isFree, isPro } = useWorkspaceSubscription();
   const {
     isTeamSpace,
-    isTeamAdmin,
+    isBillingManager,
     isAdmin,
     isPersonalSpace,
   } = useWorkspaceAuthorization();
@@ -40,7 +40,7 @@ export const PermissionSettings = () => {
             <Text weight="bold">{isTeamSpace ? 'Team Pro' : 'Pro'}</Text>{' '}
             subscription to change sandbox permissions.
           </span>
-          {isTeamAdmin || isPersonalSpace ? (
+          {isBillingManager || isPersonalSpace ? (
             <MessageStripe.Action
               as="a"
               href="/pro?utm_source=dashboard_permission_settings"
@@ -62,7 +62,7 @@ export const PermissionSettings = () => {
         </MessageStripe>
       ) : null}
 
-      {isPro && isTeamSpace && !isTeamAdmin ? (
+      {isPro && isTeamSpace && !isBillingManager ? (
         <Alert message="Please contact your admin to change sandbox permissions." />
       ) : null}
 
@@ -72,7 +72,7 @@ export const PermissionSettings = () => {
         </Column>
         {!isPersonalSpace && (
           <Column span={[12, 12, 6]}>
-            <SandboxSecurity disabled={isFree || !isTeamAdmin} />
+            <SandboxSecurity disabled={isFree || !isBillingManager} />
           </Column>
         )}
       </Grid>

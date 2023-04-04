@@ -20,7 +20,7 @@ const LinkButton = styled.button`
 
 export const FreeViewOnlyStripe = () => {
   const { sandboxPrivacyChanged } = useActions().workspace;
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isPersonalSpace, isBillingManager } = useWorkspaceAuthorization();
 
   const changeToPublic = () => {
     sandboxPrivacyChanged({ privacy: 0, source: 'editor-view-only-stripe' });
@@ -34,10 +34,10 @@ export const FreeViewOnlyStripe = () => {
         <LinkButton onClick={changeToPublic}>Make it public</LinkButton> or
         upgrade to <Text weight="bold">PRO</Text>.
       </span>
-      {isTeamAdmin ? (
+      {isPersonalSpace || isBillingManager ? (
         <MessageStripe.Action
           as="a"
-          href="/pro"
+          href="/pro?utm_source=v1_sandbox_view_only_upgrade"
           onClick={() => {
             track('Limit banner: editor - Upgrade', {
               codesandbox: 'V1',

@@ -7,6 +7,8 @@ import { Branch } from 'app/pages/Dashboard/Components/Branch';
 import { ViewOptions } from 'app/pages/Dashboard/Components/Filters/ViewOptions';
 import { Sandbox } from 'app/pages/Dashboard/Components/Sandbox';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
+import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
 import {
   GRID_MAX_WIDTH,
   ITEM_MIN_WIDTH,
@@ -21,6 +23,7 @@ import {
 } from 'app/pages/Dashboard/types';
 import { TemporaryWarningForWorkspaceScopesMigration } from 'app/pages/Dashboard/Components/Repository/stripes';
 import { useDismissible } from 'app/hooks';
+
 import { DocumentationRow } from './DocumentationRow';
 import { RecentHeader } from './RecentHeader';
 
@@ -126,6 +129,8 @@ export const RecentContent: React.FC<RecentContentProps> = ({
         </SelectionProvider>
       </Stack>
       <DocumentationRow />
+      <TemplatesRow />
+      <SuggestionsRow page="recent" />
     </StyledWrapper>
   );
 };

@@ -11,7 +11,7 @@ import { Alert } from '../components/Alert';
 export const RegistrySettings = () => {
   const actions = useActions();
   const { activeTeam, dashboard } = useAppState();
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const [resetting, setResetting] = React.useState(false);
   const { isFree, isPro } = useWorkspaceSubscription();
@@ -37,7 +37,7 @@ export const RegistrySettings = () => {
     }
     // We need to add "activeTeam"
     // eslint-disable-next-line
-  }, [setLoading, actions.dashboard, activeTeam]);
+  }, [setLoading, actions.dashboard, activeTeam, isTeamAdmin]);
 
   useEffect(() => {
     if (isPro && isTeamAdmin) {
@@ -48,6 +48,10 @@ export const RegistrySettings = () => {
   }, [loadCurrentNpmRegistry]);
 
   const onSubmit = async (params: CreateRegistryParams) => {
+    if (!isTeamAdmin) {
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -56,8 +60,6 @@ export const RegistrySettings = () => {
       setSubmitting(false);
     }
   };
-
-  if (loading) return null;
 
   return (
     <Stack direction="vertical" gap={6}>
@@ -88,51 +90,53 @@ export const RegistrySettings = () => {
         <Alert message="Please contact your admin to set a custom npm registry." />
       ) : null}
 
-      <Stack
-        css={css({
-          padding: 6,
-          border: '1px solid',
-          backgroundColor: 'card.background',
-          borderColor: 'transparent',
-          borderRadius: 'medium',
-          position: 'relative',
-          opacity: isFree || !isTeamAdmin ? 0.4 : 1,
-          pointerEvents: isFree || !isTeamAdmin ? 'none' : 'all',
-        })}
-      >
-        {!resetting && (
-          <RegistryForm
-            onCancel={() => {
-              resetForm();
-            }}
-            onSubmit={onSubmit}
-            isSubmitting={submitting}
-            registry={dashboard.workspaceSettings.npmRegistry}
-            disabled={isFree || !isTeamAdmin}
-          />
-        )}
-      </Stack>
-
-      {isPro && isTeamAdmin ? (
-        <Stack justify="center" align="center">
-          <Button
-            variant="link"
-            onClick={() =>
-              actions.dashboard.deleteCurrentNpmRegistry({}).then(() => {
-                resetForm();
-              })
-            }
+      {!loading && (
+        <>
+          <Stack
             css={css({
-              maxWidth: 150,
-              ':hover:not(:disabled)': {
-                color: 'reds.200',
-              },
+              padding: 6,
+              border: '1px solid',
+              backgroundColor: 'card.background',
+              borderColor: 'transparent',
+              borderRadius: 'medium',
+              position: 'relative',
+              opacity: isFree || !isTeamAdmin ? 0.4 : 1,
+              pointerEvents: isFree || !isTeamAdmin ? 'none' : 'all',
             })}
           >
-            Reset Registry
-          </Button>
-        </Stack>
-      ) : null}
+            {!resetting && (
+              <RegistryForm
+                onCancel={resetForm}
+                onSubmit={onSubmit}
+                isSubmitting={submitting}
+                registry={dashboard.workspaceSettings.npmRegistry}
+                disabled={isFree || !isTeamAdmin}
+              />
+            )}
+          </Stack>
+
+          {isPro && isTeamAdmin ? (
+            <Stack justify="center" align="center">
+              <Button
+                variant="link"
+                onClick={() =>
+                  actions.dashboard.deleteCurrentNpmRegistry({}).then(() => {
+                    resetForm();
+                  })
+                }
+                css={css({
+                  maxWidth: 150,
+                  ':hover:not(:disabled)': {
+                    color: 'reds.200',
+                  },
+                })}
+              >
+                Reset Registry
+              </Button>
+            </Stack>
+          ) : null}
+        </>
+      )}
     </Stack>
   );
 };

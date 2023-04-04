@@ -17,7 +17,6 @@ import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { getDaysUntil } from 'app/utils/dateTime';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { SubscriptionStatus } from 'app/graphql/types';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -26,7 +25,7 @@ import { AdminUpgradeToTeamPro } from './BottomMessages/AdminUpgradeToTeamPro';
 import { UserUpgradeToTeamPro } from './BottomMessages/UserUpgradeToTeamPro';
 import { TrialExpiring } from './BottomMessages/TrialExpiring';
 import { UpgradeToPersonalPro } from './BottomMessages/UpgradeToPersonalPro';
-import { AdminStartTrial } from './BottomMessages/AdminStartTrial';
+import { StartTrial } from './BottomMessages/StartTrial';
 import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
@@ -35,11 +34,13 @@ const DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE = 5;
 
 interface SidebarProps {
   visible: boolean;
+  hasTopBarBanner?: boolean;
   onSidebarToggle: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   visible,
+  hasTopBarBanner,
   onSidebarToggle,
 }) => {
   const history = useHistory();
@@ -95,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const {
     isPersonalSpace,
     isTeamSpace,
-    isTeamAdmin,
+    isBillingManager,
   } = useWorkspaceAuthorization();
 
   const {
@@ -114,8 +115,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const showDaysLeftMessage =
     trialDaysLeft !== null &&
     trialDaysLeft <= DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE;
-
-  const hasTopBarBanner = subscription?.status === SubscriptionStatus.Unpaid;
 
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
@@ -310,15 +309,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && isFree ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isTeamAdmin && isEligibleForTrial ? (
-              <AdminStartTrial activeTeam={activeTeam} />
-            ) : null}
+            {isEligibleForTrial ? <StartTrial activeTeam={activeTeam} /> : null}
 
-            {isTeamAdmin && !isEligibleForTrial ? (
+            {isBillingManager && isTeamSpace && !isEligibleForTrial ? (
               <AdminUpgradeToTeamPro />
             ) : null}
 
-            {isTeamSpace && !isTeamAdmin ? <UserUpgradeToTeamPro /> : null}
+            {isTeamSpace && !isBillingManager && !isEligibleForTrial ? (
+              <UserUpgradeToTeamPro />
+            ) : null}
 
             {isPersonalSpace ? <UpgradeToPersonalPro /> : null}
           </Element>
@@ -331,7 +330,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd}
               hasPaymentMethod={hasPaymentMethod}
               daysLeft={trialDaysLeft}
-              isAdmin={isTeamAdmin}
+              isBillingManager={isBillingManager}
             />
           </Element>
         ) : null}

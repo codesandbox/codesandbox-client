@@ -23,8 +23,9 @@ export const ManageSubscription = () => {
     isStripe,
     subscription,
     hasPaymentMethod,
+    isEligibleForTrial,
   } = useWorkspaceSubscription();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   const [paymentPending, setPaymentPending] = useState(false);
 
@@ -38,7 +39,7 @@ export const ManageSubscription = () => {
     }
   }, [location, history]);
 
-  if (!isTeamAdmin) {
+  if (!(isBillingManager || isEligibleForTrial)) {
     return null;
   }
 

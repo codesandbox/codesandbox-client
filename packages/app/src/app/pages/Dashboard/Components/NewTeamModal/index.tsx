@@ -16,12 +16,14 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { TeamInfo } from './TeamInfo';
 import { TeamMembers } from './TeamMembers';
 import { TeamSubscription } from './TeamSubscription';
+import { TeamImport } from './TeamImport';
 
-export type TeamStep = 'info' | 'members' | 'subscription';
+export type TeamStep = 'info' | 'members' | 'import' | 'subscription';
 
 const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
   info: 'members',
-  members: 'subscription',
+  members: 'import',
+  import: 'subscription',
   subscription: null,
 };
 
@@ -51,7 +53,6 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
 
   return (
     <>
-      {' '}
       <Element padding={6}>
         <Stack align="center" justify="space-between">
           <Text
@@ -90,6 +91,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
                 onComplete={handleStepCompletion}
               />
             ),
+            import: <TeamImport onComplete={handleStepCompletion} />,
             subscription: (
               <TeamSubscription onComplete={handleStepCompletion} />
             ),

@@ -1,6 +1,6 @@
 import { TemplateType } from '@codesandbox/common/lib/templates';
 import {
-  CurrentUser,
+  CurrentUserFromAPI,
   CustomTemplate,
   Dependency,
   Directory,
@@ -69,9 +69,9 @@ export default {
   },
   // We only use this function related to current_user/subscription
   cancelPatronSubscription() {
-    return api.delete<CurrentUser>('/users/current_user/subscription');
+    return api.delete<CurrentUserFromAPI>('/users/current_user/subscription');
   },
-  getCurrentUser(): Promise<CurrentUser> {
+  getCurrentUser(): Promise<CurrentUserFromAPI> {
     return api.get('/users/current');
   },
   markSurveySeen(): Promise<void> {
@@ -546,8 +546,8 @@ export default {
       avatar,
     });
   },
-  createVercelIntegration(code: string): Promise<CurrentUser> {
-    return api.post(`/users/current_user/integrations/zeit`, {
+  createVercelIntegration(code: string): Promise<CurrentUserFromAPI> {
+    return api.post(`/users/current_user/integrations/vercel`, {
       code,
     });
   },
@@ -558,7 +558,7 @@ export default {
     return api.delete(`/users/current_user/integrations/github`);
   },
   signoutVercel(): Promise<void> {
-    return api.delete(`/users/current_user/integrations/zeit`);
+    return api.delete(`/users/current_user/integrations/vercel`);
   },
   preloadTemplates() {
     client.query({ query: LIST_PERSONAL_TEMPLATES, variables: {} });

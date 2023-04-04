@@ -25,14 +25,8 @@ prefetchScript(
   }/static/js/babel.${BABEL7_VERSION}.min.js`
 );
 
-const WORKERS_TO_LOAD = process.env.SANDPACK ? 1 : 3;
-// @ts-ignore
-window.babelworkers = [];
-for (let i = 0; i < WORKERS_TO_LOAD; i++) {
-  const worker = new BabelWorker();
-  // @ts-ignore
-  window.babelworkers.push(worker);
-}
+// Preload first babel worker, this will ensure the worker is in the browser cache when we need it
+globalThis.babelworkers = [BabelWorker()];
 
 if (!isStandalone) {
   // Means we're in the editor

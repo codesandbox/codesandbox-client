@@ -36,8 +36,6 @@ export const SearchResults = ({
   onOpenTemplate,
   officialTemplates,
 }: {
-  // Receiving as prop to avoid fetching the checkout
-  // url every time the templates list re-renders.
   checkoutUrl: string | undefined;
   isInCollection: boolean;
   search: string;
@@ -47,7 +45,7 @@ export const SearchResults = ({
 }) => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   const limitNewSandboxes = isInCollection && hasMaxPublicSandboxes;
 
@@ -86,7 +84,7 @@ export const SearchResults = ({
             <MaxPublicSandboxes
               checkoutUrl={checkoutUrl}
               isEligibleForTrial={isEligibleForTrial}
-              isTeamAdmin={isTeamAdmin}
+              isBillingManager={isBillingManager}
             />
           ) : null}
 

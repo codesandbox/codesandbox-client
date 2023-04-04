@@ -2,10 +2,19 @@ import { useQuery } from '@apollo/react-hooks';
 import {
   GetGithubAccountsQuery,
   GetGithubAccountsQueryVariables,
+  ProfileFragment,
+  OrganizationFragment,
 } from 'app/graphql/types';
-import { GET_GITHUB_ACCOUNTS } from '../queries';
+import { GET_GITHUB_ACCOUNTS } from '../components/CreateSandbox/queries';
 
-export const useGithubAccounts = () => {
+export const useGithubAccounts = (): {
+  state: 'error' | 'loading' | 'ready';
+  error?: string;
+  data?: {
+    personal?: ProfileFragment | null;
+    organizations?: OrganizationFragment[] | null;
+  };
+} => {
   const { data, error } = useQuery<
     GetGithubAccountsQuery,
     GetGithubAccountsQueryVariables
@@ -27,8 +36,8 @@ export const useGithubAccounts = () => {
   return {
     state: 'ready',
     data: {
-      personal: data.me.githubProfile,
-      organizations: data.me.githubOrganizations,
+      personal: data.me?.githubProfile,
+      organizations: data.me?.githubOrganizations,
     },
   };
 };

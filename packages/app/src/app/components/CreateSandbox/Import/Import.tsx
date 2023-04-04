@@ -341,7 +341,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           ) : null}
         </Element>
       </Stack>
-      {restrictsPublicRepos ? null : <SuggestedRepositories />}
+      {disableImport ? null : <SuggestedRepositories />}
     </Stack>
   );
 };

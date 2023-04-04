@@ -3,7 +3,7 @@
 import * as meriyah from 'meriyah';
 import * as escope from 'escope';
 import { walk } from 'estree-walker';
-import { flatten } from 'lodash-es';
+import flatten from 'lodash-es/flatten';
 import {
   AssignmentExpression,
   Identifier,

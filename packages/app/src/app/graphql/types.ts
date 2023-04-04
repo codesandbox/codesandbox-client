@@ -409,6 +409,8 @@ export type GithubRepo = {
   /** Whether the repository is marked as private */
   private: Scalars['Boolean'];
   /** ISO 8601 datetime */
+  pushedAt: Maybe<Scalars['String']>;
+  /** ISO 8601 datetime */
   updatedAt: Scalars['String'];
 };
 
@@ -581,6 +583,7 @@ export type PrivateRegistry = {
   registryAuthKey: Maybe<Scalars['String']>;
   registryType: RegistryType;
   registryUrl: Maybe<Scalars['String']>;
+  sandpackTrustedDomains: Array<Scalars['String']>;
   teamId: Scalars['UUID4'];
 };
 
@@ -709,6 +712,7 @@ export type ProSubscription = {
   trialEnd: Maybe<Scalars['DateTime']>;
   trialStart: Maybe<Scalars['DateTime']>;
   type: SubscriptionType;
+  /** Per-seat price for the billing interval as an integer of the smallest denomination of the local currency. */
   unitPrice: Maybe<Scalars['Int']>;
   updateBillingUrl: Maybe<Scalars['String']>;
 };
@@ -871,7 +875,6 @@ export type RootMutationType = {
   createOrUpdatePrivateNpmRegistry: PrivateRegistry;
   createPreviewComment: Comment;
   createSandboxInvitation: Invitation;
-  createSandpackTrustedDomain: SandpackTrustedDomain;
   /** Create a team */
   createTeam: Team;
   deleteAlbum: Scalars['String'];
@@ -944,7 +947,6 @@ export type RootMutationType = {
   deleteProjectById: Scalars['Boolean'];
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
-  deleteSandpackTrustedDomain: Scalars['Boolean'];
   deleteWorkspace: Scalars['String'];
   /**
    * Import an existing branch from a repository
@@ -1091,7 +1093,6 @@ export type RootMutationType = {
   updateNotificationPreferences: NotificationPreferences;
   /** Update notification read status */
   updateNotificationReadStatus: Notification;
-  updateSandpackTrustedDomain: SandpackTrustedDomain;
   /** update subscription details (not billing details) */
   updateSubscription: ProSubscription;
   updateSubscriptionBillingInterval: ProSubscription;
@@ -1206,6 +1207,7 @@ export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
   registryAuthKey: Maybe<Scalars['String']>;
   registryType: RegistryType;
   registryUrl: Maybe<Scalars['String']>;
+  sandpackTrustedDomains: Maybe<Array<Scalars['String']>>;
   teamId: Scalars['UUID4'];
 };
 
@@ -1224,12 +1226,6 @@ export type RootMutationTypeCreateSandboxInvitationArgs = {
   authorization: Authorization;
   email: Scalars['String'];
   sandboxId: Scalars['ID'];
-};
-
-export type RootMutationTypeCreateSandpackTrustedDomainArgs = {
-  comment: Maybe<Scalars['String']>;
-  domainName: Scalars['String'];
-  teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeCreateTeamArgs = {
@@ -1272,10 +1268,6 @@ export type RootMutationTypeDeleteProjectByIdArgs = {
 
 export type RootMutationTypeDeleteSandboxesArgs = {
   sandboxIds: Array<Scalars['ID']>;
-};
-
-export type RootMutationTypeDeleteSandpackTrustedDomainArgs = {
-  sandpackTrustedDomainId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeDeleteWorkspaceArgs = {
@@ -1515,12 +1507,6 @@ export type RootMutationTypeUpdateNotificationPreferencesArgs = {
 export type RootMutationTypeUpdateNotificationReadStatusArgs = {
   notificationId: Scalars['UUID4'];
   read: Scalars['Boolean'];
-};
-
-export type RootMutationTypeUpdateSandpackTrustedDomainArgs = {
-  comment: Maybe<Scalars['String']>;
-  domainName: Maybe<Scalars['String']>;
-  sandpackTrustedDomainId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeUpdateSubscriptionArgs = {
@@ -1866,15 +1852,6 @@ export type SandboxProtectionSettings = {
   preventSandboxLeaving: Scalars['Boolean'];
 };
 
-/** A domain trusted for private sandpack rendering */
-export type SandpackTrustedDomain = {
-  __typename?: 'SandpackTrustedDomain';
-  comment: Maybe<Scalars['String']>;
-  domainName: Scalars['String'];
-  id: Scalars['UUID4'];
-  teamId: Scalars['UUID4'];
-};
-
 export type Source = {
   __typename?: 'Source';
   id: Maybe<Scalars['UUID4']>;
@@ -1957,11 +1934,11 @@ export type Team = {
    */
   projects: Array<Project>;
   sandboxes: Array<Sandbox>;
-  sandpackTrustedDomains: Array<SandpackTrustedDomain>;
   settings: Maybe<WorkspaceSandboxSettings>;
   shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
   templates: Array<Template>;
+  type: TeamType;
   usage: TeamUsage;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
@@ -2016,6 +1993,11 @@ export type TeamPreview = {
   name: Scalars['String'];
   shortid: Scalars['String'];
 };
+
+export enum TeamType {
+  Personal = 'PERSONAL',
+  Team = 'TEAM',
+}
 
 export type TeamUsage = {
   __typename?: 'TeamUsage';
@@ -2152,7 +2134,12 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
   githubRepo: Maybe<
     { __typename?: 'GithubRepo' } & Pick<
       GithubRepo,
-      'name' | 'fullName' | 'updatedAt' | 'authorization' | 'private'
+      | 'name'
+      | 'fullName'
+      | 'updatedAt'
+      | 'pushedAt'
+      | 'authorization'
+      | 'private'
     > & {
         owner: { __typename?: 'GithubOrganization' } & Pick<
           GithubOrganization,
@@ -2202,6 +2189,7 @@ export type GetGitHubAccountReposQuery = { __typename?: 'RootQueryType' } & {
             | 'name'
             | 'private'
             | 'updatedAt'
+            | 'pushedAt'
           > & {
               owner: { __typename?: 'GithubOrganization' } & Pick<
                 GithubOrganization,
@@ -2226,7 +2214,13 @@ export type GetGitHubOrganizationReposQuery = {
     Array<
       { __typename?: 'GithubRepo' } & Pick<
         GithubRepo,
-        'id' | 'authorization' | 'fullName' | 'name' | 'private' | 'updatedAt'
+        | 'id'
+        | 'authorization'
+        | 'fullName'
+        | 'name'
+        | 'private'
+        | 'updatedAt'
+        | 'pushedAt'
       > & {
           owner: { __typename?: 'GithubOrganization' } & Pick<
             GithubOrganization,
@@ -2799,7 +2793,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        'origin' | 'type' | 'paymentProvider'
+        'origin' | 'type' | 'status' | 'paymentProvider'
       >
     >;
   };
@@ -2817,7 +2811,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     userAuthorizations: Array<
       { __typename?: 'UserAuthorization' } & Pick<
         UserAuthorization,
-        'userId' | 'authorization'
+        'userId' | 'authorization' | 'teamManager'
       >
     >;
     settings: Maybe<
@@ -2881,10 +2875,6 @@ export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
   | 'teamId'
 >;
 
-export type SandpackTrustedDomainsFragment = {
-  __typename?: 'SandpackTrustedDomain';
-} & Pick<SandpackTrustedDomain, 'id' | 'domainName' | 'comment' | 'teamId'>;
-
 export type BranchFragment = { __typename?: 'Branch' } & Pick<
   Branch,
   'id' | 'name' | 'contribution' | 'lastAccessedAt' | 'upstream'
@@ -2917,6 +2907,15 @@ export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
   >;
   team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
 };
+
+export type TeamLimitsFragment = { __typename?: 'TeamLimits' } & Pick<
+  TeamLimits,
+  | 'maxEditors'
+  | 'maxPrivateProjects'
+  | 'maxPrivateSandboxes'
+  | 'maxPublicProjects'
+  | 'maxPublicSandboxes'
+>;
 
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
@@ -3143,6 +3142,7 @@ export type ChangeTeamMemberAuthorizationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   userId: Scalars['UUID4'];
   authorization: TeamMemberAuthorization;
+  teamManager: Maybe<Scalars['Boolean']>;
 }>;
 
 export type ChangeTeamMemberAuthorizationMutation = {
@@ -3797,11 +3797,6 @@ export type GetPrivateNpmRegistryQuery = { __typename?: 'RootQueryType' } & {
           privateRegistry: Maybe<
             { __typename?: 'PrivateRegistry' } & NpmRegistryFragment
           >;
-          sandpackTrustedDomains: Array<
-            {
-              __typename?: 'SandpackTrustedDomain';
-            } & SandpackTrustedDomainsFragment
-          >;
         }
       >;
     }
@@ -3903,6 +3898,17 @@ export type RepositoryByDetailsQueryVariables = Exact<{
 
 export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
   project: Maybe<{ __typename?: 'Project' } & ProjectWithBranchesFragment>;
+};
+
+export type LimitsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LimitsQuery = { __typename?: 'RootQueryType' } & {
+  limits: { __typename?: 'Limits' } & {
+    personalFree: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+    personalPro: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+    teamFree: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+    teamPro: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+  };
 };
 
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<

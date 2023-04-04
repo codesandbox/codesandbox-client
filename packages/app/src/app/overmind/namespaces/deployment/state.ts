@@ -5,7 +5,6 @@ type State = {
   building: boolean;
   vercel: {
     gettingDeploys: boolean;
-    hasAlias: boolean;
     deploys: VercelDeployment[];
     deploysBeingDeleted: string[];
     deployToDelete: string | null;
@@ -26,7 +25,6 @@ export const state: State = {
   deploying: false,
   building: false,
   vercel: {
-    hasAlias: false,
     deploys: [],
     deploysBeingDeleted: [],
     deployToDelete: null,

@@ -18,7 +18,6 @@ import {
   CreateOrUpdateNpmRegistryMutationVariables,
   NpmRegistryFragment,
   RegistryType,
-  SandpackTrustedDomain,
 } from 'app/graphql/types';
 
 import css from '@styled-system/css';
@@ -44,9 +43,7 @@ export type CreateRegistryParams = Omit<
 >;
 
 type RegistryFormProps = {
-  registry:
-    | (NpmRegistryFragment & { trustedDomains: SandpackTrustedDomain[] })
-    | null;
+  registry: NpmRegistryFragment | null;
   onCancel: () => void;
   onSubmit: (params: CreateRegistryParams) => void;
   isSubmitting: boolean;
@@ -103,9 +100,9 @@ export const RegistryForm = ({
     registry?.proxyEnabled
   );
 
-  const [trustedDomains, setTrustedDomains] = React.useState<
-    Partial<SandpackTrustedDomain>[]
-  >(registry.trustedDomains || []);
+  const [trustedDomains, setTrustedDomains] = React.useState(
+    registry.trustedDomains || []
+  );
 
   const serializeValues = (): CreateRegistryParams => ({
     registryAuthKey: authKey,
@@ -332,7 +329,8 @@ export const RegistryForm = ({
                       <Stack
                         align="center"
                         direction="horizontal"
-                        css={css({ width: '100%' })}
+                        key={scope}
+                        css={{ width: '100%' }}
                       >
                         <Input
                           required

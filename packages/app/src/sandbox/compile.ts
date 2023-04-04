@@ -9,7 +9,7 @@ import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { absolute } from '@codesandbox/common/lib/utils/path';
 import VERSION from '@codesandbox/common/lib/version';
 import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
-import { flatten } from 'lodash';
+import flatten from 'lodash-es/flatten';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, uninject } from 'sandbox-hooks/react-error-overlay/overlay';
 import {

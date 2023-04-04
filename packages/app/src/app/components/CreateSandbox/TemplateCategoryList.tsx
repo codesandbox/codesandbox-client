@@ -13,8 +13,6 @@ import { MaxPublicSandboxes } from './stripes';
 
 interface TemplateCategoryListProps {
   title: string;
-  // Receiving as prop to avoid fetching the checkout
-  // url every time the templates list re-renders.
   checkoutUrl: string | undefined;
   isCloudTemplateList?: boolean;
   isInCollection: boolean;
@@ -36,7 +34,7 @@ export const TemplateCategoryList = ({
   const actions = useActions();
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: title });
@@ -71,7 +69,7 @@ export const TemplateCategoryList = ({
         <MaxPublicSandboxes
           checkoutUrl={checkoutUrl}
           isEligibleForTrial={isEligibleForTrial}
-          isTeamAdmin={isTeamAdmin}
+          isBillingManager={isBillingManager}
         />
       ) : null}
       {!hasLogIn && isCloudTemplateList ? (

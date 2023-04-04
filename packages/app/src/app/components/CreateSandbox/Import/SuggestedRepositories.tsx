@@ -11,7 +11,6 @@ import {
   Icon,
   InteractiveOverlay,
   Button,
-  Element,
   SkeletonText,
   Link,
 } from '@codesandbox/components';
@@ -21,14 +20,25 @@ import { useActions, useAppState } from 'app/overmind';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
+import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 
-import { fuzzyMatchGithubToCsb } from './utils';
-import { useGithubAccounts } from './useGithubOrganizations';
-import { useGitHubAccountRepositories } from './useGitHubAccountRepositories';
 import { AccountSelect } from './AccountSelect';
+import { AuthorizeForSuggested } from './AuthorizeForSuggested';
 
-export const SuggestedRepositories = () => {
-  const { activeTeamInfo } = useAppState();
+type SuggestedRepositoriesProps = {
+  isImportOnly?: boolean;
+  onImportClicked?: () => void;
+};
+export const SuggestedRepositories = ({
+  isImportOnly,
+  onImportClicked,
+}: SuggestedRepositoriesProps) => {
+  const {
+    activeTeamInfo,
+    dashboard: { repositoriesByTeamId },
+  } = useAppState();
   const { modals, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHuPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
@@ -37,25 +47,56 @@ export const SuggestedRepositories = () => {
     { owner: string; name: string } | false
   >(false);
 
+  const teamId = activeTeamInfo?.id;
+
+  const importedRepos = useMemo(() => {
+    if (!teamId) {
+      return undefined;
+    }
+
+    return repositoriesByTeamId[teamId];
+  }, [teamId, repositoriesByTeamId]);
+
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
 
   const selectOptions = useMemo(
     () =>
-      githubAccounts.data
-        ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
+      githubAccounts.data && githubAccounts.data.personal
+        ? [
+            githubAccounts.data.personal,
+            ...(githubAccounts.data.organizations || []),
+          ]
         : undefined,
     [githubAccounts.data]
   );
 
   useEffect(() => {
     // Set initially selected account bazed on fuzzy matching
-    if (githubAccounts.state === 'ready' && selectedAccount === undefined) {
-      const match = fuzzyMatchGithubToCsb(activeTeamInfo?.name, selectOptions);
+    if (
+      githubAccounts.state === 'ready' &&
+      // Adding selectOptions to this if statement to satisfy TypeScript, because it does not
+      // know that when githubAccounts.state !== 'ready' the fuzzy functions isn't executed.
+      selectOptions &&
+      activeTeamInfo?.name &&
+      selectedAccount === undefined
+    ) {
+      const match = fuzzyMatchGithubToCsb(activeTeamInfo.name, selectOptions);
 
       setSelectedAccount(match.login);
     }
   }, [githubAccounts.state, selectedAccount, activeTeamInfo, selectOptions]);
+
+  useEffect(() => {
+    // This is needed if the import is opened before the user
+    // visits the repositories page.
+    if (!importedRepos && teamId) {
+      dashboardActions.getRepositoriesByTeam({
+        teamId,
+        fetchCachedDataFirst: true,
+      });
+    }
+  }, []);
 
   // eslint-disable-next-line no-nested-ternary
   const selectedAccountType = selectedAccount
@@ -67,6 +108,7 @@ export const SuggestedRepositories = () => {
   const githubRepos = useGitHubAccountRepositories({
     name: selectedAccount,
     accountType: selectedAccountType,
+    teamRepos: importedRepos,
   });
 
   if (githubAccounts.state === 'loading') {
@@ -77,9 +119,17 @@ export const SuggestedRepositories = () => {
     <Stack
       direction="vertical"
       gap={4}
-      css={{ fontFamily: 'Inter', marginBottom: '16px', fontWeight: 500 }}
+      css={{
+        fontFamily: 'Inter',
+        marginBottom: '16px',
+        fontWeight: 500,
+        // Conditionally spreading an object doesn't work for some reason so
+        // I had to move the conditional to separate properties.
+        maxHeight: isImportOnly ? '300px' : undefined,
+        overflow: isImportOnly ? 'auto' : undefined,
+      }}
     >
-      <Stack justify="space-between">
+      <Stack justify="space-between" css={{ fontSize: '13px' }}>
         <AccountSelect
           options={selectOptions}
           value={selectedAccount}
@@ -108,14 +158,7 @@ export const SuggestedRepositories = () => {
             {githubRepos.data?.map(repo => {
               return (
                 <InteractiveOverlay key={repo.id}>
-                  <StyledItem
-                    isDisabled={isFree && repo.private}
-                    css={{
-                      height: '32px',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <StyledItem isDisabled={isFree && repo.private}>
                     <Stack gap={4} align="center">
                       <Icon name="repository" color="#999999B3" />
                       {isFree && repo.private ? (
@@ -124,7 +167,7 @@ export const SuggestedRepositories = () => {
                         </Text>
                       ) : (
                         <InteractiveOverlay.Button
-                          onClick={() => {
+                          onClick={async () => {
                             if (isImporting) {
                               return;
                             }
@@ -142,7 +185,23 @@ export const SuggestedRepositories = () => {
 
                             if (isPersonalRepository && isTeamSpace) {
                               track(
-                                'Suggested repos - Imported personal repository into team space',
+                                `Suggested repos ${
+                                  isImportOnly
+                                    ? 'create team modal'
+                                    : 'create new modal'
+                                } - Imported personal repository into team space`,
+                                {
+                                  codesandbox: 'V1',
+                                  event_source: 'UI',
+                                }
+                              );
+                            } else {
+                              track(
+                                `Suggested repos ${
+                                  isImportOnly
+                                    ? 'create team modal'
+                                    : 'create new modal'
+                                } - Imported organization repository into team space`,
                                 {
                                   codesandbox: 'V1',
                                   event_source: 'UI',
@@ -150,7 +209,17 @@ export const SuggestedRepositories = () => {
                               );
                             }
 
-                            dashboardActions.importGitHubRepository(importInfo);
+                            const importResult = await dashboardActions.importGitHubRepository(
+                              {
+                                ...importInfo,
+                                redirect: !isImportOnly,
+                              }
+                            );
+
+                            // If we don't redirect and we get confirmation that the import succeeded
+                            if (importResult && onImportClicked) {
+                              onImportClicked();
+                            }
                           }}
                           disabled={Boolean(isImporting)}
                         >
@@ -164,11 +233,11 @@ export const SuggestedRepositories = () => {
                           <Icon name="lock" color="#999999" />
                         </>
                       ) : null}
-                      {repo.updatedAt ? (
+                      {repo.pushedAt ? (
                         <Text size={13} color="#999999B3">
                           <VisuallyHidden>Last updated</VisuallyHidden>
                           {formatDistanceStrict(
-                            zonedTimeToUtc(repo.updatedAt, 'Etc/UTC'),
+                            zonedTimeToUtc(repo.pushedAt, 'Etc/UTC'),
                             new Date(),
                             {
                               addSuffix: true,
@@ -179,19 +248,12 @@ export const SuggestedRepositories = () => {
                     </Stack>
                     {isFree && repo.private ? (
                       <StyledIndicator>
-                        <InteractiveOverlay.Item>
-                          <Link
-                            as={RouterLink}
-                            to="/pro"
+                        {isImportOnly ? (
+                          <InteractiveOverlay.Button
                             onClick={() => {
-                              track(
-                                'Suggested repos - Upgrade to Pro from private repo',
-                                {
-                                  codesandbox: 'V1',
-                                  event_source: 'UI',
-                                }
-                              );
-                              modals.newSandboxModal.close();
+                              if (onImportClicked) {
+                                onImportClicked();
+                              }
                             }}
                           >
                             <Text
@@ -206,15 +268,52 @@ export const SuggestedRepositories = () => {
                               <VisuallyHidden>
                                 {repo.name} is a private repository.
                               </VisuallyHidden>
-                              <Text color="#C2C2C2">
+                              <Text color="#EDFFA5">
                                 {isEligibleForTrial
                                   ? 'Start a free trial '
                                   : 'Upgrade to Pro '}
                               </Text>
                               to import private repositories.
                             </Text>
-                          </Link>
-                        </InteractiveOverlay.Item>
+                          </InteractiveOverlay.Button>
+                        ) : (
+                          <InteractiveOverlay.Item>
+                            <Link
+                              as={RouterLink}
+                              to="/pro"
+                              onClick={() => {
+                                track(
+                                  'Suggested repos - Upgrade to Pro from private repo',
+                                  {
+                                    codesandbox: 'V1',
+                                    event_source: 'UI',
+                                  }
+                                );
+                                modals.newSandboxModal.close();
+                              }}
+                            >
+                              <Text
+                                size={12}
+                                css={{
+                                  display: 'block',
+                                  width: 152,
+                                  color: '#999999B3',
+                                }}
+                                align="right"
+                              >
+                                <VisuallyHidden>
+                                  {repo.name} is a private repository.
+                                </VisuallyHidden>
+                                <Text color="#C2C2C2">
+                                  {isEligibleForTrial
+                                    ? 'Start a free trial '
+                                    : 'Upgrade to Pro '}
+                                </Text>
+                                to import private repositories.
+                              </Text>
+                            </Link>
+                          </InteractiveOverlay.Item>
+                        )}
                       </StyledIndicator>
                     ) : (
                       <StyledIndicator aria-hidden>
@@ -242,36 +341,11 @@ export const SuggestedRepositories = () => {
               );
             })}
           </StyledList>
-          {restrictsPrivateRepos ? <AuthorizeMessage /> : null}
+          {restrictsPrivateRepos ? <AuthorizeForSuggested /> : null}
         </>
       ) : null}
     </Stack>
   ) : null;
-};
-
-const AuthorizeMessage = () => {
-  const { signInGithubClicked } = useActions();
-
-  return (
-    <Stack gap={2} align="center">
-      <Text variant="muted" size={12}>
-        Don&apos;t see all your repositories?
-      </Text>
-      <Button
-        onClick={() => signInGithubClicked('private_repos')}
-        variant="link"
-        autoWidth
-        css={{ padding: 0, cursor: 'pointer' }}
-      >
-        <Stack gap={1} align="center" css={{ color: '#FFFFFF' }}>
-          <Text size={12}>Authorize access to private repositories</Text>
-          <Element css={{ marginTop: '2px' }}>
-            <Icon css={{ display: 'block' }} name="external" size={12} />
-          </Element>
-        </Stack>
-      </Button>
-    </Stack>
-  );
 };
 
 const StyledList = styled(Stack)`
@@ -290,6 +364,8 @@ const StyledItem = styled.li<{ isDisabled?: boolean }>`
   padding: 16px;
   background-color: #1d1d1d;
   border-radius: 4px;
+  height: 32px;
+  align-items: center;
 
   &:hover,
   &:focus-within {

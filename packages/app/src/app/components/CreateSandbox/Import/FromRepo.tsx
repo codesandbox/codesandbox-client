@@ -13,11 +13,11 @@ import {
 } from '@codesandbox/components';
 import styled, { keyframes } from 'styled-components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
-import { useGithubAccounts } from './useGithubOrganizations';
 import { useValidateRepoDestination } from './useValidateRepoDestination';
-import { fuzzyMatchGithubToCsb } from './utils';
 
 const COLORS = {
   INVALID: '#ED6C6C',
@@ -70,12 +70,13 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
     });
 
     setIsForking(true);
+
     await dashboard.forkGitHubRepository({
       source: { owner: repository.owner.login, name: repository.name },
       destination: {
         teamId: activeTeamInfo.id,
         organization:
-          destinationValidation.owner !== user.username
+          destinationValidation.owner !== user.githubProfile?.data?.login
             ? destinationValidation.owner
             : undefined,
         name: destinationValidation.name,
@@ -229,7 +230,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
 
           <Label css={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <Text as="span" size={2} css={{ color: '#808080' }}>
-              Git organization
+              Personal or organization GitHub account
             </Text>
             {githubAccounts.state === 'loading' ? (
               <SkeletonText

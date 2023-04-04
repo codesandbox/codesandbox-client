@@ -70,16 +70,6 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
         width: '100%',
       }}
     >
-      <Element
-        css={{ backgroundColor: '#252525', borderRadius: '4px' }}
-        padding={6}
-      >
-        <Icon
-          name="camera"
-          size={16}
-          css={{ color: '#C2C2C2', display: 'block' }}
-        />
-      </Element>
       <Stack align="center" direction="vertical" gap={2}>
         <Text
           as="h2"

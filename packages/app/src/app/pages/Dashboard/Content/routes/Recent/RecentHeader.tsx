@@ -1,26 +1,39 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { CreateCard, Stack, Text } from '@codesandbox/components';
+import { Stack, Text, Icon } from '@codesandbox/components';
+import { SubscriptionStatus, SubscriptionType } from 'app/graphql/types';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
+import styled from 'styled-components';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
-  const { activeTeam } = useAppState();
   const actions = useActions();
+  const {
+    dashboard: { teams },
+  } = useAppState();
   const { isFree } = useWorkspaceSubscription();
   const {
     isTeamSpace,
     isPersonalSpace,
     isTeamViewer,
   } = useWorkspaceAuthorization();
-  const showUpgradeBanner = isFree && isTeamSpace;
+  const allTeamsNotOnPro =
+    teams.find(
+      t =>
+        t.subscription &&
+        t.subscription.type === SubscriptionType.TeamPro &&
+        (t.subscription.status === SubscriptionStatus.Active ||
+          t.subscription.status === SubscriptionStatus.Trialing)
+    ) === undefined;
+  const showUpgradeBanner =
+    (isPersonalSpace && allTeamsNotOnPro) || (isFree && isTeamSpace);
 
   return (
     <Stack direction="vertical" gap={9}>
-      {showUpgradeBanner && <UpgradeBanner teamId={activeTeam} />}
+      {showUpgradeBanner && <UpgradeBanner />}
       <Text
         as="h1"
         css={{
@@ -34,10 +47,8 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       >
         {title}
       </Text>
-      <EmptyPage.StyledGrid>
-        <CreateCard
-          icon="plus"
-          title="New from a template"
+      <EmptyPage.StyledGrid css={{ gridAutoRows: 'auto' }}>
+        <ButtonInverseLarge
           onClick={() => {
             track('Empty State Card - Open create modal', {
               codesandbox: 'V1',
@@ -47,10 +58,10 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
             });
             actions.openCreateSandboxModal();
           }}
-        />
-        <CreateCard
-          icon="github"
-          title="Import from GitHub"
+        >
+          <Icon name="sandbox" /> New sandbox
+        </ButtonInverseLarge>
+        <ButtonInverseLarge
           onClick={() => {
             track('Empty State Card - Open create modal', {
               codesandbox: 'V1',
@@ -60,11 +71,12 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
             });
             actions.openCreateSandboxModal({ initialTab: 'import' });
           }}
-        />
+        >
+          <Icon name="github" /> Import repository
+        </ButtonInverseLarge>
+
         {isTeamSpace && !isTeamViewer ? (
-          <CreateCard
-            icon="addMember"
-            title="Invite team members"
+          <ButtonInverseLarge
             onClick={() => {
               track('Empty State Card - Invite members', {
                 codesandbox: 'V1',
@@ -76,12 +88,13 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
                 hasNextStep: false,
               });
             }}
-          />
+          >
+            <Icon name="addMember" /> Invite team members
+          </ButtonInverseLarge>
         ) : null}
+
         {isPersonalSpace ? (
-          <CreateCard
-            icon="team"
-            title="Create a team"
+          <ButtonInverseLarge
             onClick={() => {
               track('Empty State Card - Create team', {
                 codesandbox: 'V1',
@@ -90,9 +103,45 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
               });
               actions.openCreateTeamModal();
             }}
-          />
+          >
+            <Icon name="team" /> Create team
+          </ButtonInverseLarge>
         ) : null}
       </EmptyPage.StyledGrid>
     </Stack>
   );
 };
+
+type ButtonInverseLargeProps = {
+  children: React.ReactNode;
+} & Pick<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>;
+
+// TODO: Add the Button component variant below to the design system.
+// naming: [component][variant][size]
+const ButtonInverseLarge = ({ children, onClick }: ButtonInverseLargeProps) => {
+  return <StyledButton onClick={onClick}>{children}</StyledButton>;
+};
+
+const StyledButton = styled.button`
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 12px; // In case of icons
+  padding: 20px 24px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #0e0e0e;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+
+  &:hover {
+    background-color: #ebebeb;
+    cursor: pointer;
+    transition: background-color 75ms ease;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #9581ff;
+  }
+`;

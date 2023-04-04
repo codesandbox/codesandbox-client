@@ -144,9 +144,10 @@ export const teamFragmentDashboard = gql`
       avatarUrl
     }
 
-    subscription {
+    subscription(includeCancelled: true) {
       origin
       type
+      status
       paymentProvider
     }
   }
@@ -176,6 +177,7 @@ export const currentTeamInfoFragment = gql`
     userAuthorizations {
       userId
       authorization
+      teamManager
     }
 
     settings {
@@ -232,15 +234,6 @@ export const npmRegistryFragment = gql`
     registryAuthKey
     registryType
     registryUrl
-    teamId
-  }
-`;
-
-export const sandpackTrustedDomainsFragment = gql`
-  fragment sandpackTrustedDomains on SandpackTrustedDomain {
-    id
-    domainName
-    comment
     teamId
   }
 `;
@@ -304,4 +297,14 @@ export const projectWithBranchesFragment = gql`
     }
   }
   ${branchFragment}
+`;
+
+export const teamLimitsFragment = gql`
+  fragment teamLimits on TeamLimits {
+    maxEditors
+    maxPrivateProjects
+    maxPrivateSandboxes
+    maxPublicProjects
+    maxPublicSandboxes
+  }
 `;

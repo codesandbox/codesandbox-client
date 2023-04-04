@@ -50,7 +50,7 @@ export const EmptyContributions: React.FC = () => {
             return (
               <Element as="li" key={slug}>
                 <CreateCard
-                  icon="github"
+                  icon="repository"
                   label={owner}
                   title={name}
                   onClick={() => {

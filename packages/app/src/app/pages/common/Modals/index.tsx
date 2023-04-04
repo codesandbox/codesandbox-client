@@ -22,7 +22,6 @@ import { ExportGitHubModal } from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
-import { LiveSessionConfirm } from './LiveSessionConfirm';
 import { LiveSessionRestricted } from './LiveSessionRestricted';
 import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
@@ -51,6 +50,9 @@ import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 import { SubscriptionCancellationModal } from './SubscriptionCancellation';
 import { SelectWorkspaceToUpgrade } from './SelectWorkspaceToUpgrade';
+import { SelectWorkspaceToStartTrial } from './SelectWorkspaceToStartTrial';
+import { MidTrialModal } from './MidTrialModal';
+import { EditorSeatsUpgrade } from './EditorSeatsUpgrade';
 
 const modals = {
   preferences: {
@@ -149,10 +151,6 @@ const modals = {
     Component: LiveSessionEnded,
     width: 400,
   },
-  liveSessionConfirm: {
-    Component: LiveSessionConfirm,
-    width: 400,
-  },
   liveSessionRestricted: {
     Component: LiveSessionRestricted,
     width: 400,
@@ -212,10 +210,22 @@ const modals = {
   },
   subscriptionCancellation: {
     Component: SubscriptionCancellationModal,
-    width: 444,
+    width: 600,
   },
   selectWorkspaceToUpgrade: {
     Component: SelectWorkspaceToUpgrade,
+    width: 400,
+  },
+  selectWorkspaceToStartTrial: {
+    Component: SelectWorkspaceToStartTrial,
+    width: 400,
+  },
+  midTrial: {
+    Component: MidTrialModal,
+    width: 600,
+  },
+  editorSeatsUpgrade: {
+    Component: EditorSeatsUpgrade,
     width: 400,
   },
 };

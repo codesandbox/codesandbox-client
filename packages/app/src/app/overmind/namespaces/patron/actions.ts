@@ -1,5 +1,6 @@
 import { Context } from 'app/overmind';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { renameZeitToVercel } from 'app/overmind/utils/vercel';
 
 export const cancelSubscriptionClicked = async ({
   state,
@@ -15,7 +16,9 @@ export const cancelSubscriptionClicked = async ({
     state.patron.isUpdatingSubscription = true;
 
     try {
-      state.user = await effects.api.cancelPatronSubscription();
+      const currentUser = await effects.api.cancelPatronSubscription();
+      state.user = renameZeitToVercel(currentUser);
+
       effects.notificationToast.add({
         status: NotificationStatus.SUCCESS,
         title: 'Successfully Cancelled',

@@ -4,11 +4,12 @@ import {
   GetGitHubAccountReposQueryVariables,
   GetGitHubOrganizationReposQuery,
   GetGitHubOrganizationReposQueryVariables,
+  ProjectFragment,
 } from 'app/graphql/types';
 import {
   GET_GITHUB_ACCOUNT_REPOS,
   GET_GITHUB_ORGANIZATION_REPOS,
-} from '../queries';
+} from '../components/CreateSandbox/queries';
 
 // GitHub makes a distinction between personal and organization accounts
 // both are accounts, so I'm calling them that.
@@ -16,14 +17,20 @@ import {
 type UseGitHubAccountRepositoriesOptions = {
   name?: string;
   accountType?: 'personal' | 'organization';
+  teamRepos?: ProjectFragment[];
 };
 
 export const useGitHubAccountRepositories = ({
   name,
   accountType,
+  teamRepos,
 }: UseGitHubAccountRepositoriesOptions) => {
   const skipLoadingPersonal = accountType === 'organization' || !name;
   const skipLoadingOrganization = accountType === 'personal' || !name;
+
+  const currentAccountRepos = teamRepos?.map(
+    ({ repository }) => `${repository.owner}/${repository.name}`
+  );
 
   // Query the personal repositories unless the selected github account
   // is an organization
@@ -53,7 +60,9 @@ export const useGitHubAccountRepositories = ({
   >(GET_GITHUB_ORGANIZATION_REPOS, {
     skip: skipLoadingOrganization,
     variables: {
-      organization: name,
+      // The name can be null, but if it is we skip. Typescript doesn't know this and expects a string, so we
+      // satisfy TypeScript by defaulting to an empty string.
+      organization: name || '',
       perPage: 10, // TODO determine how much repos
       page: 1,
     },
@@ -84,6 +93,8 @@ export const useGitHubAccountRepositories = ({
 
   return {
     state: 'ready',
-    data: accountData || organizationData,
+    data: (accountData || organizationData)?.filter(repository => {
+      return !currentAccountRepos?.includes(repository.fullName);
+    }),
   };
 };

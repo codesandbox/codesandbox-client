@@ -1,49 +1,58 @@
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 
-export const useWorkspaceAuthorization = () => {
-  const {
-    activeTeam,
-    personalWorkspaceId,
-    activeWorkspaceAuthorization,
-  } = useAppState();
+type WorkspaceAuthorizationReturn = {
+  isAdmin: boolean;
+  isBillingManager: boolean;
+  isPersonalSpace: boolean;
+  isTeamSpace: boolean;
+  isTeamAdmin: boolean;
+  isTeamEditor: boolean;
+  isTeamViewer: boolean;
+  userRole: TeamMemberAuthorization | null;
+};
+
+export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
+  const { activeTeamInfo, personalWorkspaceId, user } = useAppState();
+
+  const { authorization, teamManager } =
+    activeTeamInfo?.userAuthorizations.find(auth => auth.userId === user?.id) ??
+    {};
 
   /**
    * Personal states
    */
 
-  const isPersonalSpace = activeTeam === personalWorkspaceId;
+  const isPersonalSpace = activeTeamInfo?.id === personalWorkspaceId;
 
   /**
    * User states
    */
 
-  const isAdmin =
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+  const isAdmin = authorization === TeamMemberAuthorization.Admin;
 
   /**
    * Team states
    */
 
-  const isTeamSpace = activeTeam !== null && !isPersonalSpace;
+  const isTeamSpace = activeTeamInfo !== null && !isPersonalSpace;
 
   const isTeamAdmin = isTeamSpace && isAdmin;
 
   const isTeamEditor =
-    isTeamSpace &&
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Write;
+    isTeamSpace && authorization === TeamMemberAuthorization.Write;
 
   const isTeamViewer =
-    isTeamSpace &&
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Read;
+    isTeamSpace && authorization === TeamMemberAuthorization.Read;
 
   return {
+    isBillingManager: Boolean(teamManager) || isAdmin,
+    isAdmin,
     isPersonalSpace,
     isTeamSpace,
     isTeamAdmin,
     isTeamEditor,
     isTeamViewer,
-    isAdmin,
-    userRole: activeWorkspaceAuthorization,
+    userRole: authorization ?? null,
   };
 };
