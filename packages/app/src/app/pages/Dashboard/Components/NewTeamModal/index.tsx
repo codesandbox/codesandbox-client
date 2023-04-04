@@ -13,12 +13,12 @@ import { TeamMembers } from './TeamMembers';
 import { TeamSubscription } from './TeamSubscription';
 import { TeamImport } from './TeamImport';
 
-export type TeamStep = 'info' | 'members' | 'import' | 'subscription';
+export type TeamStep = 'info' | 'import' | 'members' | 'subscription';
 
 const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
-  info: 'members',
-  members: 'import',
-  import: 'subscription',
+  info: 'import',
+  import: 'members',
+  members: 'subscription',
   subscription: null,
 };
 
