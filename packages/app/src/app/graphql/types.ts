@@ -2873,6 +2873,7 @@ export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
   | 'registryType'
   | 'registryUrl'
   | 'teamId'
+  | 'sandpackTrustedDomains'
 >;
 
 export type BranchFragment = { __typename?: 'Branch' } & Pick<
@@ -3160,6 +3161,7 @@ export type CreateOrUpdateNpmRegistryMutationVariables = Exact<{
   proxyEnabled: Scalars['Boolean'];
   limitToScopes: Scalars['Boolean'];
   enabledScopes: Array<Scalars['String']>;
+  sandpackTrustedDomains: Array<Scalars['String']>;
 }>;
 
 export type CreateOrUpdateNpmRegistryMutation = {

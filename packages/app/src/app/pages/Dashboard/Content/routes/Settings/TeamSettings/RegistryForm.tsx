@@ -100,8 +100,8 @@ export const RegistryForm = ({
     registry?.proxyEnabled
   );
 
-  const [trustedDomains, setTrustedDomains] = React.useState(
-    registry.trustedDomains || []
+  const [sandpackTrustedDomains, setTrustedDomains] = React.useState(
+    registry?.sandpackTrustedDomains || []
   );
 
   const serializeValues = (): CreateRegistryParams => ({
@@ -112,6 +112,7 @@ export const RegistryForm = ({
     registryAuthType: authenticationType,
     registryUrl,
     proxyEnabled,
+    sandpackTrustedDomains,
   });
 
   // We make sure to always show one input field
@@ -325,11 +326,10 @@ export const RegistryForm = ({
                     css={css({ width: '100%' })}
                     direction="vertical"
                   >
-                    {trustedDomains.map((domain, i) => (
+                    {sandpackTrustedDomains.map((domain, i) => (
                       <Stack
                         align="center"
                         direction="horizontal"
-                        key={scope}
                         css={{ width: '100%' }}
                       >
                         <Input
@@ -338,7 +338,7 @@ export const RegistryForm = ({
                           css={css({ width: '100%' })}
                           placeholder="Enter a domain (http://*.example.com / mail.example.com:443)"
                           disabled={disabled}
-                          value={domain.domainName}
+                          value={domain}
                           onInput={e => {
                             e.target.setCustomValidity('');
                           }}
@@ -377,10 +377,7 @@ export const RegistryForm = ({
                       disabled={disabled}
                       type="submit"
                       onClick={() => {
-                        setTrustedDomains(oldScopes => [
-                          ...oldScopes,
-                          { domainName: '' },
-                        ]);
+                        setTrustedDomains(oldScopes => [...oldScopes, '']);
                       }}
                       autoWidth
                     >
