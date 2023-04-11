@@ -410,6 +410,7 @@ export const createOrUpdateNpmRegistry: Query<
     $proxyEnabled: Boolean!
     $limitToScopes: Boolean!
     $enabledScopes: [String!]!
+    $sandpackTrustedDomains: [String!]!
   ) {
     createOrUpdatePrivateNpmRegistry(
       teamId: $teamId
@@ -420,6 +421,7 @@ export const createOrUpdateNpmRegistry: Query<
       proxyEnabled: $proxyEnabled
       limitToScopes: $limitToScopes
       enabledScopes: $enabledScopes
+      sandpackTrustedDomains: $sandpackTrustedDomains
     ) {
       ...npmRegistry
     }

@@ -583,6 +583,7 @@ export type PrivateRegistry = {
   registryAuthKey: Maybe<Scalars['String']>;
   registryType: RegistryType;
   registryUrl: Maybe<Scalars['String']>;
+  sandpackTrustedDomains: Array<Scalars['String']>;
   teamId: Scalars['UUID4'];
 };
 
@@ -711,6 +712,7 @@ export type ProSubscription = {
   trialEnd: Maybe<Scalars['DateTime']>;
   trialStart: Maybe<Scalars['DateTime']>;
   type: SubscriptionType;
+  /** Per-seat price for the billing interval as an integer of the smallest denomination of the local currency. */
   unitPrice: Maybe<Scalars['Int']>;
   updateBillingUrl: Maybe<Scalars['String']>;
 };
@@ -1205,6 +1207,7 @@ export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
   registryAuthKey: Maybe<Scalars['String']>;
   registryType: RegistryType;
   registryUrl: Maybe<Scalars['String']>;
+  sandpackTrustedDomains: Maybe<Array<Scalars['String']>>;
   teamId: Scalars['UUID4'];
 };
 
@@ -2870,6 +2873,7 @@ export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
   | 'registryType'
   | 'registryUrl'
   | 'teamId'
+  | 'sandpackTrustedDomains'
 >;
 
 export type BranchFragment = { __typename?: 'Branch' } & Pick<
@@ -3157,6 +3161,7 @@ export type CreateOrUpdateNpmRegistryMutationVariables = Exact<{
   proxyEnabled: Scalars['Boolean'];
   limitToScopes: Scalars['Boolean'];
   enabledScopes: Array<Scalars['String']>;
+  sandpackTrustedDomains: Array<Scalars['String']>;
 }>;
 
 export type CreateOrUpdateNpmRegistryMutation = {

@@ -235,6 +235,7 @@ export const npmRegistryFragment = gql`
     registryType
     registryUrl
     teamId
+    sandpackTrustedDomains
   }
 `;
 

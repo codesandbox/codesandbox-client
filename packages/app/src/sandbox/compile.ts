@@ -28,6 +28,11 @@ import {
   NpmRegistryOpts,
 } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
 import {
+  getSandpackSecret,
+  removeSandpackSecret,
+  getProtocolAndHostWithSSE,
+} from 'sandpack-core/lib/sandpack-secret';
+import {
   evalBoilerplates,
   findBoilerplate,
   getBoilerplates,
@@ -318,10 +323,12 @@ async function initializeManager(
     hasFileResolver = false,
     customNpmRegistries = [],
     reactDevTools,
+    teamId,
   }: {
     hasFileResolver?: boolean;
     customNpmRegistries?: NpmRegistry[];
     reactDevTools?: 'legacy' | 'latest';
+    teamId?: string;
   } = {}
 ) {
   const newManager = new Manager(
@@ -335,8 +342,61 @@ async function initializeManager(
     }
   );
 
+  /**
+   * If a team-id is provided, we can mount a registryUrl and proxy
+   * dependencies request through CSB proxy
+   */
+  if (teamId) {
+    const sandpackToken = getSandpackSecret();
+
+    if (!sandpackToken) {
+      dispatch({
+        type: 'action',
+        action: 'show-error',
+        message: 'NPM_REGISTRY_UNAUTHENTICATED_REQUEST',
+      });
+
+      throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
+    }
+
+    const domain = getProtocolAndHostWithSSE();
+
+    const responseRegistry = await fetch(`${domain}/api/v1/sandpack/registry`, {
+      headers: { Authorization: `Bearer ${sandpackToken}` },
+    }).catch(() => {
+      removeSandpackSecret();
+      throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
+    });
+
+    const registry = (await responseRegistry.json()) as {
+      auth_type: string;
+      enabled_scopes: string[];
+      limit_to_scopes: true;
+      proxy_enabled: false;
+      registry_auth_key: string;
+      registry_type: string;
+      registry_url: string;
+    };
+
+    customNpmRegistries.push({
+      enabledScopes: registry.enabled_scopes,
+      limitToScopes: registry.limit_to_scopes,
+      proxyEnabled: registry.proxy_enabled,
+      registryUrl:
+        registry.registry_url || `${domain}/api/v1/sandpack/registry/`,
+      registryAuthToken: registry.registry_auth_key || sandpackToken,
+      registryAuthType: registry.auth_type,
+    });
+  }
+
   // Add the custom registered npm registries
-  customNpmRegistries.forEach(registry => {
+  for (const registry of customNpmRegistries) {
+    if (!registry.registryUrl) {
+      throw new Error(
+        'Unable to fetch required dependency: neither a `registryUrl` nor a `codesandboxTeamId` was provided.'
+      );
+    }
+
     const cleanUrl = registry.registryUrl.replace(/\/$/, '');
 
     const options: NpmRegistryOpts = { proxyEnabled: registry.proxyEnabled };
@@ -366,7 +426,7 @@ async function initializeManager(
       protocol,
       condition: protocol.condition,
     });
-  });
+  }
 
   return newManager;
 }
@@ -473,6 +533,7 @@ interface CompileOptions {
   disableDependencyPreprocessing?: boolean;
   clearConsoleDisabled?: boolean;
   reactDevTools?: 'legacy' | 'latest';
+  teamId?: string;
 }
 
 async function compile(opts: CompileOptions) {
@@ -493,6 +554,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
     reactDevTools,
+    teamId,
   } = opts;
 
   if (firstLoad) {
@@ -561,6 +623,7 @@ async function compile(opts: CompileOptions) {
         hasFileResolver,
         customNpmRegistries,
         reactDevTools,
+        teamId,
       }));
 
     let dependencies: NPMDependencies = getDependencies(
