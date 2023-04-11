@@ -337,7 +337,7 @@ export const RegistryForm = ({
 
                   <Badge>Beta</Badge>
                 </Stack>
-                <CustomFormField label="Trusted domains" badge="Beta">
+                <CustomFormField label="Trusted domains">
                   <Stack
                     gap={2}
                     css={css({ width: '100%' })}
