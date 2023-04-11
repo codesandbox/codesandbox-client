@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, useParams } from 'react-router-dom';
 import { css } from '@styled-system/css';
-import { useParams } from 'react-router-dom';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { CodeSandboxIcon } from '@codesandbox/components/lib/components/Icon/icons';

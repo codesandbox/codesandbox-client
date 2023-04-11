@@ -58,7 +58,7 @@ function getPopupDimensions() {
 
 export function getProtocolAndHostWithSSE() {
   if (document.location.host.startsWith('localhost')) {
-    return 'https://6er17b-3000.preview.csb.app';
+    return 'https://6er17b-3000.csb.app';
   }
 
   if (document.location.host.endsWith('.io')) {
