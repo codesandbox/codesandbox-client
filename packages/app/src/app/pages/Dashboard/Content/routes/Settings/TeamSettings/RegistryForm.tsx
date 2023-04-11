@@ -9,7 +9,6 @@ import {
   IconButton,
   Icon,
   Link,
-  Tooltip,
   Switch,
   Badge,
 } from '@codesandbox/components';
@@ -153,17 +152,15 @@ export const RegistryForm = ({
                     color: 'grays.400',
                   })}
                 >
-                  <Tooltip label="Documentation">
-                    <div
-                      css={css({
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      })}
-                    >
-                      <Icon aria-label="Documentation" size={12} name="info" />
-                    </div>
-                  </Tooltip>
+                  <div
+                    css={css({
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    })}
+                  >
+                    <Icon aria-label="Documentation" size={12} name="info" />
+                  </div>
                 </Link>
               </Stack>
 
@@ -318,6 +315,26 @@ export const RegistryForm = ({
                   <Text size={4} weight="500">
                     Sandpack
                   </Text>
+
+                  <Link
+                    href="https://sandpack.codesandbox.io/docs/getting-started/private-packages"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    css={css({
+                      color: 'grays.400',
+                    })}
+                  >
+                    <div
+                      css={css({
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      })}
+                    >
+                      <Icon aria-label="Documentation" size={12} name="info" />
+                    </div>
+                  </Link>
+
                   <Badge>Beta</Badge>
                 </Stack>
                 <CustomFormField label="Trusted domains" badge="Beta">
