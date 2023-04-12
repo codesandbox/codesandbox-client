@@ -50,7 +50,6 @@ const SANDBOXES = [
   //  'gpgpu-curl-noise-yq6y8', // leva (based on stitches)
   'vx55c', // react stitches
   'fo3c0n', // vue3 with <script setup>
-  'tender-cookies-iwrwek', // console.log a `bigint`
 ];
 
 // Logic for parallelizing the tests
