@@ -61,6 +61,10 @@ export function getProtocolAndHostWithSSE() {
     return 'https://6er17b-3000.csb.app';
   }
 
+  if (document.location.host.endsWith('.test')) {
+    return 'https://codesandbox.test';
+  }
+
   if (document.location.host.endsWith('.io')) {
     return 'https://codesandbox.io';
   }
