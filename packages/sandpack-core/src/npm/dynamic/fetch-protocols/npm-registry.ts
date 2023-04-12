@@ -139,14 +139,9 @@ export class NpmRegistryFetcher implements FetchProtocol {
     if (this.authToken) {
       // Custom registry url
       headers.append('Authorization', `${this.authType} ${this.authToken}`);
-    } else {
-      const sandpackToken = getSandpackSecret();
-      if (!sandpackToken) {
-        throw new Error('NPM_REGISTRY_UNAUTHENTICATED_REQUEST');
-      }
-
+    } else if (getSandpackSecret()) {
       // CSB proxy
-      headers.append('Authorization', `Bearer ${sandpackToken}`);
+      headers.append('Authorization', `Bearer ${getSandpackSecret()}`);
     }
 
     return {
