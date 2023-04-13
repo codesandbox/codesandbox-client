@@ -189,7 +189,7 @@ export const ProUpgrade = () => {
 
     // The formatCurrency function will divide the amount by 100
     return formatCurrency({
-      currency: priceInCurrency ? currency : 'USD',
+      currency: hasPriceInCurrency ? currency : 'USD',
       amount: price,
     });
   };
