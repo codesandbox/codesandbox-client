@@ -3,13 +3,7 @@ import React from 'react';
 import { Stack, Badge, Text } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 
-type Feature = {
-  key: string;
-  pro: string;
-  free: string;
-  pill?: string;
-};
-const LOSE_DEFAULT: Feature[] = [
+const LOSE_DEFAULT = [
   {
     key: 'editors',
     pro: 'Up to 20 editors',
@@ -35,24 +29,24 @@ const LOSE_DEFAULT: Feature[] = [
     pro: 'Live sessions',
     free: 'No ability to go live',
   },
-  // {
-  //   key: 'ram',
-  //   pro: '6GB RAM',
-  //   free: '2GB RAM',
-  //   pill: '-66% capacity',
-  // },
-  // {
-  //   key: 'cpu',
-  //   pro: '4 vCPUs',
-  //   free: '2 vCPUs',
-  //   pill: '-2 vCPUs',
-  // },
-  // {
-  //   key: 'disk',
-  //   pro: '12GB Disk',
-  //   free: '6GB Disk',
-  //   pill: '-50% storage',
-  // },
+  {
+    key: 'ram',
+    pro: '6GB RAM',
+    free: '2GB RAM',
+    pill: '-66% capacity',
+  },
+  {
+    key: 'cpu',
+    pro: '4 vCPUs',
+    free: '2 vCPUs',
+    pill: '-2 vCPUs',
+  },
+  {
+    key: 'disk',
+    pro: '12GB Disk',
+    free: '6GB Disk',
+    pill: '-50% storage',
+  },
 ];
 
 export const LoseFeatures = () => {

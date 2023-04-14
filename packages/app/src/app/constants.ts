@@ -57,9 +57,9 @@ export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
   },
   { key: 'npm', label: 'Public NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
-  // { key: 'vm_mem', label: '6GB RAM', pill: '3x capacity' },
-  // { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
-  // { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
+  { key: 'vm_mem', label: '6GB RAM', pill: '3x capacity' },
+  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
+  { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
 ];
 
 export const TEAM_FREE_FEATURES: Feature[] = [
@@ -88,12 +88,9 @@ export const TEAM_PRO_FEATURES: Feature[] = [
   },
   { key: 'npm', label: 'Private NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
-  { key: 'vm_mem', label: '2GB RAM' },
-  { key: 'vm_cpu', label: '2vCPUs' },
-  { key: 'vm_disk', label: '6GB Disk' },
-  // { key: 'vm_mem', label: '6GB RAM' },
-  // { key: 'vm_cpu', label: '4vCPUs' },
-  // { key: 'vm_disk', label: '12GB Disk' },
+  { key: 'vm_mem', label: '6GB RAM' },
+  { key: 'vm_cpu', label: '4vCPUs' },
+  { key: 'vm_disk', label: '12GB Disk' },
 ];
 
 export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
@@ -107,12 +104,9 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
   },
   { key: 'npm', label: 'Private NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
-  { key: 'vm_mem', label: '2GB RAM' },
-  { key: 'vm_cpu', label: '2vCPUs' },
-  { key: 'vm_disk', label: '6GB Disk' },
-  // { key: 'vm_mem', label: '6GB RAM', pill: '3x capacity' },
-  // { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
-  // { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
+  { key: 'vm_mem', label: '6GB RAM', pill: '3x capacity' },
+  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
+  { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
 ];
 
 export const ORG_FEATURES: Feature[] = [
