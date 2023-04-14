@@ -10474,10 +10474,10 @@ console-control-strings@^1.0.0, console-control-strings@^1.1.0, console-control-
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
   integrity sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==
 
-console-feed@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.5.0.tgz#0edf7dd1ebd82a24f5727315d0392fbb9a3c2f35"
-  integrity sha512-2N5b37yH0HeaqbBDsHBx0jEy3qvhTGA1dVdGyEM6C1NQhVmIX+ToU6Rt/uo86K0lLs4Lg1orC940YSn+Z3kk5g==
+console-feed@^3.1.9:
+  version "3.1.9"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.1.9.tgz#946191e5bf7a10fcabb478703129bc8b9eef5a9e"
+  integrity sha512-GAJCSTEvU3uZl4xVmYm7FONqzKelOj/+/+HZREb2w9CiOCjXRJtRP3nKiBYK8GszIDExiODEyz1WxWl2hHFkow==
   dependencies:
     "@emotion/core" "^10.0.10"
     "@emotion/styled" "^10.0.12"
