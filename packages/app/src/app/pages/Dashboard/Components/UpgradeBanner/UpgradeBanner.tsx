@@ -41,17 +41,17 @@ const FEATURES_LIST: Feature[] = [
     icon: 'sandbox',
     label: 'Unlimited private sandboxes',
   },
-  // {
-  //   icon: 'server',
-  //   label: '6GB RAM, 12GB Disk, 4 vCPUs',
-  // },
   {
-    icon: 'sharing',
-    label: 'Live sessions',
+    icon: 'server',
+    label: '6GB RAM, 12GB Disk, 4 vCPUs',
   },
   {
     icon: 'repository',
     label: 'Unlimited private repositories',
+  },
+  {
+    icon: 'sharing',
+    label: 'Live sessions',
   },
   {
     icon: 'npm',
