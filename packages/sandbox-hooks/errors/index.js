@@ -129,8 +129,31 @@ function buildDynamicError(ref: ErrorRecord) {
   return null;
 }
 
+const MAX_ERRORS_PER_SECOND = 10;
+const WARNING_INTERVAL_SECONDS = 10;
+let errorsSentLastSecond = 0;
+let lastWarningSent = 0;
+
+setInterval(() => {
+  // Reset errors sent
+  errorsSentLastSecond = 0;
+}, 1000);
+
 /* eslint-disable no-underscore-dangle */
 export default function showError(ref: ErrorRecord) {
+  // We don't want to flood the editor with errors, because of this
+  // we make sure to only send a max of MAX_ERRORS_PER_SECOND per second.
+  if (++errorsSentLastSecond > MAX_ERRORS_PER_SECOND) {
+    if (Date.now() - lastWarningSent > WARNING_INTERVAL_SECONDS * 1000) {
+      console.warn(
+        'Received too many errors in quick succession, not showing all errors in editor...'
+      );
+      lastWarningSent = Date.now();
+    }
+
+    return;
+  }
+
   const errorToSend = buildDynamicError(ref);
   if (errorToSend) {
     dispatch(
