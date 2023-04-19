@@ -143,7 +143,7 @@ setInterval(() => {
 export default function showError(ref: ErrorRecord) {
   // We don't want to flood the editor with errors, because of this
   // we make sure to only send a max of MAX_ERRORS_PER_SECOND per second.
-  if (errorsSentLastSecond++ > MAX_ERRORS_PER_SECOND) {
+  if (++errorsSentLastSecond > MAX_ERRORS_PER_SECOND) {
     if (Date.now() - lastWarningSent > WARNING_INTERVAL_SECONDS * 1000) {
       console.warn(
         'Received too many errors in quick succession, not showing all errors in editor...'
