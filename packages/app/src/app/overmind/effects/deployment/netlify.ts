@@ -1,9 +1,9 @@
-import getTemplate from '@codesandbox/common/lib/templates';
-import { NetlifySite, Sandbox } from '@codesandbox/common/lib/types';
-import getNetlifyConfig from 'app/utils/getNetlifyConfig';
-import axios from 'axios';
+import getTemplate from "@codesandbox/common/lib/templates";
+import { NetlifySite, Sandbox } from "@codesandbox/common/lib/types";
+import getNetlifyConfig from "app/utils/getNetlifyConfig";
+import axios from "axios";
 
-const NetlifyBaseURL = 'https://builder.csbops.io/netlify/site';
+const NetlifyBaseURL = "https://builder.micro.codesandbox.io/netlify/site";
 
 type Options = {
   getUserId(): string | null;
@@ -79,26 +79,26 @@ export default (() => {
       const userId = _options.getUserId();
       const template = getTemplate(sandbox.template);
       const buildCommand = (name: string) => {
-        if (name === 'styleguidist') {
-          return 'styleguide:build';
+        if (name === "styleguidist") {
+          return "styleguide:build";
         }
 
-        if (name === 'preact-cli') {
-          return 'build --no-prerender';
+        if (name === "preact-cli") {
+          return "build --no-prerender";
         }
 
-        if (name === 'nuxt') {
-          return 'generate';
+        if (name === "nuxt") {
+          return "generate";
         }
 
-        return 'build';
+        return "build";
       };
       const buildConfig = getNetlifyConfig(sandbox);
       // command needs to be passed without the package manager name
-      const buildCommandFromConfig = (buildConfig.command || '')
-        .replace('npm run', '')
-        .replace('yarn ', '');
-      let id = '';
+      const buildCommandFromConfig = (buildConfig.command || "")
+        .replace("npm run", "")
+        .replace("yarn ", "");
+      let id = "";
       try {
         const { data } = await axios.request({
           url: `${NetlifyBaseURL}/${sandbox.id}`,

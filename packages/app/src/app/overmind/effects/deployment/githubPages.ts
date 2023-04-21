@@ -1,8 +1,8 @@
-import getTemplate from '@codesandbox/common/lib/templates';
-import { Sandbox } from '@codesandbox/common/lib/types';
-import axios from 'axios';
+import getTemplate from "@codesandbox/common/lib/templates";
+import { Sandbox } from "@codesandbox/common/lib/types";
+import axios from "axios";
 
-const GHPagesBaseUrl = 'https://builder.csbops.io/gh-pages';
+const GHPagesBaseUrl = "https://builder.micro.codesandbox.io/gh-pages";
 
 type Options = {
   provideJwtToken: () => Promise<string | null>;
@@ -66,35 +66,35 @@ export default (() => {
       const token = await this.provideJwtCached();
       const template = getTemplate(sandbox.template);
       const buildCommand = (name: string) => {
-        if (name === 'styleguidist') {
-          return 'styleguide:build';
+        if (name === "styleguidist") {
+          return "styleguide:build";
         }
-        if (name === 'nuxt') {
-          return 'generate';
+        if (name === "nuxt") {
+          return "generate";
         }
 
-        if (name === 'parcel') {
+        if (name === "parcel") {
           return `build --public-url /csb-${sandbox.id}/`;
         }
 
-        if (name === 'preact-cli') {
-          return 'build --no-prerender';
+        if (name === "preact-cli") {
+          return "build --no-prerender";
         }
 
-        if (name === 'gatsby') {
-          return 'build --prefix-paths';
+        if (name === "gatsby") {
+          return "build --prefix-paths";
         }
 
-        return 'build';
+        return "build";
       };
 
       const env = (name: string) => {
-        if (name === 'create-react-app') {
+        if (name === "create-react-app") {
           return `PUBLIC_URL=https://${username.toLowerCase()}.github.io/csb-${
             sandbox.id
           }/`;
         }
-        return '';
+        return "";
       };
 
       const website = await axios.post(
