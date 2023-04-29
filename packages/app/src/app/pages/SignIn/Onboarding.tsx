@@ -57,7 +57,7 @@ export const Onboarding = () => {
   const [role, setRole] = useState('');
   const [usage, setUsage] = useState('');
   const [loadingUsername, setLoadingUserName] = useState(false);
-  const firstName = pendingUser?.name.split(' ')[0];
+  const firstName = (pendingUser?.name || '').split(' ')[0];
 
   if (pathname.includes('/invite')) {
     // Set flag to neither show the create team modal and the
