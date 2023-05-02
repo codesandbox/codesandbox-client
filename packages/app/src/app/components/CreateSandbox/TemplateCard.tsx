@@ -7,6 +7,7 @@ import {
   Text,
 } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { useAppState } from 'app/overmind';
@@ -91,7 +92,28 @@ export const TemplateCard = ({
           {isOfficial && (
             <Badge icon={isV2 ? 'cloud' : undefined}>Official</Badge>
           )}
-          {!isOfficial && isV2 && <Badge icon="cloud">Cloud</Badge>}
+          {!isOfficial && isV2 && (
+            <Tooltip
+              content={
+                <div style={{ fontSize: 13 }}>
+                  This is a cloud sandbox that runs in a microVM, learn more{' '}
+                  <a
+                    href="https://codesandbox.io/docs/learn/sandboxes/overview?tab=cloud"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    here
+                  </a>
+                  .
+                </div>
+              }
+              interactive
+            >
+              <div>
+                <Badge icon="cloud">Cloud</Badge>
+              </div>
+            </Tooltip>
+          )}
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text
