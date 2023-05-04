@@ -16,16 +16,14 @@ import { All } from './routes/All';
 import { Repositories } from './routes/Repositories';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
-import { NewTeam } from './routes/Settings/NewTeam';
 import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
 import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
-import { BetaRepositoriesPage } from './routes/Beta';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
-  const { activeTeam, dashboard: dashboardState } = useAppState();
+  const { activeTeam } = useAppState();
 
   useEffect(() => {
     dashboard.dashboardMounted();
@@ -42,10 +40,6 @@ export const Content = withRouter(({ history }) => {
     };
   }, [history, history.listen, dashboard]);
 
-  const isFeatureFlagBeta = !!dashboardState.featureFlags.find(
-    e => e.name === 'beta'
-  );
-
   return (
     <Element
       css={css({
@@ -57,15 +51,6 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
-        <Route
-          path="/dashboard/beta"
-          /**
-           * Wrap the component instead of the whole route, as the
-           * feature-flag query takes a few ms to load, and meanwhile the Route
-           * redirect the page because the route hasn't been registered yet
-           */
-          component={isFeatureFlagBeta ? BetaRepositoriesPage : () => null}
-        />
         <Route path="/dashboard/home" component={Home} />
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/all/:path*" component={All} />
@@ -85,7 +70,6 @@ export const Content = withRouter(({ history }) => {
         {/* old dashboard - redirects: */}
         <Route path="/dashboard/trash" component={Deleted} />
         <Route path="/dashboard/sandboxes/:path*" component={All} />
-        <Route path="/dashboard/teams/new" component={NewTeam} />
         <Redirect to={dashboardUrls.home(activeTeam)} />
       </Switch>
     </Element>

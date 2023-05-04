@@ -9,8 +9,6 @@
 
 import { AlertModalComponents } from 'app/pages/common/Modals/GenericAlertModal';
 
-export const importRepoBeta = {};
-
 export const forkFrozenModal = {
   result: 'fork' as 'fork' | 'cancel' | 'unfreeze',
 };

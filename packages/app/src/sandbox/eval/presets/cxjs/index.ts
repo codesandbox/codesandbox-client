@@ -18,7 +18,7 @@ export default function initialize() {
     {}
   );
 
-  cxjsPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  cxjsPreset.registerTranspiler(module => /\.(c|m)?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
@@ -97,7 +97,7 @@ export default function initialize() {
   function registerStyleTranspilers() {
     return Object.keys(styles).forEach(type => {
       cxjsPreset.registerTranspiler(
-        module => new RegExp(`\\.${type}`).test(module.path),
+        module => new RegExp(`\\.${type}$`).test(module.path),
         [...styles[type], { transpiler: stylesTranspiler }]
       );
     });

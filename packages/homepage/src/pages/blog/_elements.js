@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Header = styled.section`
   text-align: center;
@@ -17,11 +17,12 @@ export const Header = styled.section`
 `;
 
 export const PageTitle = styled.h1`
+  font-family: "TWKEverett", sans-serif;
   font-size: 2.5rem;
-  line-height: 3rem;
-  font-weight: 700;
+  line-height: 120%;
+  font-weight: normal;
 
-  letter-spacing: -0.02rem;
+  letter-spacing: -0.025em;
 
   @media screen and (min-width: 768px) {
     font-size: 4rem;
@@ -37,6 +38,7 @@ export const PageTitle = styled.h1`
 export const PageSubtitle = styled.h3`
   font-size: 1.5rem;
   line-height: 1.5;
+  letter-spacing: -0.025em;
   font-weight: 400;
   padding: 0 2rem;
   margin: 0 0 1.0875rem;
@@ -78,8 +80,8 @@ export const Grid = styled.div`
 `;
 
 export const Wrapper = styled.div`
-  border: 1px solid #242424;
-  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
+  // border: 1px solid #242424;
+  // box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
   overflow: hidden;
   border-radius: 0.5rem;
   clip-path: inset(0px round 0.5rem);
@@ -101,6 +103,7 @@ export const Thumbnail = styled.img`
 export const Posts = styled.article``;
 
 export const Title = styled.h2`
+font-family: "TWKEverett", sans-serif;
   color: #fff;
   margin: 0 0 0.5rem 0;
   font-size: 23px;

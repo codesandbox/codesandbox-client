@@ -30,6 +30,9 @@ sourced.
   responsible for extracting the source from a GitHub repository
 - [CLI](https://github.com/codesandbox/codesandbox-importers/tree/master/packages/cli):
   the CLI to upload a CodeSandbox project from your command line
+  
+## Documentation
+You can find our documenation on our [website](https://codesandbox.io/docs/start)
 
 ## Contributors ✨
 
@@ -259,10 +262,14 @@ Thanks goes to these wonderful people
   <tr>
     <td align="center"><a href="https://github.com/NinoMaj"><img src="https://avatars0.githubusercontent.com/u/20380632?v=4" width="100px;" alt="Nino"/><br /><sub><b>Nino</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=NinoMaj" title="Documentation">📖</a></td>
     <td align="center"><a href="https://saurabhdaware.in/"><img src="https://avatars1.githubusercontent.com/u/30949385?v=4" width="100px;" alt="Saurabh Daware"/><br /><sub><b>Saurabh Daware</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=saurabhdaware" title="Code">💻</a> <a href="#plugin-saurabhdaware" title="Plugin/utility libraries">🔌</a></td>
-    <td align="center"><a href="https://pablo.pink"><img src="https://avatars0.githubusercontent.com/u/4324982?v=4" width="100px;" alt="Pablo Varela"/><br /><sub><b>Pablo Varela</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=pablopunk" title="Code">💻</a></td>
+    <td align="center"><a href="https://pablopunk.com"><img src="https://avatars0.githubusercontent.com/u/4324982?v=4" width="100px;" alt="Pablo Varela"/><br /><sub><b>Pablo Varela</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=pablopunk" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ryanpwaldon"><img src="https://avatars0.githubusercontent.com/u/12480362?v=4" width="100px;" alt="Ryan Waldon"/><br /><sub><b>Ryan Waldon</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=ryanpwaldon" title="Code">💻</a></td>
     <td align="center"><a href="http://cherniavskii.com"><img src="https://avatars.githubusercontent.com/u/13808724?v=4" width="100px;" alt="Andrew Cherniavskii"/><br /><sub><b>Andrew Cherniavskii</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=cherniavskii" title="Code">💻</a></td>
     <td align="center"><a href="http://nullvoxpopuli.com"><img src="https://avatars.githubusercontent.com/u/199018?v=4" width="100px;" alt="NullVoxPopuli"/><br /><sub><b>NullVoxPopuli</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=NullVoxPopuli" title="Code">💻</a> <a href="#content-NullVoxPopuli" title="Content">🖋</a> <a href="#maintenance-NullVoxPopuli" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://stefanretief.com"><img src="https://avatars.githubusercontent.com/u/3196604?v=4" width="100px;" alt="Stefan Retief"/><br /><sub><b>Stefan Retief</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3AStefanRetief" title="Bug reports">🐛</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/aditya211935"><img src="https://avatars.githubusercontent.com/u/23213686?v=4" width="100px;" alt="Aditya"/><br /><sub><b>Aditya</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3Aaditya211935" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=aditya211935" title="Code">💻</a></td>
   </tr>
 </table>
 

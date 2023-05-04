@@ -3,23 +3,25 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, Location } from '@reach/router';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { useTheme } from '../layout';
 import Button from '../Button';
-import Logo from '../../assets/images/logo.svg';
+import Logo from '../../assets/logo';
+
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
-import IDEIcon from '../../assets/icons/Ide';
+import CodeSandbox from '../../assets/icons/CodeSandbox';
 import FeedbackIcon from '../../assets/icons/Feedback';
-import PrototypeIcon from '../../assets/icons/Prototype';
-import TeamsIcon from '../../assets/icons/Teams';
+// import PrototypeIcon from "../../assets/icons/Prototype";
+// import TeamsIcon from "../../assets/icons/Teams";
+import SandpackIcon from '../../assets/icons/Sandpack';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import NewIcon from '../../assets/icons/New';
 import { OPEN_JOBS_COUNT } from '../../config/hiring';
+import { CHANGELOG_LOCATION } from '../../config/externalResources';
 import { useLogin } from '../../hooks/useLogin';
 import { JobBadge } from '../JobBadge';
 import {
@@ -28,7 +30,6 @@ import {
   Wrapper,
   UserAvatar,
   LogoWrapper,
-  LogoImage,
   List,
   LogIn,
   Jobs,
@@ -41,26 +42,6 @@ const Navigation = () => {
   const [openedNav, setOpenedNav] = useState('');
   const [hasOpened, setHasOpened] = useState(false);
   const muted = useTheme().homepage.muted;
-
-  const experimentPromise = useExperimentResult('homepage-header-links');
-  const [compactMenu, setCompactMenu] = useState(false);
-
-  useEffect(() => {
-    /* Wait for the API */
-    experimentPromise.then(experiment => {
-      if (experiment === ExperimentValues.A) {
-        /**
-         * A
-         */
-        setCompactMenu(false);
-      } else if (experiment === ExperimentValues.B) {
-        /**
-         * B
-         */
-        setCompactMenu(true);
-      }
-    });
-  }, [experimentPromise]);
 
   const DownButton = () => (
     <svg
@@ -112,70 +93,66 @@ const Navigation = () => {
               <Nav>
                 <Wrapper>
                   <LogoWrapper to="/">
-                    <LogoImage src={Logo} alt="CodeSandbox Logo" />
-                    CodeSandbox
+                    <Logo />
                   </LogoWrapper>
-                  {!compactMenu && (
-                    <List>
-                      <li>
-                        <button
-                          onMouseEnter={() => setOpenedNav('product')}
-                          type="button"
-                        >
-                          Product
-                          <DownButton />
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onMouseEnter={() => setOpenedNav('explore')}
-                          type="button"
-                        >
-                          Explore
-                          <DownButton />
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onMouseEnter={() => setOpenedNav('resources')}
-                          type="button"
-                        >
-                          Resources
-                          <DownButton />
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onMouseEnter={() => setOpenedNav('support')}
-                          type="button"
-                        >
-                          Support
-                          <DownButton />
-                        </button>
-                      </li>
 
-                      <li>
-                        <Link
-                          to="/pricing"
-                          onMouseEnter={() => setOpenedNav(null)}
-                        >
-                          Pricing
-                        </Link>
-                      </li>
+                  <List>
+                    <li>
+                      <button
+                        onMouseEnter={() => setOpenedNav('product')}
+                        type="button"
+                      >
+                        Product
+                        <DownButton />
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onMouseEnter={() => setOpenedNav('explore')}
+                        type="button"
+                      >
+                        Explore
+                        <DownButton />
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onMouseEnter={() => setOpenedNav('resources')}
+                        type="button"
+                      >
+                        Resources
+                        <DownButton />
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onMouseEnter={() => setOpenedNav('support')}
+                        type="button"
+                      >
+                        Support
+                        <DownButton />
+                      </button>
+                    </li>
 
-                      <Jobs>
-                        <Link
-                          to="/jobs"
-                          onMouseEnter={() => setOpenedNav(null)}
-                        >
-                          Jobs{' '}
-                          {OPEN_JOBS_COUNT && (
-                            <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
-                          )}
-                        </Link>
-                      </Jobs>
-                    </List>
-                  )}
+                    <li>
+                      <Link
+                        to="/pricing"
+                        onMouseEnter={() => setOpenedNav(null)}
+                      >
+                        Pricing
+                      </Link>
+                    </li>
+
+                    <Jobs>
+                      <Link to="/jobs" onMouseEnter={() => setOpenedNav(null)}>
+                        Jobs{' '}
+                        {OPEN_JOBS_COUNT && (
+                          <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
+                        )}
+                      </Link>
+                    </Jobs>
+                  </List>
+
                   <List>
                     {!user && (
                       <li className="tablet-remove">
@@ -189,9 +166,10 @@ const Navigation = () => {
                     )}
                     <LogIn onMouseEnter={() => setOpenedNav(null)}>
                       <Button
-                        css={`
-                          background: #5962df;
-                        `}
+                        // css={`
+                        //   background: #DCFF50;
+                        //   color: #171618;
+                        // `}
                         className="button"
                         href="/s"
                       >
@@ -272,9 +250,7 @@ const Navigation = () => {
                         </a>
                       ),
                       Label: () => (
-                        <a href="mailto:support@codesandbox.io">
-                          Contact Support
-                        </a>
+                        <a href="mailto:support@codesandbox.io">Contact</a>
                       ),
                     },
                     {
@@ -307,28 +283,68 @@ const Navigation = () => {
                   components={[
                     {
                       Icon: () => (
-                        <Link to="/ide">
-                          <IDEIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/ide">Coding</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/prototyping">
-                          <PrototypeIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/prototyping">Prototyping</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/knowledge-sharing/">
-                          <TeamsIcon />
-                        </Link>
+                        <a
+                          href="https://projects.codesandbox.io/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Projects"
+                        >
+                          <CodeSandbox />
+                        </a>
                       ),
                       Label: () => (
-                        <Link to="/knowledge-sharing/">Knowledge Sharing</Link>
+                        <a
+                          href="https://projects.codesandbox.io/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Projects"
+                        >
+                          Projects
+                        </a>
+                      ),
+                    },
+                    {
+                      Icon: () => (
+                        <a
+                          href="https://codesandbox.io/ios"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="CodeSandbox for iOS"
+                        >
+                          <CodeSandbox />
+                        </a>
+                      ),
+                      Label: () => (
+                        <a
+                          href="https://codesandbox.io/ios"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="CodeSandbox for iOS"
+                        >
+                          CodeSandbox for iOS
+                        </a>
+                      ),
+                    },
+                    {
+                      Icon: () => (
+                        <a
+                          href="https://sandpack.codesandbox.io/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Sandpack"
+                        >
+                          <SandpackIcon />
+                        </a>
+                      ),
+                      Label: () => (
+                        <a
+                          href="https://sandpack.codesandbox.io/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Sandpack"
+                        >
+                          Sandpack
+                        </a>
                       ),
                     },
                     {
@@ -341,11 +357,25 @@ const Navigation = () => {
                     },
                     {
                       Icon: () => (
-                        <Link to="/changelog">
+                        <a
+                          href={CHANGELOG_LOCATION}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="What's new"
+                        >
                           <NewIcon />
-                        </Link>
+                        </a>
                       ),
-                      Label: () => <Link to="/changelog">What's New</Link>,
+                      Label: () => (
+                        <a
+                          href={CHANGELOG_LOCATION}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="What's new"
+                        >
+                          What's new
+                        </a>
+                      ),
                     },
                   ]}
                 />
@@ -360,9 +390,7 @@ const Navigation = () => {
                           <HighlightedICon />
                         </Link>
                       ),
-                      Label: () => (
-                        <Link to="/explore">Featured Sandboxes</Link>
-                      ),
+                      Label: () => <Link to="/explore">Featured</Link>,
                     },
                     {
                       Icon: () => (
@@ -370,7 +398,7 @@ const Navigation = () => {
                           <SearchIcon />
                         </a>
                       ),
-                      Label: () => <a href="/search">Search Sandboxes</a>,
+                      Label: () => <a href="/search">Search</a>,
                     },
                   ]}
                 />

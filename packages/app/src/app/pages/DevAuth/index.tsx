@@ -12,9 +12,8 @@ import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
+import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Container } from './elements';
-
-import Logo from '../../logo.svg';
 
 export const DevAuthPage = withTheme(({ theme }) => {
   const [authCode, setAuthCode] = React.useState('');
@@ -72,13 +71,7 @@ export const DevAuthPage = withTheme(({ theme }) => {
           })}
         >
           <Container>
-            <img
-              src={Logo}
-              width="32"
-              alt="CodeSandbox Logo"
-              style={{ paddingBottom: 32 }}
-            />
-
+            <LogoFull />
             <Title>Developer Sign In</Title>
             <SubTitle style={{ paddingBottom: 16 }}>
               Please enter the token you get from{' '}

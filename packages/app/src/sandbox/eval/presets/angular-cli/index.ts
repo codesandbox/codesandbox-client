@@ -172,7 +172,7 @@ async function addAngularCLIResources(manager: Manager) {
 export default function initialize() {
   const preset = new Preset(
     'angular-cli',
-    ['web.ts', 'ts', 'json', 'web.tsx', 'tsx', 'js'],
+    ['web.ts', 'ts', 'json', 'web.tsx', 'tsx', 'js', 'cjs'],
     {},
     {
       setup: async manager => {
@@ -197,6 +197,21 @@ export default function initialize() {
         } else {
           await addAngularCLIResources(manager);
         }
+      },
+      processDependencies: deps => {
+        if (!deps['@babel/core']) {
+          deps['@babel/core'] = '^7.3.3';
+        }
+
+        if (!deps['@babel/runtime']) {
+          deps['@babel/runtime'] = '^7.3.4';
+        }
+
+        // Don't delete babel-runtime, some dependencies rely on it...
+        // delete deps['babel-runtime'];
+        delete deps['babel-core'];
+
+        return Promise.resolve(deps);
       },
     }
   );
@@ -237,7 +252,7 @@ export default function initialize() {
   function registerStyleTranspilers() {
     return Object.keys(styles).forEach(type => {
       preset.registerTranspiler(
-        module => new RegExp(`\\.${type}`).test(module.path),
+        module => new RegExp(`\\.${type}$`).test(module.path),
         [...styles[type], { transpiler: stylesTranspiler }]
       );
     });
@@ -251,34 +266,30 @@ export default function initialize() {
     { transpiler: csbDynamicImportTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?js$/.test(module.path), [
+  preset.registerTranspiler(module => /\.(m|c)?js$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
+        isV7: true,
         config: {
-          presets: ['es2015', 'react', 'stage-0'],
-          plugins: [
-            'transform-async-to-generator',
-            'transform-object-rest-spread',
-            'transform-decorators-legacy',
-            'transform-class-properties',
-            // Polyfills the runtime needed for async/await and generators
+          presets: [
             [
-              'transform-runtime',
+              'env',
               {
-                helpers: false,
-                polyfill: false,
-                regenerator: true,
-              },
-            ],
-            [
-              'transform-regenerator',
-              {
-                // Async functions are converted to generators by babel-preset-env
-                async: false,
+                // These targets rougly match csb itself
+                targets: '>1%, not ie 11',
+                // Users cannot override this behavior because this Babel
+                // configuration is highly tuned for ES5 support
+                ignoreBrowserslistConfig: true,
+                // If users import all core-js they're probably not concerned with
+                // bundle size. We shouldn't rely on magic to try and shrink it.
+                useBuiltIns: false,
+                // Do not transform modules to CJS
+                modules: false,
               },
             ],
           ],
+          plugins: [['proposal-decorators', { legacy: true }]],
         },
       },
     },

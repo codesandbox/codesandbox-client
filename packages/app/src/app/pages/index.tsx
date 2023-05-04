@@ -24,7 +24,6 @@ import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
-import { ImportRepoBetaModal } from './Dashboard/Components/Beta/ImportRepoBetaModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import(
@@ -104,6 +103,12 @@ const Client = Loadable(() =>
   }))
 );
 
+const VSCodeAuth = Loadable(() =>
+  import(/* webpackChunkName: 'page-client' */ './VSCodeAuth').then(module => ({
+    default: module.VSCodeAuth,
+  }))
+);
+
 const TeamInvitation = Loadable(() =>
   import(
     /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
@@ -142,6 +147,12 @@ const Curator = Loadable(() =>
     default: module.Curator,
   }))
 );
+const WaitListRequest = Loadable(() =>
+  import(/* webpackChunkName: 'page-curator' */ './WaitList').then(module => ({
+    default: module.WaitListRequest,
+  }))
+);
+
 // @ts-ignore
 const CodeSadbox = () => this[`💥`].kaboom();
 
@@ -217,12 +228,14 @@ const RoutesComponent: React.FC = () => {
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={Client} />
+            <Route path="/vscode/login" component={VSCodeAuth} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
             <Route path="/codesadbox" component={CodeSadbox} />
+            <Route path="/waitlist" component={WaitListRequest} />
             <Route component={NotFound} />
           </Switch>
         </Content>
@@ -232,8 +245,6 @@ const RoutesComponent: React.FC = () => {
         {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
           <MoveSandboxFolderModal />
         )}
-
-        <ImportRepoBetaModal />
       </Boundary>
     </Container>
   );

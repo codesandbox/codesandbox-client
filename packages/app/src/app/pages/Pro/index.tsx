@@ -1,129 +1,42 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
-import { Switch, Route } from 'react-router-dom';
-import { ThemeProvider, Stack } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
-import { Step } from 'app/overmind/namespaces/pro/types';
-import { Navigation } from 'app/pages/common/Navigation';
-import { NewTeam } from 'app/pages/common/NewTeam';
+import {
+  SubscriptionOrigin,
+  SubscriptionPaymentProvider,
+} from 'app/graphql/types';
+import { useHistory } from 'react-router-dom';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { WorkspacePlanSelection } from './pages/WorkspacePlanSelection';
-import { InlineCheckout } from './pages/InlineCheckout';
-import { ConfirmBillingInterval } from './pages/ConfirmBillingInterval';
-import { PaymentSuccess } from './pages/PaymentSuccess';
-import { SignInModalElement } from '../SignIn/Modal';
+import { ProLegacy } from './legacy';
+import { ProUpgrade } from './upgrade';
 
 export const ProPage: React.FC = () => {
   const { pageMounted } = useActions().pro;
-  const { hasLoadedApp, isLoggedIn } = useAppState();
+  const history = useHistory();
+
+  const { activeTeamInfo, hasLoadedApp, isLoggedIn } = useAppState();
 
   React.useEffect(() => {
     pageMounted();
   }, [pageMounted]);
 
-  const getContent = () => {
-    if (!hasLoadedApp) return null;
-    if (!isLoggedIn) {
-      return (
-        <div style={{ marginTop: 120 }}>
-          <SignInModalElement />
-        </div>
-      );
-    }
+  if (hasLoadedApp && !isLoggedIn) {
+    history.push(signInPageUrl('/pro'));
 
-    const searchParams = new URLSearchParams(window.location.search);
-    const interval = searchParams.get('interval');
+    return null;
+  }
 
-    return (
-      <Switch>
-        <Route path={`/pro/create-workspace`}>
-          <NewTeam redirectTo={`/pro?interval=${interval}`} />
-        </Route>
-        <Route path={'/pro/success'}>
-          <PaymentSuccess />
-        </Route>
-        <Route path={`/pro`}>
-          <StartOrModifySubscription />
-        </Route>
-      </Switch>
-    );
-  };
+  if (!activeTeamInfo === undefined) return <p>Loading...</p>;
 
-  return (
-    <ThemeProvider>
-      <Helmet>
-        <title>Pro - CodeSandbox</title>
-        <link
-          href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap"
-          rel="stylesheet"
-        />
-      </Helmet>
-      <Stack
-        direction="vertical"
-        css={css({
-          backgroundColor: 'grays.900',
-          color: 'white',
-          width: '100vw',
-          minHeight: '100vh',
-          fontFamily: 'Lato, sans-serif',
-        })}
-      >
-        <Navigation title="CodeSandbox Pro" />
-        {getContent()}
-      </Stack>
-    </ThemeProvider>
-  );
-};
+  const isPaddle =
+    activeTeamInfo?.subscription?.paymentProvider ===
+    SubscriptionPaymentProvider.Paddle;
+  const isPatron =
+    activeTeamInfo?.subscription?.origin === SubscriptionOrigin.Patron;
 
-const StartOrModifySubscription = () => {
-  /**
-   * The user flow forks based on the account.
-   *
-   * step 1 - choose account (personal or team) and plan
-   * step 2 -
-   *    if subscription doens't exist - Inline Checkout
-   *    if subscription already exists - Confirm Amount Change
-   * step 3 - redirect to pro/success
-   *
-   * We don't treat these as seperate pages because steps transition into
-   * each other with data from the previous step
-   */
+  if (isPaddle || isPatron) {
+    return <ProLegacy />;
+  }
 
-  const {
-    step,
-    isPaddleInitialised,
-    isBillingAmountLoaded,
-  } = useAppState().pro;
-
-  return (
-    <Stack
-      justify="center"
-      align="center"
-      css={css({ fontSize: 3, width: 560, marginTop: 120, marginX: 'auto' })}
-    >
-      {step === Step.WorkspacePlanSelection ||
-      (step === Step.InlineCheckout && !isPaddleInitialised) ||
-      (step === Step.ConfirmBillingInterval && !isBillingAmountLoaded) ? (
-        <WorkspacePlanSelection
-          loading={
-            (step === Step.InlineCheckout && !isPaddleInitialised) ||
-            (step === Step.ConfirmBillingInterval && !isBillingAmountLoaded)
-          }
-        />
-      ) : null}
-      {step === Step.InlineCheckout && (
-        <div
-          style={{
-            width: isPaddleInitialised ? 'auto' : 0,
-            height: isPaddleInitialised ? 'auto' : 0,
-            overflow: 'hidden',
-          }}
-        >
-          <InlineCheckout />
-        </div>
-      )}
-      {step === Step.ConfirmBillingInterval && <ConfirmBillingInterval />}
-    </Stack>
-  );
+  return <ProUpgrade />;
 };

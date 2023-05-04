@@ -29,6 +29,8 @@ import vue from './vue';
 import vuepress from './vuepress';
 import docusaurus from './docusaurus';
 import esmReact from './esmodule-react';
+import remix from './remix';
+import solid from './solid';
 
 export {
   adonis,
@@ -62,6 +64,8 @@ export {
   mdxDeck,
   quasar,
   unibit,
+  remix,
+  solid,
 };
 
 export type TemplateType =
@@ -95,7 +99,9 @@ export type TemplateType =
   | 'custom'
   | 'docusaurus'
   | 'babel-repl'
-  | 'esm-react';
+  | 'esm-react'
+  | 'remix'
+  | 'solid';
 
 export default function getDefinition(theme?: TemplateType | null) {
   switch (theme) {
@@ -161,6 +167,10 @@ export default function getDefinition(theme?: TemplateType | null) {
       return unibit;
     case esmReact.name:
       return esmReact;
+    case remix.name:
+      return remix;
+    case solid.name:
+      return solid;
     default:
       return react;
   }

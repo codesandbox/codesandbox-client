@@ -265,3 +265,7 @@ export const checkURLParameters = ({ state, effects }: Context) => {
     ];
   }
 };
+
+export const setIsResizing = ({ state }: Context, newIsResizing: boolean) => {
+  state.preview.responsive.isResizing = newIsResizing;
+}

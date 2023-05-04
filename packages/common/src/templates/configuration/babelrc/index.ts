@@ -254,6 +254,20 @@ const config: ConfigurationFile = {
       );
     }
 
+    if (template === 'solid') {
+      return JSON.stringify(
+        {
+          presets: ['env', 'typescript', 'babel-preset-solid'],
+          plugins: [
+            '@babel/plugin-syntax-dynamic-import',
+            'solid-refresh/babel',
+          ],
+        },
+        null,
+        2
+      );
+    }
+
     return JSON.stringify({ presets: [], plugins: [] }, null, 2);
   },
 

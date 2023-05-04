@@ -31,12 +31,13 @@ const Grid = styled(motion.div)`
   grid-gap: 38px;
   margin-bottom: 56px;
 
-  ${props => props.theme.breakpoints.md} {
+  @media screen and (max-width: 900px) {
+    grid-gap: 20px;
     grid-template-columns: repeat(3, 1fr);
   }
 
   @media screen and (max-width: 767px) {
-    grid-gap: 24px;
+    grid-gap: 1rem;
     grid-template-columns: 1fr;
   }
 
@@ -48,11 +49,15 @@ const Feature = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 44px 16px;
-  border: 0.572728px solid #343434;
+  padding: 4rem;
+  // border: 0.572728px solid #343434;
   border-radius: 4px;
   text-align: center;
   background: #151515;
+
+  @media screen and (max-width: 900px) {
+    padding: 1rem;
+  }
 
   svg,
   h3 {
@@ -81,7 +86,7 @@ const Quotes = () => (
         margin: 0 0 5rem 0;
       `}
     >
-      What others are saying
+      What are others saying?
     </H2>
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>

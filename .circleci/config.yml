@@ -128,11 +128,11 @@ aliases:
 executors:
   node:
     docker:
-      - image: circleci/node:10.22.1
+      - image: circleci/node:10.24.1
     working_directory: ~/codesandbox-client
   node-xlarge:
     docker:
-      - image: circleci/node:10.22.1
+      - image: circleci/node:10.24.1
     resource_class: xlarge
     working_directory: ~/codesandbox-client
   node-with-puppeteer:
@@ -140,7 +140,8 @@ executors:
       - image: codesandbox/node-puppeteer
     working_directory: ~/codesandbox-client
   docker_machine:
-    machine: true
+    machine:
+      image: ubuntu-2004:202201-02
     working_directory: ~/codesandbox-client
 
 ################################
@@ -316,7 +317,7 @@ jobs:
       - checkout_with_cache
       - test_visual_regressions
   test-jest:
-    executor: node
+    executor: node-xlarge
     steps:
       - checkout_with_cache
       - test_jest

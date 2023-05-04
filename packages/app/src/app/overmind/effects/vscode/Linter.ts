@@ -7,7 +7,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 import { getCurrentModelPath } from './utils';
 
 const requireAMDModule = paths =>
-  new Promise(resolve => (window as any).require(paths, () => resolve()));
+  new Promise<void>(resolve => (window as any).require(paths, () => resolve()));
 
 export class Linter {
   private worker: LinterWorker;
@@ -24,6 +24,7 @@ export class Linter {
   }
 
   dispose(): null {
+    this.clearErrors();
     this.worker.removeEventListener('message', this.onMessage);
     this.worker.terminate();
     this.isDisposed = true;
@@ -31,14 +32,18 @@ export class Linter {
     return null;
   }
 
+  private clearErrors = () => {
+    dispatch(
+      actions.correction.clear(getCurrentModelPath(this.editor), 'eslint')
+    );
+  };
+
   private onMessage = event => {
     const { markers, version } = event.data;
     const activeEditor = this.editor.getActiveCodeEditor();
 
     if (activeEditor && activeEditor.getModel()) {
-      dispatch(
-        actions.correction.clear(getCurrentModelPath(this.editor), 'eslint')
-      );
+      this.clearErrors();
 
       if (version === activeEditor.getModel().getVersionId()) {
         markers.forEach(marker => {

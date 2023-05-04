@@ -17,6 +17,7 @@ import { FeathersIcon } from './FeathersIcon';
 import { GatsbyIcon } from './GatsbyIcon';
 import { GlimmerIcon } from './GlimmerIcon';
 import { GridsomeIcon } from './GridsomeIcon';
+import { GSAPIcon } from './GSAPIcon';
 import { HapiIcon } from './HapiIcon';
 import { HTML5Icon } from './HTML5Icon';
 import { HyperappIcon } from './HyperappIcon';
@@ -40,6 +41,7 @@ import { PrismaIcon } from './PrismaIcon';
 import { QuasarIcon } from './QuasarIcon';
 import { RazzleIcon } from './RazzleIcon';
 import { ReactIcon } from './ReactIcon';
+import { RemixIcon } from './RemixIcon';
 import { ReasonIcon } from './ReasonIcon';
 import { RollupIcon } from './RollupIcon';
 import { SapperIcon } from './SapperIcon';
@@ -54,6 +56,7 @@ import { UnibitIcon } from './UnibitIcon';
 import { VueIcon } from './VueIcon';
 import { VuePressIcon } from './VuePressIcon';
 import { WebAssemblyIcon } from './WebAssemblyIcon';
+import { SolidIcon } from './SolidIcon';
 
 export const ColorIcons = {
   AdonisIcon,
@@ -76,6 +79,7 @@ export const ColorIcons = {
   GitHubIcon,
   GlimmerIcon,
   GridsomeIcon,
+  GSAPIcon,
   HapiIcon,
   HTML5Icon,
   HyperappIcon,
@@ -99,6 +103,7 @@ export const ColorIcons = {
   RazzleIcon,
   ReactIcon,
   ReasonIcon,
+  RemixIcon,
   RollupIcon,
   SapperIcon,
   ServerlessIcon,
@@ -112,6 +117,7 @@ export const ColorIcons = {
   VueIcon,
   VuePressIcon,
   WebAssemblyIcon,
+  SolidIcon,
 };
 
 export const Icons = {
@@ -135,6 +141,7 @@ export const Icons = {
   GitHubIcon,
   GlimmerIcon,
   GridsomeIcon,
+  GSAPIcon,
   HapiIcon,
   HTML5Icon,
   HyperappIcon,
@@ -158,6 +165,7 @@ export const Icons = {
   RazzleIcon,
   ReactIcon,
   ReasonIcon,
+  RemixIcon,
   RollupIcon,
   SapperIcon,
   ServerlessIcon,
@@ -171,6 +179,7 @@ export const Icons = {
   VueIcon,
   VuePressIcon,
   WebAssemblyIcon,
+  SolidIcon,
 };
 
 export { AdonisIcon } from './AdonisIcon';
@@ -192,6 +201,7 @@ export { FeathersIcon } from './FeathersIcon';
 export { GatsbyIcon } from './GatsbyIcon';
 export { GlimmerIcon } from './GlimmerIcon';
 export { GridsomeIcon } from './GridsomeIcon';
+export { GSAPIcon } from './GSAPIcon';
 export { HapiIcon } from './HapiIcon';
 export { HTML5Icon } from './HTML5Icon';
 export { GitHubIcon } from './GitHubIcon';
@@ -216,6 +226,7 @@ export { QuasarIcon } from './QuasarIcon';
 export { RazzleIcon } from './RazzleIcon';
 export { ReactIcon } from './ReactIcon';
 export { ReasonIcon } from './ReasonIcon';
+export { RemixIcon } from './RemixIcon';
 export { RollupIcon } from './RollupIcon';
 export { SapperIcon } from './SapperIcon';
 export { ServerlessIcon } from './ServerlessIcon';
@@ -229,3 +240,4 @@ export { UnibitIcon } from './UnibitIcon';
 export { VueIcon } from './VueIcon';
 export { VuePressIcon } from './VuePressIcon';
 export { WebAssemblyIcon } from './WebAssemblyIcon';
+export { SolidIcon } from './SolidIcon';

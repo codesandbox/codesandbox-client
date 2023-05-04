@@ -59,11 +59,11 @@ export default () => {
       <TitleAndMetaTags title="IDE - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Code from anywhere</Title>
+          <Title>Code from anywhere.</Title>
         </TitleWrapper>
         <Description>
-          Code online with no setup in a powerful IDE that feels like it’s
-          local.
+          Code online with no setup in a powerful <br /> IDE that feels like
+          it’s local.
         </Description>
         <div
           css={`
@@ -73,13 +73,15 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button big href="https://codesandbox.io/s/">
             Get Started
           </Button>
         </div>
         <div>
           <div>
-            <Subtitle as="h2">Fast development in the browser</Subtitle>
+            <Subtitle as="h2">
+              Fast development <br /> in the browser.
+            </Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -125,7 +127,9 @@ export default () => {
               margin-bottom: 56px;
             `}
           >
-            <Subtitle as="h2">Use with your fave dev tools</Subtitle>
+            <Subtitle as="h2">
+              Use with your <br /> favorite DevTools.
+            </Subtitle>
           </div>
 
           <ContentBlock>
@@ -202,7 +206,7 @@ export default () => {
           </div>
           <div>
             <div>
-              <Subtitle as="h2">Work with containers</Subtitle>
+              <Subtitle as="h2">Work with containers.</Subtitle>
             </div>
             <FeaturedImage
               css={`
@@ -248,7 +252,7 @@ export default () => {
           </div>
           <div>
             <div>
-              <Subtitle as="h2">Debug like a pro</Subtitle>
+              <Subtitle as="h2">Debug like a pro.</Subtitle>
             </div>
             <FeaturedImage
               css={`
@@ -300,7 +304,7 @@ export default () => {
           </div>
           <div>
             <div>
-              <Subtitle as="h2">Make it yours</Subtitle>
+              <Subtitle as="h2">Make it yours.</Subtitle>
             </div>
 
             <FeaturedImage
@@ -366,7 +370,7 @@ export default () => {
       </Wrapper>
 
       <CTA
-        title="Start coding in seconds"
+        title="Start coding in seconds."
         subtitle="Code from anywhere with no project setup."
         cta="Get Started"
         link="/s"

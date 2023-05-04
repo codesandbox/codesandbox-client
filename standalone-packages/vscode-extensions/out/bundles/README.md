@@ -7,7 +7,7 @@ In order to avoid thousands of requests on the client, to load all extensions fi
 
 ### How to generate this file:
 1. Load the client in development mode;
-2. Delete the original file (main.min.js);
+2. Delete the original file (main.min.json);
 3. Load the editor and wait for a few until it loads all dependencies; it might take a few seconds or even a minute;
 4. Go to the browser console and type the following command to copy all extensions: `copy(JSON.stringify(global.fileReads))`
 5. Clone this repository https://github.com/codesandbox/extension-bundle-utils

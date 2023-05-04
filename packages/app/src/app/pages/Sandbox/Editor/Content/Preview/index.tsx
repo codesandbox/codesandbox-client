@@ -1,5 +1,6 @@
 import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
+import { frameUrl } from '@codesandbox/common/lib/utils/url-generator';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 
 import React, { FunctionComponent, useState } from 'react';
@@ -12,6 +13,7 @@ type Props = {
   hidden?: boolean;
   options: {
     url?: string;
+    port?: number;
   };
   runOnClick?: boolean;
 };
@@ -81,6 +83,7 @@ export const Preview: FunctionComponent<Props> = ({
       noPreview={!previewWindowVisible}
       onToggleProjectView={projectViewToggled}
       Wrapper={ResponsiveWrapper}
+      isResponsivePreviewResizing={preview.responsive.isResizing}
       isResponsiveModeActive={
         preview.mode === 'responsive' ||
         preview.mode === 'responsive-add-comment'
@@ -100,7 +103,12 @@ export const Preview: FunctionComponent<Props> = ({
       createPreviewComment={
         canAddComments(currentSandbox) && previewActions.createPreviewComment
       }
-      url={options.url}
+      url={
+        options.url ||
+        (options.port
+          ? frameUrl(currentSandbox, undefined, { port: options.port })
+          : undefined)
+      }
     />
   ) : (
     <RunOnClick onClick={() => setRunning(true)} />

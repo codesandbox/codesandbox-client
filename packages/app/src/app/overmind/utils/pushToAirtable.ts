@@ -9,31 +9,27 @@ export default async ({
 }: {
   [key: string]: string;
 }) => {
-  const Airtable = await import(
-    /* webpackChunkName: 'airtable' */ './setAirtable'
-  );
-  const base = Airtable.default.base('appzdQFPct2p9gFZi');
-
-  return new Promise((resolve, reject) => {
-    base('feedback').create(
-      {
-        feedback,
-        emoji,
-        sandboxId,
-        username,
-        email,
-        url: window.location.pathname,
-        version,
-        browser,
-      },
-      err => {
-        if (err) {
-          console.error(err);
-          reject();
-        }
-
-        resolve();
-      }
-    );
-  });
+  /**
+   * @see https://codesandbox.io/s/feedback-microservice-sp8i0
+   */
+  return fetch('https://sp8i0.sse.codesandbox.io/airtable', {
+    method: 'POST',
+    body: JSON.stringify({
+      feedback,
+      emoji,
+      sandboxId,
+      username,
+      email,
+      url: window.location.pathname,
+      version,
+      browser,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).catch(error => {
+    if (error) {
+      console.error(error);
+    }
+  })
 };

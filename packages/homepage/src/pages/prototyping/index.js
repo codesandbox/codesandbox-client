@@ -49,7 +49,9 @@ export default () => {
       <TitleAndMetaTags title="Prototyping - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Quickly prototype ideas with code</Title>
+          <Title>
+            Quickly prototype <br /> ideas with code.
+          </Title>
         </TitleWrapper>
         <Description>
           Create real, working prototypes. Test ideas earlier, iterate more and
@@ -69,7 +71,9 @@ export default () => {
         </div>
         <div>
           <div>
-            <Subtitle>Keep everyone in the loop</Subtitle>
+            <Subtitle>
+              Keep everyone <br /> in the loop.
+            </Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -116,7 +120,7 @@ export default () => {
               margin-bottom: 56px;
             `}
           >
-            <Subtitle left>Code in public, or private</Subtitle>
+            <Subtitle left>Code in public, or private.</Subtitle>
           </div>
 
           <ContentBlock>
@@ -159,7 +163,8 @@ export default () => {
           >
             <div>
               <Subtitle>
-                Create static sites, components, <br /> or full-stack web apps
+                Create static sites, <br /> components, or full-stack <br /> web
+                apps.
               </Subtitle>
             </div>
             <FeaturedImage
@@ -206,7 +211,7 @@ export default () => {
       </Wrapper>
 
       <CTA
-        title="Start rapid prototyping"
+        title="Start rapid prototyping."
         subtitle="With instant sandboxes that get you coding in seconds."
         cta="Get Started"
         link="/s"

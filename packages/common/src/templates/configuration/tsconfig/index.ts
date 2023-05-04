@@ -169,6 +169,30 @@ const config: ConfigurationFile = {
       );
     }
 
+    if (template === 'solid') {
+      return JSON.stringify(
+        {
+          compileOnSave: false,
+          compilerOptions: {
+            strict: false,
+            module: 'ESNext',
+            target: 'ESNext',
+            jsx: 'preserve',
+            esModuleInterop: true,
+            sourceMap: true,
+            allowJs: true,
+            lib: ['es6', 'dom'],
+            rootDir: 'src',
+            moduleResolution: 'node',
+            jsxImportSource: 'solid-js',
+            types: ['solid-js', 'solid-js/web'],
+          },
+        },
+        null,
+        2
+      );
+    }
+
     return JSON.stringify(
       {
         compilerOptions: {

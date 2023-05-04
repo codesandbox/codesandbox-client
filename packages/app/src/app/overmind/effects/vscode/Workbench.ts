@@ -361,7 +361,7 @@ export class Workbench {
     addBrowserNavigationCommand(
       'codesandbox.help.discord',
       'Join our discord server',
-      'https://discord.gg/5BpufEP7MH'
+      'https://discord.gg/C6vfhW3H6e'
     );
 
     this.addWorkbenchAction({
@@ -440,6 +440,15 @@ export class Workbench {
       command: {
         id: 'codesandbox.help.twitter',
         title: 'Follow Us on &&Twitter',
+      },
+    });
+
+    this.appendMenuItem(MenuId.MenubarHelpMenu, {
+      group: '3_social',
+      order: 3,
+      command: {
+        id: 'codesandbox.help.discord',
+        title: 'Get Help on &&Discord',
       },
     });
 

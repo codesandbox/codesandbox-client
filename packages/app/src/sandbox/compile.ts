@@ -24,7 +24,10 @@ import { NpmRegistry } from '@codesandbox/common/lib/types';
 import { Manager, TranspiledModule } from 'sandpack-core';
 
 import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
-import { NpmRegistryFetcher } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
+import {
+  NpmRegistryFetcher,
+  NpmRegistryOpts,
+} from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -315,7 +318,12 @@ async function initializeManager(
   {
     hasFileResolver = false,
     customNpmRegistries = [],
-  }: { hasFileResolver?: boolean; customNpmRegistries?: NpmRegistry[] } = {}
+    reactDevTools,
+  }: {
+    hasFileResolver?: boolean;
+    customNpmRegistries?: NpmRegistry[];
+    reactDevTools?: 'legacy' | 'latest';
+  } = {}
 ) {
   const newManager = new Manager(
     sandboxId,
@@ -324,6 +332,7 @@ async function initializeManager(
     {
       hasFileResolver,
       versionIdentifier: SCRIPT_VERSION,
+      reactDevTools,
     }
   );
 
@@ -331,15 +340,26 @@ async function initializeManager(
   customNpmRegistries.forEach(registry => {
     const cleanUrl = registry.registryUrl.replace(/\/$/, '');
 
-    const options = registry.limitToScopes
-      ? {
-          scopeWhitelist: registry.enabledScopes,
-          // With our custom proxy on the server we want to handle downloading
-          // the tarball. So we proxy it.
-          provideTarballUrl: (name: string, version: string) =>
-            `${cleanUrl}/${name.replace('/', '%2f')}/${version}`,
-        }
-      : {};
+    const options: NpmRegistryOpts = {};
+
+    if (registry.limitToScopes) {
+      options.scopeWhitelist = registry.enabledScopes;
+    }
+
+    // In case the API is not including the field yet
+    if (typeof registry.proxyEnabled === 'undefined') {
+      registry.proxyEnabled = true;
+    }
+    if (registry.proxyEnabled) {
+      // With our custom proxy on the server we want to handle downloading
+      // the tarball. So we proxy it.
+      options.provideTarballUrl = (name: string, version: string) =>
+        `${cleanUrl}/${name.replace('/', '%2f')}/${version}`;
+    }
+
+    if (registry.registryAuthToken) {
+      options.authToken = registry.registryAuthToken;
+    }
 
     const protocol = new NpmRegistryFetcher(cleanUrl, options);
 
@@ -453,6 +473,7 @@ interface CompileOptions {
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
   clearConsoleDisabled?: boolean;
+  reactDevTools?: 'legacy' | 'latest';
 }
 
 async function compile(opts: CompileOptions) {
@@ -472,6 +493,7 @@ async function compile(opts: CompileOptions) {
     hasFileResolver = false,
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
+    reactDevTools,
   } = opts;
 
   if (firstLoad) {
@@ -539,6 +561,7 @@ async function compile(opts: CompileOptions) {
       (await initializeManager(sandboxId, template, modules, configurations, {
         hasFileResolver,
         customNpmRegistries,
+        reactDevTools,
       }));
 
     let dependencies: NPMDependencies = getDependencies(
@@ -606,7 +629,7 @@ async function compile(opts: CompileOptions) {
         template,
         modules,
         configurations,
-        { hasFileResolver }
+        { hasFileResolver, reactDevTools }
       );
     }
 
@@ -912,7 +935,7 @@ let runningTask = null;
 async function executeTaskIfAvailable() {
   if (tasks.length) {
     runningTask = tasks.pop();
-    await compile(runningTask);
+    await compile(runningTask).catch(console.error);
     runningTask = null;
 
     executeTaskIfAvailable();

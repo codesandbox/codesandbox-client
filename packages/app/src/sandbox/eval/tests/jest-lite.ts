@@ -40,7 +40,7 @@ expect.extend({
 expect.addSnapshotSerializer = addSerializer;
 
 function addScript(src: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const s = document.createElement('script');
     s.setAttribute('src', src);
     document.body.appendChild(s);
@@ -292,6 +292,7 @@ export default class TestRunner {
     });
   }
 
+  oldWindow = {};
   async initJSDOM() {
     await getJSDOM();
     const { JSDOM } = (window as any).JSDOM;
@@ -303,6 +304,15 @@ export default class TestRunner {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       url,
+    });
+
+    // If there's code accessing globals (e.g. `getComputedStyle`), it will
+    // use the global window instead. We can't change a global, but we can override
+    // values over it.
+    const GLOBAL_OVERRIDE_KEYS = ['getComputedStyle'];
+    GLOBAL_OVERRIDE_KEYS.forEach(key => {
+      this.oldWindow[key] = window[key];
+      window[key] = this.dom.window[key];
     });
   }
 
@@ -318,6 +328,12 @@ export default class TestRunner {
     Object.defineProperty(global, 'document', { value: null });
     this.dom = null;
     this.manager.envVariables = this.oldEnvVars;
+
+    // Put back the old globals of the window after tests have run
+    Object.keys(this.oldWindow).forEach(key => {
+      window[key] = this.oldWindow[key];
+    });
+    this.oldWindow = {};
 
     // @ts-expect-error We don't have the module, but the module is only used in a lazy context
     const jestRuntimeGlobals = this.getRuntimeGlobals();

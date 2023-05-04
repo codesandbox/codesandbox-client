@@ -363,7 +363,8 @@ class Live {
       } else {
         // we might try to send messages even when not on live, just
         // ignore it
-        resolve();
+        // @ts-ignore this is probably not safe but whatever
+        resolve(undefined);
       }
     });
   }

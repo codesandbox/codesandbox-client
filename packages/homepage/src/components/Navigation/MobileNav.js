@@ -4,11 +4,10 @@ import { Link } from 'gatsby';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import Logo from '../../assets/images/logo.svg';
+import Logo from '../../assets/logo';
 import {
   MobileNav,
   LogoWrapper,
-  LogoImage,
   PopUpNav,
   Headers,
   Items,
@@ -21,10 +20,13 @@ import StatusIcon from '../../assets/icons/Status';
 import PricingIcon from '../../assets/icons/Pricing';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
-import IDEIcon from '../../assets/icons/Ide';
+import CodeSandbox from '../../assets/icons/CodeSandbox';
 import FeedbackIcon from '../../assets/icons/Feedback';
-import PrototypeIcon from '../../assets/icons/Prototype';
-import TeamsIcon from '../../assets/icons/Teams';
+// import PrototypeIcon from "../../assets/icons/Prototype";
+// import TeamsIcon from "../../assets/icons/Teams";
+
+import SandpackIcon from '../../assets/icons/Sandpack';
+
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import JobsIcon from '../../assets/icons/Jobs';
@@ -40,8 +42,7 @@ export default () => {
     <>
       <MobileNav>
         <LogoWrapper to="/">
-          <LogoImage src={Logo} alt="CodeSandbox Logo" />
-          CodeSandbox
+          <Logo />
         </LogoWrapper>
         <div>
           {!user ? (
@@ -109,28 +110,45 @@ export default () => {
               <Headers>Product</Headers>
               <Items>
                 <li>
-                  <Link to="/ide">
+                  <a
+                    href="https://projects.codesandbox.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Projects"
+                  >
                     <IconWrapper>
-                      <IDEIcon />
+                      <CodeSandbox />
                     </IconWrapper>
-                    <span>Coding</span>
-                  </Link>
+                    <span>Projects</span>
+                  </a>
                 </li>
+
                 <li>
-                  <Link to="/prototyping">
+                  <a
+                    href="https://codesandbox.io/ios"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="CodeSandbox for iOS"
+                  >
                     <IconWrapper>
-                      <PrototypeIcon />
+                      <CodeSandbox />
                     </IconWrapper>
-                    <span>Prototyping</span>
-                  </Link>
+                    <span>CodeSandbox for iOS</span>
+                  </a>
                 </li>
+
                 <li>
-                  <Link to="/knowledge-sharing">
+                  <a
+                    href="https://sandpack.codesandbox.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Sandpack"
+                  >
                     <IconWrapper>
-                      <TeamsIcon />
+                      <SandpackIcon />
                     </IconWrapper>
-                    <span>Knowledge Sharing</span>
-                  </Link>
+                    <span>Sandpack</span>
+                  </a>
                 </li>
                 <li>
                   <Link to="/feedback">
@@ -230,10 +248,9 @@ export default () => {
                 `}
               >
                 <Button
+                  big
                   css={`
                     display: block;
-                    padding: 6px 21px;
-                    background: #5962df;
                   `}
                   className="button"
                   href="/s"

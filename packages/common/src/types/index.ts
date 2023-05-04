@@ -130,6 +130,7 @@ export type CurrentUser = {
   };
   curatorAt: string;
   badges: Badge[];
+  betaAccess: boolean;
   provider: 'github' | 'google';
   integrations: {
     zeit: {
@@ -141,6 +142,7 @@ export type CurrentUser = {
     } | null;
   };
   sendSurvey: boolean;
+  deletionRequested: boolean;
 };
 
 export type CustomTemplate = {
@@ -356,6 +358,8 @@ export type NpmRegistry = {
   enabledScopes: string[];
   limitToScopes: boolean;
   registryUrl: string;
+  proxyEnabled?: boolean;
+  registryAuthToken?: string;
 };
 
 export enum CommentsFilterOption {

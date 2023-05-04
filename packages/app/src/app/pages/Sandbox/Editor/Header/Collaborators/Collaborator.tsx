@@ -276,10 +276,11 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
         <Text size={3} variant="muted" align="center">
           Changing sandbox access is available with{' '}
           <a
-            href="/pricing"
+            href="/pro"
             target="_blank"
             rel="noreferrer noopener"
             onClick={() => track('Editor - Share sandbox Pricing link')}
+            style={{ textDecoration: 'none' }}
           >
             CodeSandbox Pro
           </a>

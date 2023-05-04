@@ -18,6 +18,10 @@ const defaultProps: Partial<Props> = {
 const mainStyles = `
   background-color: #242424;
   box-shadow: 0 16px 32px rgba(0,0,0,.24), 0 4px 4px rgba(0,0,0,.12); 
+
+  a {
+    color: #fff;
+  }
   
   .tippy-backdrop {
     background-color: #242424;

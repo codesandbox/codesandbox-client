@@ -49,7 +49,9 @@ export default () => {
       <TitleAndMetaTags title="Feedback - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Get better feedback from your whole team</Title>
+          <Title>
+            Get better feedback from <br /> your whole team.
+          </Title>
         </TitleWrapper>
         <Description>
           Give and get feedback, on code or visuals, right in the editor. Take
@@ -63,13 +65,13 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
-            Get Started
+          <Button big href="https://codesandbox.io/s/">
+            Get started
           </Button>
         </div>
         <div>
           <div>
-            <Subtitle as="h2">Keep everyone in the loop</Subtitle>
+            <Subtitle as="h2">Keep everyone in the loop.</Subtitle>
           </div>
           <FeaturedImage
             bg={bg}
@@ -118,7 +120,7 @@ export default () => {
             `}
           >
             <Subtitle left as="h2">
-              Know the context
+              Know the context.
             </Subtitle>
           </div>
 
@@ -158,7 +160,7 @@ export default () => {
             `}
           >
             <div>
-              <Subtitle as="h2">Stay up to date</Subtitle>
+              <Subtitle as="h2">Stay up to date.</Subtitle>
               <h6
                 css={`
                   font-style: normal;
@@ -197,9 +199,9 @@ export default () => {
         </div>
 
         <CTA
-          title="Start testing your ideas"
+          title="Start testing your ideas."
           subtitle="Get better feedback faster to validate and iterate."
-          cta="Get Started"
+          cta="Get started"
           link="/s"
         />
       </Wrapper>

@@ -46,11 +46,11 @@ export const PrivacyTooltip: FunctionComponent = () => {
     activeTeamInfo?.subscription ? (
       <>Adjust privacy settings.</>
     ) : (
-      <>
+      <Text color="grays.300">
         You can change privacy of a sandbox as a Pro.
         <br />
-        <Link href="/pricing">Upgrade to Pro</Link>
-      </>
+        <Link href="/pro">Upgrade to Pro</Link>
+      </Text>
     );
 
   return (

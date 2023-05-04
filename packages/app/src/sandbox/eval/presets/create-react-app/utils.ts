@@ -1,6 +1,5 @@
 import semver from 'semver';
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
-import { Manager } from 'sandpack-core';
 import { Dependencies } from '@codesandbox/common/lib/templates/template';
 
 function isMinimalSemverVersion(version: string, minimalVersion: string) {
@@ -67,51 +66,11 @@ export async function supportsNewReactTransform(
   dependencies: Dependencies = {},
   devDependencies: Dependencies = {}
 ): Promise<boolean> {
-  const reactScripts =
-    dependencies['react-scripts'] || devDependencies['react-scripts'];
   const react = dependencies.react || devDependencies.react;
-
-  if (reactScripts && react) {
-    const [isReact, isReactScripts] = await Promise.all([
-      isMinimalReactVersion(react, '17.0.0'),
-      isMinimalAbsoluteVersion('react-scripts', reactScripts, '4.0.0'),
-    ]);
-    return isReact && isReactScripts;
+  if (react) {
+    return isMinimalReactVersion(react, '17.0.0');
   }
-
   return false;
-}
-
-/**
- * We unmount the component tree to ensure that `componentWillUnmount` et all are called
- */
-export function cleanUsingUnmount(manager: Manager) {
-  try {
-    const { children } = document.body;
-    // Do unmounting for react
-    if (
-      manager.manifest &&
-      manager.manifest.dependencies.find(n => n.name === 'react-dom')
-    ) {
-      const reactDOMModule = manager.resolveModule({ path: 'react-dom' });
-      const reactDOM = manager.evaluateModule(reactDOMModule);
-
-      reactDOM.unmountComponentAtNode(document.body);
-
-      for (let i = 0; i < children.length; i += 1) {
-        if (children[i].tagName === 'DIV') {
-          reactDOM.unmountComponentAtNode(children[i]);
-        }
-      }
-    }
-  } catch (e) {
-    /* don't do anything with this error */
-
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Problem while cleaning up');
-      console.error(e);
-    }
-  }
 }
 
 export const aliases = {

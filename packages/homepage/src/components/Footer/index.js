@@ -5,6 +5,7 @@ import Github from '../../assets/icons/github';
 import Twitter from '../../assets/icons/twitter';
 import Discord from '../../assets/icons/discord';
 import { OPEN_JOBS_COUNT } from '../../config/hiring';
+import { CHANGELOG_LOCATION } from '../../config/externalResources';
 import { FooterWrapper, Nav, Social, Title } from './elements';
 
 const footerNavElements = [
@@ -20,7 +21,7 @@ const footerNavElements = [
         link: '/prototyping',
       },
       {
-        text: 'Knowledge Sharing',
+        text: 'Knowledge sharing',
         link: '/knowledge-sharing',
       },
       {
@@ -28,8 +29,9 @@ const footerNavElements = [
         link: '/feedback',
       },
       {
-        text: 'What’s New',
-        link: '/changelog',
+        text: 'What’s new',
+        external: true,
+        link: CHANGELOG_LOCATION,
       },
     ],
   },
@@ -37,12 +39,12 @@ const footerNavElements = [
     title: 'Explore',
     elements: [
       {
-        text: 'Featured Sandboxes',
+        text: 'Featured sandboxes',
         link: '/explore',
       },
       {
         external: true,
-        text: 'Search Sandboxes',
+        text: 'Search sandboxes',
         link: '/search',
       },
     ],
@@ -89,11 +91,11 @@ const footerNavElements = [
         count: OPEN_JOBS_COUNT,
       },
       {
-        text: 'Terms Of Use',
+        text: 'Terms of use',
         link: '/legal/terms',
       },
       {
-        text: 'Privacy Policy',
+        text: 'Privacy policy',
         link: '/legal/privacy',
       },
     ],
@@ -106,7 +108,7 @@ const footerNavElements = [
         link: '/docs',
       },
       {
-        text: 'Contact Support',
+        text: 'Contact support',
         external: true,
         link: 'mailto:support@codesandbox.io',
       },
@@ -158,7 +160,7 @@ const Footer = () => (
         </a>
       </li>
       <li>
-        <a title="Join our Discord Server" href="https://discord.gg/5BpufEP7MH">
+        <a title="Join our Discord Server" href="https://discord.gg/C6vfhW3H6e">
           <Discord />
         </a>
       </li>
@@ -170,7 +172,7 @@ const Footer = () => (
         text-align: center;
       `}
     >
-      Copyright © {new Date().getFullYear()} CodeSandbox BV
+      Copyright © {new Date().getFullYear()} CodeSandbox BV.
     </P>
   </FooterWrapper>
 );

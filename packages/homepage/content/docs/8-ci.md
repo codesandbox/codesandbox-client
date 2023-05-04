@@ -8,7 +8,7 @@ description:
 
 ## What is CodeSandbox CI?
 
-CodeSandbox CI is a [GitHub app](https://github.com/apps/codesandbox) that you
+CodeSandbox CI is a [GitHub app](https://github.com/apps/codesandbox-ci) that you
 can install in your repository. The app is responsible for building your
 library. Whenever a Pull Request is opened it builds a version of the library
 from that PR. This is published to our registry, so you can immediately test the
@@ -35,7 +35,7 @@ A typical workflow might look like this:
 ## How do I set this up?
 
 For most libraries, the only thing you need to do is install this
-[GitHub App](https://github.com/apps/codesandbox). In some cases you might need
+[GitHub App](https://github.com/apps/codesandbox-ci). In some cases you might need
 to do some configuration, an example of this is for monorepos. You can configure
 your library by creating a file called `ci.json` in a folder called
 `.codesandbox` (`.codesandbox/ci.json`) in the root of your repo. An example PR
@@ -80,7 +80,7 @@ These are all the configuration options you can set. They are all optional.
   // to generate a sandbox from the contents of that directory.
   "sandboxes": ["vanilla", "new", "/examples/todomvc"],
   // Node.js version to use for building the PR.
-  // Supported versions are '10' (10.23.0, default), '12' (12.20.0) and '14' (14.15.1).
+  // Supported versions are '10' (10.24.1, default), '12' (12.22.7), '14' (14.18.1) and '16' (16.13.0).
   "node": "14"
 }
 ```

@@ -29,7 +29,7 @@ const homepageTheme = {
   },
   homepage: {
     appleFont:
-      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue'",
+      "inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue'",
     white: '#fff',
     whiteDark: '#e6e6e6',
     primary: '#0971f1',
@@ -43,9 +43,10 @@ const homepageTheme = {
 };
 
 export const WRAPPER_STYLING = {
-  maxWidth: '80%',
-  width: '1200px',
-  margin: 'auto',
+  // maxWidth: '80%',
+  maxWidth: '1200px',
+  margin: '0 auto',
+  padding: '0 50px',
 };
 
 export const useTheme = () => homepageTheme;

@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ThemeProvider, Stack } from '@codesandbox/components';
@@ -25,28 +24,11 @@ const OnBoarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(0);
 
-  /**
-   * Experiment
-   */
-  const experimentPromise = useExperimentResult('signup-onboarding');
   useEffect(() => {
     const shouldOnboarding = localStorage.getItem('should-onboarding-user');
 
     if (shouldOnboarding) {
-      /* Wait for the API */
-      experimentPromise.then(experiment => {
-        if (experiment === ExperimentValues.A) {
-          /**
-           * A
-           */
-          setVisibility(false);
-        } else if (experiment === ExperimentValues.B) {
-          /**
-           * B
-           */
-          setVisibility(true);
-        }
-      });
+      setVisibility(true);
     }
   }, []);
 

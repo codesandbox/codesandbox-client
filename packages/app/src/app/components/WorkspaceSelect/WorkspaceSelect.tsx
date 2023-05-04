@@ -1,14 +1,11 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { useAppState } from 'app/overmind';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import { useActions, useAppState } from 'app/overmind';
 import { Text, Menu, Stack, Icon, Tooltip } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { SubscriptionType } from 'app/graphql/types';
 import { MenuItem, Badge } from './elements';
-import { BetaMenuItem, BetaActiveItem } from './BetaItem';
 
 type Team = {
   id: string;
@@ -26,16 +23,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ activeAccount, disabled, onSelect }) => {
     const state = useAppState();
     const { dashboard, user } = state;
-    const history = useHistory();
+    const { openCreateTeamModal } = useActions();
+
+    if (!dashboard.teams || !state.personalWorkspaceId) return null;
 
     const personalWorkspace = dashboard.teams.find(
       t => t.id === state.personalWorkspaceId
     )!;
-
-    const isInBetaScreen = history.location.pathname === dashboardUrls.beta();
-    const isFeatureFlagBeta = !!dashboard.featureFlags.find(
-      e => e.name === 'beta'
-    );
 
     const workspaces = [
       personalWorkspace,
@@ -70,24 +64,20 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 },
               })}
             >
-              {isInBetaScreen ? (
-                <BetaActiveItem />
-              ) : (
-                <Stack gap={2} as="span" align="center">
-                  <Stack as="span" align="center" justify="center">
-                    <TeamAvatar
-                      avatar={
-                        state.activeTeamInfo?.avatarUrl ||
-                        activeAccount.avatarUrl
-                      }
-                      name={activeAccount.name}
-                    />
-                  </Stack>
-                  <Text size={4} weight="normal" maxWidth={140}>
-                    {activeAccount.name}
-                  </Text>
+              <Stack gap={2} as="span" align="center">
+                <Stack as="span" align="center" justify="center">
+                  <TeamAvatar
+                    avatar={
+                      state.activeTeamInfo?.avatarUrl || activeAccount.avatarUrl
+                    }
+                    name={activeAccount.name}
+                  />
                 </Stack>
-              )}
+                <Text size={4} weight="normal" maxWidth={140}>
+                  {activeAccount.name}
+                </Text>
+              </Stack>
+
               <Icon name="caret" size={8} />
             </Stack>
 
@@ -105,17 +95,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   key={team.id}
                   align="center"
                   gap={2}
-                  onSelect={() => {
+                  onSelect={() =>
                     onSelect({
                       name: team.name,
                       id: team.id,
                       avatarUrl: team.avatarUrl,
-                    });
-
-                    if (isInBetaScreen) {
-                      history.push('/dashboard/all');
-                    }
-                  }}
+                    })
+                  }
                 >
                   <TeamAvatar
                     avatar={
@@ -137,14 +123,8 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                       SubscriptionType.PersonalPro,
                     ].includes(team.subscription?.type) && <Badge>Pro</Badge>}
                   </Stack>
-
-                  {activeAccount.id === team.id && !isInBetaScreen && (
-                    <Icon name="simpleCheck" />
-                  )}
                 </MenuItem>
               ))}
-
-              {isFeatureFlagBeta && <BetaMenuItem />}
 
               <Stack
                 as={Menu.Item}
@@ -156,7 +136,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   marginLeft: '1px',
                 })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() => history.push(dashboardUrls.createTeam())}
+                onSelect={openCreateTeamModal}
               >
                 <Stack
                   justify="center"

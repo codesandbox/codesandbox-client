@@ -5,6 +5,7 @@ import { withTheme } from 'styled-components';
 
 import { Chat } from './Chat';
 import { Container } from './elements';
+import { Help } from './socials';
 import { Comments } from './screens/Comments';
 import { ConfigurationFiles } from './screens/ConfigurationFiles';
 import { Deployment } from './screens/Deployment/index';
@@ -65,8 +66,8 @@ export const WorkspaceComponent = ({ theme }) => {
           >
             {editor.currentSandbox && <Component />}
           </div>
-
           {isLive && roomInfo.chatEnabled && <Chat />}
+          <Help />
         </>
       </ThemeProvider>
     </Container>

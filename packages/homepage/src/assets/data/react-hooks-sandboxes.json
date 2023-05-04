@@ -1,0 +1,104 @@
+[
+  {
+    "id": "7y6o4282lq",
+    "title": "React Hooks Counter Demo",
+    "description": "An example of creating a counter component using React Hooks.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "xlw615w7ow",
+    "title": "Traffic light using hooks",
+    "description": "A switching traffic light that makes use of React Hooks.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "qxkr4mplv6",
+    "title": "useLocalStorage",
+    "description": "Sync state to local storage so that it persists through a page refresh. Usage is similar to useState except we pass in a local storage key so that we can default to that value on page load instead of the specified initial value.\n",
+    "template": "create-react-app"
+  },
+  {
+    "id": "ppxnl191zx",
+    "title": "React Hooks Animations",
+    "description": "Shows how React Hooks can be used with react-spring to create new type of animations.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "yq5qowzrvz",
+    "title": "useState() and useEffect()",
+    "description": "An example of using useState() and useEffect()",
+    "template": "create-react-app"
+  },
+  {
+    "id": "nrkw34982j",
+    "title": "Declarative Intervals",
+    "description": "An implementation of setInterval using React Hooks, showing how you can clean up the interval correctly and even how to dynamically change the delay. https://overreacted.io/making-setinterval-declarative-with-react-hooks/",
+    "template": "create-react-app"
+  },
+  {
+    "id": "6z5q5wj27w",
+    "title": "basic useTransition masonry grid",
+    "description": "Using React Hooks in combination with react-spring to create a transition in a masonry grid.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "7kxj9p9qm0",
+    "title": "Dialog with React Hooks",
+    "description": "Create dialogs using React Hooks.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "6jlvz1j5q3",
+    "title": "useSpring React Hook",
+    "description": "Shows how you can use the useSpring hook and react-spring library to create high-performance interactive animations.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "2v716k56pr",
+    "title": "Sequence vs Timestep Animations",
+    "description": "Using react-spring in combination with hooks to do sequence and timestep animations.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "llmk22kz19",
+    "title": "Comment System using React Hooks",
+    "description": "An example Reddit-like comment system using React Hooks.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "ywo8rmk7zz",
+    "title": "Form Hooks",
+    "description": "Implementation of a form where the props for the elements are provided with hooks.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "jp1wr1867w",
+    "title": "Animated Routes",
+    "description": "Animated routes using a hook called 'useRouter' and the 'useTransition' hook from react-spring.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "53kkmvxlol",
+    "title": "Combo Box",
+    "description": "An accessible combo box.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "6v25x8pyyn",
+    "title": "Konami Code",
+    "description": "A hook that listens when the Konami code is pressed",
+    "template": "create-react-app"
+  },
+  {
+    "id": "509jvrqr8n",
+    "title": "useWindowResize",
+    "description": "Respond to a window resize event using a hook.",
+    "template": "create-react-app"
+  },
+  {
+    "id": "vqxqlpmnv3",
+    "title": "Cancelable Fetch",
+    "description": "A fetch implementation that can be cancelled",
+    "template": "create-react-app"
+  }
+]

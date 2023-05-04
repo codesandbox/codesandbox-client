@@ -65,10 +65,9 @@ interface Props {
 }
 
 const DEFAULT_COLORS = {
-  [NotificationStatus.ERROR]:
-    codesandboxBlack.colors['editorWarning.foreground'],
+  [NotificationStatus.ERROR]: '#ED6C6C',
   [NotificationStatus.WARNING]: '#F69935',
-  [NotificationStatus.SUCCESS]: codesandboxBlack.colors['terminal.ansiGreen'],
+  [NotificationStatus.SUCCESS]: '#B3FBB4',
   [NotificationStatus.NOTICE]: codesandboxBlack.colors['button.background'],
 };
 

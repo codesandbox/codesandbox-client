@@ -605,17 +605,23 @@ export class VSCodeEffect {
           })
           .filter(x => x);
 
-        this.monaco.editor.setModelMarkers(
-          activeEditor.getModel(),
-          'error',
-          errorMarkers
-        );
+        // use raf to make sure that when we spam the editor, we don't clog the ui thread
+        requestAnimationFrame(() => {
+          this.monaco.editor.setModelMarkers(
+            activeEditor.getModel(),
+            'error',
+            errorMarkers
+          );
+        });
       } else {
-        this.monaco.editor.setModelMarkers(
-          activeEditor.getModel(),
-          'error',
-          []
-        );
+        // use raf to make sure that when we spam the editor, we don't clog the ui thread
+        requestAnimationFrame(() => {
+          this.monaco.editor.setModelMarkers(
+            activeEditor.getModel(),
+            'error',
+            []
+          );
+        });
       }
     }
   };

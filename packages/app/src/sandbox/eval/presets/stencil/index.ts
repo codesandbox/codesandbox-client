@@ -27,7 +27,7 @@ export default function initialize() {
     { transpiler: stencilTranspiler },
   ]);
 
-  stencilPreset.registerTranspiler(module => /\.mjs$/.test(module.path), [
+  stencilPreset.registerTranspiler(module => /\.(m|c)js$/.test(module.path), [
     { transpiler: stencilTranspiler },
     { transpiler: babelTranspiler, options: babelOptions },
   ]);

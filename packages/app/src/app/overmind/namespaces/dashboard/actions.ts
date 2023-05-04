@@ -1811,6 +1811,23 @@ export const setDefaultTeamMemberAuthorization = async (
 export const requestAccountClosing = ({ state }: Context) => {
   state.currentModal = 'accountClosing';
 };
+export const undoRequestAccountClosing = ({ state }: Context) => {
+  state.currentModal = 'undoAccountClosing';
+};
+
+export const undoDeleteAccount = async ({ state, effects }: Context) => {
+  try {
+    await effects.gql.mutations.undoDeleteAccount({});
+    state.currentModal = 'undoDeleteConfirmation';
+    if (state.user) {
+      state.user.deletionRequested = false;
+    }
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem undoing your account deletion. Please email us at support@codesandbox.io'
+    );
+  }
+};
 
 export const deleteAccount = async ({ state, effects }: Context) => {
   try {
@@ -1836,23 +1853,6 @@ export const getSharedSandboxes = async ({ state, effects }: Context) => {
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you'
-    );
-  }
-};
-
-export const getBetaSandboxes = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
-  try {
-    const data = await effects.gql.queries.sandboxesBeta({});
-
-    if (!data.me?.betaSandboxes) {
-      return;
-    }
-
-    dashboard.sandboxes[sandboxesTypes.BETA] = data.me?.betaSandboxes;
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem getting Sandboxes shared with you - beta'
     );
   }
 };
@@ -1977,14 +1977,4 @@ export const updateAlbum = async (
   } catch (error) {
     effects.notificationToast.error('There was a problem updating album');
   }
-};
-
-export const getFeatureFlags = async ({ state, effects }: Context) => {
-  if (!state.user) return;
-  const payload = await effects.gql.queries.featureFlag({});
-  if (!payload || !payload.me) {
-    return;
-  }
-
-  state.dashboard.featureFlags = payload.me.featureFlags;
 };

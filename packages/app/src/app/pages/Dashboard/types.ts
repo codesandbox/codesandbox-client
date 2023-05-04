@@ -6,7 +6,6 @@ import {
   Album,
   User,
   Maybe,
-  SandboxesBetaQuery,
 } from 'app/graphql/types';
 import {
   PageTypes as PT,
@@ -86,25 +85,6 @@ export type DashboardNewRepo = {
   type: 'new-repo';
 };
 
-export type DashboardBetaNewRepo = {
-  type: 'beta-new-repo';
-};
-
-type Unpacked<T> = T extends (infer U)[]
-  ? U
-  : T extends (...args: any[]) => infer U
-  ? U
-  : T extends Promise<infer U>
-  ? U
-  : T;
-
-export type DashboardBetaRepo = {
-  type: 'beta-repo';
-  sandbox: Unpacked<
-    NonNullable<NonNullable<SandboxesBetaQuery>['me']>['betaSandboxes']
-  >;
-};
-
 export type DashboardSkeletonRow = {
   type: 'skeleton-row';
 };
@@ -171,8 +151,6 @@ export type DashboardGridItem =
   | DashboardNewFolder
   | DashboardNewSandbox
   | DashboardNewRepo
-  | DashboardBetaNewRepo
-  | DashboardBetaRepo
   | DashboardSkeletonRow
   | DashboardNewMasterBranch
   | DashboardBlank

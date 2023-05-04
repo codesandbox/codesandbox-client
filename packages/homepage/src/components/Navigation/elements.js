@@ -2,10 +2,11 @@ import styled, { css } from 'styled-components';
 import { Link } from '@reach/router';
 
 export const Header = styled.header`
-  box-shadow: 0px 1px 0px ${props => props.theme.homepage.grey};
+  // box-shadow: 0px 1px 0px ${props => props.theme.homepage.grey};
   height: 48px;
   width: 100%;
-  background: ${props => props.theme.homepage.greyDark};
+  background: #0f0e0e;
+  border-bottom: solid 1px #191919;
 `;
 
 export const SubNav = styled.div`
@@ -101,10 +102,10 @@ export const Jobs = styled.li`
 
 export const UserAvatar = styled.img`
   border: 1px solid ${props => props.theme.homepage.grey};
-  border-radius: 2px;
   width: 24px;
   height: 24px;
   margin-left: 0.5rem;
+  border-radius: 99999px;
 `;
 
 export const LogoWrapper = styled(Link)`
@@ -191,7 +192,8 @@ export const MobileNav = styled.nav`
   height: 100%;
   position: relative;
   z-index: 3;
-  background: ${props => props.theme.homepage.greyDark};
+  background: #0f0e0e;
+  border-bottom: solid 1px #191919;
 
   ${props => props.theme.breakpoints.md} {
     display: flex;

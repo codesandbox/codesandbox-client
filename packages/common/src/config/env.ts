@@ -18,15 +18,19 @@ export const AB_TESTING_URL = /codesandbox\.io/.test(
 
 export const getExperimentUserId = () => {
   const KEY_NAME = 'csb-ab-user-id';
+  try {
+    let userId = localStorage.getItem(KEY_NAME);
 
-  let userId = localStorage.getItem(KEY_NAME);
+    if (!userId) {
+      userId = uuid.v4();
+      localStorage.setItem(KEY_NAME, userId);
+    }
 
-  if (!userId) {
-    userId = uuid.v4();
-    localStorage.setItem(KEY_NAME, userId);
+    return userId;
+  } catch (e) {
+    // localStorage is not available
+    return uuid.v4();
   }
-
-  return userId;
 };
 
 export default Object.keys(process.env)

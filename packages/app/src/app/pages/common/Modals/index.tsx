@@ -26,6 +26,7 @@ import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
+import { PilotPaymentModal } from './PilotPaymentModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
@@ -40,14 +41,21 @@ import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
 import { AccountDeletionModal } from './AccountDeletion';
 import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
+import { UndoAccountDeletionModal } from './UndoAccountDeletion';
+import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/UndoDeletedConfirmation';
 import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
+import { NewTeamModal } from './NewTeamModal';
 
 const modals = {
   preferences: {
     Component: PreferencesModal,
     width: 900,
+  },
+  pilotPayment: {
+    Component: PilotPaymentModal,
+    width: 600,
   },
   newSandbox: {
     Component: CreateSandbox,
@@ -170,13 +178,25 @@ const modals = {
     Component: AccountDeletionModal,
     width: 450,
   },
+  undoAccountClosing: {
+    Component: UndoAccountDeletionModal,
+    width: 450,
+  },
   deleteConfirmation: {
     Component: AccountDeletionConfirmationModal,
+    width: 450,
+  },
+  undoDeleteConfirmation: {
+    Component: UndoAccountDeletionConfirmationModal,
     width: 450,
   },
   notFoundBranchModal: {
     Component: NotFoundBranchModal,
     width: 450,
+  },
+  newTeam: {
+    Component: NewTeamModal,
+    width: 400,
   },
 };
 

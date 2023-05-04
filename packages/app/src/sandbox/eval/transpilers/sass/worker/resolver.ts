@@ -1,12 +1,15 @@
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
 
-const POTENTIAL_EXTENSIONS = ['.scss', '.sass', '.css'];
+// Extensions without `.`, resolver expects it like this
+const POTENTIAL_EXTENSIONS = ['scss', 'sass', 'css'];
 
 // Re-implementation of sass.js's `getPathVariations`, dart-sass does not implement this and we have some extra logic on top
 export function getPathVariations(filename: string) {
   const hasExtension = !!pathUtils.extname(filename);
-  const extensions = hasExtension ? [''] : POTENTIAL_EXTENSIONS;
+  const extensions = hasExtension
+    ? ['']
+    : POTENTIAL_EXTENSIONS.map(ext => '.' + ext);
   const pathVariations = [];
 
   // eslint-disable-next-line no-unused-vars
@@ -94,7 +97,7 @@ function existsPromise(opts: {
             childHandler,
           });
 
-          const ext = pathUtils.extname(resolvedModule.path);
+          const ext = pathUtils.extname(resolvedModule.path).substring(1);
           if (POTENTIAL_EXTENSIONS.indexOf(ext) === -1) {
             r(false);
             return;

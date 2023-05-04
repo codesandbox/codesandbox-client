@@ -20,7 +20,7 @@ export default function initialize() {
     { transpiler: stylesTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  preset.registerTranspiler(module => /\.(m|c)?jsx?$/.test(module.path), [
     { transpiler: babelTranspiler },
   ]);
 

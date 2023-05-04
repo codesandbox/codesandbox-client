@@ -43,6 +43,10 @@ export const PostContainer = styled.div`
 
     p {
       margin-bottom: 2rem;
+
+      strong {
+        color: #fff;
+      }
     }
 
     img {
@@ -115,7 +119,7 @@ export const PostTitle = styled.h1`
     font-size: 5rem;
     font-weight: 700;
     line-height: 6.2rem;
-    padding: 2rem 0;
+    padding: 2rem 1em;
   }
 `;
 

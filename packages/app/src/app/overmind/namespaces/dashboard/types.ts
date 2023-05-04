@@ -12,7 +12,8 @@ export type PageTypes =
   | 'shared'
   | 'liked'
   | 'always-on'
-  | 'discover';
+  | 'discover'
+  | 'external';
 
 export type OrderBy = {
   field: string;
@@ -38,7 +39,6 @@ export enum sandboxesTypes {
   ALL = 'ALL',
   SEARCH = 'SEARCH',
   REPOS = 'REPOS',
-  BETA = 'BETA',
   ALWAYS_ON = 'ALWAYS_ON',
   DISCOVER = 'DISCOVER',
 }

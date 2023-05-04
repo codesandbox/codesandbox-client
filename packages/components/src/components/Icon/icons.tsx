@@ -2,6 +2,22 @@ import React from 'react';
 
 import { Element } from '../Element';
 
+export const reload = props => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M13.5008 1C13.5008 0.723858 13.277 0.5 13.0008 0.5C12.7247 0.5 12.5008 0.723858 12.5008 1V3.54542C11.3504 1.73519 9.32656 0.533447 7.02118 0.533447C3.4388 0.533447 0.53418 3.43585 0.53418 7.01678C0.53418 10.5977 3.4388 13.5001 7.02118 13.5001C9.42277 13.5001 11.519 12.1955 12.64 10.2589C12.7783 10.0199 12.6967 9.71405 12.4577 9.57571C12.2187 9.43738 11.9128 9.51898 11.7745 9.75797C10.8251 11.3982 9.05167 12.5001 7.02118 12.5001C3.99051 12.5001 1.53418 10.0449 1.53418 7.01678C1.53418 3.98871 3.99051 1.53345 7.02118 1.53345C9.27449 1.53345 11.2115 2.891 12.0561 4.83334L8.66748 4.83334C8.39134 4.83334 8.16748 5.0572 8.16748 5.33334C8.16748 5.60949 8.39134 5.83334 8.66748 5.83334L12.5008 5.83334C13.0531 5.83334 13.5008 5.38563 13.5008 4.83334V1Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
 // we use this icon as a error state fallback
 export const notFound = props => (
   <svg
@@ -925,6 +941,23 @@ export const discover = props => (
       fillRule="evenodd"
       clipRule="evenodd"
       d="M7.11111 0H0V7.11111H7.11111V0ZM7.11111 8.88889H0V16H7.11111V8.88889ZM8.88889 8.88889H16V16H8.88889V8.88889ZM16 0H8.88889V7.11111H16V0Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
+export const projects = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M0 0h16v16H0V0zm14.364 1.636v12.728H1.636V1.636h12.728z"
       fill="currentColor"
     />
   </Element>

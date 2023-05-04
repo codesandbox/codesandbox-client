@@ -30,6 +30,6 @@
     "@types/socket.io-client": "^1.4.32",
     "tsdx": "^0.6.1",
     "tslib": "^1.9.3",
-    "typescript": "4.0.3"
+    "typescript": "4.1.2"
   }
 }

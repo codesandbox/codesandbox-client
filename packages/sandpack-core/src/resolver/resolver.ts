@@ -1,48 +1,32 @@
+/* eslint-disable no-else-return */
 /* eslint-disable no-continue */
-import gensync, { Gensync } from 'gensync';
+import gensync from 'gensync';
 import micromatch from 'micromatch';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
+import { ModuleNotFoundError } from './errors/ModuleNotFound';
+import { ProcessedPackageJSON, processPackageJSON } from './utils/pkg-json';
+import { isFile, FnIsFile, FnReadFile, getParentDirectories } from './utils/fs';
+import {
+  ProcessedTSConfig,
+  processTSConfig,
+  getPotentialPathsFromTSConfig,
+} from './utils/tsconfig';
 
-const EMPTY_SHIM = '//empty.js';
+export type ResolverCache = Map<string, any>;
 
-// alias/exports/main keys, sorted from high to low priority
-const EXPORTS_KEYS = ['browser', 'development', 'default'];
-const MAIN_PKG_FIELDS = ['module', 'browser', 'main', 'jsnext:main'];
-const PKG_ALIAS_FIELDS = ['browser', 'alias'];
-
-export type PackageCache = Map<string, any>;
-
-export type FnIsFile = Gensync<(filepath: string) => boolean>;
-export type FnReadFile = Gensync<(filepath: string) => string>;
-
-interface IResolveOptionsInput {
+export interface IResolveOptionsInput {
   filename: string;
   extensions: string[];
   isFile: FnIsFile;
   readFile: FnReadFile;
   moduleDirectories?: string[];
-  packageCache?: PackageCache;
+  resolverCache?: ResolverCache;
 }
 
 interface IResolveOptions extends IResolveOptionsInput {
   moduleDirectories: string[];
-  packageCache: PackageCache;
-}
-
-function normalizeAliasFilePath(
-  specifier: string,
-  pkgRoot: string,
-  // This can be set to false to fallback to returning the specifier in case it can be a node_module
-  isFilePath: boolean = true
-): string {
-  if (specifier[0] === '/') {
-    return specifier;
-  }
-  if (specifier[0] === '.' || isFilePath) {
-    return pathUtils.join(pkgRoot, specifier);
-  }
-  return specifier;
+  resolverCache: ResolverCache;
 }
 
 function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
@@ -59,89 +43,8 @@ function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
     isFile: opts.isFile,
     readFile: opts.readFile,
     moduleDirectories: [...normalizedModuleDirectories],
-    packageCache: opts.packageCache || new Map(),
+    resolverCache: opts.resolverCache || new Map(),
   };
-}
-
-type AliasesDict = { [key: string]: string };
-interface ProcessedPackageJSON {
-  aliases: AliasesDict;
-}
-
-function normalizePackageExport(filepath: string, pkgRoot: string): string {
-  return normalizeAliasFilePath(filepath.replace(/\*/g, '$1'), pkgRoot);
-}
-
-function processPackageExportsObject(
-  exports: {
-    [key: string]: string | null | false;
-  },
-  pkgRoot: string
-): string | false {
-  for (const key of EXPORTS_KEYS) {
-    const exportFilename = exports[key];
-    if (exportFilename !== undefined) {
-      return typeof exportFilename === 'string'
-        ? normalizePackageExport(exportFilename, pkgRoot)
-        : false;
-    }
-  }
-  return false;
-}
-
-function processPackageJSON(
-  content: any,
-  pkgRoot: string
-): ProcessedPackageJSON {
-  if (!content || typeof content !== 'object') {
-    return { aliases: {} };
-  }
-
-  const aliases: AliasesDict = {};
-  for (const mainField of MAIN_PKG_FIELDS) {
-    if (typeof content[mainField] === 'string') {
-      aliases[pkgRoot] = normalizeAliasFilePath(content[mainField], pkgRoot);
-      break;
-    }
-  }
-
-  if (content.browser === false) {
-    aliases[pkgRoot] = EMPTY_SHIM;
-  }
-
-  for (const aliasFieldKey of PKG_ALIAS_FIELDS) {
-    const aliasField = content[aliasFieldKey];
-    if (typeof aliasField === 'object') {
-      for (const key of Object.keys(aliasField)) {
-        const val = aliasField[key] || EMPTY_SHIM;
-        const normalizedKey = normalizeAliasFilePath(key, pkgRoot, false);
-        const normalizedValue = normalizeAliasFilePath(val, pkgRoot, false);
-        aliases[normalizedKey] = normalizedValue;
-        aliases[`${normalizedKey}/*`] = `${normalizedValue}/$1`;
-      }
-    }
-  }
-
-  if (content.exports) {
-    if (typeof content.exports === 'string') {
-      aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
-    } else if (typeof content.exports === 'object') {
-      for (const exportKey of Object.keys(content.exports)) {
-        const exportValue = content.exports[exportKey];
-        const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
-        if (typeof exportValue === 'string') {
-          aliases[normalizedKey] = normalizePackageExport(exportValue, pkgRoot);
-        } else if (!exportValue) {
-          aliases[normalizedKey] = EMPTY_SHIM;
-        } else if (typeof exportValue === 'object') {
-          aliases[normalizedKey] =
-            processPackageExportsObject(exportValue, pkgRoot) || EMPTY_SHIM;
-        }
-      }
-    }
-  }
-
-  return { aliases };
 }
 
 interface IFoundPackageJSON {
@@ -151,21 +54,22 @@ interface IFoundPackageJSON {
 
 function* loadPackageJSON(
   filepath: string,
-  opts: IResolveOptions
+  opts: IResolveOptions,
+  rootDir: string = '/'
 ): Generator<any, IFoundPackageJSON | null, any> {
-  const parts = filepath.split('/');
-  while (parts.length > 0) {
-    const packageFilePath = parts.join('/') + '/package.json';
-    let packageContent = opts.packageCache.get(packageFilePath);
-    if (!opts.packageCache.has(packageFilePath)) {
+  const directories = getParentDirectories(filepath, rootDir);
+  for (const directory of directories) {
+    const packageFilePath = pathUtils.join(directory, 'package.json');
+    let packageContent = opts.resolverCache.get(packageFilePath);
+    if (packageContent === undefined) {
       try {
         packageContent = processPackageJSON(
           JSON.parse(yield* opts.readFile(packageFilePath)),
           pathUtils.dirname(packageFilePath)
         );
-        opts.packageCache.set(packageFilePath, packageContent);
+        opts.resolverCache.set(packageFilePath, packageContent);
       } catch (err) {
-        opts.packageCache.set(packageFilePath, false);
+        opts.resolverCache.set(packageFilePath, false);
       }
     }
     if (packageContent) {
@@ -174,7 +78,6 @@ function* loadPackageJSON(
         content: packageContent,
       };
     }
-    parts.pop();
   }
   return null;
 }
@@ -186,11 +89,12 @@ function resolveFile(filepath: string, dir: string): string {
     case '/':
       return filepath;
     default:
+      // is a node module
       return filepath;
   }
 }
 
-function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
+function resolveAlias(pkgJson: IFoundPackageJSON, filename: string): string {
   const aliases = pkgJson.content.aliases;
 
   let relativeFilepath = filename;
@@ -200,7 +104,7 @@ function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
     relativeFilepath = aliasedPath;
 
     // Simply check to ensure we don't infinitely alias files due to a misconfiguration of a package/user
-    if (count > 10) {
+    if (count > 5) {
       throw new Error('Could not resolve file due to a cyclic alias');
     }
     count++;
@@ -211,12 +115,24 @@ function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
       continue;
     }
 
-    const matchers = Object.keys(aliases).filter(a => a.includes('*'));
-    for (const matcher of matchers) {
-      const re = micromatch.makeRe(matcher, { capture: true });
+    for (const aliasKey of Object.keys(aliases)) {
+      if (!aliasKey.includes('*')) {
+        continue;
+      }
+
+      const re = micromatch.makeRe(aliasKey, { capture: true });
       if (re.test(relativeFilepath)) {
-        const val = aliases[matcher];
+        const val = aliases[aliasKey];
         aliasedPath = relativeFilepath.replace(re, val);
+        if (aliasedPath.startsWith(relativeFilepath)) {
+          const newAddition = aliasedPath.substr(relativeFilepath.length);
+          if (
+            !newAddition.includes('/') &&
+            relativeFilepath.endsWith(newAddition)
+          ) {
+            aliasedPath = relativeFilepath;
+          }
+        }
         break;
       }
     }
@@ -239,7 +155,7 @@ function* resolveModule(
     isAbsoluteFilename ? filename : opts.filename,
     opts
   );
-  return loadAlias(pkgJson, filename);
+  return resolveAlias(pkgJson, filename);
 }
 
 const extractPkgSpecifierParts = (specifier: string) => {
@@ -257,39 +173,49 @@ function* resolveNodeModule(
   opts: IResolveOptions
 ): Generator<any, string, any> {
   const pkgSpecifierParts = extractPkgSpecifierParts(moduleSpecifier);
+  const directories = getParentDirectories(opts.filename);
   for (const modulesPath of opts.moduleDirectories) {
-    const parts = opts.filename.split('/');
-    while (parts.length > 0) {
-      const packageJsonPath = [
-        ...parts,
+    for (const directory of directories) {
+      const rootDir = pathUtils.join(
+        directory,
         modulesPath,
-        pkgSpecifierParts.pkgName,
-        'package.json',
-      ].join('/');
-      const pkgExists = yield* isFile(packageJsonPath, opts.isFile);
-      if (pkgExists) {
-        try {
-          const filepath = pkgSpecifierParts.filepath
-            ? './' + pkgSpecifierParts.filepath
-            : '.';
-          return yield* resolverRunner(filepath, {
-            ...opts,
-            filename: packageJsonPath,
-          });
-        } catch (err) {
-          if (!pkgSpecifierParts.filepath) {
-            return yield* resolverRunner('./index', {
+        pkgSpecifierParts.pkgName
+      );
+
+      try {
+        const pkgFilePath = pathUtils.join(rootDir, pkgSpecifierParts.filepath);
+        const pkgJson = yield* loadPackageJSON(pkgFilePath, opts, rootDir);
+        if (pkgJson) {
+          try {
+            return yield* resolver(pkgFilePath, {
               ...opts,
-              filename: packageJsonPath,
+              filename: pkgJson.filepath,
             });
+          } catch (err) {
+            if (!pkgSpecifierParts.filepath) {
+              return yield* resolver(pathUtils.join(pkgFilePath, 'index'), {
+                ...opts,
+                filename: pkgJson.filepath,
+              });
+            }
+
+            throw err;
           }
-          throw err;
         }
+      } catch (err) {
+        // Handle multiple duplicates of a node_module across the tree
+        if (directory.length > 1) {
+          return yield* resolveNodeModule(moduleSpecifier, {
+            ...opts,
+            filename: pathUtils.dirname(directory),
+          });
+        }
+
+        throw err;
       }
-      parts.pop();
     }
   }
-  throw new Error(`Could not find module ${moduleSpecifier}`);
+  throw new ModuleNotFoundError(moduleSpecifier, opts.filename);
 }
 
 function* findPackageJSON(
@@ -318,13 +244,13 @@ function* expandFile(
 ): Generator<any, string | null, any> {
   const pkg = yield* findPackageJSON(filepath, opts);
 
-  if (expandCount > 15) {
+  if (expandCount > 5) {
     throw new Error('Cyclic alias detected');
   }
 
   for (const ext of opts.extensions) {
     const f = filepath + ext;
-    const aliasedPath = loadAlias(pkg, f);
+    const aliasedPath = resolveAlias(pkg, f);
     if (aliasedPath === f) {
       const exists = yield* isFile(f, opts.isFile);
       if (exists) {
@@ -344,16 +270,6 @@ function* expandFile(
   return null;
 }
 
-function* isFile(
-  filepath: string,
-  isFileFn: FnIsFile
-): Generator<any, boolean, any> {
-  if (filepath === EMPTY_SHIM) {
-    return true;
-  }
-  return yield* isFileFn(filepath);
-}
-
 export function normalizeModuleSpecifier(specifier: string): string {
   const normalized = specifier.replace(/(\/|\\)+/g, '/');
   if (normalized.endsWith('/')) {
@@ -362,34 +278,102 @@ export function normalizeModuleSpecifier(specifier: string): string {
   return normalized;
 }
 
-const resolverRunner = gensync<
-  (moduleSpecifier: string, inputOpts: IResolveOptionsInput) => string
->(function* resolve(moduleSpecifier, inputOpts): Generator<any, string, any> {
+const TS_CONFIG_CACHE_KEY = '__root_tsconfig';
+function* getTSConfig(
+  opts: IResolveOptions
+): Generator<any, ProcessedTSConfig | false, any> {
+  const cachedConfig = opts.resolverCache.get(TS_CONFIG_CACHE_KEY);
+  if (cachedConfig != null) {
+    return cachedConfig;
+  }
+
+  let config: ProcessedTSConfig | false = false;
+  try {
+    const contents = yield* opts.readFile('/tsconfig.json');
+    const processed = processTSConfig(contents);
+    if (processed) {
+      config = processed;
+    }
+  } catch (err) {
+    try {
+      const contents = yield* opts.readFile('/jsconfig.json');
+      const processed = processTSConfig(contents);
+      if (processed) {
+        config = processed;
+      }
+    } catch {
+      // do nothing
+    }
+  }
+  opts.resolverCache.set(TS_CONFIG_CACHE_KEY, config);
+  return config;
+}
+
+export const resolver = gensync<
+  (
+    moduleSpecifier: string,
+    inputOpts: IResolveOptionsInput,
+    skipIndexExpansion?: boolean
+  ) => string
+>(function* resolve(
+  moduleSpecifier,
+  inputOpts,
+  skipIndexExpansion = false
+): Generator<any, string, any> {
   const normalizedSpecifier = normalizeModuleSpecifier(moduleSpecifier);
   const opts = normalizeResolverOptions(inputOpts);
   const modulePath = yield* resolveModule(normalizedSpecifier, opts);
 
   if (modulePath[0] !== '/') {
+    // This isn't a node module, we can attempt to resolve using a tsconfig/jsconfig
+    if (!opts.filename.includes('/node_modules')) {
+      const parsedTSConfig = yield* getTSConfig(opts);
+      if (parsedTSConfig) {
+        const potentialPaths = getPotentialPathsFromTSConfig(
+          modulePath,
+          parsedTSConfig
+        );
+        for (const potentialPath of potentialPaths) {
+          try {
+            return yield* resolve(potentialPath, opts);
+          } catch {
+            // do nothing, it's probably a node_module in this case
+          }
+        }
+      }
+    }
+
     try {
       return yield* resolveNodeModule(modulePath, opts);
     } catch (e) {
-      throw new Error(
-        `Could not find ${normalizedSpecifier} in ${opts.filename}`
-      );
+      throw new ModuleNotFoundError(normalizedSpecifier, opts.filename);
     }
   }
 
   let foundFile = yield* expandFile(modulePath, opts);
-  if (!foundFile) {
+  if (!foundFile && !skipIndexExpansion) {
     foundFile = yield* expandFile(pathUtils.join(modulePath, 'index'), opts);
+
+    // In case alias adds an extension, we retry the entire resolution with an added /index
+    // This is mostly a hack I guess, but it works for now, so many edge-cases
+    if (!foundFile) {
+      try {
+        const parts = moduleSpecifier.split('/');
+        if (!parts.length || !parts[parts.length - 1].startsWith('index')) {
+          foundFile = yield* resolve(moduleSpecifier + '/index', opts, true);
+        }
+      } catch (err) {
+        // should throw ModuleNotFound for original specifier, not new one
+      }
+    }
   }
 
   if (!foundFile) {
-    throw new Error(`Cannot find module ${modulePath}`);
+    throw new ModuleNotFoundError(modulePath, opts.filename);
   }
 
   return foundFile;
 });
 
-export const resolveSync = resolverRunner.sync;
-export const resolveAsync = resolverRunner.async;
+export const resolveSync = resolver.sync;
+export const resolveAsync = resolver.async;

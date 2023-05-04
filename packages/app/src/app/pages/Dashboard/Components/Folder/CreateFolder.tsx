@@ -58,7 +58,7 @@ export const CreateFolder = ({ basePath, setCreating }: DashboardNewFolder) => {
   };
 
   const folderProps = {
-    name,
+    name: '',
     path: basePath,
     isDrafts: false,
     numberOfSandboxes: 0,

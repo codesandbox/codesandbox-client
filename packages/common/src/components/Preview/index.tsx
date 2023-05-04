@@ -52,6 +52,7 @@ export type Props = {
   overlayMessage?: string;
   Wrapper?: React.FC<{ children: any }>;
   isResponsiveModeActive?: boolean;
+  isResponsivePreviewResizing?: boolean;
   isPreviewCommentModeActive?: boolean;
   toggleResponsiveMode?: () => void;
   createPreviewComment?: () => void;
@@ -458,6 +459,7 @@ class BasePreview extends React.PureComponent<Props, State> {
           previewSecret: sandbox.previewSecret,
           showScreen,
           clearConsoleDisabled: !settings.clearConsoleEnabled,
+          reactDevTools: 'legacy',
         });
       }
     }
@@ -629,7 +631,7 @@ class BasePreview extends React.PureComponent<Props, State> {
                 <StyledFrame
                   key="PREVIEW"
                   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-downloads allow-pointer-lock"
                   src={this.state.url}
                   ref={this.setIframeElement}
                   title={getSandboxName(sandbox)}
@@ -638,8 +640,14 @@ class BasePreview extends React.PureComponent<Props, State> {
                     ...style,
                     zIndex: 1,
                     backgroundColor: 'white',
+                    userSelect: this.props.isResponsivePreviewResizing
+                      ? 'none'
+                      : 'initial',
                     pointerEvents:
-                      dragging || inactive || this.props.isResizing
+                      dragging ||
+                      inactive ||
+                      this.props.isResizing ||
+                      this.props.isResponsivePreviewResizing
                         ? 'none'
                         : 'initial',
                   }}

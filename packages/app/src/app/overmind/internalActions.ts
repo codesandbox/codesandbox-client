@@ -29,7 +29,6 @@ export const initializeNewUser = async ({
   actions,
 }: Context) => {
   actions.dashboard.getTeams();
-  actions.dashboard.getFeatureFlags();
   actions.internal.setPatronPrice();
   effects.analytics.identify('signed_in', true);
   effects.analytics.setUserId(state.user!.id, state.user!.email);
@@ -69,6 +68,7 @@ export const signIn = async (
     actions.refetchSandboxInfo();
     state.hasLogIn = true;
     state.isAuthenticating = false;
+    actions.getActiveTeamInfo();
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not authenticate',
@@ -186,7 +186,7 @@ export const runProviderAuth = (
 
   if (provider === 'github') {
     if (useExtraScopes) {
-      authPath.searchParams.set('scope', 'user:email,repo');
+      authPath.searchParams.set('scope', 'user:email,repo,workflow');
     }
   }
 

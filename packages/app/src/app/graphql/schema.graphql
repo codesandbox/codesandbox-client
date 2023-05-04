@@ -87,6 +87,7 @@ type CurrentUser {
   collections(teamId: ID): [Collection!]!
   email: String!
   firstName: String
+  beta_access: Boolean
   id: ID!
   lastName: String
   notifications(limit: Int, orderBy: OrderBy, type: [String]): [Notification]

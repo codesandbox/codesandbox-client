@@ -12,6 +12,7 @@ import {
   SandboxFs,
 } from '@codesandbox/common/lib/types';
 import delay from '@codesandbox/common/lib/utils/delay';
+import { getAbsoluteDependency } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
@@ -519,16 +520,23 @@ class SandboxFsSync {
   }
 
   private async fetchDependencyTypingFiles(
-    name: string,
-    version: string
+    originalName: string,
+    originalVersion: string
   ): Promise<{ [path: string]: { module: { code: string } } }> {
     const sandbox = this.options.getCurrentSandbox();
-    const isPrivatePackage = sandbox && isPrivateScope(sandbox, name);
+    const isPrivatePackage = sandbox && isPrivateScope(sandbox, originalName);
 
     if (isPrivatePackage) {
-      return this.fetchPrivateDependencyTypingsFiles(name, version);
+      return this.fetchPrivateDependencyTypingsFiles(
+        originalName,
+        originalVersion
+      );
     }
 
+    const { name, version } = await getAbsoluteDependency(
+      originalName,
+      originalVersion
+    );
     const dependencyQuery = encodeURIComponent(`${name}@${version}`);
 
     try {

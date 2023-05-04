@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'TWKEverett';
+  src: url('../assets/fonts/TWKEverett-Medium-web.woff') format('woff'),
+    url('../assets/fonts/TWKEverett-Medium-web.ttf') format('ttf');
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+:root {
+  color-scheme: dark;
+}
+
 html,
 body {
   text-rendering: optimizeLegibility;
@@ -7,13 +19,15 @@ body {
   min-height: 100%;
   -webkit-text-size-adjust: 100%;
   height: 100%;
-  background: #040404;
+  background: #090909;
   font-size: 16px;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue';
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue';
   /* overflow-x: hidden; */
 }
+
+@import 'https://cdn.jsdelivr.net/npm/@codesandbox/sandpack-react@latest/dist/index.css';
 
 @media screen and (-webkit-max-device-pixel-ratio: 1.3),
   (max-resolution: 120dpi) {
@@ -51,7 +65,7 @@ iframe {
 }
 
 a {
-  color: #40a9f3;
+  color: #fff;
 }
 
 .gatsby-resp-image-image {

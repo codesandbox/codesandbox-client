@@ -9,8 +9,6 @@ import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { ImportRepo } from '../Repo/ImportRepo';
-import { ImportRepoBeta } from '../Beta/ImportRepoBeta';
-import { RepoBeta } from '../Beta';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
 import { CommunitySandbox } from '../CommunitySandbox';
@@ -28,8 +26,6 @@ import {
   DashboardNewFolder,
   DashboardRepo,
   DashboardNewRepo,
-  DashboardBetaNewRepo,
-  DashboardBetaRepo,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   PageTypes,
@@ -79,8 +75,6 @@ interface IComponentForTypes {
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
-  'beta-new-repo': React.FC<DecoratedItemProps<DashboardBetaNewRepo>>;
-  'beta-repo': React.FC<DecoratedItemProps<DashboardBetaRepo>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -138,8 +132,6 @@ const ComponentForTypes: IComponentForTypes = {
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
-  'beta-new-repo': () => <ImportRepoBeta />,
-  'beta-repo': props => <RepoBeta {...props.item} />,
 };
 
 const Item = React.memo(
@@ -217,12 +209,14 @@ interface VariableGridProps {
   items: DashboardGridItem[];
   collectionId?: string;
   page: PageTypes;
+  viewMode?: 'grid' | 'list';
 }
 
 export const VariableGrid = ({
   items,
   collectionId,
   page,
+  viewMode: propViewMode,
 }: VariableGridProps) => {
   const { dashboard } = useAppState();
 
@@ -230,7 +224,7 @@ export const VariableGrid = ({
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else viewMode = dashboard.viewMode;
+  else viewMode = propViewMode || dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 

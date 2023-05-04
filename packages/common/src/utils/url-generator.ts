@@ -108,6 +108,14 @@ export const frameUrl = (
   const templateIsServer = isServer(sandbox.template);
 
   if (process.env.LOCAL_SERVER) {
+    if (templateIsServer) {
+      return `${location.protocol}//${sandbox.id}${port ? `-${port}` : ''}.${
+        templateIsServer ? 'sse.' : ''
+      }${
+        process.env.STAGING_API ? 'codesandbox.stream' : 'codesandbox.io'
+      }/${path}`;
+    }
+
     return `http://localhost:3002/${path}`;
   }
 
@@ -142,7 +150,8 @@ export const signInPageUrl = (redirectTo?: string) => {
 };
 
 export const signInUrl = (extraScopes: boolean = false) =>
-  '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');
+  '/auth/github' +
+  (extraScopes ? '?scope=user:email,public_repo,workflow' : '');
 export const signInVercelUrl = () => '/auth/vercel';
 
 export const profileUrl = (username: string) => `/u/${username}`;
@@ -182,12 +191,6 @@ export const optionsToParameterizedUrl = (options: Object) => {
 
 export const gitHubToSandboxUrl = (githubUrl: string) =>
   githubUrl.replace(gitHubPrefix, '/s/github').replace(dotGit, '');
-
-export const gitHubToSandboxBetaUrl = (githubUrl: string) =>
-  githubUrl
-    .replace(gitHubPrefix, '/github')
-    .replace(dotGit, '')
-    .replace(/\/tree\//, '/');
 
 export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;

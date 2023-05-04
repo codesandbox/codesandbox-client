@@ -8,7 +8,7 @@ export const Card = props => (
     css={css({
       minHeight: 200,
       padding: 6,
-      backgroundColor: 'grays.800',
+      background: '#191919',
       border: '1px solid',
       borderColor: 'grays.600',
       borderRadius: 'medium',

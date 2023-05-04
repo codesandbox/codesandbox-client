@@ -8,6 +8,7 @@ import {
   Text,
   Link,
 } from '@codesandbox/components';
+import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import {
   Link as LinkBase,
   withRouter,
@@ -16,13 +17,17 @@ import {
 import css from '@styled-system/css';
 
 import { UserMenu } from '../UserMenu';
-import { Logo } from './Icons';
 
 type Props = {
   title?: string;
+  showActions?: boolean;
 } & RouteComponentProps;
 
-export const NavigationComponent = ({ title, match }: Props) => {
+export const NavigationComponent = ({
+  title,
+  match,
+  showActions = true,
+}: Props) => {
   const { signInClicked, openCreateSandboxModal } = useActions();
   const { isLoggedIn, isAuthenticating, user } = useAppState();
   const link = isLoggedIn ? '/dashboard' : '/';
@@ -55,7 +60,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
         >
           <Stack gap={4} align="center">
             <Link css={css({ display: 'flex' })} to={link} as={LinkBase}>
-              <Logo />
+              <LogoFull />
             </Link>
             <Text
               size={3}
@@ -66,7 +71,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
                 },
               })}
             >
-              CodeSandbox - {title}
+              {title}
             </Text>
           </Stack>
           {!isAuthenticating ? (
@@ -80,15 +85,17 @@ export const NavigationComponent = ({ title, match }: Props) => {
                   Sign In
                 </Button>
               ) : null}
-              <Button
-                variant="primary"
-                css={css({ width: 'auto', paddingX: 3 })}
-                onClick={() => {
-                  openCreateSandboxModal({});
-                }}
-              >
-                Create Sandbox
-              </Button>
+              {showActions && (
+                <Button
+                  variant="primary"
+                  css={css({ width: 'auto', paddingX: 3 })}
+                  onClick={() => {
+                    openCreateSandboxModal({});
+                  }}
+                >
+                  Create Sandbox
+                </Button>
+              )}
               {isLoggedIn ? (
                 <UserMenu>
                   <Button
@@ -98,6 +105,8 @@ export const NavigationComponent = ({ title, match }: Props) => {
                       padding: 0,
                       height: 'auto',
                       border: 'none',
+                      borderRadius: '100%',
+                      marginTop: 1,
                     })}
                   >
                     <Avatar

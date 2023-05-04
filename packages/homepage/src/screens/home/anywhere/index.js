@@ -29,10 +29,10 @@ const Anywhere = () => (
         margin-bottom: 24px;
       `}
     >
-      Code from anywhere
+      Code from anywhere.
     </H2>
     <P
-      big
+      // big
       muted
       css={`
         text-align: center;
@@ -42,18 +42,18 @@ const Anywhere = () => (
         display: block;
       `}
     >
-      Code from anywhere with play.js by CodeSandbox
+      Experience the future of web development and build projects with the first cloud IDE for iOS.
     </P>
 
     <Button
+      big
       css={`
         position: relative;
-        line-height: 32px;
         z-index: 2;
       `}
-      href="/blog"
+      href="/ios"
     >
-      Learn more about play.js
+      Learn more about CodeSandbox for iOS
     </Button>
 
     <motion.div
@@ -82,36 +82,11 @@ const Anywhere = () => (
             margin: -14rem auto 0rem -10rem;
 
             @media (max-width: 992px) {
-              margin: -8rem 0 0 0;
-            }
-
-            @media (max-width: 576px) {
-              margin: -4rem 0 0 0;
+              margin: -8rem 0 0 -4rem;
             }
           `}
         >
           <img src={padIMG} alt="Play.js" />
-
-          <iframe
-            title="Play"
-            css={`
-              position: absolute;
-              max-width: 620px;
-              max-height: 760px;
-              top: 4.2rem;
-              right: 7.4rem;
-              border: none;
-              background: #040404;
-              transform: scale(0.5, 0.5);
-
-              @media (max-width: 1440px) {
-                display: none;
-              }
-            `}
-            src="https://playdotjs.com"
-            width="100%"
-            height="100%"
-          />
 
           <div
             css={`

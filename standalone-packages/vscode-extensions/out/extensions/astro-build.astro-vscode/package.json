@@ -8,41 +8,54 @@
     "color": "#FFBE2D",
     "theme": "dark"
   },
-  "version": "0.5.0",
-  "author": "Astro",
+  "version": "0.13.2",
+  "author": "withastro",
   "license": "MIT",
   "publisher": "astro-build",
-  "private": true,
   "scripts": {
     "vscode:prepublish": "yarn build",
-    "vscode:publish": "node ./scripts/publish.mjs",
     "build": "astro-scripts build \"src/**/*.ts\" && tsc -p tsconfig.json",
-    "dev": "astro-scripts dev \"src/**/*.ts\""
+    "dev": "astro-scripts dev \"src/**/*.ts\"",
+    "test": "node ./test/runTest.js"
   },
   "engines": {
     "vscode": "^1.52.0"
   },
   "dependencies": {
-    "@astrojs/language-server": "0.5.0",
-    "vscode-emmet-helper": "2.1.2",
-    "vscode-html-languageservice": "^3.0.3",
+    "@astrojs/language-server": "0.13.2",
+    "@astrojs/ts-plugin": "0.2.1",
     "vscode-languageclient": "~7.0.0"
   },
   "devDependencies": {
+    "@types/glob": "^7.2.0",
     "@types/vscode": "^1.52.0",
+    "@vscode/test-electron": "^2.1.3",
     "astro-scripts": "file:../../scripts",
-    "execa": "^5.0.0"
+    "glob": "^7.2.0"
   },
   "files": [
+    "dist/",
     "languages/",
     "syntaxes/"
   ],
   "repository": {
     "type": "git",
-    "directory": "vscode",
-    "url": "https://github.com/snowpackjs/astro"
+    "url": "https://github.com/withastro/language-tools.git",
+    "directory": "packages/vscode"
   },
   "contributes": {
+    "typescriptServerPlugins": [
+      {
+        "name": "@astrojs/ts-plugin",
+        "enableForWorkspaceTypeScriptVersions": true
+      }
+    ],
+    "commands": [
+      {
+        "command": "astro.restartLanguageServer",
+        "title": "Astro: Restart Language Server"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "Astro configuration",
@@ -57,6 +70,78 @@
           ],
           "default": "off",
           "description": "Traces the communication between VS Code and the language server."
+        },
+        "astro.plugin.typescript.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript",
+          "description": "Enable the TypeScript plugin"
+        },
+        "astro.plugin.typescript.diagnostics.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Diagnostics",
+          "description": "Enable diagnostic messages for TypeScript"
+        },
+        "astro.plugin.typescript.hover.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Hover Info",
+          "description": "Enable hover info for TypeScript"
+        },
+        "astro.plugin.typescript.documentSymbols.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Symbols in Outline",
+          "description": "Enable document symbols for TypeScript"
+        },
+        "astro.plugin.typescript.completions.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Completions",
+          "description": "Enable completions for TypeScript"
+        },
+        "astro.plugin.typescript.findReferences.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Find References",
+          "description": "Enable find-references for TypeScript"
+        },
+        "astro.plugin.typescript.definitions.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Go to Definition",
+          "description": "Enable go to definition for TypeScript"
+        },
+        "astro.plugin.typescript.codeActions.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Code Actions",
+          "description": "Enable code actions for TypeScript"
+        },
+        "astro.plugin.typescript.selectionRange.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Selection Range",
+          "description": "Enable selection range for TypeScript"
+        },
+        "astro.plugin.typescript.signatureHelp.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Signature Help",
+          "description": "Enable signature help (parameter hints) for TypeScript"
+        },
+        "astro.plugin.typescript.rename.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Rename",
+          "description": "Enable rename functionality for JS/TS variables inside Astro files"
+        },
+        "astro.plugin.typescript.semanticTokens.enable": {
+          "type": "boolean",
+          "default": true,
+          "title": "TypeScript: Semantic Tokens",
+          "description": "Enable semantic tokens (semantic highlight) for TypeScript."
         }
       }
     },
@@ -69,86 +154,41 @@
         "aliases": [
           "Astro"
         ],
-        "configuration": "./languages/astro-language-configuration.json"
-      },
-      {
-        "id": "astro-markdown",
-        "aliases": [
-          "Astro Markdown"
-        ],
-        "configuration": "./languages/astro-markdown-language-configuration.json"
+        "configuration": "./languages/astro-language-configuration.json",
+        "icon": {
+          "light": "./assets/lang-icon.svg",
+          "dark": "./assets/lang-icon.svg"
+        }
       }
     ],
     "grammars": [
       {
         "language": "astro",
-        "scopeName": "text.html.astro",
+        "scopeName": "source.astro",
         "path": "./syntaxes/astro.tmLanguage.json",
         "embeddedLanguages": {
-          "text.html.astro": "astro",
-          "text.html.markdown.astro": "astro-markdown",
           "text.html": "html",
+          "text.html.markdown": "markdown",
           "source.css": "css",
-          "source.scss": "scss",
+          "source.css.less": "less",
+          "source.css.scss": "scss",
           "source.sass": "sass",
-          "source.tsx": "typescriptreact",
-          "meta.embedded.block.frontmatter": "typescriptreact"
+          "source.stylus": "stylus",
+          "source.js": "javascript",
+          "source.ts": "typescript",
+          "source.tsx": "typescriptreact"
         }
       },
       {
-        "language": "astro-markdown",
         "scopeName": "text.html.markdown.astro",
-        "path": "./syntaxes/astro-markdown.tmLanguage.json",
+        "path": "./syntaxes/markdown.astro.tmLanguage.json",
         "injectTo": [
-          "text.html.astro"
+          "text.html.markdown",
+          "source.astro"
         ],
         "embeddedLanguages": {
-          "text.html.astro": "astro",
-          "text.html.markdown.astro": "astro-markdown",
-          "text.html.markdown": "markdown",
-          "source.tsx": "typescriptreact",
-          "source.js": "javascript",
-          "source.css": "css",
-          "meta.embedded.block.css": "css",
           "meta.embedded.block.astro": "astro",
-          "meta.embedded.block.ini": "ini",
-          "meta.embedded.block.java": "java",
-          "meta.embedded.block.lua": "lua",
-          "meta.embedded.block.makefile": "makefile",
-          "meta.embedded.block.perl": "perl",
-          "meta.embedded.block.r": "r",
-          "meta.embedded.block.ruby": "ruby",
-          "meta.embedded.block.php": "php",
-          "meta.embedded.block.sql": "sql",
-          "meta.embedded.block.vs_net": "vs_net",
-          "meta.embedded.block.xml": "xml",
-          "meta.embedded.block.xsl": "xsl",
-          "meta.embedded.block.yaml": "yaml",
-          "meta.embedded.block.dosbatch": "dosbatch",
-          "meta.embedded.block.clojure": "clojure",
-          "meta.embedded.block.coffee": "coffee",
-          "meta.embedded.block.c": "c",
-          "meta.embedded.block.cpp": "cpp",
-          "meta.embedded.block.diff": "diff",
-          "meta.embedded.block.dockerfile": "dockerfile",
-          "meta.embedded.block.go": "go",
-          "meta.embedded.block.groovy": "groovy",
-          "meta.embedded.block.pug": "jade",
-          "meta.embedded.block.javascript": "javascript",
-          "meta.embedded.block.json": "json",
-          "meta.embedded.block.less": "less",
-          "meta.embedded.block.objc": "objc",
-          "meta.embedded.block.scss": "scss",
-          "meta.embedded.block.perl6": "perl6",
-          "meta.embedded.block.powershell": "powershell",
-          "meta.embedded.block.python": "python",
-          "meta.embedded.block.rust": "rust",
-          "meta.embedded.block.scala": "scala",
-          "meta.embedded.block.shellscript": "shellscript",
-          "meta.embedded.block.typescript": "typescript",
-          "meta.embedded.block.typescriptreact": "typescriptreact",
-          "meta.embedded.block.csharp": "csharp",
-          "meta.embedded.block.fsharp": "fsharp"
+          "meta.embedded.block.astro.frontmatter": "typescriptreact"
         }
       }
     ]

@@ -44,7 +44,9 @@ export default () => {
       <TitleAndMetaTags title="Knowledge Sharing - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Share knowledge and learn together</Title>
+          <Title>
+            Share knowledge <br /> and learn together.
+          </Title>
         </TitleWrapper>
         <Description>
           Use code, apps, and templates collectively. Learn from each other and
@@ -58,7 +60,7 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button big href="https://codesandbox.io/s/">
             Get Started
           </Button>
         </div>
@@ -141,7 +143,7 @@ export default () => {
           </div>
           <div>
             <div>
-              <Subtitle>Made for sharing</Subtitle>
+              <Subtitle>Made for sharing.</Subtitle>
             </div>
             <FeaturedImage bg={bg1}>
               <img
@@ -179,7 +181,7 @@ export default () => {
         </div>
 
         <CTA
-          title="Come together to create"
+          title="Come together to create."
           subtitle="Code online in real-time or asynchronously with your team."
           cta="Get Started"
           link="/s"

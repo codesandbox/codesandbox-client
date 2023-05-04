@@ -12,16 +12,21 @@ function pageLoaded(page) {
 
 let browser = puppeteer.launch({ headless: true });
 const SANDBOX_ID = process.argv[2];
+const prod = process.argv[4] === '--prod';
 const results = [];
 
-(async function() {
+(async function () {
+  const url = prod
+    ? `https://${SANDBOX_ID}.csb.app`
+    : 'http://localhost:3000/#' + SANDBOX_ID;
   browser = await browser;
   console.log('Testing speed of ' + SANDBOX_ID);
+  console.log('url: ' + url);
 
   for (let i = 0; i < (process.argv[3] || 10); i++) {
     const page = await browser.newPage();
     const waitFunction = pageLoaded(page);
-    page.goto('http://localhost:3000/#' + SANDBOX_ID);
+    page.goto(url);
     const a = Date.now();
     await waitFunction;
     const d = Date.now() - a;

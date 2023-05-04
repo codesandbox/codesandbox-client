@@ -144,6 +144,7 @@ export const teamFragmentDashboard = gql`
     subscription {
       origin
       type
+      paymentProvider
     }
   }
 `;
@@ -193,6 +194,7 @@ export const currentTeamInfoFragment = gql`
       billingInterval
       updateBillingUrl
       nextBillDate
+      paymentProvider
       cancelAt
     }
   }

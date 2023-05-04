@@ -39,7 +39,7 @@ like React, Babel, Framer, Material UI, and others. And it's proving to be a
 real time-saver.
 
 **Try it out for yourself by
-[installing the GitHub app](https://github.com/apps/codesandbox)**.
+[installing the GitHub app](https://github.com/apps/codesandbox-ci)**.
 
 https://twitter.com/mattgperry/status/1181863225756934144
 
@@ -92,7 +92,7 @@ maintainers new ways to reduce their support overhead and get more done.
 Available now, CodeSandbox CI makes it possible to test fixes without the need
 to clone, install, and check things locally. There’s more info about how to
 configure CodeSandbox CI in [our docs](/docs/ci), and you can get started by
-[installing the GitHub app](https://github.com/apps/codesandbox).
+[installing the GitHub app](https://github.com/apps/codesandbox-ci).
 
 ## Thanks
 

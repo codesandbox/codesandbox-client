@@ -3,6 +3,7 @@ import { TemplateType } from '..';
 const SERVER_TEMPLATE_NAMES = [
   'adonis',
   'apollo',
+  'docusaurus',
   'ember',
   'gatsby',
   'gridsome',
@@ -13,11 +14,11 @@ const SERVER_TEMPLATE_NAMES = [
   'node',
   'nuxt',
   'quasar',
+  'remix',
   'sapper',
   'styleguidist',
   'unibit',
   'vuepress',
-  'docusaurus',
 ];
 
 export const isServer = (template: TemplateType) =>

@@ -135,10 +135,9 @@ const Workspaces = () => {
           margin-bottom: 24px;
         `}
       >
-        Code collaboration made easy
+        Code collaboration <br /> made easy.
       </H2>
       <P
-        big
         muted
         css={`
           text-align: center;
@@ -149,8 +148,8 @@ const Workspaces = () => {
           margin-bottom: 80px;
         `}
       >
-        A link is all you need to hop into a sandbox and keep development work
-        flowing.
+        A link is all you need to hop into a sandbox <br /> and keep development
+        work flowing.
       </P>
       <motion.div
         initial={{ opacity: 0, y: 140 }}

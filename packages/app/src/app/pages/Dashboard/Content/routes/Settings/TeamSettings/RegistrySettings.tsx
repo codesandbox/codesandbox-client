@@ -68,38 +68,31 @@ export const RegistrySettings = () => {
     };
   }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return null;
 
   return (
     <Stack direction="vertical" gap={6}>
-      {alert && <Alert message={alert.message} cta={alert.cta} />}
+      {alert && (
+        <Alert
+          upgrade={
+            state.activeTeamInfo?.subscription?.type !==
+            SubscriptionType.TeamPro
+          }
+          message={alert.message}
+          cta={alert.cta}
+        />
+      )}
       <Stack
         css={css({
-          backgroundColor: 'grays.900',
-          paddingY: 8,
-          paddingX: 11,
+          padding: 6,
           border: '1px solid',
-          borderColor: 'grays.500',
+          borderColor: 'grays.600',
           borderRadius: 'medium',
           position: 'relative',
+          opacity: alert ? 0.4 : 1,
+          pointerEvents: alert ? 'none' : 'all',
         })}
       >
-        {alert && (
-          <div
-            id="disabled-overlay"
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.4)',
-              pointerEvents: 'none',
-            }}
-          />
-        )}
         {!resetting && (
           <RegistryForm
             onCancel={() => {

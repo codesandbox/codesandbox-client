@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import styled from 'styled-components';
 import { useActions, useAppState } from 'app/overmind';
 import { Text } from '@codesandbox/components';
@@ -41,37 +40,13 @@ export const FixedSignInBanner: React.FC = () => {
   const { signInClicked } = useActions();
   const { sandboxesLimits } = useAppState();
 
-  /**
-   * A/B
-   */
-  const experimentPromise = useExperimentResult('signin-banner-new-value-prop');
-  const [newValuePropInBanner, setNewValuePropInBanner] = useState(false);
-  useEffect(() => {
-    /* Wait for the API */
-    experimentPromise.then(experiment => {
-      if (experiment === ExperimentValues.A) {
-        /**
-         * A
-         */
-        setNewValuePropInBanner(false);
-      } else if (experiment === ExperimentValues.B) {
-        /**
-         * B
-         */
-        setNewValuePropInBanner(true);
-      }
-    });
-  }, [experimentPromise]);
-
   if (!sandboxesLimits) return null;
 
   return (
     <Wrapper onClick={() => signInClicked()}>
       <span />
       <Text size={3} css={{ textAlign: 'center' }}>
-        {newValuePropInBanner
-          ? 'Sign up for free to create unlimited sandboxes'
-          : 'Sign up for free to save your work'}
+        Sign up for free to create unlimited sandboxes
       </Text>
       <Text size={2} css={css({ textAlign: 'right', paddingRight: 4 })}>
         {sandboxesLimits.sandboxCount}/{sandboxesLimits.sandboxLimit} Sandboxes
