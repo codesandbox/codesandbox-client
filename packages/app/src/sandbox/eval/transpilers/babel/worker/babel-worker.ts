@@ -501,6 +501,17 @@ function getCustomConfig(
 async function compile(opts: any) {
   const { code, config, path, isV7, loaderContextId } = opts;
 
+  if (path.includes('node_modules')) {
+    const filterRefreshPlugins = p => {
+      return typeof p === 'string'
+        ? !p.includes('refresh')
+        : !p[0].includes('refresh');
+    };
+
+    config.plugins = config.plugins.filter(filterRefreshPlugins);
+    config.presets = config.presets.filter(filterRefreshPlugins);
+  }
+
   try {
     let result;
     try {
