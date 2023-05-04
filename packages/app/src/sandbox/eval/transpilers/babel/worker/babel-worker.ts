@@ -292,6 +292,7 @@ async function installPlugin(opts, count = 0) {
     evaluatedPlugin = evaluatedFromPath.default || evaluatedFromPath;
   } catch (err) {
     if (count > 5) {
+      console.error('Compiling babel plugin ' + name + ' went wrong, got:');
       throw err;
     }
 
@@ -367,6 +368,7 @@ async function installPreset(opts, count = 0) {
     evaluatedPreset = evaluatedFromPath.default || evaluatedFromPath;
   } catch (err) {
     if (count > 5) {
+      console.error('Compiling babel preset ' + name + ' went wrong, got:');
       throw err;
     }
 

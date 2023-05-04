@@ -1,1 +1,1 @@
-export const BABEL7_VERSION = '7.20.13';
+export const BABEL7_VERSION = '7.21.8';
