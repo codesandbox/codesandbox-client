@@ -34,7 +34,7 @@ export default function initialize() {
         const deps = { ...originalDeps };
 
         if (!deps['solid-refresh']) {
-          deps['solid-refresh'] = '^0.4.0';
+          deps['solid-refresh'] = '^0.5.2';
         }
 
         if (!deps['babel-preset-solid']) {
