@@ -77,7 +77,7 @@ export const PermissionSettings = () => {
         )}
         {isPro && (
           <Column span={[12, 12, 6]}>
-            <AIPermission disabled={!isTeamSpace} />
+            <AIPermission disabled={!isAdmin} />
           </Column>
         )}
       </Grid>
@@ -376,7 +376,7 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
         </Stack>
       </Stack>
       <Stack justify="flex-end">
-        <Button autoWidth onClick={async () => {}}>
+        <Button disabled={disabled} autoWidth onClick={async () => {}}>
           Change Settings
         </Button>
       </Stack>
