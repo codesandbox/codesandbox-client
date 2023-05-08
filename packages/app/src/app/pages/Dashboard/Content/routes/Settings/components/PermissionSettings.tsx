@@ -297,19 +297,19 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
 
   const options = [
     {
-      text: 'Enable AI feature to <strong>private repositories</strong>',
+      text: 'Enable AI feature for <strong>private repositories</strong>',
       key: 'privateRepositories',
     },
     {
-      text: 'Enable AI feature to <strong>private sandboxes</strong>',
+      text: 'Enable AI feature for <strong>private sandboxes</strong>',
       key: 'privateSandboxes',
     },
     {
-      text: 'Enable AI feature to <strong>public repositories</strong>',
+      text: 'Enable AI feature for <strong>public repositories</strong>',
       key: 'publicRepositories',
     },
     {
-      text: 'Enable AI feature to <strong>public sandboxes</strong>',
+      text: 'Enable AI feature for <strong>public sandboxes</strong>',
       key: 'publicSandboxes',
     },
   ];
