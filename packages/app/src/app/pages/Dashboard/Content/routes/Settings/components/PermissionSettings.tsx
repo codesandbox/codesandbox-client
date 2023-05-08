@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
@@ -73,6 +73,11 @@ export const PermissionSettings = () => {
         {!isPersonalSpace && (
           <Column span={[12, 12, 6]}>
             <SandboxSecurity disabled={isFree || !isBillingManager} />
+          </Column>
+        )}
+        {isPro && (
+          <Column span={[12, 12, 6]}>
+            <AIPermission disabled={!isTeamSpace} />
           </Column>
         )}
       </Grid>
@@ -280,6 +285,98 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       </Stack>
       <Stack justify="flex-end">
         <Button autoWidth onClick={onSubmit} disabled={disabled}>
+          Change Settings
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
+const AIPermission = ({ disabled }: { disabled: boolean }) => {
+  const options = [
+    {
+      text: 'Enable AI feature to <strong>private repositories</strong>',
+      key: 'private_repositories',
+    },
+    {
+      text: 'Enable AI feature to <strong>private sandboxes</strong>',
+      key: 'private_sandboxes',
+    },
+    {
+      text: 'Enable AI feature to <strong>public repositories</strong>',
+      key: 'public_repositories',
+    },
+    {
+      text: 'Enable AI feature to <strong>public sandboxes</strong>',
+      key: 'public_sandboxes',
+    },
+  ];
+
+  const [state, setState] = useState({
+    private_repositories: false,
+    private_sandboxes: false,
+    public_repositories: false,
+    public_sandboxes: false,
+  });
+
+  return (
+    <Stack
+      direction="vertical"
+      justify="space-between"
+      gap={114}
+      css={css({
+        padding: 6,
+        backgroundColor: 'card.background',
+        border: '1px solid',
+        borderColor: 'transparent',
+        borderRadius: 'medium',
+        opacity: disabled ? 0.4 : 1,
+      })}
+    >
+      <Stack direction="vertical" gap={8}>
+        <Stack direction="vertical" gap={8}>
+          <Text size={4} weight="500">
+            AI Permissions
+          </Text>
+
+          <Text variant="muted" size={2}>
+            Read our{' '}
+            <a
+              href="https://codesandbox.io/legal/privacy"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Privacy Policy
+            </a>{' '}
+            to check what data AI will be have access
+          </Text>
+
+          <Stack direction="vertical" gap={6}>
+            {options.map(item => {
+              return (
+                <Stack justify="space-between" as="label">
+                  <Text
+                    size={3}
+                    dangerouslySetInnerHTML={{ __html: item.text }}
+                  />
+                  <Switch
+                    disabled={disabled}
+                    on={state[item.key]}
+                    onChange={() =>
+                      setState(prev => ({
+                        ...prev,
+                        [item.key]: !prev[item.key],
+                      }))
+                    }
+                  />
+                </Stack>
+              );
+            })}
+          </Stack>
+        </Stack>
+      </Stack>
+      <Stack justify="flex-end">
+        <Button autoWidth onClick={async () => {}}>
           Change Settings
         </Button>
       </Stack>
