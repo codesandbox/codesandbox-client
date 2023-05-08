@@ -293,31 +293,29 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
 };
 
 const AIPermission = ({ disabled }: { disabled: boolean }) => {
+  const { activeTeamInfo } = useAppState();
+
   const options = [
     {
       text: 'Enable AI feature to <strong>private repositories</strong>',
-      key: 'private_repositories',
+      key: 'privateRepositories',
     },
     {
       text: 'Enable AI feature to <strong>private sandboxes</strong>',
-      key: 'private_sandboxes',
+      key: 'privateSandboxes',
     },
     {
       text: 'Enable AI feature to <strong>public repositories</strong>',
-      key: 'public_repositories',
+      key: 'publicRepositories',
     },
     {
       text: 'Enable AI feature to <strong>public sandboxes</strong>',
-      key: 'public_sandboxes',
+      key: 'publicSandboxes',
     },
   ];
 
-  const [state, setState] = useState({
-    private_repositories: false,
-    private_sandboxes: false,
-    public_repositories: false,
-    public_sandboxes: false,
-  });
+  const [state, setState] = useState(activeTeamInfo.settings.aiConsent);
+  const { setTeamAiConsent } = useActions().dashboard;
 
   return (
     <Stack
@@ -376,7 +374,13 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
         </Stack>
       </Stack>
       <Stack justify="flex-end">
-        <Button disabled={disabled} autoWidth onClick={async () => {}}>
+        <Button
+          disabled={disabled}
+          autoWidth
+          onClick={async () => {
+            await setTeamAiConsent(state);
+          }}
+        >
           Change Settings
         </Button>
       </Stack>

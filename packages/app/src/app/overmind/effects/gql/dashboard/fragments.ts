@@ -185,6 +185,12 @@ export const currentTeamInfoFragment = gql`
       preventSandboxExport
       preventSandboxLeaving
       defaultAuthorization
+      aiConsent {
+        privateRepositories
+        privateSandboxes
+        publicRepositories
+        publicSandboxes
+      }
     }
 
     subscription(includeCancelled: true) {

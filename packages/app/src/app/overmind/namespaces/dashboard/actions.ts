@@ -14,6 +14,7 @@ import {
   CuratedAlbumByIdQueryVariables,
   ProjectFragment,
   ChangeTeamMemberAuthorizationMutationVariables,
+  SetTeamAiConsentMutationVariables,
 } from 'app/graphql/types';
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -1553,6 +1554,26 @@ export const setTeamMinimumPrivacy = async (
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem updating your settings'
+    );
+  }
+};
+
+export const setTeamAiConsent = async (
+  { state, effects }: Context,
+  params: Exclude<SetTeamAiConsentMutationVariables, 'teamId'>
+) => {
+  const teamId = state.activeTeam;
+
+  try {
+    await effects.gql.mutations.setTeamAiConsent({
+      ...params,
+      teamId,
+    });
+
+    effects.notificationToast.success('AI permissions updated.');
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your workspace settings'
     );
   }
 };
