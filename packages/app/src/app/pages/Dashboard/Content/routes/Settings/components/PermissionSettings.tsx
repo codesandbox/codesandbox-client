@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
@@ -314,7 +314,7 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
     },
   ];
 
-  const [state, setState] = useState(activeTeamInfo.settings.aiConsent);
+  const [state, setState] = React.useState(activeTeamInfo.settings.aiConsent);
   const { setTeamAiConsent } = useActions().dashboard;
 
   return (

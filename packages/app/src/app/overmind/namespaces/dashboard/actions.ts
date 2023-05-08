@@ -14,7 +14,6 @@ import {
   CuratedAlbumByIdQueryVariables,
   ProjectFragment,
   ChangeTeamMemberAuthorizationMutationVariables,
-  SetTeamAiConsentMutationVariables,
 } from 'app/graphql/types';
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -1560,7 +1559,12 @@ export const setTeamMinimumPrivacy = async (
 
 export const setTeamAiConsent = async (
   { state, effects }: Context,
-  params: Exclude<SetTeamAiConsentMutationVariables, 'teamId'>
+  params: {
+    privateRepositories: boolean;
+    privateSandboxes: boolean;
+    publicSandboxes: boolean;
+    publicRepositories: boolean;
+  }
 ) => {
   const teamId = state.activeTeam;
 
