@@ -180,7 +180,7 @@ export const TeamMembers: React.FC<{
             <Textarea
               aria-describedby="invitees-role"
               id="member"
-              label="Invite team members (Insert emails separated by a comma)"
+              label="Invite up to 4 additional team members (Insert email addresses separated by a comma)"
               name="members"
               value={addressesString}
               onChange={e => {
