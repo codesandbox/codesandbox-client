@@ -890,11 +890,9 @@ async function compile(opts: CompileOptions) {
 
     setTimeout(async () => {
       try {
-        testRunner =
-          testRunner ||
-          (await import('./eval/tests/jest-lite')
-            .then(s => s.default)
-            .then(TestRunner => new TestRunner(manager)));
+        const jestLiteModule = await import('./eval/tests/jest-lite');
+        const TestRunner = jestLiteModule.default;
+        testRunner = testRunner || new TestRunner(manager);
 
         sendTestCount(modules);
       } catch (e) {

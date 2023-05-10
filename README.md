@@ -274,6 +274,7 @@ Thanks goes to these wonderful people
     <td align="center"><a href="http://baobangdong.cn"><img src="https://avatars.githubusercontent.com/u/36991862?v=4" width="100px;" alt="B2D1"/><br /><sub><b>B2D1</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=B2D1" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/kettanaito"><img src="https://github.com/kettanaito.png" width="100px;" alt="Artem"/><br /><sub><b>Artem</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=kettanaito" title="Code">💻</a></td>
     <td align="center"><a href="http://hugos.computer"><img src="https://avatars.githubusercontent.com/u/1035169?v=4" width="100px;" alt="Hugo Wiledal"/><br /><sub><b>Hugo Wiledal</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3Awiledal" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=wiledal" title="Code">💻</a></td>
+    <td align="center"><a href="https://thesshguy.com/"><img src="https://avatars.githubusercontent.com/u/11434879?v=4" width="100px;" alt="Sai Hari"/><br /><sub><b>Sai Hari</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=SSHari" title="Code">💻</a></td>
   </tr>
 </table>
 
