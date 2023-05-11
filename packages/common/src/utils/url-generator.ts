@@ -107,11 +107,6 @@ export const editorUrl = () => `/s/`;
 export const v2EditorUrl = () => `/p/`;
 
 export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
-  if (sandboxDetails.git) {
-    const { git } = sandboxDetails;
-    return `${editorUrl()}${sandboxGitUrl(git)}`;
-  }
-
   const baseUrl = sandboxDetails.isV2
     ? `${v2EditorUrl()}sandbox/`
     : editorUrl();
@@ -120,6 +115,11 @@ export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
 
   if (sandboxDetails.query) {
     queryParams = `?${new URLSearchParams(sandboxDetails.query).toString()}`;
+  }
+
+  if (sandboxDetails.git) {
+    const { git } = sandboxDetails;
+    return `${baseUrl}${sandboxGitUrl(git)}${queryParams}`;
   }
 
   if (sandboxDetails.alias) {
