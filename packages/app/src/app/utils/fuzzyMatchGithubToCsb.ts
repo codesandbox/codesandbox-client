@@ -8,7 +8,7 @@ export const fuzzyMatchGithubToCsb = (
 ) => {
   const match = findBestMatch(
     teamName,
-    accounts.map(account => account.login)
+    accounts.map(account => account.login).filter(Boolean)
   );
 
   const bestMatch = accounts.find(
