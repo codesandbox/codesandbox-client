@@ -148,6 +148,7 @@ export type CurrentUser = {
   };
   sendSurvey: boolean;
   deletionRequested: boolean;
+  insertedAt: string;
   githubProfile:
     | {
         data: null;

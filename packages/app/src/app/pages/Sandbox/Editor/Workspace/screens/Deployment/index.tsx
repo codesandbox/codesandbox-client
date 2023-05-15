@@ -9,12 +9,15 @@ import { NotOwner } from './NotOwner';
 import { Vercel } from './Vercel';
 import { GithubPages } from './GithubPages';
 
+const MINIMUM_USER_AGE_FOR_NETLIFY = 14 * 24 * 60 * 60 * 1000;
+
 export const Deployment: FunctionComponent = () => {
   const {
     editor: {
       currentSandbox: { owned },
     },
     isLoggedIn,
+    user,
   } = useAppState();
   const { getDeploys } = useActions().deployment;
 
@@ -32,6 +35,9 @@ export const Deployment: FunctionComponent = () => {
     return <NotOwner />;
   }
 
+  const userAge =
+    Date.now() - new Date(user.insertedAt || Date.now()).getTime();
+
   return (
     <Collapsible defaultOpen title="Deployment">
       <Element paddingX={2}>
@@ -43,7 +49,7 @@ export const Deployment: FunctionComponent = () => {
         <Stack direction="vertical" gap={5}>
           <Vercel />
 
-          <Netlify />
+          {userAge >= MINIMUM_USER_AGE_FOR_NETLIFY ? <Netlify /> : null}
           <GithubPages />
         </Stack>
       </Element>
