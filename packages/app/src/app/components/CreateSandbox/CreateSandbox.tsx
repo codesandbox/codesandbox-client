@@ -297,9 +297,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Tab
                     {...tabState}
                     onClick={() => {
-                      track('Create New - Click Quick Start', {
+                      track('Create New - Click Tab', {
                         codesandbox: 'V1',
                         event_source: 'UI',
+                        tab_name: 'Quick Start',
                       });
                     }}
                     stopId="quickstart"
@@ -310,9 +311,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Tab
                     {...tabState}
                     onClick={() => {
-                      track('Create New - Click Import from Github', {
+                      track('Create New - Click Tab', {
                         codesandbox: 'V1',
                         event_source: 'UI',
+                        tab_name: 'Import from Github',
                       });
                     }}
                     stopId="import"
@@ -326,15 +328,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <Tab
                       {...tabState}
                       onClick={() => {
-                        track(
-                          `Create New - Click ${
-                            isUser ? 'My' : 'Team'
-                          } Templates`,
-                          {
-                            codesandbox: 'V1',
-                            event_source: 'UI',
-                          }
-                        );
+                        track(`Create New - Click Tab`, {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          tab_name: `${isUser ? 'My' : 'Team'} Templates`,
+                        });
                       }}
                       stopId="team-templates"
                     >
@@ -345,9 +343,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Tab
                     {...tabState}
                     onClick={() => {
-                      track('Create New - Click Cloud templates', {
+                      track('Create New - Click Tab', {
                         codesandbox: 'V1',
                         event_source: 'UI',
+                        tab_name: `Cloud templates`,
                       });
                     }}
                     stopId="cloud-templates"
@@ -358,9 +357,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Tab
                     {...tabState}
                     onClick={() => {
-                      track('Create New - Click Official Templates', {
+                      track('Create New - Click Tab', {
                         codesandbox: 'V1',
                         event_source: 'UI',
+                        tab_name: `Official Templates`,
                       });
                     }}
                     stopId="official-templates"
@@ -375,9 +375,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           {...tabState}
                           stopId={slugify(essential.title)}
                           onClick={() => {
-                            track(`Create New - Click ${essential.title}`, {
+                            track(`Create New - Click Tab`, {
                               codesandbox: 'V1',
                               event_source: 'UI',
+                              tab_name: essential.title,
                             });
                           }}
                         >
@@ -483,6 +484,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         track('Create New - Fork Cloud template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
                         });
 
                         selectTemplate(template);
@@ -502,6 +507,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         track('Create New - Fork Official template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
                         });
 
                         selectTemplate(template);
@@ -526,6 +535,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                               track('Create New - Fork Essential template', {
                                 codesandbox: 'V1',
                                 event_source: 'UI',
+                                template_name:
+                                  template.sandbox.title ||
+                                  template.sandbox.alias ||
+                                  template.sandbox.id,
                               });
 
                               selectTemplate(template);
