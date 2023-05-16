@@ -433,9 +433,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       isInCollection={Boolean(collectionId)}
                       templates={quickStartTemplates}
                       onSelectTemplate={template => {
-                        track('Create New - Fork Quickstart template', {
+                        track('Create New - Fork template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          tab_name: 'Quick Start',
                         });
 
                         selectTemplate(template);
@@ -458,12 +459,17 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         isInCollection={Boolean(collectionId)}
                         templates={teamTemplates}
                         onSelectTemplate={template => {
-                          track(
-                            `Create New - Fork ${
-                              isUser ? 'my' : 'team'
-                            } template`,
-                            { codesandbox: 'V1', event_source: 'UI' }
-                          );
+                          track(`Create New - Fork template`, {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                            tab_name: `${
+                              isUser ? 'My' : activeTeamInfo?.name || 'Team'
+                            } templates`,
+                            template_name:
+                              template.sandbox.title ||
+                              template.sandbox.alias ||
+                              template.sandbox.id,
+                          });
 
                           selectTemplate(template);
                         }}
@@ -481,13 +487,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         template => template.sandbox.isV2
                       )}
                       onSelectTemplate={template => {
-                        track('Create New - Fork Cloud template', {
+                        track('Create New - Fork template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
                           template_name:
                             template.sandbox.title ||
                             template.sandbox.alias ||
                             template.sandbox.id,
+                          tab_name: 'Cloud templates',
                         });
 
                         selectTemplate(template);
@@ -504,13 +511,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       isInCollection={Boolean(collectionId)}
                       templates={officialTemplates}
                       onSelectTemplate={template => {
-                        track('Create New - Fork Official template', {
+                        track('Create New - Fork template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
                           template_name:
                             template.sandbox.title ||
                             template.sandbox.alias ||
                             template.sandbox.id,
+                          tab_name: 'Official Templates',
                         });
 
                         selectTemplate(template);
@@ -532,13 +540,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                             isInCollection={Boolean(collectionId)}
                             templates={essential.templates}
                             onSelectTemplate={template => {
-                              track('Create New - Fork Essential template', {
+                              track('Create New - Fork template', {
                                 codesandbox: 'V1',
                                 event_source: 'UI',
                                 template_name:
                                   template.sandbox.title ||
                                   template.sandbox.alias ||
                                   template.sandbox.id,
+                                tab_name: essential.title,
                               });
 
                               selectTemplate(template);
