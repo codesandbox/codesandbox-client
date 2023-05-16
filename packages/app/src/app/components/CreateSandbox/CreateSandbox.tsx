@@ -47,9 +47,9 @@ const QUICK_START_IDS = [
   'vanilla',
   'vue',
   'hsd8ke', // docker starter v2
-  'prp60l', // remix v2
-  '9qputt', // vite + react v2
   'fxis37', // next v2
+  '9qputt', // vite + react v2
+  'prp60l', // remix v2
   'angular',
   'react-ts',
   'rjk9n4zj7m', // static v1
@@ -437,6 +437,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           codesandbox: 'V1',
                           event_source: 'UI',
                           tab_name: 'Quick Start',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
                         });
 
                         selectTemplate(template);
