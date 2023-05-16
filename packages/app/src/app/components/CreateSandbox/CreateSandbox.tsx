@@ -437,6 +437,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           codesandbox: 'V1',
                           event_source: 'UI',
                           tab_name: 'Quick Start',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
                         });
 
                         selectTemplate(template);
