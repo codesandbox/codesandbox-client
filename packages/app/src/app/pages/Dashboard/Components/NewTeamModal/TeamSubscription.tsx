@@ -82,9 +82,7 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
           </Text>
         </Stack>
         {isEligibleForTrial && (
-          <StyledTitle block>
-            14 days free trial. No credit card required.
-          </StyledTitle>
+          <StyledTitle block>14 days free trial.</StyledTitle>
         )}
       </Stack>
 

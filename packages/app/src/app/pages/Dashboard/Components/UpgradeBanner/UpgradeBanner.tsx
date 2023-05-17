@@ -167,7 +167,7 @@ export const UpgradeBanner: React.FC = () => {
           }}
           autoWidth
         >
-          Start 14-day free trial
+          Start free trial
         </Button>
       );
     }
@@ -228,7 +228,7 @@ export const UpgradeBanner: React.FC = () => {
           <Stack direction="vertical" justify="space-between">
             <StyledTitle block>
               {isEligibleForTrial || isPersonalSpace
-                ? '14 days free trial. No credit card required.'
+                ? '14 days free trial.'
                 : 'Enjoy the full CodeSandbox experience.'}
             </StyledTitle>
             <Stack
