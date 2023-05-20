@@ -1,4 +1,4 @@
-import { MessageStripe, Link, Text } from '@codesandbox/components';
+import { MessageStripe, Link } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -114,31 +114,6 @@ export const MaxReposFreeTeam: React.FC = () => {
           Learn more
         </MessageStripe.Action>
       )}
-    </MessageStripe>
-  );
-};
-
-export const TemporaryWarningForWorkspaceScopesMigration: React.FC<{
-  onDismiss?: () => void;
-  variant?: 'repository' | 'branch';
-}> = ({ onDismiss, variant = 'repository' }) => {
-  return (
-    <MessageStripe
-      justify="space-between"
-      onDismiss={onDismiss}
-      variant="neutral"
-    >
-      <Text>
-        Can&apos;t find a {variant}? It is not deleted, but needs to be
-        re-imported due to a change. Please{' '}
-        <Link
-          css={{ textDecoration: 'underline', fontWeight: 'bold' }}
-          href="https://www.loom.com/share/a7a7a44e7ef547358ab5696d6d328156"
-        >
-          watch this video for more details
-        </Link>
-        .
-      </Text>
     </MessageStripe>
   );
 };

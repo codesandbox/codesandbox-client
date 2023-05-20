@@ -23,7 +23,7 @@ type KeyboardEventWithTarget = KeyboardEvent & {
 export const SearchBox = ({
   value,
   onChange,
-  placeholder = 'Search Templates',
+  placeholder = 'Search templates',
 }: SearchProps) => {
   const inputEl = React.useRef<HTMLInputElement>();
 
@@ -33,7 +33,10 @@ export const SearchBox = ({
     // Do not trigger if the key event originates from
     // an input. This allows users to type / in the GH
     // url input.
-    if (inputEl.current && 'type' in e.target && e.target.type !== 'text') {
+    if (
+      inputEl.current &&
+      (!('type' in e.target) || e.target.type !== 'text')
+    ) {
       requestAnimationFrame(() => {
         inputEl.current.focus();
       });

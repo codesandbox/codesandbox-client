@@ -8,10 +8,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
-import {
-  MaxReposFreeTeam,
-  TemporaryWarningForWorkspaceScopesMigration,
-} from 'app/pages/Dashboard/Components/Repository/stripes';
+import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 import { useDismissible } from 'app/hooks';
 import { EmptyRepositories } from './EmptyRepositories';
@@ -24,13 +21,6 @@ export const RepositoriesPage = () => {
   } = useAppState();
   const [dismissedPermissionsBanner, dismissPermissionsBanner] = useDismissible(
     'DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER'
-  );
-
-  const [
-    dismissedWorkspaceScopesMigrationMessage,
-    dismissWorkspaceScopesMigrationMessage,
-  ] = useDismissible(
-    'DASHBOARD_REPOSITORIES_WORKSPACE_SCOPES_MIGRATION_MESSAGE'
   );
 
   const teamRepos = repositoriesByTeamId[activeTeam] || undefined;
@@ -96,14 +86,6 @@ export const RepositoriesPage = () => {
         showBetaBadge
         title="All repositories"
       />
-
-      {!dismissedWorkspaceScopesMigrationMessage ? (
-        <Element paddingLeft={4} paddingRight={6} paddingY={4}>
-          <TemporaryWarningForWorkspaceScopesMigration
-            onDismiss={dismissWorkspaceScopesMigrationMessage}
-          />
-        </Element>
-      ) : null}
 
       {hasMaxPublicRepositories || hasMaxPrivateRepositories ? (
         <Element paddingLeft={4} paddingRight={6} paddingY={4}>

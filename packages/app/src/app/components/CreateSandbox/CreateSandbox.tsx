@@ -39,6 +39,7 @@ import { SearchResults } from './SearchResults';
 import { GithubRepoToImport } from './Import/types';
 import { ImportInfo } from './Import/ImportInfo';
 import { FromRepo } from './Import/FromRepo';
+import { ImportSandbox } from './ImportSandbox';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -319,7 +320,21 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="import"
                   >
-                    Import from GitHub
+                    Import repository
+                  </Tab>
+
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Tab', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                        tab_name: 'Import template',
+                      });
+                    }}
+                    stopId="import-template"
+                  >
+                    Import template
                   </Tab>
 
                   <Element css={{ height: '18px' }} />
@@ -451,6 +466,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                   <Panel tab={tabState} id="import">
                     <Import onRepoSelect={selectGithubRepo} />
+                  </Panel>
+
+                  <Panel tab={tabState} id="import-template">
+                    <ImportSandbox />
                   </Panel>
 
                   {showTeamTemplates ? (
