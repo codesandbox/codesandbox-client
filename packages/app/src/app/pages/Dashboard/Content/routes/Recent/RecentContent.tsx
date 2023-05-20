@@ -21,8 +21,6 @@ import {
   DashboardSandbox,
   PageTypes,
 } from 'app/pages/Dashboard/types';
-import { TemporaryWarningForWorkspaceScopesMigration } from 'app/pages/Dashboard/Components/Repository/stripes';
-import { useDismissible } from 'app/hooks';
 
 import { DocumentationRow } from './DocumentationRow';
 import { RecentHeader } from './RecentHeader';
@@ -72,10 +70,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
     activeTeam,
     dashboard: { viewMode },
   } = useAppState();
-  const [
-    dismissedWorkspaceScopesMigrationMessage,
-    dismissWorkspaceScopesMigrationMessage,
-  ] = useDismissible('DASHBOARD_RECENT_WORKSPACE_SCOPES_MIGRATION_MESSAGE');
   const page: PageTypes = 'recent';
 
   return (
@@ -88,13 +82,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           </Text>
           <ViewOptions />
         </Stack>
-
-        {!dismissedWorkspaceScopesMigrationMessage ? (
-          <TemporaryWarningForWorkspaceScopesMigration
-            variant="branch"
-            onDismiss={dismissWorkspaceScopesMigrationMessage}
-          />
-        ) : null}
 
         <SelectionProvider
           activeTeamId={activeTeam}

@@ -216,18 +216,45 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   return (
     <Stack direction="vertical" gap={8}>
       <Stack direction="vertical" gap={4}>
-        <Text
-          as="h2"
-          id="form-title"
-          css={{
-            fontSize: '16px',
-            fontWeight: 500,
-            margin: 0,
-            lineHeight: 1.5,
-          }}
-        >
-          Enter the GitHub repository URL to import
-        </Text>
+        <Stack direction="vertical" gap={2}>
+          <Text
+            as="h2"
+            id="form-title"
+            css={{
+              fontSize: '16px',
+              fontWeight: 500,
+              margin: 0,
+              lineHeight: 1.5,
+            }}
+          >
+            Import repository
+          </Text>
+
+          <Text
+            as="h3"
+            id="form-title"
+            variant="muted"
+            css={{
+              fontSize: '14px',
+              fontWeight: 400,
+              margin: 0,
+              lineHeight: 1.5,
+            }}
+          >
+            Directly work on your GitHub repository in CodeSandbox.
+            <br />
+            Learn more about Repositories{' '}
+            <a
+              href="https://codesandbox.io/docs/learn/repositories/overview"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              here
+            </a>
+            .
+          </Text>
+        </Stack>
+
         {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
         {restrictsPublicRepos ? <RestrictedPublicReposImport /> : null}
         <Element>
