@@ -1,5 +1,6 @@
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Button, Input, Stack, Text, Element } from '@codesandbox/components';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const InfoBlock = ({ label, content }: { label: string; content: string }) => (
   <Stack direction="vertical" gap={2}>
@@ -55,6 +56,12 @@ export const ImportSandbox = () => {
   if (info?.folder) {
     url += info.folder;
   }
+
+  useEffect(() => {
+    if (url) {
+      track('Import Template - GitHub URL entered', { repoUrl });
+    }
+  }, [url, repoUrl]);
 
   return (
     <Stack
@@ -129,6 +136,9 @@ export const ImportSandbox = () => {
             href={url}
             variant="primary"
             as="a"
+            onClick={() => {
+              track('Import Template - Open URL clicked');
+            }}
           >
             Open URL
           </Button>

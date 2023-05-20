@@ -241,7 +241,17 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
               lineHeight: 1.5,
             }}
           >
-            Directly work on your GitHub repository in CodeSandbox
+            Directly work on your GitHub repository in CodeSandbox.
+            <br />
+            Learn more about Repositories{' '}
+            <a
+              href="https://codesandbox.io/docs/learn/repositories/overview"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              here
+            </a>
+            .
           </Text>
         </Stack>
 
