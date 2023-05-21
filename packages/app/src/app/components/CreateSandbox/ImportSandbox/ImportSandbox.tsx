@@ -131,7 +131,16 @@ export const ImportSandbox = () => {
           />
 
           <Button
-            style={{ width: 100, height: 32 }}
+            style={{
+              width: 100,
+              height: 32,
+              ...(info
+                ? {}
+                : {
+                    pointerEvents: 'none',
+                    opacity: 0.6,
+                  }),
+            }}
             disabled={!info}
             href={url}
             variant="primary"
