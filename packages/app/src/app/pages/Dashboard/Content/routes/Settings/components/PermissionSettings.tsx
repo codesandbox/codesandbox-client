@@ -384,6 +384,7 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
           disabled={disabled}
           autoWidth
           onClick={async () => {
+            track('Dashboard - Permissions panel - Changed AI consent');
             await setTeamAiConsent(state);
           }}
         >
