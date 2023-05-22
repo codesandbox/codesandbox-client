@@ -125,7 +125,11 @@ export type BranchConnections = {
 };
 
 /** Events related to a specific branch. */
-export type BranchEvent = PullRequestEvent | PullRequestReviewEvent;
+export type BranchEvent =
+  | PullRequestCommentEvent
+  | PullRequestEvent
+  | PullRequestReviewCommentEvent
+  | PullRequestReviewEvent;
 
 /** Subscription update about a commit made by CodeSandbox for a branch */
 export type BranchLastCommit = {
@@ -421,11 +425,72 @@ export type GitHubPullRequestComment = {
   htmlUrl: Scalars['String'];
   /** GitHub ID */
   id: Scalars['Int'];
+  /** ID of the parent pull request */
+  issueId: Scalars['Int'];
   /** Last edit or reaction date of the comment */
   updatedAt: Scalars['DateTime'];
   /** If available, the CodeSandbox user who created the comment */
   user: Maybe<User>;
+  /** GitHub username of the user who created the comment */
+  username: Scalars['String'];
 };
+
+/** Comment on a GitHub pull request review */
+export type GitHubPullRequestReviewComment = {
+  __typename?: 'GitHubPullRequestReviewComment';
+  /** Relationship between the comment author and the repository */
+  authorAssociation: GitHubAuthorAssociation;
+  /** Raw (markdown and/or HTML) body of the comment */
+  body: Scalars['String'];
+  /** SHA of the commit to which the comment applies */
+  commitId: Scalars['String'];
+  /** Original creation date of the comment */
+  createdAt: Scalars['DateTime'];
+  /** Diff of the line that the comment refers to */
+  diffHunk: Scalars['String'];
+  /** Link to view the comment on GitHub */
+  htmlUrl: Scalars['String'];
+  /** GitHub ID */
+  id: Scalars['Int'];
+  /** Parent comment ID (in the context of a thread) */
+  inReplyToId: Maybe<Scalars['Int']>;
+  /** Line of the blob to which the comment applies. Last line of the range for a multi-line comment. */
+  line: Maybe<Scalars['Int']>;
+  /** SHA of the original commit to which the comment applies */
+  originalCommitId: Scalars['String'];
+  /** Line of the blob to which the comment applies. Last line of the range for a multi-line comment */
+  originalLine: Maybe<Scalars['Int']>;
+  /** First line of the range for a multi-line comment */
+  originalStartLine: Maybe<Scalars['Int']>;
+  /** Relative path of the file to which the comment applies */
+  path: Scalars['String'];
+  /** Side of the diff to which the comment applies. Side of the last line of the range for a multi-line comment */
+  side: GitHubPullRequestReviewCommentSide;
+  /** First line of the range for a multi-line comment */
+  startLine: Maybe<Scalars['Int']>;
+  /** Side of the first line of the range for a multi-line comment */
+  startSide: GitHubPullRequestReviewCommentSide;
+  /** Level at which the comment is targeted, can be a diff line or a file */
+  subjectType: Maybe<GitHubPullRequestReviewCommentSubjectType>;
+  /** Last edit or reaction date of the comment */
+  updatedAt: Scalars['DateTime'];
+  /** If available, the CodeSandbox user who created the comment */
+  user: Maybe<User>;
+  /** GitHub username of the user who created the comment */
+  username: Scalars['String'];
+};
+
+/** Which side of a side-by-side diff a PR review comment pertains to */
+export enum GitHubPullRequestReviewCommentSide {
+  Left = 'LEFT',
+  Right = 'RIGHT',
+}
+
+/** Whether a review comment pertains to an entire file or specific line(s) */
+export enum GitHubPullRequestReviewCommentSubjectType {
+  File = 'FILE',
+  Line = 'LINE',
+}
 
 /** Details about a repository as it appears on GitHub (Open API `repository`) */
 export type GithubRepo = {
@@ -745,7 +810,11 @@ export enum ProjectAuthorization {
 }
 
 /** Events related to a project (repository). */
-export type ProjectEvent = PullRequestEvent | PullRequestReviewEvent;
+export type ProjectEvent =
+  | PullRequestCommentEvent
+  | PullRequestEvent
+  | PullRequestReviewCommentEvent
+  | PullRequestReviewEvent;
 
 /** User-editable settings for a project */
 export type ProjectSettings = {
@@ -843,6 +912,34 @@ export type PullRequest = {
   title: Scalars['String'];
 };
 
+/**
+ * Event about a comment on a pull request (outside the context of a review)
+ *
+ * GitHub does not distinguish between PR and issue comments, so the event will be "issue_comment"
+ * for both types. The API will attempt to distinguish between them using additional information
+ * from the event.
+ */
+export type PullRequestCommentEvent = {
+  __typename?: 'PullRequestCommentEvent';
+  action: PullRequestCommentEventAction;
+  comment: GitHubPullRequestComment;
+  event: Scalars['String'];
+  /**
+   * Pull request on which the comment appears
+   *
+   * This field is nullable due to an edge case that may cause comments to be saved without the
+   * parent PR. Clients can observe the comment's `issueId` field to see if the pull request is
+   * already known based on its ID.
+   */
+  pullRequest: Maybe<PullRequest>;
+};
+
+export enum PullRequestCommentEventAction {
+  Created = 'CREATED',
+  Deleted = 'DELETED',
+  Edited = 'EDITED',
+}
+
 /** Event about activity on a pull request */
 export type PullRequestEvent = {
   __typename?: 'PullRequestEvent';
@@ -864,6 +961,13 @@ export enum PullRequestEventAction {
 export type PullRequestReview = {
   __typename?: 'PullRequestReview';
   body: Maybe<Scalars['String']>;
+  /**
+   * Comments on the PR review
+   *
+   * Comments are returned in the order in which they were created. However, clients may wish to
+   * observe the `is_reply_to_id` field to ensure threaded replies appear in order.
+   */
+  comments: Array<GitHubPullRequestComment>;
   id: Scalars['Int'];
   state: PullRequestReviewState;
   submittedAt: Maybe<Scalars['DateTime']>;
@@ -873,6 +977,21 @@ export type PullRequestReview = {
   /** GitHub username of the user who submitted the review */
   username: Scalars['String'];
 };
+
+/** Event about a comment on a pull request review */
+export type PullRequestReviewCommentEvent = {
+  __typename?: 'PullRequestReviewCommentEvent';
+  action: PullRequestReviewCommentEventAction;
+  comment: GitHubPullRequestReviewComment;
+  event: Scalars['String'];
+  pullRequest: PullRequest;
+};
+
+export enum PullRequestReviewCommentEventAction {
+  Created = 'CREATED',
+  Deleted = 'DELETED',
+  Edited = 'EDITED',
+}
 
 /** Event about review activity on a pull request */
 export type PullRequestReviewEvent = {

@@ -321,7 +321,7 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
     <Stack
       direction="vertical"
       justify="space-between"
-      gap={114}
+      gap={60}
       css={css({
         padding: 6,
         backgroundColor: 'card.background',
@@ -372,7 +372,13 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
             })}
           </Stack>
         </Stack>
+
+        <Text variant="active" size={2}>
+          For the changes to take effect, you need to restart the microVM
+          instance
+        </Text>
       </Stack>
+
       <Stack justify="flex-end">
         <Button
           disabled={disabled}

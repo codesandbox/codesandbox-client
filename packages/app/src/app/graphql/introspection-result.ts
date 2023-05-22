@@ -56,7 +56,13 @@ const result: IntrospectionResultData = {
         name: 'BranchEvent',
         possibleTypes: [
           {
+            name: 'PullRequestCommentEvent',
+          },
+          {
             name: 'PullRequestEvent',
+          },
+          {
+            name: 'PullRequestReviewCommentEvent',
           },
           {
             name: 'PullRequestReviewEvent',
@@ -77,7 +83,13 @@ const result: IntrospectionResultData = {
         name: 'ProjectEvent',
         possibleTypes: [
           {
+            name: 'PullRequestCommentEvent',
+          },
+          {
             name: 'PullRequestEvent',
+          },
+          {
+            name: 'PullRequestReviewCommentEvent',
           },
           {
             name: 'PullRequestReviewEvent',
