@@ -180,8 +180,8 @@ const KEEP_DEFAULT = [
   },
   {
     key: 'ram',
-    pro: '6GB RAM',
-    pill: '3x capacity',
+    pro: '8GiB RAM',
+    pill: '4x capacity',
   },
   {
     key: 'cpu',

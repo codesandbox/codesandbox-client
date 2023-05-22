@@ -43,7 +43,7 @@ const FEATURES_LIST: Feature[] = [
   },
   {
     icon: 'server',
-    label: '6GB RAM, 12GB Disk, 4 vCPUs',
+    label: '8GiB RAM, 12GB Disk, 4 vCPUs',
   },
   {
     icon: 'repository',

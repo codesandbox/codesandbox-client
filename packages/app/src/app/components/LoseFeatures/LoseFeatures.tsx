@@ -31,9 +31,9 @@ const LOSE_DEFAULT = [
   },
   {
     key: 'ram',
-    pro: '6GB RAM',
-    free: '2GB RAM',
-    pill: '-66% capacity',
+    pro: '8GiB RAM',
+    free: '2GiB RAM',
+    pill: '-75% capacity',
   },
   {
     key: 'cpu',
