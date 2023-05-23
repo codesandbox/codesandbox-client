@@ -15,6 +15,16 @@ export type MentionData = {
   commentId: string;
 };
 
+export type PullRequestReviewRequestData = {
+  branch: string;
+  owner: string;
+  pullRequestNumber: number;
+  repo: string;
+  requesterAvatar: string;
+  requesterName: string;
+  teamId: string;
+};
+
 export type TeamInviteData = {
   teamId: string;
   teamName: string;
