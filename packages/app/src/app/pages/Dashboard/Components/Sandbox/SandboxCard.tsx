@@ -165,7 +165,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
       }
 
       if (showBetaBadge) {
-        return <Badge icon="cloud">Beta</Badge>;
+        return <Badge icon="cloud">Cloud</Badge>;
       }
 
       return null;

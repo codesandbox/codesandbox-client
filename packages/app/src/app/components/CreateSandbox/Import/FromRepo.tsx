@@ -122,7 +122,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
         >
           Create new fork
         </Text>
-        <Badge icon="cloud">Beta</Badge>
+        <Badge icon="cloud">Cloud</Badge>
       </Stack>
       <Element
         as="form"
