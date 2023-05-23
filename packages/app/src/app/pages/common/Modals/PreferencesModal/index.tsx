@@ -71,13 +71,12 @@ const getItems = (isLoggedIn: boolean, user: CurrentUser): MenuItem[] =>
       id: 'integrations',
       title: 'Integrations',
     },
-    user &&
-      user.experiments.inPilot && {
-        Content: MailPreferences,
-        Icon: MailIcon,
-        id: 'emailSettings',
-        title: 'Email Settings',
-      },
+    user && {
+      Content: MailPreferences,
+      Icon: MailIcon,
+      id: 'emailSettings',
+      title: 'Email Settings',
+    },
     {
       Content: Experiments,
       Icon: FlaskIcon,
