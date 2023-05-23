@@ -448,9 +448,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       isInCollection={Boolean(collectionId)}
                       templates={quickStartTemplates}
                       onSelectTemplate={template => {
-                        track('Create New - Fork template', {
+                        track('Create New - Select template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          type: 'fork',
                           tab_name: 'Quick Start',
                           template_name:
                             template.sandbox.title ||
@@ -460,7 +461,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                         selectTemplate(template);
                       }}
-                      onOpenTemplate={openTemplate}
+                      onOpenTemplate={template => {
+                        track('Create New - Select template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          type: 'open',
+                          tab_name: 'Quick Start',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
+                        });
+
+                        openTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -482,9 +496,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         isInCollection={Boolean(collectionId)}
                         templates={teamTemplates}
                         onSelectTemplate={template => {
-                          track(`Create New - Fork template`, {
+                          track(`Create New - Select template`, {
                             codesandbox: 'V1',
                             event_source: 'UI',
+                            type: 'fork',
                             tab_name: `${
                               isUser ? 'My' : activeTeamInfo?.name || 'Team'
                             } templates`,
@@ -496,7 +511,22 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                           selectTemplate(template);
                         }}
-                        onOpenTemplate={openTemplate}
+                        onOpenTemplate={template => {
+                          track(`Create New - Select template`, {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                            type: 'open',
+                            tab_name: `${
+                              isUser ? 'My' : activeTeamInfo?.name || 'Team'
+                            } templates`,
+                            template_name:
+                              template.sandbox.title ||
+                              template.sandbox.alias ||
+                              template.sandbox.id,
+                          });
+
+                          openTemplate(template);
+                        }}
                       />
                     </Panel>
                   ) : null}
@@ -510,9 +540,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         template => template.sandbox.isV2
                       )}
                       onSelectTemplate={template => {
-                        track('Create New - Fork template', {
+                        track('Create New - Select template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          type: 'fork',
                           template_name:
                             template.sandbox.title ||
                             template.sandbox.alias ||
@@ -522,7 +553,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                         selectTemplate(template);
                       }}
-                      onOpenTemplate={openTemplate}
+                      onOpenTemplate={template => {
+                        track('Create New - Select template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          type: 'open',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
+                          tab_name: 'Cloud templates',
+                        });
+
+                        openTemplate(template);
+                      }}
                       isCloudTemplateList
                     />
                   </Panel>
@@ -534,9 +578,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       isInCollection={Boolean(collectionId)}
                       templates={officialTemplates}
                       onSelectTemplate={template => {
-                        track('Create New - Fork template', {
+                        track('Create New - Select template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          type: 'fork',
                           template_name:
                             template.sandbox.title ||
                             template.sandbox.alias ||
@@ -546,7 +591,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                         selectTemplate(template);
                       }}
-                      onOpenTemplate={openTemplate}
+                      onOpenTemplate={template => {
+                        track('Create New - Select template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          type: 'open',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
+                          tab_name: 'Official Templates',
+                        });
+
+                        openTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -563,9 +621,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                             isInCollection={Boolean(collectionId)}
                             templates={essential.templates}
                             onSelectTemplate={template => {
-                              track('Create New - Fork template', {
+                              track('Create New - Select template', {
                                 codesandbox: 'V1',
                                 event_source: 'UI',
+                                type: 'fork',
                                 template_name:
                                   template.sandbox.title ||
                                   template.sandbox.alias ||
@@ -575,7 +634,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                               selectTemplate(template);
                             }}
-                            onOpenTemplate={openTemplate}
+                            onOpenTemplate={template => {
+                              track('Create New - Select template', {
+                                codesandbox: 'V1',
+                                event_source: 'UI',
+                                type: 'open',
+                                template_name:
+                                  template.sandbox.title ||
+                                  template.sandbox.alias ||
+                                  template.sandbox.id,
+                                tab_name: essential.title,
+                              });
+
+                              openTemplate(template);
+                            }}
                           />
                         </Panel>
                       ))
