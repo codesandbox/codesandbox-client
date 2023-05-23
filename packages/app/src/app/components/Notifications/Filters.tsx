@@ -14,6 +14,7 @@ export const Filters = () => {
   const options = {
     team_invite: 'Team Invite',
     team_accepted: 'Team Accepted',
+    pull_request_review_requested: 'PR Review Requests',
     sandbox_invitation: 'Sandbox Invites',
   };
 
