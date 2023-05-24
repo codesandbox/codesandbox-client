@@ -3,6 +3,7 @@ import { Input, Element } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import useKeys from 'react-use/lib/useKeyboardJs';
+import { debounce } from 'lodash-es';
 import { AlgoliaIcon } from './icons';
 
 const getBackgroundColor = ({ focus, theme }) =>
@@ -127,12 +128,12 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
               fontSize: 4,
             },
           })}
-          onChange={e => {
+          onChange={debounce(e => {
             changeDependencySearch(e.target.value);
             if (workspace.showingSelectedDependencies) {
               toggleShowingSelectedDependencies();
             }
-          }}
+          }, 500)}
           value={workspace.dependencySearch}
         />
         <AlgoliaIcon
