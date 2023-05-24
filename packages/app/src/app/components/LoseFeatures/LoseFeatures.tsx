@@ -20,6 +20,11 @@ const LOSE_DEFAULT = [
     free: 'Limited to 3 public repositories',
   },
   {
+    key: 'ai',
+    pro: '✨ Full access to AI tools',
+    free: 'No AI tools',
+  },
+  {
     key: 'npm',
     pro: 'Private NPM packages',
     free: 'Limited to public NPM packages',
