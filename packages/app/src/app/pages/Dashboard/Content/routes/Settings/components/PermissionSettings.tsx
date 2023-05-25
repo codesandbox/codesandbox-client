@@ -326,7 +326,7 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
         padding: 6,
         backgroundColor: 'card.background',
         border: '1px solid',
-        borderColor: 'transparent',
+        borderColor: 'button.background',
         borderRadius: 'medium',
         opacity: disabled ? 0.4 : 1,
       })}
