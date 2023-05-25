@@ -1557,6 +1557,31 @@ export const setTeamMinimumPrivacy = async (
   }
 };
 
+export const setTeamAiConsent = async (
+  { state, effects }: Context,
+  params: {
+    privateRepositories: boolean;
+    privateSandboxes: boolean;
+    publicSandboxes: boolean;
+    publicRepositories: boolean;
+  }
+) => {
+  const teamId = state.activeTeam;
+
+  try {
+    await effects.gql.mutations.setTeamAiConsent({
+      ...params,
+      teamId,
+    });
+
+    effects.notificationToast.success('AI permissions updated.');
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your workspace settings'
+    );
+  }
+};
+
 export const setWorkspaceSandboxSettings = async (
   { state, effects }: Context,
   {

@@ -86,6 +86,11 @@ export const VSCODE: INavigationItem = {
   name: 'VS Code',
 };
 
+export const AITOOLS: INavigationItem = {
+  id: 'ai',
+  name: 'AI Tools',
+};
+
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
@@ -198,5 +203,5 @@ export default function getItems(
   }
 
   // Add docker and vs code as last item in the navigation
-  return [...items, DOCKER, VSCODE];
+  return [...items, DOCKER, VSCODE, AITOOLS];
 }

@@ -42,12 +42,16 @@ const FEATURES_LIST: Feature[] = [
     label: 'Unlimited private sandboxes',
   },
   {
-    icon: 'server',
-    label: '8GiB RAM, 12GB Disk, 4 vCPUs',
-  },
-  {
     icon: 'repository',
     label: 'Unlimited private repositories',
+  },
+  {
+    icon: 'ai',
+    label: 'Full access to AI tools',
+  },
+  {
+    icon: 'server',
+    label: '8GiB RAM, 12GB Disk, 4 vCPUs',
   },
   {
     icon: 'sharing',

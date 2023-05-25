@@ -39,6 +39,10 @@ export const PERSONAL_FEATURES: Feature[] = [
     key: 'limit_repositories',
     label: 'Unlimited private repositories',
   },
+  {
+    key: 'ai',
+    label: '✨ Full access to AI tools',
+  },
   { key: 'npm', label: 'Public NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: '8GiB RAM' },
@@ -54,6 +58,10 @@ export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
   {
     key: 'limit_repositories',
     label: 'Unlimited private repositories',
+  },
+  {
+    key: 'ai',
+    label: '✨ Full access to AI tools',
   },
   { key: 'npm', label: 'Public NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
@@ -86,6 +94,10 @@ export const TEAM_PRO_FEATURES: Feature[] = [
     key: 'limit_repositories',
     label: 'Unlimited private repositories',
   },
+  {
+    key: 'ai',
+    label: '✨ Full access to AI tools',
+  },
   { key: 'npm', label: 'Private NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: '8GiB RAM' },
@@ -102,6 +114,10 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
     key: 'limit_repositories',
     label: 'Unlimited private repositories',
   },
+  {
+    key: 'ai',
+    label: '✨ Full access to AI tools',
+  },
   { key: 'npm', label: 'Private NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: '8GiB RAM', pill: '4x capacity' },
@@ -117,6 +133,10 @@ export const ORG_FEATURES: Feature[] = [
   {
     key: 'limit_repositories',
     label: 'Unlimited private repositories',
+  },
+  {
+    key: 'ai',
+    label: '✨ Full access to AI tools',
   },
   { key: 'npm', label: 'Private NPM packages' },
   { key: 'live_sessions', label: 'Live sessions' },
