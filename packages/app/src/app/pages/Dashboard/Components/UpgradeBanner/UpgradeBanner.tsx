@@ -46,7 +46,7 @@ const FEATURES_LIST: Feature[] = [
     label: 'Unlimited private repositories',
   },
   {
-    icon: 'sharing',
+    icon: 'ai',
     label: 'Full access to AI tools',
   },
   {
