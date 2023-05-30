@@ -40,7 +40,7 @@ export const AITools = () => {
             Yes, fork
           </Button>
           <Link
-            href="https://codesandbox.io/docs/learn/sandboxes/overview?tab=cloud"
+            href="https://codesandbox.io/docs/tutorial/convert-browser-sandbox-cloud"
             target="_blank"
             rel="noreferrer noopener"
           >
