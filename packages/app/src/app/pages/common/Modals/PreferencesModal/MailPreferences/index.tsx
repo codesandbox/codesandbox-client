@@ -26,17 +26,19 @@ export const MailPreferences: FunctionComponent = () => {
           <Text block marginBottom={2} size={3} weight="regular">
             Review Notifications
           </Text>
+
           <Text
             block
-            marginBottom={2}
-            size={3}
-            style={{ maxWidth: '60%' }}
+            marginTop={2}
+            size={2}
             variant="muted"
+            style={{ maxWidth: '90%' }}
           >
             In-browser notifications related to pull requests and reviews. These
             will only be sent for repositories that have the GitHub App
             installed and have been imported into any of your teams.
           </Text>
+
           <Element paddingTop={4}>
             <PaddedPreference
               setValue={(value: boolean) =>
@@ -54,16 +56,12 @@ export const MailPreferences: FunctionComponent = () => {
           <Text block marginTop={4} marginBottom={4} size={3} weight="regular">
             Email Notifications
           </Text>
-          <Text
-            block
-            marginBottom={2}
-            size={3}
-            style={{ maxWidth: '60%' }}
-            variant="muted"
-          >
+
+          <Text block marginTop={2} size={2} variant="muted">
             These notifications will always show in the browser, but receiving
             an email is optional.
           </Text>
+
           <Element paddingTop={4}>
             <PaddedPreference
               setValue={(value: boolean) =>
@@ -90,8 +88,9 @@ export const MailPreferences: FunctionComponent = () => {
               value={preferences.emailSandboxInvite}
             />
           </Element>
+
           <Rule />
-          <Element paddingTop={4}>
+          <Element paddingTop={2}>
             <PaddedPreference
               setValue={(value: boolean) =>
                 updateNotificationPreferences({
