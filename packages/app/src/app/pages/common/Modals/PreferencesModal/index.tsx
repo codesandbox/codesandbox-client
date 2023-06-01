@@ -74,8 +74,8 @@ const getItems = (isLoggedIn: boolean, user: CurrentUser): MenuItem[] =>
     user && {
       Content: MailPreferences,
       Icon: MailIcon,
-      id: 'emailSettings',
-      title: 'Notification Preferences',
+      id: 'notifications',
+      title: 'Notifications',
     },
     {
       Content: Experiments,

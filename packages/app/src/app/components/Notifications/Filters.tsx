@@ -9,6 +9,7 @@ export const Filters = () => {
     filterNotifications,
     markAllNotificationsAsRead,
     archiveAllNotifications,
+    openNotificationPreferencesModal,
   } = useActions().userNotifications;
 
   const options = {
@@ -62,6 +63,9 @@ export const Filters = () => {
           size={12}
         />
         <Menu.List>
+          <Menu.Item onSelect={() => openNotificationPreferencesModal()}>
+            Manage notification preferences
+          </Menu.Item>
           <Menu.Item onSelect={() => archiveAllNotifications()}>
             Clear all notifications
           </Menu.Item>

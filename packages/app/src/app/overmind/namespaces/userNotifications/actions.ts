@@ -189,6 +189,11 @@ export const openTeamAcceptModal = (
   state.currentModal = 'teamInvite';
 };
 
+export const openNotificationPreferencesModal = ({ state }: Context) => {
+  state.preferences.itemId = 'notifications';
+  state.currentModal = 'preferences';
+};
+
 export const getNotificationPreferences = async ({
   state,
   effects,
