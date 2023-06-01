@@ -2,7 +2,7 @@ import { Text, Element } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 
-import { SubContainer, PaddedPreference } from '../elements';
+import { Rule, SubContainer, PaddedPreference } from '../elements';
 
 export const MailPreferences: FunctionComponent = () => {
   const {
@@ -18,77 +18,92 @@ export const MailPreferences: FunctionComponent = () => {
   return (
     <>
       <Text block marginBottom={6} size={4} weight="regular">
-        Email me when...
+        Notfication Preferences
       </Text>
 
       {preferences ? (
         <SubContainer>
-          <Element paddingTop={4}>
-            <PaddedPreference
-              setValue={(value: boolean) =>
-                updateNotificationPreferences({
-                  emailNewComment: value,
-                })
-              }
-              title="New comment"
-              tooltip="Email on new comment"
-              type="boolean"
-              value={preferences.emailNewComment}
-            />
-            <Text
-              block
-              marginTop={2}
-              size={3}
-              style={{ maxWidth: '60%' }}
-              variant="muted"
-            >
-              A user left a comment on one of my sandboxes
-            </Text>
-          </Element>
-          <Element paddingTop={4}>
-            <PaddedPreference
-              setValue={(value: boolean) =>
-                updateNotificationPreferences({
-                  emailCommentReply: value,
-                })
-              }
-              title="Replies"
-              tooltip="Email on new reply"
-              type="boolean"
-              value={preferences.emailCommentReply}
-            />
-            <Text
-              block
-              marginTop={2}
-              size={3}
-              style={{ maxWidth: '60%' }}
-              variant="muted"
-            >
-              A reply has been left on one of my comments
-            </Text>
-          </Element>
-          <Element paddingTop={4}>
-            <PaddedPreference
-              setValue={(value: boolean) =>
-                updateNotificationPreferences({
-                  emailCommentMention: value,
-                })
-              }
-              title="@Mentions"
-              tooltip="Email on new mention"
-              type="boolean"
-              value={preferences.emailCommentMention}
-            />
-          </Element>
+          <Text block marginBottom={2} size={3} weight="regular">
+            Review Notifications
+          </Text>
           <Text
             block
-            marginTop={2}
+            marginBottom={2}
             size={3}
             style={{ maxWidth: '60%' }}
             variant="muted"
           >
-            Someone mentioned me in a comment
+            In-browser notifications related to pull requests and reviews. These
+            will only be sent for repositories that have the GitHub App
+            installed and have been imported into any of your teams.
           </Text>
+          <Element paddingTop={4}>
+            <PaddedPreference
+              setValue={(value: boolean) =>
+                updateNotificationPreferences({
+                  inAppPrReviewRequest: value,
+                })
+              }
+              title="Notify me when someone requests my review on a pull request"
+              tooltip="Notify on review request"
+              type="boolean"
+              value={preferences.inAppPrReviewRequest}
+            />
+          </Element>
+          <Rule />
+          <Text block marginTop={4} marginBottom={4} size={3} weight="regular">
+            Email Notifications
+          </Text>
+          <Text
+            block
+            marginBottom={2}
+            size={3}
+            style={{ maxWidth: '60%' }}
+            variant="muted"
+          >
+            These notifications will always show in the browser, but receiving
+            an email is optional.
+          </Text>
+          <Element paddingTop={4}>
+            <PaddedPreference
+              setValue={(value: boolean) =>
+                updateNotificationPreferences({
+                  emailTeamInvite: value,
+                })
+              }
+              title="Email when someone invites me to a team"
+              tooltip="Email on team invite"
+              type="boolean"
+              value={preferences.emailTeamInvite}
+            />
+          </Element>
+          <Element paddingTop={4}>
+            <PaddedPreference
+              setValue={(value: boolean) =>
+                updateNotificationPreferences({
+                  emailSandboxInvite: value,
+                })
+              }
+              title="Email when someone invites me to collaborate on a sandbox"
+              tooltip="Email on team invite"
+              type="boolean"
+              value={preferences.emailSandboxInvite}
+            />
+          </Element>
+          <Rule />
+          <Element paddingTop={4}>
+            <PaddedPreference
+              setValue={(value: boolean) =>
+                updateNotificationPreferences({
+                  emailMarketing: value,
+                })
+              }
+              title="Send me occasional news and product updates via email"
+              tooltip="Product emails"
+              type="boolean"
+              value={preferences.emailMarketing}
+            />
+          </Element>
         </SubContainer>
       ) : (
         <Text align="center" marginTop={6} size={3}>
