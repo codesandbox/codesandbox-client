@@ -435,6 +435,20 @@ export type GitHubPullRequestComment = {
   username: Scalars['String'];
 };
 
+/** Ways to merge a pull request */
+export enum GitHubPullRequestMergeMethod {
+  Merge = 'MERGE',
+  Rebase = 'REBASE',
+  Squash = 'SQUASH',
+}
+
+/** The action to take with a pull request review */
+export enum GitHubPullRequestReviewAction {
+  Approve = 'APPROVE',
+  Comment = 'COMMENT',
+  RequestChanges = 'REQUEST_CHANGES',
+}
+
 /** Comment on a GitHub pull request review */
 export type GitHubPullRequestReviewComment = {
   __typename?: 'GitHubPullRequestReviewComment';
@@ -464,12 +478,14 @@ export type GitHubPullRequestReviewComment = {
   originalStartLine: Maybe<Scalars['Int']>;
   /** Relative path of the file to which the comment applies */
   path: Scalars['String'];
+  /** ID of the parent pull request review */
+  pullRequestReviewId: Maybe<Scalars['Int']>;
   /** Side of the diff to which the comment applies. Side of the last line of the range for a multi-line comment */
-  side: GitHubPullRequestReviewCommentSide;
+  side: Maybe<GitHubPullRequestReviewCommentSide>;
   /** First line of the range for a multi-line comment */
   startLine: Maybe<Scalars['Int']>;
   /** Side of the first line of the range for a multi-line comment */
-  startSide: GitHubPullRequestReviewCommentSide;
+  startSide: Maybe<GitHubPullRequestReviewCommentSide>;
   /** Level at which the comment is targeted, can be a diff line or a file */
   subjectType: Maybe<GitHubPullRequestReviewCommentSubjectType>;
   /** Last edit or reaction date of the comment */
@@ -478,6 +494,21 @@ export type GitHubPullRequestReviewComment = {
   user: Maybe<User>;
   /** GitHub username of the user who created the comment */
   username: Scalars['String'];
+};
+
+export type GithubPullRequestReviewCommentInput = {
+  /** Body text of the review comment */
+  body: Scalars['String'];
+  /** Line number of the file to comment on. Note: This line must be part of the diff */
+  line: Scalars['Int'];
+  /** Relative path to the file being commented on */
+  path: Scalars['String'];
+  /** Which side of the diff to comment on. */
+  side: GitHubPullRequestReviewCommentSide;
+  /** Start line of multi-line comment. Only needed for multi-line comments. */
+  startLine: Maybe<Scalars['Int']>;
+  /** Start side of multi-line comment. Only needed for multi-line comments. */
+  startSide: Maybe<GitHubPullRequestReviewCommentSide>;
 };
 
 /** Which side of a side-by-side diff a PR review comment pertains to */
@@ -660,7 +691,24 @@ export type NotificationPreferences = {
   __typename?: 'NotificationPreferences';
   emailCommentMention: Scalars['Boolean'];
   emailCommentReply: Scalars['Boolean'];
+  /**
+   * Whether or not a user wants to receive marketing emails.
+   * Since we do not receive webhooks from the marketing email service, it is possible for this to show
+   * `true` when in reality a user has already unsubscribed via the link in an email.
+   * This is inevitable, but does not affect whether or not they get emails.
+   */
+  emailMarketing: Scalars['Boolean'];
   emailNewComment: Scalars['Boolean'];
+  emailSandboxInvite: Scalars['Boolean'];
+  emailTeamInvite: Scalars['Boolean'];
+  emailTeamRequest: Scalars['Boolean'];
+  /**
+   * Whether or not a user wants an in-browser notification if someone requests their review on a PR.
+   *
+   * This will only be sent when a repository has the GitHub App installed and the requested reviewer is a
+   * member of a CodeSandbox team that has the project imported.
+   */
+  inAppPrReviewRequest: Scalars['Boolean'];
 };
 
 export type OrderBy = {
@@ -888,6 +936,10 @@ export type PullRequest = {
   headBranch: Scalars['String'];
   /** URL to view the PR on GitHub */
   htmlUrl: Scalars['String'];
+  /** Whether the PR can be merged in terms of Git conflicts. See also `mergeable_state`. */
+  mergeable: Maybe<Scalars['Boolean']>;
+  /** Whether the PR is allowed to be merged on GitHub */
+  mergeableStatus: Maybe<Scalars['String']>;
   /** PR number as it appears on GitHub */
   number: Scalars['Int'];
   /** When a PR was closed, either due to closing or merging */
@@ -967,11 +1019,12 @@ export type PullRequestReview = {
    * Comments are returned in the order in which they were created. However, clients may wish to
    * observe the `is_reply_to_id` field to ensure threaded replies appear in order.
    */
-  comments: Array<GitHubPullRequestComment>;
+  comments: Array<GitHubPullRequestReviewComment>;
   id: Scalars['Int'];
   state: PullRequestReviewState;
   submittedAt: Maybe<Scalars['DateTime']>;
-  syncedAt: Scalars['DateTime'];
+  /** Timestamp of the last time the review was persisted to the DB. Null means it has not been yet persisted */
+  syncedAt: Maybe<Scalars['DateTime']>;
   /** If available, the CodeSandbox user who submitted the review */
   user: Maybe<User>;
   /** GitHub username of the user who submitted the review */
@@ -1135,6 +1188,15 @@ export type RootMutationType = {
    * ```
    */
   createContributionBranch: Branch;
+  /**
+   * Create a review on a pull request on GitHub.
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. Returns the updated
+   * pull request review. Clients should be prepared to receive the same or additional information
+   * from the `BranchEvents` or `ProjectEvents` subscription with a `PullRequestReviewEvent` once
+   * the GitHub webhook is processed.
+   */
+  createGithubPullRequestReview: PullRequestReview;
   /** Create or Update a private registry */
   createOrUpdatePrivateNpmRegistry: PrivateRegistry;
   createPreviewComment: Comment;
@@ -1164,6 +1226,14 @@ export type RootMutationType = {
   deleteComment: Comment;
   /** Request deletion of current user */
   deleteCurrentUser: Scalars['String'];
+  /**
+   * Delete a comment from a pull request review
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. This endpoint returns
+   * a simple message, since the original comment was deleted. Clients can expect an event on the
+   * `BranchEvents` and `ProjectEvents` subscriptions with the full body of the removed comment.
+   */
+  deleteGithubPullRequestReviewComment: Scalars['String'];
   /** Delete a private registry */
   deletePrivateNpmRegistry: Maybe<PrivateRegistry>;
   /**
@@ -1212,6 +1282,19 @@ export type RootMutationType = {
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
   deleteWorkspace: Scalars['String'];
+  /**
+   * Dismiss a submitted pull request review
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. Returns the updated
+   * pull request review. Clients should be prepared to receive the same or additional information
+   * from the `BranchEvents` or `ProjectEvents` subscription with a `PullRequestReviewEvent` once
+   * the GitHub webhook is processed.
+   *
+   * **Note**: To dismiss a pull request review on a protected branch, the user must be a
+   * repository administrator or be included in the list of people or teams who can dismiss pull
+   * request reviews.
+   */
+  dismissGithubPullRequestReview: PullRequestReview;
   /**
    * Import an existing branch from a repository
    *
@@ -1306,6 +1389,19 @@ export type RootMutationType = {
   markAllNotificationsAsRead: User;
   /** Mark one notification as read */
   markNotificationAsRead: Notification;
+  /**
+   * Merge a pull request if merging is possible
+   *
+   * Pull requests have `mergeable` and `mergeableState` fields that indicate whether they can be
+   * merged (due to git conflicts and other merge requirements). However, these fields may not be
+   * up-to-date. Before attempting to merge, this mutation will check the latest status and return
+   * an error if merging is not possible. Furthermore, it will publish an event for the related
+   * repository and branch with the updated status.
+   *
+   * On success, the project and branch subscriptions will receive the updated pull request as soon
+   * as the resulting webhook is received.
+   */
+  mergeGithubPullRequest: Scalars['String'];
   permanentlyDeleteSandboxes: Array<Sandbox>;
   previewUpdateSubscriptionBillingInterval: BillingPreview;
   reactivateSubscription: ProSubscription;
@@ -1323,6 +1419,16 @@ export type RootMutationType = {
   /** Rename a collection and all subfolders */
   renameCollection: Array<Collection>;
   renameSandbox: Sandbox;
+  /**
+   * Reply to a pull request review on GitHub
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. This mutation returns
+   * only "OK" or an error message. To receive the created review data, the GitHub app needs to be
+   * installed in the repository, and clients need to subscribe to `BranchEvents` or
+   * `ProjectEvents` which will receive a `PullRequestReviewCommentEvent` once the webhook from
+   * GitHub gets processed.
+   */
+  replyToGithubPullRequestReview: GitHubPullRequestReviewComment;
   /**
    * Request access to a team by ID
    *
@@ -1366,6 +1472,16 @@ export type RootMutationType = {
   updateComment: Comment;
   /** Change details of current user */
   updateCurrentUser: User;
+  /** Edit the body of a pull request review. */
+  updateGithubPullRequestReview: PullRequestReview;
+  /**
+   * Update a comment from a pull request review
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. This endpoint returns
+   * the updated review comment. Clients can expect an event on the
+   * `BranchEvents` and `ProjectEvents` subscriptions with the full body of the edited comment.
+   */
+  updateGithubPullRequestReviewComment: GitHubPullRequestReviewComment;
   /** Set a user's notification preferences */
   updateNotificationPreferences: NotificationPreferences;
   /** Update notification read status */
@@ -1486,6 +1602,16 @@ export type RootMutationTypeCreateContributionBranchArgs = {
   provider: GitProvider;
 };
 
+export type RootMutationTypeCreateGithubPullRequestReviewArgs = {
+  body: Maybe<Scalars['String']>;
+  comments: Maybe<Array<GithubPullRequestReviewCommentInput>>;
+  commitId: Maybe<Scalars['String']>;
+  event: GitHubPullRequestReviewAction;
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+};
+
 export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
   authType: Maybe<AuthType>;
   enabledScopes: Array<Scalars['String']>;
@@ -1538,6 +1664,12 @@ export type RootMutationTypeDeleteCommentArgs = {
   sandboxId: Scalars['ID'];
 };
 
+export type RootMutationTypeDeleteGithubPullRequestReviewCommentArgs = {
+  commentId: Scalars['Int'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+};
+
 export type RootMutationTypeDeletePrivateNpmRegistryArgs = {
   teamId: Scalars['UUID4'];
 };
@@ -1559,6 +1691,14 @@ export type RootMutationTypeDeleteSandboxesArgs = {
 
 export type RootMutationTypeDeleteWorkspaceArgs = {
   teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeDismissGithubPullRequestReviewArgs = {
+  message: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+  pullRequestReviewId: Scalars['Int'];
 };
 
 export type RootMutationTypeImportBranchArgs = {
@@ -1617,6 +1757,13 @@ export type RootMutationTypeMarkNotificationAsReadArgs = {
   notificationId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeMergeGithubPullRequestArgs = {
+  mergeMethod?: Maybe<GitHubPullRequestMergeMethod>;
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+};
+
 export type RootMutationTypePermanentlyDeleteSandboxesArgs = {
   sandboxIds: Array<Scalars['ID']>;
 };
@@ -1670,6 +1817,14 @@ export type RootMutationTypeRenameCollectionArgs = {
 export type RootMutationTypeRenameSandboxArgs = {
   id: Scalars['ID'];
   title: Scalars['String'];
+};
+
+export type RootMutationTypeReplyToGithubPullRequestReviewArgs = {
+  body: Scalars['String'];
+  commentId: Scalars['Int'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
 };
 
 export type RootMutationTypeRequestTeamInvitationArgs = {
@@ -1797,13 +1952,30 @@ export type RootMutationTypeUpdateCurrentUserArgs = {
   username: Scalars['String'];
 };
 
+export type RootMutationTypeUpdateGithubPullRequestReviewArgs = {
+  body: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+  pullRequestReviewId: Scalars['Int'];
+};
+
+export type RootMutationTypeUpdateGithubPullRequestReviewCommentArgs = {
+  body: Scalars['String'];
+  commentId: Scalars['Int'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+};
+
 export type RootMutationTypeUpdateNotificationPreferencesArgs = {
   emailCommentMention: Maybe<Scalars['Boolean']>;
   emailCommentReply: Maybe<Scalars['Boolean']>;
+  emailMarketing: Maybe<Scalars['Boolean']>;
   emailNewComment: Maybe<Scalars['Boolean']>;
   emailSandboxInvite: Maybe<Scalars['Boolean']>;
   emailTeamInvite: Maybe<Scalars['Boolean']>;
   emailTeamRequest: Maybe<Scalars['Boolean']>;
+  inAppPrReviewRequest: Maybe<Scalars['Boolean']>;
 };
 
 export type RootMutationTypeUpdateNotificationReadStatusArgs = {
@@ -4319,7 +4491,9 @@ export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
 export type UpdateNotificationPreferencesMutationVariables = Exact<{
   emailCommentMention: Maybe<Scalars['Boolean']>;
   emailCommentReply: Maybe<Scalars['Boolean']>;
+  emailMarketing: Maybe<Scalars['Boolean']>;
   emailNewComment: Maybe<Scalars['Boolean']>;
+  emailSandboxInvite: Maybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateNotificationPreferencesMutation = {
@@ -4329,7 +4503,10 @@ export type UpdateNotificationPreferencesMutation = {
     __typename?: 'NotificationPreferences';
   } & Pick<
     NotificationPreferences,
-    'emailCommentMention' | 'emailCommentReply' | 'emailNewComment'
+    | 'emailCommentMention'
+    | 'emailCommentReply'
+    | 'emailMarketing'
+    | 'emailNewComment'
   >;
 };
 
@@ -4392,7 +4569,14 @@ export type EmailPreferencesQuery = { __typename?: 'RootQueryType' } & {
       notificationPreferences: Maybe<
         { __typename?: 'NotificationPreferences' } & Pick<
           NotificationPreferences,
-          'emailCommentMention' | 'emailCommentReply' | 'emailNewComment'
+          | 'emailCommentMention'
+          | 'emailCommentReply'
+          | 'emailMarketing'
+          | 'emailNewComment'
+          | 'emailSandboxInvite'
+          | 'emailTeamInvite'
+          | 'emailTeamRequest'
+          | 'inAppPrReviewRequest'
         >
       >;
     }
