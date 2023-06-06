@@ -14,17 +14,12 @@ export const Recent = props => {
   } = useAppState();
   const {
     dashboard: { getPage },
-    preferences: { openPreferencesModal },
   } = useActions();
 
   useEffect(() => {
     getPage(sandboxesTypes.RECENT);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
-
-  if (props.location?.pathname === '/dashboard/preferences') {
-    openPreferencesModal();
-  }
 
   const items: (DashboardSandbox | DashboardBranch)[] =
     sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null
