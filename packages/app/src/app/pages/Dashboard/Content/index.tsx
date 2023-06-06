@@ -66,6 +66,7 @@ export const Content = withRouter(({ history }) => {
     >
       <Switch>
         <Route path="/dashboard/recent" component={Recent} />
+        <Route path="/dashboard/preferences" component={Recent} />
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/sandboxes/:path*" component={Sandboxes} />
         <Route path="/dashboard/templates" component={Templates} />
