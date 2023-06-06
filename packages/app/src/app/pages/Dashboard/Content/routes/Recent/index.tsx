@@ -8,11 +8,10 @@ import { EmptyRecent } from './EmptyRecent';
 import { RecentContent } from './RecentContent';
 
 export const Recent = props => {
-  const state = useAppState();
   const {
     activeTeam,
     dashboard: { sandboxes },
-  } = state;
+  } = useAppState();
   const {
     dashboard: { getPage },
     preferences: { openPreferencesModal },
@@ -23,7 +22,7 @@ export const Recent = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
 
-  if (props.location.pathname === '/dashboard/preferences') {
+  if (props.location?.pathname === '/dashboard/preferences') {
     openPreferencesModal();
   }
 

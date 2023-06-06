@@ -74,7 +74,7 @@ const getItems = (isLoggedIn: boolean, user: CurrentUser): MenuItem[] =>
     user && {
       Content: MailPreferences,
       Icon: MailIcon,
-      id: 'emailSettings',
+      id: 'notifications',
       title: 'Notification Preferences',
     },
     {
@@ -98,6 +98,7 @@ export const PreferencesModal: FunctionComponent = () => {
     preferences: { itemId = 'appearance' },
   } = useAppState();
   const items = getItems(isLoggedIn, user);
+
   const { Content } = items.find(({ id }) => id === itemId);
 
   return (
