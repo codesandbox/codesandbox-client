@@ -37,7 +37,6 @@ const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
 });
 
-// Hello this is a cool comment to see what the AI commit message does
 // TODO: Move this page to v2 (also, this is a random commit to trigger the re-run of the build)
 export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, activeTeamInfo, activeTeam } = useAppState();
@@ -156,7 +155,7 @@ export const Dashboard: FunctionComponent = () => {
       const trialEndDate = new Date(subscription.trialEnd);
       const remainingTrialDays = differenceInDays(trialEndDate, today);
 
-      if (remainingTrialDays <= 5) {
+      if (remainingTrialDays <= 7) {
         actions.modalOpened({ modal: 'midTrial' });
       }
     }
