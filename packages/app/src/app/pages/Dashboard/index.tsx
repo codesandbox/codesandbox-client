@@ -156,7 +156,7 @@ export const Dashboard: FunctionComponent = () => {
       const trialEndDate = new Date(subscription.trialEnd);
       const remainingTrialDays = differenceInDays(trialEndDate, today);
 
-      if (remainingTrialDays <= 7) {
+      if (remainingTrialDays <= 5) {
         actions.modalOpened({ modal: 'midTrial' });
       }
     }
