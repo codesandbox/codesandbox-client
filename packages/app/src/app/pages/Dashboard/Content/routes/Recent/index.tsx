@@ -7,7 +7,7 @@ import { Loading, Stack } from '@codesandbox/components';
 import { EmptyRecent } from './EmptyRecent';
 import { RecentContent } from './RecentContent';
 
-export const Recent = () => {
+export const Recent = props => {
   const {
     activeTeam,
     dashboard: { sandboxes },

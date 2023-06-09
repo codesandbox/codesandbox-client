@@ -6,10 +6,13 @@ import css from '@styled-system/css';
 export const Filters = () => {
   const { userNotifications } = useAppState();
   const {
-    filterNotifications,
-    markAllNotificationsAsRead,
-    archiveAllNotifications,
-  } = useActions().userNotifications;
+    userNotifications: {
+      filterNotifications,
+      markAllNotificationsAsRead,
+      archiveAllNotifications,
+    },
+    preferences: { openPreferencesModal },
+  } = useActions();
 
   const options = {
     team_invite: 'Team Invite',
@@ -62,6 +65,9 @@ export const Filters = () => {
           size={12}
         />
         <Menu.List>
+          <Menu.Item onSelect={() => openPreferencesModal('notifications')}>
+            Manage notification preferences
+          </Menu.Item>
           <Menu.Item onSelect={() => archiveAllNotifications()}>
             Clear all notifications
           </Menu.Item>
