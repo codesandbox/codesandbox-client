@@ -22,6 +22,7 @@ export const getEmailPreferences: Query<
         emailSandboxInvite
         emailTeamInvite
         inAppPrReviewRequest
+        inAppPrReviewReceived
       }
     }
   }
