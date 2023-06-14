@@ -4599,6 +4599,7 @@ export type EmailPreferencesQuery = { __typename?: 'RootQueryType' } & {
           | 'emailNewComment'
           | 'emailSandboxInvite'
           | 'emailTeamInvite'
+          | 'inAppPrReviewReceived'
           | 'inAppPrReviewRequest'
         >
       >;
