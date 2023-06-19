@@ -5,7 +5,7 @@ export const PostToken: FunctionComponent<{ authToken: string }> = ({
   authToken,
 }) => {
   useEffect(() => {
-    window.top.postMessage(
+    window.opener.postMessage(
       {
         type: 'CLI_TOKEN',
         token: authToken,
