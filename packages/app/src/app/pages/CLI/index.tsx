@@ -28,6 +28,10 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
   const postTokenToParent = window.location.search.includes('post=true');
 
   useEffect(() => {
+    actions.cliMounted();
+  }, [actions.cliMounted]);
+
+  useEffect(() => {
     if (isLoggedIn && !authToken && !isLoadingAuthToken) {
       actions.internal.authorize();
     }
