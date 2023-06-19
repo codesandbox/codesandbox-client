@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { withTheme } from 'styled-components';
 import { Element, ThemeProvider } from '@codesandbox/components';
@@ -18,22 +18,22 @@ import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 export const CLI: FunctionComponent = withTheme(({ theme }) => {
   const {
     authToken,
-    isLoadingAuthToken,
     error,
-    isLoadingCLI,
+    isLoadingAuthToken,
     user,
     isLoggedIn,
   } = useAppState();
   const actions = useActions();
   const postTokenToParent = window.location.search.includes('post=true');
+  const [hasRequestedAuthorization, setHasRequestedAuthorization] = useState(
+    false
+  );
 
   useEffect(() => {
-    actions.cliMounted();
-  }, [actions.cliMounted]);
-
-  useEffect(() => {
-    if (isLoggedIn && !authToken && !isLoadingAuthToken) {
+    // We want to reauthorize when we change logged in state
+    if (isLoggedIn) {
       actions.internal.authorize();
+      setHasRequestedAuthorization(true);
     }
   }, [isLoggedIn]);
 
@@ -82,7 +82,7 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
       );
     }
 
-    if (isLoadingCLI) {
+    if (isLoadingAuthToken || !hasRequestedAuthorization) {
       return <Title>Fetching authorization key...</Title>;
     }
 
