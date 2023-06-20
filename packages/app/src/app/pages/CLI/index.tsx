@@ -22,7 +22,9 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
   const { authToken, error, isLoadingAuthToken, isLoggedIn } = useAppState();
   const actions = useActions();
   const postTokenToParent = window.location.search.includes('post=true');
-  const [hasRequestedAuthorization, setHasRequestedAuthorization] = useState(
+  // Because we need to run `authorize` (given we are logged in) before evaluating what to render,
+  // we have to wait until the effect has run before showing any UI
+  const [hasRunInitialAuthorization, setHasRunInitialAuthorization] = useState(
     false
   );
 
@@ -30,8 +32,9 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
     // We want to reauthorize when we change logged in state
     if (isLoggedIn) {
       actions.internal.authorize();
-      setHasRequestedAuthorization(true);
     }
+
+    setHasRunInitialAuthorization(true);
   }, [isLoggedIn]);
 
   const render = () => {
@@ -61,7 +64,7 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
       );
     }
 
-    if (isLoadingAuthToken || !hasRequestedAuthorization) {
+    if (isLoadingAuthToken) {
       return <Title>Fetching authorization key...</Title>;
     }
 
@@ -89,6 +92,10 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
       </>
     );
   };
+
+  if (!hasRunInitialAuthorization) {
+    return null;
+  }
 
   return (
     <ThemeProvider theme={theme.vsCode}>
