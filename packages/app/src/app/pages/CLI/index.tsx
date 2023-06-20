@@ -1,10 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { withTheme } from 'styled-components';
-import { Element, ThemeProvider , Button } from '@codesandbox/components';
+import { Element, ThemeProvider, Button } from '@codesandbox/components';
 
 import { useActions, useAppState } from 'app/overmind';
-
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
