@@ -27,9 +27,12 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
   } = useActions();
 
   const handleSignIn = async (provider: 'github' | 'google' | 'apple') => {
+    console.log('SIGNING IN!');
     setLoadingAuth(provider);
 
     await signInButtonClicked({ provider });
+
+    console.log('SIGNED IN', redirectTo, onSignIn);
 
     if (onSignIn) {
       return onSignIn();

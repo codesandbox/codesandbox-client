@@ -46,6 +46,7 @@ export const SignIn = ({ redirectTo, onSignIn }: SignInProps) => {
     return <Onboarding />;
   }
 
+  console.log('WTF', redirectTo);
   /**
    * ⬇️ Sign in provider
    */

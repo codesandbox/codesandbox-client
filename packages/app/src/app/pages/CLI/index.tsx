@@ -77,7 +77,9 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
             You need to sign in to use the CLI.
           </SubTitle>
 
-          <SignIn redirectTo={window.location.href} />
+          <SignIn
+            redirectTo={window.opener ? window.location.href : undefined}
+          />
         </>
       );
     }
