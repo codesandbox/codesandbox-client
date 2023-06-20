@@ -1,20 +1,24 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { withTheme } from 'styled-components';
-import { Element, ThemeProvider } from '@codesandbox/components';
+import { Element, ThemeProvider , Button } from '@codesandbox/components';
 
 import { useActions, useAppState } from 'app/overmind';
-import { Container, Buttons, ContentContainer } from './elements';
-import { PostToken } from './PostToken';
-import { Prompt } from './Prompt';
-import { Button } from '@codesandbox/components';
+
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 
 import { SignIn } from 'app/pages/SignIn/SignIn';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
+import { Prompt } from './Prompt';
+import { PostToken } from './PostToken';
+import { Container, Buttons, ContentContainer } from './elements';
 
+/**
+ * This component renders the CLI token page. By giving a query of "post=true" it will post
+ * the JWT token back to the window.opener, as opposed to showing it in the UI to "copy/paste"
+ */
 export const CLI: FunctionComponent = withTheme(({ theme }) => {
   const {
     authToken,
