@@ -19,13 +19,7 @@ import { Container, Buttons, ContentContainer } from './elements';
  * the JWT token back to the window.opener, as opposed to showing it in the UI to "copy/paste"
  */
 export const CLI: FunctionComponent = withTheme(({ theme }) => {
-  const {
-    authToken,
-    error,
-    isLoadingAuthToken,
-    user,
-    isLoggedIn,
-  } = useAppState();
+  const { authToken, error, isLoadingAuthToken, isLoggedIn } = useAppState();
   const actions = useActions();
   const postTokenToParent = window.location.search.includes('post=true');
   const [hasRequestedAuthorization, setHasRequestedAuthorization] = useState(
@@ -67,34 +61,32 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
       );
     }
 
-    if (!user?.username) {
-      return (
-        <>
-          <LogoFull style={{ paddingBottom: 32 }} />
-          <Title>
-            Welcome to <br />
-            CodeSandbox!
-          </Title>
-
-          <SubTitle style={{ paddingBottom: 16 }}>
-            You need to sign in to use the CLI.
-          </SubTitle>
-
-          <SignIn
-            redirectTo={window.opener ? window.location.href : undefined}
-          />
-        </>
-      );
-    }
-
     if (isLoadingAuthToken || !hasRequestedAuthorization) {
       return <Title>Fetching authorization key...</Title>;
     }
 
-    return postTokenToParent ? (
-      <PostToken authToken={authToken} />
-    ) : (
-      <Prompt authToken={authToken} />
+    if (authToken) {
+      return postTokenToParent ? (
+        <PostToken authToken={authToken} />
+      ) : (
+        <Prompt authToken={authToken} />
+      );
+    }
+
+    return (
+      <>
+        <LogoFull style={{ paddingBottom: 32 }} />
+        <Title>
+          Welcome to <br />
+          CodeSandbox!
+        </Title>
+
+        <SubTitle style={{ paddingBottom: 16 }}>
+          You need to sign in to use the CLI.
+        </SubTitle>
+
+        <SignIn redirectTo={window.opener ? window.location.href : undefined} />
+      </>
     );
   };
 
