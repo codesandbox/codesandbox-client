@@ -33,7 +33,7 @@ const Typeform = () => {
     if (el.current) {
       typeformEmbed.makeWidget(
         el.current,
-        `${formUrl}#team_id=${activeTeamInfo.id}`,
+        `${formUrl}?team_id=${activeTeamInfo.id}`,
         {
           opacity: 0,
           hideScrollbars: true,
