@@ -12,6 +12,10 @@ import { LoseFeatures } from 'app/components/LoseFeatures/LoseFeatures';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
+import { SubscriptionType } from 'app/graphql/types';
+
+const PERSONAL_PRO_MODAL = 'https://codesandbox.typeform.com/to/UiMxcTD8';
+const TEAM_PRO_MODAL = 'https://codesandbox.typeform.com/to/oeh6CNdL';
 
 const Typeform = () => {
   const el = React.useRef();
@@ -22,10 +26,14 @@ const Typeform = () => {
   });
 
   useEffect(() => {
+    const formUrl =
+      activeTeamInfo.subscription?.type === SubscriptionType.TeamPro
+        ? TEAM_PRO_MODAL
+        : PERSONAL_PRO_MODAL;
     if (el.current) {
       typeformEmbed.makeWidget(
         el.current,
-        `https://codesandbox.typeform.com/to/UiMxcTD8?team_id=${activeTeamInfo.id}`,
+        `${formUrl}#team_id=${activeTeamInfo.id}`,
         {
           opacity: 0,
           hideScrollbars: true,
