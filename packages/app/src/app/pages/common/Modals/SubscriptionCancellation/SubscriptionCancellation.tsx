@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react';
+import * as typeformEmbed from '@typeform/embed';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   Element,
@@ -10,18 +12,47 @@ import { LoseFeatures } from 'app/components/LoseFeatures/LoseFeatures';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
-import React from 'react';
+
+const Typeform = () => {
+  const el = React.useRef();
+  const { activeTeamInfo } = useAppState();
+
+  const [, createCustomerPortal] = useCreateCustomerPortal({
+    team_id: activeTeamInfo?.id,
+  });
+
+  useEffect(() => {
+    if (el.current) {
+      typeformEmbed.makeWidget(
+        el.current,
+        `https://codesandbox.typeform.com/to/UiMxcTD8?team_id=${activeTeamInfo.id}`,
+        {
+          opacity: 0,
+          hideScrollbars: true,
+          hideFooter: true,
+          hideHeaders: true,
+          onSubmit: () => {
+            setTimeout(() => {
+              createCustomerPortal();
+            }, 1500);
+          },
+        }
+      );
+    }
+  }, [el, activeTeamInfo.id]);
+
+  return (
+    <Stack>
+      <div style={{ width: '100%', height: 700 }} ref={el} />
+    </Stack>
+  );
+};
 
 export const SubscriptionCancellationModal: React.FC = () => {
-  const { activeTeamInfo } = useAppState();
+  const [hasFormOpen, setFormOpen] = React.useState(false);
   const { hasActiveTeamTrial, isPaddle } = useWorkspaceSubscription();
   const [paddleLoading, setPaddeLoading] = React.useState(false);
   const { modalClosed, pro } = useActions();
-  const [loadingCustomerPortal, createCustomerPortal] = useCreateCustomerPortal(
-    {
-      team_id: activeTeamInfo?.id,
-    }
-  );
 
   const handleCloseModal = () => {
     track('Team Settings: close cancel subscription modal', {
@@ -31,6 +62,10 @@ export const SubscriptionCancellationModal: React.FC = () => {
 
     modalClosed();
   };
+
+  if (hasFormOpen) {
+    return <Typeform />;
+  }
 
   return (
     <Stack css={{ padding: '24px' }} direction="vertical" gap={12}>
@@ -82,14 +117,13 @@ export const SubscriptionCancellationModal: React.FC = () => {
             </Button>
           ) : (
             <Button
-              loading={loadingCustomerPortal}
               onClick={() => {
                 track('Team Settings: confirm cancellation from modal', {
                   codesandbox: 'V1',
                   event_source: 'UI',
                 });
 
-                createCustomerPortal();
+                setFormOpen(true);
               }}
               variant="primary"
             >
