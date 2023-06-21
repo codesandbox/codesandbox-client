@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
@@ -294,6 +294,7 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
 
 const AIPermission = ({ disabled }: { disabled: boolean }) => {
   const { activeTeamInfo } = useAppState();
+  const [showContinueUrl, setShowContinueUrl] = useState(false);
 
   const options = [
     {
@@ -316,6 +317,9 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
 
   const [state, setState] = React.useState(activeTeamInfo.settings.aiConsent);
   const { setTeamAiConsent } = useActions().dashboard;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const continueUrl = urlParams.get('continueUrl');
 
   return (
     <Stack
@@ -379,13 +383,20 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
         </Text>
       </Stack>
 
-      <Stack justify="flex-end">
+      <Stack justify="flex-end" gap={2}>
+        {showContinueUrl && continueUrl && (
+          <Button autoWidth variant="secondary" as="a" href={continueUrl}>
+            Go back to the project
+          </Button>
+        )}
+
         <Button
-          disabled={disabled}
           autoWidth
+          disabled={disabled}
           onClick={async () => {
             track('Dashboard - Permissions panel - Changed AI consent');
             await setTeamAiConsent(state);
+            setShowContinueUrl(true);
           }}
         >
           Change Settings
