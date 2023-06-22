@@ -25,6 +25,7 @@ export const updateNotificationPreferences: Query<
     $emailNewComment: Boolean
     $emailSandboxInvite: Boolean
     $emailTeamInvite: Boolean
+    $inAppPrReviewReceived: Boolean
     $inAppPrReviewRequest: Boolean
   ) {
     updateNotificationPreferences(
@@ -34,6 +35,7 @@ export const updateNotificationPreferences: Query<
       emailNewComment: $emailNewComment
       emailSandboxInvite: $emailSandboxInvite
       emailTeamInvite: $emailTeamInvite
+      inAppPrReviewReceived: $inAppPrReviewReceived
       inAppPrReviewRequest: $inAppPrReviewRequest
     ) {
       emailCommentMention
@@ -42,6 +44,7 @@ export const updateNotificationPreferences: Query<
       emailNewComment
       emailSandboxInvite
       emailTeamInvite
+      inAppPrReviewReceived
       inAppPrReviewRequest
     }
   }

@@ -7,6 +7,7 @@ export type preferenceTypes = {
   emailNewComment: boolean;
   emailSandboxInvite: boolean;
   emailTeamInvite: boolean;
+  inAppPrReviewReceived: boolean;
   inAppPrReviewRequest: boolean;
 };
 

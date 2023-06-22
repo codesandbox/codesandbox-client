@@ -43,6 +43,19 @@ export const MailPreferences: FunctionComponent = () => {
             <PaddedPreference
               setValue={(value: boolean) =>
                 updateNotificationPreferences({
+                  inAppPrReviewReceived: value,
+                })
+              }
+              title="Notify me when someone reviews my pull request"
+              tooltip="Notify on review"
+              type="boolean"
+              value={preferences.inAppPrReviewReceived}
+            />
+          </Element>
+          <Element paddingTop={4}>
+            <PaddedPreference
+              setValue={(value: boolean) =>
+                updateNotificationPreferences({
                   inAppPrReviewRequest: value,
                 })
               }

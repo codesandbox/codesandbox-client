@@ -15,6 +15,18 @@ export type MentionData = {
   commentId: string;
 };
 
+export type PullRequestReviewReceivedData = {
+  branch: string;
+  owner: string;
+  pullRequestNumber: number;
+  repo: string;
+  reviewerAvatar: string;
+  reviewerName: string;
+  reviewState: string;
+  reviewId: number;
+  teamId: string;
+};
+
 export type PullRequestReviewRequestData = {
   branch: string;
   owner: string;

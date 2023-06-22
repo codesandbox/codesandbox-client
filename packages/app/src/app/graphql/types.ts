@@ -703,6 +703,13 @@ export type NotificationPreferences = {
   emailTeamInvite: Scalars['Boolean'];
   emailTeamRequest: Scalars['Boolean'];
   /**
+   * Whether or not a user wants an in-browser notification if someone submits a review on their PR.
+   *
+   * This will only be sent when a repository has the GitHub App installed and the PR owner is a
+   * member of a CodeSandbox team that has the project imported.
+   */
+  inAppPrReviewReceived: Scalars['Boolean'];
+  /**
    * Whether or not a user wants an in-browser notification if someone requests their review on a PR.
    *
    * This will only be sent when a repository has the GitHub App installed and the requested reviewer is a
@@ -1975,6 +1982,7 @@ export type RootMutationTypeUpdateNotificationPreferencesArgs = {
   emailSandboxInvite: Maybe<Scalars['Boolean']>;
   emailTeamInvite: Maybe<Scalars['Boolean']>;
   emailTeamRequest: Maybe<Scalars['Boolean']>;
+  inAppPrReviewReceived: Maybe<Scalars['Boolean']>;
   inAppPrReviewRequest: Maybe<Scalars['Boolean']>;
 };
 
@@ -2454,6 +2462,7 @@ export type Team = {
   /** @deprecated There's no such thing as a pilot team anymore */
   joinedPilotAt: Maybe<Scalars['DateTime']>;
   limits: TeamLimits;
+  members: Array<TeamMember>;
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
   /**
@@ -2517,6 +2526,16 @@ export type TeamLimits = {
   maxPrivateSandboxes: Maybe<Scalars['Int']>;
   maxPublicProjects: Maybe<Scalars['Int']>;
   maxPublicSandboxes: Maybe<Scalars['Int']>;
+};
+
+export type TeamMember = {
+  __typename?: 'TeamMember';
+  avatarUrl: Scalars['String'];
+  bio: Maybe<Scalars['String']>;
+  githubUsername: Maybe<Scalars['String']>;
+  id: Scalars['UUID4'];
+  name: Maybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 export enum TeamMemberAuthorization {
@@ -4494,6 +4513,8 @@ export type UpdateNotificationPreferencesMutationVariables = Exact<{
   emailMarketing: Maybe<Scalars['Boolean']>;
   emailNewComment: Maybe<Scalars['Boolean']>;
   emailSandboxInvite: Maybe<Scalars['Boolean']>;
+  emailTeamInvite: Maybe<Scalars['Boolean']>;
+  inAppPrReviewRequest: Maybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateNotificationPreferencesMutation = {
@@ -4507,6 +4528,9 @@ export type UpdateNotificationPreferencesMutation = {
     | 'emailCommentReply'
     | 'emailMarketing'
     | 'emailNewComment'
+    | 'emailSandboxInvite'
+    | 'emailTeamInvite'
+    | 'inAppPrReviewRequest'
   >;
 };
 
@@ -4575,7 +4599,7 @@ export type EmailPreferencesQuery = { __typename?: 'RootQueryType' } & {
           | 'emailNewComment'
           | 'emailSandboxInvite'
           | 'emailTeamInvite'
-          | 'emailTeamRequest'
+          | 'inAppPrReviewReceived'
           | 'inAppPrReviewRequest'
         >
       >;
