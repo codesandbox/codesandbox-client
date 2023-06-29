@@ -14,7 +14,11 @@ export type CheckoutOptions = {
   recurring_interval?: 'month' | 'year';
   success_path?: string;
   cancel_path?: string;
-  utm_source?: 'settings_upgrade' | 'dashboard_upgrade_banner';
+  utm_source?:
+    | 'settings_upgrade'
+    | 'dashboard_upgrade_banner'
+    | 'dashboard_import_limits'
+    | 'dashboard_private_repo_upgrade';
 };
 
 /**
