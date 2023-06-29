@@ -7,7 +7,7 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
-import { useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout } from 'app/hooks';
 import { Alert } from '../Common/Alert';
 
 const EVENT_PARAMS = {
@@ -17,6 +17,7 @@ const EVENT_PARAMS = {
 
 export const LiveSessionRestricted: React.FC = () => {
   const {
+    activeTeam,
     editor: {
       currentSandbox: { id },
     },
@@ -24,10 +25,8 @@ export const LiveSessionRestricted: React.FC = () => {
   const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: sandboxUrl({ id }),
-    cancel_path: sandboxUrl({ id }),
-  });
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
+  const disabled = checkout.status == 'loading';
 
   const docsUrl = isEligibleForTrial
     ? SUBSCRIPTION_DOCS_URLS.teams.trial
@@ -35,7 +34,7 @@ export const LiveSessionRestricted: React.FC = () => {
 
   return (
     <Alert title="Upgrade to Pro to start a Live Session">
-      {checkoutUrl ? (
+      {canCheckout ? (
         <Stack gap={2} align="center" justify="flex-end">
           <Button
             as="a"
@@ -60,6 +59,7 @@ export const LiveSessionRestricted: React.FC = () => {
           ) : (
             <Button
               variant="primary"
+              disabled={disabled}
               onClick={() => {
                 if (isEligibleForTrial) {
                   const event = 'Live Session - trial clicked';
@@ -70,7 +70,14 @@ export const LiveSessionRestricted: React.FC = () => {
                 } else {
                   track('Live Session - upgrade clicked', EVENT_PARAMS);
                 }
-                window.location.href = checkoutUrl;
+
+                createCheckout({
+                  success_path: sandboxUrl({ id }),
+                  cancel_path: sandboxUrl({ id }),
+                  team_id: activeTeam,
+                  recurring_interval: 'month',
+                  utm_source: 'v1_live_session_upgrade',
+                });
               }}
               autoWidth
             >

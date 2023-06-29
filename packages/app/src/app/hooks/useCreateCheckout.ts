@@ -18,7 +18,8 @@ export type CheckoutOptions = {
     | 'settings_upgrade'
     | 'dashboard_upgrade_banner'
     | 'dashboard_import_limits'
-    | 'dashboard_private_repo_upgrade';
+    | 'dashboard_private_repo_upgrade'
+    | 'v1_live_session_upgrade';
 };
 
 /**
