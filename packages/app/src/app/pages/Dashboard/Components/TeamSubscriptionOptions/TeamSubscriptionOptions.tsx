@@ -22,7 +22,6 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
-
   const disabled = checkout.status === 'loading';
 
   const createMonthlyCheckout = () => {
@@ -55,6 +54,7 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
 
   return (
     <ComboButton
+      disabled={disabled}
       as="a"
       customStyles={buttonStyles}
       onClick={() => {
@@ -128,7 +128,10 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
       variant={buttonVariant}
       fillSpace
     >
-      {ctaCopy || (isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro')}
+      {disabled
+        ? 'Loading...'
+        : ctaCopy ||
+          (isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro')}
     </ComboButton>
   );
 };

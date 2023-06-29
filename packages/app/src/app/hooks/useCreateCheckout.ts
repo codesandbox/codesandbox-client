@@ -20,7 +20,8 @@ export type CheckoutOptions = {
     | 'dashboard_import_limits'
     | 'dashboard_private_repo_upgrade'
     | 'v1_live_session_upgrade'
-    | 'editor_seats_upgrade';
+    | 'editor_seats_upgrade'
+    | 'pro_page';
 };
 
 /**
@@ -51,13 +52,15 @@ export const useCreateCheckout = (): [
   boolean
 ] => {
   const { activeTeam } = useAppState();
-  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
+  const { isFree } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
   const [status, setStatus] = useState<CheckoutStatus>({ status: 'idle' });
   const { api } = useEffects();
 
+  const canCheckout = isFree && isBillingManager;
+
   const createCheckout = async ({
-    team_id,
+    team_id = activeTeam,
     recurring_interval = 'month',
     success_path = dashboard.settings(team_id) + '&payment_pending=true',
     cancel_path = '/pro',
@@ -69,7 +72,7 @@ export const useCreateCheckout = (): [
       const payload = await api.stripeCreateCheckout({
         success_path: addStripeSuccessParam(success_path, utm_source),
         cancel_path,
-        team_id: team_id || activeTeam,
+        team_id,
         recurring_interval,
       });
 
@@ -83,8 +86,6 @@ export const useCreateCheckout = (): [
       });
     }
   };
-
-  const canCheckout = isFree && isBillingManager;
 
   return [status, createCheckout, canCheckout];
 };

@@ -13,7 +13,6 @@ import {
 } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ORG_FEATURES,
@@ -26,7 +25,7 @@ import {
 } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
 
-import { useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout, useGetCheckoutURL } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
@@ -92,10 +91,8 @@ export const ProUpgrade = () => {
    */
   const hasCustomSubscription = false;
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: dashboardUrls.settings(activeTeam),
-    // recurring_interval: 'year', // TODO: defaulting to year does not enable the interval switch in stripe
-  });
+  const [checkout, createCheckout] = useCreateCheckout();
+  const disabled = checkout.status === 'loading';
 
   const [
     isCustomerPortalLoading,
@@ -117,12 +114,16 @@ export const ProUpgrade = () => {
       }
     : {
         text: 'Proceed to checkout',
-        href: checkoutUrl ?? '', // TODO: Fallback?
         variant: 'highlight',
+        isLoading: disabled,
         onClick: () => {
           track('subscription page - personal pro checkout', {
             codesandbox: 'V1',
             event_source: 'UI',
+          });
+
+          createCheckout({
+            utm_source: 'pro_page',
           });
         },
       };
