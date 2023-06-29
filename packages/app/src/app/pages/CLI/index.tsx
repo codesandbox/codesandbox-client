@@ -11,17 +11,20 @@ import { Title } from 'app/components/Title';
 import { SignIn } from 'app/pages/SignIn/SignIn';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Prompt } from './Prompt';
-import { PostToken } from './PostToken';
+import { LocalStorageToken } from './LocalStorageToken';
+import { DevToken } from './DevToken';
 import { Container, Buttons, ContentContainer } from './elements';
 
 /**
- * This component renders the CLI token page. By giving a query of "post=true" it will post
- * the JWT token back to the window.opener, as opposed to showing it in the UI to "copy/paste"
+ * This component renders the CLI token page. By giving a query of "local=true" it will store
+ * the exchange JWT token in local storage and notify when it is available. This allows an iFrame
+ * codesandbox.stream page to sign in through the parent by making it open a popup to this page
  */
 const AuthorizedCLI: FunctionComponent = () => {
   const { authToken, error, isLoadingAuthToken, isLoggedIn } = useAppState();
   const actions = useActions();
-  const postTokenToParent = window.location.search.includes('post=true');
+  const localToken = window.location.search.includes('local=true');
+  const devToken = window.location.search.includes('dev=true') && window.location.origin === 'https://codesandbox.stream'
 
   useEffect(() => {
     // We want to reauthorize when we change logged in state
@@ -60,12 +63,12 @@ const AuthorizedCLI: FunctionComponent = () => {
     return <Title>Fetching authorization key...</Title>;
   }
 
-  if (authToken) {
-    return postTokenToParent ? (
-      <PostToken authToken={authToken} />
-    ) : (
-      <Prompt authToken={authToken} />
-    );
+  if (authToken && devToken) {
+    return <DevToken authToken={authToken} />
+  } else if (authToken && localToken) {
+    return <LocalStorageToken authToken={authToken} />
+  } else if (authToken) {
+    return <Prompt authToken={authToken} />
   }
 
   return (
