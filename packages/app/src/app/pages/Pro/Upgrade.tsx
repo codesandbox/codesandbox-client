@@ -25,7 +25,7 @@ import {
 } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
 
-import { useCreateCheckout, useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
