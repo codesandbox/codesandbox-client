@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { MessageStripe } from '@codesandbox/components';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
@@ -22,31 +21,28 @@ const EVENT_PROPS = {
 };
 
 type MaxPublicSandboxesProps = {
-  checkoutUrl: string | null;
+  onCreateCheckout: () => void;
   isBillingManager: boolean;
   isEligibleForTrial: boolean;
+  isFree: boolean;
 };
 export const MaxPublicSandboxes: React.FC<MaxPublicSandboxesProps> = ({
-  checkoutUrl,
+  onCreateCheckout,
   isEligibleForTrial,
   isBillingManager,
+  isFree,
 }) => {
+  const canCheckout = (isFree && isBillingManager) || isEligibleForTrial;
+
   return (
     <MessageStripe justify="space-between">
       You&apos;ve reached the maximum amount of free sandboxes. Upgrade for
       more.
-      {checkoutUrl ? (
+      {canCheckout ? (
         <MessageStripe.Action
-          {...(checkoutUrl.startsWith('/')
-            ? {
-                as: Link,
-                to: `${checkoutUrl}?utm_source=dashboard_upgrade_banner`,
-              }
-            : {
-                as: 'a',
-                href: checkoutUrl,
-              })}
           onClick={() => {
+            onCreateCheckout();
+
             track(
               getEventName(isEligibleForTrial, isBillingManager),
               EVENT_PROPS

@@ -15,8 +15,8 @@ import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useGetCheckoutURL } from 'app/hooks';
 import { useLocation } from 'react-router-dom';
+import { useCreateCheckout } from 'app/hooks';
 import {
   Container,
   Tab,
@@ -181,10 +181,17 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     }
   }, [tabState.selectedId]);
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: pathname,
-    cancel_path: pathname,
-  });
+  const [, createCheckout] = useCreateCheckout();
+
+  const onCreateCheckout = () => {
+    createCheckout({
+      success_path: pathname,
+      cancel_path: pathname,
+      team_id: activeTeamInfo?.id,
+      recurring_interval: 'month',
+      utm_source: 'dashboard_upgrade_banner',
+    });
+  };
 
   const createFromTemplate = (
     template: TemplateFragment,
@@ -432,7 +439,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {viewState === 'initial' &&
               (searchQuery ? (
                 <SearchResults
-                  checkoutUrl={checkoutUrl}
+                  onCreateCheckout={onCreateCheckout}
                   isInCollection={Boolean(collectionId)}
                   search={searchQuery}
                   onSelectTemplate={selectTemplate}
@@ -444,7 +451,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Panel tab={tabState} id="quickstart">
                     <TemplateCategoryList
                       title="Start from a template"
-                      checkoutUrl={checkoutUrl}
+                      onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
                       templates={quickStartTemplates}
                       onSelectTemplate={template => {
@@ -492,7 +499,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         title={`${
                           isUser ? 'My' : activeTeamInfo?.name || 'Team'
                         } templates`}
-                        checkoutUrl={checkoutUrl}
+                        onCreateCheckout={onCreateCheckout}
                         isInCollection={Boolean(collectionId)}
                         templates={teamTemplates}
                         onSelectTemplate={template => {
@@ -534,7 +541,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Panel tab={tabState} id="cloud-templates">
                     <TemplateCategoryList
                       title="Cloud templates"
-                      checkoutUrl={checkoutUrl}
+                      onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
                       templates={officialTemplates.filter(
                         template => template.sandbox.isV2
@@ -574,7 +581,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Panel tab={tabState} id="official-templates">
                     <TemplateCategoryList
                       title="Official templates"
-                      checkoutUrl={checkoutUrl}
+                      onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
                       templates={officialTemplates}
                       onSelectTemplate={template => {
@@ -617,7 +624,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         >
                           <TemplateCategoryList
                             title={essential.title}
-                            checkoutUrl={checkoutUrl}
+                            onCreateCheckout={onCreateCheckout}
                             isInCollection={Boolean(collectionId)}
                             templates={essential.templates}
                             onSelectTemplate={template => {

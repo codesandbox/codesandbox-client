@@ -13,7 +13,7 @@ import { MaxPublicSandboxes } from './stripes';
 
 interface TemplateCategoryListProps {
   title: string;
-  checkoutUrl: string | undefined;
+  onCreateCheckout: () => void;
   isCloudTemplateList?: boolean;
   isInCollection: boolean;
   templates: TemplateFragment[];
@@ -23,7 +23,7 @@ interface TemplateCategoryListProps {
 
 export const TemplateCategoryList = ({
   title,
-  checkoutUrl,
+  onCreateCheckout,
   isCloudTemplateList,
   isInCollection,
   templates,
@@ -32,7 +32,7 @@ export const TemplateCategoryList = ({
 }: TemplateCategoryListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
-  const { isEligibleForTrial } = useWorkspaceSubscription();
+  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const { isBillingManager } = useWorkspaceAuthorization();
 
@@ -67,9 +67,10 @@ export const TemplateCategoryList = ({
       </Stack>
       {limitNewSandboxes ? (
         <MaxPublicSandboxes
-          checkoutUrl={checkoutUrl}
+          onCreateCheckout={onCreateCheckout}
           isEligibleForTrial={isEligibleForTrial}
           isBillingManager={isBillingManager}
+          isFree={isFree}
         />
       ) : null}
       {!hasLogIn && isCloudTemplateList ? (
