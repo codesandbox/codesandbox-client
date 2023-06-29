@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useEffects } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from './useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
@@ -10,16 +10,17 @@ type CheckoutStatus =
   | { status: 'error'; error: string };
 
 export type CheckoutOptions = {
-  team_id: string | undefined;
+  team_id?: string | undefined;
   recurring_interval?: 'month' | 'year';
   success_path?: string;
   cancel_path?: string;
-  utm_source?:
+  utm_source:
     | 'settings_upgrade'
     | 'dashboard_upgrade_banner'
     | 'dashboard_import_limits'
     | 'dashboard_private_repo_upgrade'
-    | 'v1_live_session_upgrade';
+    | 'v1_live_session_upgrade'
+    | 'editor_seats_upgrade';
 };
 
 /**
@@ -49,6 +50,7 @@ export const useCreateCheckout = (): [
   (args: CheckoutOptions) => void,
   boolean
 ] => {
+  const { activeTeam } = useAppState();
   const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
   const [status, setStatus] = useState<CheckoutStatus>({ status: 'idle' });
@@ -61,18 +63,13 @@ export const useCreateCheckout = (): [
     cancel_path = '/pro',
     utm_source,
   }: CheckoutOptions) => {
-    if (!team_id) {
-      setStatus({ status: 'idle' });
-      return;
-    }
-
     try {
       setStatus({ status: 'loading' });
 
       const payload = await api.stripeCreateCheckout({
         success_path: addStripeSuccessParam(success_path, utm_source),
         cancel_path,
-        team_id,
+        team_id: team_id || activeTeam,
         recurring_interval,
       });
 
