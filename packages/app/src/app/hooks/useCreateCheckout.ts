@@ -12,16 +12,23 @@ export type CheckoutOptions = {
   recurring_interval?: 'month' | 'year';
   success_path?: string;
   cancel_path?: string;
+  utm_source?: 'settings_upgrade';
 };
 
 /**
  * @param {string} pathNameAndSearch The pathname and search params you want to add the stripe
  * success param to, for example  `/dashboard?workspace=xxxx`. Exclude the url base.
  */
-export const addStripeSuccessParam = (pathNameAndSearch: string): string => {
+export const addStripeSuccessParam = (
+  pathNameAndSearch: string,
+  utm_source?: string
+): string => {
   try {
     const newUrl = new URL(pathNameAndSearch, window.location.origin);
     newUrl.searchParams.append('stripe', 'success');
+    if (utm_source) {
+      newUrl.searchParams.append('utm_source', utm_source);
+    }
 
     // Return only pathname and search
     return `${newUrl.pathname}${newUrl.search}`;
@@ -42,6 +49,7 @@ export const useCreateCheckout = (): [
     recurring_interval = 'month',
     success_path = dashboard.settings(team_id) + '&payment_pending=true',
     cancel_path = '/pro',
+    utm_source,
   }: CheckoutOptions) => {
     if (!team_id) {
       setStatus({ status: 'idle' });
@@ -52,7 +60,7 @@ export const useCreateCheckout = (): [
       setStatus({ status: 'loading' });
 
       const payload = await api.stripeCreateCheckout({
-        success_path: addStripeSuccessParam(success_path),
+        success_path: addStripeSuccessParam(success_path, utm_source),
         cancel_path,
         team_id,
         recurring_interval,

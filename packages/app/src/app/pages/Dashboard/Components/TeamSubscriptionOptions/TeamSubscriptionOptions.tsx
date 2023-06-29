@@ -2,22 +2,9 @@ import React from 'react';
 import { ComboButton, Stack, Text } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
-
-const DEFAULT_SEARCH_PARAMS = '?utm_source=settings_upgrade';
-
-const buildCheckoutUrl = (baseUrl: string | null) => {
-  if (!baseUrl) {
-    return;
-  }
-
-  if (baseUrl.startsWith('/')) {
-    return `${baseUrl}${DEFAULT_SEARCH_PARAMS}`;
-  }
-  return baseUrl;
-};
 
 type TeamSubscriptionOptionsProps = {
   buttonVariant?: React.ComponentProps<typeof ComboButton>['variant'];
@@ -34,78 +21,84 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
-  const monthlyCheckoutData = useGetCheckoutURL({
-    success_path: dashboardUrls.settings(activeTeam),
-    cancel_path: dashboardUrls.settings(activeTeam),
-  });
-  const monthlyCheckoutUrl = buildCheckoutUrl(monthlyCheckoutData);
+  const [checkout, createCheckout] = useCreateCheckout();
 
-  const yearlyCheckoutData = useGetCheckoutURL({
-    success_path: dashboardUrls.settings(activeTeam),
-    cancel_path: dashboardUrls.settings(activeTeam),
-    recurring_interval: 'year',
-  });
-  const yearlyCheckoutUrl = buildCheckoutUrl(yearlyCheckoutData);
+  const disabled = checkout.status === 'loading';
+
+  const createMonthlyCheckout = () => {
+    createCheckout({
+      success_path: dashboardUrls.settings(activeTeam),
+      cancel_path: dashboardUrls.settings(activeTeam),
+      team_id: activeTeam,
+      recurring_interval: 'month',
+      utm_source: 'settings_upgrade',
+    });
+  };
+
+  const createYearlyCheckout = () => {
+    createCheckout({
+      success_path: dashboardUrls.settings(activeTeam),
+      cancel_path: dashboardUrls.settings(activeTeam),
+      team_id: activeTeam,
+      recurring_interval: 'year',
+      utm_source: 'settings_upgrade',
+    });
+  };
 
   return (
     <ComboButton
       as="a"
       customStyles={buttonStyles}
       onClick={() => {
+        createMonthlyCheckout();
+
         track(`${trackingLocation} - Upgrade`, {
           codesandbox: 'V1',
           event_source: 'UI',
         });
       }}
-      {...(monthlyCheckoutUrl ? { href: monthlyCheckoutUrl } : {})}
       options={
         <>
           {isEligibleForTrial && (
             <ComboButton.Item
-              disabled={!monthlyCheckoutUrl}
+              disabled={disabled}
               onSelect={() => {
-                if (monthlyCheckoutUrl) {
-                  track(
-                    `${trackingLocation} - Upgrade option - Start free trial`,
-                    {
-                      codesandbox: 'V1',
-                      event_source: 'UI',
-                    }
-                  );
+                track(
+                  `${trackingLocation} - Upgrade option - Start free trial`,
+                  {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  }
+                );
 
-                  window.location.href = monthlyCheckoutUrl;
-                }
+                createMonthlyCheckout();
               }}
             >
               Start free trial
             </ComboButton.Item>
           )}
           <ComboButton.Item
-            disabled={!monthlyCheckoutUrl}
+            disabled={disabled}
             onSelect={() => {
-              if (monthlyCheckoutUrl) {
-                track(`${trackingLocation} - Upgrade option - Upgrade to Pro`, {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
+              track(`${trackingLocation} - Upgrade option - Upgrade to Pro`, {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
 
-                window.location.href = monthlyCheckoutUrl;
-              }
+              createMonthlyCheckout();
             }}
           >
             Upgrade to Pro
           </ComboButton.Item>
           <ComboButton.Item
-            disabled={!yearlyCheckoutUrl}
+            disabled={disabled}
             onSelect={() => {
-              if (yearlyCheckoutUrl) {
-                track(`${trackingLocation} - Upgrade option - Custom upgrade`, {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
+              track(`${trackingLocation} - Upgrade option - Custom upgrade`, {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
 
-                window.location.href = yearlyCheckoutUrl;
-              }
+              createYearlyCheckout();
             }}
           >
             <Stack direction="vertical">
