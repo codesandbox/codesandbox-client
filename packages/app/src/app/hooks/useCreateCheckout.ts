@@ -84,7 +84,7 @@ export const useCreateCheckout = (): [
     }
   };
 
-  const canCheckout = (isFree && isBillingManager) || isEligibleForTrial;
+  const canCheckout = isFree && isBillingManager;
 
   return [status, createCheckout, canCheckout];
 };

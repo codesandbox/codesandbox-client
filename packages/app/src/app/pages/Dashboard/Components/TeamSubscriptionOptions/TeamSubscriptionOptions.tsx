@@ -21,7 +21,7 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
-  const [checkout, createCheckout] = useCreateCheckout();
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
   const disabled = checkout.status === 'loading';
 
@@ -44,6 +44,14 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
       utm_source: 'settings_upgrade',
     });
   };
+
+  if (!canCheckout) {
+    return (
+      <Text as="p" variant="body" css={{ marginTop: 0 }}>
+        Contact your team admin to upgrade.
+      </Text>
+    );
+  }
 
   return (
     <ComboButton
