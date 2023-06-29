@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useEffects } from 'app/overmind';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useWorkspaceSubscription } from './useWorkspaceSubscription';
+import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
 type CheckoutStatus =
   | { status: 'idle' }
@@ -39,8 +41,11 @@ export const addStripeSuccessParam = (
 
 export const useCreateCheckout = (): [
   CheckoutStatus,
-  (args: CheckoutOptions) => void
+  (args: CheckoutOptions) => void,
+  boolean
 ] => {
+  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const [status, setStatus] = useState<CheckoutStatus>({ status: 'idle' });
   const { api } = useEffects();
 
@@ -77,5 +82,7 @@ export const useCreateCheckout = (): [
     }
   };
 
-  return [status, createCheckout];
+  const canCheckout = (isFree && isBillingManager) || isEligibleForTrial;
+
+  return [status, createCheckout, canCheckout];
 };
