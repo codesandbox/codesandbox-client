@@ -17,7 +17,6 @@ const EVENT_PARAMS = {
 
 export const LiveSessionRestricted: React.FC = () => {
   const {
-    activeTeam,
     editor: {
       currentSandbox: { id },
     },
@@ -72,10 +71,7 @@ export const LiveSessionRestricted: React.FC = () => {
                 }
 
                 createCheckout({
-                  success_path: sandboxUrl({ id }),
                   cancel_path: sandboxUrl({ id }),
-                  team_id: activeTeam,
-                  recurring_interval: 'month',
                   utm_source: 'v1_live_session_upgrade',
                 });
               }}

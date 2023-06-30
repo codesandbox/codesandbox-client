@@ -23,7 +23,6 @@ export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
-  const { activeTeam } = useAppState();
 
   const [, createCheckout, canCheckout] = useCreateCheckout();
 
@@ -43,10 +42,8 @@ export const PrivateRepoFreeTeam: React.FC = () => {
               window.location.href = '/pro';
             } else {
               createCheckout({
-                success_path: pathname,
                 cancel_path: pathname,
                 utm_source: 'dashboard_private_repo_upgrade',
-                team_id: activeTeam,
               });
             }
           }}
@@ -73,10 +70,8 @@ export const MaxReposFreeTeam: React.FC = () => {
         <MessageStripe.Action
           onClick={() => {
             createCheckout({
-              success_path: dashboardUrls.repositories(activeTeam),
               cancel_path: dashboardUrls.repositories(activeTeam),
               utm_source: 'dashboard_private_repo_upgrade',
-              team_id: activeTeam,
             });
 
             track(getEventName(isEligibleForTrial, isBillingManager), {

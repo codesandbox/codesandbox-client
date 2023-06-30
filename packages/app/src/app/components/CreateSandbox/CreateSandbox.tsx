@@ -185,7 +185,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const onCreateCheckout = () => {
     createCheckout({
-      success_path: pathname,
       cancel_path: pathname,
       team_id: activeTeamInfo?.id,
       recurring_interval: 'month',

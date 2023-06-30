@@ -49,7 +49,6 @@ export const ManageSubscription = () => {
           });
 
           createCheckout({
-            success_path: dashboard.recent(activeTeamInfo.id),
             cancel_path: dashboard.settings(activeTeamInfo.id),
             utm_source: 'user_settings',
           });
