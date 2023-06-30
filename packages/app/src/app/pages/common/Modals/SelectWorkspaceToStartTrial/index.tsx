@@ -123,9 +123,8 @@ export const SelectWorkspaceToStartTrial: React.FC = () => {
               });
 
               createCheckout({
-                team_id: selectedTeam,
+                utm_source: 'dashboard_workspace_settings',
                 recurring_interval: 'month',
-                success_path: '/pro',
                 cancel_path: '/pro',
               });
             }}

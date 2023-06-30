@@ -38,7 +38,6 @@ export const SandboxesRestrictionsBanner: React.FC = () => {
 
               createCheckout({
                 utm_source: 'restrictions_banner',
-                success_path: dashboardUrls.sandboxes(activeTeam),
                 cancel_path: dashboardUrls.sandboxes(activeTeam),
               });
             }}

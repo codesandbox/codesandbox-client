@@ -134,9 +134,7 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
               });
 
               createCheckout({
-                team_id: selectedTeam,
-                recurring_interval: 'month',
-                success_path: '/pro',
+                utm_source: 'dashboard_workspace_settings',
                 cancel_path: '/pro',
               });
             }}

@@ -194,7 +194,6 @@ export const UpgradeBanner: React.FC = () => {
 
             createCheckout({
               utm_source: 'restrictions_banner',
-              success_path: dashboard.recent(activeTeam),
               cancel_path: dashboard.recent(activeTeam),
             });
           }}
