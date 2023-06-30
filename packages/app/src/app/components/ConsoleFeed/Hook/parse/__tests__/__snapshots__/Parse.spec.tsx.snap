@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`asserts values: assertion failed 1`] = `
+Object {
+  "data": Array [
+    "Assertion failed:",
+    "console.assert",
+  ],
+  "id": "assert-false",
+  "method": "error",
+}
+`;
+
+exports[`time non existent label: non existent timer 1`] = `
+Object {
+  "data": Array [
+    "Timer 'nonExistent' does not exist",
+  ],
+  "id": "timer-fail",
+  "method": "warn",
+}
+`;
