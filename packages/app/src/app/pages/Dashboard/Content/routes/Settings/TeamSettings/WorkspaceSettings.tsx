@@ -45,7 +45,7 @@ export const WorkspaceSettings: React.FC = () => {
     isTeamEditor,
   } = useWorkspaceAuthorization();
 
-  const [monaco, createCheckout, canCheckout] = useCreateCheckout();
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
   const membersCount = team.users.length;
   const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
@@ -229,7 +229,7 @@ export const WorkspaceSettings: React.FC = () => {
             )}
           </span>
           <MessageStripe.Action
-            disabled={monaco.status === 'loading'}
+            disabled={checkout.status === 'loading'}
             onClick={() => {
               if (isEligibleForTrial) {
                 const event = 'Limit banner: team editors - Start trial';
