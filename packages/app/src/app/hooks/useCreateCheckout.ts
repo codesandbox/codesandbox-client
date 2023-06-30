@@ -10,7 +10,6 @@ type CheckoutStatus =
   | { status: 'error'; error: string };
 
 export type CheckoutOptions = {
-  team_id?: string | undefined;
   recurring_interval?: 'month' | 'year';
   success_path?: string;
   cancel_path?: string;
@@ -33,14 +32,13 @@ export type CheckoutOptions = {
  */
 export const addStripeSuccessParam = (
   pathNameAndSearch: string,
-  utm_source?: string
+  utm_source: string
 ): string => {
   try {
     const newUrl = new URL(pathNameAndSearch, window.location.origin);
-    newUrl.searchParams.append('stripe', 'success');
-    if (utm_source) {
-      newUrl.searchParams.append('utm_source', utm_source);
-    }
+    // newUrl.searchParams.append('stripe', 'success'); @depreacted
+    newUrl.searchParams.append('payment_pending', 'true');
+    newUrl.searchParams.append('utm_source', utm_source);
 
     // Return only pathname and search
     return `${newUrl.pathname}${newUrl.search}`;
@@ -63,9 +61,7 @@ export const useCreateCheckout = (): [
   const canCheckout = isFree && isBillingManager;
 
   const createCheckout = async ({
-    team_id = activeTeam,
     recurring_interval = 'month',
-    success_path = dashboard.settings(team_id) + '&payment_pending=true',
     cancel_path = '/pro',
     utm_source,
   }: CheckoutOptions) => {
@@ -73,9 +69,12 @@ export const useCreateCheckout = (): [
       setStatus({ status: 'loading' });
 
       const payload = await api.stripeCreateCheckout({
-        success_path: addStripeSuccessParam(success_path, utm_source),
+        success_path: addStripeSuccessParam(
+          dashboard.settings(activeTeam),
+          utm_source
+        ),
         cancel_path,
-        team_id,
+        team_id: activeTeam,
         recurring_interval,
       });
 
