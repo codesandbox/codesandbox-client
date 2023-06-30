@@ -186,7 +186,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const onCreateCheckout = () => {
     createCheckout({
       cancel_path: pathname,
-      team_id: activeTeamInfo?.id,
       recurring_interval: 'month',
       utm_source: 'dashboard_upgrade_banner',
     });
