@@ -12,7 +12,9 @@ export const ApproveContainer = styled.div`
   justify-content: space-around;
 `;
 
-export const PostToken: FunctionComponent<{ authToken: string }> = ({
+const LOCAL_STORAGE_TOKEN_KEY = 'CSB_CLI_TOKEN';
+
+export const LocalToken: FunctionComponent<{ authToken: string }> = ({
   authToken,
 }) => {
   return (
@@ -21,17 +23,7 @@ export const PostToken: FunctionComponent<{ authToken: string }> = ({
       <Button
         variant="primary"
         onClick={() => {
-          window.opener.postMessage(
-            {
-              type: 'CLI_TOKEN',
-              token: authToken,
-            },
-            // We do not need to care about the origin here as this only happens when the popup
-            // was triggered by user interaction and also approving it requires user interaction. A bad
-            // site could open this popup and pass the token to the server to exchange for auth token,
-            // but that means the user has TWICE allowed access
-            '*'
-          );
+          localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, authToken);
         }}
       >
         Approve access
