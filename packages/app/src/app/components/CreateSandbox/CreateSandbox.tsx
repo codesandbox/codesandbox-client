@@ -181,7 +181,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     }
   }, [tabState.selectedId]);
 
-  const [, createCheckout] = useCreateCheckout();
+  const [, createCheckout, canCheckout] = useCreateCheckout();
 
   const onCreateCheckout = () => {
     createCheckout({
@@ -443,11 +443,13 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   onSelectTemplate={selectTemplate}
                   onOpenTemplate={openTemplate}
                   officialTemplates={officialTemplates}
+                  canCheckout={canCheckout}
                 />
               ) : (
                 <>
                   <Panel tab={tabState} id="quickstart">
                     <TemplateCategoryList
+                      canCheckout={canCheckout}
                       title="Start from a template"
                       onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
@@ -494,6 +496,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   {showTeamTemplates ? (
                     <Panel tab={tabState} id="team-templates">
                       <TemplateCategoryList
+                        canCheckout={canCheckout}
                         title={`${
                           isUser ? 'My' : activeTeamInfo?.name || 'Team'
                         } templates`}
@@ -538,6 +541,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                   <Panel tab={tabState} id="cloud-templates">
                     <TemplateCategoryList
+                      canCheckout={canCheckout}
                       title="Cloud templates"
                       onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
@@ -578,6 +582,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                   <Panel tab={tabState} id="official-templates">
                     <TemplateCategoryList
+                      canCheckout={canCheckout}
                       title="Official templates"
                       onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
@@ -621,6 +626,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           id={slugify(essential.title)}
                         >
                           <TemplateCategoryList
+                            canCheckout={canCheckout}
                             title={essential.title}
                             onCreateCheckout={onCreateCheckout}
                             isInCollection={Boolean(collectionId)}

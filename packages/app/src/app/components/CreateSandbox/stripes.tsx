@@ -24,16 +24,14 @@ type MaxPublicSandboxesProps = {
   onCreateCheckout: () => void;
   isBillingManager: boolean;
   isEligibleForTrial: boolean;
-  isFree: boolean;
+  canCheckout: boolean;
 };
 export const MaxPublicSandboxes: React.FC<MaxPublicSandboxesProps> = ({
   onCreateCheckout,
   isEligibleForTrial,
   isBillingManager,
-  isFree,
+  canCheckout,
 }) => {
-  const canCheckout = (isFree && isBillingManager) || isEligibleForTrial;
-
   return (
     <MessageStripe justify="space-between">
       You&apos;ve reached the maximum amount of free sandboxes. Upgrade for

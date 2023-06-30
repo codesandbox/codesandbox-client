@@ -35,6 +35,7 @@ export const SearchResults = ({
   onSelectTemplate,
   onOpenTemplate,
   officialTemplates,
+  canCheckout,
 }: {
   onCreateCheckout: () => void;
   isInCollection: boolean;
@@ -42,8 +43,9 @@ export const SearchResults = ({
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
   officialTemplates: TemplateFragment[];
+  canCheckout: boolean;
 }) => {
-  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const { isBillingManager } = useWorkspaceAuthorization();
 
@@ -85,7 +87,7 @@ export const SearchResults = ({
               onCreateCheckout={onCreateCheckout}
               isEligibleForTrial={isEligibleForTrial}
               isBillingManager={isBillingManager}
-              isFree={isFree}
+              canCheckout={canCheckout}
             />
           ) : null}
 

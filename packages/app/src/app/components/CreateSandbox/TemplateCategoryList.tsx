@@ -19,6 +19,7 @@ interface TemplateCategoryListProps {
   templates: TemplateFragment[];
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
+  canCheckout: boolean;
 }
 
 export const TemplateCategoryList = ({
@@ -29,10 +30,11 @@ export const TemplateCategoryList = ({
   templates,
   onSelectTemplate,
   onOpenTemplate,
+  canCheckout,
 }: TemplateCategoryListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
-  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const { isBillingManager } = useWorkspaceAuthorization();
 
@@ -70,7 +72,7 @@ export const TemplateCategoryList = ({
           onCreateCheckout={onCreateCheckout}
           isEligibleForTrial={isEligibleForTrial}
           isBillingManager={isBillingManager}
-          isFree={isFree}
+          canCheckout={canCheckout}
         />
       ) : null}
       {!hasLogIn && isCloudTemplateList ? (
