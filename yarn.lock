@@ -10485,17 +10485,6 @@ console-control-strings@^1.0.0, console-control-strings@^1.1.0, console-control-
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
   integrity sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==
 
-console-feed@^3.1.9:
-  version "3.1.9"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.1.9.tgz#946191e5bf7a10fcabb478703129bc8b9eef5a9e"
-  integrity sha512-GAJCSTEvU3uZl4xVmYm7FONqzKelOj/+/+HZREb2w9CiOCjXRJtRP3nKiBYK8GszIDExiODEyz1WxWl2hHFkow==
-  dependencies:
-    "@emotion/core" "^10.0.10"
-    "@emotion/styled" "^10.0.12"
-    emotion-theming "^10.0.10"
-    linkifyjs "^2.1.6"
-    react-inspector "^5.1.0"
-
 console-stream@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/console-stream/-/console-stream-0.1.1.tgz#a095fe07b20465955f2fafd28b5d72bccd949d44"
