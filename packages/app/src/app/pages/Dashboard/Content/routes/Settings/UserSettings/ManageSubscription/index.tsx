@@ -5,7 +5,7 @@ import { Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout } from 'app/hooks';
 import { Patron } from './Patron';
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
@@ -22,10 +22,7 @@ export const ManageSubscription = () => {
 
   const [paymentPending, setPaymentPending] = useState(false);
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: dashboard.recent(activeTeamInfo.id),
-    cancel_path: dashboard.settings(activeTeamInfo.id),
-  });
+  const [checkout, createCheckout] = useCreateCheckout();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -44,17 +41,18 @@ export const ManageSubscription = () => {
 
     return (
       <Upgrade
-        disabled={!checkoutUrl}
+        disabled={checkout.status === 'loading'}
         onUpgrade={() => {
-          if (!checkoutUrl) {
-            return;
-          }
-
           track('User settings - Upgrade to Pro clicked', {
             codesandbox: 'V1',
             event_source: 'UI',
           });
-          window.location.href = checkoutUrl;
+
+          createCheckout({
+            success_path: dashboard.recent(activeTeamInfo.id),
+            cancel_path: dashboard.settings(activeTeamInfo.id),
+            utm_source: 'user_settings',
+          });
         }}
       />
     );

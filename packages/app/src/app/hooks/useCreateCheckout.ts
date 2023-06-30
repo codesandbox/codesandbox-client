@@ -21,7 +21,8 @@ export type CheckoutOptions = {
     | 'dashboard_private_repo_upgrade'
     | 'v1_live_session_upgrade'
     | 'editor_seats_upgrade'
-    | 'pro_page';
+    | 'pro_page'
+    | 'user_settings';
 };
 
 /**
