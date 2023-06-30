@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import css from '@styled-system/css';
 import {
   Button,
@@ -14,7 +13,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SubscriptionOrigin, SubscriptionInterval } from 'app/graphql/types';
 import { MAX_PRO_EDITORS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
@@ -46,9 +45,7 @@ export const WorkspaceSettings: React.FC = () => {
     isTeamEditor,
   } = useWorkspaceAuthorization();
 
-  const checkoutUrl = useGetCheckoutURL({
-    cancel_path: dashboard.settings(team?.id),
-  });
+  const [monaco, createCheckout, canCheckout] = useCreateCheckout();
 
   const membersCount = team.users.length;
   const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
@@ -215,7 +212,7 @@ export const WorkspaceSettings: React.FC = () => {
        * the user can only invite viewers and the banner isn't
        * relevant.
        */}
-      {checkoutUrl && restrictNewEditors && (
+      {canCheckout && restrictNewEditors && (
         <MessageStripe justify="space-between">
           <span>
             {numberOfEditorsIsOverTheLimit && (
@@ -232,15 +229,7 @@ export const WorkspaceSettings: React.FC = () => {
             )}
           </span>
           <MessageStripe.Action
-            {...(checkoutUrl.startsWith('/')
-              ? {
-                  as: RouterLink,
-                  to: `${checkoutUrl}?utm_source=dashboard_workspace_settings`,
-                }
-              : {
-                  as: 'a',
-                  href: checkoutUrl,
-                })}
+            disabled={monaco.status === 'loading'}
             onClick={() => {
               if (isEligibleForTrial) {
                 const event = 'Limit banner: team editors - Start trial';
@@ -254,6 +243,11 @@ export const WorkspaceSettings: React.FC = () => {
                   event_source: 'UI',
                 });
               }
+
+              createCheckout({
+                cancel_path: dashboard.settings(team?.id),
+                utm_source: 'dashboard_workspace_settings',
+              });
             }}
           >
             {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}

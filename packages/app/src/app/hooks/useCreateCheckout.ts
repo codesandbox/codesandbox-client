@@ -22,7 +22,8 @@ export type CheckoutOptions = {
     | 'v1_live_session_upgrade'
     | 'editor_seats_upgrade'
     | 'pro_page'
-    | 'user_settings';
+    | 'user_settings'
+    | 'dashboard_workspace_settings';
 };
 
 /**
