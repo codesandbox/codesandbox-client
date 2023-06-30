@@ -25,7 +25,7 @@ export const LiveSessionRestricted: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
-  const disabled = checkout.status == 'loading';
+  const disabled = checkout.status === 'loading';
 
   const docsUrl = isEligibleForTrial
     ? SUBSCRIPTION_DOCS_URLS.teams.trial
