@@ -23,7 +23,8 @@ export type CheckoutOptions = {
     | 'editor_seats_upgrade'
     | 'pro_page'
     | 'user_settings'
-    | 'dashboard_workspace_settings';
+    | 'dashboard_workspace_settings'
+    | 'restrictions_banner';
 };
 
 /**
