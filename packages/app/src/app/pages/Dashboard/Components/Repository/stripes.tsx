@@ -24,7 +24,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
   const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
-  const [, createCheckout, canCheckout] = useCreateCheckout();
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
   return (
     <MessageStripe justify="space-between" variant="trial">
@@ -32,6 +32,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
       repositories.
       {canCheckout && (
         <MessageStripe.Action
+          disabled={checkout.status === 'loading'}
           onClick={() => {
             track(getEventName(isEligibleForTrial, isBillingManager), {
               codesandbox: 'V1',
@@ -60,7 +61,7 @@ export const MaxReposFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
 
-  const [, createCheckout, canCheckout] = useCreateCheckout();
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
   return (
     <MessageStripe justify="space-between" variant="trial">
@@ -68,6 +69,7 @@ export const MaxReposFreeTeam: React.FC = () => {
       public and private repositories.
       {canCheckout ? (
         <MessageStripe.Action
+          disabled={checkout.status === 'loading'}
           onClick={() => {
             createCheckout({
               cancel_path: dashboardUrls.repositories(activeTeam),
