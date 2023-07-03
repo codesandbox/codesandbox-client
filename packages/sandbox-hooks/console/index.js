@@ -1,6 +1,6 @@
 import { dispatch, listen, iframeHandshake } from 'codesandbox-api';
-import Hook from 'console-feed/lib/Hook';
-import { Encode } from 'console-feed/lib/Transform';
+import Hook from 'csb-console-feed/lib/Hook';
+import { Encode } from 'csb-console-feed/lib/Transform';
 
 export default function setupConsole() {
   Hook(window.console, async log => {
