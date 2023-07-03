@@ -11,19 +11,20 @@ import { Title } from 'app/components/Title';
 import { SignIn } from 'app/pages/SignIn/SignIn';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Prompt } from './Prompt';
-import { LocalToken } from './LocalToken';
+import { PreviewToken } from './PreviewToken';
 import { DevToken } from './DevToken';
 import { Container, Buttons, ContentContainer } from './elements';
 
 /**
- * This component renders the CLI token page. By giving a query of "local=true" it will store
- * the exchange JWT token in local storage and notify when it is available. This allows an iFrame
- * codesandbox.stream page to sign in through the parent by making it open a popup to this page
+ * This component renders the CLI token page. It has three modes:
+ * - No queries: The user needs to copy paste the CLI token to some other place
+ * - Preview: The CLI token is written to local storage so that the "same domain" inline preview devtool can read it from the iFrame
+ * - Dev: Automatically post the CLI token to the parent frame, only available on stream where only CodeSandbox users are allowed
  */
 const AuthorizedCLI: FunctionComponent = () => {
   const { authToken, error, isLoadingAuthToken, isLoggedIn } = useAppState();
   const actions = useActions();
-  const localToken = window.location.search.includes('local=true');
+  const previewToken = window.location.search.includes('preview=true');
   const devToken =
     window.location.search.includes('dev=true') &&
     window.location.origin === 'https://codesandbox.stream';
@@ -67,8 +68,8 @@ const AuthorizedCLI: FunctionComponent = () => {
 
   if (authToken && devToken) {
     return <DevToken authToken={authToken} />;
-  } else if (authToken && localToken) {
-    return <LocalToken authToken={authToken} />;
+  } else if (authToken && previewToken) {
+    return <PreviewToken authToken={authToken} />;
   } else if (authToken) {
     return <Prompt authToken={authToken} />;
   }
