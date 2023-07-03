@@ -1,0 +1,95 @@
+<body a="b">
+  demo iframe
+  <script>
+    setTimeout(() => {
+      console.log({
+        constructor: undefined,
+      })
+
+      var map = new Map()
+      map.set({ name: 'something' }, 'value associated with obj')
+      map.set(function () {
+        console.log('hello world')
+      }, 'a function')
+      map.set('hello', 'world')
+      map.set('nested', { val1: 'val1', val2: 'val2' })
+
+      console.log(map)
+
+      console.count('Counting numbers')
+      console.time('Render time')
+      console.log(
+        `Console %cformatting https://example.com/linkified`,
+        'color: red'
+      )
+
+      console.log('Window', window)
+      console.log(
+        'Functions',
+        function a() {
+          console.log(1)
+        },
+        [function myFunc() {}]
+      )
+
+      console.table([1, 2, 3])
+
+      console.log(
+        1,
+        2,
+        'Mixed types',
+        { an: 'object' },
+        [[[['Recursive types', new Promise(() => {})]]]],
+        'https://t.com'
+      )
+      console.log('Promise object', new Promise(() => {}))
+      console.log('Funky numbers', 2.998e88, Infinity, -Infinity, NaN, -0, {
+        a: -0,
+      })
+
+      console.log('Properties that throw errors', {
+        get prop() {
+          throw new Error('hmm')
+        },
+      })
+
+      console.log('HTML element', document.body)
+
+      console.log('Nested', {
+        promise: new Promise(() => {}),
+        html: document.body,
+      })
+
+      console.log('Falsey types', false, '', 0, null, undefined)
+      console.warn('This is a warning', 'message')
+      console.info('This is an info', 'message')
+      console.debug('This is a debug', 'message')
+
+      try {
+        nonExistentFunc()
+      } catch (e) {
+        console.error(e)
+      }
+
+      const longArr = Array.from(Array(99999).keys())
+      console.log(longArr)
+      console.log([longArr])
+      console.log({ longArr })
+
+      const longObj = { ...longArr }
+      console.log(longObj)
+
+      const longSet = new Set(longArr)
+      console.log(longSet)
+
+      const longMap = new Map(Object.entries(longObj))
+      console.log(longMap)
+      console.timeEnd('Render time')
+      console.dir(new Error('hmm'))
+
+      console.log('Positive BigInt', 1n)
+      console.log('Zero BigInt', 0n)
+      console.log('Negative BigInt', -1n)
+    }, 1500)
+  </script>
+</body>

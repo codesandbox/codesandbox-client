@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "lib",
+    "module": "commonjs",
+    "target": "es3",
+    "lib": ["es6", "dom", "ES2020.BigInt"],
+    "inlineSourceMap": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "forceConsistentCasingInFileNames": true,
+    "types": ["jest"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
+}
