@@ -30,11 +30,13 @@ const AuthorizedCLI: FunctionComponent = () => {
     window.location.origin === 'https://codesandbox.stream';
 
   useEffect(() => {
-    // We want to reauthorize when we change logged in state
-    if (isLoggedIn) {
+    // We want to reauthorize when we change logged in state. To properly identify, as
+    // we might already be logged in with a token, we do not run this again if we already
+    // have a token
+    if (!authToken && isLoggedIn) {
       actions.internal.authorize();
     }
-  }, [isLoggedIn]);
+  }, [authToken, isLoggedIn]);
 
   if (error) {
     return (
