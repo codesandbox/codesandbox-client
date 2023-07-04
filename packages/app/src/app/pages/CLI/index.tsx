@@ -129,7 +129,17 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
             {hasRunInitialAuthorization ? (
               <AuthorizedCLI />
             ) : (
-              <Title>Authorizing...</Title>
+              <>
+                <LogoFull style={{ paddingBottom: 32 }} />
+                <Title>
+                  Welcome to <br />
+                  CodeSandbox!
+                </Title>
+
+                <SubTitle style={{ paddingBottom: 16 }}>
+                  Authorizing....
+                </SubTitle>
+              </>
             )}
           </ContentContainer>
         </Container>
