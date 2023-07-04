@@ -68,9 +68,13 @@ const AuthorizedCLI: FunctionComponent = () => {
 
   if (authToken && devToken) {
     return <DevToken authToken={authToken} />;
-  } else if (authToken && previewToken) {
+  }
+
+  if (authToken && previewToken) {
     return <PreviewToken authToken={authToken} />;
-  } else if (authToken) {
+  }
+
+  if (authToken) {
     return <Prompt authToken={authToken} />;
   }
 
