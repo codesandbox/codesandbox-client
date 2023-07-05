@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAppState, useEffects } from 'app/overmind';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useLocation } from 'react-router';
 import { useWorkspaceSubscription } from './useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
@@ -13,6 +13,7 @@ export type CheckoutOptions = {
   recurring_interval?: 'month' | 'year';
   success_path?: string;
   cancel_path?: string;
+  team_id?: string;
   utm_source:
     | 'settings_upgrade'
     | 'dashboard_upgrade_banner'
@@ -23,7 +24,8 @@ export type CheckoutOptions = {
     | 'pro_page'
     | 'user_settings'
     | 'dashboard_workspace_settings'
-    | 'restrictions_banner';
+    | 'restrictions_banner'
+    | 'max_public_repos';
 };
 
 /**
@@ -57,24 +59,25 @@ export const useCreateCheckout = (): [
   const { isBillingManager } = useWorkspaceAuthorization();
   const [status, setStatus] = useState<CheckoutStatus>({ status: 'idle' });
   const { api } = useEffects();
+  const { pathname, search } = useLocation();
+  const defaultReturnPath = pathname + search;
 
   const canCheckout = isFree && isBillingManager;
 
   const createCheckout = async ({
     recurring_interval = 'month',
-    cancel_path = '/pro',
+    cancel_path = defaultReturnPath,
+    success_path = defaultReturnPath,
+    team_id = activeTeam,
     utm_source,
   }: CheckoutOptions) => {
     try {
       setStatus({ status: 'loading' });
 
       const payload = await api.stripeCreateCheckout({
-        success_path: addStripeSuccessParam(
-          dashboard.settings(activeTeam),
-          utm_source
-        ),
+        success_path: addStripeSuccessParam(success_path, utm_source),
         cancel_path,
-        team_id: activeTeam,
+        team_id,
         recurring_interval,
       });
 

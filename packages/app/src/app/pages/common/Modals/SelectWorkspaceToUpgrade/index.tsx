@@ -12,6 +12,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { useCreateCheckout } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
 import { getUpgradeableTeams } from 'app/utils/teams';
+import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import { Alert } from '../Common/Alert';
 
 export const SelectWorkspaceToUpgrade: React.FC = () => {
@@ -135,7 +136,8 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
 
               createCheckout({
                 utm_source: 'dashboard_workspace_settings',
-                cancel_path: '/pro',
+                team_id: selectedTeam,
+                success_path: dashboardURLs.recent(selectedTeam),
               });
             }}
             autoWidth

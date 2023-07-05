@@ -15,7 +15,6 @@ import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useLocation } from 'react-router-dom';
 import { useCreateCheckout } from 'app/hooks';
 import {
   Container,
@@ -89,7 +88,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
-  const { pathname } = useLocation();
   const isUnderRepositoriesSection =
     location.pathname.includes('/my-contributions') ||
     location.pathname.includes('/repositories');
@@ -185,8 +183,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const onCreateCheckout = () => {
     createCheckout({
-      cancel_path: pathname,
-      recurring_interval: 'month',
       utm_source: 'dashboard_upgrade_banner',
     });
   };

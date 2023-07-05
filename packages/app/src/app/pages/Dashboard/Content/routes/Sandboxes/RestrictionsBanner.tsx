@@ -1,14 +1,11 @@
 import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useAppState } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Element, MessageStripe } from '@codesandbox/components';
 import React from 'react';
 
 export const SandboxesRestrictionsBanner: React.FC = () => {
-  const { activeTeam } = useAppState();
   const { isBillingManager } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
@@ -38,7 +35,6 @@ export const SandboxesRestrictionsBanner: React.FC = () => {
 
               createCheckout({
                 utm_source: 'restrictions_banner',
-                cancel_path: dashboardUrls.sandboxes(activeTeam),
               });
             }}
           >

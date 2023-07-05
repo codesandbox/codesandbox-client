@@ -3,7 +3,6 @@ import { useAppState } from 'app/overmind';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useCreateCheckout } from 'app/hooks';
 import { Patron } from './Patron';
@@ -15,7 +14,7 @@ import { Card } from '../../components';
 import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
-  const { activeTeamInfo, user } = useAppState();
+  const { user } = useAppState();
   const { isFree, isPaddle, isPatron, isStripe } = useWorkspaceSubscription();
   const location = useLocation();
   const history = useHistory();
@@ -49,7 +48,6 @@ export const ManageSubscription = () => {
           });
 
           createCheckout({
-            cancel_path: dashboard.settings(activeTeamInfo.id),
             utm_source: 'user_settings',
           });
         }}

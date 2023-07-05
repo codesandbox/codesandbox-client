@@ -29,6 +29,7 @@ import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
+import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
@@ -123,6 +124,7 @@ export const ProUpgrade = () => {
           });
 
           createCheckout({
+            success_path: dashboardURLs.recent(activeTeam),
             utm_source: 'pro_page',
           });
         },

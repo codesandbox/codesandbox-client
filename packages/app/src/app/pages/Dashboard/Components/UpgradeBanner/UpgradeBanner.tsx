@@ -13,7 +13,6 @@ import {
   Text,
 } from '@codesandbox/components';
 import { useCreateCheckout, useDismissible } from 'app/hooks';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -121,7 +120,6 @@ const Features: React.FC = () => {
 
 export const UpgradeBanner: React.FC = () => {
   const {
-    activeTeam,
     dashboard: { teams },
     personalWorkspaceId,
   } = useAppState();
@@ -194,7 +192,6 @@ export const UpgradeBanner: React.FC = () => {
 
             createCheckout({
               utm_source: 'restrictions_banner',
-              cancel_path: dashboard.recent(activeTeam),
             });
           }}
           autoWidth

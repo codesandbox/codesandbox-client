@@ -7,7 +7,6 @@ import {
   Text,
   MessageStripe,
 } from '@codesandbox/components';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SubscriptionOrigin, SubscriptionInterval } from 'app/graphql/types';
@@ -245,7 +244,6 @@ export const WorkspaceSettings: React.FC = () => {
               }
 
               createCheckout({
-                cancel_path: dashboard.settings(team?.id),
                 utm_source: 'dashboard_workspace_settings',
               });
             }}

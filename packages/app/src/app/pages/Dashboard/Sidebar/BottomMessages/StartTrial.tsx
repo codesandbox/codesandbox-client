@@ -3,6 +3,7 @@ import { Stack, Text, Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
 const EVENT_NAME = 'Side banner - Start Trial';
 
@@ -33,7 +34,7 @@ export const StartTrial: React.FC<{ activeTeam: string }> = ({
           );
 
           createCheckout({
-            team_id: activeTeam,
+            success_path: dashboard.recent(activeTeam),
             utm_source: 'dashboard_import_limits',
           });
         }}

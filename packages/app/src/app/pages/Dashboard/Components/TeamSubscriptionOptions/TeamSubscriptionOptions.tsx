@@ -26,16 +26,14 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
 
   const createMonthlyCheckout = () => {
     createCheckout({
-      cancel_path: dashboardUrls.settings(activeTeam),
-      recurring_interval: 'month',
+      success_path: dashboardUrls.recent(activeTeam),
       utm_source: 'settings_upgrade',
     });
   };
 
   const createYearlyCheckout = () => {
     createCheckout({
-      cancel_path: dashboardUrls.settings(activeTeam),
-      recurring_interval: 'year',
+      success_path: dashboardUrls.recent(activeTeam),
       utm_source: 'settings_upgrade',
     });
   };

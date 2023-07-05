@@ -5,7 +5,6 @@ import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { getEventName } from './utils';
 
 const EVENT_PROPS = {
@@ -16,7 +15,6 @@ const EVENT_PROPS = {
 export const MaxPublicRepos: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
-  const { pathname } = useLocation();
 
   const [, createCheckout, canCheckout] = useCreateCheckout();
 
@@ -28,8 +26,6 @@ export const MaxPublicRepos: React.FC = () => {
         <MessageStripe.Action
           onClick={() => {
             createCheckout({
-              cancel_path: pathname,
-              recurring_interval: 'year',
               utm_source: 'max_public_repos',
             });
 

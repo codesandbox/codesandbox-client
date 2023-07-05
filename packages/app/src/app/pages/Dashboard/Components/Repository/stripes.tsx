@@ -1,12 +1,9 @@
 import { MessageStripe } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { useCreateCheckout } from 'app/hooks';
-import { useAppState } from 'app/overmind';
 
 const getEventName = (
   isEligibleForTrial: boolean,
@@ -22,7 +19,6 @@ const getEventName = (
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
-  const { pathname } = useLocation();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
@@ -43,7 +39,6 @@ export const PrivateRepoFreeTeam: React.FC = () => {
               window.location.href = '/pro';
             } else {
               createCheckout({
-                cancel_path: pathname,
                 utm_source: 'dashboard_private_repo_upgrade',
               });
             }
@@ -57,7 +52,6 @@ export const PrivateRepoFreeTeam: React.FC = () => {
 };
 
 export const MaxReposFreeTeam: React.FC = () => {
-  const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
 
@@ -72,7 +66,6 @@ export const MaxReposFreeTeam: React.FC = () => {
           disabled={checkout.status === 'loading'}
           onClick={() => {
             createCheckout({
-              cancel_path: dashboardUrls.repositories(activeTeam),
               utm_source: 'dashboard_private_repo_upgrade',
             });
 
