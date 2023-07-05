@@ -11027,10 +11027,10 @@ crypto-random-string@^1.0.0:
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-1.0.0.tgz#a230f64f568310e1498009940790ec99545bca7e"
   integrity sha1-ojD2T1aDEOFJgAmUB5DsmVRbyn4=
 
-csb-console-feed@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/csb-console-feed/-/csb-console-feed-3.5.0.tgz#bc81c24169c75c831b43c02dd3da846d537a5abe"
-  integrity sha512-GghJ52XcsHNa09ogwFK9spzXkliG5VFBfQsFz4siAAWhZUuLw6/3/0sMCOGOa3MfASCon+dl1vsuAKUltfJYlg==
+csb-console-feed@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/csb-console-feed/-/csb-console-feed-3.7.0.tgz#909ea890d2c9e180143d409d5f88777bb9d0d1d5"
+  integrity sha512-pShlpxC8/hxJw67kLRbaewpeDMFAt1wXkqqyipce1HpH+R5wLqP3YhA4by1mIIMLQz2N58cYRa4EL9iU0jra8Q==
   dependencies:
     "@emotion/core" "^10.0.10"
     "@emotion/styled" "^10.0.12"
