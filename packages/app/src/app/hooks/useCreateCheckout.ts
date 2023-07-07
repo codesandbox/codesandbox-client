@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppState, useEffects } from 'app/overmind';
 import { useLocation } from 'react-router';
 import { useWorkspaceSubscription } from './useWorkspaceSubscription';
@@ -54,7 +54,7 @@ export const useCreateCheckout = (): [
   (args: CheckoutOptions) => void,
   boolean
 ] => {
-  const { activeTeam } = useAppState();
+  const { activeTeam, isProcessingPayment } = useAppState();
   const { isFree } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
   const [status, setStatus] = useState<CheckoutStatus>({ status: 'idle' });
@@ -63,6 +63,14 @@ export const useCreateCheckout = (): [
   const defaultReturnPath = pathname + search;
 
   const canCheckout = isFree && isBillingManager;
+
+  useEffect(() => {
+    if (isProcessingPayment) {
+      setStatus({ status: 'loading' });
+    } else {
+      setStatus({ status: 'idle' });
+    }
+  }, [isProcessingPayment]);
 
   const createCheckout = async ({
     recurring_interval = 'month',

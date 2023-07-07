@@ -11,7 +11,6 @@ import {
   Element,
   SkipNav,
 } from '@codesandbox/components';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 import { differenceInDays, startOfToday } from 'date-fns';
@@ -19,6 +18,7 @@ import { differenceInDays, startOfToday } from 'date-fns';
 import {
   PaymentPending,
   TrialWithoutPaymentInfo,
+  PaymentProcessing,
 } from 'app/components/StripeMessages';
 import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -39,7 +39,12 @@ const GlobalStyles = createGlobalStyle({
 
 // TODO: Move this page to v2 (also, this is a random commit to trigger the re-run of the build)
 export const Dashboard: FunctionComponent = () => {
-  const { hasLogIn, activeTeamInfo, activeTeam } = useAppState();
+  const {
+    hasLogIn,
+    activeTeamInfo,
+    activeTeam,
+    isProcessingPayment,
+  } = useAppState();
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
   const {
@@ -94,27 +99,9 @@ export const Dashboard: FunctionComponent = () => {
       searchParams.get('stripe') &&
       searchParams.get('stripe') === 'success'
     ) {
+      // Successful return from stripe, but payment not processed yet
       const isProDelayed = activeTeamInfo.subscription === null;
-
-      // Show notification based on stripe success param
-      notificationToast.add({
-        status: NotificationStatus.SUCCESS,
-        title: 'Successfully activated subscription',
-        message: isProDelayed
-          ? 'Please reload to update the dashboard.'
-          : undefined,
-        actions: isProDelayed
-          ? {
-              primary: {
-                label: 'Reload',
-                run: () => {
-                  actions.getActiveTeamInfo();
-                },
-                hideOnClick: true,
-              },
-            }
-          : undefined,
-      });
+      actions.setIProcessingPayment(isProDelayed);
     }
   }, [location.search, actions, activeTeamInfo, notificationToast]);
 
@@ -193,6 +180,7 @@ export const Dashboard: FunctionComponent = () => {
           })}
         >
           <SkipNav.Link />
+          {isProcessingPayment && <PaymentProcessing />}
           {hasUnpaidSubscription && <PaymentPending />}
           {showTrialWithoutPaymentInfoBanner && (
             <TrialWithoutPaymentInfo
