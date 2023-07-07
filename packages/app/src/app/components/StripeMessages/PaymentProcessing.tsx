@@ -9,7 +9,7 @@ const UnstyledLink = styled.a`
 export const PaymentProcessing = () => (
   <MessageStripe variant="warning">
     <span>
-      Your payment is not yet processed, please wait a few seconds. If this
+      Your payment is not processed yet, please wait a few seconds. If this
       banner does not disappear please{' '}
       <UnstyledLink href="mailto:support@codesandbox.io">
         contact support
