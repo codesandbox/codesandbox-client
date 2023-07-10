@@ -11,24 +11,32 @@ import { Title } from 'app/components/Title';
 import { SignIn } from 'app/pages/SignIn/SignIn';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Prompt } from './Prompt';
-import { PostToken } from './PostToken';
+import { PreviewToken } from './PreviewToken';
+import { DevToken } from './DevToken';
 import { Container, Buttons, ContentContainer } from './elements';
 
 /**
- * This component renders the CLI token page. By giving a query of "post=true" it will post
- * the JWT token back to the window.opener, as opposed to showing it in the UI to "copy/paste"
+ * This component renders the CLI token page. It has three modes:
+ * - No queries: The user needs to copy paste the CLI token to some other place
+ * - Preview: The CLI token is written to local storage so that the "same domain" inline preview devtool can read it from the iFrame
+ * - Dev: Automatically post the CLI token to the parent frame, only available on stream where only CodeSandbox users are allowed
  */
 const AuthorizedCLI: FunctionComponent = () => {
   const { authToken, error, isLoadingAuthToken, isLoggedIn } = useAppState();
   const actions = useActions();
-  const postTokenToParent = window.location.search.includes('post=true');
+  const previewToken = window.location.search.includes('preview=true');
+  const devToken =
+    window.location.search.includes('dev=true') &&
+    window.location.origin === 'https://codesandbox.stream';
 
   useEffect(() => {
-    // We want to reauthorize when we change logged in state
-    if (isLoggedIn) {
+    // We want to reauthorize when we change logged in state. To properly identify, as
+    // we might already be logged in with a token, we do not run this again if we already
+    // have a token
+    if (!authToken && isLoggedIn) {
       actions.internal.authorize();
     }
-  }, [isLoggedIn]);
+  }, [authToken, isLoggedIn]);
 
   if (error) {
     return (
@@ -60,12 +68,16 @@ const AuthorizedCLI: FunctionComponent = () => {
     return <Title>Fetching authorization key...</Title>;
   }
 
+  if (authToken && devToken) {
+    return <DevToken authToken={authToken} />;
+  }
+
+  if (authToken && previewToken) {
+    return <PreviewToken authToken={authToken} />;
+  }
+
   if (authToken) {
-    return postTokenToParent ? (
-      <PostToken authToken={authToken} />
-    ) : (
-      <Prompt authToken={authToken} />
-    );
+    return <Prompt authToken={authToken} />;
   }
 
   return (
@@ -117,7 +129,17 @@ export const CLI: FunctionComponent = withTheme(({ theme }) => {
             {hasRunInitialAuthorization ? (
               <AuthorizedCLI />
             ) : (
-              <Title>Authorizing...</Title>
+              <>
+                <LogoFull style={{ paddingBottom: 32 }} />
+                <Title>
+                  Welcome to <br />
+                  CodeSandbox!
+                </Title>
+
+                <SubTitle style={{ paddingBottom: 16 }}>
+                  Authorizing....
+                </SubTitle>
+              </>
             )}
           </ContentContainer>
         </Container>
