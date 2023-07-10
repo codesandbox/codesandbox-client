@@ -1,6 +1,6 @@
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { FunctionComponent, useEffect } from 'react';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
@@ -18,7 +18,6 @@ import { differenceInDays, startOfToday } from 'date-fns';
 import {
   PaymentPending,
   TrialWithoutPaymentInfo,
-  PaymentProcessing,
 } from 'app/components/StripeMessages';
 import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -39,12 +38,10 @@ const GlobalStyles = createGlobalStyle({
 
 // TODO: Move this page to v2 (also, this is a random commit to trigger the re-run of the build)
 export const Dashboard: FunctionComponent = () => {
-  const {
-    hasLogIn,
-    activeTeamInfo,
-    activeTeam,
-    isProcessingPayment,
-  } = useAppState();
+  const location = useLocation();
+  const history = useHistory();
+
+  const { hasLogIn, activeTeamInfo, activeTeam } = useAppState();
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
   const {
@@ -81,8 +78,6 @@ export const Dashboard: FunctionComponent = () => {
     }
   }, [browser.storage, actions]);
 
-  const location = useLocation();
-
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
 
@@ -94,14 +89,13 @@ export const Dashboard: FunctionComponent = () => {
       actions.setActiveTeam({ id: searchParams.get('workspace') });
     }
 
-    if (
-      activeTeamInfo &&
-      searchParams.get('stripe') &&
-      searchParams.get('stripe') === 'success'
-    ) {
+    if (activeTeamInfo && searchParams.has('payment_pending')) {
       // Successful return from stripe, but payment not processed yet
       const isProDelayed = activeTeamInfo.subscription === null;
       actions.setIProcessingPayment(isProDelayed);
+
+      searchParams.delete('payment_pending');
+      history.replace({ search: searchParams.toString() });
     }
   }, [location.search, actions, activeTeamInfo, notificationToast]);
 
@@ -180,7 +174,6 @@ export const Dashboard: FunctionComponent = () => {
           })}
         >
           <SkipNav.Link />
-          {isProcessingPayment && <PaymentProcessing />}
           {hasUnpaidSubscription && <PaymentPending />}
           {showTrialWithoutPaymentInfoBanner && (
             <TrialWithoutPaymentInfo

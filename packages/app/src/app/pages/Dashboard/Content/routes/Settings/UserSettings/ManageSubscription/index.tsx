@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useAppState } from 'app/overmind';
-import { useLocation, useHistory } from 'react-router-dom';
 import { Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -14,27 +13,13 @@ import { Card } from '../../components';
 import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
-  const { user } = useAppState();
+  const { user, isProcessingPayment } = useAppState();
   const { isFree, isPaddle, isPatron, isStripe } = useWorkspaceSubscription();
-  const location = useLocation();
-  const history = useHistory();
-
-  const [paymentPending, setPaymentPending] = useState(false);
 
   const [checkout, createCheckout] = useCreateCheckout();
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-
-    if (queryParams.has('payment_pending')) {
-      setPaymentPending(true);
-      queryParams.delete('payment_pending');
-      history.replace({ search: queryParams.toString() });
-    }
-  }, [location, history]);
-
   if (isFree) {
-    if (paymentPending) {
+    if (isProcessingPayment) {
       return <ProcessingPayment />;
     }
 
