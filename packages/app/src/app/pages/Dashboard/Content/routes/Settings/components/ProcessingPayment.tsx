@@ -10,21 +10,19 @@ export const ProcessingPayment = () => {
     dashboard: { getTeams },
   } = useActions();
   const effects = useEffects();
-  const { activeTeam } = useAppState();
+  const { activeTeam, hasLoadedApp } = useAppState();
   const [loading, setLoading] = useState('...');
 
   useEffect(() => {
+    if (!hasLoadedApp) return;
+
     try {
       effects.gql.subscriptions.onSubscriptionChanged(
         { teamId: activeTeam },
-        ({ subscription }) => {
-          if (subscription.active) {
+        data => {
+          if (data.teamEvents.subscription.active) {
             getActiveTeamInfo();
             getTeams();
-          } else {
-            effects.notificationToast.error(
-              'Something went wrong, please try again later or email us at support@codesandbox.io'
-            );
           }
         }
       );
@@ -37,7 +35,7 @@ export const ProcessingPayment = () => {
     return () => {
       effects.gql.subscriptions.onSubscriptionChanged.dispose();
     };
-  }, [getActiveTeamInfo, getTeams]);
+  }, [getActiveTeamInfo, getTeams, hasLoadedApp]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
