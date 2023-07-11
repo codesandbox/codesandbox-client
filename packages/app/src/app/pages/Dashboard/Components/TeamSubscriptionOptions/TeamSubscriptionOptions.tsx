@@ -1,10 +1,8 @@
 import React from 'react';
 import { ComboButton, Stack, Text } from '@codesandbox/components';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useAppState } from 'app/overmind';
 
 type TeamSubscriptionOptionsProps = {
   buttonVariant?: React.ComponentProps<typeof ComboButton>['variant'];
@@ -18,7 +16,6 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   ctaCopy,
   trackingLocation,
 }) => {
-  const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
@@ -26,14 +23,12 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
 
   const createMonthlyCheckout = () => {
     createCheckout({
-      success_path: dashboardUrls.recent(activeTeam),
       utm_source: 'settings_upgrade',
     });
   };
 
   const createYearlyCheckout = () => {
     createCheckout({
-      success_path: dashboardUrls.recent(activeTeam),
       utm_source: 'settings_upgrade',
     });
   };
