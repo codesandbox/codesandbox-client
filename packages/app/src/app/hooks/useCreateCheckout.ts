@@ -62,7 +62,7 @@ export const useCreateCheckout = (): [
   const { pathname, search } = useLocation();
   const defaultReturnPath = pathname + search;
 
-  const canCheckout = isFree && isBillingManager;
+  const canCheckout = !!isFree && isBillingManager;
 
   useEffect(() => {
     if (isProcessingPayment) {
@@ -76,7 +76,7 @@ export const useCreateCheckout = (): [
     recurring_interval = 'month',
     cancel_path = defaultReturnPath,
     success_path = defaultReturnPath,
-    team_id = activeTeam,
+    team_id = activeTeam!,
     utm_source,
   }: CheckoutOptions) => {
     try {

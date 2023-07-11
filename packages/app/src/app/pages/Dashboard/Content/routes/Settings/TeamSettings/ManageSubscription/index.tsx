@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Stack, Text } from '@codesandbox/components';
+import { useAppState } from 'app/overmind';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -10,7 +11,6 @@ import { Upgrade } from './upgrade';
 import { Paddle } from './paddle';
 import { Stripe } from './stripe';
 import { ProcessingPayment } from '../../components/ProcessingPayment';
-import { useAppState } from 'app/overmind';
 
 export const ManageSubscription = () => {
   const {
