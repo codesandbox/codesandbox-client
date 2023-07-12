@@ -12,8 +12,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useDismissible, useGetCheckoutURL } from 'app/hooks';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useCreateCheckout, useDismissible } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -121,7 +120,6 @@ const Features: React.FC = () => {
 
 export const UpgradeBanner: React.FC = () => {
   const {
-    activeTeam,
     dashboard: { teams },
     personalWorkspaceId,
   } = useAppState();
@@ -133,10 +131,7 @@ export const UpgradeBanner: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasVisited } = useDashboardVisit();
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: dashboard.recent(activeTeam),
-    cancel_path: dashboard.recent(activeTeam),
-  });
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
   if (isBannerDismissed || !hasVisited) {
     return null;
@@ -176,9 +171,10 @@ export const UpgradeBanner: React.FC = () => {
       );
     }
 
-    if (checkoutUrl) {
+    if (canCheckout) {
       return (
         <Button
+          disabled={checkout.status === 'loading'}
           css={{ padding: '4px 20px' }}
           onClick={() => {
             if (isEligibleForTrial) {
@@ -194,7 +190,9 @@ export const UpgradeBanner: React.FC = () => {
               });
             }
 
-            window.location.href = checkoutUrl;
+            createCheckout({
+              utm_source: 'restrictions_banner',
+            });
           }}
           autoWidth
         >
@@ -243,7 +241,7 @@ export const UpgradeBanner: React.FC = () => {
               }}
               direction="vertical"
             >
-              {checkoutUrl || isPersonalSpace ? (
+              {canCheckout || isPersonalSpace ? (
                 <Stack align="center" gap={6}>
                   {renderMainCTA()}
                   <Link

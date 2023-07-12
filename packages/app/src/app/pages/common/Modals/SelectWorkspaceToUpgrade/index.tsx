@@ -134,10 +134,8 @@ export const SelectWorkspaceToUpgrade: React.FC = () => {
               });
 
               createCheckout({
+                utm_source: 'dashboard_workspace_settings',
                 team_id: selectedTeam,
-                recurring_interval: 'month',
-                success_path: '/pro',
-                cancel_path: '/pro',
               });
             }}
             autoWidth

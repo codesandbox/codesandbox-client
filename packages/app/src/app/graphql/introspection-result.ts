@@ -96,6 +96,15 @@ const result: IntrospectionResultData = {
           },
         ],
       },
+      {
+        kind: 'UNION',
+        name: 'TeamEvent',
+        possibleTypes: [
+          {
+            name: 'TeamSubscriptionEvent',
+          },
+        ],
+      },
     ],
   },
 };

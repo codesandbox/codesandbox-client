@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Stack, Text } from '@codesandbox/components';
-import { useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
@@ -13,7 +13,9 @@ const EVENT_PARAMS = {
 };
 
 export const EditorSeatsUpgrade: React.FC = () => {
-  const checkoutUrl = useGetCheckoutURL({});
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
+  const disabled = checkout.status === 'loading';
+
   const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
@@ -25,7 +27,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
 
   return (
     <Alert title="Upgrade to Pro to add more editor seats">
-      {checkoutUrl ? (
+      {canCheckout ? (
         <Stack gap={2} align="center" justify="flex-end">
           <Button
             as="a"
@@ -49,6 +51,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
             </Button>
           ) : (
             <Button
+              disabled={disabled}
               variant="primary"
               onClick={() => {
                 if (isEligibleForTrial) {
@@ -60,7 +63,10 @@ export const EditorSeatsUpgrade: React.FC = () => {
                 } else {
                   track('Editor seats modal - upgrade clicked', EVENT_PARAMS);
                 }
-                window.location.href = checkoutUrl;
+
+                createCheckout({
+                  utm_source: 'editor_seats_upgrade',
+                });
               }}
               autoWidth
             >

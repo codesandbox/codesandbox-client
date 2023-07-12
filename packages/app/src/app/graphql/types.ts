@@ -84,6 +84,11 @@ export type BookmarkEntity = Team | User;
  */
 export type Branch = {
   __typename?: 'Branch';
+  /**
+   * Whether or not AI features should be enabled for this branch.
+   *     This is the final calculated value based on the team subscription status, team settings, and project settings.
+   */
+  aiConsent: Scalars['Boolean'];
   /** Active users connected to this branch */
   connections: Array<Connection>;
   /** Whether this branch is a contribution branch made by a read-only user */
@@ -220,8 +225,6 @@ export type Connection = {
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
-  /** @deprecated Deprecated for open beta */
-  betaAccess: Scalars['Boolean'];
   bookmarkedTemplates: Array<Template>;
   collaboratorSandboxes: Array<Sandbox>;
   collection: Maybe<Collection>;
@@ -831,11 +834,7 @@ export type Project = {
    * looking up the team.
    */
   team: Maybe<Team>;
-  /**
-   * SOFT DEPRECATED: Teams that have bookmarked the current project.
-   *
-   * This field will be replaced by a single assigned `team` after the workspace transition.
-   */
+  /** @deprecated Use team instead */
   teams: Array<Team>;
 };
 
@@ -1421,6 +1420,11 @@ export type RootMutationType = {
   removeCollaborator: Collaborator;
   /** Remove someone from a team */
   removeFromTeam: Team;
+  /**
+   * Remove one or more GH users from the list of requested reviewers for this pull request.
+   * Returns the list of users that are still requested to review.
+   */
+  removeRequestedGithubPullRequestReviewers: Array<GithubUser>;
   /** Remove sandboxes from album (idempotent) */
   removeSandboxesFromAlbum: Maybe<Album>;
   /** Rename a collection and all subfolders */
@@ -1436,6 +1440,11 @@ export type RootMutationType = {
    * GitHub gets processed.
    */
   replyToGithubPullRequestReview: GitHubPullRequestReviewComment;
+  /**
+   * Request one or more GH users to review a pull request
+   * Returns complete list of users  requested to review.
+   */
+  requestGithubPullRequestReviewers: Array<GithubUser>;
   /**
    * Request access to a team by ID
    *
@@ -1809,6 +1818,13 @@ export type RootMutationTypeRemoveFromTeamArgs = {
   userId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeRemoveRequestedGithubPullRequestReviewersArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+  reviewers: Array<Scalars['String']>;
+};
+
 export type RootMutationTypeRemoveSandboxesFromAlbumArgs = {
   albumId: Scalars['ID'];
   sandboxIds: Array<Scalars['ID']>;
@@ -1832,6 +1848,13 @@ export type RootMutationTypeReplyToGithubPullRequestReviewArgs = {
   name: Scalars['String'];
   owner: Scalars['String'];
   pullRequestNumber: Scalars['Int'];
+};
+
+export type RootMutationTypeRequestGithubPullRequestReviewersArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+  reviewers: Array<Scalars['String']>;
 };
 
 export type RootMutationTypeRequestTeamInvitationArgs = {
@@ -2252,6 +2275,13 @@ export type RootSubscriptionType = {
    */
   projectStatus: BranchStatus;
   sandboxChanged: Sandbox;
+  /**
+   * Receive updates for events related to one or all of the user's teams
+   *
+   * Supply a `teamId` to subscribe to one team, or leave the argument `null` to receive events
+   * for all of the user's teams.
+   */
+  teamEvents: TeamEvent;
 };
 
 export type RootSubscriptionTypeBranchEventsArgs = {
@@ -2326,6 +2356,10 @@ export type RootSubscriptionTypeProjectStatusArgs = {
 
 export type RootSubscriptionTypeSandboxChangedArgs = {
   sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeTeamEventsArgs = {
+  teamId: Maybe<Scalars['ID']>;
 };
 
 /** A Sandbox */
@@ -2519,6 +2553,9 @@ export type TeamAiConsent = {
   publicSandboxes: Scalars['Boolean'];
 };
 
+/** Events related to a team */
+export type TeamEvent = TeamSubscriptionEvent;
+
 export type TeamLimits = {
   __typename?: 'TeamLimits';
   maxEditors: Maybe<Scalars['Int']>;
@@ -2554,6 +2591,14 @@ export type TeamPreview = {
   id: Scalars['UUID4'];
   name: Scalars['String'];
   shortid: Scalars['String'];
+};
+
+/** Change to a team's subscription status */
+export type TeamSubscriptionEvent = {
+  __typename?: 'TeamSubscriptionEvent';
+  event: Scalars['String'];
+  subscription: ProSubscription;
+  teamId: Scalars['ID'];
 };
 
 export enum TeamType {
@@ -4514,6 +4559,7 @@ export type UpdateNotificationPreferencesMutationVariables = Exact<{
   emailNewComment: Maybe<Scalars['Boolean']>;
   emailSandboxInvite: Maybe<Scalars['Boolean']>;
   emailTeamInvite: Maybe<Scalars['Boolean']>;
+  inAppPrReviewReceived: Maybe<Scalars['Boolean']>;
   inAppPrReviewRequest: Maybe<Scalars['Boolean']>;
 }>;
 
@@ -4530,6 +4576,7 @@ export type UpdateNotificationPreferencesMutation = {
     | 'emailNewComment'
     | 'emailSandboxInvite'
     | 'emailTeamInvite'
+    | 'inAppPrReviewReceived'
     | 'inAppPrReviewRequest'
   >;
 };
@@ -4599,8 +4646,8 @@ export type EmailPreferencesQuery = { __typename?: 'RootQueryType' } & {
           | 'emailNewComment'
           | 'emailSandboxInvite'
           | 'emailTeamInvite'
-          | 'inAppPrReviewReceived'
           | 'inAppPrReviewRequest'
+          | 'inAppPrReviewReceived'
         >
       >;
     }
