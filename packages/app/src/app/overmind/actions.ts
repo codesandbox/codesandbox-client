@@ -677,6 +677,6 @@ export const openCancelSubscriptionModal = ({ state }: Context) => {
   state.currentModal = 'subscriptionCancellation';
 };
 
-export const setIProcessingPayment = ({ state }: Context, value: boolean) => {
+export const setIsProcessingPayment = ({ state }: Context, value: boolean) => {
   state.isProcessingPayment = value;
 };

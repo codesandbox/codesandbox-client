@@ -92,7 +92,7 @@ export const Dashboard: FunctionComponent = () => {
     if (searchParams.has('payment_pending')) {
       // Successful return from stripe, but payment not processed yet
       const isProDelayed = subscription?.status !== SubscriptionStatus.Active;
-      actions.setIProcessingPayment(isProDelayed);
+      actions.setIsProcessingPayment(isProDelayed);
 
       searchParams.delete('payment_pending');
       history.replace({ search: searchParams.toString() });
