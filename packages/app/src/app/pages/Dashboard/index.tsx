@@ -41,8 +41,8 @@ export const Dashboard: FunctionComponent = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { hasLogIn, activeTeamInfo, activeTeam } = useAppState();
-  const { browser, notificationToast } = useEffects();
+  const { hasLogIn, activeTeam } = useAppState();
+  const { browser } = useEffects();
   const actions = useActions();
   const {
     subscription,
@@ -89,15 +89,15 @@ export const Dashboard: FunctionComponent = () => {
       actions.setActiveTeam({ id: searchParams.get('workspace') });
     }
 
-    if (activeTeamInfo && searchParams.has('payment_pending')) {
+    if (searchParams.has('payment_pending')) {
       // Successful return from stripe, but payment not processed yet
-      const isProDelayed = activeTeamInfo.subscription === null;
+      const isProDelayed = subscription?.status !== SubscriptionStatus.Active;
       actions.setIProcessingPayment(isProDelayed);
 
       searchParams.delete('payment_pending');
       history.replace({ search: searchParams.toString() });
     }
-  }, [location.search, actions, activeTeamInfo, notificationToast]);
+  }, [subscription]);
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;

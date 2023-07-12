@@ -11,7 +11,6 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { getTrialEligibleTeams } from 'app/utils/teams';
 import { useCreateCheckout } from 'app/hooks';
 import { useActions, useAppState } from 'app/overmind';
-import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import { Alert } from '../Common/Alert';
 
 export const SelectWorkspaceToStartTrial: React.FC = () => {
@@ -126,7 +125,6 @@ export const SelectWorkspaceToStartTrial: React.FC = () => {
               createCheckout({
                 utm_source: 'dashboard_workspace_settings',
                 team_id: selectedTeam,
-                success_path: dashboardURLs.recent(selectedTeam),
               });
             }}
             autoWidth

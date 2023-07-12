@@ -2,10 +2,10 @@ import React from 'react';
 
 import { Stack, Text } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
-
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { SubscriptionInterval } from 'app/graphql/types';
+
 import { Card } from '../../components';
 import { Upgrade } from './upgrade';
 import { Paddle } from './paddle';
