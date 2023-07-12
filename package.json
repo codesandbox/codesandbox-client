@@ -2,6 +2,7 @@
   "name": "codesandbox",
   "version": "0.1.0",
   "private": true,
+  "test":"test",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client"
