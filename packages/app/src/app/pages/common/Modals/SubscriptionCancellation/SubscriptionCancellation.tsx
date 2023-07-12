@@ -61,6 +61,10 @@ export const SubscriptionCancellationModal: React.FC = () => {
   const { hasActiveTeamTrial, isPaddle } = useWorkspaceSubscription();
   const [paddleLoading, setPaddeLoading] = React.useState(false);
   const { modalClosed, pro } = useActions();
+  const { activeTeamInfo } = useAppState();
+  const [, createCustomerPortal] = useCreateCustomerPortal({
+    team_id: activeTeamInfo?.id,
+  });
 
   const handleCloseModal = () => {
     track('Team Settings: close cancel subscription modal', {
@@ -131,7 +135,12 @@ export const SubscriptionCancellationModal: React.FC = () => {
                   event_source: 'UI',
                 });
 
-                setFormOpen(true);
+                const showModal = false;
+                if (showModal) {
+                  setFormOpen(true);
+                } else {
+                  createCustomerPortal();
+                }
               }}
               variant="primary"
             >
