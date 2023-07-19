@@ -624,26 +624,26 @@ export const setActiveWorkspaceFromUrlOrStore = async ({
   // @REMOVE ME: temp fix to unblock https://codesandboxapp.slack.com/archives/C01P6SNNBLL/p1689759679043409
   return;
 
-  const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
+  // const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
 
-  if (isValid && id) {
-    // Set active team from url or storage.
-    actions.setActiveTeam({ id });
-  } else {
-    // If an id was set but it's not valid we show a toast message informing the user
-    // we changed the workspace to the personal workspace. If no id was set we silently
-    // activate the personal team.
-    if (id) {
-      effects.notificationToast.add({
-        title: INVALID_ID_TITLE,
-        message: INVALID_ID_MESSAGE,
-        status: NotificationStatus.NOTICE,
-      });
-    }
+  // if (isValid && id) {
+  //   // Set active team from url or storage.
+  //   actions.setActiveTeam({ id });
+  // } else {
+  //   // If an id was set but it's not valid we show a toast message informing the user
+  //   // we changed the workspace to the personal workspace. If no id was set we silently
+  //   // activate the personal team.
+  //   if (id) {
+  //     effects.notificationToast.add({
+  //       title: INVALID_ID_TITLE,
+  //       message: INVALID_ID_MESSAGE,
+  //       status: NotificationStatus.NOTICE,
+  //     });
+  //   }
 
-    // Change to personal workspace.
-    actions.internal.setActiveTeamFromPersonalWorkspaceId();
-  }
+  //   // Change to personal workspace.
+  //   actions.internal.setActiveTeamFromPersonalWorkspaceId();
+  // }
 };
 
 export const getTeamIdFromUrlOrStore = async ({
