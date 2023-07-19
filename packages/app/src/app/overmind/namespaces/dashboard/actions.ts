@@ -168,7 +168,7 @@ export const getTeams = async ({ state, effects }: Context) => {
     state.personalWorkspaceId = teams.me.personalWorkspaceId;
   } catch {
     //
-  }
+   }
 };
 
 export const removeFromTeam = async (

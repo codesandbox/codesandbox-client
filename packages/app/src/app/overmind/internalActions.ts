@@ -621,6 +621,9 @@ export const setActiveWorkspaceFromUrlOrStore = async ({
   actions,
   effects,
 }: Context) => {
+  // @REMOVE ME: temp fix to unblock https://codesandboxapp.slack.com/archives/C01P6SNNBLL/p1689759679043409
+  return;
+
   const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
 
   if (isValid && id) {
