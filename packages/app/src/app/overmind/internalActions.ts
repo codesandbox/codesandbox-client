@@ -611,9 +611,9 @@ export const setViewModeForDashboard = ({ effects, state }: Context) => {
   }
 };
 
-const INVALID_ID_TITLE = 'Workspace not recognized.';
-const INVALID_ID_MESSAGE =
-  "The workspace in the URL or stored in your browser is unknown. We've automatically switched to your personal workspace.";
+// const INVALID_ID_TITLE = 'Workspace not recognized.';
+// const INVALID_ID_MESSAGE =
+//   "The workspace in the URL or stored in your browser is unknown. We've automatically switched to your personal workspace.";
 
 // TODO we could rename the function to initializeTeam (because we also use
 // personalWorkspaceId);
@@ -622,10 +622,7 @@ export const setActiveWorkspaceFromUrlOrStore = async ({
   effects,
 }: Context) => {
   // @REMOVE ME: temp fix to unblock https://codesandboxapp.slack.com/archives/C01P6SNNBLL/p1689759679043409
-  return;
-
   // const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
-
   // if (isValid && id) {
   //   // Set active team from url or storage.
   //   actions.setActiveTeam({ id });
@@ -640,7 +637,6 @@ export const setActiveWorkspaceFromUrlOrStore = async ({
   //       status: NotificationStatus.NOTICE,
   //     });
   //   }
-
   //   // Change to personal workspace.
   //   actions.internal.setActiveTeamFromPersonalWorkspaceId();
   // }
