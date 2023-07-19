@@ -156,15 +156,19 @@ export const deleteTemplate = async (
 };
 
 export const getTeams = async ({ state, effects }: Context) => {
-  if (!state.user) return;
-  const teams = await effects.gql.queries.getTeams({});
+  try {
+    if (!state.user) return;
+    const teams = await effects.gql.queries.getTeams({});
 
-  if (!teams || !teams.me) {
-    return;
+    if (!teams || !teams.me) {
+      return;
+    }
+
+    state.dashboard.teams = teams.me.workspaces;
+    state.personalWorkspaceId = teams.me.personalWorkspaceId;
+  } catch {
+    //
   }
-
-  state.dashboard.teams = teams.me.workspaces;
-  state.personalWorkspaceId = teams.me.personalWorkspaceId;
 };
 
 export const removeFromTeam = async (
