@@ -41,7 +41,12 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
   const actions = useActions();
   const { userRole } = useWorkspaceAuthorization();
 
-  const [inviteValue, setInviteValue] = React.useState('');
+  const inviteEmailInUrl = new URLSearchParams(location.search).get(
+    'invite_email'
+  );
+  const defaultInviteValue = inviteEmailInUrl || '';
+
+  const [inviteValue, setInviteValue] = React.useState(defaultInviteValue);
   const [inviteLoading, setInviteLoading] = React.useState(false);
   const inviteLink = React.useMemo(() => teamInviteLink(team.inviteToken), [
     team.inviteToken,
