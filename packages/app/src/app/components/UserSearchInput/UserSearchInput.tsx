@@ -107,6 +107,7 @@ export const UserSearchInput = ({
               placeholder: 'Enter username or email',
             })}
             autoFocus
+            autoComplete="off"
             spellcheck="false"
           />
         </div>
