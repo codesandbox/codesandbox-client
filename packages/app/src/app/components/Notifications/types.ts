@@ -44,6 +44,14 @@ export type TeamInviteData = {
   inviterAvatar: string;
 };
 
+export type TeamInviteRequestData = {
+  teamId: string;
+  teamName: string;
+  requesterEmail: string;
+  requesterName: string;
+  requesterAvatar: string | null;
+};
+
 export type TeamAcceptedData = {
   teamName: string;
   userName: string;
