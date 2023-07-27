@@ -5,6 +5,8 @@ import { DuplicateAccount } from './components/DuplicateAccount';
 import { ChooseProvider } from './ChooseProvider';
 import { Onboarding } from './Onboarding';
 
+import type { SignInMode } from './types';
+
 interface SignInProps {
   redirectTo?: string;
   onSignIn?: () => void;
@@ -20,9 +22,10 @@ export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
     }
   }, [getPendingUser, pendingUserId]);
 
-  const ssoMode = JSON.parse(
-    new URL(location.href).searchParams.get('sso_mode')
-  );
+  const defaultSignInMode: SignInMode =
+    new URLSearchParams(location.search).get('sso_mode') === 'true'
+      ? 'SSO'
+      : 'DEFAULT';
 
   /**
    * 🚧 Utility to debug Duplicate Account
@@ -57,7 +60,7 @@ export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
     <ChooseProvider
       redirectTo={redirectTo}
       onSignIn={onSignIn}
-      ssoMode={ssoMode}
+      defaultSignInMode={defaultSignInMode}
     />
   );
 };

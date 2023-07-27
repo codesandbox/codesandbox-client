@@ -22,6 +22,7 @@ import {
 } from 'app/overmind';
 import history from 'app/utils/history';
 import { Button } from './components/Button';
+import type { SignInMode } from './types';
 
 const StyledHeading = styled(Text)`
   margin: 0;
@@ -180,19 +181,14 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
   );
 };
 
-enum SignInMode {
-  SSO = 'SSO',
-  Default = 'Default',
-}
-
 type ChooseProviderProps = {
   redirectTo?: string;
-  ssoMode?: SignInMode;
+  defaultSignInMode?: SignInMode;
   onSignIn?: () => void;
 };
 export const ChooseProvider: React.FC<ChooseProviderProps> = ({
   redirectTo,
-  ssoMode,
+  defaultSignInMode,
   onSignIn,
 }) => {
   const {
@@ -203,7 +199,7 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
   const { loadingAuth, cancelOnLogin } = useAppState();
 
   const [signInMode, setSignInMode] = React.useState<SignInMode>(
-    ssoMode ? SignInMode.SSO : SignInMode.Default
+    defaultSignInMode
   );
 
   const handleSignIn = async (provider: 'github' | 'google' | 'apple') => {
@@ -243,7 +239,7 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
         justify="space-between"
       >
         <CodeSandboxIcon width={48} height={48} />
-        {signInMode === SignInMode.Default && (
+        {signInMode === 'DEFAULT' && (
           <Stack
             as={motion.div}
             initial={{ opacity: 0 }}
@@ -357,26 +353,24 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
             )}
           </Stack>
         )}
-        {signInMode === SignInMode.SSO && (
-          <SSOSignIn
-            changeSignInMode={() => setSignInMode(SignInMode.Default)}
-          />
+        {signInMode === 'SSO' && (
+          <SSOSignIn changeSignInMode={() => setSignInMode('DEFAULT')} />
         )}
 
         <Stack as="footer" align="center" direction="vertical">
-          {signInMode === SignInMode.Default && (
+          {signInMode === 'DEFAULT' && (
             <StyledGhostButton
-              onClick={() => setSignInMode(SignInMode.SSO)}
+              onClick={() => setSignInMode('SSO')}
               variant="ghost"
             >
               Sign in with SSO
             </StyledGhostButton>
           )}
-          {signInMode === SignInMode.SSO && (
+          {signInMode === 'SSO' && (
             <Text lineHeight="16px" size={13} variant="muted">
               Not SSO?{''}
               <StyledGhostButton
-                onClick={() => setSignInMode(SignInMode.Default)}
+                onClick={() => setSignInMode('DEFAULT')}
                 variant="ghost"
               >
                 Sign in
