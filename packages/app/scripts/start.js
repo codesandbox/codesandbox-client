@@ -249,6 +249,13 @@ function addMiddleware(devServer, index) {
         changeOrigin: true,
       })
     );
+    devServer.use(
+      '/auth/workos',
+      createProxyMiddleware({
+        target: PROXY_DOMAIN,
+        changeOrigin: true,
+      })
+    );
   }
   if (process.env.VSCODE) {
     devServer.use(

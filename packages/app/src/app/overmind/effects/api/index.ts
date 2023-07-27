@@ -700,4 +700,9 @@ export default {
       body
     );
   },
+  initializeSSO(email: string) {
+    return api.get<{ redirectUrl: string }>('/auth/workos/initialize', {
+      email,
+    });
+  },
 };

@@ -14,6 +14,11 @@ const getBaseApi = (path: string, useRoot: boolean = false) => {
     return API_ROOT;
   }
 
+  // Special case for /auth requests which are not on /api/v1
+  if (path.startsWith('/auth')) {
+    return '';
+  }
+
   return path.startsWith('/beta') ? API_ROOT : `${API_ROOT}/v1`;
 };
 

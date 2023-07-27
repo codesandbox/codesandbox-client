@@ -15,12 +15,9 @@ import {
   CodeSandboxIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
-import {
-  useActions,
-  useAppState,
-  //  useEffects
-} from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import history from 'app/utils/history';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { Button } from './components/Button';
 import type { SignInMode } from './types';
 
@@ -54,17 +51,24 @@ type SSOSignInProps = {
   changeSignInMode: () => void;
 };
 const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
-  // const { api } = useEffects();
-  const [validation] = React.useState<ValidationState>({
+  const { api } = useEffects();
+  const [validation, setValidation] = React.useState<ValidationState>({
     state: 'IDLE',
   });
 
-  const handleFormSubmit = React.useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-    },
-    []
-  );
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get('email').toString();
+    setValidation({ state: 'VALIDATING' });
+
+    try {
+      const { redirectUrl } = await api.initializeSSO(email);
+      window.location.href = protocolAndHost() + redirectUrl;
+    } catch (err) {
+      setValidation({ state: 'INVALID', error: err.message });
+    }
+  };
 
   return (
     <Stack
@@ -101,6 +105,7 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
               disabled={validation.state !== 'IDLE'}
               placeholder="Enter your email"
               type="email"
+              name="email"
               autoFocus
               required
             />
