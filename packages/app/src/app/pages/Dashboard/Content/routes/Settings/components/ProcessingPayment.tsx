@@ -1,37 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { Stack, Text, Link, Icon } from '@codesandbox/components';
-import { useActions, useEffects } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { Card } from '.';
-
-const MAX_TRIES = 20;
 
 export const ProcessingPayment = () => {
   const {
     getActiveTeamInfo,
     dashboard: { getTeams },
   } = useActions();
-  const [counter, setCounter] = useState(-1);
+  const effects = useEffects();
+  const { activeTeam, hasLoadedApp } = useAppState();
   const [loading, setLoading] = useState('...');
-  const { notificationToast } = useEffects();
 
   useEffect(() => {
-    let timer;
+    if (!hasLoadedApp) return;
 
-    if (counter < MAX_TRIES) {
-      timer = setInterval(() => {
-        getActiveTeamInfo();
-        getTeams();
-        setCounter(prev => prev + 1);
-      }, 1000);
-    } else {
-      notificationToast.error(
+    try {
+      effects.gql.subscriptions.onSubscriptionChanged(
+        { teamId: activeTeam },
+        data => {
+          if (data.teamEvents.subscription.active) {
+            getActiveTeamInfo();
+            getTeams();
+          }
+        }
+      );
+    } catch {
+      effects.notificationToast.error(
         'Something went wrong, please try again later or email us at support@codesandbox.io'
       );
     }
 
-    return () => clearInterval(timer);
-  }, [counter, getActiveTeamInfo, getTeams, notificationToast]);
+    return () => {
+      effects.gql.subscriptions.onSubscriptionChanged.dispose();
+    };
+  }, [getActiveTeamInfo, getTeams, hasLoadedApp]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -51,7 +55,7 @@ export const ProcessingPayment = () => {
     <Card>
       <Stack direction="vertical" gap={2}>
         <Text size={4} weight="bold" maxWidth="100%">
-          Processing{loading}
+          Processing payment{loading}
         </Text>
 
         <Text size={3} variant="muted">

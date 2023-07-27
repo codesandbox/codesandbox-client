@@ -107,7 +107,7 @@ export const Header = ({
                 albumId={albumId}
               />
             )}
-            {showBetaBadge && <Badge icon="cloud">Beta</Badge>}
+            {showBetaBadge && <Badge icon="cloud">Cloud</Badge>}
           </>
         )}
       </Stack>

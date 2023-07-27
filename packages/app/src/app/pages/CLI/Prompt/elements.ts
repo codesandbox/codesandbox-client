@@ -1,19 +1,5 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
-  height: 100%;
-  width: 100%;
-  text-align: left;
-`;
-
-export const Buttons = styled.div`
-  display: flex;
-  justify-content: center;
-
-  > button {
-    margin: 1rem;
-  }
-`;
 
 export const TokenInput = styled.input`
   color: white;

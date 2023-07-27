@@ -7,11 +7,15 @@ import { Skeleton } from './Skeleton';
 import {
   CommentData,
   MentionData,
+  PullRequestReviewReceivedData,
+  PullRequestReviewRequestData,
   TeamInviteData,
   TeamAcceptedData,
   SandboxInvitationData,
 } from './types';
 
+import { PullRequestReviewReceived } from './notifications/PullRequestReviewReceived';
+import { PullRequestReviewRequest } from './notifications/PullRequestReviewRequest';
 import { SandboxInvitation } from './notifications/SandboxInvitation';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
@@ -44,6 +48,29 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
       />
     );
   }
+
+  if (type === 'pull_request_review_received') {
+    return (
+      <PullRequestReviewReceived
+        insertedAt={insertedAt}
+        id={id}
+        read={read}
+        {...(camelCaseData as PullRequestReviewReceivedData)}
+      />
+    );
+  }
+
+  if (type === 'pull_request_review_requested') {
+    return (
+      <PullRequestReviewRequest
+        insertedAt={insertedAt}
+        id={id}
+        read={read}
+        {...(camelCaseData as PullRequestReviewRequestData)}
+      />
+    );
+  }
+
   if (type === 'team_invite') {
     return (
       <TeamInvite

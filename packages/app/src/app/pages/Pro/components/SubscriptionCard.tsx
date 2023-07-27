@@ -160,6 +160,7 @@ export const SubscriptionCard = ({
               : {
                   as: 'button',
                   onClick: props.cta.onClick,
+                  disabled: props.cta.isLoading,
                 })}
           >
             {props.cta.isLoading ? 'Loading...' : props.cta.text}

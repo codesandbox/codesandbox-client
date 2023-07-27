@@ -29,19 +29,21 @@ const GlobalSearchStyles = createGlobalStyle`
 `;
 
 export const SearchResults = ({
-  checkoutUrl,
+  onCreateCheckout,
   isInCollection,
   search,
   onSelectTemplate,
   onOpenTemplate,
   officialTemplates,
+  canCheckout,
 }: {
-  checkoutUrl: string | undefined;
+  onCreateCheckout: () => void;
   isInCollection: boolean;
   search: string;
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
   officialTemplates: TemplateFragment[];
+  canCheckout: boolean;
 }) => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
@@ -82,9 +84,10 @@ export const SearchResults = ({
 
           {limitNewSandboxes ? (
             <MaxPublicSandboxes
-              checkoutUrl={checkoutUrl}
+              onCreateCheckout={onCreateCheckout}
               isEligibleForTrial={isEligibleForTrial}
               isBillingManager={isBillingManager}
+              canCheckout={canCheckout}
             />
           ) : null}
 

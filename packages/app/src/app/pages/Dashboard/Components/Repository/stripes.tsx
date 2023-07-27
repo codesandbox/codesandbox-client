@@ -1,12 +1,9 @@
-import { MessageStripe, Link, Text } from '@codesandbox/components';
+import { MessageStripe } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { useGetCheckoutURL } from 'app/hooks';
-import { useAppState } from 'app/overmind';
+import { useCreateCheckout } from 'app/hooks';
 
 const getEventName = (
   isEligibleForTrial: boolean,
@@ -22,40 +19,29 @@ const getEventName = (
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
-  const { pathname } = useLocation();
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: pathname,
-    cancel_path: pathname,
-  });
-
-  const ctaUrl = `${
-    isPersonalSpace ? '/pro' : checkoutUrl
-  }?utm_source=dashboard_private_repo_upgrade`;
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
   return (
-    <MessageStripe
-      justify={ctaUrl ? 'space-between' : 'center'}
-      variant="trial"
-    >
+    <MessageStripe justify="space-between" variant="trial">
       This repository is in view mode only. Upgrade your account for unlimited
       repositories.
-      {checkoutUrl && (
+      {canCheckout && (
         <MessageStripe.Action
-          {...(checkoutUrl.startsWith('/')
-            ? {
-                as: RouterLink,
-                to: ctaUrl,
-              }
-            : {
-                as: 'a',
-                href: ctaUrl,
-              })}
+          disabled={checkout.status === 'loading'}
           onClick={() => {
             track(getEventName(isEligibleForTrial, isBillingManager), {
               codesandbox: 'V1',
               event_source: 'UI',
             });
+
+            if (isPersonalSpace) {
+              window.location.href = '/pro';
+            } else {
+              createCheckout({
+                utm_source: 'dashboard_private_repo_upgrade',
+              });
+            }
           }}
         >
           {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
@@ -66,36 +52,28 @@ export const PrivateRepoFreeTeam: React.FC = () => {
 };
 
 export const MaxReposFreeTeam: React.FC = () => {
-  const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: dashboardUrls.repositories(activeTeam),
-    cancel_path: dashboardUrls.repositories(activeTeam),
-  });
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
   return (
     <MessageStripe justify="space-between" variant="trial">
       Free teams are limited to 3 public repositories. Upgrade for unlimited
       public and private repositories.
-      {checkoutUrl ? (
+      {canCheckout ? (
         <MessageStripe.Action
-          {...(checkoutUrl.startsWith('/')
-            ? {
-                as: Link,
-                to: checkoutUrl,
-              }
-            : {
-                as: 'a',
-                href: checkoutUrl,
-              })}
-          onClick={() =>
+          disabled={checkout.status === 'loading'}
+          onClick={() => {
+            createCheckout({
+              utm_source: 'dashboard_private_repo_upgrade',
+            });
+
             track(getEventName(isEligibleForTrial, isBillingManager), {
               codesandbox: 'V1',
               event_source: 'UI',
-            })
-          }
+            });
+          }}
         >
           {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
         </MessageStripe.Action>
@@ -114,31 +92,6 @@ export const MaxReposFreeTeam: React.FC = () => {
           Learn more
         </MessageStripe.Action>
       )}
-    </MessageStripe>
-  );
-};
-
-export const TemporaryWarningForWorkspaceScopesMigration: React.FC<{
-  onDismiss?: () => void;
-  variant?: 'repository' | 'branch';
-}> = ({ onDismiss, variant = 'repository' }) => {
-  return (
-    <MessageStripe
-      justify="space-between"
-      onDismiss={onDismiss}
-      variant="neutral"
-    >
-      <Text>
-        Can&apos;t find a {variant}? It is not deleted, but needs to be
-        re-imported due to a change. Please{' '}
-        <Link
-          css={{ textDecoration: 'underline', fontWeight: 'bold' }}
-          href="https://www.loom.com/share/a7a7a44e7ef547358ab5696d6d328156"
-        >
-          watch this video for more details
-        </Link>
-        .
-      </Text>
     </MessageStripe>
   );
 };

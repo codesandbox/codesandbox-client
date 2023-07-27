@@ -3,7 +3,12 @@ import { RecentNotificationFragment } from 'app/graphql/types';
 export type preferenceTypes = {
   emailCommentMention: boolean;
   emailCommentReply: boolean;
+  emailMarketing: boolean;
   emailNewComment: boolean;
+  emailSandboxInvite: boolean;
+  emailTeamInvite: boolean;
+  inAppPrReviewReceived: boolean;
+  inAppPrReviewRequest: boolean;
 };
 
 type State = {

@@ -24,8 +24,8 @@ export const VSCode = () => {
           servers, databases, and much more.
         </Text>
         <Text as="p" variant="muted" margin={0}>
-          Don&apos;t worry&mdash;this sandbox will not be deleted. After converting,
-          you will have both versions.
+          Don&apos;t worry&mdash;this sandbox will not be deleted. After
+          converting, you will have both versions.
         </Text>
         <Text as="p" variant="muted" margin={0}>
           Do you want to fork this sandbox?
@@ -40,7 +40,7 @@ export const VSCode = () => {
             Yes, fork
           </Button>
           <Link
-            href="https://codesandbox.io/docs/learn/sandboxes/overview?tab=cloud"
+            href="https://codesandbox.io/docs/tutorial/convert-browser-sandbox-cloud"
             target="_blank"
             rel="noreferrer noopener"
           >

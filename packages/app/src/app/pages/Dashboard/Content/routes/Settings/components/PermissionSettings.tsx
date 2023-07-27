@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
@@ -73,6 +73,11 @@ export const PermissionSettings = () => {
         {!isPersonalSpace && (
           <Column span={[12, 12, 6]}>
             <SandboxSecurity disabled={isFree || !isBillingManager} />
+          </Column>
+        )}
+        {isPro && (
+          <Column span={[12, 12, 6]}>
+            <AIPermission disabled={!isAdmin} />
           </Column>
         )}
       </Grid>
@@ -280,6 +285,120 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       </Stack>
       <Stack justify="flex-end">
         <Button autoWidth onClick={onSubmit} disabled={disabled}>
+          Change Settings
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
+const AIPermission = ({ disabled }: { disabled: boolean }) => {
+  const { activeTeamInfo } = useAppState();
+  const [showContinueUrl, setShowContinueUrl] = useState(false);
+
+  const options = [
+    {
+      text: 'Enable AI feature for <strong>private repositories</strong>',
+      key: 'privateRepositories',
+    },
+    {
+      text: 'Enable AI feature for <strong>private sandboxes</strong>',
+      key: 'privateSandboxes',
+    },
+    {
+      text: 'Enable AI feature for <strong>public repositories</strong>',
+      key: 'publicRepositories',
+    },
+    {
+      text: 'Enable AI feature for <strong>public sandboxes</strong>',
+      key: 'publicSandboxes',
+    },
+  ];
+
+  const [state, setState] = React.useState(activeTeamInfo.settings.aiConsent);
+  const { setTeamAiConsent } = useActions().dashboard;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const continueUrl = urlParams.get('continueUrl');
+
+  return (
+    <Stack
+      direction="vertical"
+      justify="space-between"
+      gap={60}
+      css={css({
+        padding: 6,
+        backgroundColor: 'card.background',
+        border: '1px solid',
+        borderColor: 'button.background',
+        borderRadius: 'medium',
+        opacity: disabled ? 0.4 : 1,
+      })}
+    >
+      <Stack direction="vertical" gap={8}>
+        <Stack direction="vertical" gap={8}>
+          <Text size={4} weight="500">
+            AI Permissions
+          </Text>
+
+          <Text variant="muted" size={2}>
+            Read our{' '}
+            <a
+              href="https://codesandbox.io/legal/privacy"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Privacy Policy
+            </a>{' '}
+            to check what data AI will be have access
+          </Text>
+
+          <Stack direction="vertical" gap={6}>
+            {options.map(item => {
+              return (
+                <Stack justify="space-between" as="label">
+                  <Text
+                    size={3}
+                    dangerouslySetInnerHTML={{ __html: item.text }}
+                  />
+                  <Switch
+                    disabled={disabled}
+                    on={state[item.key]}
+                    onChange={() =>
+                      setState(prev => ({
+                        ...prev,
+                        [item.key]: !prev[item.key],
+                      }))
+                    }
+                  />
+                </Stack>
+              );
+            })}
+          </Stack>
+        </Stack>
+
+        <Text variant="active" size={2}>
+          For the changes to take effect, you need to restart the microVM
+          instance
+        </Text>
+      </Stack>
+
+      <Stack justify="flex-end" gap={2}>
+        {showContinueUrl && continueUrl && (
+          <Button autoWidth variant="secondary" as="a" href={continueUrl}>
+            Go back to the project
+          </Button>
+        )}
+
+        <Button
+          autoWidth
+          disabled={disabled}
+          onClick={async () => {
+            track('Dashboard - Permissions panel - Changed AI consent');
+            await setTeamAiConsent(state);
+            setShowContinueUrl(true);
+          }}
+        >
           Change Settings
         </Button>
       </Stack>

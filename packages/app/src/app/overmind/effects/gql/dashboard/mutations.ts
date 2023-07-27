@@ -89,6 +89,8 @@ import {
   DeleteBranchMutationVariables,
   CreateBranchMutation,
   CreateBranchMutationVariables,
+  SetTeamAiConsentMutation,
+  SetTeamAiConsentMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -410,6 +412,7 @@ export const createOrUpdateNpmRegistry: Query<
     $proxyEnabled: Boolean!
     $limitToScopes: Boolean!
     $enabledScopes: [String!]!
+    $sandpackTrustedDomains: [String!]!
   ) {
     createOrUpdatePrivateNpmRegistry(
       teamId: $teamId
@@ -420,6 +423,7 @@ export const createOrUpdateNpmRegistry: Query<
       proxyEnabled: $proxyEnabled
       limitToScopes: $limitToScopes
       enabledScopes: $enabledScopes
+      sandpackTrustedDomains: $sandpackTrustedDomains
     ) {
       ...npmRegistry
     }
@@ -733,6 +737,32 @@ export const createBranch: Query<
     createBranch(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
       id
       name
+    }
+  }
+`;
+
+export const setTeamAiConsent: Query<
+  SetTeamAiConsentMutation,
+  SetTeamAiConsentMutationVariables
+> = gql`
+  mutation SetTeamAiConsent(
+    $teamId: UUID4!
+    $privateRepositories: Boolean!
+    $privateSandboxes: Boolean!
+    $publicSandboxes: Boolean!
+    $publicRepositories: Boolean!
+  ) {
+    setTeamAiConsent(
+      teamId: $teamId
+      privateRepositories: $privateRepositories
+      privateSandboxes: $privateSandboxes
+      publicSandboxes: $publicSandboxes
+      publicRepositories: $publicRepositories
+    ) {
+      privateRepositories
+      privateSandboxes
+      publicSandboxes
+      publicRepositories
     }
   }
 `;

@@ -53,10 +53,55 @@ const result: IntrospectionResultData = {
       },
       {
         kind: 'UNION',
+        name: 'BranchEvent',
+        possibleTypes: [
+          {
+            name: 'PullRequestCommentEvent',
+          },
+          {
+            name: 'PullRequestEvent',
+          },
+          {
+            name: 'PullRequestReviewCommentEvent',
+          },
+          {
+            name: 'PullRequestReviewEvent',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
         name: 'RepositoryEvent',
         possibleTypes: [
           {
             name: 'InstallationEvent',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'ProjectEvent',
+        possibleTypes: [
+          {
+            name: 'PullRequestCommentEvent',
+          },
+          {
+            name: 'PullRequestEvent',
+          },
+          {
+            name: 'PullRequestReviewCommentEvent',
+          },
+          {
+            name: 'PullRequestReviewEvent',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'TeamEvent',
+        possibleTypes: [
+          {
+            name: 'TeamSubscriptionEvent',
           },
         ],
       },

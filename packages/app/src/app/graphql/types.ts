@@ -84,6 +84,11 @@ export type BookmarkEntity = Team | User;
  */
 export type Branch = {
   __typename?: 'Branch';
+  /**
+   * Whether or not AI features should be enabled for this branch.
+   *     This is the final calculated value based on the team subscription status, team settings, and project settings.
+   */
+  aiConsent: Scalars['Boolean'];
   /** Active users connected to this branch */
   connections: Array<Connection>;
   /** Whether this branch is a contribution branch made by a read-only user */
@@ -123,6 +128,13 @@ export type BranchConnections = {
   branchId: Scalars['String'];
   connections: Array<Connection>;
 };
+
+/** Events related to a specific branch. */
+export type BranchEvent =
+  | PullRequestCommentEvent
+  | PullRequestEvent
+  | PullRequestReviewCommentEvent
+  | PullRequestReviewEvent;
 
 /** Subscription update about a commit made by CodeSandbox for a branch */
 export type BranchLastCommit = {
@@ -213,8 +225,6 @@ export type Connection = {
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
-  /** @deprecated Deprecated for open beta */
-  betaAccess: Scalars['Boolean'];
   bookmarkedTemplates: Array<Template>;
   collaboratorSandboxes: Array<Sandbox>;
   collection: Maybe<Collection>;
@@ -348,6 +358,18 @@ export type GitOriginalGitSandboxesArgs = {
   teamId: Maybe<Scalars['UUID4']>;
 };
 
+/** Relationship between a user and repository */
+export enum GitHubAuthorAssociation {
+  Collaborator = 'COLLABORATOR',
+  Contributor = 'CONTRIBUTOR',
+  FirstTimer = 'FIRST_TIMER',
+  FirstTimeContributor = 'FIRST_TIME_CONTRIBUTOR',
+  Mannequin = 'MANNEQUIN',
+  Member = 'MEMBER',
+  None = 'NONE',
+  Owner = 'OWNER',
+}
+
 /**
  * Organization as it appears on GitHub (intersection of Open API `simple-user` and
  * `organization-simple`)
@@ -392,6 +414,117 @@ export type GithubProfile = {
   /** List of OAuth scopes the user has granted */
   scopes: Array<Scalars['String']>;
 };
+
+/** Comment on a GitHub pull request that is not part of a review */
+export type GitHubPullRequestComment = {
+  __typename?: 'GitHubPullRequestComment';
+  /** Relationship between the comment author and the repository */
+  authorAssociation: GitHubAuthorAssociation;
+  /** Raw (markdown and/or HTML) body of the comment */
+  body: Scalars['String'];
+  /** Original creation date of the comment */
+  createdAt: Scalars['DateTime'];
+  /** Link to view the comment on GitHub */
+  htmlUrl: Scalars['String'];
+  /** GitHub ID */
+  id: Scalars['Int'];
+  /** ID of the parent pull request */
+  issueId: Scalars['Int'];
+  /** Last edit or reaction date of the comment */
+  updatedAt: Scalars['DateTime'];
+  /** If available, the CodeSandbox user who created the comment */
+  user: Maybe<User>;
+  /** GitHub username of the user who created the comment */
+  username: Scalars['String'];
+};
+
+/** Ways to merge a pull request */
+export enum GitHubPullRequestMergeMethod {
+  Merge = 'MERGE',
+  Rebase = 'REBASE',
+  Squash = 'SQUASH',
+}
+
+/** The action to take with a pull request review */
+export enum GitHubPullRequestReviewAction {
+  Approve = 'APPROVE',
+  Comment = 'COMMENT',
+  RequestChanges = 'REQUEST_CHANGES',
+}
+
+/** Comment on a GitHub pull request review */
+export type GitHubPullRequestReviewComment = {
+  __typename?: 'GitHubPullRequestReviewComment';
+  /** Relationship between the comment author and the repository */
+  authorAssociation: GitHubAuthorAssociation;
+  /** Raw (markdown and/or HTML) body of the comment */
+  body: Scalars['String'];
+  /** SHA of the commit to which the comment applies */
+  commitId: Scalars['String'];
+  /** Original creation date of the comment */
+  createdAt: Scalars['DateTime'];
+  /** Diff of the line that the comment refers to */
+  diffHunk: Scalars['String'];
+  /** Link to view the comment on GitHub */
+  htmlUrl: Scalars['String'];
+  /** GitHub ID */
+  id: Scalars['Int'];
+  /** Parent comment ID (in the context of a thread) */
+  inReplyToId: Maybe<Scalars['Int']>;
+  /** Line of the blob to which the comment applies. Last line of the range for a multi-line comment. */
+  line: Maybe<Scalars['Int']>;
+  /** SHA of the original commit to which the comment applies */
+  originalCommitId: Scalars['String'];
+  /** Line of the blob to which the comment applies. Last line of the range for a multi-line comment */
+  originalLine: Maybe<Scalars['Int']>;
+  /** First line of the range for a multi-line comment */
+  originalStartLine: Maybe<Scalars['Int']>;
+  /** Relative path of the file to which the comment applies */
+  path: Scalars['String'];
+  /** ID of the parent pull request review */
+  pullRequestReviewId: Maybe<Scalars['Int']>;
+  /** Side of the diff to which the comment applies. Side of the last line of the range for a multi-line comment */
+  side: Maybe<GitHubPullRequestReviewCommentSide>;
+  /** First line of the range for a multi-line comment */
+  startLine: Maybe<Scalars['Int']>;
+  /** Side of the first line of the range for a multi-line comment */
+  startSide: Maybe<GitHubPullRequestReviewCommentSide>;
+  /** Level at which the comment is targeted, can be a diff line or a file */
+  subjectType: Maybe<GitHubPullRequestReviewCommentSubjectType>;
+  /** Last edit or reaction date of the comment */
+  updatedAt: Scalars['DateTime'];
+  /** If available, the CodeSandbox user who created the comment */
+  user: Maybe<User>;
+  /** GitHub username of the user who created the comment */
+  username: Scalars['String'];
+};
+
+export type GithubPullRequestReviewCommentInput = {
+  /** Body text of the review comment */
+  body: Scalars['String'];
+  /** Line number of the file to comment on. Note: This line must be part of the diff */
+  line: Scalars['Int'];
+  /** Relative path to the file being commented on */
+  path: Scalars['String'];
+  /** Which side of the diff to comment on. */
+  side: GitHubPullRequestReviewCommentSide;
+  /** Start line of multi-line comment. Only needed for multi-line comments. */
+  startLine: Maybe<Scalars['Int']>;
+  /** Start side of multi-line comment. Only needed for multi-line comments. */
+  startSide: Maybe<GitHubPullRequestReviewCommentSide>;
+};
+
+/** Which side of a side-by-side diff a PR review comment pertains to */
+export enum GitHubPullRequestReviewCommentSide {
+  Left = 'LEFT',
+  Right = 'RIGHT',
+}
+
+/** Whether a review comment pertains to an entire file or specific line(s) */
+export enum GitHubPullRequestReviewCommentSubjectType {
+  File = 'FILE',
+  Line = 'LINE',
+}
 
 /** Details about a repository as it appears on GitHub (Open API `repository`) */
 export type GithubRepo = {
@@ -463,6 +596,24 @@ export type GitHubRepository = {
   source: Maybe<GitHubRepository>;
   /** Time of the most recent change to the repository's metadata */
   updatedAt: Scalars['DateTime'];
+};
+
+/**
+ * Information about a GitHub organization team. Currently very limited, but
+ * hopefully we can include member information in the future
+ */
+export type GithubTeam = {
+  __typename?: 'GithubTeam';
+  name: Scalars['String'];
+};
+
+/** Information about a GitHub user and its associated CSB user if available */
+export type GithubUser = {
+  __typename?: 'GithubUser';
+  /** CodeSandbox user associated with this GitHub account, if available */
+  user: Maybe<User>;
+  /** GitHub username */
+  username: Scalars['String'];
 };
 
 export enum GitProvider {
@@ -543,7 +694,31 @@ export type NotificationPreferences = {
   __typename?: 'NotificationPreferences';
   emailCommentMention: Scalars['Boolean'];
   emailCommentReply: Scalars['Boolean'];
+  /**
+   * Whether or not a user wants to receive marketing emails.
+   * Since we do not receive webhooks from the marketing email service, it is possible for this to show
+   * `true` when in reality a user has already unsubscribed via the link in an email.
+   * This is inevitable, but does not affect whether or not they get emails.
+   */
+  emailMarketing: Scalars['Boolean'];
   emailNewComment: Scalars['Boolean'];
+  emailSandboxInvite: Scalars['Boolean'];
+  emailTeamInvite: Scalars['Boolean'];
+  emailTeamRequest: Scalars['Boolean'];
+  /**
+   * Whether or not a user wants an in-browser notification if someone submits a review on their PR.
+   *
+   * This will only be sent when a repository has the GitHub App installed and the PR owner is a
+   * member of a CodeSandbox team that has the project imported.
+   */
+  inAppPrReviewReceived: Scalars['Boolean'];
+  /**
+   * Whether or not a user wants an in-browser notification if someone requests their review on a PR.
+   *
+   * This will only be sent when a repository has the GitHub App installed and the requested reviewer is a
+   * member of a CodeSandbox team that has the project imported.
+   */
+  inAppPrReviewRequest: Scalars['Boolean'];
 };
 
 export type OrderBy = {
@@ -583,6 +758,7 @@ export type PrivateRegistry = {
   registryAuthKey: Maybe<Scalars['String']>;
   registryType: RegistryType;
   registryUrl: Maybe<Scalars['String']>;
+  sandpackTrustedDomains: Array<Scalars['String']>;
   teamId: Scalars['UUID4'];
 };
 
@@ -648,6 +824,8 @@ export type Project = {
   repository: Repository;
   /** Compute resources for the project, based on settings and team subscription */
   resources: Resources;
+  /** Settings for the project */
+  settings: ProjectSettings;
   /**
    * Team to which this project is assigned
    *
@@ -656,11 +834,7 @@ export type Project = {
    * looking up the team.
    */
   team: Maybe<Team>;
-  /**
-   * SOFT DEPRECATED: Teams that have bookmarked the current project.
-   *
-   * This field will be replaced by a single assigned `team` after the workspace transition.
-   */
+  /** @deprecated Use team instead */
   teams: Array<Team>;
 };
 
@@ -689,6 +863,20 @@ export enum ProjectAuthorization {
   Write = 'WRITE',
 }
 
+/** Events related to a project (repository). */
+export type ProjectEvent =
+  | PullRequestCommentEvent
+  | PullRequestEvent
+  | PullRequestReviewCommentEvent
+  | PullRequestReviewEvent;
+
+/** User-editable settings for a project */
+export type ProjectSettings = {
+  __typename?: 'ProjectSettings';
+  /** Whether AI features are explicitly enabled or disabled for this project. If `null`, the team-wide setting applies. */
+  aiConsent: Maybe<Scalars['Boolean']>;
+};
+
 export type ProSubscription = {
   __typename?: 'ProSubscription';
   active: Scalars['Boolean'];
@@ -711,6 +899,7 @@ export type ProSubscription = {
   trialEnd: Maybe<Scalars['DateTime']>;
   trialStart: Maybe<Scalars['DateTime']>;
   type: SubscriptionType;
+  /** Per-seat price for the billing interval as an integer of the smallest denomination of the local currency. */
   unitPrice: Maybe<Scalars['Int']>;
   updateBillingUrl: Maybe<Scalars['String']>;
 };
@@ -722,18 +911,41 @@ export enum ProviderName {
   Google = 'GOOGLE',
 }
 
+/** Pull Request as it appears on GitHub */
 export type PullRequest = {
   __typename?: 'PullRequest';
-  /** Destination repository of the pull request (may not be the same as the head) */
+  /** Number of code additions in this PR. Only available for GHA repositories. */
+  additions: Maybe<Scalars['Int']>;
+  /** Destination branch of this pull request. */
+  baseBranch: Scalars['String'];
+  /** Destination repository of the pull request (may not be the same as the HEAD) */
   baseRepository: Repository;
+  /** Body (description) of the pull request */
+  body: Maybe<Scalars['String']>;
+  /** Number of changed files in this PR. Only available for GHA repositories. */
+  changedFiles: Maybe<Scalars['Int']>;
+  /** Comments that are not part of a PR review */
+  comments: Array<GitHubPullRequestComment>;
+  /** Number of comments on this PR. Only available for GHA repositories. */
+  commentsCount: Maybe<Scalars['Int']>;
+  /** Number of commits on this PR. Only available for GHA repositories. */
+  commitsCount: Maybe<Scalars['Int']>;
   /** If available, the CodeSandbox user who opened the PR */
   creator: Maybe<User>;
   /** GitHub username of the person who opened the PR */
   creatorUsername: Scalars['String'];
+  /** Number of code deletions in this PR. Only available for GHA repositories. */
+  deletions: Maybe<Scalars['Int']>;
   /** Whether the PR is marked as a draft (instead of ready for review) */
   draft: Scalars['Boolean'];
+  /** The name of the HEAD branch of this PR. This is the branch containing the changes */
+  headBranch: Scalars['String'];
   /** URL to view the PR on GitHub */
   htmlUrl: Scalars['String'];
+  /** Whether the PR can be merged in terms of Git conflicts. See also `mergeable_state`. */
+  mergeable: Maybe<Scalars['Boolean']>;
+  /** Whether the PR is allowed to be merged on GitHub */
+  mergeableStatus: Maybe<Scalars['String']>;
   /** PR number as it appears on GitHub */
   number: Scalars['Int'];
   /** When a PR was closed, either due to closing or merging */
@@ -744,11 +956,124 @@ export type PullRequest = {
   prMergedAt: Maybe<Scalars['DateTime']>;
   /** When information about a PR was last changed */
   prUpdatedAt: Scalars['DateTime'];
+  /** Information about users who have been requested to review this PR. */
+  requestedReviewers: Array<GithubUser>;
+  /** Information about teams who have been requested to review this PR. */
+  requestedTeams: Array<GithubTeam>;
+  /** Number of review comments on this PR. Only available for GHA repositories. */
+  reviewCommentsCount: Maybe<Scalars['Int']>;
+  /** Information about reviews that have been submitted for this PR. */
+  reviews: Array<PullRequestReview>;
   /** Current state of the pull request (ex. `open` or `closed`) */
   state: Scalars['String'];
   /** Title of the PR as it appears on GitHub */
   title: Scalars['String'];
 };
+
+/**
+ * Event about a comment on a pull request (outside the context of a review)
+ *
+ * GitHub does not distinguish between PR and issue comments, so the event will be "issue_comment"
+ * for both types. The API will attempt to distinguish between them using additional information
+ * from the event.
+ */
+export type PullRequestCommentEvent = {
+  __typename?: 'PullRequestCommentEvent';
+  action: PullRequestCommentEventAction;
+  comment: GitHubPullRequestComment;
+  event: Scalars['String'];
+  /**
+   * Pull request on which the comment appears
+   *
+   * This field is nullable due to an edge case that may cause comments to be saved without the
+   * parent PR. Clients can observe the comment's `issueId` field to see if the pull request is
+   * already known based on its ID.
+   */
+  pullRequest: Maybe<PullRequest>;
+};
+
+export enum PullRequestCommentEventAction {
+  Created = 'CREATED',
+  Deleted = 'DELETED',
+  Edited = 'EDITED',
+}
+
+/** Event about activity on a pull request */
+export type PullRequestEvent = {
+  __typename?: 'PullRequestEvent';
+  action: PullRequestEventAction;
+  event: Scalars['String'];
+  pullRequest: PullRequest;
+};
+
+export enum PullRequestEventAction {
+  Closed = 'CLOSED',
+  ConvertedToDraft = 'CONVERTED_TO_DRAFT',
+  Opened = 'OPENED',
+  ReadyForReview = 'READY_FOR_REVIEW',
+  ReviewRequestRemoved = 'REVIEW_REQUEST_REMOVED',
+  ReviewRequested = 'REVIEW_REQUESTED',
+}
+
+/** Pull Request review */
+export type PullRequestReview = {
+  __typename?: 'PullRequestReview';
+  body: Maybe<Scalars['String']>;
+  /**
+   * Comments on the PR review
+   *
+   * Comments are returned in the order in which they were created. However, clients may wish to
+   * observe the `is_reply_to_id` field to ensure threaded replies appear in order.
+   */
+  comments: Array<GitHubPullRequestReviewComment>;
+  id: Scalars['Int'];
+  state: PullRequestReviewState;
+  submittedAt: Maybe<Scalars['DateTime']>;
+  /** Timestamp of the last time the review was persisted to the DB. Null means it has not been yet persisted */
+  syncedAt: Maybe<Scalars['DateTime']>;
+  /** If available, the CodeSandbox user who submitted the review */
+  user: Maybe<User>;
+  /** GitHub username of the user who submitted the review */
+  username: Scalars['String'];
+};
+
+/** Event about a comment on a pull request review */
+export type PullRequestReviewCommentEvent = {
+  __typename?: 'PullRequestReviewCommentEvent';
+  action: PullRequestReviewCommentEventAction;
+  comment: GitHubPullRequestReviewComment;
+  event: Scalars['String'];
+  pullRequest: PullRequest;
+};
+
+export enum PullRequestReviewCommentEventAction {
+  Created = 'CREATED',
+  Deleted = 'DELETED',
+  Edited = 'EDITED',
+}
+
+/** Event about review activity on a pull request */
+export type PullRequestReviewEvent = {
+  __typename?: 'PullRequestReviewEvent';
+  action: PullRequestReviewEventAction;
+  event: Scalars['String'];
+  pullRequest: PullRequest;
+  review: PullRequestReview;
+};
+
+export enum PullRequestReviewEventAction {
+  Dismissed = 'DISMISSED',
+  Edited = 'EDITED',
+  Submitted = 'SUBMITTED',
+}
+
+/** Current state of a GitHub pull request review */
+export enum PullRequestReviewState {
+  Approved = 'APPROVED',
+  ChangesRequested = 'CHANGES_REQUESTED',
+  Commented = 'COMMENTED',
+  Dismissed = 'DISMISSED',
+}
 
 export type Reference = {
   __typename?: 'Reference';
@@ -869,6 +1194,15 @@ export type RootMutationType = {
    * ```
    */
   createContributionBranch: Branch;
+  /**
+   * Create a review on a pull request on GitHub.
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. Returns the updated
+   * pull request review. Clients should be prepared to receive the same or additional information
+   * from the `BranchEvents` or `ProjectEvents` subscription with a `PullRequestReviewEvent` once
+   * the GitHub webhook is processed.
+   */
+  createGithubPullRequestReview: PullRequestReview;
   /** Create or Update a private registry */
   createOrUpdatePrivateNpmRegistry: PrivateRegistry;
   createPreviewComment: Comment;
@@ -898,6 +1232,14 @@ export type RootMutationType = {
   deleteComment: Comment;
   /** Request deletion of current user */
   deleteCurrentUser: Scalars['String'];
+  /**
+   * Delete a comment from a pull request review
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. This endpoint returns
+   * a simple message, since the original comment was deleted. Clients can expect an event on the
+   * `BranchEvents` and `ProjectEvents` subscriptions with the full body of the removed comment.
+   */
+  deleteGithubPullRequestReviewComment: Scalars['String'];
   /** Delete a private registry */
   deletePrivateNpmRegistry: Maybe<PrivateRegistry>;
   /**
@@ -946,6 +1288,19 @@ export type RootMutationType = {
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
   deleteWorkspace: Scalars['String'];
+  /**
+   * Dismiss a submitted pull request review
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. Returns the updated
+   * pull request review. Clients should be prepared to receive the same or additional information
+   * from the `BranchEvents` or `ProjectEvents` subscription with a `PullRequestReviewEvent` once
+   * the GitHub webhook is processed.
+   *
+   * **Note**: To dismiss a pull request review on a protected branch, the user must be a
+   * repository administrator or be included in the list of people or teams who can dismiss pull
+   * request reviews.
+   */
+  dismissGithubPullRequestReview: PullRequestReview;
   /**
    * Import an existing branch from a repository
    *
@@ -1040,6 +1395,19 @@ export type RootMutationType = {
   markAllNotificationsAsRead: User;
   /** Mark one notification as read */
   markNotificationAsRead: Notification;
+  /**
+   * Merge a pull request if merging is possible
+   *
+   * Pull requests have `mergeable` and `mergeableState` fields that indicate whether they can be
+   * merged (due to git conflicts and other merge requirements). However, these fields may not be
+   * up-to-date. Before attempting to merge, this mutation will check the latest status and return
+   * an error if merging is not possible. Furthermore, it will publish an event for the related
+   * repository and branch with the updated status.
+   *
+   * On success, the project and branch subscriptions will receive the updated pull request as soon
+   * as the resulting webhook is received.
+   */
+  mergeGithubPullRequest: Scalars['String'];
   permanentlyDeleteSandboxes: Array<Sandbox>;
   previewUpdateSubscriptionBillingInterval: BillingPreview;
   reactivateSubscription: ProSubscription;
@@ -1052,11 +1420,42 @@ export type RootMutationType = {
   removeCollaborator: Collaborator;
   /** Remove someone from a team */
   removeFromTeam: Team;
+  /**
+   * Remove one or more GH users from the list of requested reviewers for this pull request.
+   * Returns the list of users that are still requested to review.
+   */
+  removeRequestedGithubPullRequestReviewers: Array<GithubUser>;
   /** Remove sandboxes from album (idempotent) */
   removeSandboxesFromAlbum: Maybe<Album>;
   /** Rename a collection and all subfolders */
   renameCollection: Array<Collection>;
   renameSandbox: Sandbox;
+  /**
+   * Reply to a pull request review on GitHub
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. This mutation returns
+   * only "OK" or an error message. To receive the created review data, the GitHub app needs to be
+   * installed in the repository, and clients need to subscribe to `BranchEvents` or
+   * `ProjectEvents` which will receive a `PullRequestReviewCommentEvent` once the webhook from
+   * GitHub gets processed.
+   */
+  replyToGithubPullRequestReview: GitHubPullRequestReviewComment;
+  /**
+   * Request one or more GH users to review a pull request
+   * Returns complete list of users  requested to review.
+   */
+  requestGithubPullRequestReviewers: Array<GithubUser>;
+  /**
+   * Request access to a team by ID
+   *
+   * This will notify admins of the team that the current user would like to join the team. It is
+   * up to the team admins to complete the process. A simple message for the user is returned.
+   *
+   * ```gql
+   * mutation requestTeamInvitation(teamId: "61cbc936-470c-48f9-9520-2b862493e0d8")
+   * ```
+   */
+  requestTeamInvitation: Scalars['String'];
   resolveComment: Comment;
   revokeSandboxInvitation: Invitation;
   /** Revoke an invitation to a team */
@@ -1070,6 +1469,8 @@ export type RootMutationType = {
   setSandboxAlwaysOn: Sandbox;
   setSandboxesFrozen: Array<Sandbox>;
   setSandboxesPrivacy: Array<Sandbox>;
+  /** Configure consent for AI features in this team. Can be overridden for specific repositories or sandboxes. */
+  setTeamAiConsent: TeamAiConsent;
   /** Set the description of the team */
   setTeamDescription: Team;
   /** Set minimum privacy level for workspace */
@@ -1087,10 +1488,30 @@ export type RootMutationType = {
   updateComment: Comment;
   /** Change details of current user */
   updateCurrentUser: User;
+  /** Edit the body of a pull request review. */
+  updateGithubPullRequestReview: PullRequestReview;
+  /**
+   * Update a comment from a pull request review
+   *
+   * Requires a signed-in user who has granted additional GitHub permissions. This endpoint returns
+   * the updated review comment. Clients can expect an event on the
+   * `BranchEvents` and `ProjectEvents` subscriptions with the full body of the edited comment.
+   */
+  updateGithubPullRequestReviewComment: GitHubPullRequestReviewComment;
   /** Set a user's notification preferences */
   updateNotificationPreferences: NotificationPreferences;
   /** Update notification read status */
   updateNotificationReadStatus: Notification;
+  /**
+   * Update the settings for a project. All settings are nullable.
+   * Not passing a specific argument will leave it unchanged, explicitly passing `null` will revert it to the default.
+   */
+  updateProjectSettings: ProjectSettings;
+  /**
+   * Update the settings for a sandbox. All settings are nullable.
+   * Not passing a specific argument will leave it unchanged, explicitly passing `null` will revert it to the default.
+   */
+  updateSandboxSettings: SandboxSettings;
   /** update subscription details (not billing details) */
   updateSubscription: ProSubscription;
   updateSubscriptionBillingInterval: ProSubscription;
@@ -1197,6 +1618,16 @@ export type RootMutationTypeCreateContributionBranchArgs = {
   provider: GitProvider;
 };
 
+export type RootMutationTypeCreateGithubPullRequestReviewArgs = {
+  body: Maybe<Scalars['String']>;
+  comments: Maybe<Array<GithubPullRequestReviewCommentInput>>;
+  commitId: Maybe<Scalars['String']>;
+  event: GitHubPullRequestReviewAction;
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+};
+
 export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
   authType: Maybe<AuthType>;
   enabledScopes: Array<Scalars['String']>;
@@ -1205,6 +1636,7 @@ export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
   registryAuthKey: Maybe<Scalars['String']>;
   registryType: RegistryType;
   registryUrl: Maybe<Scalars['String']>;
+  sandpackTrustedDomains: Maybe<Array<Scalars['String']>>;
   teamId: Scalars['UUID4'];
 };
 
@@ -1248,6 +1680,12 @@ export type RootMutationTypeDeleteCommentArgs = {
   sandboxId: Scalars['ID'];
 };
 
+export type RootMutationTypeDeleteGithubPullRequestReviewCommentArgs = {
+  commentId: Scalars['Int'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+};
+
 export type RootMutationTypeDeletePrivateNpmRegistryArgs = {
   teamId: Scalars['UUID4'];
 };
@@ -1269,6 +1707,14 @@ export type RootMutationTypeDeleteSandboxesArgs = {
 
 export type RootMutationTypeDeleteWorkspaceArgs = {
   teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeDismissGithubPullRequestReviewArgs = {
+  message: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+  pullRequestReviewId: Scalars['Int'];
 };
 
 export type RootMutationTypeImportBranchArgs = {
@@ -1327,6 +1773,13 @@ export type RootMutationTypeMarkNotificationAsReadArgs = {
   notificationId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeMergeGithubPullRequestArgs = {
+  mergeMethod?: Maybe<GitHubPullRequestMergeMethod>;
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+};
+
 export type RootMutationTypePermanentlyDeleteSandboxesArgs = {
   sandboxIds: Array<Scalars['ID']>;
 };
@@ -1365,6 +1818,13 @@ export type RootMutationTypeRemoveFromTeamArgs = {
   userId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeRemoveRequestedGithubPullRequestReviewersArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+  reviewers: Array<Scalars['String']>;
+};
+
 export type RootMutationTypeRemoveSandboxesFromAlbumArgs = {
   albumId: Scalars['ID'];
   sandboxIds: Array<Scalars['ID']>;
@@ -1380,6 +1840,25 @@ export type RootMutationTypeRenameCollectionArgs = {
 export type RootMutationTypeRenameSandboxArgs = {
   id: Scalars['ID'];
   title: Scalars['String'];
+};
+
+export type RootMutationTypeReplyToGithubPullRequestReviewArgs = {
+  body: Scalars['String'];
+  commentId: Scalars['Int'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+};
+
+export type RootMutationTypeRequestGithubPullRequestReviewersArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+  reviewers: Array<Scalars['String']>;
+};
+
+export type RootMutationTypeRequestTeamInvitationArgs = {
+  teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeResolveCommentArgs = {
@@ -1430,6 +1909,14 @@ export type RootMutationTypeSetSandboxesFrozenArgs = {
 export type RootMutationTypeSetSandboxesPrivacyArgs = {
   privacy: Maybe<Scalars['Int']>;
   sandboxIds: Array<Scalars['ID']>;
+};
+
+export type RootMutationTypeSetTeamAiConsentArgs = {
+  privateRepositories: Scalars['Boolean'];
+  privateSandboxes: Scalars['Boolean'];
+  publicRepositories: Scalars['Boolean'];
+  publicSandboxes: Scalars['Boolean'];
+  teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeSetTeamDescriptionArgs = {
@@ -1495,15 +1982,46 @@ export type RootMutationTypeUpdateCurrentUserArgs = {
   username: Scalars['String'];
 };
 
+export type RootMutationTypeUpdateGithubPullRequestReviewArgs = {
+  body: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  pullRequestNumber: Scalars['Int'];
+  pullRequestReviewId: Scalars['Int'];
+};
+
+export type RootMutationTypeUpdateGithubPullRequestReviewCommentArgs = {
+  body: Scalars['String'];
+  commentId: Scalars['Int'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+};
+
 export type RootMutationTypeUpdateNotificationPreferencesArgs = {
   emailCommentMention: Maybe<Scalars['Boolean']>;
   emailCommentReply: Maybe<Scalars['Boolean']>;
+  emailMarketing: Maybe<Scalars['Boolean']>;
   emailNewComment: Maybe<Scalars['Boolean']>;
+  emailSandboxInvite: Maybe<Scalars['Boolean']>;
+  emailTeamInvite: Maybe<Scalars['Boolean']>;
+  emailTeamRequest: Maybe<Scalars['Boolean']>;
+  inAppPrReviewReceived: Maybe<Scalars['Boolean']>;
+  inAppPrReviewRequest: Maybe<Scalars['Boolean']>;
 };
 
 export type RootMutationTypeUpdateNotificationReadStatusArgs = {
   notificationId: Scalars['UUID4'];
   read: Scalars['Boolean'];
+};
+
+export type RootMutationTypeUpdateProjectSettingsArgs = {
+  aiConsent: Maybe<Scalars['Boolean']>;
+  projectId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeUpdateSandboxSettingsArgs = {
+  aiConsent: Maybe<Scalars['Boolean']>;
+  sandboxId: Scalars['ID'];
 };
 
 export type RootMutationTypeUpdateSubscriptionArgs = {
@@ -1622,8 +2140,29 @@ export type RootQueryType = {
    *   owner: "codesandbox",
    *   name: "test-repo"
    * ) { id }
+   * ```
    */
   projects: Array<Project>;
+  /**
+   * Get a list of teams that have interacted with a repository recently
+   *
+   * This endpoint is intended to be used when a user has access to a repository, but does not
+   * belong to any teams where the repository has been imported. It returns a brief list of teams
+   * (10) that have interacted with that repository recently, with the intention that the user may
+   * wish to request an invitation to one of those teams.
+   *
+   * **Note**: The teams returned by this endpoint are likely to be relevant for **private**
+   * repositories only, and unlikely to be relevant for public repositories.
+   *
+   * ```gql
+   * query recentTeamsByRepository(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo"
+   * ) { id }
+   * ```
+   */
+  recentTeamsByRepository: Array<TeamPreview>;
   /** Get a sandbox */
   sandbox: Maybe<Sandbox>;
   /** A team from an invite token */
@@ -1681,6 +2220,12 @@ export type RootQueryTypeProjectsArgs = {
   provider: GitProvider;
 };
 
+export type RootQueryTypeRecentTeamsByRepositoryArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+};
+
 export type RootQueryTypeSandboxArgs = {
   sandboxId: Scalars['ID'];
 };
@@ -1691,6 +2236,8 @@ export type RootQueryTypeTeamByTokenArgs = {
 
 export type RootSubscriptionType = {
   __typename?: 'RootSubscriptionType';
+  /** Receive updates for events related to the specified branch. */
+  branchEvents: BranchEvent;
   collaboratorAdded: Collaborator;
   collaboratorChanged: Collaborator;
   collaboratorRemoved: Collaborator;
@@ -1719,6 +2266,8 @@ export type RootSubscriptionType = {
    * Omit `branchId` to receive updates from all branches in the project.
    */
   projectConnections: BranchConnections;
+  /** Receive updates for events related to the specified repository */
+  projectEvents: ProjectEvent;
   /**
    * Receive updates when the status of a branch changes
    *
@@ -1726,6 +2275,19 @@ export type RootSubscriptionType = {
    */
   projectStatus: BranchStatus;
   sandboxChanged: Sandbox;
+  /**
+   * Receive updates for events related to one or all of the user's teams
+   *
+   * Supply a `teamId` to subscribe to one team, or leave the argument `null` to receive events
+   * for all of the user's teams.
+   */
+  teamEvents: TeamEvent;
+};
+
+export type RootSubscriptionTypeBranchEventsArgs = {
+  branchName: Scalars['String'];
+  owner: Scalars['String'];
+  repo: Scalars['String'];
 };
 
 export type RootSubscriptionTypeCollaboratorAddedArgs = {
@@ -1781,6 +2343,11 @@ export type RootSubscriptionTypeProjectConnectionsArgs = {
   repo: Scalars['String'];
 };
 
+export type RootSubscriptionTypeProjectEventsArgs = {
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+};
+
 export type RootSubscriptionTypeProjectStatusArgs = {
   branchId: Maybe<Scalars['String']>;
   owner: Scalars['String'];
@@ -1789,6 +2356,10 @@ export type RootSubscriptionTypeProjectStatusArgs = {
 
 export type RootSubscriptionTypeSandboxChangedArgs = {
   sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeTeamEventsArgs = {
+  teamId: Maybe<Scalars['ID']>;
 };
 
 /** A Sandbox */
@@ -1830,6 +2401,7 @@ export type Sandbox = {
   removedAt: Maybe<Scalars['String']>;
   screenshotOutdated: Scalars['Boolean'];
   screenshotUrl: Maybe<Scalars['String']>;
+  settings: SandboxSettings;
   source: Source;
   team: Maybe<TeamPreview>;
   teamId: Maybe<Scalars['UUID4']>;
@@ -1847,6 +2419,13 @@ export type SandboxProtectionSettings = {
   __typename?: 'SandboxProtectionSettings';
   preventSandboxExport: Scalars['Boolean'];
   preventSandboxLeaving: Scalars['Boolean'];
+};
+
+/** User-editable settings for a sandbox */
+export type SandboxSettings = {
+  __typename?: 'SandboxSettings';
+  /** Whether AI features are explicitly enabled or disabled for this sandbox. If `null`, the team-wide setting applies. */
+  aiConsent: Maybe<Scalars['Boolean']>;
 };
 
 export type Source = {
@@ -1914,8 +2493,10 @@ export type Team = {
   id: Scalars['UUID4'];
   inviteToken: Scalars['String'];
   invitees: Array<User>;
+  /** @deprecated There's no such thing as a pilot team anymore */
   joinedPilotAt: Maybe<Scalars['DateTime']>;
   limits: TeamLimits;
+  members: Array<TeamMember>;
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
   /**
@@ -1964,6 +2545,17 @@ export type TeamSubscriptionArgs = {
   includeCancelled?: Maybe<Scalars['Boolean']>;
 };
 
+export type TeamAiConsent = {
+  __typename?: 'TeamAiConsent';
+  privateRepositories: Scalars['Boolean'];
+  privateSandboxes: Scalars['Boolean'];
+  publicRepositories: Scalars['Boolean'];
+  publicSandboxes: Scalars['Boolean'];
+};
+
+/** Events related to a team */
+export type TeamEvent = TeamSubscriptionEvent;
+
 export type TeamLimits = {
   __typename?: 'TeamLimits';
   maxEditors: Maybe<Scalars['Int']>;
@@ -1971,6 +2563,16 @@ export type TeamLimits = {
   maxPrivateSandboxes: Maybe<Scalars['Int']>;
   maxPublicProjects: Maybe<Scalars['Int']>;
   maxPublicSandboxes: Maybe<Scalars['Int']>;
+};
+
+export type TeamMember = {
+  __typename?: 'TeamMember';
+  avatarUrl: Scalars['String'];
+  bio: Maybe<Scalars['String']>;
+  githubUsername: Maybe<Scalars['String']>;
+  id: Scalars['UUID4'];
+  name: Maybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 export enum TeamMemberAuthorization {
@@ -1989,6 +2591,14 @@ export type TeamPreview = {
   id: Scalars['UUID4'];
   name: Scalars['String'];
   shortid: Scalars['String'];
+};
+
+/** Change to a team's subscription status */
+export type TeamSubscriptionEvent = {
+  __typename?: 'TeamSubscriptionEvent';
+  event: Scalars['String'];
+  subscription: ProSubscription;
+  teamId: Scalars['ID'];
 };
 
 export enum TeamType {
@@ -2055,6 +2665,7 @@ export type UserReferenceMetadata = {
 
 export type WorkspaceSandboxSettings = {
   __typename?: 'WorkspaceSandboxSettings';
+  aiConsent: TeamAiConsent;
   defaultAuthorization: TeamMemberAuthorization;
   minimumPrivacy: Scalars['Int'];
   preventSandboxExport: Scalars['Boolean'];
@@ -2818,7 +3429,15 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'preventSandboxExport'
         | 'preventSandboxLeaving'
         | 'defaultAuthorization'
-      >
+      > & {
+          aiConsent: { __typename?: 'TeamAiConsent' } & Pick<
+            TeamAiConsent,
+            | 'privateRepositories'
+            | 'privateSandboxes'
+            | 'publicRepositories'
+            | 'publicSandboxes'
+          >;
+        }
     >;
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
@@ -2870,6 +3489,7 @@ export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
   | 'registryType'
   | 'registryUrl'
   | 'teamId'
+  | 'sandpackTrustedDomains'
 >;
 
 export type BranchFragment = { __typename?: 'Branch' } & Pick<
@@ -3157,6 +3777,7 @@ export type CreateOrUpdateNpmRegistryMutationVariables = Exact<{
   proxyEnabled: Scalars['Boolean'];
   limitToScopes: Scalars['Boolean'];
   enabledScopes: Array<Scalars['String']>;
+  sandpackTrustedDomains: Array<Scalars['String']>;
 }>;
 
 export type CreateOrUpdateNpmRegistryMutation = {
@@ -3435,6 +4056,24 @@ export type CreateBranchMutationVariables = Exact<{
 
 export type CreateBranchMutation = { __typename?: 'RootMutationType' } & {
   createBranch: { __typename?: 'Branch' } & Pick<Branch, 'id' | 'name'>;
+};
+
+export type SetTeamAiConsentMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  privateRepositories: Scalars['Boolean'];
+  privateSandboxes: Scalars['Boolean'];
+  publicSandboxes: Scalars['Boolean'];
+  publicRepositories: Scalars['Boolean'];
+}>;
+
+export type SetTeamAiConsentMutation = { __typename?: 'RootMutationType' } & {
+  setTeamAiConsent: { __typename?: 'TeamAiConsent' } & Pick<
+    TeamAiConsent,
+    | 'privateRepositories'
+    | 'privateSandboxes'
+    | 'publicSandboxes'
+    | 'publicRepositories'
+  >;
 };
 
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
@@ -3916,7 +4555,12 @@ export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
 export type UpdateNotificationPreferencesMutationVariables = Exact<{
   emailCommentMention: Maybe<Scalars['Boolean']>;
   emailCommentReply: Maybe<Scalars['Boolean']>;
+  emailMarketing: Maybe<Scalars['Boolean']>;
   emailNewComment: Maybe<Scalars['Boolean']>;
+  emailSandboxInvite: Maybe<Scalars['Boolean']>;
+  emailTeamInvite: Maybe<Scalars['Boolean']>;
+  inAppPrReviewReceived: Maybe<Scalars['Boolean']>;
+  inAppPrReviewRequest: Maybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateNotificationPreferencesMutation = {
@@ -3926,7 +4570,14 @@ export type UpdateNotificationPreferencesMutation = {
     __typename?: 'NotificationPreferences';
   } & Pick<
     NotificationPreferences,
-    'emailCommentMention' | 'emailCommentReply' | 'emailNewComment'
+    | 'emailCommentMention'
+    | 'emailCommentReply'
+    | 'emailMarketing'
+    | 'emailNewComment'
+    | 'emailSandboxInvite'
+    | 'emailTeamInvite'
+    | 'inAppPrReviewReceived'
+    | 'inAppPrReviewRequest'
   >;
 };
 
@@ -3989,7 +4640,14 @@ export type EmailPreferencesQuery = { __typename?: 'RootQueryType' } & {
       notificationPreferences: Maybe<
         { __typename?: 'NotificationPreferences' } & Pick<
           NotificationPreferences,
-          'emailCommentMention' | 'emailCommentReply' | 'emailNewComment'
+          | 'emailCommentMention'
+          | 'emailCommentReply'
+          | 'emailMarketing'
+          | 'emailNewComment'
+          | 'emailSandboxInvite'
+          | 'emailTeamInvite'
+          | 'inAppPrReviewRequest'
+          | 'inAppPrReviewReceived'
         >
       >;
     }

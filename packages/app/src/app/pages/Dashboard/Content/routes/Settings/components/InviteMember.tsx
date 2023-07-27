@@ -41,7 +41,12 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
   const actions = useActions();
   const { userRole } = useWorkspaceAuthorization();
 
-  const [inviteValue, setInviteValue] = React.useState('');
+  const inviteEmailInUrl = new URLSearchParams(location.search).get(
+    'invite_email'
+  );
+  const defaultInviteValue = inviteEmailInUrl || '';
+
+  const [inviteValue, setInviteValue] = React.useState(defaultInviteValue);
   const [inviteLoading, setInviteLoading] = React.useState(false);
   const inviteLink = React.useMemo(() => teamInviteLink(team.inviteToken), [
     team.inviteToken,
@@ -71,6 +76,10 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
   const onInviteSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (inviteValue === '') {
+      return;
+    }
+
     if (newMemberRole === TeamMemberAuthorization.Write && restrictNewEditors) {
       actions.modalOpened({ modal: 'editorSeatsUpgrade' });
       return;
@@ -92,6 +101,11 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
+
+    actions.track({
+      name: 'Dashboard - Start Copy Team Invite URL',
+      data: { place: 'settings', inviteLink },
+    });
 
     if (confirmNewMemberAddition) {
       const confirmed = await actions.modals.alertModal.open({
@@ -152,6 +166,7 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
 
       <Button
         type="submit"
+        disabled={inviteValue === ''}
         loading={inviteLoading}
         style={{ width: 'auto', marginLeft: 8 }}
       >

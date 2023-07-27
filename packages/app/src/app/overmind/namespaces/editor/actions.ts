@@ -310,6 +310,7 @@ export const sandboxChanged = withLoadApp<{
       const sandboxV2Url = sandboxUrl({
         id: sandbox.id,
         alias: sandbox.alias,
+        git: sandbox.git,
         isV2: true,
       });
 

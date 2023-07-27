@@ -18,6 +18,7 @@ import { Server } from './screens/Server';
 import { Search } from './screens/Search';
 import { Docker } from './screens/Docker';
 import { VSCode } from './screens/VSCode';
+import { AITools } from './screens/AI';
 
 const workspaceTabs = {
   project: ProjectInfo,
@@ -32,6 +33,7 @@ const workspaceTabs = {
   comments: Comments,
   docker: Docker,
   vscode: VSCode,
+  ai: AITools,
 };
 
 const WorkspaceComponent = ({ theme }) => {

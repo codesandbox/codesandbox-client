@@ -54,7 +54,7 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
         >
           New from template
         </Text>
-        {isV2 && <Badge icon="cloud">Beta</Badge>}
+        {isV2 && <Badge icon="cloud">Cloud</Badge>}
       </Stack>
 
       <Element

@@ -676,3 +676,7 @@ export const getSandboxesLimits = async ({ effects, state }: Context) => {
 export const openCancelSubscriptionModal = ({ state }: Context) => {
   state.currentModal = 'subscriptionCancellation';
 };
+
+export const setIsProcessingPayment = ({ state }: Context, value: boolean) => {
+  state.isProcessingPayment = value;
+};

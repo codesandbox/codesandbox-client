@@ -570,7 +570,7 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
      * For now we decided to NOT show the templates on the home page
      * But I would keep this code as it is referenced in a lot of places and (TEMPLATE_HOME)
      * and we might bring it back later on.
-     
+
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
       teamId: state.activeTeam,
     });
@@ -617,18 +617,18 @@ export const deleteTemplateFromState = (
     if (sandboxes.TEMPLATE_HOME) {
       sandboxes.TEMPLATE_HOME = sandboxes.TEMPLATE_HOME
         ? sandboxes.TEMPLATE_HOME.filter(
-          ({ sandbox }: TemplateFragmentDashboardFragment) =>
-            sandbox && sandbox.id !== id
-        )
+            ({ sandbox }: TemplateFragmentDashboardFragment) =>
+              sandbox && sandbox.id !== id
+          )
         : null;
     }
 
     if (sandboxes.TEMPLATES) {
       sandboxes.TEMPLATES = sandboxes.TEMPLATES
         ? sandboxes.TEMPLATES.filter(
-          ({ sandbox }: TemplateFragmentDashboardFragment) =>
-            sandbox && sandbox.id !== id
-        )
+            ({ sandbox }: TemplateFragmentDashboardFragment) =>
+              sandbox && sandbox.id !== id
+          )
         : null;
     }
 
@@ -1360,17 +1360,15 @@ export const changeAuthorizationInState = (
   state.activeTeamInfo!.userAuthorizations = userAuthorizations;
 };
 
-type ChangeAuthorizationParams = Omit<ChangeTeamMemberAuthorizationMutationVariables, 'teamId'> & {
+type ChangeAuthorizationParams = Omit<
+  ChangeTeamMemberAuthorizationMutationVariables,
+  'teamId'
+> & {
   confirm?: boolean;
-}
+};
 export const changeAuthorization = async (
   { state, effects, actions }: Context,
-  {
-    userId,
-    authorization,
-    confirm,
-    teamManager
-  }: ChangeAuthorizationParams
+  { userId, authorization, confirm, teamManager }: ChangeAuthorizationParams
 ) => {
   if (confirm) {
     const confirmed = await actions.modals.alertModal.open({
@@ -1555,6 +1553,31 @@ export const setTeamMinimumPrivacy = async (
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem updating your settings'
+    );
+  }
+};
+
+export const setTeamAiConsent = async (
+  { state, effects }: Context,
+  params: {
+    privateRepositories: boolean;
+    privateSandboxes: boolean;
+    publicSandboxes: boolean;
+    publicRepositories: boolean;
+  }
+) => {
+  const teamId = state.activeTeam;
+
+  try {
+    await effects.gql.mutations.setTeamAiConsent({
+      ...params,
+      teamId,
+    });
+
+    effects.notificationToast.success('AI permissions updated.');
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your workspace settings'
     );
   }
 };

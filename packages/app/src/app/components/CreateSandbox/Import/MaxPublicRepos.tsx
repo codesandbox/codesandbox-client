@@ -1,11 +1,10 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { MessageStripe } from '@codesandbox/components';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
-import { useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { getEventName } from './utils';
 
 const EVENT_PROPS = {
@@ -16,29 +15,20 @@ const EVENT_PROPS = {
 export const MaxPublicRepos: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
-  const { pathname } = useLocation();
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: pathname,
-    cancel_path: pathname,
-  });
+  const [, createCheckout, canCheckout] = useCreateCheckout();
 
   return (
     <MessageStripe justify="space-between">
       You&apos;ve reached the maximum amount of free repositories. Upgrade for
       more.
-      {checkoutUrl ? (
+      {canCheckout ? (
         <MessageStripe.Action
-          {...(checkoutUrl.startsWith('/')
-            ? {
-                as: RouterLink,
-                to: checkoutUrl,
-              }
-            : {
-                as: 'a',
-                href: checkoutUrl,
-              })}
           onClick={() => {
+            createCheckout({
+              utm_source: 'max_public_repos',
+            });
+
             track(
               getEventName(isEligibleForTrial, isBillingManager),
               EVENT_PROPS

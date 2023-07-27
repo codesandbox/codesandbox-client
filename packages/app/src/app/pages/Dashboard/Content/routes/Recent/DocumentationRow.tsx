@@ -53,7 +53,7 @@ const DOCS: DocsItem[] = [
     title: 'Automatic Dependency Management',
     duration: '1:18',
     durationLabel: '1 minute, 18 seconds',
-    url: 'https://www.youtube.com/watch?v=ZJ1sNiTZw5M',
+    url: 'https://www.youtube.com/watch?v=vS_FUWyBMZI',
     thumbnail: '/static/img/thumbnails/video_auto-deps.png',
   },
   {

@@ -75,7 +75,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
             />
           </form>
         ) : (
-          <Stack gap={2} align="flex-start" css={{ overflow: 'hidden' }}>
+          <Stack gap={3} align="flex-start" css={{ overflow: 'hidden' }}>
             <Element css={{ flexShrink: 0 }}>
               <TemplateIcon width="16" height="16" />
             </Element>
@@ -165,7 +165,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
       }
 
       if (showBetaBadge) {
-        return <Badge icon="cloud">Beta</Badge>;
+        return <Badge icon="cloud">Cloud</Badge>;
       }
 
       return null;

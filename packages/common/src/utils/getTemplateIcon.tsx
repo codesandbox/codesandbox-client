@@ -12,7 +12,12 @@ function getUserIcon(
 
   if (iconUrl.startsWith('https://')) {
     return ({ width, height }) => (
-      <img width={width} height={height} src={iconUrl} alt={templateName} />
+      <img
+        width={width || 24}
+        height={height || 24}
+        src={iconUrl}
+        alt={templateName}
+      />
     );
   }
 

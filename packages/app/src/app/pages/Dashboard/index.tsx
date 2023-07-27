@@ -1,6 +1,6 @@
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { FunctionComponent, useEffect } from 'react';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
@@ -11,7 +11,6 @@ import {
   Element,
   SkipNav,
 } from '@codesandbox/components';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 import { differenceInDays, startOfToday } from 'date-fns';
@@ -39,8 +38,11 @@ const GlobalStyles = createGlobalStyle({
 
 // TODO: Move this page to v2 (also, this is a random commit to trigger the re-run of the build)
 export const Dashboard: FunctionComponent = () => {
-  const { hasLogIn, activeTeamInfo, activeTeam } = useAppState();
-  const { browser, notificationToast } = useEffects();
+  const location = useLocation();
+  const history = useHistory();
+
+  const { hasLogIn, activeTeam } = useAppState();
+  const { browser } = useEffects();
   const actions = useActions();
   const {
     subscription,
@@ -76,8 +78,6 @@ export const Dashboard: FunctionComponent = () => {
     }
   }, [browser.storage, actions]);
 
-  const location = useLocation();
-
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
 
@@ -89,34 +89,15 @@ export const Dashboard: FunctionComponent = () => {
       actions.setActiveTeam({ id: searchParams.get('workspace') });
     }
 
-    if (
-      activeTeamInfo &&
-      searchParams.get('stripe') &&
-      searchParams.get('stripe') === 'success'
-    ) {
-      const isProDelayed = activeTeamInfo.subscription === null;
+    if (searchParams.has('payment_pending')) {
+      // Successful return from stripe, but payment not processed yet
+      const isProDelayed = subscription?.status !== SubscriptionStatus.Active;
+      actions.setIsProcessingPayment(isProDelayed);
 
-      // Show notification based on stripe success param
-      notificationToast.add({
-        status: NotificationStatus.SUCCESS,
-        title: 'Successfully activated subscription',
-        message: isProDelayed
-          ? 'Please reload to update the dashboard.'
-          : undefined,
-        actions: isProDelayed
-          ? {
-              primary: {
-                label: 'Reload',
-                run: () => {
-                  actions.getActiveTeamInfo();
-                },
-                hideOnClick: true,
-              },
-            }
-          : undefined,
-      });
+      searchParams.delete('payment_pending');
+      history.replace({ search: searchParams.toString() });
     }
-  }, [location.search, actions, activeTeamInfo, notificationToast]);
+  }, [subscription]);
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
@@ -136,6 +117,8 @@ export const Dashboard: FunctionComponent = () => {
       actions.openCreateSandboxModal({ initialTab: 'import' });
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {
       actions.openCreateSandboxModal();
+    } else if (JSON.parse(searchParams.get('preferences'))) {
+      actions.preferences.openPreferencesModal();
     }
   }, [actions, hasLogIn, location.search]);
 

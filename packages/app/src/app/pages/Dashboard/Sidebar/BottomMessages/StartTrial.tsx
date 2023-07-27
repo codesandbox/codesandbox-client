@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { Stack, Text, Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-import { useGetCheckoutURL } from 'app/hooks';
+import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
 const EVENT_NAME = 'Side banner - Start Trial';
 
@@ -12,10 +11,9 @@ export const StartTrial: React.FC<{ activeTeam: string }> = ({
   activeTeam,
 }) => {
   const { isBillingManager } = useWorkspaceAuthorization();
-  const checkout = useGetCheckoutURL({
-    success_path: dashboard.recent(activeTeam),
-    cancel_path: dashboard.recent(activeTeam),
-  }) as string;
+
+  const [checkout, createCheckout] = useCreateCheckout();
+  const disabled = checkout.status === 'loading';
 
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
@@ -24,15 +22,7 @@ export const StartTrial: React.FC<{ activeTeam: string }> = ({
       </Text>
 
       <Button
-        {...(checkout.startsWith('/')
-          ? {
-              as: RouterLink,
-              to: `${checkout}?utm_source=dashboard_import_limits`,
-            }
-          : {
-              as: 'a',
-              href: checkout, // goes to either /docs or Stripe
-            })}
+        disabled={disabled}
         variant="link"
         onClick={() => {
           track(
@@ -42,6 +32,11 @@ export const StartTrial: React.FC<{ activeTeam: string }> = ({
               event_source: 'UI',
             }
           );
+
+          createCheckout({
+            success_path: dashboard.recent(activeTeam),
+            utm_source: 'dashboard_import_limits',
+          });
         }}
         css={{
           fontSize: '12px',

@@ -59,6 +59,14 @@ export default {
 
     return response.jwt;
   },
+  async getSandpackTokenFromTeam(teamId: string): Promise<string> {
+    const response = await api.post<{ token: string }>(
+      `/sandpack/token/${teamId}`,
+      {}
+    );
+
+    return response.token;
+  },
   // We only use this function related to current_user/subscription
   cancelPatronSubscription() {
     return api.delete<CurrentUserFromAPI>('/users/current_user/subscription');

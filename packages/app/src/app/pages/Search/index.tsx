@@ -107,6 +107,7 @@ export const Search: FunctionComponent<Props> = ({ history, location }) => {
 
                   <SearchBox
                     autoFocus
+                    searchAsYouType={false}
                     translations={{ placeholder: 'Search Sandboxes...' }}
                   />
 

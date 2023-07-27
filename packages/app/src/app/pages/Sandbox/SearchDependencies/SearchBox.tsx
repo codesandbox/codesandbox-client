@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Input, Element } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import useKeys from 'react-use/lib/useKeyboardJs';
+import { debounce } from 'lodash';
 import { AlgoliaIcon } from './icons';
 
 const getBackgroundColor = ({ focus, theme }) =>
@@ -71,6 +72,15 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspace.dependencySearch]);
 
+  const handleChange = (value: string) => {
+    changeDependencySearch(value);
+    if (workspace.showingSelectedDependencies) {
+      toggleShowingSelectedDependencies();
+    }
+  };
+
+  const debouncedChange = useCallback(debounce(handleChange, 500), []);
+
   return (
     <form
       ref={form}
@@ -127,13 +137,8 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
               fontSize: 4,
             },
           })}
-          onChange={e => {
-            changeDependencySearch(e.target.value);
-            if (workspace.showingSelectedDependencies) {
-              toggleShowingSelectedDependencies();
-            }
-          }}
-          value={workspace.dependencySearch}
+          onChange={e => debouncedChange(e.target.value)}
+          defaultValue={workspace.dependencySearch}
         />
         <AlgoliaIcon
           css={css({

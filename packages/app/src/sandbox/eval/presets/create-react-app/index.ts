@@ -26,6 +26,7 @@ import base64Transpiler from '../../transpilers/base64';
 export const BASE_REACT_BABEL_PLUGINS = [
   'transform-flow-strip-types',
   ['proposal-decorators', { legacy: true }],
+  ['proposal-class-properties', { loose: true }],
   '@babel/plugin-transform-react-jsx-source',
   'babel-plugin-macros',
   [

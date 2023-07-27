@@ -3,13 +3,7 @@ import React from 'react';
 import { Stack, Badge, Text } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 
-type Feature = {
-  key: string;
-  pro: string;
-  free: string;
-  pill?: string;
-};
-const LOSE_DEFAULT: Feature[] = [
+const LOSE_DEFAULT = [
   {
     key: 'editors',
     pro: 'Up to 20 editors',
@@ -26,6 +20,11 @@ const LOSE_DEFAULT: Feature[] = [
     free: 'Limited to 3 public repositories',
   },
   {
+    key: 'ai',
+    pro: '✨ Full access to AI tools',
+    free: 'No AI tools',
+  },
+  {
     key: 'npm',
     pro: 'Private NPM packages',
     free: 'Limited to public NPM packages',
@@ -35,24 +34,24 @@ const LOSE_DEFAULT: Feature[] = [
     pro: 'Live sessions',
     free: 'No ability to go live',
   },
-  // {
-  //   key: 'ram',
-  //   pro: '6GB RAM',
-  //   free: '2GB RAM',
-  //   pill: '-66% capacity',
-  // },
-  // {
-  //   key: 'cpu',
-  //   pro: '4 vCPUs',
-  //   free: '2 vCPUs',
-  //   pill: '-2 vCPUs',
-  // },
-  // {
-  //   key: 'disk',
-  //   pro: '12GB Disk',
-  //   free: '6GB Disk',
-  //   pill: '-50% storage',
-  // },
+  {
+    key: 'ram',
+    pro: '8GiB RAM',
+    free: '2GiB RAM',
+    pill: '-75% capacity',
+  },
+  {
+    key: 'cpu',
+    pro: '4 vCPUs',
+    free: '2 vCPUs',
+    pill: '-2 vCPUs',
+  },
+  {
+    key: 'disk',
+    pro: '12GB Disk',
+    free: '6GB Disk',
+    pill: '-50% storage',
+  },
 ];
 
 export const LoseFeatures = () => {

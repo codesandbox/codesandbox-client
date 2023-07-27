@@ -1,7 +1,7 @@
 import Select from '@codesandbox/common/lib/components/Select';
 import theme from '@codesandbox/common/lib/theme';
 import { listen, dispatch } from 'codesandbox-api';
-import { Decode, Console as ConsoleFeed } from 'console-feed';
+import { Decode, Console as ConsoleFeed } from 'csb-console-feed';
 import { debounce } from 'lodash-es';
 import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';

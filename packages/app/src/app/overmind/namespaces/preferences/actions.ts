@@ -23,6 +23,14 @@ export const devtoolsToggled = ({ state }: Context) => {
   state.preferences.showDevtools = !state.preferences.showDevtools;
 };
 
+export const openPreferencesModal = (
+  { state }: Context,
+  itemId: string = 'appearance'
+) => {
+  state.preferences.itemId = itemId;
+  state.currentModal = 'preferences';
+};
+
 export const setDevtoolsOpen = ({ state }: Context, isOpen: boolean) => {
   state.preferences.showDevtools = isOpen;
 };

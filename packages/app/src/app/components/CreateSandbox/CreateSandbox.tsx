@@ -15,8 +15,7 @@ import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useGetCheckoutURL } from 'app/hooks';
-import { useLocation } from 'react-router-dom';
+import { useCreateCheckout } from 'app/hooks';
 import {
   Container,
   Tab,
@@ -39,6 +38,7 @@ import { SearchResults } from './SearchResults';
 import { GithubRepoToImport } from './Import/types';
 import { ImportInfo } from './Import/ImportInfo';
 import { FromRepo } from './Import/FromRepo';
+import { ImportSandbox } from './ImportSandbox';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -47,9 +47,9 @@ const QUICK_START_IDS = [
   'vanilla',
   'vue',
   'hsd8ke', // docker starter v2
-  'prp60l', // remix v2
-  '9qputt', // vite + react v2
   'fxis37', // next v2
+  '9qputt', // vite + react v2
+  'prp60l', // remix v2
   'angular',
   'react-ts',
   'rjk9n4zj7m', // static v1
@@ -88,7 +88,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
-  const { pathname } = useLocation();
   const isUnderRepositoriesSection =
     location.pathname.includes('/my-contributions') ||
     location.pathname.includes('/repositories');
@@ -180,10 +179,13 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     }
   }, [tabState.selectedId]);
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: pathname,
-    cancel_path: pathname,
-  });
+  const [, createCheckout, canCheckout] = useCreateCheckout();
+
+  const onCreateCheckout = () => {
+    createCheckout({
+      utm_source: 'dashboard_upgrade_banner',
+    });
+  };
 
   const createFromTemplate = (
     template: TemplateFragment,
@@ -297,9 +299,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Tab
                     {...tabState}
                     onClick={() => {
-                      track('Create New - Click Quick Start', {
+                      track('Create New - Click Tab', {
                         codesandbox: 'V1',
                         event_source: 'UI',
+                        tab_name: 'Quick Start',
                       });
                     }}
                     stopId="quickstart"
@@ -310,14 +313,29 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Tab
                     {...tabState}
                     onClick={() => {
-                      track('Create New - Click Import from Github', {
+                      track('Create New - Click Tab', {
                         codesandbox: 'V1',
                         event_source: 'UI',
+                        tab_name: 'Import from Github',
                       });
                     }}
                     stopId="import"
                   >
-                    Import from GitHub
+                    Import repository
+                  </Tab>
+
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Tab', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                        tab_name: 'Import template',
+                      });
+                    }}
+                    stopId="import-template"
+                  >
+                    Import template
                   </Tab>
 
                   <Element css={{ height: '18px' }} />
@@ -326,15 +344,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <Tab
                       {...tabState}
                       onClick={() => {
-                        track(
-                          `Create New - Click ${
-                            isUser ? 'My' : 'Team'
-                          } Templates`,
-                          {
-                            codesandbox: 'V1',
-                            event_source: 'UI',
-                          }
-                        );
+                        track(`Create New - Click Tab`, {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          tab_name: `${isUser ? 'My' : 'Team'} Templates`,
+                        });
                       }}
                       stopId="team-templates"
                     >
@@ -345,9 +359,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Tab
                     {...tabState}
                     onClick={() => {
-                      track('Create New - Click Cloud templates', {
+                      track('Create New - Click Tab', {
                         codesandbox: 'V1',
                         event_source: 'UI',
+                        tab_name: `Cloud templates`,
                       });
                     }}
                     stopId="cloud-templates"
@@ -358,9 +373,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Tab
                     {...tabState}
                     onClick={() => {
-                      track('Create New - Click Official Templates', {
+                      track('Create New - Click Tab', {
                         codesandbox: 'V1',
                         event_source: 'UI',
+                        tab_name: `Official Templates`,
                       });
                     }}
                     stopId="official-templates"
@@ -375,9 +391,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           {...tabState}
                           stopId={slugify(essential.title)}
                           onClick={() => {
-                            track(`Create New - Click ${essential.title}`, {
+                            track(`Create New - Click Tab`, {
                               codesandbox: 'V1',
                               event_source: 'UI',
+                              tab_name: essential.title,
                             });
                           }}
                         >
@@ -416,30 +433,51 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {viewState === 'initial' &&
               (searchQuery ? (
                 <SearchResults
-                  checkoutUrl={checkoutUrl}
+                  onCreateCheckout={onCreateCheckout}
                   isInCollection={Boolean(collectionId)}
                   search={searchQuery}
                   onSelectTemplate={selectTemplate}
                   onOpenTemplate={openTemplate}
                   officialTemplates={officialTemplates}
+                  canCheckout={canCheckout}
                 />
               ) : (
                 <>
                   <Panel tab={tabState} id="quickstart">
                     <TemplateCategoryList
+                      canCheckout={canCheckout}
                       title="Start from a template"
-                      checkoutUrl={checkoutUrl}
+                      onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
                       templates={quickStartTemplates}
                       onSelectTemplate={template => {
-                        track('Create New - Fork Quickstart template', {
+                        track('Create New - Select template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          type: 'fork',
+                          tab_name: 'Quick Start',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
                         });
 
                         selectTemplate(template);
                       }}
-                      onOpenTemplate={openTemplate}
+                      onOpenTemplate={template => {
+                        track('Create New - Select template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          type: 'open',
+                          tab_name: 'Quick Start',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
+                        });
+
+                        openTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -447,66 +485,132 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <Import onRepoSelect={selectGithubRepo} />
                   </Panel>
 
+                  <Panel tab={tabState} id="import-template">
+                    <ImportSandbox />
+                  </Panel>
+
                   {showTeamTemplates ? (
                     <Panel tab={tabState} id="team-templates">
                       <TemplateCategoryList
+                        canCheckout={canCheckout}
                         title={`${
                           isUser ? 'My' : activeTeamInfo?.name || 'Team'
                         } templates`}
-                        checkoutUrl={checkoutUrl}
+                        onCreateCheckout={onCreateCheckout}
                         isInCollection={Boolean(collectionId)}
                         templates={teamTemplates}
                         onSelectTemplate={template => {
-                          track(
-                            `Create New - Fork ${
-                              isUser ? 'my' : 'team'
-                            } template`,
-                            { codesandbox: 'V1', event_source: 'UI' }
-                          );
+                          track(`Create New - Select template`, {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                            type: 'fork',
+                            tab_name: `${
+                              isUser ? 'My' : activeTeamInfo?.name || 'Team'
+                            } templates`,
+                            template_name:
+                              template.sandbox.title ||
+                              template.sandbox.alias ||
+                              template.sandbox.id,
+                          });
 
                           selectTemplate(template);
                         }}
-                        onOpenTemplate={openTemplate}
+                        onOpenTemplate={template => {
+                          track(`Create New - Select template`, {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                            type: 'open',
+                            tab_name: `${
+                              isUser ? 'My' : activeTeamInfo?.name || 'Team'
+                            } templates`,
+                            template_name:
+                              template.sandbox.title ||
+                              template.sandbox.alias ||
+                              template.sandbox.id,
+                          });
+
+                          openTemplate(template);
+                        }}
                       />
                     </Panel>
                   ) : null}
 
                   <Panel tab={tabState} id="cloud-templates">
                     <TemplateCategoryList
+                      canCheckout={canCheckout}
                       title="Cloud templates"
-                      checkoutUrl={checkoutUrl}
+                      onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
                       templates={officialTemplates.filter(
                         template => template.sandbox.isV2
                       )}
                       onSelectTemplate={template => {
-                        track('Create New - Fork Cloud template', {
+                        track('Create New - Select template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          type: 'fork',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
+                          tab_name: 'Cloud templates',
                         });
 
                         selectTemplate(template);
                       }}
-                      onOpenTemplate={openTemplate}
+                      onOpenTemplate={template => {
+                        track('Create New - Select template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          type: 'open',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
+                          tab_name: 'Cloud templates',
+                        });
+
+                        openTemplate(template);
+                      }}
                       isCloudTemplateList
                     />
                   </Panel>
 
                   <Panel tab={tabState} id="official-templates">
                     <TemplateCategoryList
+                      canCheckout={canCheckout}
                       title="Official templates"
-                      checkoutUrl={checkoutUrl}
+                      onCreateCheckout={onCreateCheckout}
                       isInCollection={Boolean(collectionId)}
                       templates={officialTemplates}
                       onSelectTemplate={template => {
-                        track('Create New - Fork Official template', {
+                        track('Create New - Select template', {
                           codesandbox: 'V1',
                           event_source: 'UI',
+                          type: 'fork',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
+                          tab_name: 'Official Templates',
                         });
 
                         selectTemplate(template);
                       }}
-                      onOpenTemplate={openTemplate}
+                      onOpenTemplate={template => {
+                        track('Create New - Select template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          type: 'open',
+                          template_name:
+                            template.sandbox.title ||
+                            template.sandbox.alias ||
+                            template.sandbox.id,
+                          tab_name: 'Official Templates',
+                        });
+
+                        openTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -518,19 +622,39 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           id={slugify(essential.title)}
                         >
                           <TemplateCategoryList
+                            canCheckout={canCheckout}
                             title={essential.title}
-                            checkoutUrl={checkoutUrl}
+                            onCreateCheckout={onCreateCheckout}
                             isInCollection={Boolean(collectionId)}
                             templates={essential.templates}
                             onSelectTemplate={template => {
-                              track('Create New - Fork Essential template', {
+                              track('Create New - Select template', {
                                 codesandbox: 'V1',
                                 event_source: 'UI',
+                                type: 'fork',
+                                template_name:
+                                  template.sandbox.title ||
+                                  template.sandbox.alias ||
+                                  template.sandbox.id,
+                                tab_name: essential.title,
                               });
 
                               selectTemplate(template);
                             }}
-                            onOpenTemplate={openTemplate}
+                            onOpenTemplate={template => {
+                              track('Create New - Select template', {
+                                codesandbox: 'V1',
+                                event_source: 'UI',
+                                type: 'open',
+                                template_name:
+                                  template.sandbox.title ||
+                                  template.sandbox.alias ||
+                                  template.sandbox.id,
+                                tab_name: essential.title,
+                              });
+
+                              openTemplate(template);
+                            }}
                           />
                         </Panel>
                       ))

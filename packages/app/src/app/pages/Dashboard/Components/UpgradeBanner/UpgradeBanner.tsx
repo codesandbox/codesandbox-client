@@ -12,8 +12,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useDismissible, useGetCheckoutURL } from 'app/hooks';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useCreateCheckout, useDismissible } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -41,17 +40,21 @@ const FEATURES_LIST: Feature[] = [
     icon: 'sandbox',
     label: 'Unlimited private sandboxes',
   },
-  // {
-  //   icon: 'server',
-  //   label: '6GB RAM, 12GB Disk, 4 vCPUs',
-  // },
-  {
-    icon: 'sharing',
-    label: 'Live sessions',
-  },
   {
     icon: 'repository',
     label: 'Unlimited private repositories',
+  },
+  {
+    icon: 'ai',
+    label: 'Full access to AI tools',
+  },
+  {
+    icon: 'server',
+    label: '8GiB RAM, 12GB Disk, 4 vCPUs',
+  },
+  {
+    icon: 'sharing',
+    label: 'Live sessions',
   },
   {
     icon: 'npm',
@@ -117,7 +120,6 @@ const Features: React.FC = () => {
 
 export const UpgradeBanner: React.FC = () => {
   const {
-    activeTeam,
     dashboard: { teams },
     personalWorkspaceId,
   } = useAppState();
@@ -129,10 +131,7 @@ export const UpgradeBanner: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasVisited } = useDashboardVisit();
 
-  const checkoutUrl = useGetCheckoutURL({
-    success_path: dashboard.recent(activeTeam),
-    cancel_path: dashboard.recent(activeTeam),
-  });
+  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
   if (isBannerDismissed || !hasVisited) {
     return null;
@@ -167,14 +166,15 @@ export const UpgradeBanner: React.FC = () => {
           }}
           autoWidth
         >
-          Start 14-day free trial
+          Start free trial
         </Button>
       );
     }
 
-    if (checkoutUrl) {
+    if (canCheckout) {
       return (
         <Button
+          disabled={checkout.status === 'loading'}
           css={{ padding: '4px 20px' }}
           onClick={() => {
             if (isEligibleForTrial) {
@@ -190,7 +190,9 @@ export const UpgradeBanner: React.FC = () => {
               });
             }
 
-            window.location.href = checkoutUrl;
+            createCheckout({
+              utm_source: 'restrictions_banner',
+            });
           }}
           autoWidth
         >
@@ -228,7 +230,7 @@ export const UpgradeBanner: React.FC = () => {
           <Stack direction="vertical" justify="space-between">
             <StyledTitle block>
               {isEligibleForTrial || isPersonalSpace
-                ? '14 days free trial. No credit card required.'
+                ? '14 days free trial.'
                 : 'Enjoy the full CodeSandbox experience.'}
             </StyledTitle>
             <Stack
@@ -239,7 +241,7 @@ export const UpgradeBanner: React.FC = () => {
               }}
               direction="vertical"
             >
-              {checkoutUrl || isPersonalSpace ? (
+              {canCheckout || isPersonalSpace ? (
                 <Stack align="center" gap={6}>
                   {renderMainCTA()}
                   <Link

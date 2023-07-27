@@ -17,7 +17,12 @@ export const getEmailPreferences: Query<
       notificationPreferences {
         emailCommentMention
         emailCommentReply
+        emailMarketing
         emailNewComment
+        emailSandboxInvite
+        emailTeamInvite
+        inAppPrReviewRequest
+        inAppPrReviewReceived
       }
     }
   }
