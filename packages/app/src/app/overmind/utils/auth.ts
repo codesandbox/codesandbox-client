@@ -26,4 +26,8 @@ export type AuthOptions =
     }
   | {
       provider: 'apple' | 'google';
+    }
+  | {
+      provider: 'sso';
+      ssoURL: string;
     };

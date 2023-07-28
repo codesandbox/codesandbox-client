@@ -17,7 +17,6 @@ import {
 } from '@codesandbox/components/lib/components/Icon/icons';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import history from 'app/utils/history';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { Button } from './components/Button';
 import type { SignInMode } from './types';
 
@@ -49,8 +48,12 @@ type ValidationState =
 
 type SSOSignInProps = {
   changeSignInMode: () => void;
+  onValidInitialize: (ssoURL: string) => void;
 };
-const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
+const SSOSignIn: React.FC<SSOSignInProps> = ({
+  changeSignInMode,
+  onValidInitialize,
+}) => {
   const { api } = useEffects();
   const [validation, setValidation] = React.useState<ValidationState>({
     state: 'IDLE',
@@ -64,7 +67,8 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({ changeSignInMode }) => {
 
     try {
       const { redirectUrl } = await api.initializeSSO(email);
-      window.location.href = protocolAndHost() + redirectUrl;
+      onValidInitialize(redirectUrl);
+      setValidation({ state: 'VALID' });
     } catch (err) {
       setValidation({ state: 'INVALID', error: err.message });
     }
@@ -207,10 +211,13 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
     defaultSignInMode
   );
 
-  const handleSignIn = async (provider: 'github' | 'google' | 'apple') => {
+  const handleSignIn = async (
+    provider: 'github' | 'google' | 'apple' | 'sso',
+    ssoURL?: string
+  ) => {
     setLoadingAuth(provider);
 
-    await signInButtonClicked({ provider });
+    await signInButtonClicked({ provider, ssoURL });
 
     if (onSignIn) {
       return onSignIn();
@@ -359,7 +366,10 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
           </Stack>
         )}
         {signInMode === 'SSO' && (
-          <SSOSignIn changeSignInMode={() => setSignInMode('DEFAULT')} />
+          <SSOSignIn
+            changeSignInMode={() => setSignInMode('DEFAULT')}
+            onValidInitialize={ssoURL => handleSignIn('sso', ssoURL)}
+          />
         )}
 
         <Stack as="footer" align="center" direction="vertical">

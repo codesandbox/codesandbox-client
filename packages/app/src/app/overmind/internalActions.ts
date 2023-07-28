@@ -184,7 +184,7 @@ export const runProviderAuth = (
     ? location.origin
     : process.env.ENDPOINT || 'https://codesandbox.io';
 
-  const authPath = new URL(
+  let authPath = new URL(
     baseUrl + (useDevAuth ? '/auth/dev' : `/auth/${provider}`)
   );
 
@@ -200,6 +200,10 @@ export const runProviderAuth = (
         GH_BASE_SCOPE + ',' + MAP_GH_SCOPE_OPTIONS[options.includedScopes];
     }
     authPath.searchParams.set('scope', scope);
+  }
+
+  if (provider === 'sso') {
+    authPath = new URL(baseUrl + options.ssoURL);
   }
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
