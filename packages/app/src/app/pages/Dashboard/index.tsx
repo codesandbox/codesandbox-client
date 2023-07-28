@@ -74,7 +74,7 @@ export const Dashboard: FunctionComponent = () => {
       return;
     }
 
-    if (newUser && newUser === 'signup' && dashboard.teams.length === 1) {
+    if (newUser && newUser === 'signup' && dashboard.teams.length > 1) {
       // Open the create team modal for newly signed up users
       // not coming from a team invite page and that don't have any teams
       // other then the personal workspace
