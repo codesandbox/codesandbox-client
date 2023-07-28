@@ -14,8 +14,8 @@ const getBaseApi = (path: string, useRoot: boolean = false) => {
     return API_ROOT;
   }
 
-  // Special case for /auth requests which are not on /api/v1
-  if (path.startsWith('/auth')) {
+  // Special case for /auth/workos requests which are not on /api/v1
+  if (path.startsWith('/auth/workos')) {
     return '';
   }
 
