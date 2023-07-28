@@ -6,6 +6,7 @@ import { InputText } from 'app/components/dashboard/InputText';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
 import { StyledButton } from 'app/components/dashboard/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { recent } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 const ROLE_OPTIONS = [
   { value: 'frontend', label: 'Frontend developer' },
@@ -111,18 +112,22 @@ export const Onboarding = () => {
         as="form"
         direction="vertical"
         gap={6}
-        onSubmit={e => {
+        onSubmit={async e => {
           e.preventDefault();
           track('Create Account - Finalize SignUp', {
             codesandbox: 'V1',
             event_source: 'UI',
           });
-          finalizeSignUp({
+          await finalizeSignUp({
             username: newUsername,
             name: newDisplayName,
             role,
             usage,
           });
+          // Redirect to dashboard after finalizing sign up
+          if (window.location.href.includes('/signin')) {
+            window.location.href = recent();
+          }
         }}
       >
         <Stack direction="vertical" gap={4}>
