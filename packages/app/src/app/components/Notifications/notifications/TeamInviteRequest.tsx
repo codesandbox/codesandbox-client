@@ -53,10 +53,7 @@ export const TeamInviteRequest = ({
         if (!read) {
           await updateReadStatus(id);
         }
-        // Later I added this, with and without await, but it didnt make a difference
         setActiveTeam({ id: teamId });
-
-        // First I tried just this, and the URL shows right, it just doesn't load the right page
         history.push(teamSettingsUrl() + `?invite_email=${requesterEmail}`);
       }}
       key={id}
