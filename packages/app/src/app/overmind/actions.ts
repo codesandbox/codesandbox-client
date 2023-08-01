@@ -662,7 +662,7 @@ export const finalizeSignUp = async (
 
 export const setLoadingAuth = async (
   { state }: Context,
-  provider: 'apple' | 'google' | 'github'
+  provider: 'apple' | 'google' | 'github' | 'sso'
 ) => {
   state.loadingAuth[provider] = !state.loadingAuth[provider];
 };

@@ -41,7 +41,7 @@ export const Dashboard: FunctionComponent = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { hasLogIn, activeTeam } = useAppState();
+  const { hasLogIn, activeTeam, dashboard } = useAppState();
   const { browser } = useEffects();
   const actions = useActions();
   const {
@@ -70,13 +70,18 @@ export const Dashboard: FunctionComponent = () => {
   useEffect(() => {
     const newUser = browser.storage.get(NUOCT22);
 
-    if (newUser && newUser === 'signup') {
+    if (dashboard.teams.length === 0) {
+      return;
+    }
+
+    if (newUser && newUser === 'signup' && dashboard.teams.length === 1) {
       // Open the create team modal for newly signed up users
-      // not coming from a team invite page.
+      // not coming from a team invite page and that don't have any teams
+      // other then the personal workspace (dashboard.teams.length === 1)
       actions.openCreateTeamModal();
       browser.storage.remove(NUOCT22);
     }
-  }, [browser.storage, actions]);
+  }, [browser.storage, actions, dashboard.teams]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
