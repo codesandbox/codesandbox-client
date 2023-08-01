@@ -217,6 +217,7 @@ export const profileUrl = (username: string) => `/u/${username}`;
 export const dashboardUrl = () => `/dashboard`;
 export const exploreUrl = () => `/explore`;
 export const teamOverviewUrl = (teamId: string) => `/dashboard/teams/${teamId}`;
+export const teamSettingsUrl = () => `/dashboard/settings`;
 export const profileSandboxesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/sandboxes${page ? `/${page}` : ''}`;
 export const profileLikesUrl = (username: string, page?: number) =>

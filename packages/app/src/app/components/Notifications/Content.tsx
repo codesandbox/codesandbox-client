@@ -10,6 +10,7 @@ import {
   PullRequestReviewReceivedData,
   PullRequestReviewRequestData,
   TeamInviteData,
+  TeamInviteRequestData,
   TeamAcceptedData,
   SandboxInvitationData,
 } from './types';
@@ -17,6 +18,7 @@ import {
 import { PullRequestReviewReceived } from './notifications/PullRequestReviewReceived';
 import { PullRequestReviewRequest } from './notifications/PullRequestReviewRequest';
 import { SandboxInvitation } from './notifications/SandboxInvitation';
+import { TeamInviteRequest } from './notifications/TeamInviteRequest';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
 import { Mention } from './notifications/Mention';
@@ -81,6 +83,18 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
       />
     );
   }
+
+  if (type === 'team_invite_requested') {
+    return (
+      <TeamInviteRequest
+        insertedAt={insertedAt}
+        id={id}
+        read={read}
+        {...(camelCaseData as TeamInviteRequestData)}
+      />
+    );
+  }
+
   if (type === 'team_accepted') {
     return (
       <TeamAccepted
