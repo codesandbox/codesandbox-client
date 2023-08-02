@@ -4,7 +4,6 @@ import { Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useCreateCheckout } from 'app/hooks';
-import { Patron } from './Patron';
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
 import { Upgrade } from './Upgrade';
@@ -14,7 +13,7 @@ import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
   const { user, isProcessingPayment } = useAppState();
-  const { isFree, isPaddle, isPatron, isStripe } = useWorkspaceSubscription();
+  const { isFree, isPaddle, isStripe } = useWorkspaceSubscription();
 
   const [checkout, createCheckout] = useCreateCheckout();
 
@@ -41,7 +40,6 @@ export const ManageSubscription = () => {
   }
 
   const renderDetailsContent = () => {
-    if (isPatron) return <Patron />;
     if (isPaddle) return <Paddle />;
     if (isStripe) return <Stripe />;
 

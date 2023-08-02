@@ -1,7 +1,6 @@
 import { TEAM_FREE_LIMITS } from 'app/constants';
 import {
   SubscriptionInterval,
-  SubscriptionOrigin,
   SubscriptionPaymentProvider,
   SubscriptionStatus,
   SubscriptionType,
@@ -89,10 +88,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const numberOfSeats =
     (isFree ? activeTeamInfo.limits.maxEditors : subscription.quantity) || 1;
 
-  const isPatron =
-    subscription.origin === SubscriptionOrigin.Legacy ||
-    subscription.origin === SubscriptionOrigin.Patron;
-
   const isPaddle =
     subscription.paymentProvider === SubscriptionPaymentProvider.Paddle;
 
@@ -111,7 +106,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     hasActiveTeamTrial,
     hasExpiredTeamTrial,
     hasPaymentMethod,
-    isPatron,
     isPaddle,
     isStripe,
   };
@@ -129,7 +123,6 @@ const NO_WORKSPACE = {
   hasActiveTeamTrial: undefined,
   hasExpiredTeamTrial: undefined,
   hasPaymentMethod: undefined,
-  isPatron: undefined,
   isPaddle: undefined,
   isStripe: undefined,
 };
@@ -144,7 +137,6 @@ const NO_SUBSCRIPTION = {
   hasActiveTeamTrial: false,
   hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
-  isPatron: false,
   isPaddle: false,
   isStripe: false,
 };
@@ -174,7 +166,6 @@ export type WorkspaceSubscriptionReturn =
       hasActiveTeamTrial: boolean;
       hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;
-      isPatron: boolean;
       isPaddle: boolean;
       isStripe: boolean;
     };

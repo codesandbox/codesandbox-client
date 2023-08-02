@@ -45,7 +45,7 @@ export const WorkspacePlanSelection: React.FC = () => {
   } = useWorkspaceAuthorization();
   // const isPersonalSpace = false; // DEBUG
   // const isBillingManager = true; // DEBUG
-  const { subscription, isPatron, isPro, isFree } = useWorkspaceSubscription();
+  const { subscription, isPro, isFree } = useWorkspaceSubscription();
 
   // Based on the 'type' search param we redirect to the personal pro page if
   // it's not yet active.
@@ -208,7 +208,7 @@ export const WorkspacePlanSelection: React.FC = () => {
           {isPersonalSpace ? (
             <>
               <SubscriptionCard
-                title={isPatron ? 'Patron' : 'Personal Pro'}
+                title="Personal Pro"
                 subTitle="1 editor only"
                 features={PERSONAL_FEATURES}
                 cta={personalProCta}
