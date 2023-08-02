@@ -29,7 +29,7 @@ export const TeamInfo: React.FC = () => {
   const actions = useActions();
 
   const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { isFree } = useWorkspaceSubscription();
+  const { isLegacyFreeTeam } = useWorkspaceSubscription();
 
   const getFile = async avatar => {
     const url = await new Promise((resolve, reject) => {
@@ -207,7 +207,9 @@ export const TeamInfo: React.FC = () => {
           )}
         </Stack>
 
-        <Stack>{isFree ? <Badge variant="trial">Free</Badge> : null}</Stack>
+        <Stack>
+          {isLegacyFreeTeam ? <Badge variant="trial">Free</Badge> : null}
+        </Stack>
 
         <Text size={3} css={{ marginTop: '8px' }} variant="muted">
           {team.description}
