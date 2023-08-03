@@ -11,7 +11,7 @@ export const ProPage: React.FC = () => {
   const { pageMounted } = useActions().pro;
   const history = useHistory();
   const { hasLoadedApp, isLoggedIn } = useAppState();
-  const { isPaddle, isPatron } = useWorkspaceSubscription();
+  const { isPaddle } = useWorkspaceSubscription();
 
   React.useEffect(() => {
     pageMounted();
@@ -23,7 +23,7 @@ export const ProPage: React.FC = () => {
     return null;
   }
 
-  if (isPaddle || isPatron) {
+  if (isPaddle) {
     return <ProLegacy />;
   }
 

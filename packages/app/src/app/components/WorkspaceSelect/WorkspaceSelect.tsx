@@ -25,7 +25,11 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const state = useAppState();
     const { dashboard, user } = state;
     const { openCreateTeamModal } = useActions();
-    const { isFree } = useWorkspaceSubscription();
+    const {
+      isLegacyFreeTeam,
+      isLegacyPersonalPro,
+      isDeactivatedTeam,
+    } = useWorkspaceSubscription();
 
     if (dashboard.teams.length === 0 || !state.personalWorkspaceId) return null;
 
@@ -34,7 +38,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     )!;
 
     const selectedTeam = dashboard.teams.find(t => t.id === selectedTeamId);
-    const isPersonalTeam = selectedTeamId === state.personalWorkspaceId;
 
     const workspaces = [
       personalWorkspace,
@@ -93,10 +96,16 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   size={16}
                   maxWidth={selectedTeam?.subscription ? 163 : 123}
                 >
-                  {isPersonalTeam ? 'Personal' : selectedTeam?.name}
+                  {selectedTeam?.name}
                 </Text>
 
-                {isFree && <Badge variant="trial">Free</Badge>}
+                {isLegacyFreeTeam && !isDeactivatedTeam && (
+                  <Badge variant="trial">Free</Badge>
+                )}
+                {isLegacyPersonalPro && <Badge variant="pro">Pro</Badge>}
+                {isDeactivatedTeam && (
+                  <Badge variant="neutral">Deactivated</Badge>
+                )}
               </Stack>
 
               <Icon name="chevronDown" size={8} />
@@ -113,10 +122,19 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             >
               {workspaces.map(team => {
                 const subscriptionStatus = team.subscription?.status;
-                const isTeamFree = !(
+                const isPersonalSpace = team.id === state.personalWorkspaceId;
+                const hasActiveSubscription =
                   subscriptionStatus === SubscriptionStatus.Active ||
-                  subscriptionStatus === SubscriptionStatus.Trialing
-                );
+                  subscriptionStatus === SubscriptionStatus.Trialing;
+                const hasCancelledSubscription =
+                  subscriptionStatus === SubscriptionStatus.Cancelled ||
+                  subscriptionStatus === SubscriptionStatus.IncompleteExpired;
+
+                const isPersonalProLegacy =
+                  isPersonalSpace && hasActiveSubscription;
+                const isTeamFree = !isPersonalSpace && !hasActiveSubscription;
+                const isDeactivated =
+                  !isPersonalSpace && hasCancelledSubscription;
 
                 return (
                   <Stack
@@ -150,12 +168,16 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                       gap={1}
                     >
                       <Text css={{ width: '100%' }} size={3}>
-                        {team.id === state.personalWorkspaceId
-                          ? 'Personal'
-                          : team.name}
+                        {team.name}
                       </Text>
 
-                      {isTeamFree && <Badge variant="trial">Free</Badge>}
+                      {isTeamFree && !isDeactivated && (
+                        <Badge variant="trial">Free</Badge>
+                      )}
+                      {isPersonalProLegacy && <Badge variant="pro">Pro</Badge>}
+                      {isDeactivated && (
+                        <Badge variant="neutral">Deactivated</Badge>
+                      )}
                     </Stack>
                   </Stack>
                 );
@@ -189,7 +211,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 >
                   <Icon name="plus" size={10} />
                 </Stack>
-                <Text size={3}>Create a new team</Text>
+                <Text size={3}>Create a pro workspace</Text>
               </Stack>
             </Menu.List>
           </Menu>

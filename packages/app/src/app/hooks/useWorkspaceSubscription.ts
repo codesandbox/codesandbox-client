@@ -1,7 +1,6 @@
 import { TEAM_FREE_LIMITS } from 'app/constants';
 import {
   SubscriptionInterval,
-  SubscriptionOrigin,
   SubscriptionPaymentProvider,
   SubscriptionStatus,
   SubscriptionType,
@@ -50,6 +49,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   if (!subscription) {
     return {
       ...NO_SUBSCRIPTION,
+      isLegacyFreeTeam: isTeamSpace,
       isEligibleForTrial: isTeamSpace, // Currently, only teams are eligible for trial.
       numberOfSeats:
         activeTeamInfo.limits.maxEditors ?? TEAM_FREE_LIMITS.editors,
@@ -59,7 +59,19 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isPro =
     subscription.status === SubscriptionStatus.Active ||
     subscription.status === SubscriptionStatus.Trialing;
+
+  // TODO: Update this to ensure deactivated teams are
+  // only newer teams created after the pricing updates
+  const isDeactivatedTeam =
+    isTeamSpace &&
+    (subscription.status === SubscriptionStatus.Cancelled ||
+      subscription.status === SubscriptionStatus.IncompleteExpired);
+
   const isFree = !isPro;
+  const isLegacyPersonalPro = isPro && !isTeamSpace;
+
+  // TODO: Update to ensure only older team show as legacy
+  const isLegacyFreeTeam = isFree && isTeamSpace;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
 
@@ -76,10 +88,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const numberOfSeats =
     (isFree ? activeTeamInfo.limits.maxEditors : subscription.quantity) || 1;
 
-  const isPatron =
-    subscription.origin === SubscriptionOrigin.Legacy ||
-    subscription.origin === SubscriptionOrigin.Patron;
-
   const isPaddle =
     subscription.paymentProvider === SubscriptionPaymentProvider.Paddle;
 
@@ -91,11 +99,13 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     numberOfSeats,
     isPro,
     isFree,
+    isLegacyPersonalPro,
+    isLegacyFreeTeam,
+    isDeactivatedTeam,
     isEligibleForTrial: false, // Teams with an active or past subscription are not eligible for trial.
     hasActiveTeamTrial,
     hasExpiredTeamTrial,
     hasPaymentMethod,
-    isPatron,
     isPaddle,
     isStripe,
   };
@@ -106,11 +116,13 @@ const NO_WORKSPACE = {
   numberOfSeats: undefined,
   isPro: undefined,
   isFree: undefined,
+  isLegacyPersonalPro: undefined,
+  isLegacyFreeTeam: undefined,
+  isDeactivatedTeam: undefined,
   isEligibleForTrial: undefined,
   hasActiveTeamTrial: undefined,
   hasExpiredTeamTrial: undefined,
   hasPaymentMethod: undefined,
-  isPatron: undefined,
   isPaddle: undefined,
   isStripe: undefined,
 };
@@ -119,10 +131,12 @@ const NO_SUBSCRIPTION = {
   subscription: null,
   isPro: false,
   isFree: true,
+  isLegacyPersonalPro: false,
+  isLegacyFreeTeam: false,
+  isDeactivatedTeam: false,
   hasActiveTeamTrial: false,
   hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
-  isPatron: false,
   isPaddle: false,
   isStripe: false,
 };
@@ -145,11 +159,13 @@ export type WorkspaceSubscriptionReturn =
       numberOfSeats: number;
       isPro: boolean;
       isFree: boolean;
+      isLegacyPersonalPro: boolean;
+      isLegacyFreeTeam: boolean;
+      isDeactivatedTeam: boolean;
       isEligibleForTrial: false;
       hasActiveTeamTrial: boolean;
       hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;
-      isPatron: boolean;
       isPaddle: boolean;
       isStripe: boolean;
     };
