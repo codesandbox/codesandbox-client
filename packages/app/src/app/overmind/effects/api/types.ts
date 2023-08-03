@@ -41,3 +41,10 @@ export type FinalizeSignUpOptions = {
   role: string;
   usage: string;
 };
+
+export type MetaFeatures = {
+  loginWithApple?: boolean;
+  loginWithGithub?: boolean;
+  loginWithGoogle?: boolean;
+  loginWithWorkos?: boolean;
+};

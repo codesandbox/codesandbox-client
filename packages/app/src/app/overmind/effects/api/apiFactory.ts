@@ -10,13 +10,13 @@ const API_ROOT = '/api';
  * use the root path.
  */
 const getBaseApi = (path: string, useRoot: boolean = false) => {
-  if (useRoot) {
-    return API_ROOT;
-  }
-
   // Special case for /auth/workos requests which are not on /api/v1
   if (path.startsWith('/auth/workos')) {
     return '';
+  }
+
+  if (useRoot) {
+    return API_ROOT;
   }
 
   return path.startsWith('/beta') ? API_ROOT : `${API_ROOT}/v1`;
