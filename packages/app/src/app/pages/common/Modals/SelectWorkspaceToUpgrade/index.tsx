@@ -15,13 +15,12 @@ import { getUpgradeableTeams } from 'app/utils/teams';
 import { Alert } from '../Common/Alert';
 
 export const SelectWorkspaceToUpgrade: React.FC = () => {
-  const { dashboard, personalWorkspaceId, user } = useAppState();
+  const { dashboard, user } = useAppState();
   const { openCreateTeamModal, modalClosed } = useActions();
   const [checkout, createCheckout] = useCreateCheckout();
 
   const upgradeableTeams = getUpgradeableTeams({
     teams: dashboard.teams,
-    personalWorkspaceId,
     userId: user?.id,
   });
 

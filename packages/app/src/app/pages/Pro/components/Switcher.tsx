@@ -12,20 +12,24 @@ import {
 } from '@codesandbox/components';
 import {
   CurrentTeamInfoFragmentFragment,
-  SubscriptionType,
+  TeamType,
   TeamFragmentDashboardFragment,
   TeamMemberAuthorization,
 } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
+import { determineSpecialBadges } from 'app/utils/teams';
 
 export const Switcher: React.FC<{
   workspaces: TeamFragmentDashboardFragment[];
   setActiveTeam: (payload?: { id: string }) => Promise<void>;
   activeTeamInfo: CurrentTeamInfoFragmentFragment;
-  personalWorkspaceId: string;
-}> = ({ workspaces, setActiveTeam, personalWorkspaceId, activeTeamInfo }) => {
-  const { isFree } = useWorkspaceSubscription();
+}> = ({ workspaces, setActiveTeam, activeTeamInfo }) => {
+  const {
+    isLegacyFreeTeam,
+    isLegacyPersonalPro,
+    isInactiveTeam,
+  } = useWorkspaceSubscription();
   const { openCreateTeamModal } = useActions();
   const { user } = useAppState();
 
@@ -33,7 +37,9 @@ export const Switcher: React.FC<{
     <Menu>
       <MenuTrigger>
         <Text>{activeTeamInfo.name}</Text>
-        {isFree ? <Badge variant="trial">Free</Badge> : null}
+        {isLegacyFreeTeam ? <Badge variant="trial">Free</Badge> : null}
+        {isLegacyPersonalPro ? <Badge variant="pro">Pro</Badge> : null}
+        {isInactiveTeam ? <Badge variant="neutral">Inactive</Badge> : null}
       </MenuTrigger>
 
       <MenuList>
@@ -53,18 +59,19 @@ export const Switcher: React.FC<{
               ({ userId }) => userId === user?.id
             );
 
+            const {
+              isPersonalProLegacy,
+              isTeamFreeLegacy,
+              isInactive,
+            } = determineSpecialBadges(workspace);
+
             const isBillingManager =
               userAuthorization?.authorization ===
                 TeamMemberAuthorization.Admin || userAuthorization?.teamManager;
 
             const isTrialEligible =
-              workspace.id !== personalWorkspaceId &&
+              workspace.type === TeamType.Team &&
               workspace.subscription === null;
-
-            const isPro = [
-              SubscriptionType.TeamPro,
-              SubscriptionType.PersonalPro,
-            ].includes(workspace.subscription?.type);
 
             const disabled = !(isBillingManager || isTrialEligible);
 
@@ -97,11 +104,11 @@ export const Switcher: React.FC<{
                         textOverflow: 'ellipsis',
                       }}
                     >
-                      {workspace.id === personalWorkspaceId
-                        ? 'Personal'
-                        : workspace.name}
+                      {workspace.name}
                     </Text>
-                    {!isPro && <Badge variant="trial">Free</Badge>}
+                    {isTeamFreeLegacy && <Badge variant="trial">Free</Badge>}
+                    {isPersonalProLegacy && <Badge variant="pro">Pro</Badge>}
+                    {isInactive && <Badge variant="neutral">Inactive</Badge>}
                   </Stack>
                 </Stack>
               </MenuItem>

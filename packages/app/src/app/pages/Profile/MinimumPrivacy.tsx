@@ -1,4 +1,5 @@
 import React from 'react';
+import { TeamType } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
 import {
   Stack,
@@ -36,7 +37,7 @@ export const MinimumPrivacy: React.FC<{ closeModal?: () => void }> = ({
     dashboard: { setTeamMinimumPrivacy },
     profile: { fetchSandboxes },
   } = useActions();
-  const personalWorkspace = teams.find(team => team.id === personalWorkspaceId);
+  const personalWorkspace = teams.find(team => team.type === TeamType.Personal);
   const [minimumPrivacy, setMinimumPrivacy] = React.useState(
     personalWorkspace.settings.minimumPrivacy
   );

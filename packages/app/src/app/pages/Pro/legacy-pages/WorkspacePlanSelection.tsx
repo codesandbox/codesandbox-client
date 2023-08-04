@@ -7,7 +7,11 @@ import { Element, Stack, Text, SkeletonText } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
-import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
+import {
+  SubscriptionType,
+  SubscriptionInterval,
+  TeamType,
+} from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { formatCurrency } from 'app/utils/currency';
@@ -68,13 +72,13 @@ export const WorkspacePlanSelection: React.FC = () => {
   if (!activeTeam || !dashboard.teams.length) return null;
 
   const personalWorkspace = dashboard.teams.find(
-    t => t.id === personalWorkspaceId
+    t => t.type === TeamType.Personal
   )!;
 
   const workspacesList = [
     personalWorkspace,
     ...sortBy(
-      dashboard.teams.filter(team => team.id !== personalWorkspaceId),
+      dashboard.teams.filter(team => team.type !== TeamType.Team),
       team => team.name.toLowerCase()
     ),
   ];
@@ -149,7 +153,6 @@ export const WorkspacePlanSelection: React.FC = () => {
           <Switcher
             workspaces={workspacesList}
             setActiveTeam={setActiveTeam}
-            personalWorkspaceId={personalWorkspaceId}
             activeTeamInfo={activeTeamInfo}
           />
 

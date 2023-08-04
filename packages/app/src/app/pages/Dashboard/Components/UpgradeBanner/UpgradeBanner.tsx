@@ -121,7 +121,6 @@ const Features: React.FC = () => {
 export const UpgradeBanner: React.FC = () => {
   const {
     dashboard: { teams },
-    personalWorkspaceId,
   } = useAppState();
   const { modalOpened, openCreateTeamModal } = useActions();
   const [isBannerDismissed, dismissBanner] = useDismissible(
@@ -137,10 +136,7 @@ export const UpgradeBanner: React.FC = () => {
     return null;
   }
 
-  const trialEligibleTeams = getTrialEligibleTeams({
-    teams,
-    personalWorkspaceId,
-  });
+  const trialEligibleTeams = getTrialEligibleTeams(teams);
 
   const renderMainCTA = () => {
     if (isPersonalSpace) {

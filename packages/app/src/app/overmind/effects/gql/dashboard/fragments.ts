@@ -117,9 +117,11 @@ export const teamFragmentDashboard = gql`
   fragment teamFragmentDashboard on Team {
     id
     name
+    type
     description
     creatorId
     avatarUrl
+    legacy
     settings {
       minimumPrivacy
     }
@@ -160,8 +162,9 @@ export const currentTeamInfoFragment = gql`
     description
     inviteToken
     name
+    type
     avatarUrl
-
+    legacy
     users {
       id
       avatarUrl
