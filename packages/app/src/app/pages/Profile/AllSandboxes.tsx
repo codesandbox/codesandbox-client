@@ -10,6 +10,7 @@ import {
   IconButton,
   Menu,
 } from '@codesandbox/components';
+import { TeamType } from 'app/graphql/types';
 import css from '@styled-system/css';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { motion } from 'framer-motion';
@@ -219,7 +220,6 @@ const UpgradeBanner = () => {
     user,
     profile: { current },
     dashboard: { teams },
-    personalWorkspaceId,
     activeTeamInfo,
   } = useAppState();
   const { modalOpened } = useActions();
@@ -242,7 +242,7 @@ const UpgradeBanner = () => {
 
   if (!showUpgradeMessage) return null;
 
-  const personalWorkspace = teams.find(team => team.id === personalWorkspaceId);
+  const personalWorkspace = teams.find(team => team.type === TeamType.Personal);
 
   return (
     <Stack

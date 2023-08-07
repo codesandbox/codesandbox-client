@@ -18,6 +18,7 @@ export enum SubscriptionDebugStatus {
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { activeTeamInfo } = useAppState();
   const { isTeamSpace } = useWorkspaceAuthorization();
+  const isPersonalSpace = !isTeamSpace;
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
 
@@ -56,22 +57,21 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     };
   }
 
+  const isLegacySpace = activeTeamInfo.legacy;
+
   const isPro =
     subscription.status === SubscriptionStatus.Active ||
     subscription.status === SubscriptionStatus.Trialing;
+  const isFree = !isPro;
 
-  // TODO: Update this to ensure deactivated teams are
-  // only newer teams created after the pricing updates
-  const isDeactivatedTeam =
+  const isInactiveTeam =
     isTeamSpace &&
+    !isLegacySpace &&
     (subscription.status === SubscriptionStatus.Cancelled ||
       subscription.status === SubscriptionStatus.IncompleteExpired);
 
-  const isFree = !isPro;
-  const isLegacyPersonalPro = isPro && !isTeamSpace;
-
-  // TODO: Update to ensure only older team show as legacy
-  const isLegacyFreeTeam = isFree && isTeamSpace;
+  const isLegacyPersonalPro = isPro && isPersonalSpace && isLegacySpace;
+  const isLegacyFreeTeam = isFree && isTeamSpace && isLegacySpace;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
 
@@ -101,7 +101,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     isFree,
     isLegacyPersonalPro,
     isLegacyFreeTeam,
-    isDeactivatedTeam,
+    isInactiveTeam,
     isEligibleForTrial: false, // Teams with an active or past subscription are not eligible for trial.
     hasActiveTeamTrial,
     hasExpiredTeamTrial,
@@ -118,7 +118,7 @@ const NO_WORKSPACE = {
   isFree: undefined,
   isLegacyPersonalPro: undefined,
   isLegacyFreeTeam: undefined,
-  isDeactivatedTeam: undefined,
+  isInactiveTeam: undefined,
   isEligibleForTrial: undefined,
   hasActiveTeamTrial: undefined,
   hasExpiredTeamTrial: undefined,
@@ -133,7 +133,7 @@ const NO_SUBSCRIPTION = {
   isFree: true,
   isLegacyPersonalPro: false,
   isLegacyFreeTeam: false,
-  isDeactivatedTeam: false,
+  isInactiveTeam: false,
   hasActiveTeamTrial: false,
   hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
@@ -161,7 +161,7 @@ export type WorkspaceSubscriptionReturn =
       isFree: boolean;
       isLegacyPersonalPro: boolean;
       isLegacyFreeTeam: boolean;
-      isDeactivatedTeam: boolean;
+      isInactiveTeam: boolean;
       isEligibleForTrial: false;
       hasActiveTeamTrial: boolean;
       hasExpiredTeamTrial: boolean;

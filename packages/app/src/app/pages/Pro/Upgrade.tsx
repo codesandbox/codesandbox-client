@@ -226,7 +226,6 @@ export const ProUpgrade = () => {
                 });
                 return setActiveTeam(payload);
               }}
-              personalWorkspaceId={personalWorkspaceId}
               activeTeamInfo={activeTeamInfo}
             />
             <Element css={{ maxWidth: '976px', textAlign: 'center' }}>

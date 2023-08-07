@@ -14,14 +14,11 @@ import { useActions, useAppState } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 export const SelectWorkspaceToStartTrial: React.FC = () => {
-  const { dashboard, personalWorkspaceId } = useAppState();
+  const { dashboard } = useAppState();
   const { openCreateTeamModal, modalClosed } = useActions();
   const [checkout, createCheckout] = useCreateCheckout();
 
-  const trialEligibleTeams = getTrialEligibleTeams({
-    teams: dashboard.teams,
-    personalWorkspaceId,
-  });
+  const trialEligibleTeams = getTrialEligibleTeams(dashboard.teams);
 
   const [selectedTeam, setSelectedTeam] = React.useState(
     trialEligibleTeams[0]?.id

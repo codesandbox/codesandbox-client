@@ -16,14 +16,13 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   trackingLocation,
 }) => {
   const experimentPromise = useExperimentResult('pro-page-sticker');
-  const { dashboard, pro, personalWorkspaceId, user } = useAppState();
+  const { dashboard, pro, user } = useAppState();
   const { modalOpened, openCreateTeamModal } = useActions();
   const [showSticker, setShowSticker] = React.useState(false);
   const currency = useCurrencyFromTimeZone();
 
   const upgradeableTeams = getUpgradeableTeams({
     teams: dashboard.teams,
-    personalWorkspaceId,
     userId: user?.id,
   });
 

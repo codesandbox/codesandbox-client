@@ -1,5 +1,6 @@
 import React from 'react';
 import { useActions, useAppState } from 'app/overmind';
+import { TeamType } from 'app/graphql/types';
 import {
   Badge,
   Text,
@@ -12,7 +13,7 @@ import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { SubscriptionStatus } from 'app/graphql/types';
+import { determineSpecialBadges } from 'app/utils/teams';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -28,13 +29,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const {
       isLegacyFreeTeam,
       isLegacyPersonalPro,
-      isDeactivatedTeam,
+      isInactiveTeam,
     } = useWorkspaceSubscription();
 
-    if (dashboard.teams.length === 0 || !state.personalWorkspaceId) return null;
+    if (dashboard.teams.length === 0) return null;
 
     const personalWorkspace = dashboard.teams.find(
-      t => t.id === state.personalWorkspaceId
+      t => t.type === TeamType.Personal
     )!;
 
     const selectedTeam = dashboard.teams.find(t => t.id === selectedTeamId);
@@ -42,7 +43,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const workspaces = [
       personalWorkspace,
       ...sortBy(
-        dashboard.teams.filter(t => t.id !== state.personalWorkspaceId),
+        dashboard.teams.filter(t => t.type === TeamType.Team),
         t => t.name.toLowerCase()
       ),
     ];
@@ -99,13 +100,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   {selectedTeam?.name}
                 </Text>
 
-                {isLegacyFreeTeam && !isDeactivatedTeam && (
-                  <Badge variant="trial">Free</Badge>
-                )}
+                {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
                 {isLegacyPersonalPro && <Badge variant="pro">Pro</Badge>}
-                {isDeactivatedTeam && (
-                  <Badge variant="neutral">Deactivated</Badge>
-                )}
+                {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
               </Stack>
 
               <Icon name="chevronDown" size={8} />
@@ -121,20 +118,11 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               }}
             >
               {workspaces.map(team => {
-                const subscriptionStatus = team.subscription?.status;
-                const isPersonalSpace = team.id === state.personalWorkspaceId;
-                const hasActiveSubscription =
-                  subscriptionStatus === SubscriptionStatus.Active ||
-                  subscriptionStatus === SubscriptionStatus.Trialing;
-                const hasCancelledSubscription =
-                  subscriptionStatus === SubscriptionStatus.Cancelled ||
-                  subscriptionStatus === SubscriptionStatus.IncompleteExpired;
-
-                const isPersonalProLegacy =
-                  isPersonalSpace && hasActiveSubscription;
-                const isTeamFree = !isPersonalSpace && !hasActiveSubscription;
-                const isDeactivated =
-                  !isPersonalSpace && hasCancelledSubscription;
+                const {
+                  isPersonalProLegacy,
+                  isTeamFreeLegacy,
+                  isInactive,
+                } = determineSpecialBadges(team);
 
                 return (
                   <Stack
@@ -153,7 +141,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   >
                     <TeamAvatar
                       avatar={
-                        team.id === state.personalWorkspaceId && user
+                        team.type === TeamType.Personal && user
                           ? user.avatarUrl
                           : team.avatarUrl
                       }
@@ -171,13 +159,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                         {team.name}
                       </Text>
 
-                      {isTeamFree && !isDeactivated && (
-                        <Badge variant="trial">Free</Badge>
-                      )}
+                      {isTeamFreeLegacy && <Badge variant="trial">Free</Badge>}
                       {isPersonalProLegacy && <Badge variant="pro">Pro</Badge>}
-                      {isDeactivated && (
-                        <Badge variant="neutral">Deactivated</Badge>
-                      )}
+                      {isInactive && <Badge variant="neutral">Inactive</Badge>}
                     </Stack>
                   </Stack>
                 );
