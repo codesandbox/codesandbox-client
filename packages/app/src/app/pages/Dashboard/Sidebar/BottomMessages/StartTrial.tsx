@@ -18,7 +18,8 @@ export const StartTrial: React.FC<{ activeTeam: string }> = ({
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
       <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-        Upgrade to Team PRO for the full CodeSandbox Experience.
+        Upgrade to <Text css={{ color: '#c2c2c2', fontWeight: 500 }}>Pro</Text>{' '}
+        for the full CodeSandbox Experience.
       </Text>
 
       <Button

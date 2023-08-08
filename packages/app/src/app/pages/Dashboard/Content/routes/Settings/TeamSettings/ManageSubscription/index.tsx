@@ -62,7 +62,7 @@ export const ManageSubscription = () => {
       >
         <Stack direction="vertical" gap={4}>
           <Text size={4} maxWidth="100%" weight="500">
-            Team Pro {hasActiveTeamTrial ? 'trial' : ''}
+            Pro {hasActiveTeamTrial ? 'trial' : ''}
           </Text>
 
           {hasPaymentMethod ? (

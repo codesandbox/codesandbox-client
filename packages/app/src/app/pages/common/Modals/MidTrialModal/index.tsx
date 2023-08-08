@@ -116,7 +116,7 @@ export const MidTrialModal = () => {
                 ? 'You will lose access to all Pro features when your trial expires.'
                 : null}
               {experimentValue === ExperimentValues.B
-                ? 'You will need a Team Pro subscription to continue using Pro features.'
+                ? 'You will need a subscription to continue using Pro features.'
                 : null}
             </Text>
           </Stack>

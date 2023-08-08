@@ -35,7 +35,7 @@ export const TrialExpiring: React.FC<{
       ) : (
         <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
           {hasPaymentMethod
-            ? 'After this period, your Team Pro subscription will be automatically renewed.'
+            ? 'After this period, your Pro subscription will be automatically renewed.'
             : 'Update your payment method to continue this Pro subscription.'}
         </Text>
       )}

@@ -242,7 +242,7 @@ export const ProUpgrade = () => {
                   ? 'You have an active Personal Pro subscription'
                   : null}
                 {isPro && isTeamSpace
-                  ? 'You have an active Team Pro subscription'
+                  ? 'You have an active Pro subscription'
                   : null}
                 {isFree ? 'Upgrade for Pro features' : null}
               </Text>

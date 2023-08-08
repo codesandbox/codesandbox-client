@@ -36,9 +36,8 @@ export const PermissionSettings = () => {
       {isFree ? (
         <MessageStripe justify="space-between">
           <span>
-            You need a{' '}
-            <Text weight="bold">{isTeamSpace ? 'Team Pro' : 'Pro'}</Text>{' '}
-            subscription to change sandbox permissions.
+            You need a <Text weight="bold">Pro</Text> subscription to change
+            sandbox permissions.
           </span>
           {isBillingManager || isPersonalSpace ? (
             <MessageStripe.Action
