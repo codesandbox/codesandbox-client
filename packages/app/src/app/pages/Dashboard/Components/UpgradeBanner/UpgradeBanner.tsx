@@ -198,6 +198,14 @@ const FEATURES_LIST: Feature[] = [
     label: 'Advanced privacy settings',
   },
   {
+    icon: 'sharing',
+    label: 'Live sessions',
+  },
+  {
+    icon: 'ai',
+    label: 'Full access to AI tools',
+  },
+  {
     icon: 'sandbox',
     label: 'Private sandboxes',
   },
