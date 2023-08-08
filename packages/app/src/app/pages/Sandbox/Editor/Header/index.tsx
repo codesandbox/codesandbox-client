@@ -1,5 +1,6 @@
 import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 
@@ -10,6 +11,7 @@ import { WorkspaceName } from './WorkspaceName';
 
 export const Header = () => {
   const { editor, isAuthenticating, activeTeamInfo } = useAppState();
+  const { isLegacyFreeTeam } = useWorkspaceSubscription();
 
   return (
     <Stack
@@ -32,7 +34,7 @@ export const Header = () => {
         {activeTeamInfo && (
           <WorkspaceName
             name={activeTeamInfo.name}
-            plan={activeTeamInfo.subscription?.type}
+            legacyFreeTeam={isLegacyFreeTeam}
           />
         )}
       </Stack>
