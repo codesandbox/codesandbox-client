@@ -24,7 +24,7 @@ import { SIDEBAR_WIDTH } from './constants';
 import { AdminUpgradeToTeamPro } from './BottomMessages/AdminUpgradeToTeamPro';
 import { UserUpgradeToTeamPro } from './BottomMessages/UserUpgradeToTeamPro';
 import { TrialExpiring } from './BottomMessages/TrialExpiring';
-import { UpgradeToPersonalPro } from './BottomMessages/UpgradeToPersonalPro';
+import { CreateProWorkspace } from './BottomMessages/CreateProWorkspace';
 import { StartTrial } from './BottomMessages/StartTrial';
 import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
@@ -319,7 +319,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <UserUpgradeToTeamPro />
             ) : null}
 
-            {isPersonalSpace ? <UpgradeToPersonalPro /> : null}
+            {isPersonalSpace ? <CreateProWorkspace /> : null}
           </Element>
         ) : null}
 

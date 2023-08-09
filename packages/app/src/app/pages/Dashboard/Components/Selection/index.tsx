@@ -152,7 +152,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const actions = useActions();
   const { dashboard, activeTeam } = useAppState();
   const { analytics } = useEffects();
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
@@ -457,7 +457,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           collectionPath: activeTeam ? null : '/',
         });
       } else if (dropPage === 'sandboxes') {
-        if (isFree && hasMaxPublicSandboxes) {
+        if ((isFree && hasMaxPublicSandboxes) || isInactiveTeam) {
           return;
         }
 

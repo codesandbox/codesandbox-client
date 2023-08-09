@@ -3,15 +3,16 @@ import { Link as RouterLink } from 'react-router-dom';
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-export const UpgradeToPersonalPro = () => (
+export const CreateProWorkspace = () => (
   <Stack align="flex-start" direction="vertical" gap={2}>
     <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-      Upgrade to Personal PRO for the full CodeSandbox Experience.
+      Create a <Text css={{ color: '#c2c2c2', fontWeight: 500 }}>Pro</Text>{' '}
+      workspace for the full CodeSandbox Experience.
     </Text>
     <Link
       as={RouterLink}
-      to="/pro?utm_source=personal_pro_side_banner"
-      title="Upgrade to Personal PRO"
+      to="/pro?utm_source=personal_side_banner"
+      title="Start 14-day free trial"
       css={{
         fontSize: '12px',
         fontWeight: 500,
@@ -19,13 +20,13 @@ export const UpgradeToPersonalPro = () => (
         textDecoration: 'none',
       }}
       onClick={() => {
-        track('Side banner - Upgrade to Personal Pro', {
+        track('Side banner - Create pro workspace', {
           codesandbox: 'V1',
           event_source: 'UI',
         });
       }}
     >
-      Upgrade now
+      Start trial
     </Link>
   </Stack>
 );

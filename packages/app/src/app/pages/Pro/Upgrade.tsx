@@ -16,23 +16,18 @@ import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ORG_FEATURES,
-  TEAM_FREE_FEATURES,
   TEAM_PRO_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
   PERSONAL_FREE_FEATURES,
-  PERSONAL_FEATURES,
-  PERSONAL_FEATURES_WITH_PILLS,
 } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
 
-import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
-import { UpsellTeamProCard } from './components/UpsellTeamProCard';
 import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
@@ -91,42 +86,10 @@ export const ProUpgrade = () => {
    */
   const hasCustomSubscription = false;
 
-  const [checkout, createCheckout] = useCreateCheckout();
-  const disabled = checkout.status === 'loading';
-
   const [
     isCustomerPortalLoading,
     createCustomerPortal,
   ] = useCreateCustomerPortal({ team_id: activeTeam });
-
-  const personalProCta: CTA = isPro
-    ? {
-        text: 'Manage subscription',
-        onClick: () => {
-          track('subscription page - manage pro subscription', {
-            codesandbox: 'V1',
-            event_source: 'UI',
-          });
-          createCustomerPortal();
-        },
-        variant: 'light',
-        isLoading: isCustomerPortalLoading,
-      }
-    : {
-        text: 'Proceed to checkout',
-        variant: 'highlight',
-        isLoading: disabled,
-        onClick: () => {
-          track('subscription page - personal pro checkout', {
-            codesandbox: 'V1',
-            event_source: 'UI',
-          });
-
-          createCheckout({
-            utm_source: 'pro_page',
-          });
-        },
-      };
 
   const teamProCta: CTA =
     isBillingManager && !hasCustomSubscription && isPro
@@ -242,7 +205,7 @@ export const ProUpgrade = () => {
                   ? 'You have an active Personal Pro subscription'
                   : null}
                 {isPro && isTeamSpace
-                  ? 'You have an active Team Pro subscription'
+                  ? 'You have an active Pro subscription'
                   : null}
                 {isFree ? 'Upgrade for Pro features' : null}
               </Text>
@@ -265,164 +228,115 @@ export const ProUpgrade = () => {
               },
             }}
           >
+            {isPersonalSpace && (
+              <SubscriptionCard
+                title="Free plan"
+                subTitle="1 editor only"
+                features={PERSONAL_FREE_FEATURES}
+              >
+                <Stack gap={1} direction="vertical">
+                  <Text size={32} weight="400">
+                    $0
+                  </Text>
+                  <StyledPricingDetailsText>forever</StyledPricingDetailsText>
+                </Stack>
+              </SubscriptionCard>
+            )}
             <SubscriptionCard
-              title="Free plan"
-              subTitle="1 editor only"
+              title="Pro"
+              subTitle="Up to 20 editors"
               features={
-                isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
+                isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
               }
+              isHighlighted={!hasCustomSubscription}
+              {...(isFree
+                ? {
+                    customCta: (
+                      <TeamSubscriptionOptions
+                        buttonVariant="dark"
+                        buttonStyles={{
+                          padding: '12px 20px !important', // Otherwise it gets overridden.
+                          fontSize: '16px',
+                          lineHeight: '24px',
+                          fontWeight: 500,
+                          height: 'auto',
+                        }}
+                        trackingLocation="subscription page"
+                      />
+                    ),
+                  }
+                : {
+                    cta: teamProCta,
+                  })}
             >
               <Stack gap={1} direction="vertical">
-                <Text size={32} weight="400">
-                  $0
+                <Text size={32} weight="500">
+                  {pro?.prices ? (
+                    getPricePerMonth('team', 'year')
+                  ) : (
+                    <SkeletonText css={{ width: '60px', height: '40px' }} />
+                  )}
                 </Text>
-                <StyledPricingDetailsText>forever</StyledPricingDetailsText>
+                <StyledPricingDetailsText>
+                  per editor per month,
+                  <br /> billed annually, or{' '}
+                  {pro?.prices ? (
+                    getPricePerMonth('team', 'month')
+                  ) : (
+                    <SkeletonText
+                      css={{
+                        display: 'inline-block',
+                        marginBottom: '-4px',
+                        width: '20px',
+                      }}
+                    />
+                  )}{' '}
+                  per month.
+                </StyledPricingDetailsText>
               </Stack>
             </SubscriptionCard>
 
-            {isPersonalSpace ? (
-              <>
-                <SubscriptionCard
-                  title="Personal Pro"
-                  subTitle="1 editor only"
-                  features={
-                    isPro ? PERSONAL_FEATURES : PERSONAL_FEATURES_WITH_PILLS
-                  }
-                  cta={personalProCta}
-                  isHighlighted
-                >
-                  <Stack gap={1} direction="vertical">
-                    <Text size={32} weight="500">
-                      {pro?.prices ? (
-                        getPricePerMonth('individual', 'year')
-                      ) : (
-                        <SkeletonText css={{ width: '60px', height: '40px' }} />
-                      )}
-                    </Text>
-                    <StyledPricingDetailsText>
-                      <div>per month,</div>
-                      <div>
-                        billed annually, or{' '}
-                        {pro?.prices ? (
-                          getPricePerMonth('individual', 'month')
-                        ) : (
-                          <SkeletonText
-                            css={{
-                              display: 'inline-block',
-                              marginBottom: '-4px',
-                              width: '20px',
-                            }}
-                          />
-                        )}{' '}
-                        per month.
-                      </div>
-                    </StyledPricingDetailsText>
-                  </Stack>
-                </SubscriptionCard>
-                <UpsellTeamProCard trackingLocation="subscription page" />
-              </>
-            ) : (
-              <>
-                <SubscriptionCard
-                  title="Team Pro"
-                  subTitle="Up to 20 editors"
-                  features={
-                    isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
-                  }
-                  isHighlighted={!hasCustomSubscription}
-                  {...(isFree
-                    ? {
-                        customCta: (
-                          <TeamSubscriptionOptions
-                            buttonVariant="dark"
-                            buttonStyles={{
-                              padding: '12px 20px !important', // Otherwise it gets overridden.
-                              fontSize: '16px',
-                              lineHeight: '24px',
-                              fontWeight: 500,
-                              height: 'auto',
-                            }}
-                            trackingLocation="subscription page"
-                          />
-                        ),
-                      }
-                    : {
-                        cta: teamProCta,
-                      })}
-                >
-                  <Stack gap={1} direction="vertical">
-                    <Text size={32} weight="500">
-                      {pro?.prices ? (
-                        getPricePerMonth('team', 'year')
-                      ) : (
-                        <SkeletonText css={{ width: '60px', height: '40px' }} />
-                      )}
-                    </Text>
-                    <StyledPricingDetailsText>
-                      per editor per month,
-                      <br /> billed annually, or{' '}
-                      {pro?.prices ? (
-                        getPricePerMonth('team', 'month')
-                      ) : (
-                        <SkeletonText
-                          css={{
-                            display: 'inline-block',
-                            marginBottom: '-4px',
-                            width: '20px',
-                          }}
-                        />
-                      )}{' '}
-                      per month.
-                    </StyledPricingDetailsText>
-                  </Stack>
-                </SubscriptionCard>
-
-                <SubscriptionCard
-                  title="Organization"
-                  subTitle="Unlimited editors"
-                  features={ORG_FEATURES}
-                  cta={
-                    hasCustomSubscription
-                      ? {
-                          text: 'Contact support',
-                          href: 'mailto:support@codesandbox.io',
-                          variant: 'light',
-                          onClick: () => {
-                            track(
-                              'subscription page - manage org subscription',
-                              {
-                                codesandbox: 'V1',
-                                event_source: 'UI',
-                              }
-                            );
-                          },
-                        }
-                      : {
-                          text: 'Contact us',
-                          href: 'https://codesandbox.typeform.com/organization',
-                          variant: 'dark',
-                          onClick: () => {
-                            track('subscription page - contact us', {
-                              codesandbox: 'V1',
-                              event_source: 'UI',
-                            });
-                          },
-                        }
-                  }
-                  isHighlighted={hasCustomSubscription}
-                >
-                  <Stack gap={1} direction="vertical">
-                    <Text size={32} weight="400">
-                      custom
-                    </Text>
-                    <StyledPricingDetailsText>
-                      <div>tailor-made plan.</div>
-                      <div>bulk pricing for seats.</div>
-                    </StyledPricingDetailsText>
-                  </Stack>
-                </SubscriptionCard>
-              </>
-            )}
+            <SubscriptionCard
+              title="Organization"
+              subTitle="Unlimited editors"
+              features={ORG_FEATURES}
+              cta={
+                hasCustomSubscription
+                  ? {
+                      text: 'Contact support',
+                      href: 'mailto:support@codesandbox.io',
+                      variant: 'light',
+                      onClick: () => {
+                        track('subscription page - manage org subscription', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+                      },
+                    }
+                  : {
+                      text: 'Contact us',
+                      href: 'https://codesandbox.typeform.com/organization',
+                      variant: 'dark',
+                      onClick: () => {
+                        track('subscription page - contact us', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+                      },
+                    }
+              }
+              isHighlighted={hasCustomSubscription}
+            >
+              <Stack gap={1} direction="vertical">
+                <Text size={32} weight="400">
+                  custom
+                </Text>
+                <StyledPricingDetailsText>
+                  <div>tailor-made plan.</div>
+                  <div>bulk pricing for seats.</div>
+                </StyledPricingDetailsText>
+              </Stack>
+            </SubscriptionCard>
           </Stack>
         </Stack>
 

@@ -68,3 +68,41 @@ export const MaxPublicSandboxes: React.FC<MaxPublicSandboxesProps> = ({
     </MessageStripe>
   );
 };
+
+type InactiveTeamProps = {
+  onCreateCheckout: () => void;
+  isBillingManager: boolean;
+  canCheckout: boolean;
+};
+export const InactiveTeam: React.FC<InactiveTeamProps> = ({
+  onCreateCheckout,
+  isBillingManager,
+  canCheckout,
+}) => {
+  return (
+    <MessageStripe justify="space-between">
+      Re-activate your workspace to create new sandboxes.
+      {canCheckout ? (
+        <MessageStripe.Action
+          onClick={() => {
+            onCreateCheckout();
+            track(getEventName(false, isBillingManager), EVENT_PROPS);
+          }}
+        >
+          Upgrade now
+        </MessageStripe.Action>
+      ) : (
+        <MessageStripe.Action
+          as="a"
+          href={SUBSCRIPTION_DOCS_URLS.teams.non_trial}
+          target="_blank"
+          onClick={() =>
+            track('Limit banner: create sandbox - Learn more', EVENT_PROPS)
+          }
+        >
+          Learn more
+        </MessageStripe.Action>
+      )}
+    </MessageStripe>
+  );
+};

@@ -6,12 +6,13 @@ import track from '@codesandbox/common/lib/utils/analytics';
 export const AdminUpgradeToTeamPro = () => (
   <Stack align="flex-start" direction="vertical" gap={2}>
     <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-      Upgrade to Team PRO for the full CodeSandbox Experience.
+      Upgrade to <Text css={{ color: '#c2c2c2', fontWeight: 500 }}>Pro</Text>{' '}
+      for the full CodeSandbox Experience.
     </Text>
     <Link
       as={RouterLink}
       to="/pro?utm_source=side_banner_team_pro"
-      title="Upgrade to Team PRO"
+      title="Upgrade to PRO"
       css={{
         fontSize: '12px',
         fontWeight: 500,

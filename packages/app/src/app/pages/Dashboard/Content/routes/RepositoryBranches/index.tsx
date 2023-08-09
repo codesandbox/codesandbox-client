@@ -6,6 +6,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { InactiveTeamStripe } from 'app/pages/Dashboard/Components/shared/InactiveTeamStripe';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { PrivateRepoFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
@@ -47,9 +48,9 @@ export const RepositoryBranchesPage = () => {
     }
   }, [activeTeam]);
 
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
   const isPrivate = repositoryProject?.repository.private;
-  const isReadOnlyRepo = isFree && isPrivate;
+  const restricted = isFree && isPrivate;
 
   const pageType: PageTypes = 'repository-branches';
 
@@ -135,13 +136,19 @@ export const RepositoryBranchesPage = () => {
           name: repositoryProject?.repository.name,
           assignedTeamId: repositoryProject?.team?.id,
         }}
-        readOnly={isReadOnlyRepo}
+        readOnly={restricted || isInactiveTeam}
       />
 
-      {isReadOnlyRepo && (
+      {restricted && (
         <Element paddingX={4} paddingY={2}>
-          {isPrivate && <PrivateRepoFreeTeam />}
+          <PrivateRepoFreeTeam />
         </Element>
+      )}
+
+      {isInactiveTeam && (
+        <InactiveTeamStripe>
+          Re-activate your workspace to continue working on the repository
+        </InactiveTeamStripe>
       )}
 
       <VariableGrid page={pageType} items={itemsToShow} />

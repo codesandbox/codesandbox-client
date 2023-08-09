@@ -39,7 +39,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const actions = useActions();
   const { notificationToast } = useEffects();
   const { visible, setVisibility, position } = React.useContext(Context);
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   /*
@@ -105,7 +105,8 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
         [...sandboxes, ...templates].find(
           s => s.sandbox.permissions.preventSandboxLeaving
         ) ||
-          (isFree && hasMaxPublicSandboxes)
+          (isFree && hasMaxPublicSandboxes) ||
+          isInactiveTeam
       ),
     });
   };
