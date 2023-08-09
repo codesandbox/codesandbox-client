@@ -55,10 +55,9 @@ type SettingsNavigationProps = {
 export const SettingNavigation = ({
   teamId,
   personal,
-  ...props
 }: SettingsNavigationProps) => {
   return (
-    <Stack direction="vertical" {...props}>
+    <Stack direction="vertical">
       <Stack
         css={css({
           width: '100%',
@@ -77,6 +76,7 @@ export const SettingNavigation = ({
             NPM Registry
           </NavigationLink>
         )}
+
         <NavigationLink url={dashboardUrls.permissionSettings(teamId)}>
           Permissions
         </NavigationLink>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useActions, useAppState } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { TeamType } from 'app/graphql/types';
 import {
   Badge,
@@ -14,6 +14,7 @@ import { TeamAvatar } from 'app/components/TeamAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { determineSpecialBadges } from 'app/utils/teams';
+import { useHistory } from 'react-router';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -25,7 +26,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
     const { dashboard, user } = state;
-    const { openCreateTeamModal } = useActions();
+    const history = useHistory();
     const {
       isLegacyFreeTeam,
       isLegacyPersonalPro,
@@ -180,7 +181,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     event_source: 'UI',
                   });
 
-                  openCreateTeamModal();
+                  history.push('/pro');
                 }}
               >
                 <Stack
