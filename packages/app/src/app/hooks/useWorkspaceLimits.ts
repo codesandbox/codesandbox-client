@@ -119,7 +119,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
 
 export type WorkspaceLimitsReturn =
   | {
-      numberOfEditors: undefined;
+      numberOfEditors: number | undefined;
       hasMaxNumberOfEditors: undefined;
       numberOfEditorsIsOverTheLimit: undefined;
       hasMaxPublicRepositories: undefined;

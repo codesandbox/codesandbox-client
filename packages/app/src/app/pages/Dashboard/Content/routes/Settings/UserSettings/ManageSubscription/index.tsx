@@ -22,6 +22,8 @@ export const ManageSubscription = () => {
     return <Upgrade />;
   }
 
+  // Legacy Personal Pro
+
   const renderDetailsContent = () => {
     if (isPaddle) return <Paddle />;
     if (isStripe) return <Stripe />;
