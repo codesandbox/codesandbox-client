@@ -27,6 +27,11 @@ export class ParcelTemplate extends Template {
     return entries.filter(Boolean);
   }
 
+  getHTMLEntries(configurationFiles: ParsedConfigurationFiles): string[] {
+    const entries = this.getEntries(configurationFiles);
+    return entries.filter(e => e.endsWith('.html'));
+  }
+
   /**
    * The file to open by the editor
    */
