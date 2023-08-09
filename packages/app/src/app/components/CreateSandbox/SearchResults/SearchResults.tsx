@@ -14,7 +14,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { SearchResultList } from './SearchResultList';
 import { Loader } from '../Loader';
-import { MaxPublicSandboxes } from '../stripes';
+import { MaxPublicSandboxes, InactiveTeam } from '../stripes';
 
 const LoadingIndicator = connectStateResults(({ isSearchStalled }) =>
   isSearchStalled ? <Loader /> : null
@@ -45,7 +45,7 @@ export const SearchResults = ({
   officialTemplates: TemplateFragment[];
   canCheckout: boolean;
 }) => {
-  const { isEligibleForTrial } = useWorkspaceSubscription();
+  const { isEligibleForTrial, isInactiveTeam } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const { isBillingManager } = useWorkspaceAuthorization();
 
@@ -86,6 +86,13 @@ export const SearchResults = ({
             <MaxPublicSandboxes
               onCreateCheckout={onCreateCheckout}
               isEligibleForTrial={isEligibleForTrial}
+              isBillingManager={isBillingManager}
+              canCheckout={canCheckout}
+            />
+          ) : null}
+          {isInactiveTeam ? (
+            <InactiveTeam
+              onCreateCheckout={onCreateCheckout}
               isBillingManager={isBillingManager}
               canCheckout={canCheckout}
             />
