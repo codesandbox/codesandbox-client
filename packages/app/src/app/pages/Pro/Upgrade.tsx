@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import {
   ThemeProvider,
   Stack,
   Element,
   Text,
   Icon,
+  Badge,
   SkeletonText,
 } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
@@ -15,9 +15,9 @@ import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ORG_FEATURES,
+  PERSONAL_FEATURES,
   TEAM_PRO_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
-  PERSONAL_FREE_FEATURES,
 } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
 
@@ -26,48 +26,29 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
+import { UpsellTeamProCard } from './components/UpsellTeamProCard';
 import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
-import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 
 export const ProUpgrade = () => {
   const {
-    pro: { pageMounted },
-    setActiveTeam,
-  } = useActions();
-  const {
+    activeTeam,
+    activeTeamInfo,
     dashboard,
     hasLoadedApp,
     isLoggedIn,
-    personalWorkspaceId,
     pro,
   } = useAppState();
-  const location = useLocation();
   const currency = useCurrencyFromTimeZone();
-  const searchQuery = new URLSearchParams(location.search);
+  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
   const {
-    isBillingManager,
-    isTeamSpace,
-    isPersonalSpace,
-  } = useWorkspaceAuthorization();
-  const { isPro, isFree, isLegacyPersonalPro } = useWorkspaceSubscription();
-
-  useEffect(() => {
-    pageMounted();
-  }, [pageMounted]);
-
-  const urlWorkspaceId = searchQuery.get('workspace');
-
-  // Make sure if someone gets the URL with a specific workspaceId,
-  // the team is selected in the background for them
-  useEffect(() => {
-    if (urlWorkspaceId) {
-      setActiveTeam({ id: urlWorkspaceId });
-    } else {
-      setActiveTeam({ id: personalWorkspaceId });
-    }
-  }, [urlWorkspaceId, personalWorkspaceId]);
+    isFree,
+    isPro,
+    isLegacyPersonalPro,
+    isLegacyFreeTeam,
+    isInactiveTeam,
+  } = useWorkspaceSubscription();
 
   /**
    * There is currently no way to know if teams have a custom subscription. This means we will
@@ -80,11 +61,12 @@ export const ProUpgrade = () => {
     isCustomerPortalLoading,
     createCustomerPortal,
   ] = useCreateCustomerPortal({
-    team_id: urlWorkspaceId || personalWorkspaceId,
+    team_id: activeTeam,
   });
 
-  const teamProCta: CTA =
-    isBillingManager && !hasCustomSubscription && isPro
+  // TODO: Handle personal pro
+  const proCTA: CTA =
+    isPro && isBillingManager && !hasCustomSubscription
       ? {
           text: 'Manage subscription',
           onClick: () => {
@@ -97,7 +79,7 @@ export const ProUpgrade = () => {
           variant: 'light',
           isLoading: isCustomerPortalLoading,
         }
-      : undefined;
+      : null;
 
   if (!hasLoadedApp || !isLoggedIn) return null;
 
@@ -157,6 +139,13 @@ export const ProUpgrade = () => {
 
         <Stack gap={10} direction="vertical">
           <Stack gap={3} direction="vertical" align="center">
+            <Stack gap={2} direction="horizontal" align="center">
+              <Text size={24}>{activeTeamInfo.name}</Text>
+              {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
+              {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
+              {isLegacyPersonalPro && <Badge variant="pro">Pro</Badge>}
+            </Stack>
+
             <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
               <Text
                 as="h1"
@@ -167,13 +156,9 @@ export const ProUpgrade = () => {
                 lineHeight="56px"
                 margin={0}
               >
-                {isLegacyPersonalPro
-                  ? 'You have an active Personal Pro subscription'
-                  : null}
-                {isPro && isTeamSpace
+                {isPro
                   ? 'You have an active Pro subscription'
-                  : null}
-                {isFree ? 'Unlock more with pro' : null}
+                  : 'Unlock more with pro'}
               </Text>
             </Element>
           </Stack>
@@ -194,73 +179,96 @@ export const ProUpgrade = () => {
               },
             }}
           >
-            {isPersonalSpace && (
+            {isPersonalSpace ? (
+              <>
+                <SubscriptionCard
+                  title="Personal Pro (legacy)"
+                  features={PERSONAL_FEATURES}
+                  isHighlighted={!hasCustomSubscription}
+                  cta={proCTA}
+                >
+                  <Stack gap={1} direction="vertical">
+                    <Text size={32} weight="500">
+                      {pro?.prices ? (
+                        getPricePerMonth('individual', 'year')
+                      ) : (
+                        <SkeletonText css={{ width: '60px', height: '40px' }} />
+                      )}
+                    </Text>
+                    <StyledPricingDetailsText>
+                      per editor per month,
+                      <br /> billed annually, or{' '}
+                      {pro?.prices ? (
+                        getPricePerMonth('individual', 'month')
+                      ) : (
+                        <SkeletonText
+                          css={{
+                            display: 'inline-block',
+                            marginBottom: '-4px',
+                            width: '20px',
+                          }}
+                        />
+                      )}{' '}
+                      per month.
+                    </StyledPricingDetailsText>
+                  </Stack>
+                </SubscriptionCard>
+                <UpsellTeamProCard trackingLocation="legacy subscription page" />
+              </>
+            ) : (
               <SubscriptionCard
-                title="Community"
-                features={PERSONAL_FREE_FEATURES}
+                title="Pro"
+                features={
+                  isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
+                }
+                isHighlighted={!hasCustomSubscription}
+                {...(isFree
+                  ? {
+                      customCta: (
+                        <TeamSubscriptionOptions
+                          buttonVariant="dark"
+                          buttonStyles={{
+                            padding: '12px 20px !important', // Otherwise it gets overridden.
+                            fontSize: '16px',
+                            lineHeight: '24px',
+                            fontWeight: 500,
+                            height: 'auto',
+                          }}
+                          trackingLocation="subscription page"
+                        />
+                      ),
+                    }
+                  : {
+                      cta: proCTA,
+                    })}
               >
                 <Stack gap={1} direction="vertical">
-                  <Text size={32} weight="400">
-                    Free
+                  <Text size={32} weight="500">
+                    {pro?.prices ? (
+                      getPricePerMonth('team', 'year')
+                    ) : (
+                      <SkeletonText css={{ width: '60px', height: '40px' }} />
+                    )}
                   </Text>
                   <StyledPricingDetailsText>
-                    personal space
+                    per editor per month,
+                    <br /> billed annually, or{' '}
+                    {pro?.prices ? (
+                      getPricePerMonth('team', 'month')
+                    ) : (
+                      <SkeletonText
+                        css={{
+                          display: 'inline-block',
+                          marginBottom: '-4px',
+                          width: '20px',
+                        }}
+                      />
+                    )}{' '}
+                    per month.
                   </StyledPricingDetailsText>
                 </Stack>
               </SubscriptionCard>
             )}
-            <SubscriptionCard
-              title="Pro"
-              features={
-                isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
-              }
-              isHighlighted={!hasCustomSubscription}
-              {...(isFree
-                ? {
-                    customCta: (
-                      <TeamSubscriptionOptions
-                        buttonVariant="dark"
-                        buttonStyles={{
-                          padding: '12px 20px !important', // Otherwise it gets overridden.
-                          fontSize: '16px',
-                          lineHeight: '24px',
-                          fontWeight: 500,
-                          height: 'auto',
-                        }}
-                        trackingLocation="subscription page"
-                      />
-                    ),
-                  }
-                : {
-                    cta: teamProCta,
-                  })}
-            >
-              <Stack gap={1} direction="vertical">
-                <Text size={32} weight="500">
-                  {pro?.prices ? (
-                    getPricePerMonth('team', 'year')
-                  ) : (
-                    <SkeletonText css={{ width: '60px', height: '40px' }} />
-                  )}
-                </Text>
-                <StyledPricingDetailsText>
-                  per editor per month,
-                  <br /> billed annually, or{' '}
-                  {pro?.prices ? (
-                    getPricePerMonth('team', 'month')
-                  ) : (
-                    <SkeletonText
-                      css={{
-                        display: 'inline-block',
-                        marginBottom: '-4px',
-                        width: '20px',
-                      }}
-                    />
-                  )}{' '}
-                  per month.
-                </StyledPricingDetailsText>
-              </Stack>
-            </SubscriptionCard>
 
             <SubscriptionCard
               title="Organization"
@@ -320,7 +328,6 @@ export const ProUpgrade = () => {
           </Stack>
         ) : null}
       </Element>
-      <NewTeamModal />
     </ThemeProvider>
   );
 };
