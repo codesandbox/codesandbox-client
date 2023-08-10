@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { sortBy } from 'lodash-es';
 import { useAppState, useActions } from 'app/overmind';
 import {
   ThemeProvider,
@@ -25,7 +24,6 @@ import { formatCurrency } from 'app/utils/currency';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
-import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import type { CTA } from './components/SubscriptionCard';
@@ -39,8 +37,6 @@ export const ProUpgrade = () => {
     setActiveTeam,
   } = useActions();
   const {
-    activeTeamInfo,
-    activeTeam,
     dashboard,
     hasLoadedApp,
     isLoggedIn,
@@ -49,35 +45,29 @@ export const ProUpgrade = () => {
   } = useAppState();
   const location = useLocation();
   const currency = useCurrencyFromTimeZone();
+  const searchQuery = new URLSearchParams(location.search);
+  const {
+    isBillingManager,
+    isTeamSpace,
+    isPersonalSpace,
+  } = useWorkspaceAuthorization();
+  const { isPro, isFree, isLegacyPersonalPro } = useWorkspaceSubscription();
 
   useEffect(() => {
     pageMounted();
   }, [pageMounted]);
 
+  const urlWorkspaceId = searchQuery.get('workspace');
+
+  // Make sure if someone gets the URL with a specific workspaceId,
+  // the team is selected in the background for them
   useEffect(() => {
-    const personal = location.search.includes('personal');
-    const team = location.search.includes('team');
-
-    if (personal) {
+    if (urlWorkspaceId) {
+      setActiveTeam({ id: urlWorkspaceId });
+    } else {
       setActiveTeam({ id: personalWorkspaceId });
-    } else if (team) {
-      setActiveTeam({
-        id: dashboard?.teams?.find(
-          ({ id, subscription }) =>
-            id !== personalWorkspaceId && subscription === null
-        )?.id,
-      });
     }
-  }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
-
-  const {
-    isPersonalSpace,
-    isTeamSpace,
-    isBillingManager,
-  } = useWorkspaceAuthorization();
-  const { isFree, isPro } = useWorkspaceSubscription();
-  // const isFree = false; // DEBUG
-  // const isPro = true; // DEBUG
+  }, [urlWorkspaceId, personalWorkspaceId]);
 
   /**
    * There is currently no way to know if teams have a custom subscription. This means we will
@@ -89,7 +79,9 @@ export const ProUpgrade = () => {
   const [
     isCustomerPortalLoading,
     createCustomerPortal,
-  ] = useCreateCustomerPortal({ team_id: activeTeam });
+  ] = useCreateCustomerPortal({
+    team_id: urlWorkspaceId || personalWorkspaceId,
+  });
 
   const teamProCta: CTA =
     isBillingManager && !hasCustomSubscription && isPro
@@ -107,22 +99,7 @@ export const ProUpgrade = () => {
         }
       : undefined;
 
-  if (!hasLoadedApp || !isLoggedIn || !activeTeamInfo) return null;
-
-  /**
-   * Workspace
-   */
-  const personalWorkspace = dashboard.teams.find(team => {
-    return team.id === personalWorkspaceId;
-  })!;
-
-  const workspacesList = [
-    personalWorkspace,
-    ...sortBy(
-      dashboard.teams.filter(team => team.id !== personalWorkspaceId),
-      team => team.name.toLowerCase()
-    ),
-  ];
+  if (!hasLoadedApp || !isLoggedIn) return null;
 
   const hasAnotherPaymentProvider = dashboard.teams.some(
     team =>
@@ -180,17 +157,6 @@ export const ProUpgrade = () => {
 
         <Stack gap={10} direction="vertical">
           <Stack gap={3} direction="vertical" align="center">
-            <Switcher
-              workspaces={workspacesList}
-              setActiveTeam={payload => {
-                track('subscription page - change team', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
-                return setActiveTeam(payload);
-              }}
-              activeTeamInfo={activeTeamInfo}
-            />
             <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
               <Text
                 as="h1"
@@ -201,13 +167,13 @@ export const ProUpgrade = () => {
                 lineHeight="56px"
                 margin={0}
               >
-                {isPro && isPersonalSpace
+                {isLegacyPersonalPro
                   ? 'You have an active Personal Pro subscription'
                   : null}
                 {isPro && isTeamSpace
                   ? 'You have an active Pro subscription'
                   : null}
-                {isFree ? 'Upgrade for Pro features' : null}
+                {isFree ? 'Unlock more with pro' : null}
               </Text>
             </Element>
           </Stack>
@@ -230,21 +196,21 @@ export const ProUpgrade = () => {
           >
             {isPersonalSpace && (
               <SubscriptionCard
-                title="Free plan"
-                subTitle="1 editor only"
+                title="Community"
                 features={PERSONAL_FREE_FEATURES}
               >
                 <Stack gap={1} direction="vertical">
                   <Text size={32} weight="400">
-                    $0
+                    Free
                   </Text>
-                  <StyledPricingDetailsText>forever</StyledPricingDetailsText>
+                  <StyledPricingDetailsText>
+                    personal space
+                  </StyledPricingDetailsText>
                 </Stack>
               </SubscriptionCard>
             )}
             <SubscriptionCard
               title="Pro"
-              subTitle="Up to 20 editors"
               features={
                 isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
               }
@@ -298,7 +264,6 @@ export const ProUpgrade = () => {
 
             <SubscriptionCard
               title="Organization"
-              subTitle="Unlimited editors"
               features={ORG_FEATURES}
               cta={
                 hasCustomSubscription
@@ -329,7 +294,7 @@ export const ProUpgrade = () => {
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="400">
-                  custom
+                  Custom
                 </Text>
                 <StyledPricingDetailsText>
                   <div>tailor-made plan.</div>

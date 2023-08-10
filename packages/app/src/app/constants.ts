@@ -19,11 +19,11 @@ export interface Feature {
 export const PERSONAL_FREE_FEATURES: Feature[] = [
   {
     key: 'limit_sandboxes',
-    label: 'Unlimited public sandboxes',
+    label: 'Public sandboxes',
   },
   {
     key: 'limit_repositories',
-    label: 'Unlimited public repositories',
+    label: 'Public repositories',
   },
   { key: 'vm_mem', label: '2GiB RAM' },
   { key: 'vm_cpu', label: '2 vCPUs' },
@@ -88,18 +88,23 @@ export const TEAM_FREE_FEATURES: Feature[] = [
 export const TEAM_PRO_FEATURES: Feature[] = [
   {
     key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
+    label: 'Private sandboxes',
   },
   {
     key: 'limit_repositories',
-    label: 'Unlimited private repositories',
+    label: 'Private repositories',
   },
+  { key: 'npm', label: 'Private npm packages' },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  { key: 'npm', label: 'Private NPM packages' },
+  {
+    key: 'editors',
+    label: 'Up to 20 editors',
+  },
   { key: 'live_sessions', label: 'Live sessions' },
+
   { key: 'vm_mem', label: '8GiB RAM' },
   { key: 'vm_cpu', label: '4vCPUs' },
   { key: 'vm_disk', label: '12GB Disk' },
@@ -108,18 +113,23 @@ export const TEAM_PRO_FEATURES: Feature[] = [
 export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
   {
     key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
+    label: 'Private sandboxes',
   },
   {
     key: 'limit_repositories',
-    label: 'Unlimited private repositories',
+    label: 'Private repositories',
   },
+  { key: 'npm', label: 'Private npm packages' },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  { key: 'npm', label: 'Private NPM packages' },
+  {
+    key: 'editors',
+    label: 'Up to 20 editors',
+  },
   { key: 'live_sessions', label: 'Live sessions' },
+
   { key: 'vm_mem', label: '8GiB RAM', pill: '4x capacity' },
   { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
   { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
@@ -128,17 +138,21 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
 export const ORG_FEATURES: Feature[] = [
   {
     key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
+    label: 'Private sandboxes',
   },
   {
     key: 'limit_repositories',
-    label: 'Unlimited private repositories',
+    label: 'Private repositories',
   },
+  { key: 'npm', label: 'Private npm packages' },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  { key: 'npm', label: 'Private NPM packages' },
+  {
+    key: 'editors',
+    label: 'Unlimited editors',
+  },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: 'Custom VM Specs' },
   { key: 'vm_cpu', label: '+ Custom support and Slack channel' },

@@ -6,6 +6,7 @@ import { Text, Link, Stack, Badge } from '@codesandbox/components';
 import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 const UpgradeToolTip: React.FC = () => (
   <Stack>
@@ -17,7 +18,11 @@ const UpgradeToolTip: React.FC = () => (
             <Stack
               gap={2}
               direction="vertical"
-              css={{ alignItems: 'flex-start', padding: '8px', width: '190px' }}
+              css={{
+                alignItems: 'flex-start',
+                padding: '8px',
+                width: '190px',
+              }}
               onMouseEnter={() => track('Editor - Mouse enter tooltip upgrade')}
             >
               <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
@@ -25,7 +30,7 @@ const UpgradeToolTip: React.FC = () => (
               </Text>
               <Link
                 as={RouterLink}
-                to="/pro"
+                to={proUrl({ source: 'v1_free_tooltip' })}
                 onClick={() => track('Editor - Click tooltip upgrade')}
                 title="Upgrade to Team PRO"
                 css={{
