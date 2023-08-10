@@ -1399,12 +1399,12 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@barelyhuman/astring-jsx@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@barelyhuman/astring-jsx/-/astring-jsx-1.0.3.tgz#28ed9b235f65b0cd45d31205e321098de97b28a9"
-  integrity sha512-bXZL+wufrMppEFS54ncL6C3VDtRtJo6VMBUnX9v4LEuSYnXCD4vJ5OJCPPx51P7DmISQI3iT2T+i5+7PowCYvg==
+"@barelyhuman/astring-jsx@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@barelyhuman/astring-jsx/-/astring-jsx-2.0.0.tgz#451db4c0a13d1248e9f11d8e320e9747a8c9ee0f"
+  integrity sha512-tHWR26QHJJLwXpvKy2Fnnj+m6Ed1PtIZlKelBRNwJ/vofSaXCS4oKElm0qmOQ+fbzyvTTX03AeV+aRr0iPonzA==
   dependencies:
-    astring "^0.7.1"
+    astring "^1.8.6"
     xtend "^4.0.1"
 
 "@bcoe/v8-coverage@^0.2.3":
@@ -7494,15 +7494,15 @@ astral-regex@^2.0.0:
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
 
-astring@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/astring/-/astring-0.7.1.tgz#13bb2564e029727cbdf5d6da0944db9dbb9bb9bb"
-  integrity sha512-OXKjB/Wg07ojR+1PE5urpfTWW3s6jTe2+uuxM05CfpgwItTF8fcV3/Gw0N6Z7Gy3nN1ZMH5kDSiLwUs5Ggp8Yg==
-
 astring@^1.7.4:
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/astring/-/astring-1.7.4.tgz#06aa7f72ad30097210dee1ae8f7d9615cd3b57d4"
   integrity sha512-WiVqDJV0AayUUH65FfUrbnBO4KD10854cyU49lK30+2n/lEkJDRqBKj/2fYGhZSD3uIt1H1VfW/pQtO07kR2Xg==
+
+astring@^1.8.6:
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/astring/-/astring-1.8.6.tgz#2c9c157cf1739d67561c56ba896e6948f6b93731"
+  integrity sha512-ISvCdHdlTDlH5IpxQJIex7BWBywFWgjJSVdwst+/iQCoEYnyOaQ95+X1JGshuBjGp6nxKUy1jMgE3zPqN7fQdg==
 
 async-each@^1.0.0, async-each@^1.0.1:
   version "1.0.3"

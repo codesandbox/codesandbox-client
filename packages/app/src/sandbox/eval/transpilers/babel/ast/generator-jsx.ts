@@ -1,6 +1,6 @@
-import jsx from "@barelyhuman/astring-jsx"
+import jsx from '@barelyhuman/astring-jsx';
 
 export default {
   // <div></div>
-  ...jsx.generator
+  ...jsx.GENERATOR,
 };
