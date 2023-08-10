@@ -1399,6 +1399,14 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
+"@barelyhuman/astring-jsx@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@barelyhuman/astring-jsx/-/astring-jsx-1.0.3.tgz#28ed9b235f65b0cd45d31205e321098de97b28a9"
+  integrity sha512-bXZL+wufrMppEFS54ncL6C3VDtRtJo6VMBUnX9v4LEuSYnXCD4vJ5OJCPPx51P7DmISQI3iT2T+i5+7PowCYvg==
+  dependencies:
+    astring "^0.7.1"
+    xtend "^4.0.1"
+
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
@@ -7485,6 +7493,11 @@ astral-regex@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
+
+astring@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/astring/-/astring-0.7.1.tgz#13bb2564e029727cbdf5d6da0944db9dbb9bb9bb"
+  integrity sha512-OXKjB/Wg07ojR+1PE5urpfTWW3s6jTe2+uuxM05CfpgwItTF8fcV3/Gw0N6Z7Gy3nN1ZMH5kDSiLwUs5Ggp8Yg==
 
 astring@^1.7.4:
   version "1.7.4"
