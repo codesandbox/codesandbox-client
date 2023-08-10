@@ -16,7 +16,7 @@ export interface Feature {
   highlighted?: boolean;
 }
 
-export const PERSONAL_FREE_FEATURES: Feature[] = [
+export const COMMUNITY_FEATURES: Feature[] = [
   {
     key: 'limit_sandboxes',
     label: 'Public sandboxes',
@@ -30,46 +30,31 @@ export const PERSONAL_FREE_FEATURES: Feature[] = [
   { key: 'vm_disk', label: '6GB Disk' },
 ];
 
-export const PERSONAL_FEATURES: Feature[] = [
+export const PERSONAL_PRO_FEATURES: Feature[] = [
   {
     key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
+    label: 'Private sandboxes',
   },
   {
     key: 'limit_repositories',
-    label: 'Unlimited private repositories',
+    label: 'Private repositories',
   },
+  { key: 'npm', label: 'Public NPM packages' },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  { key: 'npm', label: 'Public NPM packages' },
+  {
+    key: 'editor',
+    label: 'Single editor',
+  },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: '8GiB RAM' },
   { key: 'vm_cpu', label: '4vCPUs' },
   { key: 'vm_disk', label: '12GB Disk' },
 ];
 
-export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
-  {
-    key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
-  },
-  {
-    key: 'limit_repositories',
-    label: 'Unlimited private repositories',
-  },
-  {
-    key: 'ai',
-    label: '✨ Full access to AI tools',
-  },
-  { key: 'npm', label: 'Public NPM packages' },
-  { key: 'live_sessions', label: 'Live sessions' },
-  { key: 'vm_mem', label: '8GiB RAM', pill: '4x capacity' },
-  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
-  { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
-];
-
+// TODO: Remove
 export const TEAM_FREE_FEATURES: Feature[] = [
   {
     key: 'limit_sandboxes',

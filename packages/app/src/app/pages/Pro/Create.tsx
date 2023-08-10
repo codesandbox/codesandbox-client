@@ -13,7 +13,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ORG_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
-  PERSONAL_FREE_FEATURES,
+  COMMUNITY_FEATURES,
 } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
 
@@ -121,10 +121,7 @@ export const ProCreate = () => {
               },
             }}
           >
-            <SubscriptionCard
-              title="Community"
-              features={PERSONAL_FREE_FEATURES}
-            >
+            <SubscriptionCard title="Community" features={COMMUNITY_FEATURES}>
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="400">
                   Free

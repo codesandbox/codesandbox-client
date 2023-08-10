@@ -16,7 +16,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { formatCurrency } from 'app/utils/currency';
 import {
-  PERSONAL_FEATURES,
+  PERSONAL_PRO_FEATURES,
   TEAM_PRO_FEATURES,
   ORG_FEATURES,
 } from 'app/constants';
@@ -186,11 +186,11 @@ export const WorkspacePlanSelection: React.FC = () => {
             },
           }}
         >
-          {isPersonalSpace ? (
+          {isLegacyPersonalPro ? (
             <>
               <SubscriptionCard
                 title="Personal Pro (legacy)"
-                features={PERSONAL_FEATURES}
+                features={PERSONAL_PRO_FEATURES}
                 cta={personalProCta}
                 isHighlighted
               >

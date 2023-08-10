@@ -15,7 +15,7 @@ import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ORG_FEATURES,
-  PERSONAL_FEATURES,
+  PERSONAL_PRO_FEATURES,
   TEAM_PRO_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
@@ -183,7 +183,7 @@ export const ProUpgrade = () => {
               <>
                 <SubscriptionCard
                   title="Personal Pro (legacy)"
-                  features={PERSONAL_FEATURES}
+                  features={PERSONAL_PRO_FEATURES}
                   isHighlighted={!hasCustomSubscription}
                   cta={proCTA}
                 >

@@ -3,7 +3,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import { Element, Stack, Text, SkeletonText } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { TEAM_PRO_FEATURES_WITH_PILLS } from 'app/constants';
+import { TEAM_PRO_FEATURES } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
 import { getUpgradeableTeams } from 'app/utils/teams';
 import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
@@ -114,7 +114,7 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
       )}
       <SubscriptionCard
         title="Pro"
-        features={TEAM_PRO_FEATURES_WITH_PILLS}
+        features={TEAM_PRO_FEATURES}
         isHighlighted
         cta={upsellTeamProCta}
       >
