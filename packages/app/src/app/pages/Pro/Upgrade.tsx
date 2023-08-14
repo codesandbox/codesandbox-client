@@ -29,6 +29,7 @@ import { SubscriptionCard } from './components/SubscriptionCard';
 import { UpsellTeamProCard } from './components/UpsellTeamProCard';
 import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
+import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
 
 export const ProUpgrade = () => {
@@ -182,7 +183,12 @@ export const ProUpgrade = () => {
             {isPersonalSpace ? (
               <>
                 <SubscriptionCard
-                  title="Personal Pro (legacy)"
+                  title={
+                    <Stack gap={2}>
+                      <Text>Personal</Text>
+                      <Badge variant="pro">Pro</Badge>
+                    </Stack>
+                  }
                   features={PERSONAL_PRO_FEATURES}
                   isHighlighted={!hasCustomSubscription}
                   cta={proCTA}
@@ -328,6 +334,7 @@ export const ProUpgrade = () => {
           </Stack>
         ) : null}
       </Element>
+      <NewTeamModal />
     </ThemeProvider>
   );
 };

@@ -5,7 +5,6 @@ import { Element, Stack, Text, SkeletonText } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TEAM_PRO_FEATURES } from 'app/constants';
 import { formatCurrency } from 'app/utils/currency';
-import { getUpgradeableTeams } from 'app/utils/teams';
 import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
 
 import { SubscriptionCard } from './SubscriptionCard';
@@ -16,15 +15,10 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   trackingLocation,
 }) => {
   const experimentPromise = useExperimentResult('pro-page-sticker');
-  const { dashboard, pro, user } = useAppState();
-  const { modalOpened, openCreateTeamModal } = useActions();
+  const { pro } = useAppState();
+  const { openCreateTeamModal } = useActions();
   const [showSticker, setShowSticker] = React.useState(false);
   const currency = useCurrencyFromTimeZone();
-
-  const upgradeableTeams = getUpgradeableTeams({
-    teams: dashboard.teams,
-    userId: user?.id,
-  });
 
   const buildEventName = (event: string) => {
     const name = `${trackingLocation} - ${event}`;
@@ -36,30 +30,17 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
     return name;
   };
 
-  const upsellTeamProCta: CTA =
-    upgradeableTeams.length > 0
-      ? {
-          text: 'Upgrade',
-          variant: 'highlight',
-          onClick: () => {
-            track(buildEventName('upsell team pro upgrade clicked'), {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-            modalOpened({ modal: 'selectWorkspaceToUpgrade' });
-          },
-        }
-      : {
-          text: 'Create team and Upgrade',
-          variant: 'highlight',
-          onClick: () => {
-            track(buildEventName('upsell team pro create team clicked'), {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-            openCreateTeamModal();
-          },
-        };
+  const upsellTeamProCta: CTA = {
+    text: 'Upgrade',
+    variant: 'highlight',
+    onClick: () => {
+      track(buildEventName('upsell team pro create team clicked'), {
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
+      openCreateTeamModal();
+    },
+  };
 
   React.useEffect(() => {
     experimentPromise.then(experiment => {

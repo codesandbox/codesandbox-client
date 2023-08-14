@@ -259,8 +259,6 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'selectWorkspaceToUpgrade'
-  | 'selectWorkspaceToStartTrial'
   | 'midTrial'
   | 'editorSeatsUpgrade';
 

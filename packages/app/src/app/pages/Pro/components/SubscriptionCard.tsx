@@ -81,7 +81,7 @@ type CTAOptional =
 export type CTA = CTABase & CTAOptional;
 
 type SubscriptionCardProps = {
-  title: string;
+  title: string | React.ReactNode;
   children: React.ReactNode;
   features: Feature[];
   isHighlighted?: boolean;
