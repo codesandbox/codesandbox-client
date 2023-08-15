@@ -24,12 +24,12 @@ export const PricingTable = () => {
 
   return (
     <Stack
-      css={{ padding: '32px' }}
+      css={{ padding: '48px 32px' }}
       direction="vertical"
       gap={8}
       align="center"
     >
-      <Text fontFamily="everett" color="#EDFFA5" size={24} weight="500">
+      <Text fontFamily="everett" size={24} weight="500">
         Explore pricing
       </Text>
       <Stack direction="horizontal" justify="center" gap={2}>
@@ -145,7 +145,7 @@ export const PricingTable = () => {
 
 const StyledButton = styled.button`
   background: transparent;
-  color: #edffa5;
+  color: #e5e5e5;
   padding: 8px 20px;
   text-align: center;
   font-size: 16px;
@@ -156,6 +156,6 @@ const StyledButton = styled.button`
   cursor: pointer;
 
   &[data-selected='true'] {
-    border-top: 2px solid #edffa5;
+    border-top: 2px solid #e5e5e5;
   }
 `;
