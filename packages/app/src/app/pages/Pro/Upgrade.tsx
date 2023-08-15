@@ -19,11 +19,9 @@ import {
   TEAM_PRO_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
-import { formatCurrency } from 'app/utils/currency';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import { UpsellTeamProCard } from './components/UpsellTeamProCard';
@@ -31,6 +29,7 @@ import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
+import { usePriceCalculation } from './usePriceCalculation';
 
 export const ProUpgrade = () => {
   const {
@@ -39,10 +38,8 @@ export const ProUpgrade = () => {
     dashboard,
     hasLoadedApp,
     isLoggedIn,
-    pro,
   } = useAppState();
-  const currency = useCurrencyFromTimeZone();
-  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const {
     isFree,
     isPro,
@@ -65,7 +62,26 @@ export const ProUpgrade = () => {
     team_id: activeTeam,
   });
 
-  // TODO: Handle personal pro
+  const oneSeatTeamPrice = usePriceCalculation({
+    billingPeriod: 'year',
+    maxSeats: 1,
+  });
+
+  const extraSeatsTeamPrice = usePriceCalculation({
+    billingPeriod: 'year',
+    maxSeats: 3,
+  });
+
+  const personalProPriceBilledYearly = usePriceCalculation({
+    plan: 'individual',
+    billingPeriod: 'year',
+  });
+
+  const personalProPriceBilledMonthly = usePriceCalculation({
+    plan: 'individual',
+    billingPeriod: 'month',
+  });
+
   const proCTA: CTA =
     isPro && isBillingManager && !hasCustomSubscription
       ? {
@@ -88,35 +104,6 @@ export const ProUpgrade = () => {
     team =>
       team.subscription?.paymentProvider === SubscriptionPaymentProvider.Paddle
   );
-
-  const getPricePerMonth = (
-    type: 'individual' | 'team',
-    period: 'year' | 'month'
-  ) => {
-    if (!pro?.prices) {
-      return null; // still loading
-    }
-
-    let priceInCurrency =
-      pro.prices?.[type]?.[period]?.[currency.toLowerCase()];
-
-    const hasPriceInCurrency = priceInCurrency !== null && priceInCurrency >= 0;
-
-    if (!hasPriceInCurrency) {
-      // Fallback to USD
-      priceInCurrency = pro?.prices?.[type]?.[period]?.usd;
-    }
-
-    // Divide by 12 if the period is year to get monthly price for yearly
-    // subscriptions
-    const price = period === 'year' ? priceInCurrency / 12 : priceInCurrency;
-
-    // The formatCurrency function will divide the amount by 100
-    return formatCurrency({
-      currency: hasPriceInCurrency ? currency : 'USD',
-      amount: price,
-    });
-  };
 
   return (
     <ThemeProvider>
@@ -180,7 +167,7 @@ export const ProUpgrade = () => {
               },
             }}
           >
-            {isPersonalSpace ? (
+            {isLegacyPersonalPro ? (
               <>
                 <SubscriptionCard
                   title={
@@ -195,18 +182,14 @@ export const ProUpgrade = () => {
                 >
                   <Stack gap={1} direction="vertical">
                     <Text size={32} weight="500">
-                      {pro?.prices ? (
-                        getPricePerMonth('individual', 'year')
-                      ) : (
+                      {personalProPriceBilledYearly || (
                         <SkeletonText css={{ width: '60px', height: '40px' }} />
                       )}
                     </Text>
                     <StyledPricingDetailsText>
                       per editor per month,
                       <br /> billed annually, or{' '}
-                      {pro?.prices ? (
-                        getPricePerMonth('individual', 'month')
-                      ) : (
+                      {personalProPriceBilledMonthly || (
                         <SkeletonText
                           css={{
                             display: 'inline-block',
@@ -219,7 +202,7 @@ export const ProUpgrade = () => {
                     </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
-                <UpsellTeamProCard trackingLocation="legacy subscription page" />
+                <UpsellTeamProCard />
               </>
             ) : (
               <SubscriptionCard
@@ -250,18 +233,14 @@ export const ProUpgrade = () => {
               >
                 <Stack gap={1} direction="vertical">
                   <Text size={32} weight="500">
-                    {pro?.prices ? (
-                      getPricePerMonth('team', 'year')
-                    ) : (
+                    {oneSeatTeamPrice || (
                       <SkeletonText css={{ width: '60px', height: '40px' }} />
                     )}
                   </Text>
                   <StyledPricingDetailsText>
                     per editor per month,
-                    <br /> billed annually, or{' '}
-                    {pro?.prices ? (
-                      getPricePerMonth('team', 'month')
-                    ) : (
+                    <br /> **
+                    {extraSeatsTeamPrice || (
                       <SkeletonText
                         css={{
                           display: 'inline-block',
@@ -270,7 +249,7 @@ export const ProUpgrade = () => {
                         }}
                       />
                     )}{' '}
-                    per month.
+                    extra for the 2nd and 3rd editor
                   </StyledPricingDetailsText>
                 </Stack>
               </SubscriptionCard>

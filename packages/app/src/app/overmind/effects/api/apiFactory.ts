@@ -5,6 +5,12 @@ import { camelizeKeys, decamelizeKeys } from 'humps';
 const API_ROOT = '/api';
 
 /**
+ * This is the date at which the API was implemented in the client.
+ * Bump this only when you want to be at the latest version with all the API calls.
+ */
+const API_LATEST_VERSION = '2023-08-15';
+
+/**
  * If the path starts with `/beta`, do not append `/v1` to the api root
  * url. Alternatively we have the useRoot param for when we just want to
  * use the root path.
@@ -61,6 +67,7 @@ export type ApiConfig = {
 export default (config: ApiConfig) => {
   const createHeaders = (provideJwt: () => string | null) => ({
     'x-codesandbox-client': 'legacy-web',
+    'X-CSB-API-Version': API_LATEST_VERSION,
     ...(provideJwt()
       ? {
           Authorization: `Bearer ${provideJwt()}`,

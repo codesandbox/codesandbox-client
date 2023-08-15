@@ -15,18 +15,26 @@ import {
   TEAM_PRO_FEATURES_WITH_PILLS,
   FREE_FEATURES,
 } from 'app/constants';
-import { formatCurrency } from 'app/utils/currency';
-
-import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
+import { usePriceCalculation } from './usePriceCalculation';
 
 export const ProCreate = () => {
-  const { hasLoadedApp, isLoggedIn, pro } = useAppState();
-  const currency = useCurrencyFromTimeZone();
+  const { hasLoadedApp, isLoggedIn } = useAppState();
+
   const { openCreateTeamModal } = useActions();
+
+  const oneSeatPrice = usePriceCalculation({
+    billingPeriod: 'year',
+    maxSeats: 1,
+  });
+
+  const extraSeatsPrice = usePriceCalculation({
+    billingPeriod: 'year',
+    maxSeats: 3,
+  });
 
   if (!hasLoadedApp || !isLoggedIn) return null;
 
@@ -37,35 +45,6 @@ export const ProCreate = () => {
     onClick: () => {
       openCreateTeamModal();
     },
-  };
-
-  const getPricePerMonth = (
-    type: 'individual' | 'team',
-    period: 'year' | 'month'
-  ) => {
-    if (!pro?.prices) {
-      return null; // still loading
-    }
-
-    let priceInCurrency =
-      pro.prices?.[type]?.[period]?.[currency.toLowerCase()];
-
-    const hasPriceInCurrency = priceInCurrency !== null && priceInCurrency >= 0;
-
-    if (!hasPriceInCurrency) {
-      // Fallback to USD
-      priceInCurrency = pro?.prices?.[type]?.[period]?.usd;
-    }
-
-    // Divide by 12 if the period is year to get monthly price for yearly
-    // subscriptions
-    const price = period === 'year' ? priceInCurrency / 12 : priceInCurrency;
-
-    // The formatCurrency function will divide the amount by 100
-    return formatCurrency({
-      currency: hasPriceInCurrency ? currency : 'USD',
-      amount: price,
-    });
   };
 
   return (
@@ -138,18 +117,14 @@ export const ProCreate = () => {
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="500">
-                  {pro?.prices ? (
-                    getPricePerMonth('team', 'year')
-                  ) : (
+                  {oneSeatPrice || (
                     <SkeletonText css={{ width: '60px', height: '40px' }} />
                   )}
                 </Text>
                 <StyledPricingDetailsText>
                   per editor per month,
-                  <br /> billed annually, or{' '}
-                  {pro?.prices ? (
-                    getPricePerMonth('team', 'month')
-                  ) : (
+                  <br /> **
+                  {extraSeatsPrice || (
                     <SkeletonText
                       css={{
                         display: 'inline-block',
@@ -158,7 +133,7 @@ export const ProCreate = () => {
                       }}
                     />
                   )}{' '}
-                  per month.
+                  extra for the 2nd and 3rd editor
                 </StyledPricingDetailsText>
               </Stack>
             </SubscriptionCard>
