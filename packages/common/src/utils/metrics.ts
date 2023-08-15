@@ -121,8 +121,6 @@ getGlobal().measurements = {
   getMeasurements,
 };
 
-const MEASUREMENT_API = `https://col.csbops.io/data/sandpack`;
-
 export function persistMeasurements(data: {
   sandboxId: string;
   cacheUsed: boolean;
@@ -151,16 +149,8 @@ export function persistMeasurements(data: {
 
   if (process.env.NODE_ENV === 'development' || process.env.STAGING) {
     // eslint-disable-next-line
-    console.log(body);
-    return Promise.resolve();
+    console.log('SANDBOX MEASUREMENT', body);
   }
 
-  return fetch(MEASUREMENT_API, {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  });
+  return Promise.resolve();
 }
