@@ -831,6 +831,15 @@ async function compile(opts: CompileOptions) {
       }
 
       metrics.measure('external-resources');
+
+      // 将外部 js 代码添加到 head 中
+      if (
+        parsedSandboxJSON.evaluateJavaScript &&
+        typeof parsedSandboxJSON.evaluateJavaScript === 'string'
+      ) {
+        handleEvaluateScript(parsedSandboxJSON.evaluateJavaScript);
+      }
+
       if (
         parsedSandboxJSON.externalResources &&
         Array.isArray(parsedSandboxJSON.externalResources)
@@ -845,13 +854,6 @@ async function compile(opts: CompileOptions) {
       // 详细逻辑请查看 handleExternalResources 函数中的 waitForLoaded
       await handleExternalResources(externalResources);
 
-      // 将外部 js 代码添加到 head 中
-      if (
-        parsedSandboxJSON.evaluateJavaScript &&
-        typeof parsedSandboxJSON.evaluateJavaScript === 'string'
-      ) {
-        handleEvaluateScript(parsedSandboxJSON.evaluateJavaScript);
-      }
       metrics.endMeasure('external-resources', {
         displayName: 'External Resources',
       });
