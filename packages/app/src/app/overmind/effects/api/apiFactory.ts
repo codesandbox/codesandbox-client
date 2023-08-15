@@ -5,12 +5,6 @@ import { camelizeKeys, decamelizeKeys } from 'humps';
 const API_ROOT = '/api';
 
 /**
- * This is the date at which the API was implemented in the client.
- * Bump this only when you want to be at the latest version with all the API calls.
- */
-const API_LATEST_VERSION = '2023-08-15';
-
-/**
  * If the path starts with `/beta`, do not append `/v1` to the api root
  * url. Alternatively we have the useRoot param for when we just want to
  * use the root path.
@@ -37,7 +31,8 @@ export type Params = {
 };
 
 type Options = {
-  shouldCamelize: boolean;
+  shouldCamelize?: boolean;
+  version?: string;
 };
 
 export type Api = {
@@ -65,9 +60,12 @@ export type ApiConfig = {
 };
 
 export default (config: ApiConfig) => {
-  const createHeaders = (provideJwt: () => string | null) => ({
+  const createHeaders = (
+    provideJwt: () => string | null,
+    version?: string
+  ) => ({
     'x-codesandbox-client': 'legacy-web',
-    'X-CSB-API-Version': API_LATEST_VERSION,
+    ...(version ? { 'X-CSB-API-Version': version } : {}),
     ...(provideJwt()
       ? {
           Authorization: `Bearer ${provideJwt()}`,
@@ -79,28 +77,28 @@ export default (config: ApiConfig) => {
       return axios
         .get(getBaseApi(path, useRoot) + path, {
           params,
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
     post(path, body, options) {
       return axios
         .post(getBaseApi(path) + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
     patch(path, body, options) {
       return axios
         .patch(getBaseApi(path) + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
     put(path, body, options) {
       return axios
         .put(getBaseApi(path) + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
@@ -108,7 +106,7 @@ export default (config: ApiConfig) => {
       return axios
         .delete(getBaseApi(path) + path, {
           params,
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
@@ -118,7 +116,7 @@ export default (config: ApiConfig) => {
           Object.assign(requestConfig, {
             url: getBaseApi(requestConfig.url ?? '') + requestConfig.url,
             data: requestConfig.data ? camelizeKeys(requestConfig.data) : null,
-            headers: createHeaders(config.provideJwtToken),
+            headers: createHeaders(config.provideJwtToken, options?.version),
           })
         )
         .then(response => handleResponse(response, options));

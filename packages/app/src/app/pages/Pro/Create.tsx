@@ -17,6 +17,7 @@ import {
 } from 'app/constants';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import type { CTA } from './components/SubscriptionCard';
+import { PricingTable } from './components/PricingTable';
 import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 import { usePriceCalculation } from './usePriceCalculation';
@@ -27,12 +28,12 @@ export const ProCreate = () => {
   const { openCreateTeamModal } = useActions();
 
   const oneSeatPrice = usePriceCalculation({
-    billingPeriod: 'year',
+    billingInterval: 'year',
     maxSeats: 1,
   });
 
   const extraSeatsPrice = usePriceCalculation({
-    billingPeriod: 'year',
+    billingInterval: 'year',
     maxSeats: 3,
   });
 
@@ -166,6 +167,7 @@ export const ProCreate = () => {
             </SubscriptionCard>
           </Stack>
         </Stack>
+        <PricingTable />
       </Element>
       <NewTeamModal />
     </ThemeProvider>

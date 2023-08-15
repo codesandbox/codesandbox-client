@@ -46,12 +46,12 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   }, [experimentPromise]);
 
   const oneSeatPrice = usePriceCalculation({
-    billingPeriod: 'year',
+    billingInterval: 'year',
     maxSeats: 1,
   });
 
   const extraSeatsPrice = usePriceCalculation({
-    billingPeriod: 'year',
+    billingInterval: 'year',
     maxSeats: 3,
   });
 

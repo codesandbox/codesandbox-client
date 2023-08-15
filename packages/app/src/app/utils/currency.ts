@@ -23,11 +23,13 @@ export const formatCurrency = ({ currency, amount }: Price) => {
     return null;
   }
 
+  const isRounded = amount % 100 === 0;
+
   const locale = getLocaleFromCurrency(currency);
 
   const formatter = new Intl.NumberFormat(locale, {
     style: 'currency',
-    maximumFractionDigits: 0,
+    maximumFractionDigits: isRounded ? 0 : 2,
     currency,
   });
 

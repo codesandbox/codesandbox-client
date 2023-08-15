@@ -63,23 +63,23 @@ export const ProUpgrade = () => {
   });
 
   const oneSeatTeamPrice = usePriceCalculation({
-    billingPeriod: 'year',
+    billingInterval: 'year',
     maxSeats: 1,
   });
 
   const extraSeatsTeamPrice = usePriceCalculation({
-    billingPeriod: 'year',
+    billingInterval: 'year',
     maxSeats: 3,
   });
 
   const personalProPriceBilledYearly = usePriceCalculation({
     plan: 'individual',
-    billingPeriod: 'year',
+    billingInterval: 'year',
   });
 
   const personalProPriceBilledMonthly = usePriceCalculation({
     plan: 'individual',
-    billingPeriod: 'month',
+    billingInterval: 'month',
   });
 
   const proCTA: CTA =
