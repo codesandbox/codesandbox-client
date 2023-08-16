@@ -15,8 +15,8 @@ export enum SubscriptionDebugStatus {
 }
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
-  const { activeTeamInfo } = useAppState();
-  const { isTeamSpace } = useWorkspaceAuthorization();
+  const { activeTeamInfo, userCanStartTrial } = useAppState();
+  const { isTeamSpace, isBillingManager } = useWorkspaceAuthorization();
   const isPersonalSpace = !isTeamSpace;
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
@@ -50,7 +50,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     return {
       ...NO_SUBSCRIPTION,
       isLegacyFreeTeam: isTeamSpace,
-      isEligibleForTrial: isTeamSpace,
+      isEligibleForTrial: userCanStartTrial,
       numberOfSeats: activeTeamInfo.limits.maxEditors ?? MAX_TEAM_FREE_EDITORS,
     };
   }
@@ -70,6 +70,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
 
   const isLegacyPersonalPro = isPro && isPersonalSpace && isLegacySpace;
   const isLegacyFreeTeam = isFree && isTeamSpace && isLegacySpace;
+  const isEligibleForTrial =
+    userCanStartTrial && isLegacyFreeTeam && isBillingManager;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
 
@@ -95,12 +97,12 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   return {
     subscription,
     numberOfSeats,
+    isEligibleForTrial,
     isPro,
     isFree,
     isLegacyPersonalPro,
     isLegacyFreeTeam,
     isInactiveTeam,
-    isEligibleForTrial: false, // Teams with an active or past subscription are not eligible for trial.
     hasActiveTeamTrial,
     hasExpiredTeamTrial,
     hasPaymentMethod,
@@ -153,7 +155,7 @@ export type WorkspaceSubscriptionReturn =
       isLegacyPersonalPro: boolean;
       isLegacyFreeTeam: boolean;
       isInactiveTeam: boolean;
-      isEligibleForTrial: false;
+      isEligibleForTrial: boolean;
       hasActiveTeamTrial: boolean;
       hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;

@@ -1,20 +1,12 @@
 import React from 'react';
-import { Stack, Text, Button } from '@codesandbox/components';
+import { Link as RouterLink } from 'react-router-dom';
+import { Stack, Text, Link } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useCreateCheckout } from 'app/hooks';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-
-const EVENT_NAME = 'Side banner - Start Trial';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 export const StartTrial: React.FC<{ activeTeam: string }> = ({
   activeTeam,
 }) => {
-  const { isBillingManager } = useWorkspaceAuthorization();
-
-  const [checkout, createCheckout] = useCreateCheckout();
-  const disabled = checkout.status === 'loading';
-
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
       <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
@@ -22,34 +14,24 @@ export const StartTrial: React.FC<{ activeTeam: string }> = ({
         for the full CodeSandbox Experience.
       </Text>
 
-      <Button
-        disabled={disabled}
-        variant="link"
-        onClick={() => {
-          track(
-            isBillingManager ? EVENT_NAME : `${EVENT_NAME} - As non-admin`,
-            {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            }
-          );
-
-          createCheckout({
-            success_path: dashboard.recent(activeTeam),
-            utm_source: 'dashboard_import_limits',
-          });
-        }}
+      <Link
+        as={RouterLink}
+        to={proUrl({ source: 'side_banner_team', workspaceId: activeTeam })}
         css={{
           fontSize: '12px',
           fontWeight: 500,
           color: '#EDFFA5',
           textDecoration: 'none',
-          padding: '4px 0',
         }}
-        autoWidth
+        onClick={() => {
+          track('Side banner - Start Trial for existing team', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+        }}
       >
         Start trial
-      </Button>
+      </Link>
     </Stack>
   );
 };

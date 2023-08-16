@@ -23,7 +23,7 @@ import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 
 export const ProCreate = () => {
-  const { hasLoadedApp, isLoggedIn } = useAppState();
+  const { hasLoadedApp, isLoggedIn, userCanStartTrial } = useAppState();
 
   const { openCreateTeamModal } = useActions();
 
@@ -39,9 +39,8 @@ export const ProCreate = () => {
 
   if (!hasLoadedApp || !isLoggedIn) return null;
 
-  // TODO: Check if user is eligible for trial
   const newWorkspaceCTA: CTA = {
-    text: 'Start trial',
+    text: userCanStartTrial ? 'Start trial' : 'Upgrade to Pro',
     variant: 'dark',
     onClick: () => {
       openCreateTeamModal();

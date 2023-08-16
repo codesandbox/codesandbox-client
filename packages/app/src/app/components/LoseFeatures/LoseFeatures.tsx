@@ -6,7 +6,7 @@ import { useAppState } from 'app/overmind';
 const LOSE_DEFAULT = [
   {
     key: 'editors',
-    pro: 'Up to 20 editors',
+    pro: 'Unlimited editors',
     free: 'Limited to 5 editors',
   },
   {

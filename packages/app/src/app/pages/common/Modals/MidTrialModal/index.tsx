@@ -160,7 +160,7 @@ export const MidTrialModal = () => {
 const KEEP_DEFAULT = [
   {
     key: 'editors',
-    pro: 'Up to 20 editors',
+    pro: 'Unlimited editors',
   },
   {
     key: 'sandboxes',

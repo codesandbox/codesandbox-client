@@ -230,6 +230,11 @@ export type CurrentUser = {
   collection: Maybe<Collection>;
   collections: Array<Collection>;
   deletionRequested: Scalars['Boolean'];
+  /**
+   * Whether this user should be offered a trial.
+   *     Returns false if they have created any teams that have used a trial in the last 6 months.
+   */
+  eligibleForTrial: Scalars['Boolean'];
   email: Scalars['String'];
   /** Get all of the current user's GitHub organizations */
   githubOrganizations: Maybe<Array<GithubOrganization>>;
@@ -2154,7 +2159,7 @@ export type RootQueryType = {
   /** Get a sandbox */
   sandbox: Maybe<Sandbox>;
   /** A team from an invite token */
-  teamByToken: Maybe<Team>;
+  teamByToken: Maybe<TeamPreview>;
 };
 
 export type RootQueryTypeAlbumArgs = {
@@ -4231,7 +4236,7 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & Pick<
       CurrentUser,
-      'personalWorkspaceId'
+      'personalWorkspaceId' | 'eligibleForTrial'
     > & {
         workspaces: Array<
           { __typename?: 'Team' } & TeamFragmentDashboardFragment
@@ -5101,7 +5106,9 @@ export type TeamByTokenQueryVariables = Exact<{
 }>;
 
 export type TeamByTokenQuery = { __typename?: 'RootQueryType' } & {
-  teamByToken: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
+  teamByToken: Maybe<
+    { __typename?: 'TeamPreview' } & Pick<TeamPreview, 'name'>
+  >;
 };
 
 export type JoinTeamByTokenMutationVariables = Exact<{

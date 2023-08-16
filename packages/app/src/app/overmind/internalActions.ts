@@ -672,6 +672,7 @@ export const getTeamIdFromUrlOrStore = async ({
       // Also set state while we're at it
       state.dashboard.teams = teams.me.workspaces;
       state.personalWorkspaceId = teams.me.personalWorkspaceId;
+      state.userCanStartTrial = teams.me.eligibleForTrial;
     }
   }
 

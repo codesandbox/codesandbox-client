@@ -4,7 +4,9 @@ import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
-export const CreateProWorkspace = () => (
+export const CreateProWorkspace: React.FC<{ userCanStartTrial: boolean }> = ({
+  userCanStartTrial,
+}) => (
   <Stack align="flex-start" direction="vertical" gap={2}>
     <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
       Create a <Text css={{ color: '#c2c2c2', fontWeight: 500 }}>Pro</Text>{' '}
@@ -13,7 +15,7 @@ export const CreateProWorkspace = () => (
     <Link
       as={RouterLink}
       to={proUrl({ source: 'personal_side_banner' })}
-      title="Start 14-day free trial"
+      title={userCanStartTrial ? 'Start 14-day free trial' : 'Upgrade to Pro'}
       css={{
         fontSize: '12px',
         fontWeight: 500,
@@ -27,7 +29,7 @@ export const CreateProWorkspace = () => (
         });
       }}
     >
-      Start trial
+      {userCanStartTrial ? 'Start trial' : 'Upgrade to Pro'}
     </Link>
   </Stack>
 );
