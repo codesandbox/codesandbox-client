@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppState, useEffects } from 'app/overmind';
 import { useLocation } from 'react-router';
 import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from './useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
@@ -33,13 +34,12 @@ export type CheckoutOptions = {
  * @param {string} pathNameAndSearch The pathname and search params you want to add the stripe
  * success param to, for example  `/dashboard?workspace=xxxx`. Exclude the url base.
  */
-export const addStripeSuccessParam = (
+const addStripeSuccessParam = (
   pathNameAndSearch: string,
   utm_source: string
 ): string => {
   try {
     const newUrl = new URL(pathNameAndSearch, window.location.origin);
-    // newUrl.searchParams.append('stripe', 'success'); @depreacted
     newUrl.searchParams.append('payment_pending', 'true');
     newUrl.searchParams.append('utm_source', utm_source);
 
@@ -47,6 +47,18 @@ export const addStripeSuccessParam = (
     return `${newUrl.pathname}${newUrl.search}`;
   } catch {
     return pathNameAndSearch;
+  }
+};
+
+const addStripeCancelParam = (pathName: string): string => {
+  try {
+    const newUrl = new URL(pathName, window.location.origin);
+    newUrl.searchParams.append('payment_canceled', 'true');
+
+    // Return only pathname and search
+    return `${newUrl.pathname}${newUrl.search}`;
+  } catch {
+    return pathName;
   }
 };
 
@@ -84,13 +96,16 @@ export const useCreateCheckout = (): [
 
       const payload = await api.stripeCreateCheckout({
         success_path: addStripeSuccessParam(success_path, utm_source),
-        cancel_path,
+        cancel_path: addStripeCancelParam(cancel_path),
         team_id,
         recurring_interval,
       });
 
       if (payload.stripeCheckoutUrl) {
+        track('Subscription - Checkout successfully created');
         window.location.href = payload.stripeCheckoutUrl;
+      } else {
+        track('Subscription - Failed to create checkout');
       }
     } catch (err) {
       setStatus({
