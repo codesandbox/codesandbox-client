@@ -19,7 +19,7 @@ export interface Feature {
 export const FREE_FEATURES: Feature[] = [
   {
     key: 'public_limit',
-    label: 'Public repositories and sandboxes',
+    label: 'Unlimited public repositories & sandboxes',
   },
   { key: 'vm_mem', label: '2GiB RAM' },
   { key: 'vm_cpu', label: '2 vCPUs' },
@@ -28,18 +28,18 @@ export const FREE_FEATURES: Feature[] = [
 
 export const PERSONAL_PRO_FEATURES: Feature[] = [
   {
-    key: 'limit_sandboxes',
-    label: 'Private repositories and sandboxes',
+    key: 'editor',
+    label: 'Single editor',
   },
-  { key: 'npm', label: 'Public NPM packages' },
+  {
+    key: 'limit_sandboxes',
+    label: 'Unlimited private repositories & sandboxes',
+  },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  {
-    key: 'editor',
-    label: 'Single editor',
-  },
+  { key: 'npm', label: 'Public npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: '8GiB RAM' },
   { key: 'vm_cpu', label: '4vCPUs' },
@@ -48,18 +48,18 @@ export const PERSONAL_PRO_FEATURES: Feature[] = [
 
 export const TEAM_PRO_FEATURES: Feature[] = [
   {
-    key: 'private',
-    label: 'Private repositories and sandboxes',
+    key: 'editors',
+    label: 'Unlimited editors',
   },
-  { key: 'npm', label: 'Private npm packages' },
+  {
+    key: 'private',
+    label: 'Unlimited private repositories & sandboxes',
+  },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  {
-    key: 'editors',
-    label: 'Unlimited editors',
-  },
+  { key: 'npm', label: 'Private npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },
 
   { key: 'vm_mem', label: '8GiB RAM' },
@@ -69,18 +69,18 @@ export const TEAM_PRO_FEATURES: Feature[] = [
 
 export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
   {
-    key: 'private',
-    label: 'Private repositories and sandboxes',
+    key: 'editors',
+    label: 'Unlimited editors',
   },
-  { key: 'npm', label: 'Private npm packages' },
+  {
+    key: 'private',
+    label: 'Unlimited private repositories & sandboxes',
+  },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  {
-    key: 'editors',
-    label: 'Unlimited editors',
-  },
+  { key: 'npm', label: 'Private npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },
 
   { key: 'vm_mem', label: '8GiB RAM', pill: '4x capacity' },
@@ -90,22 +90,12 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
 
 export const ORG_FEATURES: Feature[] = [
   {
-    key: 'private',
-    label: 'Private repositories and sandboxes',
+    key: 'intro',
+    label: 'All Pro features, plus:',
   },
-  { key: 'npm', label: 'Private npm packages' },
-  {
-    key: 'ai',
-    label: '✨ Full access to AI tools',
-  },
-  {
-    key: 'editors',
-    label: 'Unlimited editors',
-  },
-  { key: 'live_sessions', label: 'Live sessions' },
-  { key: 'vm_mem', label: 'Custom VM Specs' },
-  { key: 'vm_cpu', label: '+ Custom support and Slack channel' },
-  { key: 'vm_disk', label: '+ Customer success manager' },
+  { key: 'specs', label: 'Custom VM Specs' },
+  { key: 'support', label: 'Custom support and Slack channel' },
+  { key: 'customer', label: 'Customer success manager' },
 ];
 
 // Soft limit of maximum amount of pro
