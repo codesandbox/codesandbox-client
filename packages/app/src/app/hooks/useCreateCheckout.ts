@@ -102,10 +102,14 @@ export const useCreateCheckout = (): [
       });
 
       if (payload.stripeCheckoutUrl) {
-        track('Subscription - Checkout successfully created');
+        track('Subscription - Checkout successfully created', {
+          source: utm_source,
+        });
         window.location.href = payload.stripeCheckoutUrl;
       } else {
-        track('Subscription - Failed to create checkout');
+        track('Subscription - Failed to create checkout', {
+          source: utm_source,
+        });
       }
     } catch (err) {
       setStatus({
