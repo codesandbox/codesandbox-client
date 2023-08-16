@@ -1,9 +1,8 @@
-import { TEAM_FREE_LIMITS } from 'app/constants';
+import { MAX_TEAM_FREE_EDITORS } from 'app/constants';
 import {
-  SubscriptionInterval,
+  CurrentTeamInfoFragmentFragment,
   SubscriptionPaymentProvider,
   SubscriptionStatus,
-  SubscriptionType,
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { isBefore, startOfToday } from 'date-fns';
@@ -52,8 +51,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
       ...NO_SUBSCRIPTION,
       isLegacyFreeTeam: isTeamSpace,
       isEligibleForTrial: isTeamSpace,
-      numberOfSeats:
-        activeTeamInfo.limits.maxEditors ?? TEAM_FREE_LIMITS.editors,
+      numberOfSeats: activeTeamInfo.limits.maxEditors ?? MAX_TEAM_FREE_EDITORS,
     };
   }
 
@@ -148,14 +146,7 @@ export type WorkspaceSubscriptionReturn =
       numberOfSeats: number;
     })
   | {
-      subscription: {
-        cancelAt?: string;
-        billingInterval?: SubscriptionInterval | null;
-        status: SubscriptionStatus;
-        type: SubscriptionType;
-        trialEnd?: string;
-        trialStart?: string;
-      };
+      subscription: CurrentTeamInfoFragmentFragment['subscription'];
       numberOfSeats: number;
       isPro: boolean;
       isFree: boolean;

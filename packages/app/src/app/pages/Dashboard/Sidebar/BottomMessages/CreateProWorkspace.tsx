@@ -2,6 +2,7 @@ import { Stack, Text, Link } from '@codesandbox/components';
 import { Link as RouterLink } from 'react-router-dom';
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 export const CreateProWorkspace = () => (
   <Stack align="flex-start" direction="vertical" gap={2}>
@@ -11,7 +12,7 @@ export const CreateProWorkspace = () => (
     </Text>
     <Link
       as={RouterLink}
-      to="/pro?utm_source=personal_side_banner"
+      to={proUrl({ source: 'personal_side_banner' })}
       title="Start 14-day free trial"
       css={{
         fontSize: '12px',

@@ -11,6 +11,7 @@ type State = {
   prices: Pricing | null;
 };
 
+// TODO: Cleanup paddle state
 export const state: State = {
   step: Step.WorkspacePlanSelection,
   seats: 1,

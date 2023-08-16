@@ -81,8 +81,7 @@ type CTAOptional =
 export type CTA = CTABase & CTAOptional;
 
 type SubscriptionCardProps = {
-  title: string;
-  subTitle: string;
+  title: string | React.ReactNode;
   children: React.ReactNode;
   features: Feature[];
   isHighlighted?: boolean;
@@ -95,7 +94,6 @@ type SubscriptionCardProps = {
 
 export const SubscriptionCard = ({
   title,
-  subTitle,
   children,
   features,
   isHighlighted,
@@ -112,7 +110,6 @@ export const SubscriptionCard = ({
         <Text size={16} weight="500">
           {title}
         </Text>
-        <Text size={13}>{subTitle}</Text>
       </Stack>
       {children}
       <Stack

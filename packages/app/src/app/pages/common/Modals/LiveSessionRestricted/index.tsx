@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -49,7 +50,7 @@ export const LiveSessionRestricted: React.FC = () => {
           {isPersonalSpace ? (
             <Button
               as="a"
-              href="/pro?utm_source=v1_live_session_upgrade"
+              href={proUrl({ source: 'v1_live_session_upgrade' })}
               variant="primary"
               autoWidth
             >

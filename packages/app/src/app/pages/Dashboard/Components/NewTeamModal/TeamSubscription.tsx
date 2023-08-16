@@ -8,7 +8,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   Feature,
-  TEAM_FREE_FEATURES,
+  FREE_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
 import { TeamSubscriptionOptions } from '../TeamSubscriptionOptions/TeamSubscriptionOptions';
@@ -95,7 +95,7 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
       >
         <FeatureList
           title="Free Plan"
-          features={TEAM_FREE_FEATURES}
+          features={FREE_FEATURES}
           background="#1c1c1c"
           textColor="#c2c2c2"
         />
