@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Column, Grid, Icon, Stack, Text } from '@codesandbox/components';
-import { usePriceCalculation } from '../usePriceCalculation';
+import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
 
 export const PricingTable = () => {
   const [billingInterval, setBillingInterval] = useState<'year' | 'month'>(

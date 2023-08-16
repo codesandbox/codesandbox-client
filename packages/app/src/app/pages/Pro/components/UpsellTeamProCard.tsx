@@ -4,11 +4,11 @@ import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import { Element, Stack, Text, SkeletonText } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TEAM_PRO_FEATURES } from 'app/constants';
+import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
 
 import { SubscriptionCard } from './SubscriptionCard';
 import type { CTA } from './SubscriptionCard';
 import { StyledPricingDetailsText } from './elements';
-import { usePriceCalculation } from '../usePriceCalculation';
 
 export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   trackingLocation,

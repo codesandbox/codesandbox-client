@@ -15,12 +15,12 @@ import {
   TEAM_PRO_FEATURES_WITH_PILLS,
   FREE_FEATURES,
 } from 'app/constants';
+import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import type { CTA } from './components/SubscriptionCard';
 import { PricingTable } from './components/PricingTable';
 import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
-import { usePriceCalculation } from './usePriceCalculation';
 
 export const ProCreate = () => {
   const { hasLoadedApp, isLoggedIn } = useAppState();

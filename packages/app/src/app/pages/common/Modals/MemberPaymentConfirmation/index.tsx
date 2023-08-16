@@ -2,24 +2,24 @@ import React, { useEffect } from 'react';
 import { Checkbox, Text, Button, Stack } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { formatCurrency } from 'app/utils/currency';
-
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
 import { Alert } from '../Common/Alert';
 
 export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   title,
 }) => {
   const {
-    activeTeamInfo,
     pro: { prices },
   } = useAppState();
   const actions = useActions();
-  const { isTeamSpace } = useWorkspaceAuthorization();
-  const { isPaddle } = useWorkspaceSubscription();
+  const { isPaddle, subscription, numberOfSeats } = useWorkspaceSubscription();
+  const oneSeatTeamPrice = usePriceCalculation({
+    billingInterval:
+      subscription?.billingInterval === 'MONTHLY' ? 'month' : 'year',
+    maxSeats: numberOfSeats < 3 ? 3 : null, // if below 3, use the maxSeats for 3 pricing, otherwise use the 4+
+  });
 
   const [confirmed, setConfirmed] = React.useState(false);
-  const subscription = activeTeamInfo?.subscription!;
 
   const getValue = () => {
     // This shouldn't occur on this page, but it is still possible that this
@@ -36,19 +36,7 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
       );
     }
 
-    if (!prices) return null;
-
-    const period =
-      subscription.billingInterval === 'MONTHLY' ? 'month' : 'year';
-    const proType = isTeamSpace ? 'team' : 'individual';
-    const price = prices[proType][period];
-
-    if (!price) return null;
-
-    return `${formatCurrency({
-      amount: price.usd,
-      currency: 'USD',
-    })}/${subscription.billingInterval?.toLowerCase()}`;
+    return oneSeatTeamPrice;
   };
 
   const value = getValue();

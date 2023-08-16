@@ -22,6 +22,7 @@ import {
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import { UpsellTeamProCard } from './components/UpsellTeamProCard';
@@ -29,7 +30,6 @@ import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
-import { usePriceCalculation } from './usePriceCalculation';
 
 export const ProUpgrade = () => {
   const {
@@ -202,7 +202,7 @@ export const ProUpgrade = () => {
                     </StyledPricingDetailsText>
                   </Stack>
                 </SubscriptionCard>
-                <UpsellTeamProCard />
+                <UpsellTeamProCard trackingLocation="legacy personal pro page" />
               </>
             ) : (
               <SubscriptionCard
