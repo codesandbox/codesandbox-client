@@ -42,7 +42,7 @@ export const PERSONAL_PRO_FEATURES: Feature[] = [
   { key: 'npm', label: 'Public npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: '8GiB RAM' },
-  { key: 'vm_cpu', label: '4vCPUs' },
+  { key: 'vm_cpu', label: '4 vCPUs' },
   { key: 'vm_disk', label: '12GB Disk' },
 ];
 
@@ -63,7 +63,7 @@ export const TEAM_PRO_FEATURES: Feature[] = [
   { key: 'live_sessions', label: 'Live sessions' },
 
   { key: 'vm_mem', label: '8GiB RAM' },
-  { key: 'vm_cpu', label: '4vCPUs' },
+  { key: 'vm_cpu', label: '4 vCPUs' },
   { key: 'vm_disk', label: '12GB Disk' },
 ];
 
@@ -84,7 +84,7 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
   { key: 'live_sessions', label: 'Live sessions' },
 
   { key: 'vm_mem', label: '8GiB RAM', pill: '4x capacity' },
-  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
+  { key: 'vm_cpu', label: '4 vCPUs', pill: '2x faster' },
   { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
 ];
 
