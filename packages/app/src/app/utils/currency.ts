@@ -1,4 +1,4 @@
-type Price = { currency: string; amount?: number };
+type Price = { currency: string; amount: number };
 
 /**
  * This function isn't fool proof. We're using it mainly for the INR currency. The
@@ -19,10 +19,6 @@ const getLocaleFromCurrency = (currency: string) => {
 };
 
 export const formatCurrency = ({ currency, amount }: Price) => {
-  if (typeof amount === 'undefined') {
-    return null;
-  }
-
   const isRounded = amount % 100 === 0;
 
   const locale = getLocaleFromCurrency(currency);

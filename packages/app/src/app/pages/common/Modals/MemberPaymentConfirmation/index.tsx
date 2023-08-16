@@ -16,7 +16,7 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   const oneSeatTeamPrice = usePriceCalculation({
     billingInterval:
       subscription?.billingInterval === 'MONTHLY' ? 'month' : 'year',
-    maxSeats: numberOfSeats < 3 ? 3 : null, // if below 3, use the maxSeats for 3 pricing, otherwise use the 4+
+    maxSeats: numberOfSeats && numberOfSeats < 3 ? 3 : null, // if below 3, use the maxSeats for 3 pricing, otherwise use the 4+
   });
 
   const [confirmed, setConfirmed] = React.useState(false);

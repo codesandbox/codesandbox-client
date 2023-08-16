@@ -5,7 +5,7 @@ import { useCurrencyFromTimeZone } from 'app/hooks/useCurrencyFromTimeZone';
 type PriceCalculationParams = {
   plan?: 'team' | 'individual'; // team - new pro, individual - legacy personal pro
   billingInterval?: 'year' | 'month';
-  maxSeats?: number;
+  maxSeats?: number | null;
 };
 
 const DEFAULT_PARAMS = {

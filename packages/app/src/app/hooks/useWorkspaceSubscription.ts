@@ -1,9 +1,8 @@
 import { MAX_TEAM_FREE_EDITORS } from 'app/constants';
 import {
-  SubscriptionInterval,
+  CurrentTeamInfoFragmentFragment,
   SubscriptionPaymentProvider,
   SubscriptionStatus,
-  SubscriptionType,
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { isBefore, startOfToday } from 'date-fns';
@@ -147,14 +146,7 @@ export type WorkspaceSubscriptionReturn =
       numberOfSeats: number;
     })
   | {
-      subscription: {
-        cancelAt?: string;
-        billingInterval?: SubscriptionInterval | null;
-        status: SubscriptionStatus;
-        type: SubscriptionType;
-        trialEnd?: string;
-        trialStart?: string;
-      };
+      subscription: CurrentTeamInfoFragmentFragment['subscription'];
       numberOfSeats: number;
       isPro: boolean;
       isFree: boolean;
