@@ -155,7 +155,7 @@ export type WorkspaceSubscriptionReturn =
       isLegacyPersonalPro: boolean;
       isLegacyFreeTeam: boolean;
       isInactiveTeam: boolean;
-      isEligibleForTrial: false;
+      isEligibleForTrial: boolean;
       hasActiveTeamTrial: boolean;
       hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;
