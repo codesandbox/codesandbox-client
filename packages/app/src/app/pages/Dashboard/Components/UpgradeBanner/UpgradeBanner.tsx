@@ -19,6 +19,7 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { useHistory } from 'react-router';
+import { useAppState } from 'app/overmind';
 
 // When flex wraps and the list of features
 // is shown below the call to action.
@@ -26,6 +27,7 @@ const WRAP_WIDTH = 1320;
 
 export const UpgradeBanner: React.FC = () => {
   const history = useHistory();
+  const { userCanStartTrial } = useAppState();
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
@@ -37,7 +39,10 @@ export const UpgradeBanner: React.FC = () => {
     isPro,
   } = useWorkspaceSubscription();
 
-  const canStartTrial = isPersonalSpace || isEligibleForTrial;
+  // Either the workspace is eligible for trial or user is on
+  // a personal space and cand start a trial
+  const trialAvailable =
+    (isPersonalSpace && userCanStartTrial) || isEligibleForTrial;
   const { hasVisited } = useDashboardVisit();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
@@ -81,7 +86,6 @@ export const UpgradeBanner: React.FC = () => {
 
     // Banner only shows for personal space, to upsell the pro workspaces
     // Takes the user to the /pro page
-    // TODO: When can you start a free trial?
     if (isPersonalSpace) {
       return (
         <Button
@@ -96,7 +100,7 @@ export const UpgradeBanner: React.FC = () => {
           }}
           autoWidth
         >
-          Start 14-day free trial
+          {userCanStartTrial ? 'Start 14-day free trial' : 'Upgrade'}
         </Button>
       );
     }
@@ -109,7 +113,7 @@ export const UpgradeBanner: React.FC = () => {
       return 'Reactivate Pro';
     }
 
-    if (canStartTrial) {
+    if (trialAvailable) {
       return 'Try Pro for free';
     }
 
@@ -153,7 +157,7 @@ export const UpgradeBanner: React.FC = () => {
                 {renderMainCTA()}
                 <Link
                   href={
-                    canStartTrial
+                    trialAvailable
                       ? SUBSCRIPTION_DOCS_URLS.teams.trial
                       : SUBSCRIPTION_DOCS_URLS.teams.non_trial
                   }
@@ -191,7 +195,7 @@ type Feature = {
 const FEATURES_LIST: Feature[] = [
   {
     icon: 'profile',
-    label: 'Up to 20 editors',
+    label: 'Unlimited editors',
   },
   {
     icon: 'lock',

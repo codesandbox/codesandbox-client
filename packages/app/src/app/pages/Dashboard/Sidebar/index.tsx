@@ -308,13 +308,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && isFree ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isEligibleForTrial ? <StartTrial activeTeam={activeTeam} /> : null}
+            {isTeamSpace && isBillingManager && isEligibleForTrial ? (
+              <StartTrial activeTeam={activeTeam} />
+            ) : null}
 
             {isTeamSpace && !isEligibleForTrial ? (
               <UpgradeFreeTeamToPro activeTeam={activeTeam} />
             ) : null}
 
-            {isPersonalSpace ? <CreateProWorkspace /> : null}
+            {isPersonalSpace ? (
+              <CreateProWorkspace userCanStartTrial={state.userCanStartTrial} />
+            ) : null}
           </Element>
         ) : null}
 

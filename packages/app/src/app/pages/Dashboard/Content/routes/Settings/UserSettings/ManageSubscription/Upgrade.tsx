@@ -16,7 +16,9 @@ const List = styled(Stack)`
   }
 `;
 
-export const Upgrade: React.FC = () => {
+export const Upgrade: React.FC<{ userCanStartTrial: boolean }> = ({
+  userCanStartTrial,
+}) => {
   return (
     <Card
       css={{
@@ -32,10 +34,10 @@ export const Upgrade: React.FC = () => {
 
         <List direction="vertical" gap={1} as="ul">
           <Text as="li" size={3}>
-            Private sandboxes & repositories
+            Unlimited editors
           </Text>
           <Text as="li" size={3}>
-            Up to 20 editors
+            Unlimited private sandboxes & repositories
           </Text>
           <Text as="li" size={3}>
             Advanced privacy settings
@@ -58,7 +60,7 @@ export const Upgrade: React.FC = () => {
           }}
           variant="trial"
         >
-          Upgrade to Pro
+          {userCanStartTrial ? 'Start trial' : 'Upgrade to Pro'}
         </Button>
       </Stack>
     </Card>

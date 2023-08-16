@@ -11,7 +11,7 @@ import { Card } from '../../components';
 import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
-  const { user, isProcessingPayment } = useAppState();
+  const { user, isProcessingPayment, userCanStartTrial } = useAppState();
   const { isFree, isPaddle, isStripe } = useWorkspaceSubscription();
 
   if (isFree) {
@@ -19,7 +19,7 @@ export const ManageSubscription = () => {
       return <ProcessingPayment />;
     }
 
-    return <Upgrade />;
+    return <Upgrade userCanStartTrial={userCanStartTrial} />;
   }
 
   // Legacy Personal Pro

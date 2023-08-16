@@ -165,6 +165,7 @@ export const getTeams = async ({ state, effects }: Context) => {
 
   state.dashboard.teams = teams.me.workspaces;
   state.personalWorkspaceId = teams.me.personalWorkspaceId;
+  state.userCanStartTrial = teams.me.eligibleForTrial;
 };
 
 export const removeFromTeam = async (

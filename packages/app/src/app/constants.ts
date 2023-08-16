@@ -18,9 +18,19 @@ export interface Feature {
 
 export const FREE_FEATURES: Feature[] = [
   {
-    key: 'public_limit',
-    label: 'Unlimited public repositories & sandboxes',
+    key: 'editor',
+    label: 'Single editor',
   },
+  {
+    key: 'public_limit',
+    label: 'Public repositories & sandboxes',
+  },
+  {
+    key: 'ai',
+    label: 'No access to AI tools',
+  },
+  { key: 'npm', label: 'Public npm packages' },
+  { key: 'permissions', label: 'Limited permissions' },
   { key: 'vm_mem', label: '2GiB RAM' },
   { key: 'vm_cpu', label: '2 vCPUs' },
   { key: 'vm_disk', label: '6GB Disk' },
