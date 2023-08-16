@@ -8,11 +8,13 @@ import { StyledButton } from 'app/components/dashboard/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 const ROLE_OPTIONS = [
-  { value: 'frontend', label: 'Frontend developer' },
-  { value: 'backend', label: 'Backend developer' },
-  { value: 'fullstack', label: 'Fullstack developer' },
+  { value: 'frontend', label: 'Front-End Developer' },
+  { value: 'backend', label: 'Back-End Developer' },
+  { value: 'fullstack', label: 'Full-Stack Developer' },
+  { value: 'lead-dev', label: 'Lead Developer' },
+  { value: 'engineering-manager', label: 'Engineering Manager' },
   { value: 'designer', label: 'Designer' },
-  { value: 'product-manager', label: 'Product manager' },
+  { value: 'product-manager', label: 'Product Manager' },
   { value: 'educator', label: 'Educator' },
   { value: 'student', label: 'Student' },
   { value: 'other', label: 'Other' },

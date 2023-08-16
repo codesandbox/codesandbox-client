@@ -167,6 +167,12 @@ export const onInitializeOvermind = async (
   effects.browserExtension.hasExtension().then(hasExtension => {
     actions.preview.setExtension(hasExtension);
   });
+
+  try {
+    state.features = await effects.api.getFeatures();
+  } catch {
+    // Just for safety so it doesn't crash the overmind initialize flow
+  }
 };
 
 export const appUnmounted = async ({ effects, actions }: Context) => {
