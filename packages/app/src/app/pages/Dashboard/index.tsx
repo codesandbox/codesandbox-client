@@ -4,7 +4,7 @@ import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import {
   ThemeProvider,
   Stack,
@@ -37,8 +37,14 @@ export const Dashboard: FunctionComponent = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { hasLogIn } = useAppState();
+  const {
+    hasLogIn,
+    activeTeam,
+    hasLoadedApp,
+    isProcessingPayment,
+  } = useAppState();
   const actions = useActions();
+  const effects = useEffects();
   const { subscription } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
   const [
@@ -69,11 +75,25 @@ export const Dashboard: FunctionComponent = () => {
       // Successful return from stripe, but payment not processed yet
       const isProDelayed = subscription?.status !== SubscriptionStatus.Active;
       actions.setIsProcessingPayment(isProDelayed);
-
       searchParams.delete('payment_pending');
       history.replace({ search: searchParams.toString() });
     }
   }, [subscription]);
+
+  useEffect(() => {
+    if (!hasLoadedApp || !isProcessingPayment) return;
+
+    // Listen for subscription update (payment processed) on the backend
+    effects.gql.subscriptions.onSubscriptionChanged(
+      { teamId: activeTeam },
+      data => {
+        if (data.teamEvents.subscription.active) {
+          actions.getActiveTeamInfo();
+          actions.dashboard.getTeams();
+        }
+      }
+    );
+  }, [hasLoadedApp, activeTeam, isProcessingPayment]);
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
@@ -89,6 +109,7 @@ export const Dashboard: FunctionComponent = () => {
 
     if (JSON.parse(searchParams.get('new_workspace'))) {
       actions.openCreateTeamModal({ step: 'members' });
+      searchParams.delete('new_workspace');
     } else if (JSON.parse(searchParams.get('import_repo'))) {
       actions.openCreateSandboxModal({ initialTab: 'import' });
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {
@@ -96,6 +117,8 @@ export const Dashboard: FunctionComponent = () => {
     } else if (JSON.parse(searchParams.get('preferences'))) {
       actions.preferences.openPreferencesModal();
     }
+
+    history.replace({ search: searchParams.toString() });
   }, [actions, hasLogIn, location.search]);
 
   useEffect(() => {
