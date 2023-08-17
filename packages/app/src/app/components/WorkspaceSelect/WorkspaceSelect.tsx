@@ -44,7 +44,12 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const workspaces = [
       personalWorkspace,
       ...sortBy(
-        dashboard.teams.filter(t => t.type === TeamType.Team),
+        dashboard.teams.filter(
+          t =>
+            t.type === TeamType.Team &&
+            // New teams with no subscription information are automatically filtered out
+            !(t.legacy === false && t.subscription === null)
+        ),
         t => t.name.toLowerCase()
       ),
     ];

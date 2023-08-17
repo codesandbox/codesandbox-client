@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useActions, useAppState } from 'app/overmind';
 import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { StyledButton } from 'app/components/dashboard/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
+import { useCreateCheckout } from 'app/hooks';
 
-export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
-  onComplete,
-}) => {
+export const TeamCreate: React.FC<{ onComplete: () => void }> = () => {
   const { dashboard } = useAppState();
   const actions = useActions();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [existingTeamError, setExistingTeamError] = useState(false);
+  const [checkout, createCheckout] = useCreateCheckout();
+
+  useEffect(() => {
+    if (checkout.status === 'error') {
+      setError(`Could not create stripe checkout link. ${checkout.error}`);
+    }
+  }, [checkout]);
 
   const onSubmit = async event => {
     event.preventDefault();
@@ -27,10 +34,17 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
       setError(null);
       setLoading(true);
       try {
-        await actions.dashboard.createTeam({
+        const newTeam = await actions.dashboard.createTeam({
           teamName,
         });
-        onComplete();
+
+        await createCheckout({
+          team_id: newTeam.id,
+          success_path: dashboardURLs.recent(newTeam.id, {
+            new_workspace: 'true',
+          }),
+          utm_source: 'pro_page',
+        });
       } catch {
         setError('There was a problem creating your team');
       } finally {

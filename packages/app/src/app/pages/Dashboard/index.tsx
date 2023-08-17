@@ -4,7 +4,7 @@ import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
-import { useAppState, useActions, useEffects } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   ThemeProvider,
   Stack,
@@ -29,7 +29,6 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
-import { NUOCT22 } from '../SignIn/Onboarding';
 import { NewTeamModal } from './Components/NewTeamModal';
 
 const GlobalStyles = createGlobalStyle({
@@ -41,8 +40,7 @@ export const Dashboard: FunctionComponent = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { hasLogIn, activeTeam, dashboard } = useAppState();
-  const { browser } = useEffects();
+  const { hasLogIn, activeTeam } = useAppState();
   const actions = useActions();
   const {
     subscription,
@@ -66,22 +64,6 @@ export const Dashboard: FunctionComponent = () => {
     [setSidebarVisibility]
   );
   const theme = useTheme() as any;
-
-  useEffect(() => {
-    const newUser = browser.storage.get(NUOCT22);
-
-    if (dashboard.teams.length === 0) {
-      return;
-    }
-
-    if (newUser && newUser === 'signup' && dashboard.teams.length === 1) {
-      // Open the create team modal for newly signed up users
-      // not coming from a team invite page and that don't have any teams
-      // other then the personal workspace (dashboard.teams.length === 1)
-      actions.openCreateTeamModal();
-      browser.storage.remove(NUOCT22);
-    }
-  }, [browser.storage, actions, dashboard.teams]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -116,8 +98,8 @@ export const Dashboard: FunctionComponent = () => {
 
     const searchParams = new URLSearchParams(location.search);
 
-    if (JSON.parse(searchParams.get('create_team'))) {
-      actions.openCreateTeamModal();
+    if (JSON.parse(searchParams.get('new_workspace'))) {
+      actions.openCreateTeamModal({ step: 'members' });
     } else if (JSON.parse(searchParams.get('import_repo'))) {
       actions.openCreateSandboxModal({ initialTab: 'import' });
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {

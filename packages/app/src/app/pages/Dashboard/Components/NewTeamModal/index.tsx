@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import css from '@styled-system/css';
 import {
   IconButton,
@@ -8,21 +7,18 @@ import {
   Text,
   ThemeProvider,
 } from '@codesandbox/components';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import Modal from 'app/components/Modal';
 import { useActions, useAppState } from 'app/overmind';
 
 import track from '@codesandbox/common/lib/utils/analytics';
-import { TeamInfo } from './TeamInfo';
+import { TeamCreate } from './TeamCreate';
 import { TeamMembers } from './TeamMembers';
-import { TeamSubscription } from './TeamSubscription';
 import { TeamImport } from './TeamImport';
 
-export type TeamStep = 'info' | 'members' | 'import' | 'subscription';
+export type TeamStep = 'create' | 'members' | 'import';
 
 const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
-  info: 'subscription',
-  subscription: null,
+  create: null,
   members: 'import',
   import: null,
 };
@@ -35,7 +31,7 @@ type NewTeamProps = {
 const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
   const { activeTeamInfo } = useAppState();
   const [currentStep, setCurrentStep] = React.useState<TeamStep>(
-    step ?? 'info'
+    step ?? 'create'
   );
 
   const nextStep =
@@ -61,7 +57,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
             })}
             size={3}
           >
-            {activeTeamInfo && currentStep !== 'info'
+            {activeTeamInfo && currentStep !== 'create'
               ? activeTeamInfo.name
               : 'New workspace'}
           </Text>
@@ -84,7 +80,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
       >
         {
           {
-            info: <TeamInfo onComplete={handleStepCompletion} />,
+            create: <TeamCreate onComplete={handleStepCompletion} />,
             members: (
               <TeamMembers
                 hideSkip={!nextStep}
@@ -92,9 +88,6 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
               />
             ),
             import: <TeamImport onComplete={handleStepCompletion} />,
-            subscription: (
-              <TeamSubscription onComplete={handleStepCompletion} />
-            ),
           }[currentStep]
         }
       </Stack>
@@ -104,27 +97,11 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
 
 export const NewTeamModal: React.FC = () => {
   const actions = useActions();
-  const { activeTeam, modals } = useAppState();
-  const previousTeam = React.useRef<string | null>(null);
-  const history = useHistory();
+  const { modals } = useAppState();
 
   const handleModalClose = () => {
-    // If the user is still at the first step, no Team
-    // has been created and closing the modal should
-    // not perform any further actions. Else, the user
-    // must be redirected to the  recent page where the
-    // UI to create/import sandboxes or repositories
-    // will be displayed.
-    if (activeTeam !== previousTeam.current) {
-      history.push(dashboard.recent(activeTeam));
-    }
-
     actions.modals.newTeamModal.close();
   };
-
-  React.useEffect(() => {
-    previousTeam.current = activeTeam;
-  }, [activeTeam]);
 
   React.useEffect(() => {
     track('New Team - View Modal', {
