@@ -21,10 +21,10 @@ import { TeamImport } from './TeamImport';
 export type TeamStep = 'info' | 'members' | 'import' | 'subscription';
 
 const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
-  info: 'members',
-  members: 'import',
-  import: 'subscription',
+  info: 'subscription',
   subscription: null,
+  members: 'import',
+  import: null,
 };
 
 type NewTeamProps = {
@@ -63,7 +63,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
           >
             {activeTeamInfo && currentStep !== 'info'
               ? activeTeamInfo.name
-              : 'New team'}
+              : 'New workspace'}
           </Text>
           <IconButton
             name="cross"
