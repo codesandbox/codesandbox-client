@@ -265,7 +265,6 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'midTrial'
   | 'editorSeatsUpgrade';
 
 export const modalOpened = (
