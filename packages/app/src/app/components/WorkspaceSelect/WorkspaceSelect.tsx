@@ -87,7 +87,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               align="center"
               css={{
                 width: '100%',
-                cursor: 'default',
+                cursor: 'pointer',
                 color: '#C2C2C2',
                 paddingLeft: '28px',
                 height: '36px',
