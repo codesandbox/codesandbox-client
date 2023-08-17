@@ -49,7 +49,6 @@ import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 import { SubscriptionCancellationModal } from './SubscriptionCancellation';
-import { MidTrialModal } from './MidTrialModal';
 import { EditorSeatsUpgrade } from './EditorSeatsUpgrade';
 
 const modals = {
@@ -208,11 +207,7 @@ const modals = {
   },
   subscriptionCancellation: {
     Component: SubscriptionCancellationModal,
-    width: 800,
-  },
-  midTrial: {
-    Component: MidTrialModal,
-    width: 600,
+    width: 450,
   },
   editorSeatsUpgrade: {
     Component: EditorSeatsUpgrade,

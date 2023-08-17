@@ -189,7 +189,12 @@ export const WorkspacePlanSelection: React.FC = () => {
           {isLegacyPersonalPro ? (
             <>
               <SubscriptionCard
-                title="Personal Pro (legacy)"
+                title={
+                  <Stack gap={2}>
+                    <Text>Personal</Text>
+                    <Badge variant="pro">Pro</Badge>
+                  </Stack>
+                }
                 features={PERSONAL_PRO_FEATURES}
                 cta={personalProCta}
                 isHighlighted

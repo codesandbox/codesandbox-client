@@ -64,7 +64,7 @@ const addStripeCancelParam = (pathName: string): string => {
 
 export const useCreateCheckout = (): [
   CheckoutStatus,
-  (args: CheckoutOptions) => void,
+  (args: CheckoutOptions) => Promise<void>,
   boolean
 ] => {
   const { activeTeam, isProcessingPayment } = useAppState();
@@ -84,13 +84,13 @@ export const useCreateCheckout = (): [
     }
   }, [isProcessingPayment]);
 
-  const createCheckout = async ({
+  async function createCheckout({
     recurring_interval = 'month',
     cancel_path = pathname + search,
     success_path = dashboardURLs.settings(activeTeam),
     team_id = activeTeam!,
     utm_source,
-  }: CheckoutOptions) => {
+  }: CheckoutOptions): Promise<void> {
     try {
       setStatus({ status: 'loading' });
 
@@ -117,7 +117,7 @@ export const useCreateCheckout = (): [
         error: err?.message ?? 'Failed to create checkout link',
       });
     }
-  };
+  }
 
   return [status, createCheckout, canCheckout];
 };

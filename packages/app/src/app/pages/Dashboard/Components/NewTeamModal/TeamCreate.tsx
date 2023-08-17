@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useActions, useAppState } from 'app/overmind';
-import css from '@styled-system/css';
 import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { StyledButton } from 'app/components/dashboard/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
+import { useCreateCheckout } from 'app/hooks';
 
-export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
-  onComplete,
-}) => {
+export const TeamCreate: React.FC<{ onComplete: () => void }> = () => {
   const { dashboard } = useAppState();
   const actions = useActions();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [existingTeamError, setExistingTeamError] = useState(false);
+  const [checkout, createCheckout] = useCreateCheckout();
+
+  useEffect(() => {
+    if (checkout.status === 'error') {
+      setError(`Could not create stripe checkout link. ${checkout.error}`);
+    }
+  }, [checkout]);
 
   const onSubmit = async event => {
     event.preventDefault();
@@ -28,10 +34,17 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
       setError(null);
       setLoading(true);
       try {
-        await actions.dashboard.createTeam({
+        const newTeam = await actions.dashboard.createTeam({
           teamName,
         });
-        onComplete();
+
+        await createCheckout({
+          team_id: newTeam.id,
+          success_path: dashboardURLs.recent(newTeam.id, {
+            new_workspace: 'true',
+          }),
+          utm_source: 'pro_page',
+        });
       } catch {
         setError('There was a problem creating your team');
       } finally {
@@ -84,18 +97,7 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
             letterSpacing: '-0.01em',
           }}
         >
-          Create team
-        </Text>
-        <Text
-          as="p"
-          size={13}
-          css={css({
-            color: '#999999',
-            margin: '0',
-            lineHeight: '16px',
-          })}
-        >
-          Teams are the best way of collaborating in CodeSandbox.
+          Name your workspace
         </Text>
       </Stack>
       <Stack
@@ -106,17 +108,19 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
         css={{ width: '100%' }}
       >
         <InputText
-          label="Team name"
+          label="Workspace name"
+          placeholder="My workspace"
           id="teamname"
           name="name"
           required
           autoFocus
+          hideLabel
           onChange={handleInput}
         />
 
         {existingTeamError && (
           <Text size={2} variant="danger">
-            Name already taken, please choose a new name.
+            Name already taken, please choose another one.
           </Text>
         )}
 
@@ -131,7 +135,7 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
           disabled={loading || existingTeamError}
           type="submit"
         >
-          Create Team
+          Next
         </StyledButton>
       </Stack>
       <Element paddingTop={10}>

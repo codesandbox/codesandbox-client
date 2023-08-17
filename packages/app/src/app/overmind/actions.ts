@@ -265,7 +265,6 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'midTrial'
   | 'editorSeatsUpgrade';
 
 export const modalOpened = (
@@ -621,7 +620,7 @@ export const openCreateTeamModal = (
   props?: OpenCreateTeamModalParams
 ) => {
   actions.modals.newTeamModal.open({
-    step: props?.step ?? 'info',
+    step: props?.step ?? 'create',
     hasNextStep: props?.hasNextStep ?? true,
   });
 };
