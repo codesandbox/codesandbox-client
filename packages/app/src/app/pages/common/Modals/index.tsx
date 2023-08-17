@@ -208,7 +208,7 @@ const modals = {
   },
   subscriptionCancellation: {
     Component: SubscriptionCancellationModal,
-    width: 800,
+    width: 450,
   },
   midTrial: {
     Component: MidTrialModal,

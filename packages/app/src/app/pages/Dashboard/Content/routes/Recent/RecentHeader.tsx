@@ -5,10 +5,12 @@ import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
+  const history = useHistory();
 
   const {
     isTeamSpace,
@@ -86,10 +88,10 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
                 event_source: 'UI',
                 card_type: 'get-started-action',
               });
-              actions.openCreateTeamModal();
+              history.push('/pro');
             }}
           >
-            <Icon name="team" /> Create team
+            <Icon name="team" /> Create pro workspace
           </ButtonInverseLarge>
         ) : null}
       </EmptyPage.StyledGrid>
