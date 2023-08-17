@@ -40,8 +40,8 @@ export const Stripe: React.FC = () => {
           autoWidth
           variant="link"
           css={{
-            padding: 0,
             height: 'auto',
+            padding: 0,
           }}
           onClick={() => {
             track('Team Settings - Renew subscription', {
@@ -51,7 +51,6 @@ export const Stripe: React.FC = () => {
 
             createCustomerPortal();
           }}
-          size={3}
         >
           {loading ? 'Loading...' : 'Upgrade to Pro'}
         </Button>
@@ -69,8 +68,8 @@ export const Stripe: React.FC = () => {
         autoWidth
         variant="link"
         css={{
-          padding: 0,
           height: 'auto',
+          padding: 0,
         }}
         onClick={() => {
           track('Team Settings - Update payment details', {
@@ -80,7 +79,6 @@ export const Stripe: React.FC = () => {
 
           createCustomerPortal();
         }}
-        size={3}
       >
         {loading ? 'Loading...' : updateSubscriptionText}
       </Button>
@@ -88,8 +86,8 @@ export const Stripe: React.FC = () => {
         autoWidth
         variant="link"
         css={{
-          padding: 0,
           height: 'auto',
+          padding: 0,
           color: '#EE8269',
         }}
         onClick={() => {
@@ -105,7 +103,6 @@ export const Stripe: React.FC = () => {
 
           openCancelSubscriptionModal();
         }}
-        size={3}
       >
         {hasActiveTeamTrial ? 'Cancel trial' : 'Cancel subscription'}
       </Button>
