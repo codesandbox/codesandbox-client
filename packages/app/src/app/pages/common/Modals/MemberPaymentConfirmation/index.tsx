@@ -13,15 +13,22 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   } = useAppState();
   const actions = useActions();
   const { isPaddle, subscription, numberOfSeats } = useWorkspaceSubscription();
-  const oneSeatTeamPrice = usePriceCalculation({
+
+  const smallTeamSeatPrice = usePriceCalculation({
     billingInterval:
       subscription?.billingInterval === 'MONTHLY' ? 'month' : 'year',
-    maxSeats: numberOfSeats && numberOfSeats < 3 ? 3 : null, // if below 3, use the maxSeats for 3 pricing, otherwise use the 4+
+    maxSeats: 3,
+  });
+
+  const largeTeamSeatPrice = usePriceCalculation({
+    billingInterval:
+      subscription?.billingInterval === 'MONTHLY' ? 'month' : 'year',
+    maxSeats: null,
   });
 
   const [confirmed, setConfirmed] = React.useState(false);
 
-  const getValue = () => {
+  const getPaddleValue = () => {
     // This shouldn't occur on this page, but it is still possible that this
     // value is undefined or null, coming from the hook.
     if (!subscription) return null;
@@ -35,17 +42,49 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
         subscription.billingInterval?.toLowerCase()
       );
     }
-
-    return oneSeatTeamPrice;
   };
 
-  const value = getValue();
+  const nextSeat = numberOfSeats + 1;
+
+  const nextProSeatLabel =
+    nextSeat <= 3 ? (
+      <Text>
+        By adding a {nextSeat}
+        {nextSeat === 2 ? 'nd' : 'rd'} editor, I confirm an additional{' '}
+        <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+          {smallTeamSeatPrice} (excl. tax)
+        </Text>{' '}
+        will be added to the invoice.
+      </Text>
+    ) : (
+      <Text>
+        By adding an extra editor, I confirm an additional{' '}
+        <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+          {largeTeamSeatPrice} (excl. tax)
+        </Text>{' '}
+        for 1 seat will be added to the invoice.
+      </Text>
+    );
+
+  const priceLabel = isPaddle ? (
+    <Text>
+      By adding an extra editor, I confirm an additional{' '}
+      <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+        {getPaddleValue()} (excl. tax)
+      </Text>{' '}
+      for 1 seat will be added to the invoice.
+    </Text>
+  ) : (
+    nextProSeatLabel
+  );
 
   useEffect(() => {
     actions.pro.pageMounted();
   }, [actions]);
 
   if (!prices) return null;
+
+  const smallProTeam = numberOfSeats < 3 && !isPaddle;
 
   return (
     <Alert title={title}>
@@ -55,16 +94,22 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
             checked={confirmed}
             onChange={e => setConfirmed(e.target.checked)}
           />
-          <span>
-            <Text>
-              By adding an extra editor, I confirm an additional{' '}
-              <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
-                {value} (excl. tax)
-              </Text>{' '}
-              for 1 seat will be added to the invoice
-            </Text>
-          </span>
+
+          {priceLabel}
         </Stack>
+
+        {/** When the team is small, inform the user of the large team pricing as well */}
+        {smallProTeam && (
+          <Stack>
+            <Text size={3} block marginTop={4} marginLeft={6}>
+              When the team reaches 4+ editors, I confirm an additional{' '}
+              <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+                {largeTeamSeatPrice} (excl. tax)
+              </Text>{' '}
+              for 1 seat will be added to the invoice.
+            </Text>
+          </Stack>
+        )}
 
         <Stack>
           <Text size={3} block marginTop={4} marginLeft={6}>
