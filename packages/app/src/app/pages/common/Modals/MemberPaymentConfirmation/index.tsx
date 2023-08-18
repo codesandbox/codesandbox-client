@@ -12,7 +12,11 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
     pro: { prices },
   } = useAppState();
   const actions = useActions();
-  const { isPaddle, subscription, numberOfSeats } = useWorkspaceSubscription();
+  const {
+    isPaddle,
+    subscription,
+    numberOfSeats = 1,
+  } = useWorkspaceSubscription();
 
   const smallTeamSeatPrice = usePriceCalculation({
     billingInterval:
