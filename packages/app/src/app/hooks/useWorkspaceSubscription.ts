@@ -49,10 +49,10 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   if (!subscription) {
     return {
       ...NO_SUBSCRIPTION,
-      isLegacyFreeTeam: isTeamSpace,
+      isLegacyFreeTeam: isTeamSpace && activeTeamInfo.legacy,
       isEligibleForTrial: userCanStartTrial,
       // If no subscription, all non-legacy teams without subscription are inactive
-      isInactiveTeam: !activeTeamInfo.legacy,
+      isInactiveTeam: isTeamSpace && !activeTeamInfo.legacy,
       numberOfSeats: activeTeamInfo.limits.maxEditors ?? MAX_TEAM_FREE_EDITORS,
     };
   }
