@@ -4,12 +4,13 @@ import { Stack } from '../Stack';
 import { Text } from '../Text';
 
 export interface BadgeProps {
-  variant?: 'trial' | 'neutral' | 'warning' | 'highlight' | 'error';
+  variant?: 'trial' | 'pro' | 'neutral' | 'warning' | 'highlight' | 'error';
   icon?: IconNames;
 }
 
 const BG_MAP: Record<BadgeProps['variant'], string> = {
   trial: '#644ed7',
+  pro: '#EDFFA5',
   neutral: '#2e2e2e',
   warning: 'rgba(255, 255, 255, 0.06)',
   highlight: '#edffa5',
@@ -18,6 +19,7 @@ const BG_MAP: Record<BadgeProps['variant'], string> = {
 
 const COLOR_MAP: Record<BadgeProps['variant'], string> = {
   trial: '#fff',
+  pro: '#0E0E0E',
   neutral: 'inherit',
   warning: '#ef7a7a',
   highlight: 'inherit',

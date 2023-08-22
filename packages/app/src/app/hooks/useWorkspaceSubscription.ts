@@ -1,10 +1,8 @@
-import { TEAM_FREE_LIMITS } from 'app/constants';
+import { MAX_TEAM_FREE_EDITORS } from 'app/constants';
 import {
-  SubscriptionInterval,
-  SubscriptionOrigin,
+  CurrentTeamInfoFragmentFragment,
   SubscriptionPaymentProvider,
   SubscriptionStatus,
-  SubscriptionType,
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { isBefore, startOfToday } from 'date-fns';
@@ -17,8 +15,9 @@ export enum SubscriptionDebugStatus {
 }
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
-  const { activeTeamInfo } = useAppState();
-  const { isTeamSpace } = useWorkspaceAuthorization();
+  const { activeTeamInfo, userCanStartTrial } = useAppState();
+  const { isTeamSpace, isBillingManager } = useWorkspaceAuthorization();
+  const isPersonalSpace = !isTeamSpace;
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
 
@@ -50,16 +49,31 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   if (!subscription) {
     return {
       ...NO_SUBSCRIPTION,
-      isEligibleForTrial: isTeamSpace, // Currently, only teams are eligible for trial.
-      numberOfSeats:
-        activeTeamInfo.limits.maxEditors ?? TEAM_FREE_LIMITS.editors,
+      isLegacyFreeTeam: isTeamSpace && activeTeamInfo.legacy,
+      isEligibleForTrial: userCanStartTrial,
+      // If no subscription, all non-legacy teams without subscription are inactive
+      isInactiveTeam: isTeamSpace && !activeTeamInfo.legacy,
+      numberOfSeats: activeTeamInfo.limits.maxEditors ?? MAX_TEAM_FREE_EDITORS,
     };
   }
+
+  const isLegacySpace = activeTeamInfo.legacy;
 
   const isPro =
     subscription.status === SubscriptionStatus.Active ||
     subscription.status === SubscriptionStatus.Trialing;
   const isFree = !isPro;
+
+  const isInactiveTeam =
+    isTeamSpace &&
+    !isLegacySpace &&
+    (subscription.status === SubscriptionStatus.Cancelled ||
+      subscription.status === SubscriptionStatus.IncompleteExpired);
+
+  const isLegacyPersonalPro = isPro && isPersonalSpace && isLegacySpace;
+  const isLegacyFreeTeam = isFree && isTeamSpace && isLegacySpace;
+  const isEligibleForTrial =
+    userCanStartTrial && isLegacyFreeTeam && isBillingManager;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
 
@@ -76,10 +90,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const numberOfSeats =
     (isFree ? activeTeamInfo.limits.maxEditors : subscription.quantity) || 1;
 
-  const isPatron =
-    subscription.origin === SubscriptionOrigin.Legacy ||
-    subscription.origin === SubscriptionOrigin.Patron;
-
   const isPaddle =
     subscription.paymentProvider === SubscriptionPaymentProvider.Paddle;
 
@@ -89,13 +99,15 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   return {
     subscription,
     numberOfSeats,
+    isEligibleForTrial,
     isPro,
     isFree,
-    isEligibleForTrial: false, // Teams with an active or past subscription are not eligible for trial.
+    isLegacyPersonalPro,
+    isLegacyFreeTeam,
+    isInactiveTeam,
     hasActiveTeamTrial,
     hasExpiredTeamTrial,
     hasPaymentMethod,
-    isPatron,
     isPaddle,
     isStripe,
   };
@@ -106,11 +118,13 @@ const NO_WORKSPACE = {
   numberOfSeats: undefined,
   isPro: undefined,
   isFree: undefined,
+  isLegacyPersonalPro: undefined,
+  isLegacyFreeTeam: undefined,
+  isInactiveTeam: undefined,
   isEligibleForTrial: undefined,
   hasActiveTeamTrial: undefined,
   hasExpiredTeamTrial: undefined,
   hasPaymentMethod: undefined,
-  isPatron: undefined,
   isPaddle: undefined,
   isStripe: undefined,
 };
@@ -119,10 +133,12 @@ const NO_SUBSCRIPTION = {
   subscription: null,
   isPro: false,
   isFree: true,
+  isLegacyPersonalPro: false,
+  isLegacyFreeTeam: false,
+  isInactiveTeam: false,
   hasActiveTeamTrial: false,
   hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
-  isPatron: false,
   isPaddle: false,
   isStripe: false,
 };
@@ -134,22 +150,17 @@ export type WorkspaceSubscriptionReturn =
       numberOfSeats: number;
     })
   | {
-      subscription: {
-        cancelAt?: string;
-        billingInterval?: SubscriptionInterval | null;
-        status: SubscriptionStatus;
-        type: SubscriptionType;
-        trialEnd?: string;
-        trialStart?: string;
-      };
+      subscription: CurrentTeamInfoFragmentFragment['subscription'];
       numberOfSeats: number;
       isPro: boolean;
       isFree: boolean;
-      isEligibleForTrial: false;
+      isLegacyPersonalPro: boolean;
+      isLegacyFreeTeam: boolean;
+      isInactiveTeam: boolean;
+      isEligibleForTrial: boolean;
       hasActiveTeamTrial: boolean;
       hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;
-      isPatron: boolean;
       isPaddle: boolean;
       isStripe: boolean;
     };

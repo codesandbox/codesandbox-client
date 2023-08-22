@@ -13,7 +13,6 @@ import {
 } from '@codesandbox/components';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
-import { differenceInDays, startOfToday } from 'date-fns';
 
 import {
   PaymentPending,
@@ -21,15 +20,12 @@ import {
 } from 'app/components/StripeMessages';
 import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
-import { useDismissible } from 'app/hooks';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
-import { NUOCT22 } from '../SignIn/Onboarding';
 import { NewTeamModal } from './Components/NewTeamModal';
 
 const GlobalStyles = createGlobalStyle({
@@ -41,23 +37,20 @@ export const Dashboard: FunctionComponent = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { hasLogIn, activeTeam, dashboard } = useAppState();
-  const { browser } = useEffects();
-  const actions = useActions();
   const {
-    subscription,
-    hasActiveTeamTrial,
-    hasPaymentMethod,
-  } = useWorkspaceSubscription();
+    hasLogIn,
+    activeTeam,
+    hasLoadedApp,
+    isProcessingPayment,
+  } = useAppState();
+  const actions = useActions();
+  const effects = useEffects();
+  const { subscription } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
   const [
     showTrialWithoutPaymentInfoBanner,
     dismissTrialWithoutPaymentInfoBanner,
   ] = useShowBanner();
-  const [isMidTrialReminderDismissed] = useDismissible(
-    `DASHBOARD_MID_TRIAL_REMINDER_${activeTeam}`
-  );
-  const { isTeamAdmin } = useWorkspaceAuthorization();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -66,22 +59,6 @@ export const Dashboard: FunctionComponent = () => {
     [setSidebarVisibility]
   );
   const theme = useTheme() as any;
-
-  useEffect(() => {
-    const newUser = browser.storage.get(NUOCT22);
-
-    if (dashboard.teams.length === 0) {
-      return;
-    }
-
-    if (newUser && newUser === 'signup' && dashboard.teams.length === 1) {
-      // Open the create team modal for newly signed up users
-      // not coming from a team invite page and that don't have any teams
-      // other then the personal workspace (dashboard.teams.length === 1)
-      actions.openCreateTeamModal();
-      browser.storage.remove(NUOCT22);
-    }
-  }, [browser.storage, actions, dashboard.teams]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -98,11 +75,25 @@ export const Dashboard: FunctionComponent = () => {
       // Successful return from stripe, but payment not processed yet
       const isProDelayed = subscription?.status !== SubscriptionStatus.Active;
       actions.setIsProcessingPayment(isProDelayed);
-
       searchParams.delete('payment_pending');
       history.replace({ search: searchParams.toString() });
     }
   }, [subscription]);
+
+  useEffect(() => {
+    if (!hasLoadedApp || !isProcessingPayment) return;
+
+    // Listen for subscription update (payment processed) on the backend
+    effects.gql.subscriptions.onSubscriptionChanged(
+      { teamId: activeTeam },
+      data => {
+        if (data.teamEvents.subscription.active) {
+          actions.getActiveTeamInfo();
+          actions.dashboard.getTeams();
+        }
+      }
+    );
+  }, [hasLoadedApp, activeTeam, isProcessingPayment]);
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
@@ -116,8 +107,9 @@ export const Dashboard: FunctionComponent = () => {
 
     const searchParams = new URLSearchParams(location.search);
 
-    if (JSON.parse(searchParams.get('create_team'))) {
-      actions.openCreateTeamModal();
+    if (JSON.parse(searchParams.get('new_workspace'))) {
+      actions.openCreateTeamModal({ step: 'members' });
+      searchParams.delete('new_workspace');
     } else if (JSON.parse(searchParams.get('import_repo'))) {
       actions.openCreateSandboxModal({ initialTab: 'import' });
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {
@@ -125,36 +117,13 @@ export const Dashboard: FunctionComponent = () => {
     } else if (JSON.parse(searchParams.get('preferences'))) {
       actions.preferences.openPreferencesModal();
     }
+
+    history.replace({ search: searchParams.toString() });
   }, [actions, hasLogIn, location.search]);
 
   useEffect(() => {
     trackVisit();
   }, []);
-
-  useEffect(() => {
-    if (
-      isTeamAdmin &&
-      hasActiveTeamTrial &&
-      hasPaymentMethod === false &&
-      subscription.trialEnd &&
-      !isMidTrialReminderDismissed
-    ) {
-      const today = startOfToday();
-      const trialEndDate = new Date(subscription.trialEnd);
-      const remainingTrialDays = differenceInDays(trialEndDate, today);
-
-      if (remainingTrialDays <= 7) {
-        actions.modalOpened({ modal: 'midTrial' });
-      }
-    }
-  }, [
-    isTeamAdmin,
-    actions,
-    hasActiveTeamTrial,
-    hasPaymentMethod,
-    isMidTrialReminderDismissed,
-    subscription,
-  ]);
 
   if (!hasLogIn) {
     return (

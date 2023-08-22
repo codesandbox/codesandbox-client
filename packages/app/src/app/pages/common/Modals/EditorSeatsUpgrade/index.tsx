@@ -5,6 +5,7 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { Alert } from '../Common/Alert';
 
 const EVENT_PARAMS = {
@@ -43,7 +44,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
           {isPersonalSpace ? (
             <Button
               as="a"
-              href="/pro?utm_source=editor_seats_upgrade"
+              href={proUrl({ source: 'editor_seats_upgrade' })}
               variant="primary"
               autoWidth
             >

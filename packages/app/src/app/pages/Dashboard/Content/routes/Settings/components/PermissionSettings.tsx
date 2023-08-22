@@ -14,6 +14,7 @@ import {
 import css from '@styled-system/css';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -23,6 +24,7 @@ export const PermissionSettings = () => {
   const proTracking = () =>
     track('Dashboard - Permissions panel - Clicked on Pro upgrade');
 
+  const { activeTeam } = useAppState();
   const { isFree, isPro } = useWorkspaceSubscription();
   const {
     isTeamSpace,
@@ -36,14 +38,16 @@ export const PermissionSettings = () => {
       {isFree ? (
         <MessageStripe justify="space-between">
           <span>
-            You need a{' '}
-            <Text weight="bold">{isTeamSpace ? 'Team Pro' : 'Pro'}</Text>{' '}
-            subscription to change sandbox permissions.
+            You need a <Text weight="bold">Pro</Text> subscription to change
+            sandbox permissions.
           </span>
           {isBillingManager || isPersonalSpace ? (
             <MessageStripe.Action
               as="a"
-              href="/pro?utm_source=dashboard_permission_settings"
+              href={proUrl({
+                workspaceId: activeTeam,
+                source: 'dashboard_permission_settings',
+              })}
               onClick={proTracking}
             >
               Upgrade now

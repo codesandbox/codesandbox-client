@@ -10,7 +10,7 @@ import {
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const { activeTeamInfo } = useAppState();
   const { isTeamSpace } = useWorkspaceAuthorization();
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
   const debugLimits = useControls('Limits', {
     debugLimits: folder(
       {
@@ -58,6 +58,17 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const numberOfEditors = isTeamSpace
     ? editorOrAdminAuthorizations?.length || 1
     : 1; // Personal
+
+  if (isInactiveTeam) {
+    return {
+      numberOfEditors,
+      hasMaxNumberOfEditors: undefined,
+      numberOfEditorsIsOverTheLimit: undefined,
+      hasMaxPublicRepositories: undefined,
+      hasMaxPrivateRepositories: undefined,
+      hasMaxPublicSandboxes: undefined,
+    };
+  }
 
   const hasMaxNumberOfEditors =
     debugLimits?.restrictEditors ||
@@ -108,7 +119,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
 
 export type WorkspaceLimitsReturn =
   | {
-      numberOfEditors: undefined;
+      numberOfEditors: number | undefined;
       hasMaxNumberOfEditors: undefined;
       numberOfEditorsIsOverTheLimit: undefined;
       hasMaxPublicRepositories: undefined;

@@ -1,4 +1,4 @@
-import { TeamMemberAuthorization } from 'app/graphql/types';
+import { TeamMemberAuthorization, TeamType } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 
 type WorkspaceAuthorizationReturn = {
@@ -13,7 +13,7 @@ type WorkspaceAuthorizationReturn = {
 };
 
 export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
-  const { activeTeamInfo, personalWorkspaceId, user } = useAppState();
+  const { activeTeamInfo, user } = useAppState();
 
   const { authorization, teamManager } =
     activeTeamInfo?.userAuthorizations.find(auth => auth.userId === user?.id) ??
@@ -23,7 +23,7 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
    * Personal states
    */
 
-  const isPersonalSpace = activeTeamInfo?.id === personalWorkspaceId;
+  const isPersonalSpace = activeTeamInfo?.type === TeamType.Personal;
 
   /**
    * User states

@@ -7,9 +7,11 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
+import { InactiveTeamStripe } from 'app/pages/Dashboard/Components/shared/InactiveTeamStripe';
 import { useDismissible } from 'app/hooks';
 import { EmptyRepositories } from './EmptyRepositories';
 
@@ -36,6 +38,7 @@ export const RepositoriesPage = () => {
     });
   }, [activeTeam]);
 
+  const { isInactiveTeam } = useWorkspaceSubscription();
   const {
     hasMaxPublicRepositories,
     hasMaxPrivateRepositories,
@@ -61,7 +64,10 @@ export const RepositoriesPage = () => {
         onImportClicked: () => {
           actions.openCreateSandboxModal({ initialTab: 'import' });
         },
-        disabled: hasMaxPublicRepositories || hasMaxPrivateRepositories,
+        disabled:
+          hasMaxPublicRepositories ||
+          hasMaxPrivateRepositories ||
+          isInactiveTeam,
       });
     }
 
@@ -91,6 +97,12 @@ export const RepositoriesPage = () => {
         <Element paddingLeft={4} paddingRight={6} paddingY={4}>
           <MaxReposFreeTeam />
         </Element>
+      ) : null}
+
+      {isInactiveTeam ? (
+        <InactiveTeamStripe>
+          Re-activate your workspace to import new repositories.
+        </InactiveTeamStripe>
       ) : null}
 
       {restrictsPublicRepos && !dismissedPermissionsBanner ? (

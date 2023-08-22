@@ -36,6 +36,7 @@ type State = {
   personalWorkspaceId: string | null;
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
+  userCanStartTrial: boolean;
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
@@ -124,6 +125,7 @@ export const state: State = {
   activeTeam: null,
   activeTeamInfo: null,
   personalWorkspaceId: null,
+  userCanStartTrial: false,
   connected: true,
   notifications: [],
   contributors: [],

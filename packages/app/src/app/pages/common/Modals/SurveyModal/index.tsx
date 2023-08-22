@@ -10,7 +10,7 @@ import { Alert } from '../Common/Alert';
 export const SurveyModal: FunctionComponent = () => {
   const { modalClosed } = useActions();
   const { user } = useAppState();
-  const { isPro, isPatron } = useWorkspaceSubscription();
+  const { isPro } = useWorkspaceSubscription();
 
   const initializeTypeform = (el?: HTMLDivElement) => {
     if (el) {
@@ -18,7 +18,7 @@ export const SurveyModal: FunctionComponent = () => {
         el,
         `https://codesandbox.typeform.com/to/LYbjII?userid=${hash(
           user.id
-        )}&ispatron=${isPatron}&ispro=${isPro}`,
+        )}&ispro=${isPro}`,
         {
           opacity: 0,
           hideScrollbars: true,

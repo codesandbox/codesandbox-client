@@ -1,39 +1,26 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Text, Icon } from '@codesandbox/components';
-import { SubscriptionStatus, SubscriptionType } from 'app/graphql/types';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useActions, useAppState } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
-  const {
-    dashboard: { teams },
-  } = useAppState();
-  const { isFree } = useWorkspaceSubscription();
+  const history = useHistory();
+
   const {
     isTeamSpace,
     isPersonalSpace,
     isTeamViewer,
   } = useWorkspaceAuthorization();
-  const allTeamsNotOnPro =
-    teams.find(
-      t =>
-        t.subscription &&
-        t.subscription.type === SubscriptionType.TeamPro &&
-        (t.subscription.status === SubscriptionStatus.Active ||
-          t.subscription.status === SubscriptionStatus.Trialing)
-    ) === undefined;
-  const showUpgradeBanner =
-    (isPersonalSpace && allTeamsNotOnPro) || (isFree && isTeamSpace);
 
   return (
     <Stack direction="vertical" gap={9}>
-      {showUpgradeBanner && <UpgradeBanner />}
+      <UpgradeBanner />
       <Text
         as="h1"
         css={{
@@ -101,10 +88,10 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
                 event_source: 'UI',
                 card_type: 'get-started-action',
               });
-              actions.openCreateTeamModal();
+              history.push('/pro');
             }}
           >
-            <Icon name="team" /> Create team
+            <Icon name="team" /> Create pro workspace
           </ButtonInverseLarge>
         ) : null}
       </EmptyPage.StyledGrid>

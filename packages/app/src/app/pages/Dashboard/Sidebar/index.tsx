@@ -21,10 +21,9 @@ import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH } from './constants';
-import { AdminUpgradeToTeamPro } from './BottomMessages/AdminUpgradeToTeamPro';
-import { UserUpgradeToTeamPro } from './BottomMessages/UserUpgradeToTeamPro';
+import { UpgradeFreeTeamToPro } from './BottomMessages/UpgradeFreeTeamToPro';
 import { TrialExpiring } from './BottomMessages/TrialExpiring';
-import { UpgradeToPersonalPro } from './BottomMessages/UpgradeToPersonalPro';
+import { CreateProWorkspace } from './BottomMessages/CreateProWorkspace';
 import { StartTrial } from './BottomMessages/StartTrial';
 import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
@@ -309,17 +308,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && isFree ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isEligibleForTrial ? <StartTrial activeTeam={activeTeam} /> : null}
-
-            {isBillingManager && isTeamSpace && !isEligibleForTrial ? (
-              <AdminUpgradeToTeamPro />
+            {isTeamSpace && isBillingManager && isEligibleForTrial ? (
+              <StartTrial activeTeam={activeTeam} />
             ) : null}
 
-            {isTeamSpace && !isBillingManager && !isEligibleForTrial ? (
-              <UserUpgradeToTeamPro />
+            {isTeamSpace && !isEligibleForTrial ? (
+              <UpgradeFreeTeamToPro activeTeam={activeTeam} />
             ) : null}
 
-            {isPersonalSpace ? <UpgradeToPersonalPro /> : null}
+            {isPersonalSpace ? (
+              <CreateProWorkspace userCanStartTrial={state.userCanStartTrial} />
+            ) : null}
           </Element>
         ) : null}
 

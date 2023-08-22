@@ -140,3 +140,22 @@ export const discoverSearch = (query: string, teamId?: string | null) => {
 
   return searchUrl;
 };
+
+type ProPathParams = {
+  workspaceId?: string;
+  source?: string;
+};
+
+export const proUrl = ({ workspaceId, source }: ProPathParams = {}): string => {
+  const searchQuery = new URLSearchParams({});
+  if (workspaceId) {
+    searchQuery.set('workspace', workspaceId);
+  }
+
+  if (source) {
+    searchQuery.set('utm_source', source);
+  }
+
+  const queryString = searchQuery.toString();
+  return queryString ? `/pro?${queryString}` : '/pro';
+};

@@ -7,7 +7,6 @@ import {
   Tooltip,
   IconButton,
   Element,
-  Badge,
 } from '@codesandbox/components';
 import {
   AppleIcon,
@@ -17,7 +16,6 @@ import {
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Header } from '../../../../Components/Header';
 import { Card } from '../components';
 import { ManageSubscription } from './ManageSubscription';
@@ -25,7 +23,6 @@ import { ManageSubscription } from './ManageSubscription';
 export const WorkspaceSettings = () => {
   const { user, activeTeam } = useAppState();
   const actions = useActions();
-  const { isFree } = useWorkspaceSubscription();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -80,11 +77,11 @@ export const WorkspaceSettings = () => {
 
         '@media (min-width: 768px)': {
           display: 'grid',
-          'grid-template-columns': 'repeat(3, 1fr)',
+          'grid-template-columns': 'repeat(2, 1fr)',
         },
       }}
     >
-      <Card css={{ 'grid-column': '1/3' }}>
+      <Card css={{ 'grid-column': '1/2' }}>
         {editing ? (
           <Stack
             as="form"
@@ -200,11 +197,6 @@ export const WorkspaceSettings = () => {
                     onClick={() => setEditing(false)}
                   />
                 </Stack>
-                {isFree && (
-                  <Stack>
-                    <Badge variant="trial">Free</Badge>
-                  </Stack>
-                )}
               </Stack>
             </Stack>
           </Stack>
@@ -262,11 +254,6 @@ export const WorkspaceSettings = () => {
                   onClick={() => setEditing(true)}
                 />
               </Stack>
-              {isFree && (
-                <Stack>
-                  <Badge variant="trial">Free</Badge>
-                </Stack>
-              )}
             </Stack>
           </Stack>
         )}

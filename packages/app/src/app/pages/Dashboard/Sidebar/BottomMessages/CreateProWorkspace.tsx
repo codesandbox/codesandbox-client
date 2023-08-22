@@ -2,16 +2,20 @@ import { Stack, Text, Link } from '@codesandbox/components';
 import { Link as RouterLink } from 'react-router-dom';
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
-export const AdminUpgradeToTeamPro = () => (
+export const CreateProWorkspace: React.FC<{ userCanStartTrial: boolean }> = ({
+  userCanStartTrial,
+}) => (
   <Stack align="flex-start" direction="vertical" gap={2}>
     <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-      Upgrade to Team PRO for the full CodeSandbox Experience.
+      Create a <Text css={{ color: '#c2c2c2', fontWeight: 500 }}>Pro</Text>{' '}
+      workspace for the full CodeSandbox Experience.
     </Text>
     <Link
       as={RouterLink}
-      to="/pro?utm_source=side_banner_team_pro"
-      title="Upgrade to Team PRO"
+      to={proUrl({ source: 'personal_side_banner' })}
+      title={userCanStartTrial ? 'Start 14-day free trial' : 'Upgrade to Pro'}
       css={{
         fontSize: '12px',
         fontWeight: 500,
@@ -19,13 +23,13 @@ export const AdminUpgradeToTeamPro = () => (
         textDecoration: 'none',
       }}
       onClick={() => {
-        track('Side banner - Upgrade to Pro', {
+        track('Side banner - Create pro workspace', {
           codesandbox: 'V1',
           event_source: 'UI',
         });
       }}
     >
-      Upgrade now
+      {userCanStartTrial ? 'Start trial' : 'Upgrade to Pro'}
     </Link>
   </Stack>
 );
