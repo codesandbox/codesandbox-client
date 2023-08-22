@@ -14,6 +14,7 @@ import {
   ORG_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
   FREE_FEATURES,
+  ORGANIZATION_CONTACT_LINK,
 } from 'app/constants';
 import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
 import { SubscriptionCard } from './components/SubscriptionCard';
@@ -143,7 +144,7 @@ export const ProCreate = () => {
               features={ORG_FEATURES}
               cta={{
                 text: 'Contact us',
-                href: 'https://codesandbox.typeform.com/organization',
+                href: ORGANIZATION_CONTACT_LINK,
                 variant: 'dark',
                 onClick: () => {
                   track('subscription page - contact us', {
