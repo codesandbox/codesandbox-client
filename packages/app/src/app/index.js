@@ -81,11 +81,6 @@ const overmind = createOvermind(config, {
   logProxies: true,
 });
 
-initializeAnalytics({
-  sentryDSN: 'https://f595bc90ce3646c4a9d76a8d3b84b403@sentry.io/2071895',
-  amplitudeApiKey: 'a205ed9b06a7baf5a594bdd30293aa80',
-});
-
 if (process.env.NODE_ENV === 'production') {
   const ignoredOvermindActions = [
     'onInitialize',
@@ -99,6 +94,11 @@ if (process.env.NODE_ENV === 'production') {
   ];
 
   try {
+    initializeAnalytics({
+      sentryDSN: 'https://f595bc90ce3646c4a9d76a8d3b84b403@sentry.io/2071895',
+      amplitudeApiKey: 'a205ed9b06a7baf5a594bdd30293aa80',
+    });
+
     overmind.eventHub.on('action:start', event => {
       if (ignoredOvermindActions.includes(event.actionName)) {
         return;
