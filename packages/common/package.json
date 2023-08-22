@@ -45,6 +45,7 @@
     }
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.2.0",
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/polyfill": "^7.4.4",
     "@codesandbox/components": "^0.0.3",

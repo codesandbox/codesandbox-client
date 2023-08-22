@@ -9,15 +9,7 @@ import {
   isAllowedEvent,
 } from './utils';
 
-if (process.env.NODE_ENV === 'production') {
-  setTimeout(() => {
-    identify('[Amplitude] Version', VERSION);
-  }, 5000);
-}
-
 export { getHashedUserId };
-
-export const initializeSentry = sentry.initialize;
 
 export const DNT = DO_NOT_TRACK_ENABLED;
 
@@ -25,6 +17,11 @@ export async function logError(err: Error) {
   sentry.captureException(err);
 
   if (window.console && console.error) console.error(err);
+}
+
+export async function initializeAnalytics({ sentryDSN, amplitudeApiKey }) {
+  sentry.initialize(sentryDSN);
+  amplitude.init(amplitudeApiKey);
 }
 
 // Used to configure stuff?
