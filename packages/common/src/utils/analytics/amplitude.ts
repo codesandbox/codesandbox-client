@@ -1,5 +1,5 @@
 import * as amplitude from '@amplitude/analytics-browser';
-import VERSION from '@codesandbox/common/lib/version';
+import VERSION from '../../version';
 import { debug } from './utils';
 
 // After 30min no event we mark a session
