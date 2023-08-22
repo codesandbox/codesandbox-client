@@ -50,6 +50,7 @@ const SelectComponent = styled(Input).attrs(() => ({ as: 'select' }))<{
     deepmerge(variantStyles[variant], {
       appearance: 'none',
       color: 'input.placeholderForeground',
+      cursor: 'pointer',
       transition: 'all ease',
       transitionDuration: theme => theme.speeds[2],
 

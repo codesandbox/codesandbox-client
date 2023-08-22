@@ -32,6 +32,7 @@ export const WorkspaceSettings: React.FC = () => {
     isEligibleForTrial,
     numberOfSeats,
     subscription,
+    isInactiveTeam,
   } = useWorkspaceSubscription();
   const {
     numberOfEditors,
@@ -56,7 +57,7 @@ export const WorkspaceSettings: React.FC = () => {
 
   const created = team.users.find(user => user.id === team.creatorId);
   const restrictNewEditors =
-    hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit;
+    hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit || isInactiveTeam;
 
   if (!team || !currentUser) {
     return <Header title="Team Settings" activeTeam={null} />;
@@ -214,6 +215,12 @@ export const WorkspaceSettings: React.FC = () => {
       {canCheckout && restrictNewEditors && (
         <MessageStripe justify="space-between">
           <span>
+            {isInactiveTeam && (
+              <>
+                Team is inactive. Subscribe to Pro if you want to invite new
+                team members.
+              </>
+            )}
             {numberOfEditorsIsOverTheLimit && (
               <>
                 Free teams are limited to 5 editor seats. Some permissions might

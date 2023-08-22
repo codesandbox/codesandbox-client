@@ -10,9 +10,11 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { InactiveTeamStripe } from 'app/pages/Dashboard/Components/shared/InactiveTeamStripe';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
-import { SandboxesRestrictionsBanner } from './RestrictionsBanner';
+import { MaxSandboxesRestrictionsBanner } from './MaxSandboxesRestrictionsBanner';
 
 export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
@@ -27,6 +29,7 @@ export const SandboxesPage = () => {
     activeTeam,
   } = useAppState();
 
+  const { isInactiveTeam } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   React.useEffect(() => {
@@ -64,7 +67,7 @@ export const SandboxesPage = () => {
       activeTeamId={activeTeam}
       createNewFolder={() => setCreating(true)}
       createNewSandbox={
-        currentCollection && !hasMaxPublicSandboxes
+        currentCollection && !hasMaxPublicSandboxes && !isInactiveTeam
           ? () => {
               actions.modals.newSandboxModal.open({
                 collectionId: currentCollection.id,
@@ -89,9 +92,14 @@ export const SandboxesPage = () => {
         showSortOptions={!isEmpty && Boolean(currentPath)}
       />
 
-      {hasMaxPublicSandboxes ? <SandboxesRestrictionsBanner /> : null}
+      {hasMaxPublicSandboxes ? <MaxSandboxesRestrictionsBanner /> : null}
+      {isInactiveTeam ? (
+        <InactiveTeamStripe>
+          Re-activate your workspace to create new sandboxes.
+        </InactiveTeamStripe>
+      ) : null}
 
-      {isEmpty ? (
+      {isEmpty && !isInactiveTeam ? (
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledGrid>
             <CreateCard

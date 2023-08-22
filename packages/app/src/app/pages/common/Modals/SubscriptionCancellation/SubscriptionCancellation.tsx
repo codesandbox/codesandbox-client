@@ -1,14 +1,7 @@
 import React, { useEffect } from 'react';
 import * as typeformEmbed from '@typeform/embed';
 import track from '@codesandbox/common/lib/utils/analytics';
-import {
-  Element,
-  Button,
-  IconButton,
-  Stack,
-  Text,
-} from '@codesandbox/components';
-import { LoseFeatures } from 'app/components/LoseFeatures/LoseFeatures';
+import { Button, IconButton, Stack, Text } from '@codesandbox/components';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
@@ -80,74 +73,69 @@ export const SubscriptionCancellationModal: React.FC = () => {
   }
 
   return (
-    <Stack css={{ padding: '24px' }} direction="vertical" gap={12}>
-      <Stack direction="vertical" gap={6} css={{ textAlign: 'center' }}>
-        <Stack direction="vertical" gap={4}>
-          <Stack justify="flex-end">
-            <IconButton name="cross" title="Close" onClick={handleCloseModal} />
-          </Stack>
-          <Stack justify="center">
-            <Text
-              as="h2"
-              size={19}
-              color="#C2C2C2"
-              align="center"
-              lineHeight="28px"
-              css={{ margin: 0, maxWidth: '400px' }}
-              weight="400"
-            >
-              Are you sure you want to cancel? You&apos;ll lose access to all
-              Pro features
-            </Text>
+    <Stack css={{ padding: '24px' }} direction="vertical" gap={8}>
+      <Stack direction="vertical" gap={4}>
+        <Stack direction="horizontal" justify="space-between" align="center">
+          <Text size={16} color="#C2C2C2" weight="500">
+            Are you sure you want to cancel?
+          </Text>
+
+          <Stack>
+            <IconButton
+              variant="square"
+              name="cross"
+              title="Close"
+              onClick={handleCloseModal}
+            />
           </Stack>
         </Stack>
-        <LoseFeatures />
+        <Text size={13} color="#999999">
+          Everything in the workspace will be restricted until you either move
+          your work to a new pro workspace or reactivate this one.
+        </Text>
       </Stack>
 
-      <Stack gap={4} justify="space-between">
-        <Element css={{ flexGrow: 1 }}>
-          <Button onClick={handleCloseModal} variant="secondary">
-            Continue {hasActiveTeamTrial ? 'trial' : 'subscription'}
+      <Stack gap={4} css={{ width: '100%' }} direction="horizontal">
+        {isPaddle ? (
+          <Button
+            loading={paddleLoading}
+            onClick={() => {
+              setPaddeLoading(true);
+              track('Team Settings - confirm paddle cancel subscription', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+
+              pro.cancelWorkspaceSubscription();
+            }}
+            variant="primary"
+          >
+            I understand
           </Button>
-        </Element>
-        <Element css={{ flexGrow: 1 }}>
-          {isPaddle ? (
-            <Button
-              loading={paddleLoading}
-              onClick={() => {
-                setPaddeLoading(true);
-                track('Team Settings - confirm paddle cancel subscription', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
+        ) : (
+          <Button
+            autoWidth
+            onClick={() => {
+              track('Team Settings: confirm cancellation from modal', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
 
-                pro.cancelWorkspaceSubscription();
-              }}
-              variant="primary"
-            >
-              I understand
-            </Button>
-          ) : (
-            <Button
-              onClick={() => {
-                track('Team Settings: confirm cancellation from modal', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
-
-                const showModal = false;
-                if (showModal) {
-                  setFormOpen(true);
-                } else {
-                  createCustomerPortal();
-                }
-              }}
-              variant="primary"
-            >
-              OK
-            </Button>
-          )}
-        </Element>
+              const showModal = false;
+              if (showModal) {
+                setFormOpen(true);
+              } else {
+                createCustomerPortal();
+              }
+            }}
+            variant="primary"
+          >
+            Cancel {hasActiveTeamTrial ? 'trial' : 'subscription'}
+          </Button>
+        )}
+        <Button onClick={handleCloseModal} variant="secondary" autoWidth>
+          Continue {hasActiveTeamTrial ? 'trial' : 'subscription'}
+        </Button>
       </Stack>
     </Stack>
   );

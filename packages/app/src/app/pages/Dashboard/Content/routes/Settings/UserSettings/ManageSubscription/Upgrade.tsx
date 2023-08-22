@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Card } from '../../components';
 
@@ -15,10 +16,9 @@ const List = styled(Stack)`
   }
 `;
 
-export const Upgrade: React.FC<{
-  disabled?: boolean;
-  onUpgrade: () => void;
-}> = ({ disabled, onUpgrade }) => {
+export const Upgrade: React.FC<{ userCanStartTrial: boolean }> = ({
+  userCanStartTrial,
+}) => {
   return (
     <Card
       css={{
@@ -29,14 +29,18 @@ export const Upgrade: React.FC<{
     >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
         <Text size={4} weight="500">
-          Upgrade to Personal Pro
+          Experience the full CodeSandbox experience
         </Text>
+
         <List direction="vertical" gap={1} as="ul">
           <Text as="li" size={3}>
-            Advanced privacy settings
+            Unlimited editors
           </Text>
           <Text as="li" size={3}>
-            More file storage
+            Unlimited private sandboxes & repositories
+          </Text>
+          <Text as="li" size={3}>
+            Advanced privacy settings
           </Text>
           <Text as="li" size={3}>
             Higher upload limits
@@ -46,8 +50,17 @@ export const Upgrade: React.FC<{
           </Text>
         </List>
 
-        <Button disabled={disabled} onClick={onUpgrade} variant="trial">
-          Upgrade to Pro
+        <Button
+          onClick={() => {
+            track('User settings - Upgrade to Pro clicked', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+            window.location.href = '/pro';
+          }}
+          variant="trial"
+        >
+          {userCanStartTrial ? 'Start trial' : 'Upgrade to Pro'}
         </Button>
       </Stack>
     </Card>

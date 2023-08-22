@@ -10,4 +10,5 @@ export const StyledButton = styled(ButtonComponent)`
   line-height: 20px;
   letter-spacing: -0.02em;
   color: #151515;
+  cursor: pointer;
 `;

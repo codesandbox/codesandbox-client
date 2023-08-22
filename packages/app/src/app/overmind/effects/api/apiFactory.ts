@@ -31,7 +31,8 @@ export type Params = {
 };
 
 type Options = {
-  shouldCamelize: boolean;
+  shouldCamelize?: boolean;
+  version?: string;
 };
 
 export type Api = {
@@ -59,8 +60,12 @@ export type ApiConfig = {
 };
 
 export default (config: ApiConfig) => {
-  const createHeaders = (provideJwt: () => string | null) => ({
+  const createHeaders = (
+    provideJwt: () => string | null,
+    version?: string
+  ) => ({
     'x-codesandbox-client': 'legacy-web',
+    ...(version ? { 'X-CSB-API-Version': version } : {}),
     ...(provideJwt()
       ? {
           Authorization: `Bearer ${provideJwt()}`,
@@ -72,28 +77,28 @@ export default (config: ApiConfig) => {
       return axios
         .get(getBaseApi(path, useRoot) + path, {
           params,
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
     post(path, body, options) {
       return axios
         .post(getBaseApi(path) + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
     patch(path, body, options) {
       return axios
         .patch(getBaseApi(path) + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
     put(path, body, options) {
       return axios
         .put(getBaseApi(path) + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
@@ -101,7 +106,7 @@ export default (config: ApiConfig) => {
       return axios
         .delete(getBaseApi(path) + path, {
           params,
-          headers: createHeaders(config.provideJwtToken),
+          headers: createHeaders(config.provideJwtToken, options?.version),
         })
         .then(response => handleResponse(response, options));
     },
@@ -111,7 +116,7 @@ export default (config: ApiConfig) => {
           Object.assign(requestConfig, {
             url: getBaseApi(requestConfig.url ?? '') + requestConfig.url,
             data: requestConfig.data ? camelizeKeys(requestConfig.data) : null,
-            headers: createHeaders(config.provideJwtToken),
+            headers: createHeaders(config.provideJwtToken, options?.version),
           })
         )
         .then(response => handleResponse(response, options));

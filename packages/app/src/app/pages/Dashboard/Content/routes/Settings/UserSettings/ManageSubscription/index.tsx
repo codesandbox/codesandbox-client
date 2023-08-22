@@ -1,10 +1,8 @@
 import React from 'react';
 import { useAppState } from 'app/overmind';
 import { Stack, Text } from '@codesandbox/components';
-import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useCreateCheckout } from 'app/hooks';
-import { Patron } from './Patron';
+
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
 import { Upgrade } from './Upgrade';
@@ -13,35 +11,20 @@ import { Card } from '../../components';
 import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
-  const { user, isProcessingPayment } = useAppState();
-  const { isFree, isPaddle, isPatron, isStripe } = useWorkspaceSubscription();
-
-  const [checkout, createCheckout] = useCreateCheckout();
+  const { user, isProcessingPayment, userCanStartTrial } = useAppState();
+  const { isFree, isPaddle, isStripe } = useWorkspaceSubscription();
 
   if (isFree) {
     if (isProcessingPayment) {
       return <ProcessingPayment />;
     }
 
-    return (
-      <Upgrade
-        disabled={checkout.status === 'loading'}
-        onUpgrade={() => {
-          track('User settings - Upgrade to Pro clicked', {
-            codesandbox: 'V1',
-            event_source: 'UI',
-          });
-
-          createCheckout({
-            utm_source: 'user_settings',
-          });
-        }}
-      />
-    );
+    return <Upgrade userCanStartTrial={userCanStartTrial} />;
   }
 
+  // Legacy Personal Pro
+
   const renderDetailsContent = () => {
-    if (isPatron) return <Patron />;
     if (isPaddle) return <Paddle />;
     if (isStripe) return <Stripe />;
 

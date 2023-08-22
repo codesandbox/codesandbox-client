@@ -642,7 +642,7 @@ export default {
     }>(`/sandboxes/limits`);
   },
   getPrices() {
-    return api.get(`/prices`, undefined, undefined, true);
+    return api.get(`/prices`, undefined, { version: '2023-08-15' }, true);
   },
   stripeCreateCheckout({
     success_path,

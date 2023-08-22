@@ -1,5 +1,6 @@
 import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 
@@ -9,12 +10,8 @@ import { SandboxName } from './SandboxName';
 import { WorkspaceName } from './WorkspaceName';
 
 export const Header = () => {
-  const {
-    editor,
-    isAuthenticating,
-    activeTeamInfo,
-    personalWorkspaceId,
-  } = useAppState();
+  const { editor, isAuthenticating, activeTeamInfo } = useAppState();
+  const { isLegacyFreeTeam } = useWorkspaceSubscription();
 
   return (
     <Stack
@@ -34,14 +31,10 @@ export const Header = () => {
     >
       <Stack align="center">
         <AppMenu />
-        {activeTeamInfo && personalWorkspaceId && (
+        {activeTeamInfo && (
           <WorkspaceName
-            name={
-              activeTeamInfo.id === personalWorkspaceId
-                ? 'Personal'
-                : activeTeamInfo.name
-            }
-            plan={activeTeamInfo.subscription?.type}
+            name={activeTeamInfo.name}
+            legacyFreeTeam={isLegacyFreeTeam}
           />
         )}
       </Stack>

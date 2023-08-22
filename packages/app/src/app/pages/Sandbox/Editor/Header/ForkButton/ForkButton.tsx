@@ -11,7 +11,7 @@ import {
 import { useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { CurrentUser } from '@codesandbox/common/lib/types';
-import { MemberAuthorization } from 'app/graphql/types';
+import { MemberAuthorization, TeamType } from 'app/graphql/types';
 import { ForkIcon } from '../icons';
 
 interface TeamItemProps {
@@ -69,7 +69,6 @@ interface TeamOrUserItemProps {
   item: ITeamItem;
   forkClicked: (teamId: string) => void;
   disabled: boolean;
-  isPersonal: boolean;
 }
 const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
   if (props.disabled) {
@@ -108,7 +107,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
   let otherWorkspaces: ITeamItem[] = [];
 
   const userSpace = state.dashboard.teams.find(
-    t => t.id === state.personalWorkspaceId
+    t => t.type === TeamType.Personal
   )!;
 
   const allTeams: {
@@ -118,7 +117,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
     userAuthorizations: MemberAuthorization[];
   }[] = [
     userSpace,
-    ...state.dashboard.teams.filter(t => t.id !== state.personalWorkspaceId),
+    ...state.dashboard.teams.filter(t => t.type === TeamType.Team),
   ].filter(Boolean);
 
   if (allTeams.length) {
@@ -216,16 +215,12 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
                     forkClicked={props.forkClicked}
                     item={currentSpace}
                     disabled={state.activeWorkspaceAuthorization === 'READ'}
-                    isPersonal={
-                      currentSpace.teamId === state.personalWorkspaceId
-                    }
                   />
                 )}
 
                 <Menu.Divider />
                 {otherWorkspaces.map((space, i) => (
                   <TeamOrUserItem
-                    isPersonal={space.teamId === state.personalWorkspaceId}
                     key={space.teamId}
                     forkClicked={props.forkClicked}
                     item={space}

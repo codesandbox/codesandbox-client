@@ -2,26 +2,37 @@ import React, { useEffect } from 'react';
 import { Checkbox, Text, Button, Stack } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { formatCurrency } from 'app/utils/currency';
-
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
 import { Alert } from '../Common/Alert';
 
 export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   title,
 }) => {
   const {
-    activeTeamInfo,
     pro: { prices },
   } = useAppState();
   const actions = useActions();
-  const { isTeamSpace } = useWorkspaceAuthorization();
-  const { isPaddle } = useWorkspaceSubscription();
+  const {
+    isPaddle,
+    subscription,
+    numberOfSeats = 1,
+  } = useWorkspaceSubscription();
+
+  const smallTeamSeatPrice = usePriceCalculation({
+    billingInterval:
+      subscription?.billingInterval === 'MONTHLY' ? 'month' : 'year',
+    maxSeats: 3,
+  });
+
+  const largeTeamSeatPrice = usePriceCalculation({
+    billingInterval:
+      subscription?.billingInterval === 'MONTHLY' ? 'month' : 'year',
+    maxSeats: null,
+  });
 
   const [confirmed, setConfirmed] = React.useState(false);
-  const subscription = activeTeamInfo?.subscription!;
 
-  const getValue = () => {
+  const getPaddleValue = () => {
     // This shouldn't occur on this page, but it is still possible that this
     // value is undefined or null, coming from the hook.
     if (!subscription) return null;
@@ -35,29 +46,49 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
         subscription.billingInterval?.toLowerCase()
       );
     }
-
-    if (!prices) return null;
-
-    const period =
-      subscription.billingInterval === 'MONTHLY' ? 'month' : 'year';
-    const proType = isTeamSpace ? 'team' : 'individual';
-    const price = prices[proType][period];
-
-    if (!price) return null;
-
-    return `${formatCurrency({
-      amount: price.usd,
-      currency: 'USD',
-    })}/${subscription.billingInterval?.toLowerCase()}`;
   };
 
-  const value = getValue();
+  const nextSeat = numberOfSeats + 1;
+
+  const nextProSeatLabel =
+    nextSeat <= 3 ? (
+      <Text>
+        By adding a {nextSeat}
+        {nextSeat === 2 ? 'nd' : 'rd'} editor, I confirm an additional{' '}
+        <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+          {smallTeamSeatPrice} (excl. tax)
+        </Text>{' '}
+        will be added to the invoice.
+      </Text>
+    ) : (
+      <Text>
+        By adding an extra editor, I confirm an additional{' '}
+        <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+          {largeTeamSeatPrice} (excl. tax)
+        </Text>{' '}
+        for 1 seat will be added to the invoice.
+      </Text>
+    );
+
+  const priceLabel = isPaddle ? (
+    <Text>
+      By adding an extra editor, I confirm an additional{' '}
+      <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+        {getPaddleValue()} (excl. tax)
+      </Text>{' '}
+      for 1 seat will be added to the invoice.
+    </Text>
+  ) : (
+    nextProSeatLabel
+  );
 
   useEffect(() => {
     actions.pro.pageMounted();
   }, [actions]);
 
   if (!prices) return null;
+
+  const smallProTeam = numberOfSeats < 3 && !isPaddle;
 
   return (
     <Alert title={title}>
@@ -67,16 +98,22 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
             checked={confirmed}
             onChange={e => setConfirmed(e.target.checked)}
           />
-          <span>
-            <Text>
-              By adding an extra editor, I confirm an additional{' '}
-              <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
-                {value} (excl. tax)
-              </Text>{' '}
-              for 1 seat will be added to the invoice
-            </Text>
-          </span>
+
+          {priceLabel}
         </Stack>
+
+        {/** When the team is small, inform the user of the large team pricing as well */}
+        {smallProTeam && (
+          <Stack>
+            <Text size={3} block marginTop={4} marginLeft={6}>
+              When the team reaches 4+ editors, I confirm an additional{' '}
+              <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+                {largeTeamSeatPrice} (excl. tax)
+              </Text>{' '}
+              for 1 seat will be added to the invoice.
+            </Text>
+          </Stack>
+        )}
 
         <Stack>
           <Text size={3} block marginTop={4} marginLeft={6}>

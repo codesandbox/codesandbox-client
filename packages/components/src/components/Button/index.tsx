@@ -83,6 +83,7 @@ const commonStyles = {
   display: 'inline-flex',
   justifyContent: 'center',
   alignItems: 'center',
+  cursor: 'pointer',
   flex: 'none', // as a flex child
   fontFamily: 'Inter, sans-serif',
   paddingY: '4px',
