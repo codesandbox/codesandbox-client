@@ -10,7 +10,7 @@ import {
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SubscriptionOrigin, SubscriptionInterval } from 'app/graphql/types';
-import { MAX_PRO_EDITORS } from 'app/constants';
+import { MAX_PRO_EDITORS, ORGANIZATION_CONTACT_LINK } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useCreateCheckout } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -273,7 +273,7 @@ export const WorkspaceSettings: React.FC = () => {
             </span>
             <MessageStripe.Action
               as="a"
-              href="https://codesandbox.typeform.com/organization"
+              href={ORGANIZATION_CONTACT_LINK}
               onClick={() =>
                 track('Limit banner - team editors - Custom plan contact')
               }
