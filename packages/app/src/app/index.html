@@ -71,19 +71,6 @@ fill: white;
   <link href="/static/fonts/everett/everett.css" rel="stylesheet">
 
   </link>
-  <!-- Google Tag Manager -->
-  <script>
-    (function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
-      }); var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-T3L6RFK');
-  </script>
-  <!-- End Google Tag Manager -->
-  <!-- <script async src="//cdn.headwayapp.co/widget.js"></script> -->
   <script src="<%= webpackConfig.output.publicPath %>static/browserfs12/browserfs<%=process.env.NODE_ENV
       === 'development' ? '' : '.min'%>.js" type="text/javascript"></script>
 
@@ -112,12 +99,6 @@ fill: white;
 </head>
 
 <body style="margin: 0; padding: 0;">
-  <!-- Google Tag Manager (noscript) -->
-  <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T3L6RFK" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe>
-  </noscript>
-  <!-- End Google Tag Manager (noscript) -->
   <div id="root">
   </div>
 </body>

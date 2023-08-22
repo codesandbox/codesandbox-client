@@ -1,6 +1,5 @@
 import VERSION from '../../version';
 import * as amplitude from './amplitude';
-import * as google from './google';
 import * as sentry from './sentry';
 import {
   ANONYMOUS_UID_KEY,
@@ -80,7 +79,6 @@ export function trackPageview() {
     };
 
     amplitude.track('pageview', data);
-    google.trackPageView();
   }
 }
 
@@ -129,7 +127,6 @@ export default function track(eventName: string, secondArg: Object = {}) {
       path: location.pathname + location.search,
     };
     amplitude.track(eventName, data);
-    google.track(eventName, data);
     sentry.logBreadcrumb({
       type: 'analytics',
       message: eventName,

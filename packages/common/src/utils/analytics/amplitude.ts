@@ -10,6 +10,10 @@ export const init = (apiKey: string) => {
     serverUrl: 'https://stats.codesandbox.io/2/httpapi',
     appVersion: VERSION,
     flushIntervalMillis: 5000,
+    defaultTracking: {
+      attribution: false,
+      pageViews: false, // We have custom logic for pageview tracking
+    },
   });
 };
 
