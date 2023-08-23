@@ -81,6 +81,11 @@ const overmind = createOvermind(config, {
   logProxies: true,
 });
 
+initializeAnalytics({
+  sentryDSN: window._env_.SENTRY_DSN,
+  amplitudeApiKey: window._env_.AMPLITUDE_API_KEY,
+});
+
 if (process.env.NODE_ENV === 'production') {
   const ignoredOvermindActions = [
     'onInitialize',
@@ -94,11 +99,6 @@ if (process.env.NODE_ENV === 'production') {
   ];
 
   try {
-    initializeAnalytics({
-      sentryDSN: window._env_.SENTRY_DSN,
-      amplitudeApiKey: window._env_.AMPLITUDE_API_KEY,
-    });
-
     overmind.eventHub.on('action:start', event => {
       if (ignoredOvermindActions.includes(event.actionName)) {
         return;

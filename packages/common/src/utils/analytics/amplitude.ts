@@ -5,7 +5,13 @@ import { debug } from './utils';
 // After 30min no event we mark a session
 const NEW_SESSION_TIME = 1000 * 60 * 30;
 
+let amplitudeInitialized = false;
+
 export const init = (apiKey: string) => {
+  if (!apiKey) {
+    return;
+  }
+
   amplitude.init(apiKey, undefined, {
     serverUrl: 'https://stats.codesandbox.io/2/httpapi',
     appVersion: VERSION,
@@ -15,11 +21,13 @@ export const init = (apiKey: string) => {
       pageViews: false, // We have custom logic for pageview tracking
     },
   });
+
+  amplitudeInitialized = true;
 };
 
 export const identify = async (key: string, value: any) => {
-  if (!amplitude) {
-    debug('[Amplitude] NOT identifying because Amplitude is not loaded');
+  if (!amplitudeInitialized) {
+    return;
   }
 
   const identity = new amplitude.Identify();
@@ -29,8 +37,8 @@ export const identify = async (key: string, value: any) => {
 };
 
 export const identifyOnce = async (key: string, value: any) => {
-  if (!amplitude) {
-    debug('[Amplitude] NOT identifying because Amplitude is not loaded');
+  if (!amplitudeInitialized) {
+    return;
   }
 
   const identity = new amplitude.Identify();
@@ -40,8 +48,8 @@ export const identifyOnce = async (key: string, value: any) => {
 };
 
 export const setUserId = async (userId: string) => {
-  if (!amplitude) {
-    debug('[Amplitude] NOT setting userid because Amplitude is not loaded');
+  if (!amplitudeInitialized) {
+    return;
   }
 
   identify('userId', userId);
@@ -50,8 +58,8 @@ export const setUserId = async (userId: string) => {
 };
 
 export const resetUserId = async () => {
-  if (!amplitude) {
-    debug('[Amplitude] NOT resetting user id because Amplitude is not loaded');
+  if (!amplitudeInitialized) {
+    return;
   }
 
   amplitude.reset();
@@ -59,11 +67,8 @@ export const resetUserId = async () => {
 };
 
 export const track = async (eventName: string, data: any) => {
-  if (!amplitude) {
-    debug(
-      '[Amplitude] NOT tracking because Amplitude is not loaded',
-      eventName
-    );
+  if (!amplitudeInitialized) {
+    return;
   }
 
   const currentTime = Date.now();
@@ -78,6 +83,10 @@ export const track = async (eventName: string, data: any) => {
 };
 
 export const setGroup = async (group: string, value: string | string[]) => {
+  if (!amplitudeInitialized) {
+    return;
+  }
+
   amplitude.setGroup(group, value);
   debug('[Amplitude] Grouping', group, value);
 };
