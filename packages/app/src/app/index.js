@@ -95,8 +95,8 @@ if (process.env.NODE_ENV === 'production') {
 
   try {
     initializeAnalytics({
-      sentryDSN: 'https://f595bc90ce3646c4a9d76a8d3b84b403@sentry.io/2071895',
-      amplitudeApiKey: 'a205ed9b06a7baf5a594bdd30293aa80',
+      sentryDSN: window._env_.SENTRY_DSN,
+      amplitudeApiKey: window._env_.AMPLITUDE_API_KEY,
     });
 
     overmind.eventHub.on('action:start', event => {
