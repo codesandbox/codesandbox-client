@@ -32,4 +32,4 @@ standalone-packages/monaco-editor-core
 .next
 .cache-loader
 
-packages/app/public/env-config.js
+packages/app/static/js/env-config.js

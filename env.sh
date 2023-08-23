@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Recreate config file
-envConfigFilePath=./packages/app/public/env-config.js
+envConfigFilePath=./packages/app/static/js/env-config.js
 
 rm -rf $envConfigFilePath
 touch $envConfigFilePath
