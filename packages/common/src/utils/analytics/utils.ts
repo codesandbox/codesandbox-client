@@ -69,10 +69,6 @@ export const WHITELISTED_VSCODE_EVENTS = [
 
 const isDoNotTrackEnabled = () => {
   try {
-    if (document.location.origin !== 'https://codesandbox.io') {
-      return true;
-    }
-
     if (typeof window !== 'undefined') {
       let localStorageValue = true;
       try {
