@@ -9,7 +9,7 @@ import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import theme from '@codesandbox/common/lib/theme';
 import {
-  initializeSentry,
+  initializeAnalytics,
   logError,
 } from '@codesandbox/common/lib/utils/analytics';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
@@ -94,9 +94,10 @@ if (process.env.NODE_ENV === 'production') {
   ];
 
   try {
-    initializeSentry(
-      'https://f595bc90ce3646c4a9d76a8d3b84b403@sentry.io/2071895'
-    );
+    initializeAnalytics({
+      sentryDSN: 'https://f595bc90ce3646c4a9d76a8d3b84b403@sentry.io/2071895',
+      amplitudeApiKey: 'a205ed9b06a7baf5a594bdd30293aa80',
+    });
 
     overmind.eventHub.on('action:start', event => {
       if (ignoredOvermindActions.includes(event.actionName)) {

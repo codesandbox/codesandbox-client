@@ -7,6 +7,7 @@ import '@codesandbox/common/lib/global.css';
 import track, {
   identifyOnce,
   identify,
+  initializeAnalytics,
 } from '@codesandbox/common/lib/utils/analytics';
 import { initializeExperimentStore } from '@codesandbox/ab';
 import {
@@ -24,6 +25,10 @@ initializeExperimentStore(
 );
 
 try {
+  initializeAnalytics({
+    amplitudeApiKey: 'a205ed9b06a7baf5a594bdd30293aa80',
+  });
+
   // If this value is not set, set it to false
   identifyOnce('signed_in', false);
 } catch (e) {
