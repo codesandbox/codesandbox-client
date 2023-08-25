@@ -1,31 +1,40 @@
-# The Caddyfile is an easy way to configure your Caddy web server.
-#
-# Unless the file starts with a global options block, the first
-# uncommented line is always the address of your site.
-#
-# To use your own domain name (with automatic HTTPS), first make
-# sure your domain's A/AAAA DNS records are properly pointed to
-# this machine's public IP, then replace the line below with your
-# domain name.
-:80
+# Set the default listening port, also enable HTTPS for local development.
+{
+  http_port 8080
+  https_port 8443
 
-# Set this path to your site's directory.
-root * /usr/share/caddy
+  # HTTPS is suppossed to be used for local development only.
+  # For production, we've a nginx proxy to route and do the HTTPS stuff.
+  #
+  # If you're sure to use HTTPS with owned domain, remove the following lines,
+  # so that Caddy will use a valid ACME CA to sign a trusted certificate.
+  auto_https disable_redirects
+  local_certs
+}
+
+# To use HTTPS, change the next line after comments into your specific domain.
+#
+# The domain name should use the same second-level domain as Tango.
+# For example, if Tango is hosted on tango.example.com, then you can set it to
+# any subdomain of example.com like csb.example.com.
+#
+# For local development, make sure you've put your domain into your hosts file,
+# and point it to 127.0.0.1.
+# For production, make sure your domain's A/AAAA DNS records are properly
+# pointed to this machine's public IP.
+:8080
+
+# Built files will be saved into ./www/.
+root * ./www
 
 # Enable the static file server.
 file_server
 
+# Set this header to allow modifying document.domain in Chrome 115.
+# https://developer.chrome.com/blog/document-domain-setter-deprecation/
 header {
   Origin-Agent-Cluster ?0
 }
 
+# Handle URL with search query.
 try_files {path} {path}/ /index.html?{query}
-
-# Another common task is to set up a reverse proxy:
-# reverse_proxy localhost:8080
-
-# Or serve a PHP site through php-fpm:
-# php_fastcgi localhost:9000
-
-# Refer to the Caddy docs for more information:
-# https://caddyserver.com/docs/caddyfile

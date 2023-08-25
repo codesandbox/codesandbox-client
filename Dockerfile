@@ -8,7 +8,8 @@ RUN npx yarn build:deps
 RUN npx yarn build:sandpack
 
 # serve static files with caddy
-FROM caddy:2.1.1-alpine
+FROM caddy:2.7.4-alpine
 
-COPY --from=builder /app/www/ /usr/share/caddy/
+WORKDIR /app
+COPY --from=builder /app/www/ /app/www/
 COPY --from=builder /app/Caddyfile /etc/caddy/Caddyfile
