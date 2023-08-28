@@ -14,6 +14,7 @@ import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
+  ORGANIZATION_CONTACT_LINK,
   ORG_FEATURES,
   PERSONAL_PRO_FEATURES,
   TEAM_PRO_FEATURES,
@@ -273,7 +274,7 @@ export const ProUpgrade = () => {
                     }
                   : {
                       text: 'Contact us',
-                      href: 'https://codesandbox.typeform.com/organization',
+                      href: ORGANIZATION_CONTACT_LINK,
                       variant: 'dark',
                       onClick: () => {
                         track('subscription page - contact us', {

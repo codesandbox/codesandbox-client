@@ -19,6 +19,7 @@ import {
   PERSONAL_PRO_FEATURES,
   TEAM_PRO_FEATURES,
   ORG_FEATURES,
+  ORGANIZATION_CONTACT_LINK,
 } from 'app/constants';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
@@ -266,7 +267,7 @@ export const WorkspacePlanSelection: React.FC = () => {
             features={ORG_FEATURES}
             cta={{
               text: 'Contact us',
-              href: 'https://codesandbox.typeform.com/organization',
+              href: ORGANIZATION_CONTACT_LINK,
               variant: 'dark',
               onClick: () => {
                 track('subscription page - contact us', {
