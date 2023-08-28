@@ -24,7 +24,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
     if (!canCheckout) {
       return isPersonalSpace
         ? '/pro'
-        : '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
+        : '/docs/learn/plans/workspace#managing-teams-and-subscriptions';
     }
 
     return false;

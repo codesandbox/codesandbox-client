@@ -5,7 +5,7 @@ const config: ConfigurationFile = {
   type: 'sandbox',
   description: 'Configuration specific to the current sandbox.',
   moreInfoUrl:
-    'https://codesandbox.io/docs/configuration#sandbox-configuration',
+    'https://codesandbox.io/docs/learn/browser-sandboxes/configuration#sandbox-configuration',
   getDefaultCode: () =>
     JSON.stringify(
       {
