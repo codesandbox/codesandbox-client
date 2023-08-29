@@ -140,7 +140,7 @@ export const TeamCreate: React.FC<{ onComplete: () => void }> = () => {
       </Stack>
       <Element paddingTop={10}>
         <Link
-          href="https://codesandbox.io/docs/learn/introduction/workspace"
+          href="https://codesandbox.io/docs/learn/plans/workspace"
           target="_blank"
           rel="noreferrer"
           onClick={() => {

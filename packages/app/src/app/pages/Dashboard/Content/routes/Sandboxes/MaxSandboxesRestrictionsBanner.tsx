@@ -43,7 +43,7 @@ export const MaxSandboxesRestrictionsBanner: React.FC = () => {
         ) : (
           <MessageStripe.Action
             as="a"
-            href="https://codesandbox.io/docs/learn/plan-billing/trials"
+            href="https://codesandbox.io/docs/learn/plans/trials"
             target="_blank"
             rel="noreferrer"
             onClick={() => {

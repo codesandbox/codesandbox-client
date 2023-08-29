@@ -71,7 +71,7 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
         </Link>
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
-          href="https://codesandbox.io/docs/projects/learn/getting-started/open-source"
+          href="https://codesandbox.io/docs/learn/repositories/open-source"
           target="_blank"
         >
           <Icon name="file" />

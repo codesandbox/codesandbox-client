@@ -80,7 +80,7 @@ export const MaxReposFreeTeam: React.FC = () => {
       ) : (
         <MessageStripe.Action
           as="a"
-          href="https://codesandbox.io/docs/learn/plan-billing/trials"
+          href="https://codesandbox.io/docs/learn/plans/trials"
           onClick={() => {
             track('Limit banner: repos - Learn More', {
               codesandbox: 'V1',
