@@ -22,7 +22,7 @@ import {
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 
 import { InactiveTeam } from './InactiveTeam';
@@ -78,7 +78,10 @@ type ImportProps = {
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { activeTeam, hasLogIn } = useAppState();
-  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
+  const {
+    restrictsPublicRepos,
+    restrictsPrivateRepos,
+  } = useGitHubPermissions();
   const {
     dashboard: { importGitHubRepository },
   } = useActions();
@@ -166,6 +169,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     privateRepoFreeAccountError === url.raw;
   const hasExistingImports =
     existingRepositoryTeams && existingRepositoryTeams.length >= 1;
+
   const disableImport =
     hasMaxPublicRepositories || restrictsPublicRepos || isInactiveTeam;
 

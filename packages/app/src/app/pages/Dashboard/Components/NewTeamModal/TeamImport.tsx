@@ -4,10 +4,10 @@ import { Element, Stack, Text, Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 import { SuggestedRepositories } from 'app/components/CreateSandbox/Import/SuggestedRepositories';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 
 export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
-  const { restrictsPublicRepos } = useGitHuPermissions();
+  const { restrictsPublicRepos } = useGitHubPermissions();
 
   const handleImportClicked = () => {
     track('New Team - Imported repository', {

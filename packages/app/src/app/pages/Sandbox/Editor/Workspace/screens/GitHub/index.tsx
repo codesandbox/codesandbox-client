@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 
@@ -70,7 +70,10 @@ export const GitHub = () => {
     },
     isLoggedIn,
   } = useAppState();
-  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
+  const {
+    restrictsPublicRepos,
+    restrictsPrivateRepos,
+  } = useGitHubPermissions();
 
   const changeCount = gitChanges
     ? gitChanges.added.length +

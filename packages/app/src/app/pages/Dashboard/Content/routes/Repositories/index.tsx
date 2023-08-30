@@ -8,7 +8,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 import { InactiveTeamStripe } from 'app/pages/Dashboard/Components/shared/InactiveTeamStripe';
@@ -44,7 +44,7 @@ export const RepositoriesPage = () => {
     hasMaxPrivateRepositories,
   } = useWorkspaceLimits();
 
-  const { restrictsPublicRepos } = useGitHuPermissions();
+  const { restrictsPublicRepos } = useGitHubPermissions();
 
   const pageType: PageTypes = 'repositories';
 

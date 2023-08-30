@@ -7,7 +7,7 @@ import {
   Icon,
   Text,
 } from '@codesandbox/components';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { useActions } from 'app/overmind';
 
 const MAP_SCOPE_DESCRIPTION = {
@@ -47,7 +47,7 @@ const Details: React.FC = () => {
     restrictsPublicRepos,
     restrictsPrivateRepos,
     profile,
-  } = useGitHuPermissions();
+  } = useGitHubPermissions();
   const { signInGithubClicked, signOutGithubIntegration } = useActions();
 
   if (restrictsPublicRepos) {

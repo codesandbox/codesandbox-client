@@ -17,7 +17,7 @@ import {
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useActions, useAppState } from 'app/overmind';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
@@ -40,7 +40,7 @@ export const SuggestedRepositories = ({
     dashboard: { repositoriesByTeamId },
   } = useAppState();
   const { modals, dashboard: dashboardActions } = useActions();
-  const { restrictsPrivateRepos } = useGitHuPermissions();
+  const { restrictsPrivateRepos } = useGitHubPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
   const [isImporting, setIsImporting] = useState<
