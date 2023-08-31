@@ -1,0 +1,48 @@
+name: Prebuild and Release
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - README.md
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+
+      - run: yarn install
+      - run: yarn build:deps
+      - run: yarn build:sandpack
+
+      - name: Pack
+        run: |
+          tar cJf ./codesandbox.tar.xz -C www .
+          tar czf ./codesandbox.tar.gz -C www .
+
+      - name: Generate release tag
+        id: generate_release_tag
+        uses: alexvingg/next-release-tag@v1.0.4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: 'prebuild-assets-'
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          artifacts: 'codesandbox.tar.xz,codesandbox.tar.gz'
+          tag: ${{ steps.generate_release_tag.outputs.release_tag }}
+          commit: 'master'
