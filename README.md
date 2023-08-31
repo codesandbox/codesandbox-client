@@ -1,3 +1,57 @@
+This fork is mainly to adapt to [Tango](https://github.com/NetEase/tango) and work as its sandbox engine, so most of the modifications are focused on Sandpack.
+
+## Build
+
+```sh
+yarn install
+yarn build:deps
+yarn build:sandpack
+```
+
+Built files will be in `www/`.
+
+## Deploy
+
+Once built, use [Caddy](https://caddyserver.com/) to serve static files. A `Caddyfile` is already in the repo.
+
+```sh
+caddy run
+```
+
+Or you can use Docker to build and deploy.
+
+```sh
+docker build -t tango-codesandbox .
+docker run -p 8080:8080 tango-codesandbox
+```
+
+### Local testing
+
+Tango and Sandpack requires to be run in HTTPS. If you want to test locally, assign any domain in your hosts file and resolve to `127.0.0.1`, then change `Caddyfile` and replace `:8080` to the domain. Once you've done, Caddy should be run on `8443` with self-signed HTTPS.
+
+```sh
+docker run -p 8443:8443 tango-codesandbox
+```
+
+## Changes
+
+Here are the main modifications applied in this fork, to make it run more flawless with Tango.
+
+- Set `document.domain` to Second-level Domain, to make sure Tango can listen to fired events in iframe.
+  - This requires to add `Origin-Agent-Cluster: ?0` response header for Chrome 115.
+- Force running Babel in multi-thread mode.
+- Resolve alias for ESM.
+- Sandbox config is now in `sandbox.config.json` rather than `package.json`.
+- Support externals feature like webpack, and can be set as `externals` and `externalResources` in `sandbox.config.json`.
+- Support passing `evaluateJavaScript` to run at head, and can be set in `sandbox.config.json`.
+- `sandboxId` can be set in `sandbox.config.json`
+- Support less module (`.module.less`)
+
+
+
+***
+
+
 <p align="center">
   <a href="https://codesandbox.io">
     <img src="https://codesandbox.io/static/img/banner.png?v=2" height="300px">
