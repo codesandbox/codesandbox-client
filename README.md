@@ -14,6 +14,8 @@ Built files will be in `www/`.
 
 Once built, use [Caddy](https://caddyserver.com/) to serve static files. A `Caddyfile` is already in the repo.
 
+Or you can download prebuild assets from [releases](https://github.com/NetEase/codesandbox-client/releases) and [`Caddyfile`](https://github.com/NetEase/codesandbox-client/blob/master/Caddyfile) manually. Create a folder `www` next to `Caddyfile`, extract compressed tarball into `www/`, and run Caddy.
+
 ```sh
 caddy run
 ```
