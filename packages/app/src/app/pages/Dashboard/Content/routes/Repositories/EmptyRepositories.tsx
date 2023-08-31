@@ -8,12 +8,14 @@ import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import { RestrictedImportDisclaimer } from 'app/pages/Dashboard/Components/shared/RestrictedImportDisclaimer';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 
 const DESCRIPTION =
   'Save hours every week by shortening the review cycle and empowering everyone to contribute.<br />Every branch in Repositories is connected to git and has its own sandbox running in a fast microVM.';
 
 export const EmptyRepositories: React.FC = () => {
   const actions = useActions();
+  const { restrictsPublicRepos } = useGitHubPermissions();
 
   return (
     <EmptyPage.StyledWrapper
@@ -61,7 +63,7 @@ export const EmptyRepositories: React.FC = () => {
       </EmptyPage.StyledGrid>
       <RestrictedImportDisclaimer />
       <Element css={{ minHeight: 32 }} />
-      <SuggestionsRow page="empty repositories" />
+      {!restrictsPublicRepos && <SuggestionsRow page="empty repositories" />}
     </EmptyPage.StyledWrapper>
   );
 };

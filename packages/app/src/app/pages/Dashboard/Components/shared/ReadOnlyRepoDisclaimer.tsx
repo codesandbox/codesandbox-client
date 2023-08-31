@@ -1,5 +1,5 @@
 import { Icon } from '@codesandbox/components';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { useActions } from 'app/overmind';
 import React from 'react';
 import {
@@ -12,7 +12,7 @@ export const ReadOnlyRepoDisclaimer: React.FC<{ insideGrid?: boolean }> = ({
   insideGrid = false,
 }) => {
   const actions = useActions();
-  const { restrictsPublicRepos } = useGitHuPermissions();
+  const { restrictsPublicRepos } = useGitHubPermissions();
 
   if (!restrictsPublicRepos) {
     return null;

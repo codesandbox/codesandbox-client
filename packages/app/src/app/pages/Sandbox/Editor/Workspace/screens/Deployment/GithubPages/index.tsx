@@ -14,7 +14,7 @@ import getTemplate from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useEffect } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { Info } from './Info';
 import { GitHubIcon, FileIcon, VisitIcon } from '../icons';
 
@@ -29,7 +29,10 @@ export const GithubPages: FunctionComponent = () => {
     signInGithubClicked,
     deployment: { deployWithGitHubPages, fetchGithubSite },
   } = useActions();
-  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
+  const {
+    restrictsPublicRepos,
+    restrictsPrivateRepos,
+  } = useGitHubPermissions();
 
   useEffect(() => {
     fetchGithubSite();

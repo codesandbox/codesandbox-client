@@ -6,7 +6,7 @@ const NO_PERMISSIONS = {
   profile: null,
 };
 
-export const useGitHuPermissions = (): {
+export const useGitHubPermissions = (): {
   restrictsPublicRepos: boolean;
   restrictsPrivateRepos: boolean;
   profile: { email: string; scopes: string[] } | null;
