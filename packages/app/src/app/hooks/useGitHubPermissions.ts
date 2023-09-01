@@ -13,7 +13,7 @@ export const useGitHubPermissions = (): {
 } => {
   const { hasLogIn, user } = useAppState();
 
-  if (!hasLogIn || !user) {
+  if (!hasLogIn) {
     return NO_PERMISSIONS;
   }
 
