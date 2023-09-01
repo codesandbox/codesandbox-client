@@ -17,7 +17,7 @@ export const useGitHubPermissions = (): {
     return NO_PERMISSIONS;
   }
 
-  if (hasLogIn && !user) {
+  if (!user) {
     // Data not loaded yet
     return {
       restrictsPublicRepos: undefined,
