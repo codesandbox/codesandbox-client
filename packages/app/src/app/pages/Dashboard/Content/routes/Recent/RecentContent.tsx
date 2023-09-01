@@ -119,7 +119,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
       </Stack>
       <DocumentationRow />
       <TemplatesRow />
-      {!restrictsPublicRepos && <SuggestionsRow page="recent" />}
+      {restrictsPublicRepos === false && <SuggestionsRow page="recent" />}
     </StyledWrapper>
   );
 };

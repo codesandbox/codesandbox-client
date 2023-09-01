@@ -63,7 +63,9 @@ export const EmptyRepositories: React.FC = () => {
       </EmptyPage.StyledGrid>
       <RestrictedImportDisclaimer />
       <Element css={{ minHeight: 32 }} />
-      {!restrictsPublicRepos && <SuggestionsRow page="empty repositories" />}
+      {restrictsPublicRepos === false && (
+        <SuggestionsRow page="empty repositories" />
+      )}
     </EmptyPage.StyledWrapper>
   );
 };
