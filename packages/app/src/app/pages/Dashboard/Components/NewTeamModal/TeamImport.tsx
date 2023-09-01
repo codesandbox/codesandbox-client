@@ -9,15 +9,6 @@ import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
   const { restrictsPublicRepos } = useGitHubPermissions();
 
-  const handleImportClicked = () => {
-    track('New Team - Imported repository', {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
-
-    onComplete();
-  };
-
   return (
     <Element css={{ width: '100%', height: '546px' }} padding={8}>
       <Stack
@@ -52,17 +43,14 @@ export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
             <RestrictedPublicReposImport />
           ) : (
             <Element css={{ width: '100%' }}>
-              <SuggestedRepositories
-                isImportOnly
-                onImportClicked={handleImportClicked}
-              />
+              <SuggestedRepositories isImportOnly />
             </Element>
           )}
         </Stack>
         <Button
           css={{ width: 'auto' }}
           onClick={() => {
-            track('New Team - Skip import', {
+            track('New Team - Done import', {
               codesandbox: 'V1',
               event_source: 'UI',
             });
@@ -71,7 +59,7 @@ export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
           }}
           variant="link"
         >
-          Skip
+          Done
         </Button>
       </Stack>
     </Element>

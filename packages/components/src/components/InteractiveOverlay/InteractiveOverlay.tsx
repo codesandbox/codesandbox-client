@@ -67,6 +67,10 @@ const StyledButton = styled.button<
   font-family: inherit;
   cursor: pointer;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   ${overlayStyles}
 `;
 
