@@ -15,6 +15,8 @@ const TEMPLATE_IDS = [
   'fxis37', // NextJS (cloud)
   'hsd8ke', // Docker Starter (cloud)
   '9qputt', // React + Vite (browser)
+  'x8qjqr', // react native
+  '8jtj4s', // supabase
 ];
 
 export const TemplatesRow: React.FC = () => {
