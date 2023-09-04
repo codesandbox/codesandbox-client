@@ -53,6 +53,8 @@ const QUICK_START_IDS = [
   'angular',
   'react-ts',
   'rjk9n4zj7m', // static v1
+  'x8qjqr', // react native
+  '8jtj4s', // supabase
 ];
 
 interface PanelProps {
