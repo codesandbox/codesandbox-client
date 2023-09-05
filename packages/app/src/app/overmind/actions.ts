@@ -155,7 +155,6 @@ export const onInitializeOvermind = async (
 
   effects.preview.initialize();
 
-  actions.internal.showPrivacyPolicyNotification();
   actions.internal.setViewModeForDashboard();
 
   effects.browser.onWindowMessage(event => {
