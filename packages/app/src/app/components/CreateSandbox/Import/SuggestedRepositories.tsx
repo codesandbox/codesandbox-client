@@ -10,7 +10,7 @@ import {
   Text,
   Icon,
   InteractiveOverlay,
-  Button,
+  AnimatingDots,
   SkeletonText,
   Link,
 } from '@codesandbox/components';
@@ -29,11 +29,9 @@ import { AuthorizeForSuggested } from './AuthorizeForSuggested';
 
 type SuggestedRepositoriesProps = {
   isImportOnly?: boolean;
-  onImportClicked?: () => void;
 };
 export const SuggestedRepositories = ({
   isImportOnly,
-  onImportClicked,
 }: SuggestedRepositoriesProps) => {
   const {
     activeTeamInfo,
@@ -43,9 +41,12 @@ export const SuggestedRepositories = ({
   const { restrictsPrivateRepos } = useGitHubPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
-  const [isImporting, setIsImporting] = useState<
-    { owner: string; name: string } | false
-  >(false);
+  const [importsInProgress, setImportsInProgress] = useState<
+    Array<{ owner: string; name: string }>
+  >([]);
+  const [importsDone, setImportsDone] = useState<
+    Array<{ owner: string; name: string }>
+  >([]);
 
   const teamId = activeTeamInfo?.id;
 
@@ -156,9 +157,22 @@ export const SuggestedRepositories = ({
         <>
           <StyledList as="ul" direction="vertical" gap={1}>
             {githubRepos.data?.map(repo => {
+              const repoIsImporting = !!importsInProgress.find(
+                iip => iip.owner === repo.owner.login && iip.name === repo.name
+              );
+
+              const repoWasImported = !!importsDone.find(
+                iip => iip.owner === repo.owner.login && iip.name === repo.name
+              );
+
+              const disableActions = repoIsImporting || repoWasImported;
+
               return (
                 <InteractiveOverlay key={repo.id}>
-                  <StyledItem isDisabled={isFree && repo.private}>
+                  <StyledItem
+                    isDisabled={isFree && repo.private}
+                    alwaysShowIndicator={disableActions}
+                  >
                     <Stack gap={4} align="center">
                       <Icon name="repository" color="#999999B3" />
                       {isFree && repo.private ? (
@@ -168,16 +182,12 @@ export const SuggestedRepositories = ({
                       ) : (
                         <InteractiveOverlay.Button
                           onClick={async () => {
-                            if (isImporting) {
-                              return;
-                            }
-
-                            const importInfo = {
+                            const repoInfo = {
                               owner: repo.owner.login,
                               name: repo.name,
                             };
 
-                            setIsImporting(importInfo);
+                            setImportsInProgress(prev => [...prev, repoInfo]);
 
                             const isPersonalRepository =
                               repo.owner.login ===
@@ -211,17 +221,26 @@ export const SuggestedRepositories = ({
 
                             const importResult = await dashboardActions.importGitHubRepository(
                               {
-                                ...importInfo,
+                                ...repoInfo,
                                 redirect: !isImportOnly,
                               }
                             );
 
-                            // If we don't redirect and we get confirmation that the import succeeded
-                            if (importResult && onImportClicked) {
-                              onImportClicked();
+                            // Remove the repo from the in progress list
+                            setImportsInProgress(prev =>
+                              prev.filter(
+                                r =>
+                                  r.owner !== repoInfo.owner &&
+                                  r.name !== repoInfo.name
+                              )
+                            );
+
+                            // Add the repo into the done list
+                            if (importResult) {
+                              setImportsDone(prev => [...prev, repoInfo]);
                             }
                           }}
-                          disabled={Boolean(isImporting)}
+                          disabled={disableActions}
                         >
                           <VisuallyHidden>Import</VisuallyHidden>
                           <Text size={13}>{repo.name}</Text>
@@ -248,12 +267,19 @@ export const SuggestedRepositories = ({
                     </Stack>
                     {isFree && repo.private ? (
                       <StyledIndicator>
-                        {isImportOnly ? (
-                          <InteractiveOverlay.Button
+                        <InteractiveOverlay.Item>
+                          <Link
+                            as={RouterLink}
+                            to="/pro"
                             onClick={() => {
-                              if (onImportClicked) {
-                                onImportClicked();
-                              }
+                              track(
+                                'Suggested repos - Upgrade to Pro from private repo',
+                                {
+                                  codesandbox: 'V1',
+                                  event_source: 'UI',
+                                }
+                              );
+                              modals.newSandboxModal.close();
                             }}
                           >
                             <Text
@@ -268,71 +294,26 @@ export const SuggestedRepositories = ({
                               <VisuallyHidden>
                                 {repo.name} is a private repository.
                               </VisuallyHidden>
-                              <Text color="#EDFFA5">
+                              <Text color="#C2C2C2">
                                 {isEligibleForTrial
                                   ? 'Start a free trial '
                                   : 'Upgrade to Pro '}
                               </Text>
                               to import private repositories.
                             </Text>
-                          </InteractiveOverlay.Button>
-                        ) : (
-                          <InteractiveOverlay.Item>
-                            <Link
-                              as={RouterLink}
-                              to="/pro"
-                              onClick={() => {
-                                track(
-                                  'Suggested repos - Upgrade to Pro from private repo',
-                                  {
-                                    codesandbox: 'V1',
-                                    event_source: 'UI',
-                                  }
-                                );
-                                modals.newSandboxModal.close();
-                              }}
-                            >
-                              <Text
-                                size={12}
-                                css={{
-                                  display: 'block',
-                                  width: 152,
-                                  color: '#999999B3',
-                                }}
-                                align="right"
-                              >
-                                <VisuallyHidden>
-                                  {repo.name} is a private repository.
-                                </VisuallyHidden>
-                                <Text color="#C2C2C2">
-                                  {isEligibleForTrial
-                                    ? 'Start a free trial '
-                                    : 'Upgrade to Pro '}
-                                </Text>
-                                to import private repositories.
-                              </Text>
-                            </Link>
-                          </InteractiveOverlay.Item>
-                        )}
+                          </Link>
+                        </InteractiveOverlay.Item>
                       </StyledIndicator>
                     ) : (
                       <StyledIndicator aria-hidden>
                         <StyledImportIndicator>
-                          {isImporting &&
-                          isImporting.owner === repo.owner.login &&
-                          isImporting.name === repo.name ? (
-                            <Button
-                              css={{
-                                height: '16px', // match the text height so the content doesn't jump around when the state changes.
-                              }}
-                              role="presentation"
-                              variant="ghost"
-                              autoWidth
-                              loading
-                            />
-                          ) : (
-                            'Import'
+                          {disableActions && repoIsImporting && (
+                            <AnimatingDots />
                           )}
+                          {disableActions && repoWasImported && (
+                            <Icon name="simpleCheck" />
+                          )}
+                          {!disableActions && <>Import</>}
                         </StyledImportIndicator>
                       </StyledIndicator>
                     )}
@@ -358,7 +339,10 @@ const StyledIndicator = styled.span`
   opacity: 0;
 `;
 
-const StyledItem = styled.li<{ isDisabled?: boolean }>`
+const StyledItem = styled.li<{
+  isDisabled?: boolean;
+  alwaysShowIndicator?: boolean;
+}>`
   display: flex;
   justify-content: space-between;
   padding: 16px;
@@ -366,6 +350,10 @@ const StyledItem = styled.li<{ isDisabled?: boolean }>`
   border-radius: 4px;
   height: 32px;
   align-items: center;
+
+  ${StyledIndicator} {
+    opacity: ${({ alwaysShowIndicator }) => (alwaysShowIndicator ? 1 : 0)};
+  }
 
   &:hover,
   &:focus-within {
@@ -383,10 +371,10 @@ const StyledItem = styled.li<{ isDisabled?: boolean }>`
 
 const StyledImportIndicator = styled.span`
   box-sizing: border-box;
-  min-width: 80px;
+  height: 100%;
+  width: 100%;
+  display: flex;
   padding: 8px;
-  border-radius: 4px;
-  background-color: #343434;
   color: #c2c2c2;
   font-size: 12px;
   text-align: center;

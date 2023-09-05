@@ -180,7 +180,7 @@ const Dot = styled.span`
   animation: ${transition} 1.5s ease-out infinite;
 `;
 
-const AnimatingDots = () => (
+export const AnimatingDots = () => (
   <>
     <VisuallyHidden>Loading</VisuallyHidden>
     <span role="presentation">
