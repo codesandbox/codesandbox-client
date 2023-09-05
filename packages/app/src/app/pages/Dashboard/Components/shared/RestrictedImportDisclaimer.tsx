@@ -23,7 +23,8 @@ export const RestrictedImportDisclaimer: React.FC<{ insideGrid?: boolean }> = ({
 
   const dismissedBannerButRestrictsPublicRepos =
     dismissedPermissionsBanner && restrictsPublicRepos;
-  const onlyAllowsPublicRepos = !restrictsPublicRepos && restrictsPrivateRepos;
+  const onlyAllowsPublicRepos =
+    restrictsPublicRepos === false && restrictsPrivateRepos === true;
 
   if (dismissedBannerButRestrictsPublicRepos || onlyAllowsPublicRepos) {
     return (

@@ -7,14 +7,23 @@ const NO_PERMISSIONS = {
 };
 
 export const useGitHubPermissions = (): {
-  restrictsPublicRepos: boolean;
-  restrictsPrivateRepos: boolean;
+  restrictsPublicRepos: boolean | undefined;
+  restrictsPrivateRepos: boolean | undefined;
   profile: { email: string; scopes: string[] } | null;
 } => {
   const { hasLogIn, user } = useAppState();
 
-  if (!hasLogIn || !user) {
+  if (!hasLogIn) {
     return NO_PERMISSIONS;
+  }
+
+  if (!user) {
+    // Data not loaded yet
+    return {
+      restrictsPublicRepos: undefined,
+      restrictsPrivateRepos: undefined,
+      profile: null,
+    };
   }
 
   const {
