@@ -13,4 +13,5 @@ export type RepositoryProps = {
   selected: boolean;
   isBeingRemoved: boolean;
   restricted?: boolean;
+  appInstalled: boolean;
 };

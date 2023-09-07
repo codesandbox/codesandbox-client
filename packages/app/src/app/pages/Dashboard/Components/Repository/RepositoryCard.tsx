@@ -7,6 +7,7 @@ import {
   Text,
   Badge,
   InteractiveOverlay,
+  Tooltip,
 } from '@codesandbox/components';
 import { RepositoryProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
@@ -44,22 +45,24 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               }}
             />
           </Stack>
-          <InteractiveOverlay.Item radius={4}>
-            <Link
-              to={isBeingRemoved ? undefined : repository.url}
-              onContextMenu={onContextMenu}
-              css={{ textDecoration: 'none' }}
-              {...props}
-            >
-              <Text
-                color={restricted ? '#999' : '#e5e5e5'}
-                size={13}
-                weight="500"
+          <Tooltip label="test">
+            <InteractiveOverlay.Item radius={4}>
+              <Link
+                to={isBeingRemoved ? undefined : repository.url}
+                onContextMenu={onContextMenu}
+                css={{ textDecoration: 'none' }}
+                {...props}
               >
-                {repository.name}
-              </Text>
-            </Link>
-          </InteractiveOverlay.Item>
+                <Text
+                  color={restricted ? '#999' : '#e5e5e5'}
+                  size={13}
+                  weight="500"
+                >
+                  {repository.name}
+                </Text>
+              </Link>
+            </InteractiveOverlay.Item>
+          </Tooltip>
         </Stack>
 
         <Stack justify="space-between" gap={4}>
@@ -67,6 +70,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
             {repository.private ? (
               <Icon color="#999" name="lock" size={12} />
             ) : null}
+
             <Stack align="center" gap={1}>
               <Icon color="#999" name="branch" />
               <Text color="#999" size={12}>

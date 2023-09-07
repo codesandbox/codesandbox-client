@@ -273,6 +273,7 @@ export const branchFragment = gql`
 
 export const projectFragment = gql`
   fragment project on Project {
+    appInstalled
     branchCount
     lastAccessedAt
     repository {
@@ -291,6 +292,7 @@ export const projectFragment = gql`
 
 export const projectWithBranchesFragment = gql`
   fragment projectWithBranches on Project {
+    appInstalled
     branches {
       ...branch
     }

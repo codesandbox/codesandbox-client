@@ -10,7 +10,11 @@ import { RepositoryProps } from './types';
 import { useSelection } from '../Selection';
 
 export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
-  const { branchCount, repository: providerRepository } = repository;
+  const {
+    branchCount,
+    repository: providerRepository,
+    appInstalled,
+  } = repository;
   const {
     activeTeam,
     dashboard: { viewMode, removingRepository },
@@ -53,6 +57,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
       removingRepository?.owner === providerRepository.owner &&
       removingRepository?.name === providerRepository.name,
     restricted,
+    appInstalled,
   };
 
   return {

@@ -3508,7 +3508,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
 
 export type ProjectFragment = { __typename?: 'Project' } & Pick<
   Project,
-  'branchCount' | 'lastAccessedAt'
+  'appInstalled' | 'branchCount' | 'lastAccessedAt'
 > & {
     repository: { __typename?: 'GitHubRepository' } & Pick<
       GitHubRepository,
@@ -3517,14 +3517,17 @@ export type ProjectFragment = { __typename?: 'Project' } & Pick<
     team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
   };
 
-export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
-  branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
-  repository: { __typename?: 'GitHubRepository' } & Pick<
-    GitHubRepository,
-    'owner' | 'name' | 'defaultBranch' | 'private'
-  >;
-  team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
-};
+export type ProjectWithBranchesFragment = { __typename?: 'Project' } & Pick<
+  Project,
+  'appInstalled'
+> & {
+    branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
+    repository: { __typename?: 'GitHubRepository' } & Pick<
+      GitHubRepository,
+      'owner' | 'name' | 'defaultBranch' | 'private'
+    >;
+    team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
+  };
 
 export type TeamLimitsFragment = { __typename?: 'TeamLimits' } & Pick<
   TeamLimits,
