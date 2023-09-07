@@ -299,7 +299,7 @@ export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
 
 export const githubAppInstallLink = () => {
-  return `https://codesandbox.stream/auth/github/app-install`;
+  return `${protocolAndHost()}/auth/github/app-install`;
 };
 
 export { dashboard };
