@@ -61,7 +61,7 @@ export const ProCreate = () => {
     onClick: async () => {
       setIsLoading(true);
       const newTeam = await actions.dashboard.createTeam({
-        teamName: `${user.username}'s pro team`,
+        teamName: `${user.username}'s pro`,
       });
 
       await createCheckout({
