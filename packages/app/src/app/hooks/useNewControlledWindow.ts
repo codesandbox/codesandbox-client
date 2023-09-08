@@ -94,8 +94,8 @@ export const useNewControlledWindow = ({
   return {
     ...state,
     openNewWindow: () => {
-      const popupW = 570;
-      const popupH = 770;
+      const popupW = 900;
+      const popupH = 600;
 
       const windowRef = window.open(
         url,
