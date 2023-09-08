@@ -108,7 +108,7 @@ export const Dashboard: FunctionComponent = () => {
     const searchParams = new URLSearchParams(location.search);
 
     if (JSON.parse(searchParams.get('new_workspace'))) {
-      actions.openCreateTeamModal({ step: 'members' });
+      actions.openCreateTeamModal({ step: 'name' });
       searchParams.delete('new_workspace');
     } else if (JSON.parse(searchParams.get('import_repo'))) {
       actions.openCreateSandboxModal({ initialTab: 'import' });

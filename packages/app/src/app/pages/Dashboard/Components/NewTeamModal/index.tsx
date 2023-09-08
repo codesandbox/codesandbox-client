@@ -1,5 +1,4 @@
 import React from 'react';
-import css from '@styled-system/css';
 import {
   IconButton,
   Stack,
@@ -11,14 +10,14 @@ import Modal from 'app/components/Modal';
 import { useActions, useAppState } from 'app/overmind';
 
 import track from '@codesandbox/common/lib/utils/analytics';
-import { TeamCreate } from './TeamCreate';
+import { TeamName } from './TeamName';
 import { TeamMembers } from './TeamMembers';
 import { TeamImport } from './TeamImport';
 
-export type TeamStep = 'create' | 'members' | 'import';
+export type TeamStep = 'name' | 'members' | 'import';
 
 const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
-  create: null,
+  name: 'members',
   members: 'import',
   import: null,
 };
@@ -31,7 +30,7 @@ type NewTeamProps = {
 const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
   const { activeTeamInfo } = useAppState();
   const [currentStep, setCurrentStep] = React.useState<TeamStep>(
-    step ?? 'create'
+    step ?? 'name'
   );
 
   const nextStep =
@@ -51,16 +50,12 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
     <>
       <Element padding={6}>
         <Stack align="center" justify="space-between">
-          <Text
-            css={css({
-              color: '#808080',
-            })}
-            size={3}
-          >
-            {activeTeamInfo && currentStep !== 'create'
+          <Text color="#999" size={3}>
+            {activeTeamInfo && currentStep !== 'name'
               ? activeTeamInfo.name
-              : 'New workspace'}
+              : ''}
           </Text>
+
           <IconButton
             name="cross"
             variant="square"
@@ -71,16 +66,14 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
         </Stack>
       </Element>
       <Stack
-        css={css({
-          flex: 1,
-        })}
+        css={{ flex: 1 }}
         align="center"
         direction="vertical"
         justify="center"
       >
         {
           {
-            create: <TeamCreate onComplete={handleStepCompletion} />,
+            name: <TeamName onComplete={handleStepCompletion} />,
             members: (
               <TeamMembers
                 hideSkip={!nextStep}

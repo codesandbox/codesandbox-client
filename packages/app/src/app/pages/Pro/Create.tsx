@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import {
   ThemeProvider,
   Stack,
@@ -17,6 +17,8 @@ import {
   ORGANIZATION_CONTACT_LINK,
 } from 'app/constants';
 import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
+import { useCreateCheckout } from 'app/hooks';
+import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import type { CTA } from './components/SubscriptionCard';
 import { PricingTable } from './components/PricingTable';
@@ -24,9 +26,21 @@ import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 
 export const ProCreate = () => {
-  const { hasLoadedApp, isLoggedIn, userCanStartTrial } = useAppState();
+  const { hasLoadedApp, isLoggedIn, userCanStartTrial, user } = useAppState();
+  const actions = useActions();
+  const effects = useEffects();
+  const [isLoading, setIsLoading] = useState(false);
+  const [checkout, createCheckout] = useCreateCheckout();
 
-  const { openCreateTeamModal } = useActions();
+  useEffect(() => {
+    if (checkout.status === 'error') {
+      setIsLoading(false);
+
+      effects.notificationToast.error(
+        `Could not create stripe checkout link. ${checkout.error}`
+      );
+    }
+  }, [checkout]);
 
   const oneSeatPrice = usePriceCalculation({
     billingInterval: 'year',
@@ -42,9 +56,22 @@ export const ProCreate = () => {
 
   const newWorkspaceCTA: CTA = {
     text: userCanStartTrial ? 'Start trial' : 'Upgrade to Pro',
+    isLoading,
     variant: 'dark',
-    onClick: () => {
-      openCreateTeamModal();
+    onClick: async () => {
+      setIsLoading(true);
+      const newTeam = await actions.dashboard.createTeam({
+        teamName: `${user.username}'s pro team`,
+      });
+
+      await createCheckout({
+        team_id: newTeam.id,
+        success_path: dashboardURLs.recent(newTeam.id, {
+          new_workspace: 'true',
+        }),
+        utm_source: 'pro_page',
+      });
+      setIsLoading(false);
     },
   };
 

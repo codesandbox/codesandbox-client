@@ -25,7 +25,7 @@ const StyledTextarea = styled.textarea<{ resize: boolean }>`
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   id: string;
-  label: string;
+  label?: string;
   name: string;
   resize?: boolean;
 }
@@ -39,7 +39,7 @@ export const Textarea = ({
 }: TextareaProps) => {
   return (
     <Stack gap={2} direction="vertical">
-      <Label htmlFor={id}>{label}</Label>
+      {label && <Label htmlFor={id}>{label}</Label>}
       <StyledTextarea id={id} name={name} resize={resize} {...restProps} />
     </Stack>
   );
