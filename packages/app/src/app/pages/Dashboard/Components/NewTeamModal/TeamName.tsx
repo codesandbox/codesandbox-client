@@ -67,7 +67,11 @@ export const TeamName: React.FC<{ onComplete: () => void }> = ({
 
     // Check if there's any team with the same name.
     setExistingTeamError(
-      Boolean(dashboard.teams.find(team => team.name === trimmedName))
+      Boolean(
+        dashboard.teams.find(
+          team => team.name === trimmedName && team.id !== activeTeamInfo?.id
+        )
+      )
     );
   };
 
