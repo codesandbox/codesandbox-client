@@ -170,9 +170,7 @@ export const TeamMembers: React.FC<{
           >
             Invite team members
           </Text>
-          <Text id="invitees-role" htmlFor="member" color="#999">
-            Insert email addresses separated by a comma
-          </Text>
+          <Text color="#999">Insert email addresses separated by a comma</Text>
         </Stack>
         <Stack
           as="form"
@@ -183,7 +181,6 @@ export const TeamMembers: React.FC<{
         >
           <Stack gap={4} direction="vertical">
             <Textarea
-              aria-describedby="invitees-role"
               id="member"
               name="members"
               value={addressesString}
