@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { CreateCard } from '@codesandbox/components';
+import { CreateCard, Element } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { Header } from 'app/pages/Dashboard/Components/Header';
@@ -60,6 +60,22 @@ export const SandboxesPage = () => {
   const pageType: PageTypes = 'sandboxes';
   const isEmpty = itemsToShow.length === 0;
 
+  const renderMessageStripe = () => {
+    if (hasMaxPublicSandboxes) {
+      return <MaxSandboxesRestrictionsBanner />;
+    }
+
+    if (isInactiveTeam) {
+      return (
+        <InactiveTeamStripe>
+          Re-activate your workspace to create new sandboxes.
+        </InactiveTeamStripe>
+      );
+    }
+  };
+
+  const messageStripe = renderMessageStripe();
+
   return (
     <SelectionProvider
       items={itemsToShow}
@@ -92,12 +108,11 @@ export const SandboxesPage = () => {
         showSortOptions={!isEmpty && Boolean(currentPath)}
       />
 
-      {hasMaxPublicSandboxes ? <MaxSandboxesRestrictionsBanner /> : null}
-      {isInactiveTeam ? (
-        <InactiveTeamStripe>
-          Re-activate your workspace to create new sandboxes.
-        </InactiveTeamStripe>
-      ) : null}
+      {messageStripe && (
+        <Element paddingX={4} paddingBottom={4}>
+          {messageStripe}
+        </Element>
+      )}
 
       {isEmpty && !isInactiveTeam ? (
         <EmptyPage.StyledWrapper>

@@ -15,6 +15,7 @@ import {
   sortByLastAccessed,
 } from 'app/overmind/namespaces/dashboard/utils';
 import { BranchFragment } from 'app/graphql/types';
+import { InstallGHAppStripe } from 'app/pages/Dashboard/Components/shared/InstallGHAppStripe';
 
 type MappedBranches = {
   defaultBranch: BranchFragment | null;
@@ -116,6 +117,37 @@ export const RepositoryBranchesPage = () => {
   const itemsToShow = getItemsToShow();
   const ownerNamePath = `${owner}/${name}`;
 
+  const renderMessageStripe = () => {
+    if (restricted) {
+      return <PrivateRepoFreeTeam />;
+    }
+
+    if (isInactiveTeam) {
+      return (
+        <InactiveTeamStripe>
+          Re-activate your workspace to continue working on the repository
+        </InactiveTeamStripe>
+      );
+    }
+
+    if (repositoryProject?.appInstalled === false) {
+      return (
+        <InstallGHAppStripe
+          onCloseWindow={() => {
+            // Refetch repo data to get rid of the banner until we implement the GH app subscription
+            actions.dashboard.getRepositoryWithBranches({
+              activeTeam,
+              owner,
+              name,
+            });
+          }}
+        />
+      );
+    }
+  };
+
+  const messageStripe = renderMessageStripe();
+
   return (
     <SelectionProvider
       page={pageType}
@@ -129,7 +161,6 @@ export const RepositoryBranchesPage = () => {
         activeTeam={activeTeam}
         path={ownerNamePath}
         showViewOptions
-        showBetaBadge
         nestedPageType={pageType}
         selectedRepo={{
           owner: repositoryProject?.repository.owner,
@@ -139,16 +170,10 @@ export const RepositoryBranchesPage = () => {
         readOnly={restricted || isInactiveTeam}
       />
 
-      {restricted && (
-        <Element paddingX={4} paddingY={2}>
-          <PrivateRepoFreeTeam />
+      {messageStripe && (
+        <Element paddingX={4} paddingBottom={4}>
+          {messageStripe}
         </Element>
-      )}
-
-      {isInactiveTeam && (
-        <InactiveTeamStripe>
-          Re-activate your workspace to continue working on the repository
-        </InactiveTeamStripe>
       )}
 
       <VariableGrid page={pageType} items={itemsToShow} />

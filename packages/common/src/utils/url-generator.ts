@@ -298,6 +298,10 @@ export const docsUrl = (path: string = '') =>
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
 
+export const githubAppInstallLink = () => {
+  return `${protocolAndHost()}/auth/github/app-install`;
+};
+
 export { dashboard };
 
 // This function handles all the scenarios of v2 branch editor urls

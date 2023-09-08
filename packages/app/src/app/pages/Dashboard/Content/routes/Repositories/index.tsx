@@ -77,6 +77,28 @@ export const RepositoriesPage = () => {
   const itemsToShow = getItemsToShow();
   const isEmpty = itemsToShow.length === 0;
 
+  const renderMessageStripe = () => {
+    if (hasMaxPublicRepositories || hasMaxPrivateRepositories) {
+      return <MaxReposFreeTeam />;
+    }
+
+    if (isInactiveTeam) {
+      return (
+        <InactiveTeamStripe>
+          Re-activate your workspace to import new repositories.
+        </InactiveTeamStripe>
+      );
+    }
+
+    if (restrictsPublicRepos && !dismissedPermissionsBanner) {
+      return (
+        <RestrictedPublicReposImport onDismiss={dismissPermissionsBanner} />
+      );
+    }
+  };
+
+  const messageStripe = renderMessageStripe();
+
   return (
     <SelectionProvider
       page={pageType}
@@ -89,27 +111,14 @@ export const RepositoriesPage = () => {
       <Header
         activeTeam={activeTeam}
         showViewOptions={!isEmpty}
-        showBetaBadge
         title="All repositories"
       />
 
-      {hasMaxPublicRepositories || hasMaxPrivateRepositories ? (
-        <Element paddingLeft={4} paddingRight={6} paddingY={4}>
-          <MaxReposFreeTeam />
+      {messageStripe && (
+        <Element paddingX={4} paddingBottom={4}>
+          {messageStripe}
         </Element>
-      ) : null}
-
-      {isInactiveTeam ? (
-        <InactiveTeamStripe>
-          Re-activate your workspace to import new repositories.
-        </InactiveTeamStripe>
-      ) : null}
-
-      {restrictsPublicRepos && !dismissedPermissionsBanner ? (
-        <Element paddingLeft={4} paddingRight={6} paddingY={4}>
-          <RestrictedPublicReposImport onDismiss={dismissPermissionsBanner} />
-        </Element>
-      ) : null}
+      )}
 
       {isEmpty ? (
         <EmptyRepositories />
