@@ -115,7 +115,7 @@
     "comlink-loader": "^2.0.0",
     "compare-versions": "^3.1.0",
     "console": "^0.7.2",
-    "csb-console-feed": "^3.7.0",
+    "console-feed": "^3.1.9",
     "cropperjs": "^1.5.11",
     "css-modules-loader-core": "^1.1.0",
     "date-fns": "^2.4.1",
