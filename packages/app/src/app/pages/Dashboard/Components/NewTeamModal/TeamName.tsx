@@ -1,32 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useActions, useAppState } from 'app/overmind';
 import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { StyledButton } from 'app/components/dashboard/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
-import { useCreateCheckout } from 'app/hooks';
 
-export const TeamCreate: React.FC<{ onComplete: () => void }> = () => {
-  const { dashboard } = useAppState();
+export const TeamName: React.FC<{ onComplete: () => void }> = ({
+  onComplete,
+}) => {
+  const { dashboard, activeTeamInfo } = useAppState();
   const actions = useActions();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [existingTeamError, setExistingTeamError] = useState(false);
-  const [checkout, createCheckout] = useCreateCheckout();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (checkout.status === 'error') {
-      setError(`Could not create stripe checkout link. ${checkout.error}`);
+    if (!activeTeamInfo || !inputRef.current) {
+      return;
     }
-  }, [checkout]);
+
+    inputRef.current.focus();
+    inputRef.current.select();
+  }, [activeTeamInfo]);
 
   const onSubmit = async event => {
     event.preventDefault();
     const teamName = event.target.name.value?.trim();
 
-    if (teamName) {
-      track('New Team - Create Team', {
+    if (teamName && teamName !== activeTeamInfo?.name) {
+      track('New Team - Set Name', {
         codesandbox: 'V1',
         event_source: 'UI',
       });
@@ -34,23 +37,19 @@ export const TeamCreate: React.FC<{ onComplete: () => void }> = () => {
       setError(null);
       setLoading(true);
       try {
-        const newTeam = await actions.dashboard.createTeam({
-          teamName,
-        });
-
-        await createCheckout({
-          team_id: newTeam.id,
-          success_path: dashboardURLs.recent(newTeam.id, {
-            new_workspace: 'true',
-          }),
-          utm_source: 'pro_page',
+        await actions.dashboard.setTeamInfo({
+          name: teamName,
+          description: null,
+          file: null,
         });
       } catch {
-        setError('There was a problem creating your team');
+        setError('There was a problem updating your workspace');
       } finally {
         setLoading(false);
       }
     }
+
+    onComplete();
   };
 
   const handleInput = e => {
@@ -68,7 +67,11 @@ export const TeamCreate: React.FC<{ onComplete: () => void }> = () => {
 
     // Check if there's any team with the same name.
     setExistingTeamError(
-      Boolean(dashboard.teams.find(team => team.name === trimmedName))
+      Boolean(
+        dashboard.teams.find(
+          team => team.name === trimmedName && team.id !== activeTeamInfo?.id
+        )
+      )
     );
   };
 
@@ -97,8 +100,9 @@ export const TeamCreate: React.FC<{ onComplete: () => void }> = () => {
             letterSpacing: '-0.01em',
           }}
         >
-          Name your workspace
+          Welcome to Pro
         </Text>
+        <Text color="#999">Let&apos;s give your workspace a name</Text>
       </Stack>
       <Stack
         as="form"
@@ -115,7 +119,9 @@ export const TeamCreate: React.FC<{ onComplete: () => void }> = () => {
           required
           autoFocus
           hideLabel
+          defaultValue={activeTeamInfo?.name}
           onChange={handleInput}
+          ref={inputRef}
         />
 
         {existingTeamError && (

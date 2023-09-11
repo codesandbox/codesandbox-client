@@ -10,7 +10,7 @@ export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
   const { restrictsPublicRepos } = useGitHubPermissions();
 
   return (
-    <Element css={{ width: '100%', height: '546px' }} padding={8}>
+    <Element css={{ width: '100%' }} padding={12}>
       <Stack
         align="center"
         direction="vertical"
@@ -47,20 +47,22 @@ export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
             </Element>
           )}
         </Stack>
-        <Button
-          css={{ width: 'auto' }}
-          onClick={() => {
-            track('New Team - Done import', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
+        <Stack css={{ width: '100%', justifyContent: 'flex-end' }}>
+          <Button
+            css={{ width: 'auto' }}
+            onClick={() => {
+              track('New Team - Done import', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
 
-            onComplete();
-          }}
-          variant="link"
-        >
-          Done
-        </Button>
+              onComplete();
+            }}
+            variant="link"
+          >
+            Done
+          </Button>
+        </Stack>
       </Stack>
     </Element>
   );

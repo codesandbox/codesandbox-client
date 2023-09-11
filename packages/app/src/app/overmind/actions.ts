@@ -619,7 +619,7 @@ export const openCreateTeamModal = (
   props?: OpenCreateTeamModalParams
 ) => {
   actions.modals.newTeamModal.open({
-    step: props?.step ?? 'create',
+    step: props?.step ?? 'name',
     hasNextStep: props?.hasNextStep ?? true,
   });
 };
