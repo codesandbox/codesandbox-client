@@ -26,15 +26,15 @@ const assets = [
   },
   {
     from: '.env.production',
-    to: '',
+    to: '.env.production',
   },
   {
     from: '.env.development',
-    to: '',
+    to: '.env.development',
   },
   {
     from: 'env.sh',
-    to: '',
+    to: 'env.sh',
   },
 ].filter(Boolean);
 
