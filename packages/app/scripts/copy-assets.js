@@ -24,6 +24,18 @@ const assets = [
     from: 'packages/app/public',
     to: '',
   },
+  {
+    from: '.env.production',
+    to: '',
+  },
+  {
+    from: '.env.development',
+    to: '',
+  },
+  {
+    from: 'env.sh',
+    to: '',
+  },
 ].filter(Boolean);
 
 const rootPath = path.resolve(__dirname, '../../..');
