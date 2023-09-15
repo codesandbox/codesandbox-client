@@ -42,8 +42,8 @@ Here are the main modifications applied in this fork, to make it run more flawle
 - Set `document.domain` to Second-level Domain, to make sure Tango can listen to fired events in iframe.
   - This requires to add `Origin-Agent-Cluster: ?0` response header for Chrome 115.
 - Force running Babel in multi-thread mode.
-- Resolve alias for ESM.
 - Sandbox config is now in `sandbox.config.json` rather than `package.json`.
+- Resolve alias for ESM, and can be set as `alias` in `sandbox.config.json`.
 - Support externals feature like webpack, and can be set as `externals` and `externalResources` in `sandbox.config.json`.
 - Support passing `evaluateJavaScript` to run at head, and can be set in `sandbox.config.json`.
 - `sandboxId` can be set in `sandbox.config.json`
