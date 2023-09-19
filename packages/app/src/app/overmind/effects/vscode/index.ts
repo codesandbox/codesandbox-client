@@ -510,7 +510,10 @@ export class VSCodeEffect {
     setFs(this.sandboxFsSync.create(sandbox));
 
     if (isFirstLoad) {
-      this.sandboxFsSync.sync(() => {});
+      this.sandboxFsSync.sync(() => {
+        // Once we have synced the fs, reload the TS project, as some new dependencies might have been added
+        this.runCommand('typescript.reloadProjects');
+      });
     } else {
       this.editorApi.extensionService.stopExtensionHost();
       this.sandboxFsSync.sync(() => {
