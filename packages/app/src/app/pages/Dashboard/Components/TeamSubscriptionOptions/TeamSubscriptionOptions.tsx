@@ -29,6 +29,7 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
 
   const createYearlyCheckout = () => {
     createCheckout({
+      recurring_interval: 'year',
       utm_source: 'settings_upgrade',
     });
   };
@@ -44,7 +45,6 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   return (
     <ComboButton
       disabled={disabled}
-      as="a"
       customStyles={buttonStyles}
       onClick={() => {
         createMonthlyCheckout();
