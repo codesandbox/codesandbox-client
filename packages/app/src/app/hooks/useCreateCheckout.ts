@@ -93,6 +93,11 @@ export const useCreateCheckout = (): [
     try {
       setStatus({ status: 'loading' });
 
+      if (!activeTeam || !user) {
+        // Should not happen but it's done for typing reasons
+        setStatus({ status: 'error', error: 'Invalid activeTeam or user' });
+      }
+
       let teamId = activeTeam;
 
       if (createTeam) {
