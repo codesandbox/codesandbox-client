@@ -22,6 +22,6 @@ while IFS='=' read -r varname varvalue || [ -n "$varname" ]; do
   fi
   
   echo "  $varname: \"$value\"," >> "$envConfigFilePath"
-done < ".env.$NODE_ENV"
+done < ".env"
 
 echo "}" >> "$envConfigFilePath"
