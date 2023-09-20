@@ -25,12 +25,8 @@ const assets = [
     to: '',
   },
   {
-    from: '.env.production',
-    to: '.env.production',
-  },
-  {
-    from: '.env.development',
-    to: '.env.development',
+    from: '.env',
+    to: '.env',
   },
   {
     from: 'env.sh',

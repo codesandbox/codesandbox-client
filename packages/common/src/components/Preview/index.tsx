@@ -84,9 +84,12 @@ const sseDomain = process.env.STAGING_API
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') => {
   // @ts-ignore
-  const staticUrl = window._env_?.STATIC_PREVIEW_URL;
-  if (staticUrl) {
-    return staticUrl;
+  const usesStaticPreviewURL = window._env_?.USE_STATIC_PREVIEW === 'true';
+  // @ts-ignore
+  const previewDomain = window._env_?.PREVIEW_DOMAIN;
+
+  if (usesStaticPreviewURL && previewDomain) {
+    return previewDomain;
   }
 
   return `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
