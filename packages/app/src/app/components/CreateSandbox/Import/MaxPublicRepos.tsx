@@ -26,7 +26,7 @@ export const MaxPublicRepos: React.FC = () => {
         <MessageStripe.Action
           onClick={() => {
             createCheckout({
-              utm_source: 'max_public_repos',
+              trackingLocation: 'max_public_repos',
             });
 
             track(

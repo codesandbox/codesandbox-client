@@ -66,7 +66,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
                 }
 
                 createCheckout({
-                  utm_source: 'editor_seats_upgrade',
+                  trackingLocation: 'editor_seats_upgrade',
                 });
               }}
               autoWidth

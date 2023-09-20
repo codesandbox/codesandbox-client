@@ -49,7 +49,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
             modals.newSandboxModal.close();
           } else {
             createCheckout({
-              utm_source: 'dashboard_import_limits',
+              trackingLocation: 'dashboard_import_limits',
             });
           }
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAppState, useEffects } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { useLocation } from 'react-router';
 import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -12,11 +12,10 @@ type CheckoutStatus =
   | { status: 'error'; error: string };
 
 export type CheckoutOptions = {
-  recurring_interval?: 'month' | 'year';
-  success_path?: string;
-  cancel_path?: string;
-  team_id?: string;
-  utm_source:
+  interval?: 'month' | 'year';
+  cancelPath?: string;
+  createTeam?: boolean;
+  trackingLocation:
     | 'settings_upgrade'
     | 'dashboard_upgrade_banner'
     | 'dashboard_import_limits'
@@ -67,7 +66,8 @@ export const useCreateCheckout = (): [
   (args: CheckoutOptions) => Promise<void>,
   boolean
 ] => {
-  const { activeTeam, isProcessingPayment } = useAppState();
+  const { activeTeam, isProcessingPayment, user } = useAppState();
+  const actions = useActions();
   const { isFree } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
   const [status, setStatus] = useState<CheckoutStatus>({ status: 'idle' });
@@ -85,30 +85,45 @@ export const useCreateCheckout = (): [
   }, [isProcessingPayment]);
 
   async function createCheckout({
-    recurring_interval = 'month',
-    cancel_path = pathname + search,
-    success_path = dashboardURLs.settings(activeTeam),
-    team_id = activeTeam!,
-    utm_source,
+    interval = 'month',
+    cancelPath = pathname + search,
+    createTeam,
+    trackingLocation,
   }: CheckoutOptions): Promise<void> {
     try {
       setStatus({ status: 'loading' });
 
+      let teamId = activeTeam;
+
+      if (createTeam) {
+        const newTeam = await actions.dashboard.createTeam({
+          teamName: `${user.username}'s pro`,
+        });
+
+        teamId = newTeam.id;
+      }
+
+      const successPath = createTeam
+        ? dashboardURLs.recent(teamId, {
+            new_workspace: 'true',
+          })
+        : dashboardURLs.settings(teamId);
+
       const payload = await api.stripeCreateCheckout({
-        success_path: addStripeSuccessParam(success_path, utm_source),
-        cancel_path: addStripeCancelParam(cancel_path),
-        team_id,
-        recurring_interval,
+        success_path: addStripeSuccessParam(successPath, trackingLocation),
+        cancel_path: addStripeCancelParam(cancelPath),
+        team_id: teamId,
+        recurring_interval: interval,
       });
 
       if (payload.stripeCheckoutUrl) {
         track('Subscription - Checkout successfully created', {
-          source: utm_source,
+          source: trackingLocation,
         });
         window.location.href = payload.stripeCheckoutUrl;
       } else {
         track('Subscription - Failed to create checkout', {
-          source: utm_source,
+          source: trackingLocation,
         });
       }
     } catch (err) {

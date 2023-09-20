@@ -183,7 +183,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const onCreateCheckout = () => {
     createCheckout({
-      utm_source: 'dashboard_upgrade_banner',
+      trackingLocation: 'dashboard_upgrade_banner',
     });
   };
 

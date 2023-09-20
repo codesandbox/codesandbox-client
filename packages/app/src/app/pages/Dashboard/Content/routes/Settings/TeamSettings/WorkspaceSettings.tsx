@@ -251,7 +251,7 @@ export const WorkspaceSettings: React.FC = () => {
               }
 
               createCheckout({
-                utm_source: 'dashboard_workspace_settings',
+                trackingLocation: 'dashboard_workspace_settings',
               });
             }}
           >
