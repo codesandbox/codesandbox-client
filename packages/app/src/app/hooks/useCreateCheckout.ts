@@ -95,7 +95,7 @@ export const useCreateCheckout = (): [
 
       if (!activeTeam || !user) {
         // Should not happen but it's done for typing reasons
-        setStatus({ status: 'error', error: 'Invalid activeTeam or user' });
+        throw new Error('Invalid activeTeam or user');
       }
 
       let teamId = activeTeam;
