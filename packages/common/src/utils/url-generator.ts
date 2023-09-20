@@ -162,6 +162,15 @@ export const frameUrl = (
     port = undefined,
   }: { useFallbackDomain?: boolean; port?: number } = {}
 ) => {
+  // @ts-ignore
+  const usesStaticPreviewURL = window._env_?.USE_STATIC_PREVIEW === 'true';
+  // @ts-ignore
+  const previewDomain = window._env_?.PREVIEW_DOMAIN;
+
+  if (usesStaticPreviewURL && previewDomain) {
+    return previewDomain;
+  }
+
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   const templateIsServer = isServer(sandbox.template);

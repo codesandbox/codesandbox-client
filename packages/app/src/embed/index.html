@@ -52,6 +52,7 @@ path {
     rel="icon"
   />
     <title>Embed - CodeSandbox</title>
+    <script src="/static/js/env-config.js"></script>
     <script src="<%= webpackConfig.output.publicPath %>static/browserfs12/browserfs<%=process.env.NODE_ENV
       === 'development' ? '' : '.min'%>.js"
       type="text/javascript"></script>
