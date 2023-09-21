@@ -20,7 +20,7 @@ export const InactiveTeamStripe: React.FC = ({ children }) => {
             });
 
             createCheckout({
-              utm_source: 'restrictions_banner',
+              trackingLocation: 'restrictions_banner',
             });
           }}
         >

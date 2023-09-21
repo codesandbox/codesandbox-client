@@ -51,7 +51,7 @@ export const Upgrade = () => {
 
         <TeamSubscriptionOptions
           buttonVariant="trial"
-          trackingLocation="Team Settings"
+          trackingLocation="settings_upgrade"
         />
       </Stack>
     </Card>

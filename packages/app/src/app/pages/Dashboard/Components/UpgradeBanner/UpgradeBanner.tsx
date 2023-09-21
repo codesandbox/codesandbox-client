@@ -74,7 +74,7 @@ export const UpgradeBanner: React.FC = () => {
             }
 
             createCheckout({
-              utm_source: 'restrictions_banner',
+              trackingLocation: 'restrictions_banner',
             });
           }}
           autoWidth
