@@ -15,7 +15,7 @@ export enum SubscriptionDebugStatus {
 }
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
-  const { activeTeamInfo, userCanStartTrial } = useAppState();
+  const { activeTeamInfo, userCanStartTrial, environment } = useAppState();
   const { isTeamSpace, isBillingManager } = useWorkspaceAuthorization();
   const isPersonalSpace = !isTeamSpace;
 
@@ -60,6 +60,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isLegacySpace = activeTeamInfo.legacy;
 
   const isPro =
+    environment.isOnPrem || // On prem workspaces are pro by default
     subscription.status === SubscriptionStatus.Active ||
     subscription.status === SubscriptionStatus.Trialing;
   const isFree = !isPro;
