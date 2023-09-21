@@ -86,7 +86,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   initialTab,
   isModal,
 }) => {
-  const { hasLogIn, activeTeamInfo, user } = useAppState();
+  const { hasLogIn, activeTeamInfo, user, environment } = useAppState();
   const actions = useActions();
   const isUnderRepositoriesSection =
     location.pathname.includes('/my-contributions') ||
@@ -224,6 +224,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     setViewState('fork');
   };
 
+  const showSearch = !environment.isOnPrem;
+  const showCloudTemplates = !environment.isOnPrem;
+
   return (
     <ThemeProvider>
       <Container>
@@ -260,7 +263,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             )}
           </HeaderInformation>
 
-          {viewState === 'initial' ? (
+          {showSearch && viewState === 'initial' ? (
             <SearchBox
               value={searchQuery}
               onChange={e => {
@@ -356,19 +359,21 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     </Tab>
                   ) : null}
 
-                  <Tab
-                    {...tabState}
-                    onClick={() => {
-                      track('Create New - Click Tab', {
-                        codesandbox: 'V1',
-                        event_source: 'UI',
-                        tab_name: `Cloud templates`,
-                      });
-                    }}
-                    stopId="cloud-templates"
-                  >
-                    Cloud templates
-                  </Tab>
+                  {showCloudTemplates && (
+                    <Tab
+                      {...tabState}
+                      onClick={() => {
+                        track('Create New - Click Tab', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          tab_name: `Cloud templates`,
+                        });
+                      }}
+                      stopId="cloud-templates"
+                    >
+                      Cloud templates
+                    </Tab>
+                  )}
 
                   <Tab
                     {...tabState}
