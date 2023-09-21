@@ -75,7 +75,6 @@
     "@apollo/react-hooks": "^3.1.3",
     "@babel/plugin-transform-destructuring": "^7.5.0",
     "@babel/preset-env": "^7.5.5",
-    "@codesandbox/ab": "^1.0.5",
     "@codesandbox/common": "^1.0.8",
     "@codesandbox/components": "^0.0.3",
     "@codesandbox/executors": "^0.1.0",

@@ -1,8 +1,4 @@
-import {
-  DNT,
-  trackPageview,
-  identify,
-} from '@codesandbox/common/lib/utils/analytics';
+import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { Toasts } from '@codesandbox/notifications';
@@ -13,11 +9,6 @@ import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { CreateSandboxModal } from 'app/components/CreateSandbox/CreateSandboxModal';
 import { Debug } from 'app/components/Debug';
-import { initializeExperimentStore } from '@codesandbox/ab';
-import {
-  getExperimentUserId,
-  AB_TESTING_URL,
-} from '@codesandbox/common/lib/config/env';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
@@ -152,14 +143,6 @@ const Curator = Loadable(() =>
 const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
-
-initializeExperimentStore(
-  AB_TESTING_URL,
-  getExperimentUserId,
-  async (key, value) => {
-    await identify(key, value);
-  }
-);
 
 const RoutesComponent: React.FC = () => {
   const { appUnmounted } = useActions();

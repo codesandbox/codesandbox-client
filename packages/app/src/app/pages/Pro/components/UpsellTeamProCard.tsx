@@ -1,6 +1,5 @@
 import React from 'react';
 import { useActions } from 'app/overmind';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import { Element, Stack, Text, SkeletonText } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TEAM_PRO_FEATURES } from 'app/constants';
@@ -13,18 +12,10 @@ import { StyledPricingDetailsText } from './elements';
 export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
   trackingLocation,
 }) => {
-  const experimentPromise = useExperimentResult('pro-page-sticker');
   const { openCreateTeamModal } = useActions();
-  const [showSticker, setShowSticker] = React.useState(false);
 
   const buildEventName = (event: string) => {
-    const name = `${trackingLocation} - ${event}`;
-
-    if (showSticker) {
-      return `${name} with collaboration sticker`;
-    }
-
-    return name;
+    return `${trackingLocation} - ${event}`;
   };
 
   const upsellTeamProCta: CTA = {
@@ -39,12 +30,6 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
     },
   };
 
-  React.useEffect(() => {
-    experimentPromise.then(experiment => {
-      setShowSticker(experiment === ExperimentValues.B);
-    });
-  }, [experimentPromise]);
-
   const oneSeatPrice = usePriceCalculation({
     billingInterval: 'year',
     maxSeats: 1,
@@ -57,20 +42,6 @@ export const UpsellTeamProCard: React.FC<{ trackingLocation: string }> = ({
 
   return (
     <Element css={{ position: 'relative' }}>
-      {showSticker && (
-        <Element
-          as="img"
-          alt="Optimized for collaboration!"
-          css={{
-            position: 'absolute',
-            right: 0,
-            transform: 'translate(50%, -40%)',
-            width: '158px',
-            height: '180px',
-          }}
-          src="/static/img/collaboration-sticker.png"
-        />
-      )}
       <SubscriptionCard
         title="Pro"
         features={TEAM_PRO_FEATURES}
