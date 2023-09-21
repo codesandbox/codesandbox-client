@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useAppState, useActions, useEffects } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import {
   ThemeProvider,
   Stack,
@@ -17,30 +17,14 @@ import {
   ORGANIZATION_CONTACT_LINK,
 } from 'app/constants';
 import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
-import { useCreateCheckout } from 'app/hooks';
-import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import { SubscriptionCard } from './components/SubscriptionCard';
-import type { CTA } from './components/SubscriptionCard';
 import { PricingTable } from './components/PricingTable';
 import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
+import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
 
 export const ProCreate = () => {
-  const { hasLoadedApp, isLoggedIn, userCanStartTrial, user } = useAppState();
-  const actions = useActions();
-  const effects = useEffects();
-  const [isLoading, setIsLoading] = useState(false);
-  const [checkout, createCheckout] = useCreateCheckout();
-
-  useEffect(() => {
-    if (checkout.status === 'error') {
-      setIsLoading(false);
-
-      effects.notificationToast.error(
-        `Could not create stripe checkout link. ${checkout.error}`
-      );
-    }
-  }, [checkout]);
+  const { hasLoadedApp, isLoggedIn } = useAppState();
 
   const oneSeatPrice = usePriceCalculation({
     billingInterval: 'year',
@@ -53,27 +37,6 @@ export const ProCreate = () => {
   });
 
   if (!hasLoadedApp || !isLoggedIn) return null;
-
-  const newWorkspaceCTA: CTA = {
-    text: userCanStartTrial ? 'Start trial' : 'Upgrade to Pro',
-    isLoading,
-    variant: 'dark',
-    onClick: async () => {
-      setIsLoading(true);
-      const newTeam = await actions.dashboard.createTeam({
-        teamName: `${user.username}'s pro`,
-      });
-
-      await createCheckout({
-        team_id: newTeam.id,
-        success_path: dashboardURLs.recent(newTeam.id, {
-          new_workspace: 'true',
-        }),
-        utm_source: 'pro_page',
-      });
-      setIsLoading(false);
-    },
-  };
 
   return (
     <ThemeProvider>
@@ -141,7 +104,20 @@ export const ProCreate = () => {
               title="Pro"
               features={TEAM_PRO_FEATURES_WITH_PILLS}
               isHighlighted
-              cta={newWorkspaceCTA}
+              customCta={
+                <TeamSubscriptionOptions
+                  buttonVariant="dark"
+                  buttonStyles={{
+                    padding: '12px 20px !important', // Otherwise it gets overridden.
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    fontWeight: 500,
+                    height: 'auto',
+                  }}
+                  createTeam
+                  trackingLocation="pro_page"
+                />
+              }
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="500">

@@ -224,7 +224,7 @@ export const ProUpgrade = () => {
                             fontWeight: 500,
                             height: 'auto',
                           }}
-                          trackingLocation="subscription page"
+                          trackingLocation="pro_page"
                         />
                       ),
                     }

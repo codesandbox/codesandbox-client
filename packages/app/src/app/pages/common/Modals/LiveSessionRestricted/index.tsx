@@ -72,8 +72,8 @@ export const LiveSessionRestricted: React.FC = () => {
                 }
 
                 createCheckout({
-                  cancel_path: sandboxUrl({ id }),
-                  utm_source: 'v1_live_session_upgrade',
+                  cancelPath: sandboxUrl({ id }),
+                  trackingLocation: 'v1_live_session_upgrade',
                 });
               }}
               autoWidth
