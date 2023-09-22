@@ -89,7 +89,7 @@ const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') => {
   const previewDomain = window._env_?.PREVIEW_DOMAIN;
 
   if (usesStaticPreviewURL && previewDomain) {
-    return previewDomain;
+    return `${location.protocol}//${previewDomain}/${initialPath}`;
   }
 
   return `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
