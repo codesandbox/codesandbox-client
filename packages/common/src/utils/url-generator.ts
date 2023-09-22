@@ -166,12 +166,11 @@ export const frameUrl = (
   const usesStaticPreviewURL = window._env_?.USE_STATIC_PREVIEW === 'true';
   // @ts-ignore
   const previewDomain = window._env_?.PREVIEW_DOMAIN;
+  const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   if (usesStaticPreviewURL && previewDomain) {
-    return previewDomain;
+    return `${location.protocol}//${previewDomain}/${path}`;
   }
-
-  const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   const templateIsServer = isServer(sandbox.template);
 
