@@ -79,8 +79,8 @@ function slugify(text) {
 
 export function createPackageJSON(
   sandbox: Sandbox,
-  dependencies: Object,
-  devDependencies: Object,
+  dependencies: Record<string, string>,
+  devDependencies: Record<string, string>,
   scripts: Object,
   extra?: Object
 ) {
@@ -101,9 +101,12 @@ export function createPackageJSON(
           name,
           description: packageJSON.description || sandbox.description,
           version,
-          dependencies: { ...dependencies, ...packageJSON.dependencies },
+          dependencies: {
+            ...getDependenciesToAdd(dependencies, packageJSON),
+            ...packageJSON.dependencies,
+          },
           devDependencies: {
-            ...devDependencies,
+            ...getDependenciesToAdd(devDependencies, packageJSON),
             ...packageJSON.devDependencies,
           },
           scripts: {
@@ -138,6 +141,33 @@ export function createPackageJSON(
     null,
     '  '
   );
+}
+
+/**
+ * Makes sure that we only add dependencies that are not already
+ * in the package.json
+ */
+function getDependenciesToAdd(
+  dependencies: Record<string, string>,
+  packageJson: {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  }
+): Record<string, string> {
+  const dependenciesToAdd: Record<string, string> = {};
+
+  const totalPackageJsonDependencies = Object.keys({
+    ...(packageJson.dependencies || {}),
+    ...(packageJson.devDependencies || {}),
+  });
+
+  for (const dependency of Object.keys(dependencies)) {
+    if (!totalPackageJsonDependencies.includes(dependency)) {
+      dependenciesToAdd[dependency] = dependencies[dependency];
+    }
+  }
+
+  return dependenciesToAdd;
 }
 
 export async function createFile(
