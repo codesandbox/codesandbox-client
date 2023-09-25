@@ -146,7 +146,7 @@ const Boundary = withRouter(ErrorBoundary);
 
 const RoutesComponent: React.FC = () => {
   const { appUnmounted } = useActions();
-  const { modals, activeTeamInfo } = useAppState();
+  const { modals, activeTeamInfo, environment } = useAppState();
 
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -202,7 +202,11 @@ const RoutesComponent: React.FC = () => {
             <Route path="/u/:username" component={Profile} />
             <Route path="/u2/:username" component={Profile} />
             <Route path="/search" component={Search} />
-            <Route path="/pro" component={Pro} />
+            {environment.isOnPrem ? (
+              <Redirect from="/pro" to="/dashboard" />
+            ) : (
+              <Route path="/pro" component={Pro} />
+            )}
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={MobileAuth} />
             <Route path="/vscode/login" component={VSCodeAuth} />

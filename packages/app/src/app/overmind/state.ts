@@ -173,7 +173,7 @@ export const state: State = {
   },
   environment: {
     // @ts-ignore
-    isOnPrem: true, // window._env_?.IS_ONPREM === 'true',
+    isOnPrem: window._env_?.IS_ONPREM === 'true',
     // @ts-ignore
     useStaticPreview: window._env_?.USE_STATIC_PREVIEW === 'true',
     // @ts-ignore
