@@ -12,12 +12,10 @@ echo "window._env_ = {" >> $envConfigFilePath
 
 while IFS='=' read -r varname varvalue || [ -n "$varname" ]; do
   value=""
-  if [ -n "$varname" ]; then
+  if [ ! -z $(printenv | grep "$varname=") ]; then
     eval "value=\"\${$varname}\""
-  fi
-
+  else
   # Otherwise use value from .env file
-  if [ -z "$value" ]; then
     value="$varvalue"
   fi
   
