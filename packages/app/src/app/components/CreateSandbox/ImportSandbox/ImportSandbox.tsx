@@ -1,5 +1,6 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button, Input, Stack, Text, Element } from '@codesandbox/components';
+import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { useEffect } from 'react';
 
 const InfoBlock = ({ label, content }: { label: string; content: string }) => (
@@ -103,7 +104,7 @@ export const ImportSandbox = () => {
             <a
               target="_blank"
               rel="noreferrer noopener"
-              href="https://codesandbox.io/docs/learn/sandboxes/synced-templates"
+              href={docsUrl('/learn/sandboxes/synced-templates')}
             >
               here
             </a>

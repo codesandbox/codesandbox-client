@@ -21,6 +21,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   sandboxUrl,
   signInPageUrl,
+  docsUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
@@ -183,7 +184,7 @@ export const addNpmDependency = withOwnedSandbox(
                   label: 'Learn More',
                   run: () => {
                     effects.browser.openWindow(
-                      'https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry'
+                      docsUrl('/learn/sandboxes/custom-npm-registry')
                     );
                   },
                 },

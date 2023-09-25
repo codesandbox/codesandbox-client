@@ -2,6 +2,7 @@ import {
   curatorUrl,
   profileUrl,
   docsUrl,
+  csbSite,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
@@ -36,7 +37,7 @@ export const UserMenu: FunctionComponent & {
               </Stack>
             </Menu.Link>
             <Menu.Divider />
-            <Menu.Link href="/?from-app=1">
+            <Menu.Link href={`${csbSite()}/?from-app=1`}>
               <Stack align="center" gap={2}>
                 <Icon name="external" size={16} />
                 <Text>codesandbox.io</Text>
@@ -136,7 +137,7 @@ export const UserMenu: FunctionComponent & {
 
           <Menu.Divider />
 
-          <Menu.Link href="/?from-app=1">
+          <Menu.Link href={`${csbSite()}/?from-app=1`}>
             <Stack align="center" gap={2}>
               <Icon name="external" size={16} />
               <Text>codesandbox.io</Text>

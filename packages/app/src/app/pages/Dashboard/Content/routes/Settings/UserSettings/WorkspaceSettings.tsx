@@ -21,7 +21,7 @@ import { Card } from '../components';
 import { ManageSubscription } from './ManageSubscription';
 
 export const WorkspaceSettings = () => {
-  const { user, activeTeam } = useAppState();
+  const { user, activeTeam, environment } = useAppState();
   const actions = useActions();
 
   const [editing, setEditing] = useState(false);
@@ -68,6 +68,8 @@ export const WorkspaceSettings = () => {
     return <Header title="Settings" activeTeam={activeTeam} />;
   }
 
+  const showSubscriptionManageCard = !environment.isOnPrem;
+
   return (
     <Element
       css={{
@@ -77,7 +79,9 @@ export const WorkspaceSettings = () => {
 
         '@media (min-width: 768px)': {
           display: 'grid',
-          'grid-template-columns': 'repeat(2, 1fr)',
+          'grid-template-columns': showSubscriptionManageCard
+            ? 'repeat(2, 1fr)'
+            : 'none',
         },
       }}
     >
@@ -322,7 +326,7 @@ export const WorkspaceSettings = () => {
         ) : null}
       </Card>
 
-      <ManageSubscription />
+      {showSubscriptionManageCard && <ManageSubscription />}
     </Element>
   );
 };

@@ -5,6 +5,7 @@ import css from '@styled-system/css';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { CreateRegistryParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
@@ -83,7 +84,7 @@ export const RegistrySettings = () => {
           ) : (
             <MessageStripe.Action
               as="a"
-              href="https://codesandbox.io/docs/learn/plans/trials"
+              href={docsUrl('/learn/plans/trials')}
               target="_blank"
               rel="noreferrer"
             >

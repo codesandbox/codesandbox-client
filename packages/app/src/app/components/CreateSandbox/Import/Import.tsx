@@ -12,7 +12,10 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  v2DefaultBranchUrl,
+  docsUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import {
   GithubRepoAuthorization,
@@ -251,7 +254,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             <br />
             Learn more about Repositories{' '}
             <a
-              href="https://codesandbox.io/docs/learn/repositories/overview"
+              href={docsUrl('/learn/repositories/overview')}
               target="_blank"
               rel="noreferrer noopener"
             >
