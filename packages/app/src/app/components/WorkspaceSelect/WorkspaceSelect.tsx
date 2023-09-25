@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppState } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { TeamType } from 'app/graphql/types';
 import {
   Badge,
@@ -25,6 +25,7 @@ interface WorkspaceSelectProps {
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
+    const actions = useActions();
     const { dashboard, user } = state;
     const history = useHistory();
     const {
@@ -32,8 +33,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
       isLegacyPersonalPro,
       isInactiveTeam,
     } = useWorkspaceSubscription();
-
-    const showCreateProWorkspaceOption = !state.environment.isOnPrem;
 
     if (dashboard.teams.length === 0) return null;
 
@@ -175,38 +174,44 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 );
               })}
 
-              {showCreateProWorkspaceOption && (
-                <Stack
-                  as={Menu.Item}
-                  align="center"
-                  gap={2}
-                  css={{
-                    textAlign: 'left',
-                  }}
-                  onSelect={() => {
+              <Stack
+                as={Menu.Item}
+                align="center"
+                gap={2}
+                css={{
+                  textAlign: 'left',
+                }}
+                onSelect={() => {
+                  if (state.environment.isOnPrem) {
+                    actions.openCreateTeamModal({ step: 'create' });
+                  } else {
                     track('Workspace Selector - Create Team', {
                       codesandbox: 'V1',
                       event_source: 'UI',
                     });
 
                     history.push('/pro');
+                  }
+                }}
+              >
+                <Stack
+                  justify="center"
+                  align="center"
+                  css={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '2px',
+                    border: '1px solid #999',
                   }}
                 >
-                  <Stack
-                    justify="center"
-                    align="center"
-                    css={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: '2px',
-                      border: '1px solid #999',
-                    }}
-                  >
-                    <Icon name="plus" size={10} />
-                  </Stack>
-                  <Text size={3}>Create a pro workspace</Text>
+                  <Icon name="plus" size={10} />
                 </Stack>
-              )}
+                <Text size={3}>
+                  {state.environment.isOnPrem
+                    ? 'Create workspace'
+                    : 'Create a pro workspace'}
+                </Text>
+              </Stack>
             </Menu.List>
           </Menu>
         </Stack>

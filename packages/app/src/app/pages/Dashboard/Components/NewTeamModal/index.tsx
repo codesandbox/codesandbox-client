@@ -13,14 +13,9 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { TeamName } from './TeamName';
 import { TeamMembers } from './TeamMembers';
 import { TeamImport } from './TeamImport';
+import { TeamCreate } from './TeamCreate';
 
-export type TeamStep = 'name' | 'members' | 'import';
-
-const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
-  name: 'members',
-  members: 'import',
-  import: null,
-};
+export type TeamStep = 'name' | 'members' | 'import' | 'create';
 
 type NewTeamProps = {
   step?: TeamStep;
@@ -28,10 +23,17 @@ type NewTeamProps = {
   onClose: () => void;
 };
 const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
-  const { activeTeamInfo } = useAppState();
+  const { activeTeamInfo, environment } = useAppState();
   const [currentStep, setCurrentStep] = React.useState<TeamStep>(
     step ?? 'name'
   );
+
+  const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
+    create: 'members',
+    name: 'members',
+    members: environment.isOnPrem ? null : 'import',
+    import: null,
+  };
 
   const nextStep =
     typeof hasNextStep === 'undefined' || hasNextStep === true
@@ -73,6 +75,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
       >
         {
           {
+            create: <TeamCreate onComplete={handleStepCompletion} />,
             name: <TeamName onComplete={handleStepCompletion} />,
             members: (
               <TeamMembers
