@@ -1,10 +1,11 @@
 import Template from './template';
 import { decorateSelector } from '../utils/decorate-selector';
+import { docsUrl } from '../utils/url-generator';
 
 export default new Template(
   'node',
   'Node',
-  'https://codesandbox.io/docs/learn/environment/vm',
+  docsUrl('/learn/environment/vm'),
   'node',
   decorateSelector(() => '#66cc33'),
   {

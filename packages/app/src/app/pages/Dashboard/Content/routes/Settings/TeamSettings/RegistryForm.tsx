@@ -12,6 +12,7 @@ import {
   Switch,
   Badge,
 } from '@codesandbox/components';
+import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
   AuthType,
   CreateOrUpdateNpmRegistryMutationVariables,
@@ -145,7 +146,7 @@ export const RegistryForm = ({
                 </Text>
 
                 <Link
-                  href="https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry"
+                  href={docsUrl('/learn/sandboxes/custom-npm-registry')}
                   target="_blank"
                   rel="noreferrer noopener"
                   css={css({
