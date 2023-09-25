@@ -226,6 +226,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const showSearch = !environment.isOnPrem;
   const showCloudTemplates = !environment.isOnPrem;
+  const showImportRepository = !environment.isOnPrem;
 
   return (
     <ThemeProvider>
@@ -313,19 +314,21 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     Quick start
                   </Tab>
 
-                  <Tab
-                    {...tabState}
-                    onClick={() => {
-                      track('Create New - Click Tab', {
-                        codesandbox: 'V1',
-                        event_source: 'UI',
-                        tab_name: 'Import from Github',
-                      });
-                    }}
-                    stopId="import"
-                  >
-                    Import repository
-                  </Tab>
+                  {showImportRepository && (
+                    <Tab
+                      {...tabState}
+                      onClick={() => {
+                        track('Create New - Click Tab', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                          tab_name: 'Import from Github',
+                        });
+                      }}
+                      stopId="import"
+                    >
+                      Import repository
+                    </Tab>
+                  )}
 
                   <Tab
                     {...tabState}
