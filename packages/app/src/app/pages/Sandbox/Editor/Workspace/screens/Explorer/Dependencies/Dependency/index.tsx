@@ -8,6 +8,7 @@ import compareVersions from 'compare-versions';
 import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
+import { packageExamplesUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
 import css from '@styled-system/css';
 import {
@@ -140,7 +141,7 @@ export const Dependency = ({
         })}
       >
         <Link
-          href={`/examples/package/${dependency}`}
+          href={packageExamplesUrl(dependency)}
           target="_blank"
           title={dependency}
           maxWidth="60%"

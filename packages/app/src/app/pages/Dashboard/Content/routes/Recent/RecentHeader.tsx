@@ -13,14 +13,14 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const { environment } = useAppState();
   const history = useHistory();
 
-  const showRepositoryImport = !environment.isOnPrem;
-  const showProWorkspace = !environment.isOnPrem && isPersonalSpace;
-
   const {
     isTeamSpace,
     isPersonalSpace,
     isTeamViewer,
   } = useWorkspaceAuthorization();
+
+  const showRepositoryImport = !environment.isOnPrem;
+  const showProWorkspace = !environment.isOnPrem && isPersonalSpace;
 
   return (
     <Stack direction="vertical" gap={9}>

@@ -16,6 +16,7 @@ import {
   Button,
 } from '@codesandbox/components';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { packageExamplesUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { HomeIcon, GitHubIcon, CSBIcon } from './icons';
 
@@ -263,7 +264,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
                   </Tooltip>
                 ) : null}
                 <Tooltip content="Examples">
-                  <Link href={`/examples/package/${dependency.name}`}>
+                  <Link href={packageExamplesUrl(dependency.name)}>
                     <CSBIcon />
                   </Link>
                 </Tooltip>

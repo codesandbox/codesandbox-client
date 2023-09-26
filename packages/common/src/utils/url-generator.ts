@@ -308,6 +308,9 @@ export function getSandboxId() {
 
 export const docsUrl = (path: string = '') => `${csbSite()}/docs${path}`;
 
+export const packageExamplesUrl = (packageName: string) =>
+  `${csbSite()}/examples/package/${packageName}`;
+
 export const blogUrl = (path: string = '') => `${csbSite()}/blog${path}`;
 
 export const teamInviteLink = (inviteToken: string) =>
