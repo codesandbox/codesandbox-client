@@ -53,7 +53,9 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
       <Element padding={6}>
         <Stack align="center" justify="space-between">
           <Text color="#999" size={3}>
-            {activeTeamInfo && currentStep !== 'name'
+            {activeTeamInfo &&
+            currentStep !== 'name' &&
+            currentStep !== 'create'
               ? activeTeamInfo.name
               : ''}
           </Text>
