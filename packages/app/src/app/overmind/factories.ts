@@ -5,6 +5,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { IState, derived, ContextFunction } from 'overmind';
 import { Context } from '.';
+import { renameZeitToVercel } from './utils/vercel';
 
 /*
   Ensures that we have loaded the app with the initial user
@@ -65,7 +66,7 @@ export const withLoadApp = <I>(
     try {
       await Promise.all([
         effects.api.getCurrentUser().then(user => {
-          state.user = user;
+          state.user = renameZeitToVercel(user);
         }),
       ]);
 
@@ -112,6 +113,7 @@ export const withOwnedSandbox = <I>(
   const { state, actions } = context;
 
   const sandbox = state.editor.currentSandbox;
+
   if (sandbox) {
     if (
       typeof requiredPermission === 'undefined'
@@ -127,6 +129,13 @@ export const withOwnedSandbox = <I>(
           sandboxId: sandbox.id,
         });
       } catch (e) {
+        // If we know the error is caused by an anonymous user trying to save a
+        // file and fork a server sandbox, we don't want to show the vscode error
+        // with the cancelAction and we don't want to continue either.
+        if (e.message === 'ERR_ANON_SSE_FORK') {
+          return () => {};
+        }
+
         return cancelAction(context, payload);
       }
     } else if (sandbox.isFrozen && state.editor.sessionFrozen) {

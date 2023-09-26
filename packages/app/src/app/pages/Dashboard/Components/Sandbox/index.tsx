@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -7,16 +7,25 @@ import { zonedTimeToUtc } from 'date-fns-tz';
 import { useActions, useAppState } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import track from '@codesandbox/common/lib/utils/analytics';
+import track, {
+  trackImprovedDashboardEvent,
+} from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
-import { SandboxCard, SkeletonCard } from './SandboxCard';
-import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { SandboxCard } from './SandboxCard';
+import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
+
+const MAP_SANDBOX_EVENT_TO_PAGE_TYPE: Partial<Record<PageTypes, string>> = {
+  recent: 'Dashboard - Open Sandbox from Recent',
+  drafts: 'Dashboard - Open Sandbox from My Drafts',
+  sandboxes: 'Dashboard - Open Sandbox from Sandboxes',
+};
 
 const PrivacyIcons = {
   0: () => null,
@@ -60,8 +69,9 @@ function getFolderName(item: GenericSandboxProps['item']): string | undefined {
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const { dashboard, activeWorkspaceAuthorization } = useAppState();
   const actions = useActions();
+  const { isFree } = useWorkspaceSubscription();
 
-  const { sandbox, type } = item;
+  const { sandbox } = item;
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
@@ -77,10 +87,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const viewCount = formatNumber(sandbox.viewCount);
 
-  const url = sandboxUrl({
-    id: sandbox.id,
-    alias: sandbox.alias,
-  });
+  const url = sandboxUrl(sandbox);
 
   const TemplateIcon = getTemplateIcon(sandbox);
   const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
@@ -95,8 +102,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   /* Drag logic */
 
-  const location = useLocation();
-
   const [, dragRef, preview] = useDrag({
     item,
     end: (_item, monitor) => {
@@ -109,19 +114,20 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   });
 
   /* View logic */
-  let viewMode: string;
+  let { viewMode } = dashboard;
 
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else viewMode = dashboard.viewMode;
+  if (page === 'deleted') {
+    viewMode = 'list';
+  }
 
   const Component: React.FC<SandboxItemComponentProps> =
     viewMode === 'list' ? SandboxListItem : SandboxCard;
 
   /** Access restrictions */
-  let { noDrag, autoFork } = item;
+  let { noDrag } = item;
+
   if (activeWorkspaceAuthorization === 'READ') {
     noDrag = true;
-    autoFork = false;
   }
 
   // interactions
@@ -142,6 +148,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const selected = selectedIds.includes(sandbox.id);
   const isDragging = isAnythingDragging && selected;
+  const restricted = isFree && sandbox.privacy !== 0;
 
   const onClick = event => {
     onSelectionClick(event, sandbox.id);
@@ -157,38 +164,23 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   );
 
   const history = useHistory();
-  const onDoubleClick = event => {
-    // can't open deleted items, they don't exist anymore
-    if (location.pathname.includes('deleted')) {
-      onContextMenu(event);
-      return;
-    }
 
-    // Templates in Home should fork, everything else opens
-    if (event.ctrlKey || event.metaKey) {
-      if (autoFork) {
-        actions.editor.forkExternalSandbox({
-          sandboxId: sandbox.id,
-          openInNewWindow: true,
-        });
-      } else {
-        window.open(url, '_blank');
-      }
-      track('Dashboard - Recent template forked', {
-        source: 'Home',
-        dashboardVersion: 2,
-      });
-    } else if (autoFork) {
-      actions.editor.forkExternalSandbox({
-        sandboxId: sandbox.id,
-      });
+  const onDoubleClick = event => {
+    if (page === 'deleted') {
+      // Can't open deleted items, they don't exist anymore so we open
+      // the context menu instead.
+      onContextMenu(event);
     } else {
-      history.push(url);
+      trackImprovedDashboardEvent(MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]);
+
+      if (event.ctrlKey || event.metaKey) {
+        window.open(url, '_blank');
+      } else if (sandbox.isV2) {
+        window.location.href = url;
+      } else {
+        history.push(url);
+      }
     }
-    track('Dashboard - Recent sandbox opened', {
-      source: 'Home',
-      dashboardVersion: 2,
-    });
   };
 
   /* Edit logic */
@@ -231,33 +223,51 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     onSubmit();
   }, [onSubmit]);
 
-  const interactionProps = {
-    tabIndex: 0, // make div focusable
-    style: {
-      outline: 'none',
-    }, // we handle outline with border
+  const baseInteractions = {
     selected,
-    onClick,
-    onMouseDown,
-    onDoubleClick,
-    onContextMenu,
     onBlur,
-    'data-selection-id': sandbox.id,
+    onContextMenu,
   };
+  const interactionProps =
+    page === 'recent'
+      ? {
+          ...baseInteractions,
+          interaction: 'link' as const,
+          as: sandbox.isV2 ? 'a' : Link,
+          to: sandbox.isV2 ? undefined : url,
+          href: sandbox.isV2 ? url : undefined,
+          onClick: () => {
+            // On the recent page the sandbox card is an anchor, so we only have
+            // to track using onclick, the sandbox is opened through native anchor
+            // functionality (including pressing meta keys for new tab).
+            trackImprovedDashboardEvent(MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]);
+          },
+          style: {
+            textDecoration: 'none',
+          },
+        }
+      : {
+          ...baseInteractions,
+          interaction: 'button' as const,
+          // Recent page does not support selection
+          'data-selection-id': sandbox.id,
+          tabIndex: '0',
+          onClick,
+          onMouseDown,
+          onDoubleClick,
+        };
 
   const sandboxProps = {
-    autoFork,
     noDrag,
     sandboxTitle,
     sandboxLocation,
     lastUpdated,
     viewCount,
     sandbox,
-    isTemplate: type === 'template',
-    alwaysOn: sandbox.alwaysOn,
     TemplateIcon,
     PrivacyIcon,
     screenshotUrl,
+    restricted,
     // edit mode
     editing: isRenaming && selected,
     newTitle,
@@ -267,14 +277,14 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     onInputBlur,
     // drag preview
     thumbnailRef,
-    opacity: isDragging ? 0.25 : 1,
+    isDragging,
   };
 
   const dragProps = sandboxProps.noDrag
     ? {}
     : {
         ref: dragRef,
-        onDragStart: event => onDragStart(event, sandbox.id),
+        onDragStart: event => onDragStart(event, sandbox.id, 'sandbox'),
       };
 
   React.useEffect(() => {
@@ -294,7 +304,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   }
 
   return (
-    <div {...dragProps}>
+    <div {...dragProps} css={{ height: '100%' }}>
       <Component
         {...sandboxProps}
         {...interactionProps}
@@ -304,19 +314,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   );
 };
 
+/**
+ * Used on the Recent page and in the VariableGrid
+ */
 export const Sandbox = GenericSandbox;
-
-export const SkeletonSandbox = () => {
-  const { dashboard } = useAppState();
-
-  const location = useLocation();
-
-  let viewMode;
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else viewMode = dashboard.viewMode;
-
-  if (viewMode === 'list') {
-    return <SkeletonListItem />;
-  }
-  return <SkeletonCard />;
-};

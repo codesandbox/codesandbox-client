@@ -5,6 +5,7 @@ export { default as browser } from './browser';
 export { default as connection } from './connection';
 export { default as jsZip } from './jsZip';
 export { default as live } from './live';
+export { default as moduleRecover } from './moduleRecover';
 export { default as notifications } from './notifications';
 export { default as router } from './router';
 export { default as settingsStore } from './settingsStore';

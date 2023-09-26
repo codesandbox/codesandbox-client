@@ -7,7 +7,12 @@ import {
   Element,
   Stack,
 } from '@codesandbox/components';
-import { CreateSandbox } from 'app/components/CreateNewSandbox/CreateSandbox';
+import { CreateSandbox } from 'app/components/CreateSandbox';
+import {
+  FreeViewOnlyStripe,
+  PaymentPending,
+  TrialWithoutPaymentInfo,
+} from 'app/components/StripeMessages';
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
@@ -16,6 +21,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
+import { SubscriptionStatus } from 'app/graphql/types';
+import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
@@ -53,6 +62,11 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     },
     customVSCodeTheme: null,
   });
+  const { subscription } = useWorkspaceSubscription();
+  const [
+    showTrialWithoutPaymentInfoBanner,
+    dismissTrialWithoutPaymentInfoBanner,
+  ] = useShowBanner();
 
   useEffect(() => {
     let timeout;
@@ -111,6 +125,17 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       return 5.5 * 16 + 2;
     }
 
+    // Has MessageStripe
+    if (
+      subscription?.status === SubscriptionStatus.Unpaid ||
+      showTrialWithoutPaymentInfoBanner ||
+      sandbox?.freePlanEditingRestricted ||
+      (state.hasLogIn && sandbox?.isSse)
+    ) {
+      // Header height + MessageStripe
+      return 3 * 16 + 44;
+    }
+
     // Header height
     return 3 * 16;
   };
@@ -132,6 +157,19 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
         {state.preferences.settings.zenMode ? null : (
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
             {!state.hasLogIn && <FixedSignInBanner />}
+
+            {subscription?.status === SubscriptionStatus.Unpaid && (
+              <PaymentPending />
+            )}
+
+            {showTrialWithoutPaymentInfoBanner && (
+              <TrialWithoutPaymentInfo
+                onDismiss={dismissTrialWithoutPaymentInfoBanner}
+              />
+            )}
+
+            {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
+            {state.hasLogIn && sandbox?.isSse ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>
         )}
@@ -147,6 +185,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
           )}
 
           <div
+            key={getTopOffset()} // Force re-render when topOffset changes to avoid weird positioning.
             style={{
               position: 'fixed',
               left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',

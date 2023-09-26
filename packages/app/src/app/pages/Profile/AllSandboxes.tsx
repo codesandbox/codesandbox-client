@@ -86,7 +86,7 @@ export const AllSandboxes = () => {
       <Stack justify="space-between" align="center">
         {featuredSandboxes.length ? (
           <Text size={7} weight="bold">
-            All Sandboxes
+            Sandboxes
           </Text>
         ) : (
           <span />

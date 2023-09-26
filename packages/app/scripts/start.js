@@ -226,12 +226,7 @@ function addMiddleware(devServer, index) {
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       cors({
-        origin: [
-          'http://localhost:3000',
-          'http://localhost:3002',
-          'http://localhost:8000',
-          'http://localhost:8001',
-        ],
+        origin: true,
         credentials: true,
       })
     );
@@ -249,6 +244,13 @@ function addMiddleware(devServer, index) {
     devServer.use('/socket', wsProxy);
     devServer.use(
       '/api',
+      createProxyMiddleware({
+        target: PROXY_DOMAIN,
+        changeOrigin: true,
+      })
+    );
+    devServer.use(
+      '/auth/workos',
       createProxyMiddleware({
         target: PROXY_DOMAIN,
         changeOrigin: true,
@@ -291,7 +293,9 @@ function runDevServer(port, protocol, index) {
     host: process.env.LOCAL_SERVER
       ? 'localhost'
       : process.env.DEV_DOMAIN || 'codesandbox.test',
-    disableHostCheck: !process.env.LOCAL_SERVER,
+    disableHostCheck:
+      Boolean(process.env.CSB) ||
+      !(process.env.LOCAL_SERVER || process.env.CODESANDBOX_HOST),
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,

@@ -1,12 +1,12 @@
 import React from 'react';
-
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Button, Stack, Text } from '@codesandbox/components';
+import { Stack, Text } from '@codesandbox/components';
+import { TeamSubscriptionOptions } from 'app/pages/Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
 
 import { Card } from '../../components';
 
-const List = styled(Stack)`
+const StyledList = styled(Stack)`
   padding-left: 1em;
   margin: 0;
 
@@ -19,21 +19,22 @@ const List = styled(Stack)`
 export const Upgrade = () => {
   return (
     <Card
-      as="a"
-      href="/pro"
       css={{
-        textDecoration: 'none',
         backgroundColor: 'white',
-        borderTop: '6px solid #EDFFA5',
-        padding: 24,
-        borderRadius: 4,
       }}
     >
-      <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
-        <Text size={6} weight="bold">
-          Upgrade to Team Pro
-        </Text>
-        <List direction="vertical" gap={1} as="ul">
+      <Stack
+        direction="vertical"
+        gap={4}
+        css={css({ color: 'grays.800', fontWeight: '500' })}
+      >
+        <Text size={4}>Upgrade to Team Pro</Text>
+        <StyledList
+          direction="vertical"
+          gap={1}
+          as="ul"
+          css={css({ fontWeight: '400' })}
+        >
           <Text as="li" size={3}>
             Advanced privacy settings
           </Text>
@@ -46,11 +47,12 @@ export const Upgrade = () => {
           <Text as="li" size={3}>
             Centralized billing
           </Text>
-        </List>
+        </StyledList>
 
-        <Button type="button" marginTop={2} variant="secondary">
-          Upgrade to Pro
-        </Button>
+        <TeamSubscriptionOptions
+          buttonVariant="trial"
+          trackingLocation="Team Settings"
+        />
       </Stack>
     </Card>
   );

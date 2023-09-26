@@ -347,7 +347,7 @@ export class TranspiledModule {
       if (options.isEntry) {
         tModule.setIsEntry(true);
       }
-    } catch (e) {
+    } catch (e: any) {
       if (e.type === 'module-not-found' && e.isDependency) {
         const { queryPath } = splitQueryFromPath(depPath);
         this.asyncDependencies.push(
@@ -451,7 +451,7 @@ export class TranspiledModule {
         };
 
         let transpiledModule: TranspiledModule | undefined;
-        if (!overwrite) {
+        if (overwrite) {
           try {
             transpiledModule = manager.getTranspiledModule(
               moduleCopy,
@@ -634,7 +634,7 @@ export class TranspiledModule {
 
           code = transpiledCode;
           finalSourceMap = sourceMap;
-        } catch (e) {
+        } catch (e: any) {
           e.fileName = loaderContext.path;
           e.tModule = this;
           this.resetTranspilation();
@@ -1082,7 +1082,7 @@ export class TranspiledModule {
       /* eslint-enable */
 
       return exports;
-    } catch (e) {
+    } catch (e: any) {
       e.tModule = e.tModule || transpiledModule;
 
       this.resetCompilation();

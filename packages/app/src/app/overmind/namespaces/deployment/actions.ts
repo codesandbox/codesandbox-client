@@ -66,7 +66,7 @@ export const getNetlifyDeploys = async ({ state, effects }: Context) => {
 export const getDeploys = async ({ state, actions, effects }: Context) => {
   if (
     !state.user ||
-    !state.user.integrations.zeit ||
+    !state.user.integrations.vercel ||
     !state.editor.currentSandbox
   ) {
     return;
@@ -77,7 +77,6 @@ export const getDeploys = async ({ state, actions, effects }: Context) => {
   try {
     const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
 
-    state.deployment.vercel.hasAlias = !!vercelConfig.alias;
     if (vercelConfig.name) {
       state.deployment.vercel.deploys = await effects.vercel.getDeployments(
         vercelConfig.name
@@ -174,6 +173,7 @@ export const deployProductionClicked = async ({
 
   actions.deployment.getDeploys();
 };
+
 export const deploySandboxClicked = async ({
   actions,
   effects,
@@ -181,7 +181,7 @@ export const deploySandboxClicked = async ({
 }: Context) => {
   state.currentModal = 'deployment';
 
-  const vercelIntegration = state.user && state.user.integrations.zeit;
+  const vercelIntegration = state.user && state.user.integrations.vercel;
 
   if (!vercelIntegration || !vercelIntegration.token) {
     effects.notificationToast.error(
@@ -194,12 +194,13 @@ export const deploySandboxClicked = async ({
     try {
       const user = await effects.vercel.getUser();
 
-      if (state.user && state.user.integrations.zeit) {
-        state.user.integrations.zeit.email = user.email;
+      if (state.user && state.user.integrations.vercel) {
+        state.user.integrations.vercel.email = user.email;
       }
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with Vercel',
+        message:
+          'We were not able to fetch your Vercel user details. You should still be able to deploy to Vercel, please try again if needed.',
         error,
       });
     }
@@ -242,29 +243,6 @@ export const deleteDeployment = async ({
     state.deployment.vercel.deploysBeingDeleted.indexOf(id),
     1
   );
-};
-
-export const aliasDeployment = async (
-  { state, effects, actions }: Context,
-  id: string
-) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-
-  const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
-
-  try {
-    const url = await effects.vercel.aliasDeployment(id, vercelConfig);
-
-    effects.notificationToast.success(`Deployed to ${url}`);
-    actions.deployment.getDeploys();
-  } catch (error) {
-    actions.internal.handleError({
-      message: 'An unknown error occurred when aliasing your deployment',
-      error,
-    });
-  }
 };
 
 export const deployWithGitHubPages = async ({

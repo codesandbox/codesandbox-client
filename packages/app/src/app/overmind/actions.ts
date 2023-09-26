@@ -7,11 +7,15 @@ import {
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 import { NotificationStatus } from '@codesandbox/notifications';
+import { TeamStep } from 'app/pages/Dashboard/Components/NewTeamModal';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
+import { FinalizeSignUpOptions } from './effects/api/types';
+import { AuthOptions, GHScopeOption } from './utils/auth';
+import { renameZeitToVercel } from './utils/vercel';
 
 export const internal = internalActions;
 
@@ -34,6 +38,13 @@ export const onInitializeOvermind = async (
 
   effects.flows.initialize(overmindInstance.reaction);
 
+  // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
+  effects.browser.onUnload(() => {
+    if (state.editor.currentSandbox && state.connected) {
+      effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+    }
+  });
+
   effects.api.initialize({
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
@@ -55,13 +66,18 @@ export const onInitializeOvermind = async (
   if (hasDevAuth) {
     gqlOptions.headers = () => ({
       Authorization: `Bearer ${localStorage.getItem('devJwt')}`,
+      'x-codesandbox-client': 'legacy-web',
+    });
+  } else {
+    gqlOptions.headers = () => ({
+      'x-codesandbox-client': 'legacy-web',
     });
   }
 
   effects.gql.initialize(gqlOptions, () => effects.live.socket);
 
   if (state.hasLogIn) {
-    await actions.internal.setActiveTeamFromUrlOrStore();
+    await actions.internal.setActiveWorkspaceFromUrlOrStore();
   }
 
   effects.notifications.initialize({
@@ -72,7 +88,7 @@ export const onInitializeOvermind = async (
 
   effects.vercel.initialize({
     getToken() {
-      return state.user?.integrations.zeit?.token ?? null;
+      return state.user?.integrations.vercel?.token ?? null;
     },
   });
 
@@ -238,11 +254,15 @@ type ModalName =
   | 'share'
   | 'signInForTemplates'
   | 'userSurvey'
-  | 'liveSessionEnded'
+  | 'liveSessionRestricted'
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
-  | 'pilotPayment';
+  | 'legacyPayment'
+  | 'selectWorkspaceToUpgrade'
+  | 'selectWorkspaceToStartTrial'
+  | 'midTrial'
+  | 'editorSeatsUpgrade';
 
 export const modalOpened = (
   { state, effects }: Context,
@@ -290,25 +310,9 @@ export const toggleSignInModal = ({ state }: Context) => {
 
 export const signInButtonClicked = async (
   { actions, state }: Context,
-  options: {
-    useExtraScopes?: boolean;
-    provider: 'google' | 'github';
-  }
+  options: AuthOptions
 ) => {
-  const { useExtraScopes, provider } = options || {};
-  if (!useExtraScopes) {
-    await actions.internal.signIn({
-      provider,
-      useExtraScopes: false,
-    });
-    state.signInModalOpen = false;
-    state.cancelOnLogin = null;
-    return;
-  }
-  await actions.internal.signIn({
-    useExtraScopes,
-    provider,
-  });
+  await actions.internal.signIn(options);
   state.signInModalOpen = false;
   state.cancelOnLogin = null;
 };
@@ -346,6 +350,13 @@ export const signInVercelClicked = async ({
   actions,
 }: Context) => {
   state.isLoadingVercel = true;
+
+  /**
+   * We're opening a browser popup here with the /auth/zeit page but then do a server
+   * side redirect to the Vercel sign in page. This only works on production, not locally.
+   * We also can't rename the zeit route to vercel (yet) because the server will throw an
+   * invalid redirect_uri error.
+   */
   const popup = browser.openPopup('/auth/zeit', 'sign in');
   const data: { code: string } = await browser.waitForMessage('signin');
 
@@ -353,11 +364,24 @@ export const signInVercelClicked = async ({
 
   if (data && data.code) {
     try {
-      state.user = await api.createVercelIntegration(data.code);
-      await actions.deployment.internal.getVercelUserDetails();
+      const currentUser = await api.createVercelIntegration(data.code);
+      state.user = renameZeitToVercel(currentUser);
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with Vercel',
+        message: 'Not able to add a Vercel integration. Please try again.',
+        error,
+      });
+    }
+
+    try {
+      await actions.deployment.internal.getVercelUserDetails();
+
+      // Not sure if we ever reach the catch clause below because the error has already
+      // been caught in getVercelUserDetails.
+    } catch (error) {
+      actions.internal.handleError({
+        message:
+          'We were not able to fetch your Vercel user details. You should still be able to deploy to Vercel, please try again if needed.',
         error,
       });
     }
@@ -369,9 +393,9 @@ export const signInVercelClicked = async ({
 };
 
 export const signOutVercelClicked = async ({ state, effects }: Context) => {
-  if (state.user?.integrations?.zeit) {
+  if (state.user?.integrations?.vercel) {
     await effects.api.signoutVercel();
-    state.user.integrations.zeit = null;
+    state.user.integrations.vercel = null;
   }
 };
 
@@ -387,9 +411,12 @@ export const setPendingUserId = ({ state }: Context, id: string) => {
   state.pendingUserId = id;
 };
 
-export const signInGithubClicked = async ({ state, actions }: Context) => {
+export const signInGithubClicked = async (
+  { state, actions }: Context,
+  includedScopes: GHScopeOption
+) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: true, provider: 'github' });
+  await actions.internal.signIn({ includedScopes, provider: 'github' });
   state.isLoadingGithub = false;
   if (state.editor.currentSandbox?.originalGit) {
     actions.git.loadGitSource();
@@ -398,6 +425,10 @@ export const signInGithubClicked = async ({ state, actions }: Context) => {
 
 export const signInGoogleClicked = async ({ actions }: Context) => {
   await actions.internal.signIn({ provider: 'google' });
+};
+
+export const signInAppleClicked = async ({ actions }: Context) => {
+  await actions.internal.signIn({ provider: 'apple' });
 };
 
 export const signOutClicked = async ({ state, effects, actions }: Context) => {
@@ -505,26 +536,27 @@ export const setActiveTeam = async (
 
   state.activeTeam = id;
   effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
-  state.dashboard.sandboxes = DEFAULT_DASHBOARD_SANDBOXES;
+
+  // reset dashboard data on team change
+  state.dashboard.sandboxes = { ...DEFAULT_DASHBOARD_SANDBOXES };
+  state.dashboard.contributions = null;
 
   actions.internal.replaceWorkspaceParameterInUrl();
 
   if (state.activeTeamInfo?.id !== id) {
     try {
-      const teamInfo = await actions.getActiveTeamInfo();
-      if (teamInfo) {
-        effects.analytics.track('Team - Change Active Team', {
-          newTeamId: id,
-          newTeamName: teamInfo.name,
-        });
-      }
+      await actions.getActiveTeamInfo();
     } catch (e) {
       let personalWorkspaceId = state.personalWorkspaceId;
       if (!personalWorkspaceId) {
         const res = await effects.gql.queries.getPersonalWorkspaceId({});
         personalWorkspaceId = res.me?.personalWorkspaceId;
       }
+
       if (personalWorkspaceId) {
+        // This toast was triggered when the getTeam query inside getActiveTeamInfo
+        // failed due to an invalid workspace id in the url or localStorage. We now
+        // check for id validity when initializing.
         effects.notificationToast.add({
           title: 'Could not find current workspace',
           message: "We've switched you to your personal workspace",
@@ -545,9 +577,12 @@ export const getActiveTeamInfo = async ({
   actions,
 }: Context) => {
   if (!state.activeTeam) {
-    await actions.internal.setActiveTeamFromUrlOrStore();
+    await actions.internal.setActiveWorkspaceFromUrlOrStore();
   }
 
+  // The getTeam query below used to fail because we weren't sure if the id in
+  // the localStorage or url was valid. We check this now when initializing the
+  // team, so this shouldn't error anymore.
   const team = await effects.gql.queries.getTeam({
     teamId: state.activeTeam,
   });
@@ -567,14 +602,24 @@ export const openCreateSandboxModal = (
   { actions }: Context,
   props: {
     collectionId?: string;
-    initialTab?: 'Import';
+    initialTab?: 'import';
   }
 ) => {
   actions.modals.newSandboxModal.open(props);
 };
 
-export const openCreateTeamModal = ({ state }: Context) => {
-  state.currentModal = 'newTeam';
+type OpenCreateTeamModalParams = {
+  step: TeamStep;
+  hasNextStep?: boolean;
+};
+export const openCreateTeamModal = (
+  { actions }: Context,
+  props?: OpenCreateTeamModalParams
+) => {
+  actions.modals.newTeamModal.open({
+    step: props?.step ?? 'info',
+    hasNextStep: props?.hasNextStep ?? true,
+  });
 };
 
 export const validateUsername = async (
@@ -587,15 +632,10 @@ export const validateUsername = async (
   state.pendingUser.valid = validity.available;
 };
 
+type SignUpOptions = Omit<FinalizeSignUpOptions, 'id'>;
 export const finalizeSignUp = async (
   { effects, actions, state }: Context,
-  {
-    username,
-    name,
-  }: {
-    username: string;
-    name: string;
-  }
+  { username, name, role, usage }: SignUpOptions
 ) => {
   if (!state.pendingUser) return;
   try {
@@ -603,6 +643,8 @@ export const finalizeSignUp = async (
       id: state.pendingUser.id,
       username,
       name,
+      role,
+      usage,
     });
     window.postMessage(
       {
@@ -620,7 +662,7 @@ export const finalizeSignUp = async (
 
 export const setLoadingAuth = async (
   { state }: Context,
-  provider: 'google' | 'github'
+  provider: 'apple' | 'google' | 'github' | 'sso'
 ) => {
   state.loadingAuth[provider] = !state.loadingAuth[provider];
 };
@@ -629,4 +671,12 @@ export const getSandboxesLimits = async ({ effects, state }: Context) => {
   const limits = await effects.api.sandboxesLimits();
 
   state.sandboxesLimits = limits;
+};
+
+export const openCancelSubscriptionModal = ({ state }: Context) => {
+  state.currentModal = 'subscriptionCancellation';
+};
+
+export const setIsProcessingPayment = ({ state }: Context, value: boolean) => {
+  state.isProcessingPayment = value;
 };

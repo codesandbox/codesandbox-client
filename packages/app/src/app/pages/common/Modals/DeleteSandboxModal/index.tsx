@@ -10,7 +10,7 @@ export const DeleteSandboxModal: FunctionComponent = () => {
 
   return (
     <Alert
-      title="Delete Sandbox"
+      title="Delete sandbox"
       description="Are you sure you want to delete this sandbox?"
       onCancel={modalClosed}
       onPrimaryAction={sandboxDeleted}

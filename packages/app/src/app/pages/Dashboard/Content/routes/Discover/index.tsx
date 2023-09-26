@@ -23,7 +23,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
 import { Stats } from 'app/pages/Dashboard/Components/CommunitySandbox/CommunitySandboxCard';
 import { AnonymousAvatar } from 'app/pages/Dashboard/Components/CommunitySandbox/AnonymousAvatar';
@@ -113,8 +113,6 @@ export const Discover = () => {
           <Banner />
 
           <Stack direction="vertical" gap={16}>
-            {/* <FeaturedSandboxes /> */}
-
             {randomAlbums.map(album => (
               <Album
                 key={album.id}
@@ -122,7 +120,6 @@ export const Discover = () => {
                 showMore={album.sandboxes.length > 3}
               />
             ))}
-
             <TrendingSandboxes />
           </Stack>
         </Element>
@@ -154,13 +151,10 @@ const Banner = () => (
     })}
   >
     <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
-      <Text size={4} marginBottom={2}>
-        {banner.label}
-      </Text>
-      <Text size={9} weight="bold" marginBottom={1}>
+      <Text size={32} weight="regular" marginTop={2}>
         {banner.title}
       </Text>
-      <Text size={5} css={{ opacity: 0.5 }}>
+      <Text size={4} marginTop={2} css={{ opacity: 0.6 }}>
         {banner.subtitle}
       </Text>
     </Stack>
@@ -178,32 +172,6 @@ const Banner = () => (
   </Stack>
 );
 
-// const FeaturedSandboxes = () => {
-//   const {
-//     dashboard: { curatedAlbums },
-//   } = useAppState();
-
-//   const featuredSandboxesAlbum = curatedAlbums.find(
-//     album => album.id === FEATURED_SANDBOXES_ALBUM
-//   );
-
-//   return (
-//     <Grid
-//       rowGap={6}
-//       columnGap={6}
-//       css={{
-//         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-//         height: 'max(60vh, 528px)',
-//         overflow: 'hidden',
-//       }}
-//     >
-//       {featuredSandboxesAlbum?.sandboxes.slice(0, 3).map(sandbox => (
-//         <FeaturedSandbox key={sandbox.id} sandbox={sandbox} />
-//       ))}
-//     </Grid>
-//   );
-// };
-
 export const FeaturedSandbox = ({ sandbox }) => {
   const {
     dashboard: { sandboxes },
@@ -212,7 +180,7 @@ export const FeaturedSandbox = ({ sandbox }) => {
     dashboard: { likeCommunitySandbox, unlikeSandbox },
   } = useActions();
 
-  const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
+  const url = sandboxUrl(sandbox);
   const likedSandboxIds = (sandboxes.LIKED || []).map(s => s.id);
   const liked = likedSandboxIds.includes(sandbox.id);
 
@@ -337,7 +305,7 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
   return (
     <Stack key={album.id} direction="vertical" gap={6}>
       <Stack justify="space-between" align="flex-end">
-        <Text size={6} weight="bold">
+        <Text size={5} weight="regular">
           {album.title}
         </Text>
         {showMore && (
@@ -370,7 +338,6 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
               item={{
                 type: 'community-sandbox',
                 noDrag: true,
-                autoFork: false,
                 sandbox: {
                   ...sandbox,
                   liked: likedSandboxIds.includes(sandbox.id),
@@ -429,7 +396,7 @@ const TrendingSandboxes = () => {
 
   return (
     <Stack direction="vertical" gap={6} css={css({ marginTop: '100px' })}>
-      <Text size={6} weight="bold">
+      <Text size={5} weight="regular">
         {trendingSandboxesAlbum.title}
       </Text>
 
@@ -449,7 +416,6 @@ const TrendingSandboxes = () => {
               item={{
                 type: 'community-sandbox',
                 noDrag: true,
-                autoFork: false,
                 sandbox: {
                   ...sandbox,
                   liked: likedSandboxIds.includes(sandbox.id),

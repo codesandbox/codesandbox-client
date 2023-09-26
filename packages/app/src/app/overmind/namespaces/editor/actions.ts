@@ -8,6 +8,7 @@ import {
   ModuleTab,
   UserSelection,
   WindowOrientation,
+  ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -17,7 +18,10 @@ import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  sandboxUrl,
+  signInPageUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
@@ -179,7 +183,7 @@ export const addNpmDependency = withOwnedSandbox(
                   label: 'Learn More',
                   run: () => {
                     effects.browser.openWindow(
-                      'https://codesandbox.io/docs/custom-npm-registry'
+                      'https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry'
                     );
                   },
                 },
@@ -301,6 +305,18 @@ export const sandboxChanged = withLoadApp<{
     const params = state.activeTeam ? { teamId: state.activeTeam } : undefined;
     const sandbox = await effects.api.getSandbox(newId, params);
 
+    // Failsafe, in case someone types in the URL to load a v2 sandbox in v1
+    if (sandbox.v2) {
+      const sandboxV2Url = sandboxUrl({
+        id: sandbox.id,
+        alias: sandbox.alias,
+        git: sandbox.git,
+        isV2: true,
+      });
+
+      window.location.href = sandboxV2Url;
+    }
+
     actions.internal.setCurrentSandbox(sandbox);
   } catch (error) {
     const data = error.response?.data;
@@ -351,6 +367,15 @@ export const sandboxChanged = withLoadApp<{
   }
 
   await actions.editor.internal.initializeSandbox(sandbox);
+
+  // We only recover files at this point if we are not live. When live we recover them
+  // when the module_state is received
+  if (
+    !state.live.isLive &&
+    hasPermission(sandbox.authorization, 'write_code')
+  ) {
+    actions.files.internal.recoverFiles();
+  }
 
   if (state.editor.currentModule.id) {
     effects.vscode.openModule(state.editor.currentModule);
@@ -657,6 +682,7 @@ export const saveClicked = withOwnedSandbox(
               state.editor.modulesByPath,
               module
             );
+            effects.moduleRecover.remove(sandbox.id, module);
           } else {
             // We might not have the module, as it was created by the server. In
             // this case we put it in. There is an edge case here where the user
@@ -694,6 +720,9 @@ export const createZipClicked = ({ state, effects }: Context) => {
   effects.analytics.track('Editor - Click Menu Item - Export as ZIP');
 };
 
+// The forkExternalSandbox only seems to be used inside of the dashboard pages and
+// that seems to be the reason why it's called external.
+// TODO: Move the fork function to the dashboard namespace.
 export const forkExternalSandbox = async (
   { effects, state, actions }: Context,
   {
@@ -703,12 +732,13 @@ export const forkExternalSandbox = async (
   }: {
     sandboxId: string;
     openInNewWindow?: boolean;
-    body?: { collectionId: string };
+    body?: { collectionId: string; alias?: string };
   }
 ) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
-  const usedBody: { collectionId?: string; teamId?: string } = body || {};
+  const usedBody: ForkSandboxBody = body || {};
+
   if (state.activeTeam) {
     usedBody.teamId = state.activeTeam;
   }
@@ -728,6 +758,7 @@ export const forkExternalSandbox = async (
   }
 };
 
+// TODO: Look into
 export const forkSandboxClicked = async (
   { state, actions }: Context,
   {

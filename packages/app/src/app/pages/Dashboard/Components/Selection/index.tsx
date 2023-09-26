@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useAppState, useActions } from 'app/overmind';
-import { Element, SkipNav } from '@codesandbox/components';
+import { useAppState, useActions, useEffects } from 'app/overmind';
+import { Element, SkipNav, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
   ARROW_LEFT,
@@ -17,6 +17,8 @@ import {
   sandboxUrl,
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
 import {
@@ -24,9 +26,11 @@ import {
   DashboardSandbox,
   DashboardFolder,
   DashboardGridItem,
-  DashboardRepo,
+  DashboardSyncedRepo,
   DashboardCommunitySandbox,
   PageTypes,
+  DashboardBranch,
+  DashboardRepository,
 } from '../../types';
 import { DndDropType } from '../../utils/dnd';
 
@@ -53,7 +57,8 @@ interface SelectionContext {
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => void;
   onDragStart: (
     event: React.MouseEvent<HTMLDivElement>,
-    itemId: string
+    itemId: string,
+    draggableType?: 'sandbox' | 'folder'
   ) => void;
   onDrop: (droppedResult: any) => void;
   thumbnailRef: React.Ref<HTMLDivElement> | null;
@@ -103,19 +108,27 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'sandbox' ||
       item.type === 'template' ||
       item.type === 'folder' ||
-      item.type === 'repo' ||
-      item.type === 'community-sandbox'
+      item.type === 'synced-sandbox-repo' ||
+      item.type === 'community-sandbox' ||
+      item.type === 'branch'
   ) as Array<
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
-    | DashboardRepo
+    | DashboardSyncedRepo
     | DashboardCommunitySandbox
+    | DashboardBranch
+    | DashboardRepository
   >;
 
   const selectionItems = possibleItems.map(item => {
+    if (item.type === 'branch') return item.branch.id;
+    if (item.type === 'repository') {
+      const { repository: providerRepository } = item.repository;
+      return `${providerRepository.owner}-${providerRepository.name}`;
+    }
     if (item.type === 'folder') return item.path;
-    if (item.type === 'repo') return item.name;
+    if (item.type === 'synced-sandbox-repo') return item.name;
     return item.sandbox.id;
   });
 
@@ -128,10 +141,19 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'template' ||
       item.type === 'community-sandbox'
   ) as Array<DashboardSandbox | DashboardTemplate>;
+  const branches = (items || []).filter(
+    item => item.type === 'branch'
+  ) as DashboardBranch[];
+  const repositories = (items || []).filter(
+    item => item.type === 'repository'
+  ) as DashboardRepository[];
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const actions = useActions();
   const { dashboard, activeTeam } = useAppState();
+  const { analytics } = useEffects();
+  const { isFree } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {
@@ -309,15 +331,12 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       let url: string;
       if (selectedId.startsWith('/')) {
         // means its a folder
-        url = dashboardUrls.allSandboxes(selectedId, activeTeamId);
+        url = dashboardUrls.sandboxes(selectedId, activeTeamId);
       } else {
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId
         );
-        url = sandboxUrl({
-          id: selectedItem.sandbox.id,
-          alias: selectedItem.sandbox.alias,
-        });
+        url = sandboxUrl(selectedItem.sandbox);
       }
 
       if (event.ctrlKey || event.metaKey) {
@@ -399,7 +418,12 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   };
 
   const onDragStart = React.useCallback(
-    (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
+    (
+      event: React.MouseEvent<HTMLDivElement>,
+      itemId: string,
+      draggableType?: 'sandbox' | 'folder'
+    ) => {
+      analytics.track('Dashboard - On drag start', { type: draggableType });
       // if the dragged sandbox isn't selected. select it alone
       setSelectedIds(s => (s.includes(itemId) ? s : [itemId]));
     },
@@ -407,6 +431,10 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   );
 
   const onDrop = async (dropResult: DndDropType) => {
+    analytics.track('Dashboard - On drop', {
+      isSamePath: dropResult.isSamePath,
+    });
+
     if (dropResult.isSamePath) return;
 
     const sandboxIds = selectedIds.filter(isSandboxId);
@@ -429,6 +457,10 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           collectionPath: activeTeam ? null : '/',
         });
       } else if (dropPage === 'sandboxes') {
+        if (isFree && hasMaxPublicSandboxes) {
+          return;
+        }
+
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
@@ -604,15 +636,15 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         activeTeamId,
       }}
     >
-      <Element
+      <Stack
         id="selection-container"
         onContextMenu={onContainerContextMenu}
         css={css({
-          paddingTop: 10,
-          paddingBottom: 8,
+          paddingTop: page === 'recent' ? 0 : 8, // In the recent page, this component is nested so the padding top isn't needed.
           width: '100%',
           height: '100%',
         })}
+        direction="vertical"
         {...(interactive
           ? {
               onKeyDown: onContainerKeyDown,
@@ -627,7 +659,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           onFocus={() => setSelectedIds([selectionItems[0]])}
         />
         {children}
-      </Element>
+      </Stack>
       {drawingRect && selectionRect.end.x && (
         <Element
           id="selection-rectangle"
@@ -635,7 +667,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
             position: 'absolute',
             background: '#6CC7F640', // blues.300 with 25% opacity
             border: '1px solid',
-            borderColor: 'blues.600',
+            borderColor: 'focusBorder',
             pointerEvents: 'none', // disable selection
           })}
           style={{
@@ -662,6 +694,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         selectedIds={selectedIds}
         sandboxes={sandboxes || []}
         folders={folders || []}
+        branches={branches || []}
+        repositories={repositories || []}
         setRenaming={setRenaming}
         page={page}
         createNewFolder={createNewFolder}

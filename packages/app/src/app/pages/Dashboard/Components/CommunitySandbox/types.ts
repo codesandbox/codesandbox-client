@@ -4,6 +4,7 @@ export type CommunitySandboxItemComponentProps = Pick<
   DashboardCommunitySandbox['sandbox'],
   'title' | 'forkCount' | 'likeCount' | 'screenshotUrl' | 'author'
 > & {
+  // TODO: Extract TemplateIcon type?
   TemplateIcon: React.FC<{
     width: string;
     height: string;

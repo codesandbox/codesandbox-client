@@ -30,7 +30,7 @@ export const CommunitySandbox = ({
   const title = sandbox.title || sandbox.alias || sandbox.id;
   const forkCount = sandbox.forkCount;
   const likeCount = sandbox.likeCount;
-  const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
+  const url = sandboxUrl(sandbox);
   const author = sandbox.author;
   const liked = sandbox.liked;
 
@@ -62,6 +62,7 @@ export const CommunitySandbox = ({
   const onContextMenu = React.useCallback(
     event => {
       event.preventDefault();
+      event.stopPropagation();
       if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
       else onMenuEvent(event, sandbox.id);
     },

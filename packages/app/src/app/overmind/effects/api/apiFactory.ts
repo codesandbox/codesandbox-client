@@ -2,7 +2,25 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { camelizeKeys, decamelizeKeys } from 'humps';
 
-export const API_ROOT = '/api/v1';
+const API_ROOT = '/api';
+
+/**
+ * If the path starts with `/beta`, do not append `/v1` to the api root
+ * url. Alternatively we have the useRoot param for when we just want to
+ * use the root path.
+ */
+const getBaseApi = (path: string, useRoot: boolean = false) => {
+  if (useRoot) {
+    return API_ROOT;
+  }
+
+  // Special case for /auth/workos requests which are not on /api/v1
+  if (path.startsWith('/auth/workos')) {
+    return '';
+  }
+
+  return path.startsWith('/beta') ? API_ROOT : `${API_ROOT}/v1`;
+};
 
 export type ApiError = AxiosError<
   { errors: string[] } | { error: string } | any
@@ -12,12 +30,22 @@ export type Params = {
   [key: string]: string;
 };
 
-export type Options = {
+type Options = {
   shouldCamelize: boolean;
 };
 
 export type Api = {
-  get<T>(path: string, params?: Params, options?: Options): Promise<T>;
+  get<T>(
+    path: string,
+    params?: Params,
+    options?: Options,
+    /**
+     * Our API has three different base paths: /beta, /v1 and a path
+     * without one of those. We can use the useRoot parameter to use the
+     * latter.
+     */
+    useRoot?: boolean
+  ): Promise<T>;
   post<T>(path: string, body: any, options?: Options): Promise<T>;
   patch<T>(path: string, body: any, options?: Options): Promise<T>;
   put<T>(path: string, body: any, options?: Options): Promise<T>;
@@ -31,17 +59,18 @@ export type ApiConfig = {
 };
 
 export default (config: ApiConfig) => {
-  const createHeaders = (provideJwt: () => string | null) =>
-    provideJwt()
+  const createHeaders = (provideJwt: () => string | null) => ({
+    'x-codesandbox-client': 'legacy-web',
+    ...(provideJwt()
       ? {
           Authorization: `Bearer ${provideJwt()}`,
         }
-      : {};
-
+      : {}),
+  });
   const api: Api = {
-    get(path, params, options) {
+    get(path, params, options, useRoot) {
       return axios
-        .get(API_ROOT + path, {
+        .get(getBaseApi(path, useRoot) + path, {
           params,
           headers: createHeaders(config.provideJwtToken),
         })
@@ -49,28 +78,28 @@ export default (config: ApiConfig) => {
     },
     post(path, body, options) {
       return axios
-        .post(API_ROOT + path, decamelizeKeys(body), {
+        .post(getBaseApi(path) + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     patch(path, body, options) {
       return axios
-        .patch(API_ROOT + path, decamelizeKeys(body), {
+        .patch(getBaseApi(path) + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     put(path, body, options) {
       return axios
-        .put(API_ROOT + path, decamelizeKeys(body), {
+        .put(getBaseApi(path) + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     delete(path, params, options) {
       return axios
-        .delete(API_ROOT + path, {
+        .delete(getBaseApi(path) + path, {
           params,
           headers: createHeaders(config.provideJwtToken),
         })
@@ -80,7 +109,7 @@ export default (config: ApiConfig) => {
       return axios
         .request(
           Object.assign(requestConfig, {
-            url: API_ROOT + requestConfig.url,
+            url: getBaseApi(requestConfig.url ?? '') + requestConfig.url,
             data: requestConfig.data ? camelizeKeys(requestConfig.data) : null,
             headers: createHeaders(config.provideJwtToken),
           })
@@ -92,7 +121,7 @@ export default (config: ApiConfig) => {
   return api;
 };
 
-export function handleResponse(
+function handleResponse(
   response: AxiosResponse,
   { shouldCamelize = true } = {}
 ) {

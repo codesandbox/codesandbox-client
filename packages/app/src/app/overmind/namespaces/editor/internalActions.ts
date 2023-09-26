@@ -187,6 +187,7 @@ export const saveCode = async (
 
     if (savedCode === null) {
       // If the savedCode is also module.code
+      effects.moduleRecover.remove(sandbox.id, module);
       effects.vscode.syncModule(module);
     }
 
@@ -402,8 +403,12 @@ export const updateModuleCode = (
   }
 
   module.code = code;
+  // Save the code to localStorage so we can recover in case of a crash
+  effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
+// TODO: We can make this function simpler or we can also make a different convertSandbox
+// action for when we don't fork it, but change it to a v2 sandbox.
 export const forkSandbox = async (
   { state, effects, actions }: Context,
   {
@@ -429,14 +434,25 @@ export const forkSandbox = async (
     sandbox ? sandbox.template : null
   );
 
+  // If the user is not signed in and the sandbox is exectued in a server container
+  // we can't fork.
   if (!state.isLoggedIn && templateDefinition.isServer) {
+    // So we track this happens
     effects.analytics.track('Show Server Fork Sign In Modal');
+    // And open a modal (alert) to show a sign in button
     actions.modalOpened({ modal: 'forkServerModal' });
 
-    return;
+    // Throwing an error here ensures that it get's caught in the "withOwnedSandbox" function
+    // when it tries to execute forkSandbox. When we just return instead of throwing the error
+    // is not caught and "withOwnedSandbox" will run its "continueAction" which, in case of the
+    // "codeSaved" function will continue to save code, with all kinds of actions and api calls.
+    throw new Error('ERR_ANON_SSE_FORK');
   }
 
-  effects.analytics.track('Fork Sandbox');
+  effects.analytics.track('Fork Sandbox', {
+    template: sandbox.customTemplate?.title,
+    sandboxId: sandbox.id,
+  });
 
   try {
     state.editor.isForkingSandbox = true;

@@ -11,6 +11,7 @@ import { parseResolutions } from './dynamic/resolutions';
 import { resolveDependencyInfo } from './dynamic/resolve-dependency';
 import { getDependency as getPrebundledDependency } from './preloaded/fetch-dependencies';
 import { IResponse, mergeDependencies } from './merge-dependency';
+import { getSandpackSecret, removeSandpackSecret } from '../sandpack-secret';
 
 let loadedDependencyCombination: string | null = null;
 let manifest: IResponse | null = null;
@@ -169,7 +170,11 @@ export async function getDependenciesFromSources(
       ...dynamicLoadedDependencies,
       ...prebundledLoadedDependencies,
     ]);
-  } catch (err) {
+  } catch (err: any) {
+    if (getSandpackSecret()) {
+      removeSandpackSecret();
+    }
+
     err.message = `Could not fetch dependencies, please try again in a couple seconds: ${err.message}`;
     dispatch(actions.notifications.show(err.message, 'error'));
 

@@ -23,14 +23,16 @@ export const AvatarContainer = styled(Element).attrs({ as: 'span' })(
     height: 8,
     width: 8,
     position: 'relative',
+    overflow: 'hidden',
     flexShrink: 0, // avatars should never shrink inside flex
   })
 );
 
 export const AvatarImage = styled.img(
   css({
-    height: '100%',
+    display: 'flex',
     width: '100%',
+    height: '100%',
     boxSizing: 'border-box',
     borderRadius: '100%',
     border: '1px solid',

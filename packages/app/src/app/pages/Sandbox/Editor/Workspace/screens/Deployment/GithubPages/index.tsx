@@ -14,6 +14,7 @@ import getTemplate from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useEffect } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
+import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
 import { Info } from './Info';
 import { GitHubIcon, FileIcon, VisitIcon } from '../icons';
 
@@ -21,9 +22,6 @@ export const GithubPages: FunctionComponent = () => {
   const {
     isLoadingGithub,
     deployment: { deploying, githubSite },
-    user: {
-      integrations: { github },
-    },
     editor: { currentSandbox },
   } = useAppState();
   const {
@@ -31,6 +29,7 @@ export const GithubPages: FunctionComponent = () => {
     signInGithubClicked,
     deployment: { deployWithGitHubPages, fetchGithubSite },
   } = useActions();
+  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
 
   useEffect(() => {
     fetchGithubSite();
@@ -51,9 +50,33 @@ export const GithubPages: FunctionComponent = () => {
     modalOpened({ modal: 'githubPagesLogs' });
   };
 
+  const needsPermissions =
+    (currentSandbox.privacy === 0 && restrictsPublicRepos) ||
+    (currentSandbox.privacy !== 0 && restrictsPrivateRepos);
+
   return (
     <Integration icon={GitHubIcon} title="GitHub Pages">
-      {github ? (
+      {needsPermissions ? (
+        <Stack justify="space-between" marginX={2}>
+          <Stack direction="vertical">
+            <Text variant="muted">Enables</Text>
+
+            <Text>Deployments</Text>
+          </Stack>
+
+          <Button
+            autoWidth
+            disabled={isLoadingGithub}
+            onClick={() =>
+              signInGithubClicked(
+                currentSandbox.privacy === 0 ? 'public_repos' : 'private_repos'
+              )
+            }
+          >
+            Sign in
+          </Button>
+        </Stack>
+      ) : (
         <>
           <Element marginX={2} marginBottom={githubSite.ghPages ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>
@@ -112,22 +135,6 @@ export const GithubPages: FunctionComponent = () => {
             </List>
           )}
         </>
-      ) : (
-        <Stack justify="space-between" marginX={2}>
-          <Stack direction="vertical">
-            <Text variant="muted">Enables</Text>
-
-            <Text>Deployments</Text>
-          </Stack>
-
-          <Button
-            autoWidth
-            disabled={isLoadingGithub}
-            onClick={() => signInGithubClicked()}
-          >
-            Sign in
-          </Button>
-        </Stack>
       )}
     </Integration>
   );

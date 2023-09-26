@@ -7,6 +7,13 @@ import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import {
+  SandpackCodeEditor,
+  SandpackFileExplorer,
+  SandpackLayout,
+  SandpackPreview,
+  SandpackProvider,
+} from '@codesandbox/sandpack-react';
+import {
   findCurrentModule,
   findMainModule,
 } from '@codesandbox/common/lib/sandbox/modules';
@@ -156,6 +163,7 @@ export default class App extends React.PureComponent<
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${this.jwt()}`,
+              'x-codesandbox-client': 'legacy-embed',
             },
           }
         )
@@ -257,6 +265,7 @@ export default class App extends React.PureComponent<
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${jwt}`,
+          'x-codesandbox-client': 'legacy-embed',
         },
         body: JSON.stringify({
           id: this.state.sandbox.id,
@@ -294,6 +303,7 @@ export default class App extends React.PureComponent<
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${jwt}`,
+          'x-codesandbox-client': 'legacy-embed',
         },
       })
         .then(x => x.json())
@@ -364,6 +374,62 @@ export default class App extends React.PureComponent<
       runOnClick,
     } = this.state;
 
+    /**
+     * Sandpack integration
+     */
+    if (/sandpack=experimental/.test(window.location.search)) {
+      const sandpackFiles = sandbox.modules.reduce((acc, module) => {
+        const folder = sandbox.directories.find(
+          d => d.shortid === module.directoryShortid
+        )?.title;
+
+        if (folder) {
+          acc[`/${folder}/${module.title}`] = {
+            code: module.code,
+            id: module.id,
+            path: `/${folder}/${module.title}`,
+          };
+        } else {
+          acc[`/${module.title}`] = {
+            code: module.code,
+            id: module.id,
+            path: module.title,
+          };
+        }
+
+        return acc;
+      }, {});
+      const currentFile = this.getCurrentModuleFromPath(sandbox);
+      const activeFilePath = Object.values(sandpackFiles).find(
+        file => file.id === currentFile.id
+      );
+
+      return (
+        <SandpackProvider
+          files={sandpackFiles}
+          customSetup={{
+            environment: sandbox.template,
+            entry: sandbox.entry,
+            dependencies: sandpackFiles['/package.json']
+              ? undefined
+              : sandbox.npmDependencies,
+          }}
+          options={{
+            activeFile: activeFilePath.path,
+            visibleFiles: [activeFilePath.path],
+          }}
+        >
+          <SandpackLayout
+            style={{ '--sp-layout-height': `${window.innerHeight - 2}px` }}
+          >
+            <SandpackFileExplorer />
+            <SandpackCodeEditor showLineNumbers showTabs closableTabs />
+            <SandpackPreview showNavigator />
+          </SandpackLayout>
+        </SandpackProvider>
+      );
+    }
+
     return (
       <ThemeProvider
         theme={{
@@ -409,6 +475,10 @@ export default class App extends React.PureComponent<
   render() {
     const { sandbox } = this.state;
     const theme = getTheme(this.state.theme);
+
+    if (/sandpack=experimental/.test(window.location.search)) {
+      return this.content();
+    }
 
     if (this.state.notFound) {
       return (

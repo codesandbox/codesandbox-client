@@ -11,6 +11,24 @@ const sandboxHost = {
   'https://codesandbox.stream': 'https://codesandbox.dev',
 };
 
+export const CSBProjectGitHubRepository = ({
+  owner,
+  repo,
+  welcome,
+}: {
+  owner: string;
+  repo: string;
+  welcome: boolean;
+}) => {
+  const origin = process.env.STAGING_API
+    ? 'https://codesandbox.stream'
+    : 'https://codesandbox.io';
+
+  return `${origin}/p/github/${owner}/${repo}?create=true${
+    welcome ? '&welcome=true' : ''
+  }`;
+};
+
 const buildEncodedUri = (
   strings: TemplateStringsArray,
   ...values: Array<string>
@@ -20,7 +38,35 @@ const buildEncodedUri = (
     .map((value, i) => `${encodeURIComponent(value)}${strings[i + 1]}`)
     .join('');
 
+const REGEX = /(?<id>\w{5,6})-(?<port>\d{1,5})\.(?<hostname>.*)/;
+function getCodeSandboxDevHost(port: number): string | undefined {
+  if (typeof window === 'undefined') {
+    // eslint-disable-next-line global-require
+    const hostname = require('os').hostname();
+
+    return `${hostname}-${port}.preview.csb.app`;
+  }
+
+  const currentUrl = location.host;
+  const currentMatch = currentUrl.match(REGEX);
+
+  if (!currentMatch?.groups) {
+    return undefined;
+  }
+  const { id, hostname } = currentMatch.groups;
+
+  if (!id || !port || !hostname) {
+    return undefined;
+  }
+
+  return `${id}-${port}.${hostname}`;
+}
+
 export const host = () => {
+  if (process.env.CSB && getCodeSandboxDevHost(3000)) {
+    return getCodeSandboxDevHost(3000);
+  }
+
   if (process.env.NODE_ENV === 'production') {
     return process.env.CODESANDBOX_HOST.split('//')[1];
   }
@@ -58,18 +104,31 @@ const sandboxGitUrl = (git: {
 
 export const editorUrl = () => `/s/`;
 
+export const v2EditorUrl = () => `/p/`;
+
 export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
+  const baseUrl = sandboxDetails.isV2
+    ? `${v2EditorUrl()}sandbox/`
+    : editorUrl();
+
+  let queryParams = '';
+
+  if (sandboxDetails.query) {
+    queryParams = `?${new URLSearchParams(sandboxDetails.query).toString()}`;
+  }
+
   if (sandboxDetails.git) {
     const { git } = sandboxDetails;
-    return `${editorUrl()}${sandboxGitUrl(git)}`;
+    return `${baseUrl}${sandboxGitUrl(git)}${queryParams}`;
   }
 
   if (sandboxDetails.alias) {
-    return `${editorUrl()}${sandboxDetails.alias}`;
+    return `${baseUrl}${sandboxDetails.alias}${queryParams}`;
   }
 
-  return `${editorUrl()}${sandboxDetails.id}`;
+  return `${baseUrl}${sandboxDetails.id}${queryParams}`;
 };
+
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
@@ -158,6 +217,7 @@ export const profileUrl = (username: string) => `/u/${username}`;
 export const dashboardUrl = () => `/dashboard`;
 export const exploreUrl = () => `/explore`;
 export const teamOverviewUrl = (teamId: string) => `/dashboard/teams/${teamId}`;
+export const teamSettingsUrl = () => `/dashboard/settings`;
 export const profileSandboxesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/sandboxes${page ? `/${page}` : ''}`;
 export const profileLikesUrl = (username: string, page?: number) =>
@@ -192,9 +252,11 @@ export const optionsToParameterizedUrl = (options: Object) => {
 export const gitHubToSandboxUrl = (githubUrl: string) =>
   githubUrl.replace(gitHubPrefix, '/s/github').replace(dotGit, '');
 
+export const gitHubToProjectsUrl = (githubUrl: string) =>
+  githubUrl.replace(gitHubPrefix, '/p/github').replace(dotGit, '');
+
 export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;
-export const patronUrl = () => `/patron`;
 export const curatorUrl = () => `/curator`;
 export const tosUrl = () => `/legal/terms`;
 export const privacyUrl = () => `/legal/privacy`;
@@ -229,7 +291,63 @@ export function getSandboxId() {
 
   return result;
 }
+
+export const docsUrl = (path: string = '') =>
+  `https://codesandbox.io/docs${path}`;
+
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
 
 export { dashboard };
+
+// This function handles all the scenarios of v2 branch editor urls
+// It is not exported from the package to avoid miss-using it
+const v2EditorBranchUrl = ({
+  owner,
+  repoName,
+  branchName,
+  workspaceId,
+  createDraftBranch,
+  importFlag,
+  source,
+}: {
+  owner: string;
+  repoName: string;
+  branchName?: string;
+  workspaceId?: string;
+  createDraftBranch?: boolean;
+  importFlag?: boolean;
+  source?: string;
+}) => {
+  const queryString = new URLSearchParams({
+    ...(workspaceId ? { workspaceId } : {}),
+    ...(createDraftBranch ? { create: 'true' } : {}),
+    ...(importFlag ? { import: 'true' } : {}),
+    ...(source ? { utm_source: source } : {}),
+  }).toString();
+
+  return `${v2EditorUrl()}github/${owner}/${repoName}${
+    branchName ? '/' + branchName : ''
+  }${queryString ? '?' + queryString : ''}`;
+};
+
+export const v2BranchUrl = (params: {
+  owner: string;
+  repoName: string;
+  branchName: string;
+  workspaceId?: string;
+  importFlag?: boolean;
+  source?: string;
+}) => {
+  return v2EditorBranchUrl(params);
+};
+
+export const v2DefaultBranchUrl = (params: {
+  owner: string;
+  repoName: string;
+  workspaceId?: string;
+  importFlag?: boolean;
+  source?: string;
+}) => {
+  return v2EditorBranchUrl(params);
+};

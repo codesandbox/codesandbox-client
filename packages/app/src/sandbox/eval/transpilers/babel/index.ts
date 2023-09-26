@@ -23,7 +23,6 @@ interface TranspilationResult {
   transpiledCode: string;
 }
 
-const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
 
 interface IDep {
@@ -66,7 +65,7 @@ class BabelTranspiler extends WorkerTranspiler {
       // @ts-ignore
       async () => {
         let iteration = 0;
-        while (typeof global.babelworkers === 'undefined') {
+        while (typeof globalThis.babelworkers === 'undefined') {
           if (iteration >= MAX_WORKER_ITERS) {
             throw new Error('Could not load Babel worker');
           }
@@ -74,12 +73,12 @@ class BabelTranspiler extends WorkerTranspiler {
           iteration++;
         }
 
-        if (global.babelworkers.length === 0) {
+        if (globalThis.babelworkers.length === 0) {
           return BabelWorker();
         }
 
         // We set these up in startup.ts.
-        return global.babelworkers.pop();
+        return globalThis.babelworkers.pop();
       },
       {
         maxWorkerCount: WORKER_COUNT,
@@ -115,9 +114,11 @@ class BabelTranspiler extends WorkerTranspiler {
         const syntaxInfo = getSyntaxInfoFromAst(ast);
         if (!syntaxInfo.jsx) {
           // If the code is ESM we transform it to commonjs and return it
-          if (syntaxInfo.esm) {
+          if (syntaxInfo.esm || syntaxInfo.dynamicImports) {
             measure(`esconvert-${path}`);
-            convertEsModule(ast);
+            if (syntaxInfo.esm) {
+              convertEsModule(ast);
+            }
             // We collect requires instead of doing this in convertESModule as some modules also use require
             // Which is actually invalid but we probably don't wanna break anyone's code if it works in other bundlers...
             const deps = collectDependenciesFromAST(ast);

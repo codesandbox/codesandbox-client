@@ -1,20 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { useAppState, useActions } from 'app/overmind';
-import { Text, Menu, Stack } from '@codesandbox/components';
-import { GridIcon, ListIcon } from './icons';
-
-const STATES: { name: string; key: 'grid' | 'list'; icon: any }[] = [
-  {
-    name: 'Grid View',
-    key: 'grid',
-    icon: GridIcon,
-  },
-  {
-    name: 'List View',
-    key: 'list',
-    icon: ListIcon,
-  },
-];
+import { IconButton } from '@codesandbox/components';
 
 export const ViewOptions: FunctionComponent = React.memo(() => {
   const {
@@ -24,30 +10,17 @@ export const ViewOptions: FunctionComponent = React.memo(() => {
     dashboard: { viewMode },
   } = useAppState();
 
+  const oppositeViewMode = viewMode === 'grid' ? 'list' : 'grid';
+
   return (
-    <Menu>
-      <Menu.Button>
-        {viewMode === 'grid' ? <GridIcon /> : <ListIcon />}
-      </Menu.Button>
-      <Menu.List>
-        {STATES.map(viewState => (
-          <Menu.Item
-            key={viewState.key}
-            field={viewState.key}
-            onSelect={() => viewModeChanged({ mode: viewState.key })}
-          >
-            <Stack gap={4} align="center" justify="space-between">
-              <Text variant={viewMode === viewState.key ? 'body' : 'muted'}>
-                {viewState.name}
-              </Text>
-              {viewState.icon({
-                width: 10,
-                active: viewMode === viewState.key,
-              })}
-            </Stack>
-          </Menu.Item>
-        ))}
-      </Menu.List>
-    </Menu>
+    <IconButton
+      variant="square"
+      name={oppositeViewMode}
+      size={16}
+      title={`Switch to ${oppositeViewMode} view`}
+      onClick={() => {
+        viewModeChanged({ mode: oppositeViewMode });
+      }}
+    />
   );
 });

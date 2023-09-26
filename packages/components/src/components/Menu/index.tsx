@@ -34,27 +34,29 @@ export const MenuStyles = createGlobalStyle(
       fontFamily: 'Inter, sans-serif',
       fontWeight: 400,
     },
+    '[data-reach-menu] > div': {
+      borderRadius: 4,
+    },
     '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
       display: 'none',
     },
     '[data-reach-menu-list][data-component=MenuList]': {
-      minWidth: 100,
+      minWidth: 200,
       backgroundColor: 'menuList.background',
-      borderRadius: 3,
-      boxShadow: 2,
+
+      boxShadow: 1,
       overflow: 'hidden',
-      border: '1px solid',
-      borderColor: 'menuList.border',
+      border: 'none',
       ':focus': { outline: 'none' },
       transform: 'translateY(4px)',
       // override reach ui styles
-      padding: 0,
+      padding: '4px 0',
     },
     '[data-reach-menu-item][data-component=MenuItem], [data-reach-menu-item][data-component=MenuLink]': {
       fontSize: 2,
       paddingY: 2,
-      paddingX: 2,
-      cursor: 'pointer',
+      paddingX: 3,
+      cursor: 'default',
       outline: 'none',
       color: 'menuList.foreground',
       '&[data-selected], :hover': {
@@ -71,6 +73,14 @@ export const MenuStyles = createGlobalStyle(
       },
       // override reach ui styles
       font: 'inherit',
+    },
+    '[data-component="MenuItem"][disabled]': {
+      paddingY: 2,
+      paddingX: 3,
+      cursor: 'not-allowed',
+      backgroundColor: 'transparent',
+      color: 'inherit',
+      opacity: 0.5,
     },
     '[data-component=MenuDivider]': {
       margin: 0,
@@ -299,8 +309,15 @@ const MenuLink: React.FunctionComponent<MenuLinkProps> = ({
       </ReachMenu.MenuLink>
     );
   }
+
   return (
-    <ReachMenu.MenuLink data-component="MenuLink" href={href} title={title}>
+    <ReachMenu.MenuLink
+      data-component="MenuLink"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={title}
+    >
       {children}
     </ReachMenu.MenuLink>
   );

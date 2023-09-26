@@ -1,6 +1,7 @@
 import { AdonisIcon } from './AdonisIcon';
 import { AngularIcon } from './AngularIcon';
 import { ApolloIcon } from './ApolloIcon';
+import { AstroIcon } from './AstroIcon';
 import { AureliaIcon } from './AureliaIcon';
 import { CordovaIcon } from './CordovaIcon';
 import { CxJSIcon } from './CxJSIcon';
@@ -44,8 +45,10 @@ import { ReactIcon } from './ReactIcon';
 import { RemixIcon } from './RemixIcon';
 import { ReasonIcon } from './ReasonIcon';
 import { RollupIcon } from './RollupIcon';
+import { SanityIcon } from './SanityIcon';
 import { SapperIcon } from './SapperIcon';
 import { ServerlessIcon } from './ServerlessIcon';
+import { SolidIcon } from './SolidIcon';
 import { StackbitIcon } from './StackbitIcon';
 import { StorybookIcon } from './StorybookIcon';
 import { StyleguidistIcon } from './StyleguidistIcon';
@@ -53,15 +56,17 @@ import { SvelteIcon } from './SvelteIcon';
 import { TailwindIcon } from './TailwindIcon';
 import { TypeScriptIcon } from './TypeScriptIcon';
 import { UnibitIcon } from './UnibitIcon';
+import { ViteIcon } from './ViteIcon';
 import { VueIcon } from './VueIcon';
 import { VuePressIcon } from './VuePressIcon';
 import { WebAssemblyIcon } from './WebAssemblyIcon';
-import { SolidIcon } from './SolidIcon';
+import { XStateIcon } from './XStateIcon';
 
 export const ColorIcons = {
   AdonisIcon,
   AngularIcon,
   ApolloIcon,
+  AstroIcon,
   AureliaIcon,
   CordovaIcon,
   CxJSIcon,
@@ -105,8 +110,10 @@ export const ColorIcons = {
   ReasonIcon,
   RemixIcon,
   RollupIcon,
+  SanityIcon,
   SapperIcon,
   ServerlessIcon,
+  SolidIcon,
   StackbitIcon,
   StorybookIcon,
   StyleguidistIcon,
@@ -114,16 +121,18 @@ export const ColorIcons = {
   TailwindIcon,
   TypeScriptIcon,
   UnibitIcon,
+  ViteIcon,
   VueIcon,
   VuePressIcon,
   WebAssemblyIcon,
-  SolidIcon,
+  XStateIcon,
 };
 
 export const Icons = {
   AdonisIcon,
   AngularIcon,
   ApolloIcon,
+  AstroIcon,
   AureliaIcon,
   CordovaIcon,
   CxJSIcon,
@@ -167,8 +176,10 @@ export const Icons = {
   ReasonIcon,
   RemixIcon,
   RollupIcon,
+  SanityIcon,
   SapperIcon,
   ServerlessIcon,
+  SolidIcon,
   StackbitIcon,
   StorybookIcon,
   StyleguidistIcon,
@@ -176,15 +187,17 @@ export const Icons = {
   TailwindIcon,
   TypeScriptIcon,
   UnibitIcon,
+  ViteIcon,
   VueIcon,
   VuePressIcon,
   WebAssemblyIcon,
-  SolidIcon,
+  XStateIcon,
 };
 
 export { AdonisIcon } from './AdonisIcon';
 export { AngularIcon } from './AngularIcon';
 export { ApolloIcon } from './ApolloIcon';
+export { AstroIcon } from './AstroIcon';
 export { AureliaIcon } from './AureliaIcon';
 export { CordovaIcon } from './CordovaIcon';
 export { CxJSIcon } from './CxJSIcon';
@@ -228,8 +241,10 @@ export { ReactIcon } from './ReactIcon';
 export { ReasonIcon } from './ReasonIcon';
 export { RemixIcon } from './RemixIcon';
 export { RollupIcon } from './RollupIcon';
+export { SanityIcon } from './SanityIcon';
 export { SapperIcon } from './SapperIcon';
 export { ServerlessIcon } from './ServerlessIcon';
+export { SolidIcon } from './SolidIcon';
 export { StackbitIcon } from './StackbitIcon';
 export { StorybookIcon } from './StorybookIcon';
 export { StyleguidistIcon } from './StyleguidistIcon';
@@ -237,7 +252,8 @@ export { SvelteIcon } from './SvelteIcon';
 export { TailwindIcon } from './TailwindIcon';
 export { TypeScriptIcon } from './TypeScriptIcon';
 export { UnibitIcon } from './UnibitIcon';
+export { ViteIcon } from './ViteIcon';
 export { VueIcon } from './VueIcon';
 export { VuePressIcon } from './VuePressIcon';
 export { WebAssemblyIcon } from './WebAssemblyIcon';
-export { SolidIcon } from './SolidIcon';
+export { XStateIcon } from './XStateIcon';

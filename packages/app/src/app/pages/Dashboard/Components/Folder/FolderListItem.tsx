@@ -4,6 +4,7 @@ import {
   ListAction,
   Text,
   Input,
+  Icon,
   IconButton,
   Grid,
   Column,
@@ -36,13 +37,14 @@ export const FolderListItem = ({
 }: FolderItemComponentProps) => {
   let backgroundColor = 'inherit';
   if (selected) {
-    backgroundColor = 'blues.600';
+    backgroundColor = 'purpleOpaque';
   } else if (showDropStyles) {
     backgroundColor = 'list.hoverBackground';
   }
 
   return (
     <ListAction
+      as="button"
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       onContextMenu={onContextMenu}
@@ -53,7 +55,10 @@ export const FolderListItem = ({
         color: selected ? 'white' : 'inherit',
         ':hover, :focus, :focus-within': {
           cursor: 'default',
-          backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+          backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
+        },
+        ':has(button:hover), :has(button:focus-visible)': {
+          backgroundColor: 'transparent',
         },
         width: '100%',
         height: 64,
@@ -61,8 +66,8 @@ export const FolderListItem = ({
         borderBottomColor: 'grays.600',
       })}
     >
-      <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
-        <Column span={[12, 5, 5]}>
+      <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
+        <Column span={[12, 7, 6]}>
           <Stack gap={4} align="center" marginLeft={2}>
             <Stack
               as="div"
@@ -72,12 +77,13 @@ export const FolderListItem = ({
                 height: 32,
               })}
             >
-              <svg width={32} height={24} fill="none" viewBox="0 0 56 49">
-                <path
-                  fill="#6CC7F6"
-                  d="M20.721 0H1.591A1.59 1.59 0 000 1.59v45.82C0 48.287.712 49 1.59 49h52.82A1.59 1.59 0 0056 47.41V7.607a1.59 1.59 0 00-1.59-1.59H28L21.788.41A1.59 1.59 0 0020.72 0z"
-                />
-              </svg>
+              <Icon
+                name="folder"
+                size={24}
+                width={32}
+                title="folder"
+                color="#E3FF73"
+              />
             </Stack>
             <Stack justify="space-between" align="center">
               {editing ? (
@@ -99,7 +105,7 @@ export const FolderListItem = ({
             </Stack>
           </Stack>
         </Column>
-        <Column span={[0, 4, 4]} as={Stack} align="center">
+        <Column span={[0, 2, 3]} as={Stack} align="center">
           {!isNewFolder ? (
             <Text size={3} block variant={selected ? 'body' : 'muted'}>
               {numberOfSandboxes || 0}{' '}
@@ -113,8 +119,9 @@ export const FolderListItem = ({
       </Grid>
       {!isNewFolder ? (
         <IconButton
+          variant="square"
           name="more"
-          size={9}
+          size={14}
           title="Sandbox actions"
           onClick={onContextMenu}
         />

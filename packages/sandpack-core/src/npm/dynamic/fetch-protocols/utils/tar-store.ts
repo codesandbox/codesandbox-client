@@ -1,6 +1,7 @@
 import untar, { UntarredFiles } from 'isomorphic-untar-gzip';
+import { Module } from '../../../../types/module';
 
-import { Meta } from '../../fetch-npm-module';
+import { FetchProtocol, Meta } from '../../fetch-npm-module';
 import { fetchWithRetries } from '../utils';
 
 type DeserializedFetchedTar = {
@@ -11,7 +12,7 @@ type DeserializedFetchedTar = {
  * Responsible for fetching, caching and converting tars to a structure that sandpack
  * understands and can use
  */
-export class TarStore {
+export class TarStore implements FetchProtocol {
   private fetchedTars: {
     [key: string]: Promise<{ [path: string]: DeserializedFetchedTar }>;
   } = {};
@@ -76,5 +77,21 @@ export class TarStore {
     });
 
     return meta;
+  }
+
+  async massFiles(
+    name: string,
+    url: string,
+    requestInit?: RequestInit
+  ): Promise<Module[]> {
+    const tarKey = this.generateKey(name, url);
+    const tar = await (this.fetchedTars[tarKey] ||
+      this.fetchTar(name, url, requestInit));
+
+    return Object.keys(tar).map(path => ({
+      path,
+      code: tar[path].content,
+      downloaded: true,
+    }));
   }
 }

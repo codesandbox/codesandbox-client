@@ -71,13 +71,12 @@ const getItems = (isLoggedIn: boolean, user: CurrentUser): MenuItem[] =>
       id: 'integrations',
       title: 'Integrations',
     },
-    user &&
-      user.experiments.inPilot && {
-        Content: MailPreferences,
-        Icon: MailIcon,
-        id: 'emailSettings',
-        title: 'Email Settings',
-      },
+    user && {
+      Content: MailPreferences,
+      Icon: MailIcon,
+      id: 'notifications',
+      title: 'Notifications',
+    },
     {
       Content: Experiments,
       Icon: FlaskIcon,
@@ -99,6 +98,7 @@ export const PreferencesModal: FunctionComponent = () => {
     preferences: { itemId = 'appearance' },
   } = useAppState();
   const items = getItems(isLoggedIn, user);
+
   const { Content } = items.find(({ id }) => id === itemId);
 
   return (
@@ -110,6 +110,7 @@ export const PreferencesModal: FunctionComponent = () => {
           height: 482,
           width: '100%',
           padding: 6,
+          marginTop: 52,
           '*': { boxSizing: 'border-box' },
         })}
       >

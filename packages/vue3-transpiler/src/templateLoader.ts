@@ -22,7 +22,8 @@ function TemplateLoader(source: string, loaderContext: LoaderContext) {
     {}) as VueLoaderOptions;
 
   const query = qs.parse(loaderContext.resourceQuery.slice(1));
-  const scopeId = query.scoped ? `data-v-${query.id}` : null;
+  const id: string = `${query.id}`;
+  const scopeId = query.scoped ? `data-v-${id}` : null;
 
   let compiler: TemplateCompiler | undefined;
   if (typeof options.compiler === 'string') {
@@ -33,6 +34,7 @@ function TemplateLoader(source: string, loaderContext: LoaderContext) {
   }
 
   const compiled = compileTemplate({
+    id,
     source,
     inMap,
     filename: loaderContext.path,

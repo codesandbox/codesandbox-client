@@ -1,77 +1,75 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import React, { useEffect } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-import { Header } from 'app/pages/Dashboard/Components/Header';
-import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
-import {
-  DashboardGridItem,
-  DashboardHeader,
-  DashboardSandbox,
-  PageTypes,
-} from 'app/pages/Dashboard/types';
-import { getPossibleTemplates } from '../../utils';
+import { Helmet } from 'react-helmet';
+import { DashboardBranch, DashboardSandbox } from 'app/pages/Dashboard/types';
+import { Loading, Stack } from '@codesandbox/components';
+import { EmptyRecent } from './EmptyRecent';
+import { RecentContent } from './RecentContent';
 
-export const Recent = () => {
+export const Recent = props => {
   const {
     activeTeam,
-    dashboard: { sandboxes, recentSandboxesByTime, getFilteredSandboxes },
+    dashboard: { sandboxes },
   } = useAppState();
   const {
     dashboard: { getPage },
   } = useActions();
 
-  React.useEffect(() => {
+  useEffect(() => {
     getPage(sandboxesTypes.RECENT);
-  }, [activeTeam, getPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTeam]);
 
-  const getSection = (
-    title: string,
-    time: keyof typeof recentSandboxesByTime
-  ): [DashboardHeader, ...DashboardSandbox[]] | [] => {
-    const recentSandboxes = getFilteredSandboxes(recentSandboxesByTime[time]);
+  const items: (DashboardSandbox | DashboardBranch)[] =
+    sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null
+      ? null
+      : [
+          ...(sandboxes.RECENT_SANDBOXES || []).map(sandbox => ({
+            type: 'sandbox' as const,
+            sandbox,
+          })),
+          ...(sandboxes.RECENT_BRANCHES || []).map(branch => ({
+            type: 'branch' as const,
+            branch,
+          })),
+        ]
+          .sort((a, b) => {
+            const dateA =
+              a.type === 'branch'
+                ? a.branch.lastAccessedAt
+                : a.sandbox.lastAccessedAt;
+            const dateB =
+              b.type === 'branch'
+                ? b.branch.lastAccessedAt
+                : b.sandbox.lastAccessedAt;
 
-    if (!recentSandboxes.length) return [];
+            return new Date(dateA) < new Date(dateB) ? 1 : -1;
+            // Merge the two data sources and show only the first 12 most recent entries
+          })
+          .slice(0, 12);
 
-    return [
-      { type: 'header', title },
-      ...recentSandboxes.map(sandbox => ({
-        type: 'sandbox' as 'sandbox',
-        sandbox,
-      })),
-    ];
-  };
+  let pageState: 'loading' | 'ready' | 'empty';
+  if (!items) {
+    pageState = 'loading';
+  } else if (items.length > 0) {
+    pageState = 'ready';
+  } else {
+    pageState = 'empty';
+  }
 
-  const items: DashboardGridItem[] = sandboxes.RECENT
-    ? [
-        ...getSection('Today', 'day'),
-        ...getSection('Last 7 days', 'week'),
-        ...getSection('Earlier this month', 'month'),
-        ...getSection('Older', 'older'),
-      ]
-    : [
-        { type: 'header', title: 'Today' },
-        { type: 'skeleton-row' },
-        { type: 'header', title: 'Last 7 days' },
-        { type: 'skeleton-row' },
-      ];
-
-  const pageType: PageTypes = 'recents';
   return (
-    <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
+    <>
       <Helmet>
-        <title>Recent Sandboxes - CodeSandbox</title>
+        <title>Recent - CodeSandbox</title>
       </Helmet>
-      <Header
-        title="Recently Modified Sandboxes"
-        activeTeam={activeTeam}
-        templates={getPossibleTemplates(sandboxes.RECENT)}
-        showViewOptions
-        showFilters
-      />
-
-      <VariableGrid items={items} page={pageType} />
-    </SelectionProvider>
+      {pageState === 'loading' && (
+        <Stack align="center" justify="center">
+          <Loading size={12} />
+        </Stack>
+      )}
+      {pageState === 'empty' && <EmptyRecent />}
+      {pageState === 'ready' && <RecentContent recentItems={items} />}
+    </>
   );
 };

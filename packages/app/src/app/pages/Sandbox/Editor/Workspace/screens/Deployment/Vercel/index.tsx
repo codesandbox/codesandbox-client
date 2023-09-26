@@ -31,13 +31,13 @@ export const Vercel: FunctionComponent = () => {
       vercel: { deploysBeingDeleted, deploys },
     },
     user: {
-      integrations: { zeit },
+      integrations: { vercel },
     },
   } = useAppState();
 
   return (
     <Integration icon={VercelIcon} title="Vercel">
-      {zeit ? (
+      {vercel ? (
         <>
           <Element marginX={2} marginBottom={deploys.length ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>

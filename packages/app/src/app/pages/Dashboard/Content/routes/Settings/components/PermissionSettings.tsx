@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
@@ -9,68 +9,75 @@ import {
   Icon,
   Select,
   Switch,
+  MessageStripe,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { TeamMemberAuthorization, SubscriptionType } from 'app/graphql/types';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
-  const {
-    activeTeamInfo,
-    personalWorkspaceId,
-    activeWorkspaceAuthorization,
-  } = useAppState();
-
-  // different scenarios
-  const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
-  const isTeamPro =
-    activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro;
-  const isPersonalPro =
-    activeTeamInfo?.subscription?.type === SubscriptionType.PersonalPro;
-  const isAdmin =
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
-
-  let alert: {
-    message: string;
-    cta?: { label: string; href: string; onClick?: () => void };
-  } | null = null;
-
   const proTracking = () =>
     track('Dashboard - Permissions panel - Clicked on Pro upgrade');
 
-  if (isPersonalWorkspace) {
-    if (!isPersonalPro) {
-      alert = {
-        message: 'Upgrade to Pro to change sandbox permissions.',
-        cta: { label: 'Upgrade to Pro', href: '/pro', onClick: proTracking },
-      };
-    }
-  } else if (!isTeamPro) {
-    alert = {
-      message:
-        'You need a Team Pro subscription to change sandbox permissions.',
-      cta: { label: 'Upgrade to Pro', href: '/pro', onClick: proTracking },
-    };
-  } else if (!isAdmin) {
-    alert = {
-      message: 'Please contact your admin to change sandbox permissions.',
-    };
-  }
+  const { isFree, isPro } = useWorkspaceSubscription();
+  const {
+    isTeamSpace,
+    isBillingManager,
+    isAdmin,
+    isPersonalSpace,
+  } = useWorkspaceAuthorization();
 
   return (
     <Stack direction="vertical" gap={6}>
-      {alert && (
-        <Alert upgrade={!isTeamPro} message={alert.message} cta={alert.cta} />
-      )}
+      {isFree ? (
+        <MessageStripe justify="space-between">
+          <span>
+            You need a{' '}
+            <Text weight="bold">{isTeamSpace ? 'Team Pro' : 'Pro'}</Text>{' '}
+            subscription to change sandbox permissions.
+          </span>
+          {isBillingManager || isPersonalSpace ? (
+            <MessageStripe.Action
+              as="a"
+              href="/pro?utm_source=dashboard_permission_settings"
+              onClick={proTracking}
+            >
+              Upgrade now
+            </MessageStripe.Action>
+          ) : (
+            <MessageStripe.Action
+              as="a"
+              href="https://codesandbox.io/docs/learn/plan-billing/trials"
+              target="_blank"
+              rel="noreferrer"
+              onClick={proTracking}
+            >
+              Learn more
+            </MessageStripe.Action>
+          )}
+        </MessageStripe>
+      ) : null}
+
+      {isPro && isTeamSpace && !isBillingManager ? (
+        <Alert message="Please contact your admin to change sandbox permissions." />
+      ) : null}
+
       <Grid columnGap={12}>
         <Column span={[12, 12, 6]}>
-          <MinimumPrivacy disabled={Boolean(alert)} />
+          <MinimumPrivacy disabled={isFree || !isAdmin} />
         </Column>
-        {!isPersonalWorkspace && (
+        {!isPersonalSpace && (
           <Column span={[12, 12, 6]}>
-            <SandboxSecurity disabled={Boolean(alert)} />
+            <SandboxSecurity disabled={isFree || !isBillingManager} />
+          </Column>
+        )}
+        {isPro && (
+          <Column span={[12, 12, 6]}>
+            <AIPermission disabled={!isAdmin} />
           </Column>
         )}
       </Grid>
@@ -118,15 +125,16 @@ const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
       gap={114}
       css={css({
         padding: 6,
+        backgroundColor: 'card.background',
         border: '1px solid',
-        borderColor: 'grays.600',
+        borderColor: 'transparent',
         borderRadius: 'medium',
         opacity: disabled ? 0.4 : 1,
       })}
     >
       <Stack direction="vertical" gap={8}>
         <Stack direction="vertical" gap={8}>
-          <Text size={4} weight="bold">
+          <Text size={4} weight="500">
             Default Privacy
           </Text>
 
@@ -226,7 +234,8 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       css={css({
         padding: 6,
         border: '1px solid',
-        borderColor: 'grays.600',
+        backgroundColor: '#191919' /* change to tokensV2.gray[600] */,
+        borderColor: 'transparent',
         borderRadius: 'medium',
         opacity: disabled ? 0.4 : 1,
       })}
@@ -234,7 +243,7 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       <Stack direction="vertical" gap={8}>
         <Stack direction="vertical" gap={8}>
           <Stack justify="space-between">
-            <Text size={4} weight="bold">
+            <Text size={4} weight="500">
               Sandbox Security
             </Text>
           </Stack>
@@ -276,6 +285,120 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       </Stack>
       <Stack justify="flex-end">
         <Button autoWidth onClick={onSubmit} disabled={disabled}>
+          Change Settings
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
+const AIPermission = ({ disabled }: { disabled: boolean }) => {
+  const { activeTeamInfo } = useAppState();
+  const [showContinueUrl, setShowContinueUrl] = useState(false);
+
+  const options = [
+    {
+      text: 'Enable AI feature for <strong>private repositories</strong>',
+      key: 'privateRepositories',
+    },
+    {
+      text: 'Enable AI feature for <strong>private sandboxes</strong>',
+      key: 'privateSandboxes',
+    },
+    {
+      text: 'Enable AI feature for <strong>public repositories</strong>',
+      key: 'publicRepositories',
+    },
+    {
+      text: 'Enable AI feature for <strong>public sandboxes</strong>',
+      key: 'publicSandboxes',
+    },
+  ];
+
+  const [state, setState] = React.useState(activeTeamInfo.settings.aiConsent);
+  const { setTeamAiConsent } = useActions().dashboard;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const continueUrl = urlParams.get('continueUrl');
+
+  return (
+    <Stack
+      direction="vertical"
+      justify="space-between"
+      gap={60}
+      css={css({
+        padding: 6,
+        backgroundColor: 'card.background',
+        border: '1px solid',
+        borderColor: 'button.background',
+        borderRadius: 'medium',
+        opacity: disabled ? 0.4 : 1,
+      })}
+    >
+      <Stack direction="vertical" gap={8}>
+        <Stack direction="vertical" gap={8}>
+          <Text size={4} weight="500">
+            AI Permissions
+          </Text>
+
+          <Text variant="muted" size={2}>
+            Read our{' '}
+            <a
+              href="https://codesandbox.io/legal/privacy"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Privacy Policy
+            </a>{' '}
+            to check what data AI will be have access
+          </Text>
+
+          <Stack direction="vertical" gap={6}>
+            {options.map(item => {
+              return (
+                <Stack justify="space-between" as="label">
+                  <Text
+                    size={3}
+                    dangerouslySetInnerHTML={{ __html: item.text }}
+                  />
+                  <Switch
+                    disabled={disabled}
+                    on={state[item.key]}
+                    onChange={() =>
+                      setState(prev => ({
+                        ...prev,
+                        [item.key]: !prev[item.key],
+                      }))
+                    }
+                  />
+                </Stack>
+              );
+            })}
+          </Stack>
+        </Stack>
+
+        <Text variant="active" size={2}>
+          For the changes to take effect, you need to restart the microVM
+          instance
+        </Text>
+      </Stack>
+
+      <Stack justify="flex-end" gap={2}>
+        {showContinueUrl && continueUrl && (
+          <Button autoWidth variant="secondary" as="a" href={continueUrl}>
+            Go back to the project
+          </Button>
+        )}
+
+        <Button
+          autoWidth
+          disabled={disabled}
+          onClick={async () => {
+            track('Dashboard - Permissions panel - Changed AI consent');
+            await setTeamAiConsent(state);
+            setShowContinueUrl(true);
+          }}
+        >
           Change Settings
         </Button>
       </Stack>

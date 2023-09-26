@@ -28,7 +28,7 @@ import {
   UnibitIcon,
   DocusaurusIcon,
   SolidIcon,
-} from 'template-icons';
+} from '@codesandbox/template-icons';
 
 import {
   adonis,

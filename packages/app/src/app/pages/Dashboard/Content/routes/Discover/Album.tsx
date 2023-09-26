@@ -10,7 +10,7 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import { DashboardCommunitySandbox } from 'app/pages/Dashboard/types';
 
 export const Album = ({ match }) => {
@@ -38,7 +38,6 @@ export const Album = ({ match }) => {
     sandbox => ({
       type: 'community-sandbox',
       noDrag: true,
-      autoFork: false,
       sandbox,
     })
   );
@@ -89,7 +88,6 @@ export const Album = ({ match }) => {
                   item={{
                     type: 'community-sandbox',
                     noDrag: true,
-                    autoFork: false,
                     sandbox: {
                       ...sandbox,
                       liked: likedSandboxIds.includes(sandbox.id),

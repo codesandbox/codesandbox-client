@@ -10,6 +10,7 @@ import {
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TeamAvatar } from 'app/components/TeamAvatar';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 import {
   Element,
@@ -47,13 +48,16 @@ export const Summary = () => {
     forkedTemplateSandbox,
     tags,
     team,
+    privacy,
   } = currentSandbox;
   const {
     editor: { forkSandboxClicked },
   } = useActions();
+  const { isPro } = useWorkspaceSubscription();
 
   const isForked = forkedFromSandbox || forkedTemplateSandbox;
   const { url: templateUrl } = getTemplateDefinition(template);
+  const isUnlistedOrPrivate = privacy === 1 || privacy === 2;
 
   return (
     <Collapsible
@@ -66,6 +70,7 @@ export const Summary = () => {
             {customTemplate ? (
               <Stack gap={2} align="center">
                 <TemplateIcon
+                  templateName={customTemplate.title}
                   iconUrl={customTemplate.iconUrl}
                   environment={template}
                 />
@@ -163,13 +168,27 @@ export const Summary = () => {
 
         {!author && currentSandbox.git ? (
           <Stack as="section" direction="vertical" gap={4} paddingX={2}>
-            <Text variant="muted" size={3}>
-              This sandbox is in sync with{' '}
-              <Text weight="bold">{currentSandbox.git.branch}</Text> on GitHub.
-              You have to fork to make changes
-            </Text>
+            {!isPro && isUnlistedOrPrivate ? (
+              <Text variant="muted" size={3}>
+                This is {privacy === 2 ? 'a private' : 'an unlisted'} sandbox.{' '}
+                <Link href="/pro" css={{ color: 'white' }}>
+                  Upgrade to{' '}
+                  <Element as="span" css={{ textTransform: 'uppercase' }}>
+                    pro
+                  </Element>
+                </Link>{' '}
+                to fork this sandbox.
+              </Text>
+            ) : (
+              <Text variant="muted" size={3}>
+                This sandbox is in sync with{' '}
+                <Text weight="bold">{currentSandbox.git.branch}</Text> on
+                GitHub. You have to fork to make changes.
+              </Text>
+            )}
             <Button
               variant="primary"
+              disabled={!isPro && isUnlistedOrPrivate}
               loading={isForkingSandbox}
               onClick={() => forkSandboxClicked({})}
             >
@@ -182,8 +201,8 @@ export const Summary = () => {
   );
 };
 
-const TemplateIcon = ({ iconUrl, environment }) => {
-  const { UserIcon } = getTemplateIcon(iconUrl, environment);
+const TemplateIcon = ({ iconUrl, templateName, environment }) => {
+  const { UserIcon } = getTemplateIcon(templateName, iconUrl, environment);
 
   return <UserIcon />;
 };

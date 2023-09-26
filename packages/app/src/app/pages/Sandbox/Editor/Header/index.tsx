@@ -9,20 +9,12 @@ import { SandboxName } from './SandboxName';
 import { WorkspaceName } from './WorkspaceName';
 
 export const Header = () => {
-  const { editor, isAuthenticating, activeTeamInfo } = useAppState();
-
-  const renderWorkspace = () => {
-    if (activeTeamInfo) {
-      return (
-        <WorkspaceName
-          name={activeTeamInfo.name}
-          plan={activeTeamInfo.subscription?.type}
-        />
-      );
-    }
-
-    return <WorkspaceName showBadge={false} name="CodeSandbox" />;
-  };
+  const {
+    editor,
+    isAuthenticating,
+    activeTeamInfo,
+    personalWorkspaceId,
+  } = useAppState();
 
   return (
     <Stack
@@ -42,7 +34,16 @@ export const Header = () => {
     >
       <Stack align="center">
         <AppMenu />
-        {renderWorkspace()}
+        {activeTeamInfo && personalWorkspaceId && (
+          <WorkspaceName
+            name={
+              activeTeamInfo.id === personalWorkspaceId
+                ? 'Personal'
+                : activeTeamInfo.name
+            }
+            plan={activeTeamInfo.subscription?.type}
+          />
+        )}
       </Stack>
 
       {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}

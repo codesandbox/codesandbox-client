@@ -175,10 +175,7 @@ module.exports = {
             [
               '@babel/preset-env',
               {
-                targets: {
-                  ie: 11,
-                  esmodules: true,
-                },
+                targets: ['>0.25%', 'not ie 11', 'not op_mini all'],
                 modules: 'umd',
                 useBuiltIns: false,
               },
@@ -358,6 +355,12 @@ module.exports = {
           limit: 10000,
           name: 'static/media/[name].[hash:8].[ext]',
         },
+      },
+      // https://github.com/gaearon/react-hot-loader/issues/1311
+      {
+        test: /\.js$/,
+        include: /node_modules\/react-dom/,
+        use: ['react-hot-loader/webpack'],
       },
     ],
 

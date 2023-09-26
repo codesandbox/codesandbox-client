@@ -2,12 +2,14 @@ import React from 'react';
 import { useAppState, useEffects, useActions } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Menu, Tooltip } from '@codesandbox/components';
-import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
 
 import {
   sandboxUrl,
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -20,12 +22,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   setRenaming,
 }) => {
   const actions = useActions();
-  const {
-    user,
-    activeTeam,
-    activeTeamInfo,
-    activeWorkspaceAuthorization,
-  } = useAppState();
+  const { user, activeTeam } = useAppState();
+  const { isFree, isPro } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const {
     browser: { copyToClipboard },
   } = useEffects();
@@ -33,20 +32,15 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const isTemplate = type === 'template';
 
   const { visible, setVisibility, position } = React.useContext(Context);
-
   const history = useHistory();
   const location = useLocation();
+  const { userRole, isTeamAdmin } = useWorkspaceAuthorization();
 
-  const url = sandboxUrl({
-    id: sandbox.id,
-    alias: sandbox.alias,
-  });
-
+  const url = sandboxUrl(sandbox);
   const folderUrl = getFolderUrl(item, activeTeam);
 
-  const label = isTemplate ? 'Template' : 'Sandbox';
-
-  const isPro = activeTeamInfo?.subscription;
+  const label = isTemplate ? 'template' : 'sandbox';
+  const restricted = isFree && sandbox.privacy !== 0;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -77,7 +71,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   }, [item, user, activeTeam]);
 
   if (location.pathname.includes('deleted')) {
-    if (activeWorkspaceAuthorization === 'READ') return null;
+    if (userRole === 'READ') return null;
 
     return (
       <Menu.ContextMenu
@@ -91,7 +85,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.dashboard.recoverSandboxes([sandbox.id]);
           }}
         >
-          Recover Sandbox
+          Recover sandbox
         </MenuItem>
         <MenuItem
           onSelect={() => {
@@ -99,15 +93,14 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             setVisibility(false);
           }}
         >
-          Delete Permanently
+          Delete permanently
         </MenuItem>
       </Menu.ContextMenu>
     );
   }
 
   const preventSandboxExport =
-    activeWorkspaceAuthorization === 'READ' ||
-    sandbox.permissions.preventSandboxExport;
+    userRole === 'READ' || sandbox.permissions.preventSandboxExport;
 
   // TODO(@CompuIves): refactor this to an array
 
@@ -118,7 +111,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       position={position}
       style={{ width: 200 }}
     >
-      {isTemplate && activeWorkspaceAuthorization !== 'READ' ? (
+      {isTemplate && userRole !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -127,23 +120,33 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             });
           }}
         >
-          Fork Template
+          Fork template
         </MenuItem>
       ) : null}
-      <MenuItem onSelect={() => history.push(url)}>Open {label}</MenuItem>
+      <MenuItem
+        onSelect={() => {
+          if (sandbox.isV2) {
+            window.location.href = url;
+          } else {
+            history.push(url);
+          }
+        }}
+      >
+        Open {label}
+      </MenuItem>
       <MenuItem
         onSelect={() => {
           window.open(`https://codesandbox.io${url}`, '_blank');
         }}
       >
-        Open {label} in New Tab
+        Open {label} in new tab
       </MenuItem>
       <MenuItem
         onSelect={() => {
           copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
-        Copy {label} Link
+        Copy {label} link
       </MenuItem>
       {isOwner && folderUrl !== location.pathname ? (
         <MenuItem
@@ -151,13 +154,13 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             history.push(folderUrl, { sandboxId: sandbox.id });
           }}
         >
-          Show in Folder
+          Show in folder
         </MenuItem>
       ) : null}
 
       <Menu.Divider />
 
-      {!isTemplate && activeWorkspaceAuthorization !== 'READ' ? (
+      {!isTemplate && userRole !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -165,45 +168,49 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               openInNewWindow: true,
             });
           }}
+          disabled={restricted}
         >
-          Fork Sandbox
+          Fork sandbox
         </MenuItem>
       ) : null}
-      {isOwner && activeWorkspaceAuthorization !== 'READ' ? (
+      {isOwner && userRole !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
               sandboxIds: [item.sandbox.id],
               preventSandboxLeaving:
-                item.sandbox.permissions.preventSandboxLeaving,
+                item.sandbox.permissions.preventSandboxLeaving ||
+                hasMaxPublicSandboxes,
             });
           }}
         >
-          Move to Folder
+          Move to folder
         </MenuItem>
       ) : null}
 
-      <Tooltip
-        label={
-          preventSandboxExport
-            ? 'You do not have permission to export this sandbox'
-            : null
-        }
-      >
-        <div>
-          <MenuItem
-            data-disabled={preventSandboxExport ? true : null}
-            onSelect={() => {
-              if (preventSandboxExport) return;
-              actions.dashboard.downloadSandboxes([sandbox.id]);
-            }}
-          >
-            Export {label}
-          </MenuItem>
-        </div>
-      </Tooltip>
+      {!sandbox.isV2 && (
+        <Tooltip
+          label={
+            preventSandboxExport
+              ? 'You do not have permission to export this sandbox'
+              : null
+          }
+        >
+          <div>
+            <MenuItem
+              data-disabled={preventSandboxExport ? true : null}
+              onSelect={() => {
+                if (preventSandboxExport) return;
+                actions.dashboard.downloadSandboxes([sandbox.id]);
+              }}
+            >
+              Export {label}
+            </MenuItem>
+          </div>
+        </Tooltip>
+      )}
 
-      {hasAccess && activeWorkspaceAuthorization !== 'READ' && isPro ? (
+      {hasAccess && userRole !== 'READ' ? (
         <>
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
@@ -215,9 +222,14 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 })
               }
             >
-              Make {label} Public
+              Make {label} public
             </MenuItem>
           )}
+        </>
+      ) : null}
+
+      {hasAccess && userRole !== 'READ' && isPro ? (
+        <>
           {sandbox.privacy !== 1 && (
             <MenuItem
               onSelect={() =>
@@ -226,8 +238,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 1,
                 })
               }
+              disabled={restricted}
             >
-              Make {label} Unlisted
+              Make {label} unlisted
             </MenuItem>
           )}
           {sandbox.privacy !== 2 && (
@@ -238,20 +251,24 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 2,
                 })
               }
+              disabled={restricted}
             >
-              Make {label} Private
+              Make {label} private
             </MenuItem>
           )}
         </>
       ) : null}
-      {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
+
+      {hasAccess && userRole !== 'READ' && (
         <>
           <Menu.Divider />
-          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+          <MenuItem onSelect={() => setRenaming(true)} disabled={restricted}>
+            Rename {label}
+          </MenuItem>
         </>
       )}
       {hasAccess &&
-        activeWorkspaceAuthorization !== 'READ' &&
+        userRole !== 'READ' &&
         !isTemplate &&
         (sandbox.isFrozen ? (
           <MenuItem
@@ -261,6 +278,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isFrozen: false,
               });
             }}
+            disabled={restricted}
           >
             Unfreeze {label}
           </MenuItem>
@@ -272,37 +290,12 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isFrozen: true,
               });
             }}
+            disabled={restricted}
           >
             Freeze {label}
           </MenuItem>
         ))}
-      {hasAccess &&
-        activeTeamInfo?.joinedPilotAt &&
-        activeWorkspaceAuthorization !== 'READ' &&
-        getTemplate(sandbox.source.template as TemplateType).isServer &&
-        (sandbox.alwaysOn ? (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.changeSandboxAlwaysOn({
-                sandboxId: sandbox.id,
-                alwaysOn: false,
-              });
-            }}
-          >
-            Disable {'"Always-on"'}
-          </MenuItem>
-        ) : (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.changeSandboxAlwaysOn({
-                sandboxId: sandbox.id,
-                alwaysOn: true,
-              });
-            }}
-          >
-            Enable {'"Always-on"'}
-          </MenuItem>
-        ))}
+
       {hasAccess &&
         (isTemplate ? (
           <MenuItem
@@ -311,8 +304,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 templateIds: [sandbox.id],
               });
             }}
+            disabled={restricted}
           >
-            Convert to Sandbox
+            Convert to sandbox
           </MenuItem>
         ) : (
           <MenuItem
@@ -321,13 +315,14 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 sandboxIds: [sandbox.id],
               });
             }}
+            disabled={restricted}
           >
-            Make Sandbox a Template
+            Make sandbox a template
           </MenuItem>
         ))}
       {hasAccess &&
         isPro &&
-        activeWorkspaceAuthorization === 'ADMIN' &&
+        isTeamAdmin &&
         (sandbox.permissions.preventSandboxLeaving ? (
           <MenuItem
             onSelect={() => {
@@ -337,7 +332,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Allow Leaving Workspace
+            Allow leaving workspace
           </MenuItem>
         ) : (
           <MenuItem
@@ -348,13 +343,13 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Prevent Leaving Workspace
+            Prevent leaving workspace
           </MenuItem>
         ))}
-
-      {hasAccess &&
+      {!sandbox.isV2 &&
+        hasAccess &&
         isPro &&
-        activeWorkspaceAuthorization === 'ADMIN' &&
+        isTeamAdmin &&
         (sandbox.permissions.preventSandboxExport ? (
           <MenuItem
             onSelect={() => {
@@ -364,7 +359,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Allow Export as .zip
+            Allow export as .zip
           </MenuItem>
         ) : (
           <MenuItem
@@ -375,10 +370,10 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Prevent Export as .zip
+            Prevent export as .zip
           </MenuItem>
         ))}
-      {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
+      {hasAccess && userRole !== 'READ' && (
         <>
           <Menu.Divider />
           {isTemplate ? (
@@ -392,7 +387,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete Template
+              Delete template
             </MenuItem>
           ) : (
             <MenuItem
@@ -403,7 +398,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete Sandbox
+              Delete sandbox
             </MenuItem>
           )}
         </>
@@ -414,7 +409,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.dashboard.unlikeSandbox(sandbox.id);
           }}
         >
-          Unlike Sandbox
+          Unlike sandbox
         </MenuItem>
       )}
     </Menu.ContextMenu>
@@ -432,5 +427,5 @@ const getFolderUrl = (
     return dashboard.drafts(activeTeamId);
   }
 
-  return dashboard.allSandboxes(path || '/', activeTeamId);
+  return dashboard.sandboxes(path || '/', activeTeamId);
 };

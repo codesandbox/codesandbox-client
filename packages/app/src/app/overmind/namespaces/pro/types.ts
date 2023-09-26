@@ -1,25 +1,7 @@
-import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
-
 export enum Step {
   WorkspacePlanSelection = 'WorkspacePlanSelection',
-  InlineCheckout = 'InlineCheckout',
   ConfirmBillingInterval = 'ConfirmBillingInterval',
 }
-
-export type Pricing = Record<
-  'pro' | 'teamPro',
-  Record<'month' | 'year', { currency: string; unitAmount: number }>
->;
-
-export type Plan = {
-  id: string;
-  name: string;
-  type: SubscriptionType;
-  billingInterval: SubscriptionInterval;
-  unit: number;
-  multiplier: number;
-  currency: string;
-};
 
 export type PaymentSummary = {
   unitPrice: number;
@@ -39,4 +21,18 @@ export type PaymentPreview = {
     amount: number;
     currency: string;
   };
+};
+
+type PricingOptions = {
+  month: {
+    [key: string]: number;
+  };
+  year: {
+    [key: string]: number;
+  };
+};
+
+export type Pricing = {
+  individual: PricingOptions;
+  team: PricingOptions;
 };

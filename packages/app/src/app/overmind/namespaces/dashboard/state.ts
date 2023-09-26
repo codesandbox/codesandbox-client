@@ -4,10 +4,12 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
+  BranchFragment as Branch,
+  ProjectFragment as Repository,
+  ProjectWithBranchesFragment as RepositoryWithBranches,
+  Limits,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
-import isSameDay from 'date-fns/isSameDay';
-import isSameMonth from 'date-fns/isSameMonth';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -19,10 +21,10 @@ export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
   DELETED: Sandbox[] | null;
-  RECENT: Sandbox[] | null;
+  RECENT_SANDBOXES: Sandbox[] | null;
+  RECENT_BRANCHES: Branch[] | null;
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
-  RECENT_HOME: Sandbox[] | null;
   SHARED: Sandbox[] | null;
   LIKED: Sandbox[] | null;
   ALL: {
@@ -60,17 +62,47 @@ export type State = {
   getFilteredSandboxes: (
     sandboxes: Array<Sandbox | Repo | Template['sandbox']>
   ) => Sandbox[];
-  recentSandboxesByTime: {
-    day: Sandbox[];
-    week: Sandbox[];
-    month: Sandbox[];
-    older: Sandbox[];
-  };
   deletedSandboxesByTime: {
     week: Sandbox[];
     older: Sandbox[];
   };
   curatedAlbums: DashboardAlbum[];
+  /**
+   * This is populated when we need a specific album, it's
+   * currently used by the "Liked sandboxes" page when it's
+   * empty.
+   */
+  curatedAlbumsById: Record<string, DashboardAlbum | null> | null;
+  contributions: Branch[] | null;
+  /**
+   * v2 repositories (formerly projects)
+   * stores as a record of team id and repositories (or undefined).
+   * implemented this way to overcome an issue where the
+   * delayed synced repositories fetch on a previous team
+   * overrides the current team data.
+   * @see {@link https://linear.app/codesandbox/issue/XTD-375}
+   */
+  repositoriesByTeamId: Record<string, Repository[] | undefined>;
+
+  /**
+   * Repository with branches cached based on `team/owner/repo`
+   */
+  repositoriesWithBranches: Record<string, RepositoryWithBranches | undefined>;
+  starredRepos: Array<{ owner: string; name: string }>;
+  /**
+   * Use these variables to track if items are being removed. This way
+   * we don't have to manipulate the state directly to let the components
+   * know what to render.
+   */
+  removingRepository: { owner: string; name: string } | null;
+  removingBranch: { id: string } | null;
+  creatingBranch: boolean;
+
+  /**
+   * General limits for different types of subscription. Not related to any
+   * current user or team.
+   */
+  limits?: Limits;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -79,10 +111,10 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   DELETED: null,
   SHARED: null,
   LIKED: null,
-  RECENT: null,
+  RECENT_BRANCHES: null,
+  RECENT_SANDBOXES: null,
   SEARCH: null,
   TEMPLATE_HOME: null,
-  RECENT_HOME: null,
   ALL: null,
   REPOS: null,
   ALWAYS_ON: null,
@@ -97,54 +129,7 @@ export const state: State = {
     npmRegistry: null,
   },
   curatedAlbums: [],
-  recentSandboxesByTime: derived(({ sandboxes }: State) => {
-    const recentSandboxes = sandboxes.RECENT;
-
-    const base: {
-      day: Sandbox[];
-      week: Sandbox[];
-      month: Sandbox[];
-      older: Sandbox[];
-    } = {
-      day: [],
-      week: [],
-      month: [],
-      older: [],
-    };
-    if (!recentSandboxes) {
-      return base;
-    }
-
-    const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
-    const timeSandboxes = noTemplateSandboxes.reduce(
-      (accumulator, currentValue) => {
-        if (!currentValue.updatedAt) return accumulator;
-        const date = zonedTimeToUtc(currentValue.updatedAt, 'Etc/UTC');
-        if (isSameDay(date, new Date())) {
-          accumulator.day.push(currentValue);
-
-          return accumulator;
-        }
-        if (isSameWeek(date, new Date())) {
-          accumulator.week.push(currentValue);
-
-          return accumulator;
-        }
-        if (isSameMonth(date, new Date())) {
-          accumulator.month.push(currentValue);
-
-          return accumulator;
-        }
-
-        accumulator.older.push(currentValue);
-
-        return accumulator;
-      },
-      base
-    );
-
-    return timeSandboxes;
-  }),
+  curatedAlbumsById: null,
   deletedSandboxesByTime: derived(({ sandboxes }: State) => {
     const deletedSandboxes = sandboxes.DELETED;
     if (!deletedSandboxes)
@@ -231,4 +216,11 @@ export const state: State = {
       return orderedSandboxes;
     }
   ),
+  contributions: null,
+  repositoriesByTeamId: {},
+  repositoriesWithBranches: {},
+  starredRepos: [],
+  removingRepository: null,
+  removingBranch: null,
+  creatingBranch: false,
 };

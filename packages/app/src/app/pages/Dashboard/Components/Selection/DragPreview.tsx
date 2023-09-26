@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import { motion } from 'framer-motion';
-import { Stack, Text } from '@codesandbox/components';
+import { Stack, Text, Icon } from '@codesandbox/components';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar/constants';
@@ -69,7 +69,12 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
               };
             }
 
-            const sandbox = sandboxes.find(s => s.sandbox.id === id)!.sandbox;
+            const dashboardEntry = sandboxes.find(s => s.sandbox.id === id);
+            if (!dashboardEntry?.sandbox) {
+              return null;
+            }
+
+            const sandbox = dashboardEntry.sandbox;
 
             let screenshotUrl = sandbox.screenshotUrl;
             // We set a fallback thumbnail in the API which is used for
@@ -91,6 +96,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
               Icon: TemplateIcon,
             };
           })
+          .filter(Boolean)
           .slice(0, 4),
       [folders, sandboxes, selectedIds, selectionItems]
     );
@@ -184,6 +190,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
                             index,
                             selectedItems.length
                           )}deg)`,
+                    opacity: item.url ? 0.5 : 1,
                     backgroundImage: item.url ? `url(${item.url})` : null,
                   }}
                   css={css({
@@ -198,30 +205,22 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
                     backgroundRepeat: 'no-repeat',
                     borderRadius: viewMode === 'list' ? 'small' : 'medium',
                     boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border:
+                      viewMode === 'list'
+                        ? 'none'
+                        : '1px solid rgba(255,255,255,0.1)',
                   })}
                 >
                   {item.type === 'folder' ? (
-                    <svg
-                      width="100%"
-                      height={viewMode === 'list' ? 24 : '33%'}
-                      fill="none"
-                      viewBox="0 0 56 49"
-                    >
-                      <path
-                        fill="#6CC7F6"
-                        d="M20.721 0H1.591A1.59 1.59 0 000 1.59v45.82C0 48.287.712 49 1.59 49h52.82A1.59 1.59 0 0056 47.41V7.607a1.59 1.59 0 00-1.59-1.59H28L21.788.41A1.59 1.59 0 0020.72 0z"
-                      />
-                    </svg>
+                    <Icon name="folder" size={32} color="#E3FF73" />
                   ) : null}
                   {item.type === 'sandbox' && !item.url ? (
                     <Stack
                       css={{ svg: { filter: 'grayscale(1)', opacity: 0.1 } }}
                     >
                       <item.Icon
-                        // @ts-ignore
-                        width={viewMode === 'list' ? 16 : 60}
-                        height={viewMode === 'list' ? 16 : 60}
+                        width={viewMode === 'list' ? '16' : '60'}
+                        height={viewMode === 'list' ? '16' : '60'}
                       />
                     </Stack>
                   ) : null}

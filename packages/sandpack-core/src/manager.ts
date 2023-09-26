@@ -583,6 +583,8 @@ export default class Manager implements IEvaluator {
     delete this.transpiledModules[module.path];
 
     triggerFileWatch(module.path, 'rename');
+
+    this.markHardReload();
   }
 
   moveModule(module: Module, newPath: string) {
@@ -1080,7 +1082,7 @@ export default class Manager implements IEvaluator {
         ignoredExtensions
       );
       return transpiledModule;
-    } catch (e) {
+    } catch (e: any) {
       if (e.type === 'module-not-found' && e.isDependency) {
         const { queryPath } = splitQueryFromPath(path);
         return this.downloadDependency(
@@ -1246,7 +1248,9 @@ export default class Manager implements IEvaluator {
     const tModulesToUpdate = modulesToUpdate.map(m => this.updateModule(m));
 
     if (tModulesToUpdate.length > 0 && this.configurations.sandbox) {
-      this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
+      this.hardReload =
+        this.hardReload ||
+        this.configurations.sandbox.parsed.hardReloadOnChange;
     }
 
     const modulesWithErrors = this.getTranspiledModules().filter(t => {

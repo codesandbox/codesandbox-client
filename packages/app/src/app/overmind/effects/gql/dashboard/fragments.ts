@@ -6,6 +6,7 @@ export const sandboxFragmentDashboard = gql`
     alias
     title
     description
+    lastAccessedAt
     insertedAt
     updatedAt
     removedAt
@@ -16,6 +17,7 @@ export const sandboxFragmentDashboard = gql`
     viewCount
     likeCount
     alwaysOn
+    isV2
 
     source {
       template
@@ -23,6 +25,7 @@ export const sandboxFragmentDashboard = gql`
 
     customTemplate {
       id
+      iconUrl
     }
 
     forkedTemplate {
@@ -117,7 +120,6 @@ export const teamFragmentDashboard = gql`
     description
     creatorId
     avatarUrl
-    joinedPilotAt
     settings {
       minimumPrivacy
     }
@@ -125,6 +127,7 @@ export const teamFragmentDashboard = gql`
     userAuthorizations {
       userId
       authorization
+      teamManager
     }
 
     users {
@@ -141,9 +144,10 @@ export const teamFragmentDashboard = gql`
       avatarUrl
     }
 
-    subscription {
+    subscription(includeCancelled: true) {
       origin
       type
+      status
       paymentProvider
     }
   }
@@ -155,7 +159,6 @@ export const currentTeamInfoFragment = gql`
     creatorId
     description
     inviteToken
-    joinedPilotAt
     name
     avatarUrl
 
@@ -174,6 +177,7 @@ export const currentTeamInfoFragment = gql`
     userAuthorizations {
       userId
       authorization
+      teamManager
     }
 
     settings {
@@ -181,21 +185,47 @@ export const currentTeamInfoFragment = gql`
       preventSandboxExport
       preventSandboxLeaving
       defaultAuthorization
+      aiConsent {
+        privateRepositories
+        privateSandboxes
+        publicRepositories
+        publicSandboxes
+      }
     }
 
-    subscription {
-      id
-      type
-      status
-      origin
-      quantity
-      unitPrice
-      currency
+    subscription(includeCancelled: true) {
       billingInterval
-      updateBillingUrl
-      nextBillDate
-      paymentProvider
       cancelAt
+      cancelAtPeriodEnd
+      currency
+      id
+      nextBillDate
+      origin
+      paymentMethodAttached
+      paymentProvider
+      quantity
+      status
+      trialEnd
+      trialStart
+      type
+      unitPrice
+      updateBillingUrl
+    }
+
+    limits {
+      maxEditors
+      maxPrivateProjects
+      maxPrivateSandboxes
+      maxPublicProjects
+      maxPublicSandboxes
+    }
+
+    usage {
+      editorsQuantity
+      privateProjectsQuantity
+      privateSandboxesQuantity
+      publicProjectsQuantity
+      publicSandboxesQuantity
     }
   }
 `;
@@ -211,5 +241,77 @@ export const npmRegistryFragment = gql`
     registryType
     registryUrl
     teamId
+    sandpackTrustedDomains
+  }
+`;
+
+export const branchFragment = gql`
+  fragment branch on Branch {
+    id
+    name
+    contribution
+    lastAccessedAt
+    upstream
+    project {
+      repository {
+        ... on GitHubRepository {
+          defaultBranch
+          name
+          owner
+          private
+        }
+      }
+      team {
+        id
+      }
+    }
+  }
+`;
+
+export const projectFragment = gql`
+  fragment project on Project {
+    branchCount
+    lastAccessedAt
+    repository {
+      ... on GitHubRepository {
+        owner
+        name
+        defaultBranch
+        private
+      }
+    }
+    team {
+      id
+    }
+  }
+`;
+
+export const projectWithBranchesFragment = gql`
+  fragment projectWithBranches on Project {
+    branches {
+      ...branch
+    }
+    repository {
+      ... on GitHubRepository {
+        owner
+        name
+        defaultBranch
+        private
+      }
+    }
+    team {
+      id
+    }
+  }
+  ${branchFragment}
+`;
+
+export const teamLimitsFragment = gql`
+  fragment teamLimits on TeamLimits {
+    maxEditors
+    maxPrivateProjects
+    maxPrivateSandboxes
+    maxPublicProjects
+    maxPublicSandboxes
   }
 `;

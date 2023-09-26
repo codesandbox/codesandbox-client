@@ -7,6 +7,7 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { getPossibleTemplates } from '../../utils';
+import { EmptyDrafts } from './EmptyDrafts';
 
 export const Drafts = () => {
   const {
@@ -33,20 +34,26 @@ export const Drafts = () => {
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'drafts';
+  const isEmpty = items.length === 0;
+
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
-        <title>Drafts - CodeSandbox</title>
+        <title>My drafts - CodeSandbox</title>
       </Helmet>
       <Header
-        title="Drafts"
+        title="My drafts"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
-        showViewOptions
-        showFilters
-        showSortOptions
+        showViewOptions={!isEmpty}
+        showFilters={!isEmpty}
+        showSortOptions={!isEmpty}
       />
-      <VariableGrid page={pageType} items={items} />
+      {isEmpty ? (
+        <EmptyDrafts />
+      ) : (
+        <VariableGrid page={pageType} items={items} />
+      )}
     </SelectionProvider>
   );
 };

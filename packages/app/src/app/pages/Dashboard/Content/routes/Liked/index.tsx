@@ -7,6 +7,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { getPossibleTemplates } from '../../utils';
+import { EmptyLikes } from './EmptyLikes';
 
 export const Liked = () => {
   const {
@@ -29,20 +30,26 @@ export const Liked = () => {
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'liked';
+  const isEmpty = items.length === 0;
+
   return (
     <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
-        <title>Liked Sandboxes - CodeSandbox</title>
+        <title>Likes - CodeSandbox</title>
       </Helmet>
       <Header
-        title="Liked Sandboxes"
+        title="Liked sandboxes"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.LIKED)}
-        showViewOptions
-        showFilters
+        showViewOptions={!isEmpty}
+        showFilters={!isEmpty}
       />
 
-      <VariableGrid items={items} page={pageType} />
+      {isEmpty ? (
+        <EmptyLikes />
+      ) : (
+        <VariableGrid items={items} page={pageType} />
+      )}
     </SelectionProvider>
   );
 };

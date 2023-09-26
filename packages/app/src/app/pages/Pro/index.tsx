@@ -1,20 +1,17 @@
 import React from 'react';
-import { useAppState, useActions } from 'app/overmind';
-import {
-  SubscriptionOrigin,
-  SubscriptionPaymentProvider,
-} from 'app/graphql/types';
 import { useHistory } from 'react-router-dom';
+import { useAppState, useActions } from 'app/overmind';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { ProLegacy } from './legacy';
-import { ProUpgrade } from './upgrade';
+import { ProLegacy } from './Legacy';
+import { ProUpgrade } from './Upgrade';
 
 export const ProPage: React.FC = () => {
   const { pageMounted } = useActions().pro;
   const history = useHistory();
-
-  const { activeTeamInfo, hasLoadedApp, isLoggedIn } = useAppState();
+  const { hasLoadedApp, isLoggedIn } = useAppState();
+  const { isPaddle, isPatron } = useWorkspaceSubscription();
 
   React.useEffect(() => {
     pageMounted();
@@ -25,14 +22,6 @@ export const ProPage: React.FC = () => {
 
     return null;
   }
-
-  if (!activeTeamInfo === undefined) return <p>Loading...</p>;
-
-  const isPaddle =
-    activeTeamInfo?.subscription?.paymentProvider ===
-    SubscriptionPaymentProvider.Paddle;
-  const isPatron =
-    activeTeamInfo?.subscription?.origin === SubscriptionOrigin.Patron;
 
   if (isPaddle || isPatron) {
     return <ProLegacy />;

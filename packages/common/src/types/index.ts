@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import React from 'react';
+import type React from 'react';
 
-import { TemplateType } from '../templates';
+import type { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
   | 'initializing'
@@ -112,6 +112,8 @@ export type Badge = {
   visible: boolean;
 };
 
+// This is the CurrentUser that is used everywhere, the CurrentUser coming from
+// the GraphQL type is never used, except in GraphQL context.
 export type CurrentUser = {
   id: string;
   email: string;
@@ -128,12 +130,15 @@ export type CurrentUser = {
   experiments: {
     [key: string]: boolean;
   };
+  metadata: {
+    [key: string]: string;
+  };
   curatorAt: string;
   badges: Badge[];
   betaAccess: boolean;
-  provider: 'github' | 'google';
+  provider: 'github' | 'google' | 'apple';
   integrations: {
-    zeit: {
+    vercel: {
       token: string;
       email?: string;
     } | null;
@@ -143,6 +148,32 @@ export type CurrentUser = {
   };
   sendSurvey: boolean;
   deletionRequested: boolean;
+  insertedAt: string;
+  githubProfile:
+    | {
+        data: null;
+        error: { code: string; message: string };
+      }
+    | {
+        data: {
+          avatarUrl: string;
+          id: string;
+          login: string;
+          name?: string;
+          scopes: string[];
+        };
+        error: null;
+      };
+};
+
+// The zeit property comes from the API, but we want to rename it to vercel in the
+// frontend. In the future we want to rename zeit coming from the API too.
+export type CurrentUserFromAPI = Omit<CurrentUser, 'integrations'> & {
+  // Omitting the vercel key from CurrentUser
+  integrations: Omit<CurrentUser['integrations'], 'vercel'> & {
+    // And replacing it with a zeit key with the same type
+    zeit: CurrentUser['integrations']['vercel'];
+  };
 };
 
 export type CustomTemplate = {
@@ -152,6 +183,7 @@ export type CustomTemplate = {
   published?: boolean;
   title: string;
   url: string | null;
+  v2: boolean | null;
 };
 
 export type GitInfo = {
@@ -360,6 +392,7 @@ export type NpmRegistry = {
   registryUrl: string;
   proxyEnabled?: boolean;
   registryAuthToken?: string;
+  registryAuthType?: string;
 };
 
 export enum CommentsFilterOption {
@@ -399,11 +432,22 @@ export type NpmManifest = {
   };
 };
 
+// NOTE: These types are inferred from usage and might not reflect the actual
+// types one on one. Used for the api.forkSandbox method.
+export type ForkSandboxBody = {
+  v2?: boolean;
+  teamId?: string | null;
+  privacy?: 0 | 1 | 2;
+  collectionId?: string;
+  alias?: string;
+};
+
 export type Sandbox = {
   id: string;
   alias: string | null;
   title: string | null;
   description: string;
+  v2: boolean;
   viewCount: number;
   likeCount: number;
   forkCount: number;
@@ -478,6 +522,15 @@ export type Sandbox = {
     preventSandboxLeaving: boolean;
     preventSandboxExport: boolean;
   };
+  // New restrictions object. Remove the optional from the properties
+  // when resrcitions are deployed to production.
+  restrictions?: {
+    freePlanEditingRestricted?: boolean;
+    liveSessionsRestricted?: boolean;
+  };
+  // Legacy freePlanEditingRestricted. We can remove this when the
+  // restrictions above have been implemented.
+  freePlanEditingRestricted: boolean;
 };
 
 export type PrettierConfig = {
@@ -651,44 +704,26 @@ export type ServerPort = {
   name?: string;
 };
 
+/**
+ * The VercelUser type is a selection of what we use and what is or can be returned from
+ * the user endpoint. The whole list of types can be found in the Vercel docs: https://vercel.com/docs/rest-api/interfaces#authuser
+ */
 export type VercelUser = {
-  uid: string;
   email: string;
-  name: string;
-  username: string;
-  avatar: string;
-  platformVersion: number;
-  billing: {
-    plan: string;
-    period: string;
-    trial: string;
-    cancelation: string;
-    addons: string;
-  };
-  bio: string;
-  website: string;
-  profiles: Array<{
-    service: string;
-    link: string;
-  }>;
 };
 
+/**
+ * The VercelCreator type is a selection of what we use and what is or can be returned for
+ * the creator property on the deployments endpoint.
+ */
 export type VercelCreator = {
   uid: string;
 };
 
-export type VercelScale = {
-  current: number;
-  min: number;
-  max: number;
-};
-
-export type VercelAlias = {
-  alias: string;
-  created: string;
-  uid: string;
-};
-
+/**
+ * Can't find where these types are documented on the Vercel side, but we're using these states
+ * to show active deployment status to the user.
+ */
 export enum VercelDeploymentState {
   DEPLOYING = 'DEPLOYING',
   INITIALIZING = 'INITIALIZING',
@@ -701,29 +736,25 @@ export enum VercelDeploymentState {
   ERROR = 'ERROR',
 }
 
-export enum VercelDeploymentType {
-  'NPM',
-  'DOCKER',
-  'STATIC',
-  'LAMBDAS',
-}
-
+/**
+ * The VercelDeployment type is a selection of what we use and what is or can be returned from
+ * the deployments endpoint.
+ */
 export type VercelDeployment = {
   uid: string;
   name: string;
   url: string;
   created: number;
   state: VercelDeploymentState;
-  instanceCount: number;
-  alias: VercelAlias[];
-  scale: VercelScale;
-  createor: VercelCreator;
-  type: VercelDeploymentType;
 };
 
+/**
+ * The VercelConfig type is a selection of (now legacy) properties we use from the vercel configuration
+ * file. More info can be found in the Vercel docs: https://vercel.com/docs/concepts/projects/project-configuration#legacy
+ */
 export type VercelConfig = {
   name?: string;
-  alias?: string;
+  env?: string;
 };
 
 export type NetlifySite = {
@@ -795,6 +826,8 @@ export type SandboxUrlSourceData = {
   id?: string | null;
   alias?: string | null;
   git?: GitInfo | null;
+  isV2?: boolean;
+  query?: Record<string, string>;
 };
 
 export type DevToolsTabPosition = {

@@ -7,14 +7,17 @@ import {
   Tooltip,
   IconButton,
   Element,
+  Badge,
 } from '@codesandbox/components';
 import {
+  AppleIcon,
   github as GitHubIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Header } from '../../../../Components/Header';
 import { Card } from '../components';
 import { ManageSubscription } from './ManageSubscription';
@@ -22,6 +25,7 @@ import { ManageSubscription } from './ManageSubscription';
 export const WorkspaceSettings = () => {
   const { user, activeTeam } = useAppState();
   const actions = useActions();
+  const { isFree } = useWorkspaceSubscription();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -82,16 +86,22 @@ export const WorkspaceSettings = () => {
     >
       <Card css={{ 'grid-column': '1/3' }}>
         {editing ? (
-          <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
+          <Stack
+            as="form"
+            id="user-settings"
+            onSubmit={onSubmit}
+            direction="vertical"
+            gap={2}
+          >
             <Stack gap={4}>
               <Element css={css({ position: 'relative', height: 56 })}>
                 <Element css={css({ position: 'relative', height: 56 })}>
                   <Tooltip
-                    label={`
-                      Account managed by ${
-                        user.provider === 'google' ? 'Google' : 'GitHub'
-                      }
-                      `}
+                    label={`Account managed by ${
+                      { apple: 'Apple', google: 'Google', github: 'GitHub' }[
+                        user.provider
+                      ]
+                    }`}
                   >
                     <Stack
                       align="center"
@@ -110,10 +120,14 @@ export const WorkspaceSettings = () => {
                         borderColor: 'sideBar.border',
                       })}
                     >
-                      {user.provider === 'google' ? (
+                      {user.provider === 'google' && (
                         <GoogleIcon width="12" height="12" />
-                      ) : (
+                      )}
+                      {user.provider === 'github' && (
                         <GitHubIcon width="12" height="12" />
+                      )}
+                      {user.provider === 'apple' && (
+                        <AppleIcon width="12" height="12" />
                       )}
                     </Stack>
                   </Tooltip>
@@ -173,67 +187,24 @@ export const WorkspaceSettings = () => {
                 </label>
               </Element>
 
-              <Stack
-                direction="vertical"
-                gap={2}
-                css={{ width: 'calc(100% - 64px)' }}
-              >
+              <Stack direction="vertical" css={{ width: 'calc(100% - 64px)' }}>
                 <Stack justify="space-between">
-                  <Text size={6} weight="bold" maxWidth="100%" variant="body">
+                  <Text size={4} weight="500" maxWidth="100%" variant="body">
                     {user.username}
                   </Text>
                   <IconButton
                     name="edit"
+                    variant="square"
                     size={12}
                     title="Edit team"
                     onClick={() => setEditing(false)}
                   />
                 </Stack>
-                <Text size={3} maxWidth="100%">
-                  {user.name}
-                </Text>
-                <Text size={3} maxWidth="100%" variant="muted">
-                  {user.email}
-                </Text>
-                <Button
-                  variant="link"
-                  autoWidth
-                  css={css({
-                    height: 'auto',
-                    fontSize: 3,
-                    color: 'button.background',
-                    padding: 0,
-                  })}
-                  onClick={() => {
-                    if (user.deletionRequested) {
-                      actions.dashboard.undoRequestAccountClosing();
-                    } else {
-                      actions.dashboard.requestAccountClosing();
-                    }
-                  }}
-                >
-                  {user.deletionRequested
-                    ? 'Undo Account Deletion'
-                    : 'Request Account Deletion'}
-                </Button>
-                <Stack justify="flex-start" gap={1}>
-                  <Button
-                    variant="link"
-                    css={{ width: 100 }}
-                    disabled={loading}
-                    onClick={() => setEditing(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    css={{ width: 100 }}
-                    disabled={loading}
-                    loading={loading}
-                  >
-                    Save
-                  </Button>
-                </Stack>
+                {isFree && (
+                  <Stack>
+                    <Badge variant="trial">Free</Badge>
+                  </Stack>
+                )}
               </Stack>
             </Stack>
           </Stack>
@@ -241,11 +212,11 @@ export const WorkspaceSettings = () => {
           <Stack gap={4}>
             <div style={{ position: 'relative', height: 56 }}>
               <Tooltip
-                label={`
-                      Account managed by ${
-                        user.provider === 'google' ? 'Google' : 'GitHub'
-                      }
-                      `}
+                label={`Account managed by ${
+                  { apple: 'Apple', google: 'Google', github: 'GitHub' }[
+                    user.provider
+                  ]
+                }`}
               >
                 <Stack
                   align="center"
@@ -264,62 +235,104 @@ export const WorkspaceSettings = () => {
                     borderColor: 'sideBar.border',
                   })}
                 >
-                  {user.provider === 'google' ? (
+                  {user.provider === 'google' && (
                     <GoogleIcon width="12" height="12" />
-                  ) : (
+                  )}
+                  {user.provider === 'github' && (
                     <GitHubIcon width="12" height="12" />
+                  )}
+                  {user.provider === 'apple' && (
+                    <AppleIcon width="12" height="12" />
                   )}
                 </Stack>
               </Tooltip>
               <Avatar user={user} css={css({ size: 14 })} />
             </div>
 
-            <Stack
-              direction="vertical"
-              gap={2}
-              css={{ width: 'calc(100% - 64px)' }}
-            >
+            <Stack direction="vertical" css={{ width: 'calc(100% - 64px)' }}>
               <Stack justify="space-between">
-                <Text size={6} weight="bold" maxWidth="100%" variant="body">
+                <Text size={4} weight="500" maxWidth="100%" variant="body">
                   {user.username}
                 </Text>
                 <IconButton
                   name="edit"
+                  variant="square"
                   size={12}
                   title="Edit team"
                   onClick={() => setEditing(true)}
                 />
               </Stack>
-              <Text size={3} maxWidth="100%">
-                {user.name}
-              </Text>
-              <Text size={3} maxWidth="100%" variant="muted">
-                {user.email}
-              </Text>
-              <Button
-                variant="link"
-                autoWidth
-                css={css({
-                  height: 'auto',
-                  fontSize: 3,
-                  color: 'button.background',
-                  padding: 0,
-                })}
-                onClick={() => {
-                  if (user.deletionRequested) {
-                    actions.dashboard.undoRequestAccountClosing();
-                  } else {
-                    actions.dashboard.requestAccountClosing();
-                  }
-                }}
-              >
-                {user.deletionRequested
-                  ? 'Undo Account Deletion'
-                  : 'Request Account Deletion'}
-              </Button>
+              {isFree && (
+                <Stack>
+                  <Badge variant="trial">Free</Badge>
+                </Stack>
+              )}
             </Stack>
           </Stack>
         )}
+        <Stack
+          direction="vertical"
+          justify="space-between"
+          gap={1}
+          css={{ paddingTop: '16px', flexGrow: 1 }}
+        >
+          <Stack direction="vertical" gap={1}>
+            <Text size={3} maxWidth="100%" variant="muted">
+              {user.name}
+            </Text>
+            <Text size={3} maxWidth="100%" variant="muted">
+              {user.email}
+            </Text>
+          </Stack>
+          {editing ? null : (
+            <Button
+              variant="link"
+              autoWidth
+              css={css({
+                height: 'auto',
+                fontSize: '13px',
+                color: user.deletionRequested
+                  ? 'button.background'
+                  : 'errorForeground',
+                padding: '8px 0',
+              })}
+              onClick={() => {
+                if (user.deletionRequested) {
+                  actions.dashboard.undoRequestAccountClosing();
+                } else {
+                  actions.dashboard.requestAccountClosing();
+                }
+              }}
+            >
+              {user.deletionRequested
+                ? 'Undo account deletion'
+                : 'Request account deletion'}
+            </Button>
+          )}
+        </Stack>
+        {editing ? (
+          <Element css={{ position: 'relative' }}>
+            <Stack gap={1} css={{ position: 'absolute', right: 0, bottom: 0 }}>
+              <Button
+                variant="link"
+                css={{ width: 100 }}
+                disabled={loading}
+                onClick={() => setEditing(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                form="user-settings"
+                css={{ width: 100 }}
+                disabled={loading}
+                loading={loading}
+              >
+                Save
+              </Button>
+            </Stack>
+          </Element>
+        ) : null}
       </Card>
 
       <ManageSubscription />

@@ -1,6 +1,6 @@
 import {
-  UnmakeSandboxesTemplateMutation,
-  UnmakeSandboxesTemplateMutationVariables,
+  _UnmakeSandboxesTemplateMutation,
+  _UnmakeSandboxesTemplateMutationVariables,
   RenameFolderMutation,
   DeleteFolderMutation,
   DeleteFolderMutationVariables,
@@ -35,8 +35,8 @@ import {
   _CreateTeamMutationVariables,
   _RenameSandboxMutation,
   _RenameSandboxMutationVariables,
-  MakeSandboxesTemplateMutation,
-  MakeSandboxesTemplateMutationVariables,
+  _MakeSandboxesTemplateMutation,
+  _MakeSandboxesTemplateMutationVariables,
   CreateFolderMutation,
   CreateFolderMutationVariables,
   SetTeamNameMutation,
@@ -51,8 +51,6 @@ import {
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
-  SetSandboxAlwaysOnMutation,
-  SetSandboxAlwaysOnMutationVariables,
   SetWorkspaceSandboxSettingsMutation,
   SetWorkspaceSandboxSettingsMutationVariables,
   SetPreventSandboxesLeavingWorkspaceMutation,
@@ -83,6 +81,16 @@ import {
   UpdateAlbumMutationVariables,
   CreateAlbumMutation,
   CreateAlbumMutationVariables,
+  ImportProjectMutation,
+  ImportProjectMutationVariables,
+  DeleteProjectMutation,
+  DeleteProjectMutationVariables,
+  DeleteBranchMutation,
+  DeleteBranchMutationVariables,
+  CreateBranchMutation,
+  CreateBranchMutationVariables,
+  SetTeamAiConsentMutation,
+  SetTeamAiConsentMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -98,8 +106,8 @@ export const createTeam: Query<
   _CreateTeamMutation,
   _CreateTeamMutationVariables
 > = gql`
-  mutation _CreateTeam($name: String!, $pilot: Boolean) {
-    createTeam(name: $name, pilot: $pilot) {
+  mutation _CreateTeam($name: String!) {
+    createTeam(name: $name) {
       ...teamFragmentDashboard
     }
   }
@@ -272,7 +280,7 @@ export const inviteToTeam: Query<
   ${currentTeamInfoFragment}
 `;
 
-export const inviteToTeamVieEmail: Query<
+export const inviteToTeamViaEmail: Query<
   _InviteToTeamViaEmailMutation,
   _InviteToTeamViaEmailMutationVariables
 > = gql`
@@ -335,8 +343,8 @@ export const setTeamDescription: Query<
 `;
 
 export const unmakeSandboxesTemplate: Query<
-  UnmakeSandboxesTemplateMutation,
-  UnmakeSandboxesTemplateMutationVariables
+  _UnmakeSandboxesTemplateMutation,
+  _UnmakeSandboxesTemplateMutationVariables
 > = gql`
   mutation _UnmakeSandboxesTemplate($sandboxIds: [ID!]!) {
     unmakeSandboxesTemplates(sandboxIds: $sandboxIds) {
@@ -346,8 +354,8 @@ export const unmakeSandboxesTemplate: Query<
 `;
 
 export const makeSandboxesTemplate: Query<
-  MakeSandboxesTemplateMutation,
-  MakeSandboxesTemplateMutationVariables
+  _MakeSandboxesTemplateMutation,
+  _MakeSandboxesTemplateMutationVariables
 > = gql`
   mutation _MakeSandboxesTemplate($sandboxIds: [ID!]!) {
     makeSandboxesTemplates(sandboxIds: $sandboxIds) {
@@ -376,10 +384,15 @@ export const changeTeamMemberAuthorization: Query<
     $teamId: UUID4!
     $userId: UUID4!
     $authorization: TeamMemberAuthorization!
+    $teamManager: Boolean
   ) {
     changeTeamMemberAuthorizations(
       teamId: $teamId
-      memberAuthorizations: { userId: $userId, authorization: $authorization }
+      memberAuthorizations: {
+        userId: $userId
+        authorization: $authorization
+        teamManager: $teamManager
+      }
     ) {
       id
     }
@@ -399,6 +412,7 @@ export const createOrUpdateNpmRegistry: Query<
     $proxyEnabled: Boolean!
     $limitToScopes: Boolean!
     $enabledScopes: [String!]!
+    $sandpackTrustedDomains: [String!]!
   ) {
     createOrUpdatePrivateNpmRegistry(
       teamId: $teamId
@@ -409,6 +423,7 @@ export const createOrUpdateNpmRegistry: Query<
       proxyEnabled: $proxyEnabled
       limitToScopes: $limitToScopes
       enabledScopes: $enabledScopes
+      sandpackTrustedDomains: $sandpackTrustedDomains
     ) {
       ...npmRegistry
     }
@@ -454,18 +469,6 @@ export const setTeamMinimumPrivacy: Query<
       minimumPrivacy
     }
   }
-`;
-
-export const changeSandboxAlwaysOn: Query<
-  SetSandboxAlwaysOnMutation,
-  SetSandboxAlwaysOnMutationVariables
-> = gql`
-  mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
-    setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {
-      ...sandboxFragmentDashboard
-    }
-  }
-  ${sandboxFragmentDashboard}
 `;
 
 export const setWorkspaceSandboxSettings: Query<
@@ -690,6 +693,76 @@ export const updateAlbum: Query<
   mutation updateAlbum($id: ID!, $title: String!) {
     updateAlbum(id: $id, title: $title) {
       id
+    }
+  }
+`;
+
+export const importProject: Query<
+  ImportProjectMutation,
+  ImportProjectMutationVariables
+> = gql`
+  mutation importProject($owner: String!, $name: String!, $teamId: ID!) {
+    importProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
+      id
+      defaultBranch {
+        name
+      }
+    }
+  }
+`;
+
+export const deleteProject: Query<
+  DeleteProjectMutation,
+  DeleteProjectMutationVariables
+> = gql`
+  mutation deleteProject($owner: String!, $name: String!, $teamId: ID!) {
+    deleteProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId)
+  }
+`;
+
+export const deleteBranch: Query<
+  DeleteBranchMutation,
+  DeleteBranchMutationVariables
+> = gql`
+  mutation deleteBranch($branchId: String!) {
+    deleteBranch(id: $branchId)
+  }
+`;
+
+export const createBranch: Query<
+  CreateBranchMutation,
+  CreateBranchMutationVariables
+> = gql`
+  mutation createBranch($owner: String!, $name: String!, $teamId: ID!) {
+    createBranch(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
+      id
+      name
+    }
+  }
+`;
+
+export const setTeamAiConsent: Query<
+  SetTeamAiConsentMutation,
+  SetTeamAiConsentMutationVariables
+> = gql`
+  mutation SetTeamAiConsent(
+    $teamId: UUID4!
+    $privateRepositories: Boolean!
+    $privateSandboxes: Boolean!
+    $publicSandboxes: Boolean!
+    $publicRepositories: Boolean!
+  ) {
+    setTeamAiConsent(
+      teamId: $teamId
+      privateRepositories: $privateRepositories
+      privateSandboxes: $privateSandboxes
+      publicSandboxes: $publicSandboxes
+      publicRepositories: $publicRepositories
+    ) {
+      privateRepositories
+      privateSandboxes
+      publicSandboxes
+      publicRepositories
     }
   }
 `;

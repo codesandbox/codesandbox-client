@@ -7,12 +7,18 @@ import { Skeleton } from './Skeleton';
 import {
   CommentData,
   MentionData,
+  PullRequestReviewReceivedData,
+  PullRequestReviewRequestData,
   TeamInviteData,
+  TeamInviteRequestData,
   TeamAcceptedData,
   SandboxInvitationData,
 } from './types';
 
+import { PullRequestReviewReceived } from './notifications/PullRequestReviewReceived';
+import { PullRequestReviewRequest } from './notifications/PullRequestReviewRequest';
 import { SandboxInvitation } from './notifications/SandboxInvitation';
+import { TeamInviteRequest } from './notifications/TeamInviteRequest';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
 import { Mention } from './notifications/Mention';
@@ -44,6 +50,29 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
       />
     );
   }
+
+  if (type === 'pull_request_review_received') {
+    return (
+      <PullRequestReviewReceived
+        insertedAt={insertedAt}
+        id={id}
+        read={read}
+        {...(camelCaseData as PullRequestReviewReceivedData)}
+      />
+    );
+  }
+
+  if (type === 'pull_request_review_requested') {
+    return (
+      <PullRequestReviewRequest
+        insertedAt={insertedAt}
+        id={id}
+        read={read}
+        {...(camelCaseData as PullRequestReviewRequestData)}
+      />
+    );
+  }
+
   if (type === 'team_invite') {
     return (
       <TeamInvite
@@ -54,6 +83,18 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
       />
     );
   }
+
+  if (type === 'team_invite_requested') {
+    return (
+      <TeamInviteRequest
+        insertedAt={insertedAt}
+        id={id}
+        read={read}
+        {...(camelCaseData as TeamInviteRequestData)}
+      />
+    );
+  }
+
   if (type === 'team_accepted') {
     return (
       <TeamAccepted
@@ -112,12 +153,9 @@ export const NotificationsContent = props => {
   return (
     <Element
       css={css({
-        backgroundColor: 'sideBar.background',
+        backgroundColor: 'menuList.background',
         fontFamily: 'Inter',
         width: 321,
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: 'sideBar.border',
       })}
       {...props}
     >
@@ -126,13 +164,11 @@ export const NotificationsContent = props => {
         css={css({
           display: 'grid',
           gridTemplateColumns: '1fr 60px',
-          borderWidth: 0,
-          borderBottomWidth: 1,
-          borderStyle: 'solid',
-          borderColor: 'sideBar.border',
         })}
       >
-        <Text weight="bold">Notifications</Text>
+        <Text weight="regular" size={4}>
+          Notifications
+        </Text>
         <Element>
           {userNotifications.notifications ? <Filters /> : null}
         </Element>

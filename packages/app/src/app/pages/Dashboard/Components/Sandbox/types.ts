@@ -2,7 +2,6 @@ import { DashboardSandbox, DashboardTemplate } from '../../types';
 
 export interface SandboxItemComponentProps {
   noDrag?: boolean;
-  autoFork?: boolean;
   sandbox: DashboardSandbox['sandbox'] | DashboardTemplate['sandbox'];
   sandboxTitle: string;
   sandboxLocation?: string;
@@ -16,10 +15,11 @@ export interface SandboxItemComponentProps {
   PrivacyIcon: React.FC;
   screenshotUrl: string | null;
 
+  interaction: 'button' | 'link';
   isScrolling: boolean;
   selected: boolean;
-  onClick: (evt: React.MouseEvent) => void;
-  onDoubleClick: (evt: React.MouseEvent) => void;
+  onClick?: (evt: React.MouseEvent) => void;
+  onDoubleClick?: (evt: React.MouseEvent) => void;
   onBlur: (evt: React.FocusEvent) => void;
   onContextMenu: (evt: React.MouseEvent) => void;
 
@@ -29,9 +29,8 @@ export interface SandboxItemComponentProps {
   onInputKeyDown: (evt: React.KeyboardEvent<HTMLInputElement>) => void;
   onSubmit: (evt: React.FormEvent<HTMLFormElement>) => void;
   onInputBlur: (evt: React.FocusEvent<HTMLInputElement>) => void;
+  restricted?: boolean;
 
   thumbnailRef: React.Ref<HTMLDivElement>;
-  opacity: number;
-
-  alwaysOn: boolean;
+  isDragging: boolean;
 }

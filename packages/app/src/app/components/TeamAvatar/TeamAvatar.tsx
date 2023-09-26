@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const backgrounds = [
+const backgrounds = [
   'reds.200',
   'green',
   'purple',
@@ -39,7 +39,7 @@ export const TeamAvatar = ({
   // consistent color
   const index = name.length % (backgrounds.length - 1);
   const backgroundColor = backgrounds[index];
-  const avatarSize = size === 'bigger' ? '55px' : '26px';
+  const avatarSize = size === 'bigger' ? '55px' : '24px';
 
   return avatar ? (
     <img

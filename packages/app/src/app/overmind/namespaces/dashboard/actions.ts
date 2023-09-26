@@ -5,16 +5,26 @@ import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
 import {
-  Direction,
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
   TeamMemberAuthorization,
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
+  CuratedAlbumByIdQueryVariables,
+  ProjectFragment,
+  ChangeTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
-import { getDecoratedCollection } from './utils';
-import { OrderBy, sandboxesTypes } from './types';
+import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
+import {
+  getDecoratedCollection,
+  getProjectUniqueKey,
+  sortByLastAccessed,
+} from './utils';
+
+import { OrderBy, PageTypes, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -112,17 +122,6 @@ export const viewModeChanged = (
   state.dashboard.viewMode = mode;
   effects.browser.storage.set('VIEW_MODE_DASHBOARD', mode);
 };
-
-export const createSandboxClicked = (
-  { actions }: Context,
-  {
-    body,
-    sandboxId,
-  }: {
-    body: { collectionId: string };
-    sandboxId: string;
-  }
-) => actions.editor.forkExternalSandbox({ body, sandboxId });
 
 export const deleteTemplate = async (
   { actions, effects, state }: Context,
@@ -260,7 +259,7 @@ export const inviteToTeam = async (
     });
     let data: any | null = null;
     if (isEmail) {
-      const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
+      const emailInvited = await effects.gql.mutations.inviteToTeamViaEmail({
         teamId: state.activeTeam,
         email: value,
         authorization,
@@ -292,46 +291,6 @@ export const inviteToTeam = async (
       errorMessageExists
         ? e.response.errors[0].message
         : `There was a problem inviting ${value} to your workspace`
-    );
-  }
-};
-
-export const getRecentSandboxes = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
-  try {
-    let sandboxes;
-
-    if (state.activeTeam) {
-      const data = await effects.gql.queries.recentTeamSandboxes({
-        teamId: state.activeTeam,
-        limit: 200,
-        orderField: dashboard.orderBy.field,
-        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-      });
-
-      if (!data.me?.team?.sandboxes) {
-        return;
-      }
-
-      sandboxes = data.me.team.sandboxes;
-    } else {
-      const data = await effects.gql.queries.recentPersonalSandboxes({
-        limit: 200,
-        orderField: dashboard.orderBy.field,
-        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-      });
-
-      if (!data?.me?.sandboxes) {
-        return;
-      }
-
-      sandboxes = data.me.sandboxes;
-    }
-
-    dashboard.sandboxes[sandboxesTypes.RECENT] = sandboxes;
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem getting your recent Sandboxes'
     );
   }
 };
@@ -605,31 +564,44 @@ export const getTemplateSandboxes = async ({ state, effects }: Context) => {
 
 export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
+
   try {
+    /**
+     * For now we decided to NOT show the templates on the home page
+     * But I would keep this code as it is referenced in a lot of places and (TEMPLATE_HOME)
+     * and we might bring it back later on.
+
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
       teamId: state.activeTeam,
     });
-
     if (!usedTemplates || !usedTemplates.me) {
       return;
     }
-
     dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
       0,
       5
     );
+    */
 
-    const result = await effects.gql.queries.recentlyAccessedSandboxes({
+    const sandboxesResult = await effects.gql.queries.recentlyAccessedSandboxes(
+      {
+        limit: 12,
+        teamId: state.activeTeam,
+      }
+    );
+
+    const branchesResult = await effects.gql.queries.recentlyAccessedBranches({
       limit: 12,
       teamId: state.activeTeam,
     });
 
-    if (result?.me?.recentlyAccessedSandboxes == null) {
-      return;
-    }
-
-    dashboard.sandboxes.RECENT_HOME = result.me.recentlyAccessedSandboxes;
+    dashboard.sandboxes.RECENT_SANDBOXES =
+      sandboxesResult?.me?.recentlyAccessedSandboxes || [];
+    dashboard.sandboxes.RECENT_BRANCHES =
+      branchesResult?.me?.recentBranches || [];
   } catch (error) {
+    dashboard.sandboxes.RECENT_SANDBOXES = [];
+    dashboard.sandboxes.RECENT_BRANCHES = [];
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
     );
@@ -1011,14 +983,14 @@ export const getAlwaysOnSandboxes = async ({ state, effects }: Context) => {
   }
 };
 
-export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
+export const getPage = async (
+  { actions, state }: Context,
+  page: sandboxesTypes
+) => {
   const { dashboard } = actions;
 
   switch (page) {
     case sandboxesTypes.RECENT:
-      dashboard.getRecentSandboxes();
-      break;
-    case sandboxesTypes.HOME:
       dashboard.getStartPageSandboxes();
       break;
     case sandboxesTypes.DELETED:
@@ -1032,6 +1004,11 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
       break;
     case sandboxesTypes.SEARCH:
       dashboard.getSearchSandboxes();
+      if (state.activeTeam) {
+        dashboard.getRepositoriesByTeam({
+          teamId: state.activeTeam,
+        });
+      }
       break;
     case sandboxesTypes.ALWAYS_ON:
       dashboard.getAlwaysOnSandboxes();
@@ -1082,6 +1059,12 @@ export const addSandboxesToFolder = async (
     existingCollection.sandboxCount += sandboxIds.length;
   }
 
+  if (teamId !== state.activeTeam) {
+    effects.analytics.track('Dashboard - Moved Sandboxes to different team', {
+      dashboardVersion: 2,
+    });
+  }
+
   try {
     await effects.gql.mutations.addSandboxToFolder({
       sandboxIds,
@@ -1105,23 +1088,18 @@ export const createTeam = async (
   { effects, actions, state }: Context,
   {
     teamName,
-    pilot = false,
   }: {
     teamName: string;
-    pilot?: boolean;
   }
 ) => {
-  try {
-    effects.analytics.track('Team - Create Team', { dashboardVersion: 2 });
-    const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
-      name: teamName,
-      pilot,
-    });
-    state.dashboard.teams = [...state.dashboard.teams, newTeam];
-    actions.setActiveTeam({ id: newTeam.id });
-  } catch {
-    effects.notificationToast.error('There was a problem creating your team');
-  }
+  // Do not try/catch to let errors propagate to `TeamInfo` that will
+  // then handle it by showing a notification if creating a team fails.
+  effects.analytics.track('Team - Create Team', { dashboardVersion: 2 });
+  const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
+    name: teamName,
+  });
+  state.dashboard.teams = [...state.dashboard.teams, newTeam];
+  actions.setActiveTeam({ id: newTeam.id });
 };
 
 export const revokeTeamInvitation = async (
@@ -1382,17 +1360,15 @@ export const changeAuthorizationInState = (
   state.activeTeamInfo!.userAuthorizations = userAuthorizations;
 };
 
+type ChangeAuthorizationParams = Omit<
+  ChangeTeamMemberAuthorizationMutationVariables,
+  'teamId'
+> & {
+  confirm?: boolean;
+};
 export const changeAuthorization = async (
   { state, effects, actions }: Context,
-  {
-    userId,
-    authorization,
-    confirm,
-  }: {
-    userId: string;
-    authorization: TeamMemberAuthorization;
-    confirm?: Boolean;
-  }
+  { userId, authorization, confirm, teamManager }: ChangeAuthorizationParams
 ) => {
   if (confirm) {
     const confirmed = await actions.modals.alertModal.open({
@@ -1416,6 +1392,7 @@ export const changeAuthorization = async (
       teamId: state.activeTeam!,
       userId,
       authorization,
+      teamManager,
     });
     actions.getActiveTeamInfo();
   } catch (e) {
@@ -1580,58 +1557,28 @@ export const setTeamMinimumPrivacy = async (
   }
 };
 
-export const changeSandboxAlwaysOn = async (
-  { state, actions, effects }: Context,
-  {
-    sandboxId,
-    alwaysOn,
-  }: {
-    sandboxId: string;
-    alwaysOn: boolean;
+export const setTeamAiConsent = async (
+  { state, effects }: Context,
+  params: {
+    privateRepositories: boolean;
+    privateSandboxes: boolean;
+    publicSandboxes: boolean;
+    publicRepositories: boolean;
   }
 ) => {
-  effects.analytics.track('Sandbox - Always On', {
-    alwaysOn,
-    source: 'dashboard',
-    dashboardVersion: 2,
-  });
-
-  // optimistic update
-  const {
-    changedSandboxes,
-  } = actions.dashboard.internal.changeSandboxesInState({
-    sandboxIds: [sandboxId],
-    sandboxMutation: sandbox => ({ ...sandbox, alwaysOn }),
-  });
-
-  // optimisically remove from always on
-  if (!alwaysOn && state.dashboard.sandboxes.ALWAYS_ON) {
-    state.dashboard.sandboxes.ALWAYS_ON = state.dashboard.sandboxes.ALWAYS_ON.filter(
-      sandbox => sandbox.id !== sandboxId
-    );
-  }
+  const teamId = state.activeTeam;
 
   try {
-    await effects.gql.mutations.changeSandboxAlwaysOn({ sandboxId, alwaysOn });
-  } catch (error) {
-    changedSandboxes.forEach(oldSandbox =>
-      actions.dashboard.internal.changeSandboxesInState({
-        sandboxIds: [oldSandbox.id],
-        sandboxMutation: sandbox => ({
-          ...sandbox,
-          alwaysOn: oldSandbox.alwaysOn,
-        }),
-      })
-    );
-
-    // this is odd to handle it in the action
-    // TODO: we need a cleaner way to read graphql errors
-    const message = error.response?.errors[0]?.message;
-
-    actions.internal.handleError({
-      message: 'We were not able to update Always-On for this sandbox',
-      error: { name: 'Always on', message },
+    await effects.gql.mutations.setTeamAiConsent({
+      ...params,
+      teamId,
     });
+
+    effects.notificationToast.success('AI permissions updated.');
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your workspace settings'
+    );
   }
 };
 
@@ -1918,6 +1865,44 @@ export const getCuratedAlbums = async ({ state, effects }: Context) => {
   }
 };
 
+export const getCuratedAlbumById = async (
+  { state, effects }: Context,
+  params: CuratedAlbumByIdQueryVariables
+) => {
+  const { dashboard } = state;
+  const _curatedAlbumsById = dashboard.curatedAlbumsById ?? {};
+  try {
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: null,
+    };
+
+    const data = await effects.gql.queries.curatedAlbumById(params);
+
+    if (!data.album) {
+      throw new Error('Unable to find the requested collection');
+    }
+
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: data.album,
+    };
+  } catch (error) {
+    /**
+     * Adds fake album to the state because we don't differentiate
+     * between error and empty.
+     */
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: { id: params.albumId, title: '', sandboxes: [] },
+    };
+
+    effects.notificationToast.error(
+      'There was a problem getting the requested collection'
+    );
+  }
+};
+
 export const addSandboxesToAlbum = async (
   { actions, effects }: Context,
   { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
@@ -1977,4 +1962,442 @@ export const updateAlbum = async (
   } catch (error) {
     effects.notificationToast.error('There was a problem updating album');
   }
+};
+
+export const getContributionBranches = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    dashboard.contributions = null;
+
+    const contributionsData = await effects.gql.queries.getContributionBranches(
+      {}
+    );
+    const contributionBranches = contributionsData?.me?.recentBranches;
+    if (!contributionBranches) {
+      return;
+    }
+
+    dashboard.contributions = contributionBranches;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your open source contributions'
+    );
+  }
+};
+
+type RepositoriesActionOptions = {
+  teamId: string;
+  fetchCachedDataFirst?: boolean;
+};
+export const getRepositoriesByTeam = async (
+  { state, effects, actions }: Context,
+  { teamId, fetchCachedDataFirst = false }: RepositoriesActionOptions
+) => {
+  const { dashboard } = state;
+
+  try {
+    // syncData: true tells backend to return the repositories from the cache,
+    // avoiding the GitHub API for the request
+    const response = await effects.gql.queries.getRepositoriesByTeam({
+      teamId,
+      syncData: !fetchCachedDataFirst,
+    });
+    const repositories = response?.me?.team?.projects;
+    if (!repositories) {
+      return;
+    }
+
+    const accessedRepositories = repositories.filter(r => r.lastAccessedAt);
+    const unaccessedRepositories = repositories.filter(r => !r.lastAccessedAt);
+
+    dashboard.repositoriesByTeamId = {
+      ...dashboard.repositoriesByTeamId,
+      [teamId]: [
+        ...accessedRepositories.sort(sortByLastAccessed),
+        ...unaccessedRepositories,
+      ],
+    };
+
+    // If fetchCachedDataFirst was true, the initial call was made (faster), so we can
+    // safely trigger the second call to sync with GitHub (slower)
+    if (fetchCachedDataFirst) {
+      actions.dashboard.getRepositoriesByTeam({
+        teamId,
+      });
+    }
+  } catch (error) {
+    if (!fetchCachedDataFirst && error?.response?.status === 504) {
+      // Fail silently for timeout requests (unlikely to happen anymore)
+      return;
+    }
+
+    if (fetchCachedDataFirst) {
+      effects.notificationToast.error(
+        'There was a problem getting your repositories'
+      );
+    } else {
+      effects.notificationToast.error(
+        'There was a problem syncing your repositories with GitHub, data shown might not be up to date'
+      );
+    }
+  }
+};
+
+// Fetch the repository with all its branches
+// Cached by `team/owner/name` key
+export const getRepositoryWithBranches = async (
+  { state, effects }: Context,
+  {
+    activeTeam,
+    owner,
+    name,
+  }: { activeTeam: string; owner: string; name: string }
+) => {
+  const { dashboard } = state;
+
+  const repoKey = getProjectUniqueKey({ teamId: activeTeam, owner, name });
+
+  try {
+    const repositoryData = await effects.gql.queries.getRepositoryByDetails({
+      owner,
+      name,
+      teamId: activeTeam,
+    });
+    const repository = repositoryData?.project;
+    if (!repository) {
+      return;
+    }
+
+    dashboard.repositoriesWithBranches = {
+      ...dashboard.repositoriesWithBranches,
+      [repoKey]: repository,
+    };
+  } catch (error) {
+    effects.notificationToast.error(
+      `There was a problem getting repository ${name} from ${owner}`
+    );
+  }
+};
+
+export const getStarredRepos = ({ state, effects }: Context) => {
+  const { dashboard, activeTeam } = state;
+
+  const persistedStarredRepos = effects.browser.storage.get(
+    `CSB/EXPERIMENTAL_STARRED/${activeTeam}`
+  ) as Array<{ owner: string; name: string }>;
+
+  dashboard.starredRepos = persistedStarredRepos ?? [];
+};
+
+export const starRepo = (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { dashboard, activeTeam } = state;
+
+  const existingRepo = dashboard.starredRepos.find(
+    repo => repo.owner === owner && repo.name === name
+  );
+  if (existingRepo) {
+    return;
+  }
+
+  dashboard.starredRepos.push({ owner, name });
+  effects.browser.storage.set(
+    `CSB/EXPERIMENTAL_STARRED/${activeTeam}`,
+    dashboard.starredRepos
+  );
+};
+
+export const unstarRepo = (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { dashboard, activeTeam } = state;
+
+  dashboard.starredRepos = dashboard.starredRepos.filter(
+    repo => repo.owner !== owner || repo.name !== name
+  );
+  effects.browser.storage.set(
+    `CSB/EXPERIMENTAL_STARRED/${activeTeam}`,
+    dashboard.starredRepos
+  );
+};
+
+type BranchToRemove = {
+  owner: string;
+  repoName: string;
+  name: string;
+  id: string;
+  page: PageTypes;
+};
+export const removeBranchFromRepository = async (
+  { actions, effects, state }: Context,
+  branch: BranchToRemove
+) => {
+  const { activeTeam, dashboard } = state;
+  if (!activeTeam) {
+    return;
+  }
+  const { id, owner, repoName, name, page } = branch;
+
+  dashboard.removingBranch = { id };
+
+  try {
+    await effects.gql.mutations.deleteBranch({ branchId: id });
+
+    // Clean the branch references from all possible locations in the state
+    // 1. Repository with branches
+    // 2. Contribution branches
+    // 3. Recent branches
+    const key = getProjectUniqueKey({
+      teamId: activeTeam,
+      owner,
+      name: repoName,
+    });
+    const repository = dashboard.repositoriesWithBranches[key];
+
+    if (repository) {
+      dashboard.repositoriesWithBranches = {
+        ...dashboard.repositoriesWithBranches,
+        [key]: {
+          ...repository,
+          branches: repository.branches.filter(b => b.id !== id),
+        },
+      };
+    }
+
+    dashboard.contributions =
+      dashboard.contributions?.filter(b => b.id !== id) ?? [];
+
+    dashboard.sandboxes.RECENT_BRANCHES =
+      dashboard.sandboxes.RECENT_BRANCHES?.filter(b => b.id !== id) ?? [];
+
+    if (page === 'recent') {
+      // Trigger re-fetching of recent page data to fill in the free spot
+      actions.dashboard.getStartPageSandboxes();
+    }
+  } catch (error) {
+    effects.notificationToast.error(
+      `Failed to remove branch ${name} from ${owner}/${repoName}`
+    );
+  } finally {
+    dashboard.removingBranch = null;
+  }
+};
+
+type RemoveRepositoryParams = {
+  project: ProjectFragment;
+  page: PageTypes;
+};
+export const removeRepositoryFromTeam = async (
+  { actions, state, effects }: Context,
+  { project, page }: RemoveRepositoryParams
+) => {
+  const { activeTeam, dashboard } = state;
+  if (!activeTeam) {
+    return;
+  }
+
+  const { team: assignedTeam } = project;
+  const { owner, name } = project.repository;
+
+  dashboard.removingRepository = { owner, name };
+
+  try {
+    if (assignedTeam?.id) {
+      const confirmed = await actions.modals.alertModal.open({
+        title: 'Remove repository',
+        type: 'danger',
+        message:
+          'This action will remove the repository and all the branches from CodeSandbox. Any code that is not pushed on GitHub will be lost.',
+      });
+
+      if (!confirmed) {
+        return;
+      }
+
+      effects.analytics.track('Dashboard - Remove Assigned Repository');
+
+      await effects.gql.mutations.deleteProject({
+        owner,
+        name,
+        teamId: activeTeam,
+      });
+    } else {
+      await effects.api.removeLinkedProjectFromTeam(owner, name, activeTeam);
+    }
+
+    // Remove all cached data about repository
+    // 1. From repositories list
+    // 2. From repository with branches cache
+    // 3. Branches from recent page
+
+    const teamRepositories = dashboard.repositoriesByTeamId[activeTeam];
+    if (teamRepositories) {
+      dashboard.repositoriesByTeamId = {
+        ...dashboard.repositoriesByTeamId,
+        [activeTeam]: teamRepositories.filter(
+          r => r.repository.owner !== owner || r.repository.name !== name
+        ),
+      };
+    }
+
+    const key = getProjectUniqueKey({ teamId: activeTeam, owner, name });
+    const repositoryWithBranches = dashboard.repositoriesWithBranches[key];
+    if (repositoryWithBranches) {
+      dashboard.repositoriesWithBranches = {
+        ...dashboard.repositoriesWithBranches,
+        [key]: undefined,
+      };
+    }
+
+    dashboard.sandboxes.RECENT_BRANCHES =
+      dashboard.sandboxes.RECENT_BRANCHES?.filter(b => {
+        const branchRepo = b.project.repository;
+
+        return branchRepo.owner === owner && branchRepo.name === name;
+      }) ?? [];
+
+    // Refetch start page data in the background to fill the remaining slots
+    if (page === 'recent') {
+      actions.dashboard.getStartPageSandboxes();
+    }
+
+    // Redirect to main dashboard page when removing the repo from within the page
+    if (page === 'repository-branches') {
+      effects.router.redirectToDashboard();
+    }
+  } catch (error) {
+    effects.notificationToast.error(
+      `Failed to remove project ${owner}/${name}`
+    );
+  } finally {
+    dashboard.removingRepository = null;
+  }
+};
+
+export const importGitHubRepository = async (
+  { state, effects }: Context,
+  {
+    owner,
+    name,
+    redirect = true,
+  }: { owner: string; name: string; redirect?: boolean }
+) => {
+  const { activeTeam } = state;
+
+  if (!activeTeam) {
+    return undefined;
+  }
+
+  try {
+    const result = await effects.gql.mutations.importProject({
+      name,
+      owner,
+      teamId: activeTeam,
+    });
+
+    if (redirect) {
+      window.location.href = v2BranchUrl({
+        owner,
+        repoName: name,
+        branchName: result.importProject.defaultBranch.name,
+        workspaceId: activeTeam,
+        importFlag: true,
+      });
+    } else {
+      return result;
+    }
+  } catch (error) {
+    notificationState.addNotification({
+      message: JSON.stringify(error),
+      title: 'Failed to import repository',
+      status: NotificationStatus.ERROR,
+    });
+  }
+
+  return undefined;
+};
+
+export type ForkSource = {
+  owner: string;
+  name: string;
+};
+export type ForkDestination = {
+  organization?: string;
+  name: string;
+  teamId: string;
+};
+
+export const forkGitHubRepository = async (
+  { effects }: Context,
+  params: {
+    source: ForkSource;
+    destination: ForkDestination;
+  }
+) => {
+  try {
+    const response = await effects.api.forkRepository(
+      params.source,
+      params.destination
+    );
+    window.location.href = v2BranchUrl({
+      workspaceId: params.destination.teamId,
+      importFlag: true,
+      owner: response.owner,
+      repoName: response.repo,
+      branchName: response.branch,
+    });
+  } catch (error) {
+    notificationState.addNotification({
+      message: JSON.stringify(error),
+      title: 'Failed to fork repository',
+      status: NotificationStatus.ERROR,
+    });
+  }
+};
+
+export const createDraftBranch = async (
+  { state, effects }: Context,
+  { owner, name, teamId }: { owner: string; name: string; teamId: string }
+) => {
+  if (state.dashboard.creatingBranch) {
+    return;
+  }
+
+  try {
+    state.dashboard.creatingBranch = true;
+
+    const response = await effects.gql.mutations.createBranch({
+      name,
+      owner,
+      teamId,
+    });
+
+    const branchName = response.createBranch.name;
+
+    window.location.href = v2BranchUrl({
+      workspaceId: teamId,
+      owner,
+      repoName: name,
+      branchName,
+    });
+  } catch (error) {
+    notificationState.addNotification({
+      message: JSON.stringify(error),
+      title: 'Failed to create branch',
+      status: NotificationStatus.ERROR,
+    });
+  }
+};
+
+export const getLimits = async ({ state, effects }: Context) => {
+  const { limits } = await effects.gql.queries.getLimits({});
+
+  if (!limits) {
+    return;
+  }
+
+  state.dashboard.limits = limits;
 };

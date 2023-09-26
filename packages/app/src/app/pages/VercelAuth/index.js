@@ -7,15 +7,21 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Title } from 'app/components/Title';
 
+/**
+ * This component is insteresting. We're probably redirecting this page
+ * to the Vercel signin on the server. It doesn't do anything locally but
+ * does redirect on production.
+ */
 const VercelSignIn = () => {
   const [redirect, setRedirect] = useState(null);
   const [jwt] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (document.location.search.match(/\?code=(.*)/)) {
-      // eslint-disable-next-line
-      const [_, code] = document.location.search.match(/\?code=(.*)/);
+    const queryParams = new URLSearchParams(document.location.search);
+    const code = queryParams.get('code');
+
+    if (code) {
       if (window.opener) {
         if (window.opener.location.origin === window.location.origin) {
           window.opener.postMessage(

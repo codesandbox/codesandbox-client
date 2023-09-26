@@ -1,11 +1,18 @@
-import { format, subDays } from 'date-fns';
 import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { Step, Plan, PaymentSummary, PaymentPreview } from './types';
+import { SubscriptionInterval } from 'app/graphql/types';
+import { Step, PaymentSummary, PaymentPreview } from './types';
 
 export const pageMounted = withLoadApp(async ({ effects, state, actions }) => {
-  state.pro.prices = await effects.api.prices();
+  // We have to call the api effect directly rather than using an action because
+  // for some reason an action doesn't work.
+  const prices = await effects.api.getPrices();
 
+  if (prices) {
+    state.pro.prices = prices;
+  }
+
+  // This action does work.
   actions.getActiveTeamInfo();
 });
 
@@ -25,16 +32,13 @@ export const billingAmountLoaded = ({ state }: Context) => {
   state.pro.isBillingAmountLoaded = true;
 };
 
-export const updateSelectedPlan = ({ state }: Context, plan: Plan) => {
-  state.pro.selectedPlan = plan;
-};
-
+// TODO: Refactor since billingInterval is always Yearly.
 export const previewUpdateSubscriptionBillingInterval = async (
   { state, effects }: Context,
   {
     billingInterval,
   }: {
-    billingInterval: Plan['billingInterval'];
+    billingInterval: SubscriptionInterval;
   }
 ) => {
   try {
@@ -64,7 +68,7 @@ export const updateSubscriptionBillingInterval = async (
   {
     billingInterval,
   }: {
-    billingInterval: Plan['billingInterval'];
+    billingInterval: SubscriptionInterval;
   }
 ) => {
   state.pro.updatingSubscription = true;
@@ -87,20 +91,9 @@ export const updateSubscriptionBillingInterval = async (
 
 export const cancelWorkspaceSubscription = async ({
   state,
-  actions,
   effects,
+  actions,
 }: Context) => {
-  const nextBillDate = state.activeTeamInfo!.subscription!.nextBillDate;
-  const expirationDate = format(subDays(new Date(nextBillDate), 1), 'PP');
-
-  const confirmed = await actions.modals.alertModal.open({
-    title: 'Cancel Subscription',
-    message: `Are you sure? Your subscription will expire on the next billing date - ${expirationDate}.`,
-    type: 'danger',
-  });
-
-  if (!confirmed) return;
-
   try {
     const response = await effects.gql.mutations.softCancelSubscription({
       teamId: state.activeTeam,
@@ -114,6 +107,8 @@ export const cancelWorkspaceSubscription = async ({
     effects.notificationToast.error(
       'There was a problem cancelling your subscription. Please email us at support@codesandbox.io'
     );
+  } finally {
+    actions.modalClosed();
   }
 };
 

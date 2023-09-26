@@ -16,6 +16,7 @@
     "outDir": "lib",
     "declaration": true,
     "allowJs": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   }
 }

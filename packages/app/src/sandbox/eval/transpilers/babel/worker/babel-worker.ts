@@ -1,8 +1,6 @@
 /* eslint-disable global-require, no-console, no-use-before-define */
-import { flatten } from 'lodash-es';
+import flatten from 'lodash-es/flatten';
 import refreshBabelPlugin from 'react-refresh/babel';
-import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
-import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
@@ -294,6 +292,7 @@ async function installPlugin(opts, count = 0) {
     evaluatedPlugin = evaluatedFromPath.default || evaluatedFromPath;
   } catch (err) {
     if (count > 5) {
+      console.error('Compiling babel plugin ' + name + ' went wrong, got:');
       throw err;
     }
 
@@ -369,6 +368,7 @@ async function installPreset(opts, count = 0) {
     evaluatedPreset = evaluatedFromPath.default || evaluatedFromPath;
   } catch (err) {
     if (count > 5) {
+      console.error('Compiling babel preset ' + name + ' went wrong, got:');
       throw err;
     }
 
@@ -454,7 +454,6 @@ function getCustomConfig(
           'transform-flow-strip-types',
           'babel-plugin-csb-rename-import',
           'transform-modules-commonjs',
-          'proposal-class-properties',
           '@babel/plugin-transform-runtime',
           ...codeSandboxPlugins,
         ],
@@ -501,6 +500,17 @@ function getCustomConfig(
 
 async function compile(opts: any) {
   const { code, config, path, isV7, loaderContextId } = opts;
+
+  if (path.includes('node_modules')) {
+    const filterRefreshPlugins = p => {
+      return typeof p === 'string'
+        ? !p.includes('refresh')
+        : !p[0].includes('refresh');
+    };
+
+    config.plugins = config.plugins.filter(filterRefreshPlugins);
+    config.presets = config.presets.filter(filterRefreshPlugins);
+  }
 
   try {
     let result;
@@ -632,9 +642,7 @@ async function initBabel(opts) {
     loadCustomTranspiler(babelUrl, babelEnvUrl);
   } else if (version !== 7) {
     loadCustomTranspiler(
-      process.env.NODE_ENV === 'development'
-        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
-        : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
+      `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
     );
   }
 
@@ -715,38 +723,10 @@ async function initBabel(opts) {
     }
 
     if (
-      (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
-        flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >
-          -1) &&
-      Object.keys(Babel.availablePlugins).indexOf(
-        'proposal-optional-chaining'
-      ) === -1
-    ) {
-      Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
-    }
-
-    if (
       flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
       Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') === -1
     ) {
       Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
-    }
-
-    const coalescingInPlugins =
-      flattenedPlugins.indexOf('proposal-nullish-coalescing-operator') > -1 ||
-      flattenedPlugins.indexOf(
-        '@babel/plugin-proposal-nullish-coalescing-operator'
-      ) > -1;
-    if (
-      coalescingInPlugins &&
-      Object.keys(Babel.availablePlugins).indexOf(
-        'proposal-nullish-coalescing-operator'
-      ) === -1
-    ) {
-      Babel.registerPlugin(
-        'proposal-nullish-coalescing-operator',
-        coalescingPlugin
-      );
     }
 
     if (

@@ -11,13 +11,13 @@ import { Loadable } from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
-import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
+import { CreateSandboxModal } from 'app/components/CreateSandbox/CreateSandboxModal';
+import { Debug } from 'app/components/Debug';
 import { initializeExperimentStore } from '@codesandbox/ab';
 import {
   getExperimentUserId,
   AB_TESTING_URL,
 } from '@codesandbox/common/lib/config/env';
-
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
@@ -48,7 +48,7 @@ const SignInAuth = Loadable(
 );
 const SignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './SignIn').then(module => ({
-    default: module.SignIn,
+    default: module.SignInPage,
   }))
 );
 const SignOut = Loadable(() =>
@@ -66,6 +66,9 @@ const VercelSignIn = Loadable(
 );
 const PreviewAuth = Loadable(
   () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
+);
+const SandpackSecret = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './SandpackSecret')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
@@ -97,10 +100,12 @@ const CLI = Loadable(() =>
   }))
 );
 
-const Client = Loadable(() =>
-  import(/* webpackChunkName: 'page-client' */ './Client').then(module => ({
-    default: module.Client,
-  }))
+const MobileAuth = Loadable(() =>
+  import(/* webpackChunkName: 'page-mobile-auth' */ './MobileAuth').then(
+    module => ({
+      default: module.MobileAuth,
+    })
+  )
 );
 
 const VSCodeAuth = Loadable(() =>
@@ -127,11 +132,6 @@ const CliInstructions = Loadable(() =>
     /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
   ).then(module => ({ default: module.CLIInstructions }))
 );
-const Patron = Loadable(() =>
-  import(/* webpackChunkName: 'page-patron' */ './Patron').then(module => ({
-    default: module.Patron,
-  }))
-);
 const SignUp = Loadable(() =>
   import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
     default: module.SignUp,
@@ -145,11 +145,6 @@ const Pro = Loadable(() =>
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
     default: module.Curator,
-  }))
-);
-const WaitListRequest = Loadable(() =>
-  import(/* webpackChunkName: 'page-curator' */ './WaitList').then(module => ({
-    default: module.WaitListRequest,
   }))
 );
 
@@ -224,18 +219,18 @@ const RoutesComponent: React.FC = () => {
             <Route path="/u/:username" component={Profile} />
             <Route path="/u2/:username" component={Profile} />
             <Route path="/search" component={Search} />
-            <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
-            <Route path="/client/login" component={Client} />
+            <Route path="/client/login" component={MobileAuth} />
             <Route path="/vscode/login" component={VSCodeAuth} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
+            <Route path="/auth/sandpack/:teamId" component={SandpackSecret} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
             <Route path="/codesadbox" component={CodeSadbox} />
-            <Route path="/waitlist" component={WaitListRequest} />
+            <Redirect from="/patron" to="/pro" />
             <Route component={NotFound} />
           </Switch>
         </Content>
@@ -245,6 +240,7 @@ const RoutesComponent: React.FC = () => {
         {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
           <MoveSandboxFolderModal />
         )}
+        <Debug />
       </Boundary>
     </Container>
   );

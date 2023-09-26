@@ -219,17 +219,35 @@ export class VSCodeEffect {
 
     // Only set the read only state when the editor is initialized.
     this.initialized.then(() => {
-      // ReadOnly mode is derivative, it's based on a couple conditions, of which the
-      // most important one is Live. If you're in a classroom live session as spectator,
-      // you should not be allowed to edit.
+      // ReadOnly mode is derivative, it's based on a couple conditions. The most important
+      // one is the `freePlanEditingRestricted` flag. The second most important one is live.
+      // If you're in a classroom live session as spectator, you should not be allowed to edit.
+
       options.reaction(
-        state =>
-          (state.editor.currentSandbox &&
-            Boolean(state.editor.currentSandbox.git)) ||
-          !state.live.isLive ||
-          state.live.roomInfo?.mode === 'open' ||
-          (state.live.roomInfo?.mode === 'classroom' &&
-            state.live.isCurrentEditor),
+        state => {
+          const freePlanEditingRestricted =
+            state.editor.currentSandbox?.freePlanEditingRestricted;
+
+          if (freePlanEditingRestricted) {
+            // Returns canEdit, false always
+            return false;
+          }
+
+          const hasGitInfo = Boolean(state.editor.currentSandbox?.git);
+          const isNotLive = !state.live.isLive;
+          const isOpenRoom = state.live.roomInfo?.mode === 'open';
+          const isClassroomAndCurrentEditor =
+            state.live.roomInfo?.mode === 'classroom' &&
+            state.live.isCurrentEditor;
+
+          const canEdit =
+            hasGitInfo ||
+            isNotLive ||
+            isOpenRoom ||
+            isClassroomAndCurrentEditor;
+
+          return canEdit;
+        },
         canEdit => {
           this.setReadOnly(!canEdit);
         }

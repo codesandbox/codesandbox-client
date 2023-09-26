@@ -3,7 +3,7 @@ import { ThemeProvider } from '@codesandbox/components';
 import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
-} from 'app/components/CreateNewSandbox/CreateSandbox';
+} from 'app/components/CreateSandbox';
 import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
 import { useAppState, useActions } from 'app/overmind';
@@ -22,11 +22,13 @@ import { ExportGitHubModal } from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
+import { LiveSessionRestricted } from './LiveSessionRestricted';
 import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
-import { PilotPaymentModal } from './PilotPaymentModal';
+import { RecoverFilesModal } from './RecoverFilesModal';
+import { LegacyPaymentModal } from './LegacyPaymentModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
@@ -46,15 +48,19 @@ import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/Undo
 import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
-import { NewTeamModal } from './NewTeamModal';
+import { SubscriptionCancellationModal } from './SubscriptionCancellation';
+import { SelectWorkspaceToUpgrade } from './SelectWorkspaceToUpgrade';
+import { SelectWorkspaceToStartTrial } from './SelectWorkspaceToStartTrial';
+import { MidTrialModal } from './MidTrialModal';
+import { EditorSeatsUpgrade } from './EditorSeatsUpgrade';
 
 const modals = {
   preferences: {
     Component: PreferencesModal,
     width: 900,
   },
-  pilotPayment: {
-    Component: PilotPaymentModal,
+  legacyPayment: {
+    Component: LegacyPaymentModal,
     width: 600,
   },
   newSandbox: {
@@ -71,6 +77,10 @@ const modals = {
   },
   deleteWorkspace: {
     Component: DeleteWorkspace,
+    width: 400,
+  },
+  recoveredFiles: {
+    Component: RecoverFilesModal,
     width: 400,
   },
   teamInvite: {
@@ -141,6 +151,10 @@ const modals = {
     Component: LiveSessionEnded,
     width: 400,
   },
+  liveSessionRestricted: {
+    Component: LiveSessionRestricted,
+    width: 400,
+  },
   liveVersionMismatch: {
     Component: LiveVersionMismatch,
     width: 400,
@@ -194,8 +208,24 @@ const modals = {
     Component: NotFoundBranchModal,
     width: 450,
   },
-  newTeam: {
-    Component: NewTeamModal,
+  subscriptionCancellation: {
+    Component: SubscriptionCancellationModal,
+    width: 800,
+  },
+  selectWorkspaceToUpgrade: {
+    Component: SelectWorkspaceToUpgrade,
+    width: 400,
+  },
+  selectWorkspaceToStartTrial: {
+    Component: SelectWorkspaceToStartTrial,
+    width: 400,
+  },
+  midTrial: {
+    Component: MidTrialModal,
+    width: 600,
+  },
+  editorSeatsUpgrade: {
+    Component: EditorSeatsUpgrade,
     width: 400,
   },
 };

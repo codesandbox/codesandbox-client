@@ -11,6 +11,10 @@ import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
+import {
+  requestSandpackSecretFromApp,
+  removeSandpackSecret,
+} from 'sandpack-core/lib/sandpack-secret';
 import compile, { getCurrentManager } from './compile';
 
 const host = process.env.CODESANDBOX_HOST;
@@ -68,6 +72,14 @@ requirePolyfills().then(() => {
             data: {},
           });
         }
+      } else if (data.type === 'sign-in') {
+        await requestSandpackSecretFromApp(data.teamId);
+
+        window.location.reload();
+      } else if (data.type === 'sign-out') {
+        removeSandpackSecret();
+
+        window.location.reload();
       }
     }
   }

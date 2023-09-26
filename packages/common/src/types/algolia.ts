@@ -39,6 +39,7 @@ interface CustomTemplate {
   id: string;
   icon_url: string | null;
   color: string;
+  v2: boolean | null;
 }
 
 interface Author {

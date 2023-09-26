@@ -15,6 +15,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Context } from 'app/overmind';
 import { debounce, pipe } from 'overmind';
+import { CSBProjectGitHubRepository } from '@codesandbox/common/lib/utils/url-generator';
 
 import * as internalActions from './internalActions';
 import { createDiff } from './utils';
@@ -170,45 +171,18 @@ export const createRepoClicked = async ({
     state.git.isExported = true;
     state.currentModal = null;
 
-    effects.router.updateSandboxUrl({ git });
+    // Redirect to CodeSandbox Projects
+    window.location.href = CSBProjectGitHubRepository({
+      owner: git.username,
+      repo: git.repo,
+      welcome: true,
+    });
   } catch (error) {
     actions.internal.handleError({
       error,
       message:
         'Unable to create the repo. Please refresh and try again or report issue.',
     });
-  }
-};
-
-export const importFromGithub = async (
-  { state, effects, actions }: Context,
-  sandboxUrl: string
-) => {
-  actions.modalClosed();
-  state.currentModal = 'exportGithub';
-  try {
-    await actions.editor.forkExternalSandbox({
-      sandboxId: sandboxUrl.replace('/s/', ''),
-    });
-    state.currentModal = null;
-  } catch (e) {
-    if (!state.user || !state.user.integrations?.github) {
-      state.currentModal = null;
-      effects.notificationToast.add({
-        title: 'Can not import repo',
-        message: 'This seems to be a private repo, you have to sign in first',
-        status: NotificationStatus.ERROR,
-        actions: {
-          primary: {
-            label: 'Sign in',
-            run: () => {
-              actions.signInGithubClicked();
-            },
-          },
-        },
-      });
-    }
-    throw e;
   }
 };
 

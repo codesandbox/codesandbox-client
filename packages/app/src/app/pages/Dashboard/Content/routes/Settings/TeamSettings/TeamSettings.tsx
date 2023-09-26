@@ -7,7 +7,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import {
   Route,
   BrowserRouter,
@@ -28,14 +28,14 @@ export const TeamSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Team Settings - CodeSandbox</title>
+        <title>Team settings - CodeSandbox</title>
       </Helmet>
-      <Header title="Team Settings" activeTeam={activeTeam} />
+      <Header title="Team settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
           overflowY: 'scroll',
-          paddingY: 10,
+          paddingY: 6,
         })}
       >
         <Stack
@@ -67,7 +67,9 @@ export const TeamSettings = () => {
               </RouterSwitch>
             </BrowserRouter>
           ) : (
-            <Text>Loading...</Text>
+            <Text css={css({ color: 'sideBarSectionHeader.foreground' })}>
+              Loading...
+            </Text>
           )}
         </Stack>
       </Element>

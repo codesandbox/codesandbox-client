@@ -7,14 +7,23 @@ import { useAppState, useActions } from 'app/overmind';
 import { LiveIcon } from '../icons';
 
 export const Owner: FunctionComponent = () => {
-  const { createLiveClicked } = useActions().live;
+  const { live, modalOpened } = useActions();
   const {
-    editor: {
-      currentSandbox: { id },
-      isAllModulesSynced,
-    },
+    editor: { currentSandbox, isAllModulesSynced },
     live: { isLoading },
   } = useAppState();
+
+  const id = currentSandbox.id;
+  const restrictions = currentSandbox?.restrictions;
+
+  const handleGoLive = () => {
+    if (restrictions.liveSessionsRestricted) {
+      // Show modal that its restricted
+      modalOpened({ modal: 'liveSessionRestricted' });
+    } else {
+      live.createLiveClicked(id);
+    }
+  };
 
   return (
     <>
@@ -30,16 +39,14 @@ export const Owner: FunctionComponent = () => {
 
       <Button
         disabled={!isAllModulesSynced}
-        onClick={() => createLiveClicked(id)}
+        onClick={handleGoLive}
         variant="danger"
       >
         {isLoading ? (
           'Creating session'
         ) : (
           <>
-            <LiveIcon css={css({ marginRight: 2 })} />
-
-            <span>Go Live</span>
+            <LiveIcon css={css({ marginRight: 2 })} /> <span>Go Live</span>
           </>
         )}
       </Button>

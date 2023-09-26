@@ -6,7 +6,13 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
-import { getPossibleTemplates } from '../../utils';
+import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
+import {
+  appendOnboardingTracking,
+  getPossibleTemplates,
+} from 'app/pages/Dashboard/Content/utils';
+import { ArticleCard } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const Shared = () => {
   const {
@@ -29,20 +35,44 @@ export const Shared = () => {
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'shared';
+  const isEmpty = items.length === 0;
+
   return (
     <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
-        <title>Shared with Me - CodeSandbox</title>
+        <title>Shared with me - CodeSandbox</title>
       </Helmet>
       <Header
-        title="Sandboxes Shared with Me"
+        title="Sandboxes shared with me"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.SHARED)}
-        showViewOptions
-        showFilters
+        showViewOptions={!isEmpty}
+        showFilters={!isEmpty}
       />
 
-      <VariableGrid items={items} page={pageType} />
+      {isEmpty ? (
+        <EmptyPage.StyledWrapper>
+          <EmptyPage.StyledDescription as="p">
+            There are currently no sandboxes shared with you.
+          </EmptyPage.StyledDescription>
+          <EmptyPage.StyledGrid>
+            <ArticleCard
+              title="Get feedback in context"
+              thumbnail="/static/img/thumbnails/page_shared.png"
+              url={appendOnboardingTracking('https://codesandbox.io/team')}
+              onClick={() =>
+                track('Empty State Card - Content card', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                  card_type: 'landing-team-intro',
+                })
+              }
+            />
+          </EmptyPage.StyledGrid>
+        </EmptyPage.StyledWrapper>
+      ) : (
+        <VariableGrid items={items} page={pageType} />
+      )}
     </SelectionProvider>
   );
 };

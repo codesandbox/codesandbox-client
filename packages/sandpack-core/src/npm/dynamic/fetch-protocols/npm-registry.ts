@@ -1,5 +1,7 @@
 import { satisfies, valid } from 'semver';
+import { Module } from '../../../types/module';
 import { FetchProtocol, Meta } from '../fetch-npm-module';
+import { getSandpackSecret } from '../../../sandpack-secret';
 import { fetchWithRetries } from './utils';
 import { TarStore } from './utils/tar-store';
 
@@ -66,12 +68,15 @@ export type NpmRegistryOpts = {
    */
   scopeWhitelist?: string[];
 
+  authType?: string;
   authToken?: string;
 
   /**
    * Allows you to overwrite the tarball url if you have a custom location for it.
    */
   provideTarballUrl?: TarbalUrlTransformer;
+
+  proxyEnabled?: boolean;
 };
 
 export class NpmRegistryFetcher implements FetchProtocol {
@@ -86,12 +91,16 @@ export class NpmRegistryFetcher implements FetchProtocol {
   private scopeWhitelist: string[] | undefined;
   private authToken: string | undefined;
   private provideTarballUrl?: TarbalUrlTransformer;
+  private proxyEnabled?: boolean = false;
+  private authType: string;
 
   constructor(private registryLocation: string, config: NpmRegistryOpts) {
     this.proxyUrl = config.proxyUrl;
     this.scopeWhitelist = config.scopeWhitelist;
     this.authToken = config.authToken;
     this.provideTarballUrl = config.provideTarballUrl;
+    this.proxyEnabled = config.proxyEnabled;
+    this.authType = config.authType || 'Bearer';
   }
 
   private getProxiedUrl(url: string) {
@@ -119,14 +128,27 @@ export class NpmRegistryFetcher implements FetchProtocol {
     const headers = new Headers();
     headers.append('Accept', NPM_REGISTRY_ACCEPT_HEADER);
     headers.append('Content-Type', 'application/json');
+
+    /**
+     * Private packages conditionals:
+     * 1. Explicit token: if `authToken` is provide, add it to the header
+     * 2. Proxy disabled: then it's a custom registry, so do not anything
+     * 3. Proxy is enabled and team-id is provide: it's a private package provided by CSB
+     */
+
     if (this.authToken) {
-      headers.append('Authorization', `Bearer ${this.authToken}`);
+      // Custom registry url
+      headers.append('Authorization', `${this.authType} ${this.authToken}`);
+    } else if (getSandpackSecret()) {
+      // CSB proxy
+      headers.append('Authorization', `Bearer ${getSandpackSecret()}`);
     }
 
     return {
       method: 'get',
       headers,
       mode: 'cors',
+      credentials: this.proxyEnabled ? 'include' : undefined,
     };
   }
 
@@ -230,9 +252,23 @@ export class NpmRegistryFetcher implements FetchProtocol {
     return this.tarStore.meta(name, tarball, this.getRequestInit());
   }
 
+  public async massFiles(name: string, version: string): Promise<Module[]> {
+    const versionInfo = await this.getVersionInfo(name, version);
+
+    const tarball = this.getTarballUrl(
+      name,
+      versionInfo.version,
+      versionInfo.dist.tarball
+    );
+    return this.tarStore.massFiles(name, tarball, this.getRequestInit());
+  }
+
   public condition = (name: string, version: string): boolean => {
     if (this.scopeWhitelist) {
-      return this.scopeWhitelist.some(scope => name.startsWith(scope));
+      return this.scopeWhitelist.some(scope => {
+        const [scopeName] = name.split('/');
+        return scopeName === scope;
+      });
     }
 
     return true;

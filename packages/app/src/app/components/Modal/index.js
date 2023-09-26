@@ -18,9 +18,17 @@ const GlobalStyles = createGlobalStyle`
   transition-property: opacity, transform;
   opacity: 0;
   transform: scale(0.9) translateY(5px);
-
-  h2 {
-    margin-top: 14px;
+  overflow-y: hidden;
+  width: 950px; 
+  
+  @media screen and (max-width: 950px) {
+    width: 95%;
+  }
+  
+  @media screen and (max-width: 756px) {
+    width: 100%;
+    border: 0;
+    border-radius: 0;
   }
 }
 

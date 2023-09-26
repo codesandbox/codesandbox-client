@@ -2,13 +2,15 @@ import React from 'react';
 import { useEffects, useActions, useAppState } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { SubscriptionType } from 'app/graphql/types';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 import {
   DashboardSandbox,
   DashboardTemplate,
   DashboardFolder,
-  DashboardRepo,
-  DashboardNewMasterBranch,
+  DashboardSyncedRepo,
+  DashboardSyncedRepoDefaultBranch,
   DashboardCommunitySandbox,
   PageTypes,
 } from '../../../types';
@@ -18,8 +20,8 @@ interface IMultiMenuProps {
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
-    | DashboardRepo
-    | DashboardNewMasterBranch
+    | DashboardSyncedRepo
+    | DashboardSyncedRepoDefaultBranch
     | DashboardCommunitySandbox
   >;
   page: PageTypes;
@@ -37,6 +39,8 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const actions = useActions();
   const { notificationToast } = useEffects();
   const { visible, setVisibility, position } = React.useContext(Context);
+  const { isFree } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   /*
     sandbox options - export, make template, delete
@@ -100,7 +104,8 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       preventSandboxLeaving: Boolean(
         [...sandboxes, ...templates].find(
           s => s.sandbox.permissions.preventSandboxLeaving
-        )
+        ) ||
+          (isFree && hasMaxPublicSandboxes)
       ),
     });
   };
@@ -135,13 +140,13 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const DIVIDER = 'divider' as const;
 
-  const MAKE_PUBLIC = { label: 'Make Items Public', fn: changeItemPrivacy(0) };
+  const MAKE_PUBLIC = { label: 'Make items public', fn: changeItemPrivacy(0) };
   const MAKE_UNLISTED = {
-    label: 'Make Items Unlisted',
+    label: 'Make items unlisted',
     fn: changeItemPrivacy(1),
   };
   const MAKE_PRIVATE = {
-    label: 'Make Items Private',
+    label: 'Make items private',
     fn: changeItemPrivacy(2),
   };
   const PRIVACY_ITEMS = state.activeTeamInfo?.subscription
@@ -150,7 +155,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const FROZEN_ITEMS = [
     sandboxes.some(s => !s.sandbox.isFrozen) && {
-      label: 'Freeze Sandboxes',
+      label: 'Freeze sandboxes',
       fn: () => {
         actions.dashboard.changeSandboxesFrozen({
           sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -159,7 +164,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       },
     },
     sandboxes.some(s => s.sandbox.isFrozen) && {
-      label: 'Unfreeze Sandboxes',
+      label: 'Unfreeze sandboxes',
       fn: () => {
         actions.dashboard.changeSandboxesFrozen({
           sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -176,7 +181,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'
       ? [
           sandboxes.some(s => !s.sandbox.permissions.preventSandboxLeaving) && {
-            label: 'Prevent Leaving Workspace',
+            label: 'Prevent leaving workspace',
             fn: () => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -185,7 +190,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
             },
           },
           sandboxes.some(s => s.sandbox.permissions.preventSandboxLeaving) && {
-            label: 'Allow Leaving Workspace',
+            label: 'Allow leaving workspace',
             fn: () => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -193,34 +198,36 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               });
             },
           },
-          sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) && {
-            label: 'Prevent Export as .zip',
-            fn: () => {
-              actions.dashboard.setPreventSandboxesExport({
-                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventSandboxExport: true,
-              });
+          sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
+            sandboxes.every(s => !s.sandbox.isV2) && {
+              label: 'Prevent export as .zip',
+              fn: () => {
+                actions.dashboard.setPreventSandboxesExport({
+                  sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                  preventSandboxExport: true,
+                });
+              },
             },
-          },
-          sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) && {
-            label: 'Allow Export as .zip',
-            fn: () => {
-              actions.dashboard.setPreventSandboxesExport({
-                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventSandboxExport: false,
-              });
+          sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) &&
+            sandboxes.every(s => !s.sandbox.isV2) && {
+              label: 'Allow export as .zip',
+              fn: () => {
+                actions.dashboard.setPreventSandboxesExport({
+                  sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                  preventSandboxExport: false,
+                });
+              },
             },
-          },
         ].filter(Boolean)
       : [];
 
-  const EXPORT = sandboxes.some(
-    s => !s.sandbox.permissions.preventSandboxExport
-  )
-    ? [{ label: 'Export Items', fn: exportItems }]
-    : [];
+  const EXPORT =
+    sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
+    sandboxes.every(s => !s.sandbox.isV2)
+      ? [{ label: 'Export Items', fn: exportItems }]
+      : [];
 
-  const DELETE = { label: 'Delete Items', fn: deleteItems };
+  const DELETE = { label: 'Delete items', fn: deleteItems };
   const RECOVER = {
     label: 'Recover Sandboxes',
     fn: () => {
@@ -230,7 +237,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     },
   };
   const PERMANENTLY_DELETE = {
-    label: 'Permanently Delete Sandboxes',
+    label: 'Permanently delete sandboxes',
     fn: () => {
       actions.dashboard.permanentlyDeleteSandboxes(
         [...sandboxes, ...templates].map(s => s.sandbox.id)
@@ -238,15 +245,15 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     },
   };
   const CONVERT_TO_TEMPLATE = {
-    label: 'Convert to Templates',
+    label: 'Convert to templates',
     fn: convertToTemplates,
   };
   const CONVERT_TO_SANDBOX = {
-    label: 'Convert to Sandboxes',
+    label: 'Convert to sandboxes',
     fn: convertToSandboxes,
   };
   const MOVE_ITEMS = {
-    label: 'Move to Folder',
+    label: 'Move to folder',
     fn: moveToFolder,
   };
 

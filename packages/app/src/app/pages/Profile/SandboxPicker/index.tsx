@@ -114,7 +114,7 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
             })}
           >
             {collectionsInPath.map(collection => (
-              <Column key={collection.path} data-column>
+              <Column key={`${collection.path}${collection.name}`} data-column>
                 <FolderCard
                   collection={collection}
                   onClick={() => setPath(collection.path)}
@@ -199,7 +199,7 @@ const decorateCollections = (
       ...collection,
       parent: split.slice(0, -1).join('/') || '/',
       level: split.length - 2,
-      name: split[split.length - 1] || 'All Sandboxes',
+      name: split[split.length - 1] || 'Sandboxes',
     };
   });
 

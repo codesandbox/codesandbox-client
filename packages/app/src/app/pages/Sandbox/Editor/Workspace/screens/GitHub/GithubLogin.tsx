@@ -1,49 +1,63 @@
 import { useAppState, useActions } from 'app/overmind';
-import css from '@styled-system/css';
 import React from 'react';
 import {
-  Integration,
   Text,
   Element,
   Stack,
   Button,
   Collapsible,
+  Icon,
 } from '@codesandbox/components';
-import { GitHubIcon } from './Icons';
 
 export const GithubLogin = () => {
   const { signInGithubClicked } = useActions();
-  const { isLoadingGithub } = useAppState();
+  const {
+    isLoadingGithub,
+    editor: {
+      currentSandbox: { privacy },
+    },
+  } = useAppState();
+
+  const privacyLabel = {
+    0: 'public',
+    1: 'unlisted',
+    2: 'private',
+  }[privacy];
 
   return (
-    <Collapsible title="Github" defaultOpen>
-      <Element paddingX={2}>
-        <Text variant="muted" marginBottom={4} block>
-          You can create commits and open pull requests if you add GitHub to
-          your integrations.
-        </Text>
-        <Integration icon={GitHubIcon} title="GitHub">
+    <Collapsible title="Adjust GitHub permissions" defaultOpen>
+      <Stack css={{ padding: '0 12px' }} direction="vertical" gap={4}>
+        <Stack
+          css={{
+            color: '#F9D685',
+          }}
+          gap={2}
+        >
           <Element
-            marginX={2}
-            css={css({
-              display: 'grid',
-              gridTemplateColumns: '1fr auto',
-              gridGap: 4,
-            })}
+            css={{
+              marginTop: '2px', // Visually align with the Text
+            }}
           >
-            <Stack direction="vertical">
-              <Text variant="muted">Enables</Text>
-              <Text>Commits & PRs</Text>
-            </Stack>
-            <Button
-              disabled={isLoadingGithub}
-              onClick={() => signInGithubClicked()}
-            >
-              Sign In
-            </Button>
+            <Icon name="info" size={12} />
           </Element>
-        </Integration>
-      </Element>
+          <Text lineHeight="16px" size={12}>
+            CodeSandbox needs access to your{' '}
+            {privacy === 0 ? 'public' : 'private'} repositories in order to link
+            and/or export {privacyLabel === 'unlisted' ? 'an' : 'a'}{' '}
+            {privacyLabel} sandbox.
+          </Text>
+        </Stack>
+        <Button
+          loading={isLoadingGithub}
+          onClick={() =>
+            signInGithubClicked(
+              privacy === 0 ? 'public_repos' : 'private_repos'
+            )
+          }
+        >
+          Review GitHub permissions
+        </Button>
+      </Stack>
     </Collapsible>
   );
 };

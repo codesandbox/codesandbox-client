@@ -16,6 +16,37 @@ function b64DecodeUnicode(file: string) {
   );
 }
 
+export const recoverFiles = ({ effects, state }: Context) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+
+  const recoverList = effects.moduleRecover.getRecoverList(
+    sandbox.id,
+    sandbox.modules
+  );
+
+  const recoveredList = recoverList.reduce((aggr, item) => {
+    if (!item) {
+      return aggr;
+    }
+    const { recoverData, module } = item;
+
+    if (module.code !== recoverData.code) {
+      return aggr.concat(item);
+    }
+
+    return aggr;
+  }, [] as typeof recoverList);
+
+  if (recoveredList.length > 0) {
+    state.editor.recoveredFiles = recoveredList;
+    state.currentModal = 'recoveredFiles';
+  }
+};
+
 export const uploadFiles = async (
   { effects }: Context,
   {

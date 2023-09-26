@@ -60,7 +60,7 @@ const Label = styled(Text)(
       position: 'absolute',
       top: '6px',
       left: '6px',
-      backgroundColor: 'input.foreground',
+      backgroundColor: 'input.foregroundReverse',
       width: '6px',
       transition: 'all ease-in',
       transitionDuration: theme => theme.speeds[2],

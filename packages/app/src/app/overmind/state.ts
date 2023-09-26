@@ -20,7 +20,6 @@ export type PendingUserType = {
 } | null;
 
 type State = {
-  isPatron: boolean;
   isFirstVisit: boolean;
   isLoggedIn: boolean;
   hasLogIn: boolean;
@@ -28,6 +27,7 @@ type State = {
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
   authToken: string | null;
+  isLoadingAuthToken: boolean;
   error: string | null;
   contributors: string[];
   user: CurrentUser | null;
@@ -60,29 +60,32 @@ type State = {
   cancelOnLogin: null | (() => void);
   duplicateAccountStatus: {
     duplicate: boolean;
-    provider: 'google' | 'github';
+    provider: 'apple' | 'google' | 'github';
   } | null;
   loadingAuth: {
+    apple: boolean;
     google: boolean;
     github: boolean;
   };
+  /**
+   * Limits used for anonymous users and keeping track of their
+   * anonymous sandboxes
+   */
   sandboxesLimits?: {
     sandboxCount: number;
     sandboxLimit: number;
   } | null;
+  /**
+   * This flag is set when the user returns form stripe with a success flag
+   * but our data does not year have the workspace subscription information
+   */
+  isProcessingPayment: boolean;
 };
 
 export const state: State = {
   pendingUserId: null,
   pendingUser: null,
   isFirstVisit: false,
-  /**
-   * Important, only use this to see if someone has patron, you should not check this to see if someone
-   * has pro.
-   */
-  isPatron: derived(({ user }: State) =>
-    Boolean(user && user.subscription && user.subscription.since)
-  ),
   isLoggedIn: derived(({ hasLogIn: has, user }: State) => has && Boolean(user)),
   // TODO: Should not reference store directly here, rather initialize
   // the state with "onInitialize" setting the jwt
@@ -97,6 +100,7 @@ export const state: State = {
   hasLoadedApp: false,
   isAuthenticating: true,
   authToken: null,
+  isLoadingAuthToken: false,
   error: null,
   user: null,
   activeWorkspaceAuthorization: derived(
@@ -135,7 +139,9 @@ export const state: State = {
   cancelOnLogin: null,
   duplicateAccountStatus: null,
   loadingAuth: {
+    apple: false,
     google: false,
     github: false,
   },
+  isProcessingPayment: false,
 };

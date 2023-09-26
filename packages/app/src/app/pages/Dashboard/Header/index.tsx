@@ -14,7 +14,6 @@ import {
   Stack,
   Input,
   Button,
-  Link,
   Icon,
   IconButton,
   List,
@@ -38,7 +37,7 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const { activeWorkspaceAuthorization, user } = useAppState();
+    const { activeWorkspaceAuthorization, hasLogIn } = useAppState();
 
     return (
       <Stack
@@ -49,58 +48,96 @@ export const Header: React.FC<HeaderProps> = React.memo(
         css={css({
           boxSizing: 'border-box',
           fontFamily: 'Inter, sans-serif',
-          height: 12,
-          backgroundColor: 'titleBar.activeBackground',
+          padding: '16px',
           color: 'titleBar.activeForeground',
-          borderBottom: '1px solid',
-          borderColor: 'titleBar.border',
         })}
       >
-        <Link
-          href="/?from-app=1"
-          as="a"
-          css={css({ display: ['none', 'none', 'block'] })}
-        >
-          <LogoIcon
-            style={{
-              marginLeft: -6, // Logo positioning tweak
-            }}
-            height={24}
-          />
-        </Link>
         <IconButton
           name="menu"
-          size={18}
+          size={16}
           title="Menu"
           onClick={onSidebarToggle}
           css={css({ display: ['block', 'block', 'none'] })}
         />
 
+        <div>
+          <UserMenu
+            css={css({
+              display: ['none', 'none', 'block'],
+            })}
+          >
+            <Button
+              as={UserMenu.Button}
+              variant="link"
+              css={css({
+                marginLeft: '2px',
+                transition: 'color .3s',
+
+                '.chevron': {
+                  transition: 'transform .3s',
+                },
+
+                '&:hover': {
+                  '.chevron': {
+                    transform: 'translateY(2px)',
+                  },
+                },
+              })}
+            >
+              <LogoIcon
+                width={18}
+                height={18}
+                css={css({
+                  marginRight: '8px',
+                })}
+              />
+              <Icon
+                className="chevron"
+                name="chevronDown"
+                size={6}
+                title="User actions"
+              />
+            </Button>
+          </UserMenu>
+        </div>
+
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
           <Button
-            variant="primary"
-            css={css({ width: 'auto', paddingX: 3, marginLeft: 4 })}
+            variant="ghost"
+            css={css({ width: 'auto' })}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               openCreateSandboxModal({});
             }}
           >
-            Create Sandbox
+            <Icon
+              name="plus"
+              size={16}
+              title="New"
+              css={{ marginRight: '8px' }}
+            />
+            Create
           </Button>
 
-          {user && <Notifications />}
+          <Button
+            variant="ghost"
+            autoWidth
+            onClick={() => {
+              window.open('http://codesandbox.io/discover', '_blank');
+            }}
+          >
+            <Icon
+              name="discover"
+              size={16}
+              title="New"
+              css={{ marginRight: '8px' }}
+            />
+            Discover
+          </Button>
 
-          <UserMenu>
-            <Button
-              as={UserMenu.Button}
-              variant="secondary"
-              css={css({ size: 26 })}
-            >
-              <Icon name="more" size={12} title="User actions" />
-            </Button>
-          </UserMenu>
+          {hasLogIn && <Notifications dashboard />}
         </Stack>
       </Stack>
     );
@@ -132,10 +169,11 @@ const SearchInputGroup = () => {
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-
-    if (event.target.value.length >= 2) debouncedSearch(event.target.value);
+    if (event.target.value.length >= 1) {
+      debouncedSearch(event.target.value);
+    }
     if (!event.target.value) {
-      history.push(dashboardUrls.allSandboxes('/', activeTeam));
+      history.push(dashboardUrls.sandboxes('/', activeTeam));
     }
   };
 
@@ -149,11 +187,12 @@ const SearchInputGroup = () => {
 
   return (
     <Stack
+      align="center"
       css={css({
-        flexGrow: 1,
-        maxWidth: 480,
-        display: ['none', 'none', 'block'],
-        position: 'relative',
+        width: 320,
+        display: ['none', 'none', 'flex'],
+        position: 'fixed',
+        left: '288px',
       })}
     >
       <Combobox
@@ -167,70 +206,115 @@ const SearchInputGroup = () => {
           }
         }}
       >
-        <ComboboxInput
-          as={Input}
-          value={query}
-          onChange={onChange}
-          onKeyPress={handleEnter}
-          placeholder="Search all sandboxes"
-        />
-        {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
-          <ComboboxPopover
+        <Stack
+          align="center"
+          css={css({
+            position: 'relative',
+          })}
+        >
+          <Icon
+            name="search"
+            size={16}
+            title="Search"
+            className="icon"
             css={css({
-              zIndex: 4,
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 3,
+              position: 'absolute',
+              top: '50%',
+              left: 0,
+              transform: 'translateY(-50%)',
+              pointerEvents: 'none',
+              color: '#999999',
             })}
-          >
-            <ComboboxList
-              as={List}
+          />
+          <ComboboxInput
+            as={Input}
+            value={query}
+            onChange={onChange}
+            onKeyPress={handleEnter}
+            placeholder="Search"
+            icon="search"
+            css={css({
+              background: 'transparent',
+              border: 'none',
+              paddingLeft: '24px',
+              color: '#999999',
+
+              '&::placeholder': {
+                color: '#999999',
+                transition: 'color .3s',
+              },
+
+              '&:hover': {
+                '&::placeholder': {
+                  color: '#ffffff',
+                },
+              },
+
+              '&:focus': {
+                '&::placeholder': {
+                  color: '#717171',
+                },
+              },
+            })}
+          />
+          {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
+            <ComboboxPopover
               css={css({
-                backgroundColor: 'menuList.background',
-                borderRadius: 3,
-                boxShadow: 2,
-                border: '1px solid',
-                borderColor: 'menuList.border',
+                zIndex: 4,
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 3,
               })}
             >
-              <ComboboxOption
-                value={query}
-                justify="space-between"
+              <ComboboxList
+                as={List}
                 css={css({
-                  outline: 'none',
-                  height: 7,
-                  paddingX: 2,
-                  color: 'list.foreground',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  ':hover, &[aria-selected="true"]': {
-                    color: 'list.hoverForeground',
-                    backgroundColor: 'list.hoverBackground',
-                    cursor: 'pointer',
-                  },
+                  backgroundColor: 'menuList.background',
+                  borderRadius: 3,
+                  boxShadow: 2,
+                  border: '1px solid',
+                  borderColor: 'menuList.border',
                 })}
               >
-                <span>{query}</span>
-                <span>
-                  {searchType === 'COMMUNITY' ? 'Workspace' : 'Community'} ⏎
-                </span>
-              </ComboboxOption>
-            </ComboboxList>
-            <Text
-              size={3}
-              variant="muted"
-              css={css({
-                position: 'absolute',
-                width: 'fit-content',
-                top: -5,
-                right: 0,
-                paddingX: 2,
-              })}
-            >
-              {searchType === 'COMMUNITY' ? 'in community' : 'in workspace'} ⏎
-            </Text>
-          </ComboboxPopover>
-        )}
+                <ComboboxOption
+                  value={query}
+                  justify="space-between"
+                  css={css({
+                    outline: 'none',
+                    height: 7,
+                    paddingX: 2,
+                    color: 'list.foreground',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    ':hover, &[aria-selected="true"]': {
+                      color: 'list.hoverForeground',
+                      backgroundColor: 'list.hoverBackground',
+                      cursor: 'pointer',
+                    },
+                  })}
+                >
+                  <span>{query}</span>
+                  <span>
+                    {searchType === 'COMMUNITY' ? 'Workspace' : 'Community'} ⏎
+                  </span>
+                </ComboboxOption>
+              </ComboboxList>
+              <Text
+                size={3}
+                variant="muted"
+                css={css({
+                  position: 'absolute',
+                  width: 'fit-content',
+                  top: -5,
+                  right: 0,
+                  paddingX: 2,
+                })}
+              >
+                {searchType === 'COMMUNITY' ? 'in community' : 'in workspace'} ⏎
+              </Text>
+            </ComboboxPopover>
+          )}
+        </Stack>
       </Combobox>
     </Stack>
   );

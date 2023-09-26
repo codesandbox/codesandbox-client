@@ -1636,11 +1636,20 @@
       ]
     },
     {
+      "login": "joshuaellis",
+      "name": "Josh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37798644?v=4",
+      "profile": "http://joshellis.co.uk",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
       "login": "StefanRetief",
       "name": "Stefan Retief",
       "avatar_url": "https://avatars.githubusercontent.com/u/3196604?v=4",
       "profile": "https://stefanretief.com",
-       "contributions": [
+      "contributions": [
         "bug",
         "code"
       ]
@@ -1652,6 +1661,43 @@
       "profile": "https://github.com/aditya211935",
       "contributions": [
         "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "B2D1",
+      "name": "B2D1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36991862?v=4",
+      "profile": "http://baobangdong.cn",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "kettanaito",
+      "name": "Artem",
+      "avatar_url": "https://github.com/kettanaito.png",
+      "profile": "https://github.com/kettanaito",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "wiledal",
+      "name": "Hugo Wiledal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1035169?v=4",
+      "profile": "http://hugos.computer",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "SSHari",
+      "name": "Sai Hari",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11434879?v=4",
+      "profile": "https://thesshguy.com/",
+      "contributions": [
         "code"
       ]
     }

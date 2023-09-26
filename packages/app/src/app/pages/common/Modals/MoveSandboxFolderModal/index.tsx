@@ -18,19 +18,13 @@ import { DirectoryPicker } from './DirectoryPicker';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const { dashboard, refetchSandboxInfo, modals: modalsActions } = useActions();
-  const { activeTeam, modals, activeTeamInfo } = useAppState();
+  const { activeTeam, modals } = useAppState();
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [path, setPath] = useState<string | null>(
     modals.moveSandboxModal.defaultOpenedPath
   );
   const [teamId, setTeamId] = useState(activeTeam);
-  const [selectedTeam, setSelectedTeam] = useState({
-    id: activeTeamInfo.id,
-    name: activeTeamInfo.name,
-    avatarUrl: activeTeamInfo.avatarUrl,
-  });
-
   const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
 
   const handleMove = () => {
@@ -75,7 +69,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
           gap={6}
           direction="vertical"
         >
-          <Text size={6} weight="bold">
+          <Text size={6} weight="regular">
             Move {modals.moveSandboxModal.sandboxIds.length}{' '}
             {modals.moveSandboxModal.sandboxIds.length > 1 ? 'items' : 'item'}
           </Text>
@@ -89,12 +83,9 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
               })}
             >
               <WorkspaceSelect
-                activeAccount={selectedTeam}
+                selectedTeamId={teamId}
                 disabled={preventSandboxLeaving}
-                onSelect={workspace => {
-                  setSelectedTeam(workspace);
-                  setTeamId(workspace.id);
-                }}
+                onSelect={setTeamId}
               />
             </Element>
             <Stack direction="vertical" gap={4}>
@@ -135,9 +126,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                   ) : (
                     <>
                       {`Move to ${
-                        path === null
-                          ? 'Drafts'
-                          : basename(path) || 'All Sandboxes'
+                        path === null ? 'Drafts' : basename(path) || 'Sandboxes'
                       }`}
 
                       <ChevronRight />

@@ -305,7 +305,7 @@ export const sandboxPrivacyChanged = async (
     privacy,
     source = 'generic',
   }: {
-    privacy: 0 | 1 | 2;
+    privacy: /* public */ 0 | /* unlisted */ 1 | /* private */ 2;
     source?: string;
   }
 ) => {
@@ -313,37 +313,69 @@ export const sandboxPrivacyChanged = async (
     return;
   }
 
-  track('Sandbox - Update Privacy', {
-    privacy,
-    source,
-  });
+  track('Sandbox - Update Privacy', { privacy, source });
 
+  // Save oldPrivacy in case we need to reset
   const oldPrivacy = state.editor.currentSandbox.privacy;
+  // Optimistically update privacy
   state.editor.currentSandbox.privacy = privacy;
 
-  try {
-    const sandbox = await effects.api.updatePrivacy(
-      state.editor.currentSandbox.id,
-      privacy
-    );
-    state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
-    state.editor.currentSandbox.privacy = privacy;
+  // The rest endpoint doesn't allow free users and teams to change their privacy
+  // at all, so we have to use the gql mutation to update the privacy from private
+  // or unlisted to public.
+  if (privacy === 0) {
+    // Optimistically update editing restriction
+    state.editor.currentSandbox.freePlanEditingRestricted = false;
 
-    if (
-      getTemplate(state.editor.currentSandbox.template).isServer &&
-      ((oldPrivacy !== 2 && privacy === 2) ||
-        (oldPrivacy === 2 && privacy !== 2))
-    ) {
-      // Privacy changed from private to unlisted/public or other way around, restart
-      // the sandbox to notify containers
-      actions.server.restartContainer();
+    try {
+      await effects.gql.mutations.changePrivacy({
+        sandboxIds: [state.editor.currentSandbox.id],
+        privacy: 0,
+      });
+
+      const { isServer } = getTemplate(state.editor.currentSandbox.template);
+      const isChangeFromPrivate = oldPrivacy === 2;
+
+      if (isServer && isChangeFromPrivate) {
+        actions.server.restartContainer();
+      }
+    } catch (error) {
+      // Reset previous state
+      state.editor.currentSandbox.privacy = oldPrivacy;
+      state.editor.currentSandbox.freePlanEditingRestricted = true;
+
+      actions.internal.handleError({
+        message: "We weren't able to update the sandbox privacy",
+        error,
+      });
     }
-  } catch (error) {
-    state.editor.currentSandbox.privacy = oldPrivacy;
-    actions.internal.handleError({
-      message: "We weren't able to update the sandbox privacy",
-      error,
-    });
+  } else {
+    try {
+      const sandbox = await effects.api.updatePrivacy(
+        state.editor.currentSandbox.id,
+        privacy
+      );
+
+      state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
+
+      const { isServer } = getTemplate(state.editor.currentSandbox.template);
+      const isChangeToPrivate = oldPrivacy !== 2 && privacy === 2;
+      const isChangeFromPrivate = oldPrivacy === 2 && privacy !== 2;
+
+      if (isServer && (isChangeToPrivate || isChangeFromPrivate)) {
+        // Privacy changed from private to unlisted/public or other way around, restart
+        // the sandbox to notify containers
+        actions.server.restartContainer();
+      }
+    } catch (error) {
+      // Reset previous state
+      state.editor.currentSandbox.privacy = oldPrivacy;
+
+      actions.internal.handleError({
+        message: "We weren't able to update the sandbox privacy",
+        error,
+      });
+    }
   }
 };
 
@@ -562,42 +594,6 @@ export const clearSelectedDependencies = ({ state }: Context) => {
 export const toggleShowingSelectedDependencies = ({ state }: Context) => {
   state.workspace.showingSelectedDependencies = !state.workspace
     .showingSelectedDependencies;
-};
-
-export const sandboxAlwaysOnChanged = async (
-  { actions, effects, state }: Context,
-  {
-    alwaysOn,
-  }: {
-    alwaysOn: boolean;
-  }
-) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-
-  track('Sandbox - Always On', { alwaysOn });
-
-  const oldAlwaysOn = state.editor.currentSandbox.alwaysOn;
-  state.editor.currentSandbox.alwaysOn = alwaysOn;
-
-  try {
-    await effects.gql.mutations.changeSandboxAlwaysOn({
-      sandboxId: state.editor.currentSandbox.id,
-      alwaysOn,
-    });
-  } catch (error) {
-    state.editor.currentSandbox.alwaysOn = oldAlwaysOn;
-
-    // this is odd to handle it in the action
-    // TODO: we need a cleaner way to read graphql errors
-    const message = error.response?.errors[0]?.message;
-
-    actions.internal.handleError({
-      message: "We weren't able to update always on status",
-      error: { name: 'Always on', message },
-    });
-  }
 };
 
 export const searchValueChanged = ({ state }: Context, value: string) => {

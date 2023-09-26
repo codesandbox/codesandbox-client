@@ -11,7 +11,7 @@ import { escapeHtml } from 'app/utils/escape';
 export const BUTTON_URL = `${process.env.CODESANDBOX_HOST}/static/img/play-codesandbox.svg`;
 
 export const VIEW_OPTIONS = ['Editor + Preview', 'Preview', 'Editor'];
-export const THEME_OPTIONS = ['Dark', 'Light'];
+const THEME_OPTIONS = ['Dark', 'Light'];
 
 const getOptionsUrl = (sandbox, mainModule, state) => {
   const {
@@ -57,7 +57,7 @@ const getOptionsUrl = (sandbox, mainModule, state) => {
   return optionsToParameterizedUrl(options);
 };
 
-export const getEditorUrl = (sandbox, mainModule, state) =>
+const getEditorUrl = (sandbox, mainModule, state) =>
   protocolAndHost() +
   sandboxUrl(sandbox) +
   getOptionsUrl(sandbox, mainModule, state);

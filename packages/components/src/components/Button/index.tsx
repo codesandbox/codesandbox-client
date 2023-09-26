@@ -9,7 +9,8 @@ const variantStyles = {
   primary: {
     backgroundColor: 'button.background',
     color: 'button.foreground',
-    ':hover:not(:disabled)': {
+
+    ':hover:not(:disabled), :focus:not(:disabled)': {
       // hoverBackground is polyfilled and uses a gradient
       // so we use background and not backgroundColor
 
@@ -18,43 +19,62 @@ const variantStyles = {
       // TODO @sid: extend our system to make background work as well
       background: theme => theme.colors.button.hoverBackground,
     },
-    ':focus:not(:disabled)': {
-      // we use the same colors for hover and focus
-      // but we add an active state to give
-      background: theme => theme.colors.button.hoverBackground,
-    },
   },
   secondary: {
     backgroundColor: 'secondaryButton.background',
     color: 'secondaryButton.foreground',
-    // same technique as primary
-    ':hover:not(:disabled)': {
-      background: theme => theme.colors.secondaryButton.hoverBackground,
-    },
-    ':focus:not(:disabled)': {
+
+    ':hover:not(:disabled), :focus:not(:disabled)': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
     },
   },
   link: {
     backgroundColor: 'transparent',
     color: 'mutedForeground',
-    // same technique as primary
-    ':hover:not(:disabled)': {
+
+    ':hover:not(:disabled), :focus:not(:disabled)': {
       color: 'foreground',
     },
-    ':focus:not(:disabled)': {
+  },
+  ghost: {
+    backgroundColor: 'transparent',
+    color: 'mutedForeground',
+
+    ':hover:not(:disabled), :focus:not(:disabled)': {
       color: 'foreground',
+      backgroundColor: '#E5E5E51A',
     },
   },
   danger: {
     backgroundColor: 'dangerButton.background',
     color: 'dangerButton.foreground',
-    // same technique as primary
-    ':hover:not(:disabled)': {
+
+    ':hover:not(:disabled), :focus:not(:disabled)': {
       background: theme => theme.colors.dangerButton.hoverBackground,
     },
-    ':focus:not(:disabled)': {
-      background: theme => theme.colors.dangerButton.hoverBackground,
+  },
+  light: {
+    backgroundColor: '#FFFFFF',
+    color: '#0E0E0E',
+
+    ':hover:not(:disabled), :focus:not(:disabled)': {
+      backgroundColor: '#E0E0E0', // three up in the gray scale (gray[400])
+    },
+  },
+  dark: {
+    backgroundColor: '#0E0E0E',
+    color: '#FFFFFF',
+
+    ':hover:not(:disabled), :focus:not(:disabled)': {
+      backgroundColor: '#252525', // three down in the black scale (black[500])
+    },
+  },
+  trial: {
+    backgroundColor: '#644ED7',
+    color: '#FFFFFF',
+
+    ':hover:not(:disabled), :focus:not(:disabled)': {
+      backgroundColor: '#7B61FF',
     },
   },
 };
@@ -64,22 +84,21 @@ const commonStyles = {
   justifyContent: 'center',
   alignItems: 'center',
   flex: 'none', // as a flex child
-  cursor: 'pointer',
   fontFamily: 'Inter, sans-serif',
-  paddingY: 0,
+  paddingY: '4px',
+  paddingX: '8px',
   width: '100%',
-  paddingX: 2,
-  height: '26px', // match with inputs
-  fontSize: 2,
+  height: '28px', // match with inputs
+  fontSize: '13px',
   fontWeight: 'medium',
-  lineHeight: 1, // trust the height
+  lineHeight: '16px', // trust the height
   border: 'none',
-  borderRadius: 'small',
-  transition: 'all ease-in',
+  borderRadius: '4px',
+  transition: 'background .3s, color .3s, box-shadow .3s',
   textDecoration: 'none',
-  transitionDuration: theme => theme.speeds[2],
 
   ':focus': {
+    boxShadow: `0 0 0 1px #AC9CFF`,
     outline: 'none',
   },
   ':active:not(:disabled)': {
@@ -101,9 +120,18 @@ const commonStyles = {
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     IElementProps {
-  variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'ghost'
+    | 'link'
+    | 'danger'
+    | 'light'
+    | 'dark'
+    | 'trial';
   loading?: boolean;
   href?: string;
+  rel?: string; // Only use when using href and as="a"
   to?: string;
   as?: any;
   target?: any;

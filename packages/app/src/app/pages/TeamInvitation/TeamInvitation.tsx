@@ -119,11 +119,9 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
             Join <b>{data.teamByToken.name}</b> on CodeSandbox
           </>
         }
-        description="Please sign in to GitHub to continue"
+        description="Please sign in to continue"
         action={
-          <Button onClick={() => actions.signInClicked()}>
-            Sign in to GitHub
-          </Button>
+          <Button onClick={() => actions.signInClicked()}>Sign in</Button>
         }
       />
     </>
@@ -135,7 +133,6 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
   const [loading, setLoading] = React.useState(true);
   const [team, setTeam] = React.useState<{
     id: string;
-    joinedPilotAt: string | null;
   } | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
 
@@ -171,7 +168,7 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
     return <Text size={6}>Joining Team...</Text>;
   }
 
-  return <Redirect to={dashboard.home(team.id)} />;
+  return <Redirect to={dashboard.recent(team.id)} />;
 };
 
 export const TeamInvitation: React.FC<{

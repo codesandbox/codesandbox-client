@@ -1,29 +1,43 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import {
+  Route,
+  Switch,
+  Redirect,
+  withRouter,
+  useLocation,
+} from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
-import { Home } from './routes/Home';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
 import { Shared } from './routes/Shared';
 import { Liked } from './routes/Liked';
-import { AlwaysOn } from './routes/AlwaysOn';
-import { All } from './routes/All';
-import { Repositories } from './routes/Repositories';
+import { Sandboxes } from './routes/Sandboxes';
+import { SyncedSandboxes } from './routes/SyncedSandboxes';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
 import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
+import { MyContributions } from './routes/MyContributions';
+import { RepositoriesPage } from './routes/Repositories';
+import { RepositoryBranchesPage } from './routes/RepositoryBranches';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
   const { activeTeam } = useAppState();
+  const { search } = useLocation();
+
+  const mapFromSearchParams = {};
+  const searchParams = new URLSearchParams(search);
+  searchParams.forEach((value, key) => {
+    mapFromSearchParams[key] = value;
+  });
 
   useEffect(() => {
     dashboard.dashboardMounted();
@@ -51,13 +65,27 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
-        <Route path="/dashboard/home" component={Home} />
-        <Route path="/dashboard/drafts" component={Drafts} />
-        <Route path="/dashboard/all/:path*" component={All} />
-        <Route path="/dashboard/templates" component={Templates} />
-        <Route path="/dashboard/repositories/:path*" component={Repositories} />
-        <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/recent" component={Recent} />
+        <Route path="/dashboard/drafts" component={Drafts} />
+        <Route path="/dashboard/sandboxes/:path*" component={Sandboxes} />
+        <Route path="/dashboard/templates" component={Templates} />
+        <Route
+          path="/dashboard/my-contributions/:path*"
+          component={MyContributions}
+        />
+        <Route
+          path="/dashboard/repositories"
+          exact
+          component={RepositoriesPage}
+        />
+        <Route
+          path="/dashboard/repositories/:path*"
+          component={RepositoryBranchesPage}
+        />
+        <Route
+          path="/dashboard/synced-sandboxes/:path*"
+          component={SyncedSandboxes}
+        />
         <Route path="/dashboard/deleted" component={Deleted} />
         <Route path="/dashboard/shared" component={Shared} />
         <Route path="/dashboard/liked" component={Liked} />
@@ -68,9 +96,14 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/discover" component={Discover} />
         <Route path="/dashboard/settings" component={Settings} />
         {/* old dashboard - redirects: */}
-        <Route path="/dashboard/trash" component={Deleted} />
-        <Route path="/dashboard/sandboxes/:path*" component={All} />
-        <Redirect to={dashboardUrls.home(activeTeam)} />
+        <Redirect from="/dashboard/archive" to="/dashboard/deleted" />
+        <Redirect from="/dashboard/home" to="/dashboard/recent" />
+        <Redirect
+          from="/dashboard/all/:path*"
+          to="/dashboard/sandboxes/:path*"
+        />
+        <Redirect from="/dashboard/always-on" to="/dashboard/recent" />
+        <Redirect to={dashboardUrls.recent(activeTeam, mapFromSearchParams)} />
       </Switch>
     </Element>
   );

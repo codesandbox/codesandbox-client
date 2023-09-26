@@ -21,16 +21,31 @@ export const updateNotificationPreferences: Query<
   mutation UpdateNotificationPreferences(
     $emailCommentMention: Boolean
     $emailCommentReply: Boolean
+    $emailMarketing: Boolean
     $emailNewComment: Boolean
+    $emailSandboxInvite: Boolean
+    $emailTeamInvite: Boolean
+    $inAppPrReviewReceived: Boolean
+    $inAppPrReviewRequest: Boolean
   ) {
     updateNotificationPreferences(
       emailCommentMention: $emailCommentMention
       emailCommentReply: $emailCommentReply
+      emailMarketing: $emailMarketing
       emailNewComment: $emailNewComment
+      emailSandboxInvite: $emailSandboxInvite
+      emailTeamInvite: $emailTeamInvite
+      inAppPrReviewReceived: $inAppPrReviewReceived
+      inAppPrReviewRequest: $inAppPrReviewRequest
     ) {
       emailCommentMention
       emailCommentReply
+      emailMarketing
       emailNewComment
+      emailSandboxInvite
+      emailTeamInvite
+      inAppPrReviewReceived
+      inAppPrReviewRequest
     }
   }
 `;

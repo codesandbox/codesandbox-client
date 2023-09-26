@@ -9,7 +9,8 @@ import {
   IconButton,
   Icon,
   Link,
-  Tooltip,
+  Switch,
+  Badge,
 } from '@codesandbox/components';
 import {
   AuthType,
@@ -94,22 +95,13 @@ export const RegistryForm = ({
   const [scopes, setScopes] = React.useState<string[]>(
     registry?.enabledScopes || []
   );
+  const [proxyEnabled, setProxyEnabled] = React.useState(
+    registry?.proxyEnabled
+  );
 
-  const addScope = () => {
-    setScopes(oldScopes => [...oldScopes, '']);
-  };
-
-  const removeScope = (index: number) => {
-    setScopes(oldScopes => oldScopes.filter((_is, i) => i !== index));
-  };
-
-  const editScope = (scope: string, index: number) => {
-    setScopes(s => {
-      const copiedScopes = [...s];
-      copiedScopes[index] = scope;
-      return copiedScopes;
-    });
-  };
+  const [sandpackTrustedDomains, setTrustedDomains] = React.useState(
+    registry?.sandpackTrustedDomains || []
+  );
 
   const serializeValues = (): CreateRegistryParams => ({
     registryAuthKey: authKey,
@@ -118,7 +110,8 @@ export const RegistryForm = ({
     enabledScopes: scopes.filter(s => s !== ''),
     registryAuthType: authenticationType,
     registryUrl,
-    proxyEnabled: true,
+    proxyEnabled,
+    sandpackTrustedDomains,
   });
 
   // We make sure to always show one input field
@@ -147,29 +140,27 @@ export const RegistryForm = ({
           >
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
               <Stack gap={2} align="center">
-                <Text weight="bold" size={4}>
+                <Text size={4} weight="500">
                   Registry
                 </Text>
 
                 <Link
-                  href="https://codesandbox.io/docs/custom-npm-registry"
+                  href="https://codesandbox.io/docs/learn/sandboxes/custom-npm-registry"
                   target="_blank"
                   rel="noreferrer noopener"
                   css={css({
                     color: 'grays.400',
                   })}
                 >
-                  <Tooltip label="Documentation">
-                    <div
-                      css={css({
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      })}
-                    >
-                      <Icon aria-label="Documentation" size={12} name="info" />
-                    </div>
-                  </Tooltip>
+                  <div
+                    css={css({
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    })}
+                  >
+                    <Icon aria-label="Documentation" size={12} name="info" />
+                  </div>
                 </Link>
               </Stack>
 
@@ -200,6 +191,26 @@ export const RegistryForm = ({
                 setAuthKey={setAuthKey}
                 disabled={disabled}
               />
+
+              <div>
+                <CustomFormField
+                  direction="horizontal"
+                  label="Use the server proxy to access registry"
+                >
+                  <Switch
+                    onChange={() => {
+                      setProxyEnabled(s => !s);
+                    }}
+                    on={proxyEnabled}
+                    disabled={disabled}
+                  />
+                </CustomFormField>
+                <Text size={3} variant="muted">
+                  Disabling the proxy will allow you to use the registry behind
+                  a VPN, but will expose the auth token to the browser and
+                  require a CORS setup.
+                </Text>
+              </div>
             </Stack>
             <Stack
               align="center"
@@ -218,73 +229,159 @@ export const RegistryForm = ({
                 })}
               />
             </Stack>
-            <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
-              <Text weight="bold" size={4}>
-                Scopes
-              </Text>
-
-              {/* <div>
-                <CustomFormField
-                  direction="horizontal"
-                  label="Enable registry for specific npm scopes"
-                >
-                  <Switch
-                    onChange={() => {
-                      setIsLimitedToScopes(s => !s);
-                    }}
-                    on={isLimitedToScopes}
-                    disabled={disabled}
-                  />
-                </CustomFormField>
-                <Text size={3} variant="muted">
-                  Enabling the registry for specific scopes will improve sandbox
-                  load performance.
+            <Stack css={css({ width: '100%' })} gap={7} direction="vertical">
+              <Stack gap={5} direction="vertical">
+                <Text size={4} weight="500">
+                  Scopes
                 </Text>
-              </div> */}
 
-              {isLimitedToScopes && (
-                <CustomFormField label="Enabled Scopes">
+                {isLimitedToScopes && (
+                  <CustomFormField label="Enabled Scopes">
+                    <Stack
+                      gap={2}
+                      css={css({ width: '100%' })}
+                      direction="vertical"
+                    >
+                      {prefilledScopes.map((scope, i) => (
+                        <Stack
+                          align="center"
+                          direction="horizontal"
+                          css={css({ width: '100%' })}
+                        >
+                          <Input
+                            required
+                            pattern="@[\w-_]+"
+                            css={css({ width: '100%' })}
+                            placeholder="Enter a scope (@acme)"
+                            disabled={disabled}
+                            value={scope}
+                            onInput={e => {
+                              if (e.target.validity.patternMismatch) {
+                                e.target.setCustomValidity(
+                                  "Scope has to start with an '@' and have no slashes"
+                                );
+                              } else {
+                                e.target.setCustomValidity('');
+                              }
+                            }}
+                            onChange={e => {
+                              const value = e.target.value;
+                              setScopes(s => {
+                                const copiedScopes = [...s];
+                                copiedScopes[i] = value;
+                                return copiedScopes;
+                              });
+                            }}
+                            onBlur={e => {
+                              if (e.target.value.trim() === '') {
+                                setScopes(oldScopes =>
+                                  oldScopes.filter((_is, index) => index !== i)
+                                );
+                              }
+                            }}
+                          />
+                          <IconButton
+                            onClick={() => {
+                              setScopes(oldScopes =>
+                                oldScopes.filter((_is, index) => index !== i)
+                              );
+                            }}
+                            title="Remove Scope"
+                            size={9}
+                            name="cross"
+                            disabled={disabled}
+                          />
+                        </Stack>
+                      ))}
+
+                      <Button
+                        variant="secondary"
+                        disabled={disabled}
+                        type="submit"
+                        onClick={() => {
+                          setScopes(oldScopes => [...oldScopes, '']);
+                        }}
+                        autoWidth
+                      >
+                        Add Scope
+                      </Button>
+                    </Stack>
+                  </CustomFormField>
+                )}
+              </Stack>
+
+              <Stack gap={5} direction="vertical">
+                <Stack direction="horizontal" align="center" gap={2}>
+                  <Text size={4} weight="500">
+                    Sandpack
+                  </Text>
+
+                  <Link
+                    href="https://sandpack.codesandbox.io/docs/getting-started/private-packages"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    css={css({
+                      color: 'grays.400',
+                    })}
+                  >
+                    <div
+                      css={css({
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      })}
+                    >
+                      <Icon aria-label="Documentation" size={12} name="info" />
+                    </div>
+                  </Link>
+
+                  <Badge>Beta</Badge>
+                </Stack>
+                <CustomFormField label="Trusted domains">
                   <Stack
                     gap={2}
                     css={css({ width: '100%' })}
                     direction="vertical"
                   >
-                    {prefilledScopes.map((scope, i) => (
+                    {sandpackTrustedDomains.map((domain, i) => (
                       <Stack
                         align="center"
                         direction="horizontal"
-                        css={css({ width: '100%' })}
+                        css={{ width: '100%' }}
                       >
                         <Input
                           required
                           pattern="@[\w-_]+"
                           css={css({ width: '100%' })}
-                          placeholder="Enter a scope (@acme)"
+                          placeholder="Enter a domain (http://*.example.com / mail.example.com:443)"
                           disabled={disabled}
-                          value={scope}
+                          value={domain}
                           onInput={e => {
-                            if (e.target.validity.patternMismatch) {
-                              e.target.setCustomValidity(
-                                "Scope has to start with an '@' and have no slashes"
-                              );
-                            } else {
-                              e.target.setCustomValidity('');
-                            }
+                            e.target.setCustomValidity('');
                           }}
                           onChange={e => {
-                            editScope(e.target.value, i);
+                            const value = e.target.value;
+                            setTrustedDomains(s => {
+                              const copiedScopes = [...s];
+                              copiedScopes[i] = value;
+                              return copiedScopes;
+                            });
                           }}
                           onBlur={e => {
                             if (e.target.value.trim() === '') {
-                              removeScope(i);
+                              setTrustedDomains(oldScopes =>
+                                oldScopes.filter((_is, index) => index !== i)
+                              );
                             }
                           }}
                         />
                         <IconButton
                           onClick={() => {
-                            removeScope(i);
+                            setTrustedDomains(oldScopes =>
+                              oldScopes.filter((_is, index) => index !== i)
+                            );
                           }}
-                          title="Remove Scope"
+                          title="Remove domain"
                           size={9}
                           name="cross"
                           disabled={disabled}
@@ -293,19 +390,19 @@ export const RegistryForm = ({
                     ))}
 
                     <Button
-                      variant="link"
+                      variant="secondary"
                       disabled={disabled}
                       type="submit"
-                      onClick={e => {
-                        addScope();
+                      onClick={() => {
+                        setTrustedDomains(oldScopes => [...oldScopes, '']);
                       }}
                       autoWidth
                     >
-                      Add Scope
+                      Add domain
                     </Button>
                   </Stack>
                 </CustomFormField>
-              )}
+              </Stack>
             </Stack>
           </Stack>
 

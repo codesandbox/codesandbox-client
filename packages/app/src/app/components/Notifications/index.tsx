@@ -2,12 +2,12 @@ import React from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
 
-import { Button, Icon, Element } from '@codesandbox/components';
+import { Button, Icon, Element, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Overlay } from 'app/components/Overlay';
 import { NotificationsContent } from './Content';
 
-export const Notifications = () => {
+export const Notifications = ({ dashboard }: { dashboard?: boolean }) => {
   const {
     notificationsOpened: notificationsMenuOpened,
     unreadCount,
@@ -28,52 +28,39 @@ export const Notifications = () => {
     >
       {open => (
         <Button
-          variant="secondary"
+          variant={dashboard ? 'ghost' : 'secondary'}
           css={css({
-            size: 26,
             ':hover .border-for-bell': {
               background: theme => theme.colors.secondaryButton.hoverBackground,
             },
           })}
           onClick={open}
         >
-          <Element
-            css={css({
-              position: 'relative',
-              top: '2px',
-            })}
-          >
-            <Icon name="bell" size={11} title="Notifications" />
+          <Stack>
+            <Icon name="bell" size={16} title="Notifications" />
             {unreadCount > 0 ? (
-              <>
-                <Element
-                  css={css({
-                    position: 'absolute',
-                    width: '6px',
-                    height: '6px',
-                    borderRadius: '50%',
-                    backgroundColor: 'blues.600',
-                    top: '-2px',
-                    left: '6px',
-                    zIndex: 10,
-                  })}
-                />
-                <Element
-                  className="border-for-bell"
-                  css={css({
-                    position: 'absolute',
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    backgroundColor: 'sideBar.border',
-                    top: '-3px',
-                    left: '5px',
-                    zIndex: 9,
-                  })}
-                />
-              </>
+              <Element
+                css={css({
+                  minWidth: '16px',
+                  height: '16px',
+                  borderRadius: '9999px',
+                  backgroundColor: '#E63838',
+                  position: 'relative',
+                  top: '0px',
+                  right: '0px',
+                  zIndex: 10,
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  lineHeight: '16px',
+                  color: '#ffffff',
+                  marginLeft: '-6px',
+                  paddingX: '4px',
+                })}
+              >
+                {unreadCount}
+              </Element>
             ) : null}
-          </Element>
+          </Stack>
         </Button>
       )}
     </Overlay>

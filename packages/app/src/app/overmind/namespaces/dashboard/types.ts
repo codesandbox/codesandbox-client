@@ -2,16 +2,17 @@ import { SidebarCollectionDashboardFragment as Collection } from 'app/graphql/ty
 
 export type PageTypes =
   | 'search'
-  | 'home'
-  | 'recents'
+  | 'recent'
   | 'deleted'
   | 'templates'
   | 'drafts'
   | 'sandboxes'
-  | 'repos'
+  | 'synced-sandboxes'
+  | 'my-contributions'
+  | 'repositories'
+  | 'repository-branches'
   | 'shared'
   | 'liked'
-  | 'always-on'
   | 'discover'
   | 'external';
 
@@ -33,9 +34,7 @@ export enum sandboxesTypes {
   RECENT = 'RECENT',
   SHARED = 'SHARED',
   LIKED = 'LIKED',
-  HOME = 'HOME',
   TEMPLATE_HOME = 'TEMPLATE_HOME',
-  RECENT_HOME = 'RECENT_HOME',
   ALL = 'ALL',
   SEARCH = 'SEARCH',
   REPOS = 'REPOS',

@@ -16,6 +16,9 @@ import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
 import { Search } from './screens/Search';
+import { Docker } from './screens/Docker';
+import { VSCode } from './screens/VSCode';
+import { AITools } from './screens/AI';
 
 const workspaceTabs = {
   project: ProjectInfo,
@@ -28,9 +31,12 @@ const workspaceTabs = {
   live: Live,
   server: Server,
   comments: Comments,
+  docker: Docker,
+  vscode: VSCode,
+  ai: AITools,
 };
 
-export const WorkspaceComponent = ({ theme }) => {
+const WorkspaceComponent = ({ theme }) => {
   const {
     live: { isLive, roomInfo },
     workspace: { openedWorkspaceItem: activeTab },

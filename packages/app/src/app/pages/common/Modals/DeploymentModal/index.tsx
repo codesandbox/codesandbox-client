@@ -24,7 +24,7 @@ export const DeploymentModal: FunctionComponent = () => {
   }
 
   const {
-    integrations: { zeit: vercel },
+    integrations: { vercel },
   } = user;
   const vercelSignedIn = Boolean(vercel);
 
@@ -35,21 +35,35 @@ export const DeploymentModal: FunctionComponent = () => {
     >
       {url ? (
         <Element marginBottom={4}>
-          <Text weight="bold" block size={4} align="center" paddingBottom={4}>
+          <Text
+            weight="regular"
+            block
+            size={4}
+            align="center"
+            paddingBottom={4}
+          >
             Deployed!
           </Text>
-          <Link variant="muted" block size={3} align="center" href={url}>
+          <Link
+            variant="muted"
+            block
+            size={3}
+            align="center"
+            href={url}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             {url}
           </Link>
           <Text paddingTop={4} block size={3} align="center">
-            You can manage your deployments{' '}
+            You can{' '}
             <Link
               variant="muted"
               href="https://vercel.com/dashboard"
               target="_blank"
               rel="noreferrer noopener"
             >
-              here
+              manage your deployments here
             </Link>
             .
           </Text>

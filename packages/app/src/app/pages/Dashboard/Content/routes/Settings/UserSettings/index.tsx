@@ -7,7 +7,10 @@ import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { Header } from '../../../../Components/Header';
-import { GRID_MAX_WIDTH, GUTTER } from '../../../../Components/VariableGrid';
+import {
+  GRID_MAX_WIDTH,
+  GUTTER,
+} from '../../../../Components/VariableGrid/constants';
 import { SettingNavigation } from '../components/Navigation';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { PermissionSettings } from '../components/PermissionSettings';
@@ -26,7 +29,7 @@ export const UserSettings = () => {
         css={css({
           height: 'calc(100vh - 140px)',
           overflowY: 'scroll',
-          paddingY: 10,
+          paddingY: 6,
         })}
       >
         <Stack
@@ -54,7 +57,9 @@ export const UserSettings = () => {
               </Switch>
             </BrowserRouter>
           ) : (
-            <Text>Loading...</Text>
+            <Text css={css({ color: 'sideBarSectionHeader.foreground' })}>
+              Loading...
+            </Text>
           )}
         </Stack>
       </Element>

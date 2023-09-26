@@ -5,42 +5,49 @@ import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { Sandbox, SkeletonSandbox } from '../Sandbox';
-import { NewSandbox } from '../Sandbox/NewSandbox';
+import { Sandbox } from '../Sandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
-import { ImportRepo } from '../Repo/ImportRepo';
 import { Folder } from '../Folder';
-import { Repo } from '../Repo';
+import { SyncedSandbox } from '../SyncedSandbox';
 import { CommunitySandbox } from '../CommunitySandbox';
-import { EmptyScreen } from '../EmptyScreen';
 import {
   DashboardGridItem,
   DashboardSandbox,
   DashboardTemplate,
   DashboardFolder,
-  DashboardNewSandbox,
   DashboardHeader,
   DashboardHeaderLink,
   DashboardBlank,
   DashboardSkeleton,
   DashboardNewFolder,
-  DashboardRepo,
-  DashboardNewRepo,
-  DashboardNewMasterBranch,
+  DashboardSyncedRepo,
+  DashboardSyncedRepoDefaultBranch,
   DashboardCommunitySandbox,
+  DashboardBranch,
+  DashboardRepository,
+  DashboardNewBranch,
+  DashboardImportRepository,
   PageTypes,
+  DashboardFooter,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
-
-export const GRID_MAX_WIDTH = 1900;
-export const MAX_COLUMN_COUNT = 6;
-export const GUTTER = 36;
-const ITEM_MIN_WIDTH = 220;
-const ITEM_HEIGHT_GRID = 240;
-const ITEM_HEIGHT_LIST = 64;
-const HEADER_HEIGHT = 64;
-// const GRID_VERTICAL_OFFSET = 120;
-const ITEM_VERTICAL_OFFSET = 32;
+import { Branch } from '../Branch';
+import { Repository } from '../Repository';
+import { SolidSkeleton } from '../Skeleton';
+import {
+  GRID_MAX_WIDTH,
+  MAX_COLUMN_COUNT,
+  GUTTER,
+  ITEM_MIN_WIDTH,
+  ITEM_HEIGHT_GRID,
+  ITEM_HEIGHT_LIST,
+  HEADER_HEIGHT,
+  ITEM_VERTICAL_OFFSET,
+  FOOTER_HEIGHT,
+} from './constants';
+import { ActionCard } from '../shared/ActionCard';
+import { RestrictedImportDisclaimer } from '../shared/RestrictedImportDisclaimer';
+import { ReadOnlyRepoDisclaimer } from '../shared/ReadOnlyRepoDisclaimer';
 
 type WindowItemProps = {
   data: {
@@ -65,21 +72,27 @@ interface IComponentForTypes {
   sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
   template: React.FC<DecoratedItemProps<DashboardTemplate>>;
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
-  repo: React.FC<DecoratedItemProps<DashboardRepo>>;
+  'synced-sandbox-repo': React.FC<DecoratedItemProps<DashboardSyncedRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
-  'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
-  'new-repo': React.FC<DecoratedItemProps<DashboardNewRepo>>;
-  'new-master-branch': React.FC<DecoratedItemProps<DashboardNewMasterBranch>>;
+  'synced-sandbox-default-branch': React.FC<
+    DecoratedItemProps<DashboardSyncedRepoDefaultBranch>
+  >;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
-  skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'solid-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
+  branch: React.FC<DecoratedItemProps<DashboardBranch>>;
+  'new-branch': React.FC<DecoratedItemProps<DashboardNewBranch>>;
+  repository: React.FC<DecoratedItemProps<DashboardRepository>>;
+  'import-repository': React.FC<DecoratedItemProps<DashboardImportRepository>>;
+  footer: React.FC<DecoratedItemProps<DashboardFooter>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
   sandbox: React.memo(props => (
     <Sandbox
+      key={props.item.sandbox.id}
       page={props.page}
       item={props.item}
       isScrolling={props.isScrolling}
@@ -92,15 +105,17 @@ const ComponentForTypes: IComponentForTypes = {
       isScrolling={props.isScrolling}
     />
   )),
-  folder: props => <Folder {...props.item} />,
-  repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
+  folder: props => <Folder key={props.item.name} {...props.item} />,
+  'synced-sandbox-repo': props => (
+    <SyncedSandbox {...props.item} isScrolling={props.isScrolling} />
+  ),
   'new-folder': props => <CreateFolder {...props.item} />,
-  'new-sandbox': () => <NewSandbox />,
-  'new-repo': () => <ImportRepo />,
-  'new-master-branch': props => <NewMasterSandbox {...props.item} />,
+  'synced-sandbox-default-branch': props => (
+    <NewMasterSandbox {...props.item} />
+  ),
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
-      <Text block weight="bold" css={css({ userSelect: 'none' })}>
+      <Text block weight="regular" css={css({ userSelect: 'none' })}>
         {item.title}
       </Text>
       {item.showMoreLink
@@ -128,10 +143,39 @@ const ComponentForTypes: IComponentForTypes = {
     </Link>
   ),
   blank: () => <div />,
-  skeleton: () => <SkeletonSandbox />,
+  'solid-skeleton': ({ item }) => <SolidSkeleton viewMode={item.viewMode} />,
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
+  branch: ({ item, page }) => <Branch page={page} {...item} />,
+  repository: ({ item }) => <Repository {...item} />,
+  'new-branch': ({ item }) => (
+    <ActionCard onClick={item.onClick} icon="plus" disabled={item.disabled}>
+      Create branch
+    </ActionCard>
+  ),
+  'import-repository': ({ item }) => (
+    <ActionCard
+      onClick={item.onImportClicked}
+      icon="plus"
+      disabled={item.disabled}
+    >
+      Import repository
+    </ActionCard>
+  ),
+  footer: ({ item }) => {
+    if (item.page === 'repositories') {
+      return (
+        <RestrictedImportDisclaimer insideGrid={item.viewMode === 'grid'} />
+      );
+    }
+
+    if (item.page === 'repository-branches') {
+      return <ReadOnlyRepoDisclaimer insideGrid={item.viewMode === 'grid'} />;
+    }
+
+    return null;
+  },
 };
 
 const Item = React.memo(
@@ -156,7 +200,8 @@ const Item = React.memo(
 
     // we calculate width by making enough room for gutters between
     // each item + on the 2 ends
-    const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
+    // 10px space to the browser edge
+    const spaceReqiuredForGutters = GUTTER * (columnCount + 1) + 10;
     const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
     const numberOfItems = columnCount;
     const eachItemWidth = spaceLeftForItems / numberOfItems;
@@ -195,7 +240,6 @@ const Item = React.memo(
           width: eachItemWidth,
           left: leftOffset,
           height: (style.height as number) - GUTTER,
-          ...margins,
         }}
       >
         <Component item={item} page={page} isScrolling={isScrolling} />
@@ -212,14 +256,12 @@ interface VariableGridProps {
   viewMode?: 'grid' | 'list';
 }
 
-export const VariableGrid = ({
+export const VariableGrid: React.FC<VariableGridProps> = ({
   items,
-  collectionId,
   page,
   viewMode: propViewMode,
-}: VariableGridProps) => {
+}) => {
   const { dashboard } = useAppState();
-
   const location = useLocation();
 
   let viewMode: 'grid' | 'list';
@@ -232,8 +274,20 @@ export const VariableGrid = ({
     const item = filledItems[rowIndex * columnCount];
 
     if (item.type === 'header') return HEADER_HEIGHT;
+    if (item.type === 'footer') return FOOTER_HEIGHT;
     if (item.type === 'blank') return 0;
+
     return ITEM_HEIGHT + (viewMode === 'list' ? 0 : GUTTER);
+  };
+
+  const getColumnWidth = ({
+    columnCount,
+    width,
+  }: {
+    columnCount: number;
+    width: number;
+  }) => {
+    return width / columnCount;
   };
 
   const onResize = () => {
@@ -292,9 +346,6 @@ export const VariableGrid = ({
     };
   });
 
-  if (items.length === 0)
-    return <EmptyScreen page={page} collectionId={collectionId} />;
-
   return (
     <Element style={{ width: '100%', height: '100%' }}>
       <AutoSizer onResize={onResize}>
@@ -313,8 +364,11 @@ export const VariableGrid = ({
               viewMode?: 'list' | 'grid';
             }
           > = [];
-          const blankItem = { type: 'blank' as 'blank' };
-          const skeletonItem = { type: 'skeleton' as 'skeleton' };
+          const blankItem = { type: 'blank' as const };
+          const skeletonItem: DashboardSkeleton = {
+            type: 'solid-skeleton',
+            viewMode,
+          };
 
           items.forEach((item, index) => {
             if (
@@ -322,7 +376,6 @@ export const VariableGrid = ({
                 'header',
                 'skeleton-row',
                 'blank-row-fill',
-                'new-sandbox',
                 'template',
                 'sandbox',
                 'search-result',
@@ -348,8 +401,6 @@ export const VariableGrid = ({
                   });
                 }
               }
-            } else if (item.type === 'new-sandbox' && viewMode === 'grid') {
-              filledItems.push(item);
             } else if (item.type === 'sandbox' || item.type === 'template') {
               if (
                 item.type === 'template' &&
@@ -359,10 +410,7 @@ export const VariableGrid = ({
                 // If it's optional we don't show it if we're on the second row already
                 const previousRowItem = items[index - columnCount];
 
-                if (
-                  previousRowItem?.type === 'template' ||
-                  previousRowItem?.type === 'new-sandbox'
-                ) {
+                if (previousRowItem?.type === 'template') {
                   // Don't add if this one is optional and we're on the second row
                   return;
                 }
@@ -388,6 +436,30 @@ export const VariableGrid = ({
                 filledItems.push(blankItem);
               }
             }
+
+            /**
+             * If it's the last item and the state is not loading,
+             * create a footer element.
+             */
+            if (
+              index === items.length - 1 &&
+              items.find(i => i.type === 'skeleton-row') === undefined
+            ) {
+              // Fill the remaining columns w/ a blank item
+              const remainingColumns =
+                columnCount - (filledItems.length % columnCount);
+
+              for (let i = 0; i < remainingColumns; i++) {
+                filledItems.push(blankItem);
+              }
+
+              // Push the footer as the last item in its own row
+              filledItems.push({
+                page,
+                type: 'footer',
+                viewMode,
+              });
+            }
           });
 
           filledItemsRef.current = filledItems;
@@ -405,7 +477,12 @@ export const VariableGrid = ({
                 rowCount={Math.ceil(filledItems.length / columnCount)}
                 width={width}
                 height={height}
-                columnWidth={index => width / columnCount}
+                columnWidth={columnIndex =>
+                  getColumnWidth({
+                    columnCount,
+                    width,
+                  })
+                }
                 rowHeight={rowIndex =>
                   getRowHeight(rowIndex, columnCount, filledItems)
                 }
@@ -422,7 +499,7 @@ export const VariableGrid = ({
                 style={{
                   overflowX: 'hidden',
                   userSelect: 'none',
-                  paddingBottom: 40,
+                  paddingBottom: 24,
                   boxSizing: 'border-box',
                 }}
               >

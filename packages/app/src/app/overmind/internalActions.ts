@@ -7,17 +7,19 @@ import {
   TabType,
 } from '@codesandbox/common/lib/types';
 import history from 'app/utils/history';
-import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
+import { TeamFragmentDashboardFragment } from 'app/graphql/types';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Context } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
+import { AuthOptions, GH_BASE_SCOPE, MAP_GH_SCOPE_OPTIONS } from './utils/auth';
+import { renameZeitToVercel } from './utils/vercel';
 
 /**
  * After getting the current user we need to hydrate the app with new data from that user.
@@ -29,7 +31,6 @@ export const initializeNewUser = async ({
   actions,
 }: Context) => {
   actions.dashboard.getTeams();
-  actions.internal.setPatronPrice();
   effects.analytics.identify('signed_in', true);
   effects.analytics.setUserId(state.user!.id, state.user!.email);
 
@@ -49,10 +50,7 @@ export const initializeNewUser = async ({
 
 export const signIn = async (
   { state, effects, actions }: Context,
-  options: {
-    useExtraScopes?: boolean;
-    provider: 'google' | 'github';
-  }
+  options: AuthOptions
 ) => {
   effects.analytics.track('Sign In', {
     provider: options.provider,
@@ -63,7 +61,10 @@ export const signIn = async (
     state.signInModalOpen = false;
     state.cancelOnLogin = null;
     state.pendingUser = null;
-    state.user = await effects.api.getCurrentUser();
+
+    const currentUser = await effects.api.getCurrentUser();
+    state.user = renameZeitToVercel(currentUser);
+
     await actions.internal.initializeNewUser();
     actions.refetchSandboxInfo();
     state.hasLogIn = true;
@@ -92,16 +93,6 @@ export const setStoredSettings = ({ state, effects }: Context) => {
   }
 
   Object.assign(state.preferences.settings, settings);
-};
-
-export const setPatronPrice = ({ state }: Context) => {
-  if (!state.user) {
-    return;
-  }
-
-  state.patron.price = state.user.subscription
-    ? Number(state.user.subscription.amount)
-    : 10;
 };
 
 export const showUserSurveyIfNeeded = ({
@@ -164,30 +155,55 @@ export const addNotification = (
 
 export const authorize = async ({ state, effects }: Context) => {
   try {
+    state.isLoadingAuthToken = true;
     state.authToken = await effects.api.getAuthToken();
   } catch (error) {
     state.editor.error = error.message;
+  } finally {
+    state.isLoadingAuthToken = false;
   }
 };
 export const runProviderAuth = (
   { effects, state }: Context,
-  {
-    provider,
-    useExtraScopes,
-  }: { useExtraScopes?: boolean; provider?: 'github' | 'google' }
+  options: AuthOptions
 ) => {
-  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  const { provider } = options;
 
-  const authPath = new URL(
-    location.origin + (hasDevAuth ? '/auth/dev' : `/auth/${provider}`)
+  // When in development, check if there's authentication.
+  const isInitialDevelopmentAuth =
+    process.env.NODE_ENV === 'development' && !state.hasLogIn;
+  // Use dev auth if local server or staging and there's no
+  // authentication or the provider isn't GitHub. This is
+  // needed to allow us to go to GitHub to authorize extra
+  // scopes during development.
+  const useDevAuth =
+    (process.env.LOCAL_SERVER || process.env.STAGING) &&
+    (isInitialDevelopmentAuth || provider !== 'github');
+  // Base path
+  const baseUrl = useDevAuth
+    ? location.origin
+    : process.env.ENDPOINT || 'https://codesandbox.io';
+
+  let authPath = new URL(
+    baseUrl + (useDevAuth ? '/auth/dev' : `/auth/${provider}`)
   );
 
   authPath.searchParams.set('version', '2');
 
   if (provider === 'github') {
-    if (useExtraScopes) {
-      authPath.searchParams.set('scope', 'user:email,repo,workflow');
+    let scope = GH_BASE_SCOPE;
+    if (
+      'includedScopes' in options &&
+      typeof options.includedScopes !== 'undefined'
+    ) {
+      scope =
+        GH_BASE_SCOPE + ',' + MAP_GH_SCOPE_OPTIONS[options.includedScopes];
     }
+    authPath.searchParams.set('scope', scope);
+  }
+
+  if (provider === 'sso') {
+    authPath = new URL(baseUrl + options.ssoURL);
   }
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
@@ -195,7 +211,7 @@ export const runProviderAuth = (
   const signInPromise = effects.browser
     .waitForMessage('signin')
     .then((data: any) => {
-      if (hasDevAuth) {
+      if (useDevAuth) {
         localStorage.setItem('devJwt', data.jwt);
 
         // Today + 30 days
@@ -220,7 +236,9 @@ export const runProviderAuth = (
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
 
-    localStorage.setItem('should-onboarding-user', 'true');
+    // Temporarily hide the editor onboarding for new users
+    // since its UI and contents are outdated.
+    effects.browser.storage.set('should-onboard-user', false);
 
     popup.close();
   });
@@ -489,32 +507,6 @@ export const handleError = (
         state.signInModalOpen = true;
       },
     };
-  } else if (error.message.startsWith('You reached the maximum of')) {
-    effects.analytics.track('Non-Patron Sandbox Limit Reached', {
-      errorMessage: error.message,
-    });
-
-    notificationActions.primary = {
-      label: 'Open Patron Page',
-      run: () => {
-        window.open(patronUrl(), '_blank');
-      },
-    };
-  } else if (
-    error.message.startsWith(
-      'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
-    )
-  ) {
-    effects.analytics.track('Non-Patron Server Sandbox Limit Reached', {
-      errorMessage: error.message,
-    });
-
-    notificationActions.primary = {
-      label: 'Open Patron Page',
-      run: () => {
-        window.open(patronUrl(), '_blank');
-      },
-    };
   } else if (
     error.message.startsWith(
       'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact support@codesandbox.io for more server sandboxes.'
@@ -523,6 +515,20 @@ export const handleError = (
     effects.analytics.track('Patron Server Sandbox Limit Reached', {
       errorMessage: error.message,
     });
+  } else if (
+    error.message.startsWith(
+      'You need to be signed in to fork a server template.'
+    ) ||
+    error.message.startsWith(
+      'You need to be signed in to fork a cloud sandbox.'
+    )
+  ) {
+    notificationActions.primary = {
+      label: 'Sign in',
+      run: () => {
+        state.signInModalOpen = true;
+      },
+    };
   }
 
   effects.notificationToast.add({
@@ -551,8 +557,11 @@ export const trackCurrentTeams = async ({ effects, state }: Context) => {
 export const identifyCurrentUser = async ({ state, effects }: Context) => {
   const user = state.user;
   if (user) {
-    effects.analytics.identify('pilot', user.experiments.inPilot);
-    effects.browser.storage.set('pilot', user.experiments.inPilot);
+    Object.entries(user.metadata).forEach(([key, value]) => {
+      if (value) {
+        effects.analytics.identify(key, value);
+      }
+    });
 
     const profileData = await effects.api.getProfile(user.username);
     effects.analytics.identify('sandboxCount', profileData.sandboxCount);
@@ -606,61 +615,115 @@ export const setViewModeForDashboard = ({ effects, state }: Context) => {
   }
 };
 
-export const setActiveTeamFromUrlOrStore = async ({ actions }: Context) =>
-  actions.internal.setActiveTeamFromUrl() ||
-  actions.internal.setActiveTeamFromLocalStorage() ||
-  actions.internal.setActiveTeamFromPersonalWorkspaceId();
+const INVALID_ID_TITLE = 'Workspace not recognized.';
+const INVALID_ID_MESSAGE =
+  "The workspace in the URL or stored in your browser is unknown. We've automatically switched to your personal workspace.";
 
-export const setActiveTeamFromLocalStorage = ({
+// TODO we could rename the function to initializeTeam (because we also use
+// personalWorkspaceId);
+export const setActiveWorkspaceFromUrlOrStore = async ({
+  actions,
+  effects,
+}: Context) => {
+  const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
+
+  if (isValid && id) {
+    // Set active team from url or storage.
+    actions.setActiveTeam({ id });
+  } else {
+    // If an id was set but it's not valid we show a toast message informing the user
+    // we changed the workspace to the personal workspace. If no id was set we silently
+    // activate the personal team.
+    if (id) {
+      effects.notificationToast.add({
+        title: INVALID_ID_TITLE,
+        message: INVALID_ID_MESSAGE,
+        status: NotificationStatus.NOTICE,
+      });
+    }
+
+    // Change to personal workspace.
+    actions.internal.setActiveTeamFromPersonalWorkspaceId();
+  }
+};
+
+export const getTeamIdFromUrlOrStore = async ({
+  state,
   effects,
   actions,
-}: Context) => {
-  const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
+}: Context): Promise<{ id: string | null; isValid: boolean }> => {
+  const suggestedTeamId =
+    actions.internal.getTeamIdFromUrl() ||
+    actions.internal.getTeamIdFromLocalStorage();
+  const hasTeams = state.dashboard?.teams && state.dashboard.teams.length > 0;
 
-  if (typeof localStorageTeam === 'string') {
-    actions.setActiveTeam({ id: localStorageTeam });
-    return localStorageTeam;
+  let userTeams: TeamFragmentDashboardFragment[] | undefined;
+
+  if (hasTeams) {
+    userTeams = state.dashboard.teams;
+  } else {
+    // TODO: Instead of actions.dashboard.getTeams();
+    // We might be able to use it though, and then use state.dashboard.teams!
+    const teams = await effects.gql.queries.getTeams({});
+
+    if (teams?.me) {
+      userTeams = teams.me.workspaces;
+
+      // Also set state while we're at it
+      state.dashboard.teams = teams.me.workspaces;
+      state.personalWorkspaceId = teams.me.personalWorkspaceId;
+    }
+  }
+
+  const isSuggestedTeamValid = userTeams?.some(
+    team => team.id === suggestedTeamId
+  );
+
+  return {
+    id: suggestedTeamId!,
+    isValid: Boolean(isSuggestedTeamValid),
+  };
+};
+
+export const getTeamIdFromUrl = (): string | null => {
+  const url = typeof document === 'undefined' ? null : document.location.href;
+
+  if (url) {
+    return new URL(url).searchParams.get('workspace');
   }
 
   return null;
 };
 
-export const setActiveTeamFromUrl = ({ actions }: Context) => {
-  const currentUrl =
-    typeof document === 'undefined' ? null : document.location.href;
-  if (!currentUrl) {
-    return null;
-  }
+export const getTeamIdFromLocalStorage = ({ effects }): string | null => {
+  const localStorageTeamId = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
+  const isValidStorageItem = typeof localStorageTeamId === 'string';
 
-  const searchParams = new URL(currentUrl).searchParams;
-
-  const workspaceParam = searchParams.get('workspace');
-  if (workspaceParam) {
-    actions.setActiveTeam({ id: workspaceParam });
-    return workspaceParam;
+  if (isValidStorageItem) {
+    return localStorageTeamId;
   }
 
   return null;
 };
 
+/**
+ * Function to activate the personal workspace. We call this function when
+ * no initial team id is known (from url or localStorage).
+ */
 export const setActiveTeamFromPersonalWorkspaceId = async ({
   actions,
   state,
   effects,
 }: Context) => {
-  const personalWorkspaceId = state.personalWorkspaceId;
+  if (state.personalWorkspaceId) {
+    actions.setActiveTeam({ id: state.personalWorkspaceId });
+  } else {
+    const res = await effects.gql.queries.getPersonalWorkspaceId({});
 
-  if (personalWorkspaceId) {
-    actions.setActiveTeam({ id: personalWorkspaceId });
-    return personalWorkspaceId;
+    if (res.me) {
+      actions.setActiveTeam({ id: res.me.personalWorkspaceId });
+    }
   }
-  const res = await effects.gql.queries.getPersonalWorkspaceId({});
-  if (res.me) {
-    actions.setActiveTeam({ id: res.me.personalWorkspaceId });
-    return res.me.personalWorkspaceId;
-  }
-
-  return null;
 };
 
 export const replaceWorkspaceParameterInUrl = ({ state }: Context) => {

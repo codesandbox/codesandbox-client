@@ -1,5 +1,7 @@
 import React from 'react';
 import { Text } from '.';
+import { Icon } from '../Icon';
+import { Stack } from '../Stack';
 
 export default {
   title: 'components/Text',
@@ -70,4 +72,11 @@ export const Align = () => (
 
 export const MaxWidth = () => (
   <Text maxWidth={200}>this text will get cropped beyond 200px</Text>
+);
+
+export const Truncate = () => (
+  <Stack css={{ width: 200 }}>
+    <Icon name="branch" />
+    <Text truncate>This text will get cropped somewhere, over the rainbow</Text>
+  </Stack>
 );

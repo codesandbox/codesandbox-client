@@ -4,6 +4,7 @@ import deepmerge from 'deepmerge';
 import { Button } from '../Button';
 import { Icon, IconNames } from '../Icon';
 import { Tooltip } from '../Tooltip';
+import { IElementProps } from '../Element';
 
 type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** name of the icon */
@@ -12,12 +13,19 @@ type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   title: string;
   /** Size of the icon, the button is set to 26x26 */
   size?: number;
+  /** Variant - square or round */
+  variant?: 'square' | 'round';
+  /** Not ideal, but should work when we move to prism */
+  as?: any;
+  /** Any custom css necessary */
+  css?: IElementProps['css'];
 };
 
 export const IconButton: React.FC<IconButtonProps> = ({
   name,
   title,
   size,
+  variant = 'round',
   css = {},
   ...props
 }) => (
@@ -29,7 +37,9 @@ export const IconButton: React.FC<IconButtonProps> = ({
         {
           width: '26px', // same width as (height of the button)
           paddingX: 0,
-          borderRadius: '50%',
+          borderRadius: variant === 'round' ? '50%' : '2px',
+          // Round variant is legacy, so keeps cursor pointer for backwards compat in the editor
+          cursor: variant === 'round' ? 'pointer' : 'default',
           ':hover:not(:disabled)': {
             backgroundColor: 'secondaryButton.background',
           },

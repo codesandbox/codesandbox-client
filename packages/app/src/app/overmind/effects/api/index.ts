@@ -1,6 +1,6 @@
 import { TemplateType } from '@codesandbox/common/lib/templates';
 import {
-  CurrentUser,
+  CurrentUserFromAPI,
   CustomTemplate,
   Dependency,
   Directory,
@@ -23,8 +23,9 @@ import {
   UserQuery,
   UserSandbox,
   SettingsSync,
+  ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
-import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateSandbox/queries';
 import { client } from 'app/graphql/client';
 import { PendingUserType } from 'app/overmind/state';
 
@@ -39,6 +40,7 @@ import {
   IModuleAPIResponse,
   SandboxAPIResponse,
   AvatarAPIResponse,
+  FinalizeSignUpOptions,
 } from './types';
 
 let api: Api;
@@ -57,33 +59,19 @@ export default {
 
     return response.jwt;
   },
-  createPatronSubscription(
-    token: string,
-    amount: number,
-    duration: 'monthly' | 'yearly',
-    coupon: string
-  ) {
-    return api.post<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-        token,
-        duration,
-      },
-    });
+  async getSandpackTokenFromTeam(teamId: string): Promise<string> {
+    const response = await api.post<{ token: string }>(
+      `/sandpack/token/${teamId}`,
+      {}
+    );
+
+    return response.token;
   },
-  updatePatronSubscription(amount: number, coupon: string) {
-    return api.patch<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-      },
-    });
-  },
+  // We only use this function related to current_user/subscription
   cancelPatronSubscription() {
-    return api.delete<CurrentUser>('/users/current_user/subscription');
+    return api.delete<CurrentUserFromAPI>('/users/current_user/subscription');
   },
-  getCurrentUser(): Promise<CurrentUser> {
+  getCurrentUser(): Promise<CurrentUserFromAPI> {
     return api.get('/users/current');
   },
   markSurveySeen(): Promise<void> {
@@ -109,7 +97,7 @@ export default {
     // We need to add client side properties for tracking
     return transformSandbox(sandbox);
   },
-  async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
+  async forkSandbox(id: string, body?: ForkSandboxBody): Promise<Sandbox> {
     const url = id.includes('/')
       ? `/sandboxes/fork/${id}`
       : `/sandboxes/${id}/fork`;
@@ -488,20 +476,8 @@ export default {
   validateUsername(username: string): Promise<{ available: boolean }> {
     return api.get('/users/available/' + username);
   },
-  finalizeSignUp({
-    username,
-    id,
-    name,
-  }: {
-    username: string;
-    id: string;
-    name: string;
-  }): Promise<void> {
-    return api.post('/users/finalize', {
-      username,
-      id,
-      name,
-    });
+  finalizeSignUp(options: FinalizeSignUpOptions): Promise<void> {
+    return api.post('/users/finalize', options);
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
     return api.patch(`/users/${username}`, {
@@ -527,6 +503,10 @@ export default {
   deleteTag(sandboxId: string, tagName: string): Promise<string[]> {
     return api.delete(`/sandboxes/${sandboxId}/tags/${tagName}`);
   },
+  /**
+   * Updates a sandbox. Used to update sandbox metadata but also to convert
+   * a sandbox to a cloud sandbox.
+   */
   updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
     return api.put(`/sandboxes/${sandboxId}`, {
       sandbox: data,
@@ -566,8 +546,8 @@ export default {
       avatar,
     });
   },
-  createVercelIntegration(code: string): Promise<CurrentUser> {
-    return api.post(`/users/current_user/integrations/zeit`, {
+  createVercelIntegration(code: string): Promise<CurrentUserFromAPI> {
+    return api.post(`/users/current_user/integrations/vercel`, {
       code,
     });
   },
@@ -578,7 +558,7 @@ export default {
     return api.delete(`/users/current_user/integrations/github`);
   },
   signoutVercel(): Promise<void> {
-    return api.delete(`/users/current_user/integrations/zeit`);
+    return api.delete(`/users/current_user/integrations/vercel`);
   },
   preloadTemplates() {
     client.query({ query: LIST_PERSONAL_TEMPLATES, variables: {} });
@@ -660,13 +640,8 @@ export default {
       sandboxLimit: number;
     }>(`/sandboxes/limits`);
   },
-  prices() {
-    type Pricing = Record<
-      'pro' | 'teamPro',
-      Record<'month' | 'year', { currency: string; unitAmount: number }>
-    >;
-
-    return api.get<Pricing>(`/prices`);
+  getPrices() {
+    return api.get(`/prices`, undefined, undefined, true);
   },
   stripeCreateCheckout({
     success_path,
@@ -690,5 +665,44 @@ export default {
     return api.get<{ stripeCustomerPortalUrl: string }>(
       `/teams/${teamId}/customer_portal?return_path=${return_path}`
     );
+  },
+  removeBranchFromRepository(
+    workspaceId: string,
+    owner: string,
+    repo: string,
+    branch: string
+  ) {
+    return api.delete(`/beta/sandboxes/github/${owner}/${repo}/${branch}`, {
+      workspace_id: workspaceId,
+    });
+  },
+  removeLinkedProjectFromTeam(owner: string, repo: string, teamId: string) {
+    return api.delete(`/beta/repos/link/github/${owner}/${repo}/${teamId}`);
+  },
+  forkRepository(
+    source: { owner: string; name: string },
+    destination: {
+      name: string;
+      teamId: string;
+      organization?: string;
+    }
+  ) {
+    let body: Record<string, string | boolean> = {
+      name: destination.name,
+      team_id: destination.teamId,
+    };
+    if (destination.organization) {
+      body = { ...body, organization: destination.organization };
+    }
+
+    return api.post<{ owner: string; repo: string; branch: string }>(
+      `/beta/fork/github/${source.owner}/${source.name}`,
+      body
+    );
+  },
+  initializeSSO(email: string) {
+    return api.get<{ redirectUrl: string }>('/auth/workos/initialize', {
+      email,
+    });
   },
 };

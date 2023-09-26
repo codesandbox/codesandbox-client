@@ -13,10 +13,6 @@ const assets = [
     to: '',
   },
   !SANDBOX_ONLY && {
-    from: 'packages/homepage/public',
-    to: '',
-  },
-  !SANDBOX_ONLY && {
     from: 'standalone-packages/monaco-editor/release/min/vs',
     to: 'public/14/vs',
   },
