@@ -11,6 +11,10 @@ const sandboxHost = {
   'https://codesandbox.stream': 'https://codesandbox.dev',
 };
 
+// Second slash comes from joining URL parts
+const STATIC_SITE_PROTOCOL = 'https:/';
+const STATIC_SITE_DOMAIN = 'codesandbox.io';
+
 export const CSBProjectGitHubRepository = ({
   owner,
   repo,
@@ -265,9 +269,11 @@ export const gitHubToProjectsUrl = (githubUrl: string) =>
 
 export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;
+export const csbSite = () =>
+  [STATIC_SITE_PROTOCOL, STATIC_SITE_DOMAIN].join('/');
 export const curatorUrl = () => `/curator`;
-export const tosUrl = () => `/legal/terms`;
-export const privacyUrl = () => `/legal/privacy`;
+export const tosUrl = () => `${csbSite()}/legal/terms`;
+export const privacyUrl = () => `${csbSite()}/legal/privacy`;
 
 export function getSandboxId() {
   const csbHost = process.env.CODESANDBOX_HOST;
@@ -300,8 +306,12 @@ export function getSandboxId() {
   return result;
 }
 
-export const docsUrl = (path: string = '') =>
-  `https://codesandbox.io/docs${path}`;
+export const docsUrl = (path: string = '') => `${csbSite()}/docs${path}`;
+
+export const packageExamplesUrl = (packageName: string) =>
+  `${csbSite()}/examples/package/${packageName}`;
+
+export const blogUrl = (path: string = '') => `${csbSite()}/blog${path}`;
 
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;

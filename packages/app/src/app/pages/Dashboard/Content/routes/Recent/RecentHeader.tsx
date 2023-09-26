@@ -1,7 +1,7 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Text, Icon } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useActions } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
@@ -10,6 +10,7 @@ import styled from 'styled-components';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
+  const { environment } = useAppState();
   const history = useHistory();
 
   const {
@@ -17,6 +18,9 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
     isPersonalSpace,
     isTeamViewer,
   } = useWorkspaceAuthorization();
+
+  const showRepositoryImport = !environment.isOnPrem;
+  const showProWorkspace = !environment.isOnPrem && isPersonalSpace;
 
   return (
     <Stack direction="vertical" gap={9}>
@@ -48,19 +52,21 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
         >
           <Icon name="sandbox" /> New sandbox
         </ButtonInverseLarge>
-        <ButtonInverseLarge
-          onClick={() => {
-            track('Empty State Card - Open create modal', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-              card_type: 'get-started-action',
-              tab: 'github',
-            });
-            actions.openCreateSandboxModal({ initialTab: 'import' });
-          }}
-        >
-          <Icon name="github" /> Import repository
-        </ButtonInverseLarge>
+        {showRepositoryImport && (
+          <ButtonInverseLarge
+            onClick={() => {
+              track('Empty State Card - Open create modal', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+                card_type: 'get-started-action',
+                tab: 'github',
+              });
+              actions.openCreateSandboxModal({ initialTab: 'import' });
+            }}
+          >
+            <Icon name="github" /> Import repository
+          </ButtonInverseLarge>
+        )}
 
         {isTeamSpace && !isTeamViewer ? (
           <ButtonInverseLarge
@@ -80,7 +86,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           </ButtonInverseLarge>
         ) : null}
 
-        {isPersonalSpace ? (
+        {showProWorkspace ? (
           <ButtonInverseLarge
             onClick={() => {
               track('Empty State Card - Create team', {

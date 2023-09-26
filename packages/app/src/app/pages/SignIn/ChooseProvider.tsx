@@ -15,6 +15,10 @@ import {
   CodeSandboxIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
+import {
+  privacyUrl,
+  tosUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import history from 'app/utils/history';
 import { Button } from './components/Button';
@@ -423,19 +427,11 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
             block
           >
             By continuing, you agree to CodeSandbox{' '}
-            <a
-              href="https://codesandbox.io/legal/terms"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={tosUrl()} target="_blank" rel="noreferrer">
               Terms of Service
             </a>
             ,{' '}
-            <a
-              href="https://codesandbox.io/legal/privacy"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={privacyUrl()} target="_blank" rel="noreferrer">
               Privacy Policy
             </a>
           </Text>

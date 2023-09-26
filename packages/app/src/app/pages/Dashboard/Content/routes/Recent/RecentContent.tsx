@@ -69,10 +69,13 @@ export const RecentContent: React.FC<RecentContentProps> = ({
 }) => {
   const {
     activeTeam,
+    environment: { isOnPrem },
     dashboard: { viewMode },
   } = useAppState();
   const { restrictsPublicRepos } = useGitHubPermissions();
   const page: PageTypes = 'recent';
+  const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
+  const showDocsLine = !isOnPrem;
 
   return (
     <StyledWrapper>
@@ -117,9 +120,9 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           </StyledItemsWrapper>
         </SelectionProvider>
       </Stack>
-      <DocumentationRow />
+      {showDocsLine && <DocumentationRow />}
       <TemplatesRow />
-      {restrictsPublicRepos === false && <SuggestionsRow page="recent" />}
+      {showRepositoryImport && <SuggestionsRow page="recent" />}
     </StyledWrapper>
   );
 };

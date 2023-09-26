@@ -155,6 +155,12 @@ export function persistMeasurements(data: {
     return Promise.resolve();
   }
 
+  // Ignore external call for on-prem deploys
+  // @ts-ignore
+  if (window._env_?.IS_ONPREM === 'true') {
+    return Promise.resolve();
+  }
+
   return fetch(MEASUREMENT_API, {
     method: 'POST',
     body: JSON.stringify(body),

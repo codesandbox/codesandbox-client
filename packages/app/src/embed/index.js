@@ -6,27 +6,13 @@ import 'normalize.css';
 import '@codesandbox/common/lib/global.css';
 import track, {
   identifyOnce,
-  identify,
   initializeAnalytics,
 } from '@codesandbox/common/lib/utils/analytics';
-import { initializeExperimentStore } from '@codesandbox/ab';
-import {
-  getExperimentUserId,
-  AB_TESTING_URL,
-} from '@codesandbox/common/lib/config/env';
 import App from './components/App';
-
-initializeExperimentStore(
-  AB_TESTING_URL,
-  getExperimentUserId,
-  async (key, value) => {
-    await identify(key, value);
-  }
-);
 
 try {
   initializeAnalytics({
-    amplitudeApiKey: 'a205ed9b06a7baf5a594bdd30293aa80',
+    amplitudeApiKey: window._env_?.AMPLITUDE_API_KEY,
   });
 
   // If this value is not set, set it to false

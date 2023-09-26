@@ -91,6 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
+  const showRespositories = !state.environment.isOnPrem;
 
   const {
     isPersonalSpace,
@@ -216,39 +217,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="heart"
             />
           )}
-          <Element marginTop={4} />
-          <Element paddingX={7} paddingY={2}>
-            <Text
-              variant="muted"
-              size={2}
-              css={css({ color: 'sideBarSectionHeader.foreground' })}
-            >
-              Repositories
-            </Text>
-          </Element>
-          {isPersonalSpace && (
-            <RowItem
-              name="My contributions"
-              page="my-contributions"
-              path={dashboardUrls.myContributions(activeTeam)}
-              icon="contribution"
-            />
+          {showRespositories && (
+            <>
+              <Element marginTop={4} />
+              <Element paddingX={7} paddingY={2}>
+                <Text
+                  variant="muted"
+                  size={2}
+                  css={css({ color: 'sideBarSectionHeader.foreground' })}
+                >
+                  Repositories
+                </Text>
+              </Element>
+              {isPersonalSpace && (
+                <RowItem
+                  name="My contributions"
+                  page="my-contributions"
+                  path={dashboardUrls.myContributions(activeTeam)}
+                  icon="contribution"
+                />
+              )}
+              <RowItem
+                name="All repositories"
+                page="repositories"
+                path={dashboardUrls.repositories(activeTeam)}
+                icon="repository"
+              />
+              {dashboard.starredRepos.map(repo => (
+                <RowItem
+                  name={repo.name}
+                  page="repositories"
+                  path={dashboardUrls.repository(repo)}
+                  icon="star"
+                  nestingLevel={1}
+                />
+              ))}
+            </>
           )}
-          <RowItem
-            name="All repositories"
-            page="repositories"
-            path={dashboardUrls.repositories(activeTeam)}
-            icon="repository"
-          />
-          {dashboard.starredRepos.map(repo => (
-            <RowItem
-              name={repo.name}
-              page="repositories"
-              path={dashboardUrls.repository(repo)}
-              icon="star"
-              nestingLevel={1}
-            />
-          ))}
+
           <Element marginTop={4} />
           <Element paddingX={7} paddingY={2}>
             <Text

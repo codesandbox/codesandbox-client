@@ -1,6 +1,9 @@
 import React from 'react';
 import { Element, Icon, Link, Stack, Text } from '@codesandbox/components';
-import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  v2DefaultBranchUrl,
+  docsUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { GithubRepoToImport } from './types';
 
 export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
@@ -71,7 +74,7 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
         </Link>
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
-          href="https://codesandbox.io/docs/learn/repositories/open-source"
+          href={docsUrl('/learn/repositories/open-source')}
           target="_blank"
         >
           <Icon name="file" />

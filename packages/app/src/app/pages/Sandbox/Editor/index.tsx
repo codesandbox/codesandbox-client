@@ -114,6 +114,8 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
   const { statusBar } = state.editor;
 
   const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+  const showCloudSandboxConvert =
+    !state.environment.isOnPrem && state.hasLogIn && sandbox?.isSse;
 
   const getTopOffset = () => {
     if (state.preferences.settings.zenMode) {
@@ -130,7 +132,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       subscription?.status === SubscriptionStatus.Unpaid ||
       showTrialWithoutPaymentInfoBanner ||
       sandbox?.freePlanEditingRestricted ||
-      (state.hasLogIn && sandbox?.isSse)
+      showCloudSandboxConvert
     ) {
       // Header height + MessageStripe
       return 3 * 16 + 44;
@@ -169,7 +171,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
             )}
 
             {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
-            {state.hasLogIn && sandbox?.isSse ? <UpgradeSSEToV2Stripe /> : null}
+            {showCloudSandboxConvert ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>
         )}

@@ -45,7 +45,18 @@ export const getTrialEligibleTeams = (teams: TeamFragmentDashboardFragment[]) =>
  * For the current active workspace, use the `useWorkspaceSubscription` to get all relevant data
  * @param team
  */
-export const determineSpecialBadges = (team: TeamFragmentDashboardFragment) => {
+export const determineSpecialBadges = (
+  team: TeamFragmentDashboardFragment,
+  isOnPrem = false
+) => {
+  if (isOnPrem) {
+    return {
+      isPersonalProLegacy: false,
+      isTeamFreeLegacy: false,
+      isInactive: false,
+    };
+  }
+
   const subscriptionStatus = team.subscription?.status;
   const isPersonalSpace = team.type === TeamType.Personal;
   const isLegacySpace = team.legacy;

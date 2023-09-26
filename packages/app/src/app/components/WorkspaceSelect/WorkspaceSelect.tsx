@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppState } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { TeamType } from 'app/graphql/types';
 import {
   Badge,
@@ -25,6 +25,7 @@ interface WorkspaceSelectProps {
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
+    const actions = useActions();
     const { dashboard, user } = state;
     const history = useHistory();
     const {
@@ -128,7 +129,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   isPersonalProLegacy,
                   isTeamFreeLegacy,
                   isInactive,
-                } = determineSpecialBadges(team);
+                } = determineSpecialBadges(team, state.environment.isOnPrem);
 
                 return (
                   <Stack
@@ -181,12 +182,16 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   textAlign: 'left',
                 }}
                 onSelect={() => {
-                  track('Workspace Selector - Create Team', {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  });
+                  if (state.environment.isOnPrem) {
+                    actions.openCreateTeamModal({ step: 'create' });
+                  } else {
+                    track('Workspace Selector - Create Team', {
+                      codesandbox: 'V1',
+                      event_source: 'UI',
+                    });
 
-                  history.push('/pro');
+                    history.push('/pro');
+                  }
                 }}
               >
                 <Stack
@@ -201,7 +206,11 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 >
                   <Icon name="plus" size={10} />
                 </Stack>
-                <Text size={3}>Create a pro workspace</Text>
+                <Text size={3}>
+                  {state.environment.isOnPrem
+                    ? 'Create workspace'
+                    : 'Create a pro workspace'}
+                </Text>
               </Stack>
             </Menu.List>
           </Menu>

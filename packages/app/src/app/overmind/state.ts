@@ -89,6 +89,17 @@ type State = {
    * Each field is undefined until the endpoint returns.
    */
   features: MetaFeatures;
+
+  /**
+   * Environment variables that can be set for our deploys or for on-prem
+   */
+  environment: {
+    isOnPrem: boolean;
+    useStaticPreview: boolean;
+    previewDomain: string | null;
+    amplitudeKey: string | null;
+    sentryDSN: string | null;
+  };
 };
 
 export const state: State = {
@@ -159,5 +170,17 @@ export const state: State = {
     loginWithApple: true,
     loginWithGoogle: true,
     loginWithGithub: true,
+  },
+  environment: {
+    // @ts-ignore
+    isOnPrem: window._env_?.IS_ONPREM === 'true',
+    // @ts-ignore
+    useStaticPreview: window._env_?.USE_STATIC_PREVIEW === 'true',
+    // @ts-ignore
+    previewDomain: window._env_?.PREVIEW_DOMAIN || null,
+    // @ts-ignore
+    amplitudeKey: window._env_?.AMPLITUDE_API_KEY || null,
+    // @ts-ignore
+    sentryDSN: window._env_?.SENTRY_DSN || null,
   },
 };

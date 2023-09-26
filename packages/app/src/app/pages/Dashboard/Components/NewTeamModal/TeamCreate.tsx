@@ -1,53 +1,39 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useActions, useAppState } from 'app/overmind';
 import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { StyledButton } from 'app/components/dashboard/Button';
-import track from '@codesandbox/common/lib/utils/analytics';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-export const TeamName: React.FC<{ onComplete: () => void }> = ({
+export const TeamCreate: React.FC<{ onComplete: () => void }> = ({
   onComplete,
 }) => {
-  const { dashboard, activeTeamInfo } = useAppState();
+  const { dashboard } = useAppState();
   const actions = useActions();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [existingTeamError, setExistingTeamError] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!activeTeamInfo || !inputRef.current) {
-      return;
-    }
-
-    inputRef.current.focus();
-    inputRef.current.select();
-  }, [activeTeamInfo]);
 
   const onSubmit = async event => {
     event.preventDefault();
     const teamName = event.target.name.value?.trim();
 
-    if (teamName && teamName !== activeTeamInfo?.name) {
-      track('New Team - Set Name', {
-        codesandbox: 'V1',
-        event_source: 'UI',
+    if (!teamName) {
+      return;
+    }
+
+    setError(null);
+    setLoading(true);
+    try {
+      const team = await actions.dashboard.createTeam({
+        teamName,
       });
 
-      setError(null);
-      setLoading(true);
-      try {
-        await actions.dashboard.setTeamInfo({
-          name: teamName,
-          description: null,
-          file: null,
-        });
-      } catch {
-        setError('There was a problem updating your workspace');
-      } finally {
-        setLoading(false);
-      }
+      await actions.setActiveTeam({ id: team.id });
+    } catch {
+      setError('There was a problem creating your workspace');
+    } finally {
+      setLoading(false);
     }
 
     onComplete();
@@ -68,11 +54,7 @@ export const TeamName: React.FC<{ onComplete: () => void }> = ({
 
     // Check if there's any team with the same name.
     setExistingTeamError(
-      Boolean(
-        dashboard.teams.find(
-          team => team.name === trimmedName && team.id !== activeTeamInfo?.id
-        )
-      )
+      Boolean(dashboard.teams.find(team => team.name === trimmedName))
     );
   };
 
@@ -101,7 +83,7 @@ export const TeamName: React.FC<{ onComplete: () => void }> = ({
             letterSpacing: '-0.01em',
           }}
         >
-          Welcome to Pro
+          New workspace
         </Text>
         <Text color="#999">Let&apos;s give your workspace a name</Text>
       </Stack>
@@ -120,9 +102,7 @@ export const TeamName: React.FC<{ onComplete: () => void }> = ({
           required
           autoFocus
           hideLabel
-          defaultValue={activeTeamInfo?.name}
           onChange={handleInput}
-          ref={inputRef}
         />
 
         {existingTeamError && (
@@ -150,12 +130,6 @@ export const TeamName: React.FC<{ onComplete: () => void }> = ({
           href={docsUrl('/learn/plans/workspace')}
           target="_blank"
           rel="noreferrer"
-          onClick={() => {
-            track('New Team - Learn More', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-          }}
         >
           <Stack
             css={{

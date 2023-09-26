@@ -9,7 +9,7 @@ import {
 } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
-import { SubscriptionOrigin, SubscriptionInterval } from 'app/graphql/types';
+import { SubscriptionInterval } from 'app/graphql/types';
 import { MAX_PRO_EDITORS, ORGANIZATION_CONTACT_LINK } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useCreateCheckout } from 'app/hooks';
@@ -25,7 +25,11 @@ import { InviteMember } from '../components/InviteMember';
 
 export const WorkspaceSettings: React.FC = () => {
   const actions = useActions();
-  const { user: currentUser, activeTeamInfo: team } = useAppState();
+  const {
+    user: currentUser,
+    activeTeamInfo: team,
+    environment,
+  } = useAppState();
 
   const {
     isPro,
@@ -63,6 +67,8 @@ export const WorkspaceSettings: React.FC = () => {
     return <Header title="Team Settings" activeTeam={null} />;
   }
 
+  const showSubscriptionManageCard = !environment.isOnPrem;
+
   return (
     <>
       <Element
@@ -73,7 +79,9 @@ export const WorkspaceSettings: React.FC = () => {
 
           '@media (min-width: 768px)': {
             display: 'grid',
-            'grid-template-columns': 'repeat(3, 1fr)',
+            'grid-template-columns': showSubscriptionManageCard
+              ? 'repeat(3, 1fr)'
+              : 'repeat(2, 1fr)',
           },
         }}
       >
@@ -145,7 +153,7 @@ export const WorkspaceSettings: React.FC = () => {
           </Stack>
         </Card>
 
-        <ManageSubscription />
+        {showSubscriptionManageCard && <ManageSubscription />}
       </Element>
       <Stack direction="vertical" gap={3}>
         <Text
@@ -265,7 +273,7 @@ export const WorkspaceSettings: React.FC = () => {
        */}
       {isBillingManager &&
         numberOfEditors > MAX_PRO_EDITORS &&
-        subscription?.origin !== SubscriptionOrigin.Pilot && (
+        !environment.isOnPrem && (
           <MessageStripe justify="space-between">
             <span>
               You have over {MAX_PRO_EDITORS} editors. Upgrade to the
