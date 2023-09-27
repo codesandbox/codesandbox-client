@@ -46,7 +46,7 @@ export const PermissionSettings = () => {
             <MessageStripe.Action
               as="a"
               href={proUrl({
-                workspaceId: activeTeam,
+                ...(isPersonalSpace ? {} : { workspaceId: activeTeam }),
                 source: 'dashboard_permission_settings',
               })}
               onClick={proTracking}
