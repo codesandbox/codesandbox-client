@@ -31,8 +31,8 @@ export const FreeViewOnlyStripe = () => {
   return (
     <MessageStripe>
       <span>
-        You no longer have a <Text weight="bold">Pro</Text> subscription. This
-        sandbox is in view mode only.{' '}
+        Private or unlisted sandboxes need a <Text weight="bold">Pro</Text>{' '}
+        subscription. This sandbox is in view mode only.{' '}
         <LinkButton onClick={changeToPublic}>Make it public</LinkButton> or
         upgrade to <Text weight="bold">Pro</Text>.
       </span>
@@ -41,7 +41,7 @@ export const FreeViewOnlyStripe = () => {
           as="a"
           href={proUrl({
             source: 'v1_sandbox_view_only_upgrade',
-            workspaceId: activeTeam,
+            ...(isPersonalSpace ? {} : { workspaceId: activeTeam }),
           })}
           onClick={() => {
             track('Limit banner: editor - Upgrade', {
