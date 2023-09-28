@@ -503,7 +503,10 @@ export class DevTools extends React.PureComponent<Props, State> {
     } = this.props;
     const { hidden, height } = this.state;
 
-    const panes = viewConfig.views;
+    // Filter out legacy panel that might be persisted
+    const panes = viewConfig.views.filter(
+      v => v.id === 'codesandbox.terminalUpgrade'
+    );
 
     return (
       <Container
