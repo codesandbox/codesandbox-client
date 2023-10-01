@@ -1,4 +1,3 @@
-import * as astring from 'astring';
 import * as meriyah from 'meriyah';
 import { Identifier } from 'meriyah/dist/estree';
 import jsxGenerator from './generator-jsx';
@@ -41,7 +40,7 @@ const EXPRESSIONS_PRECEDENCE = {
  */
 export const customGenerator = {
   // @ts-ignore baseGenerator is deprecated, and GENERATOR is not in the types?
-  ...astring.GENERATOR,
+  ...jsxGenerator,
   FieldDefinition(
     node: meriyah.ESTree.FieldDefinition,
     state: { write(s: string): void }
@@ -91,5 +90,4 @@ export const customGenerator = {
       state.write(node.operator);
     }
   },
-  ...jsxGenerator,
 };
