@@ -524,7 +524,7 @@ export class DevTools extends React.PureComponent<Props, State> {
           minHeight: 0,
         }}
       >
-        {!hideTabs && (
+        {!hideTabs && panes.length > 0 && (
           <Header
             onTouchStart={!primary ? this.handleTouchStart : undefined}
             onMouseDown={!primary ? this.handleMouseDown : undefined}
