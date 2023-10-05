@@ -252,6 +252,12 @@ export default class App extends React.PureComponent<
     const jwt = this.jwt();
     track('Embed - Toggle Like');
 
+    const sandboxId = this.state.sandbox.id;
+    if (sandboxId.includes('/')) {
+      // The sandbox id comes from a message that's sent to the window,
+      // so we can't trust it. We'll check if there's a / in there.
+      return;
+    }
     if (this.state.sandbox.userLiked && jwt) {
       this.setState(s => ({
         sandbox: {
