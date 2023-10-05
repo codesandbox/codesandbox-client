@@ -5,13 +5,13 @@
   "license": "MIT",
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
-    "axios": "^0.19.2",
+    "axios": "^1.5.1",
     "babel-plugin-emotion": "^9.2.10",
     "emotion": "^9.2.10",
     "gsap": "^2.0.2",
     "preact": "^8.3.1",
     "preact-emotion": "^9.2.10",
-    "socket.io-client": "^2.3.0",
+    "socket.io-client": "^4.7.2",
     "xterm": "^3.5.1",
     "xterm-webfont": "^1.1.1"
   },
@@ -24,9 +24,9 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "babel-runtime": "^6.26.0",
-    "cssnano": "^4.0.5",
+    "cssnano": "^6.0.1",
     "parcel-bundler": "^1.12.5",
-    "rimraf": "^2.6.2"
+    "rimraf": "^5.0.5"
   },
   "scripts": {
     "start": "parcel src/index.html",
