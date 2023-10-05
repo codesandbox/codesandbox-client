@@ -14,9 +14,9 @@ import TimelineLite from 'gsap/TimelineLite';
 import axios from 'axios';
 
 import { isStandalone } from 'codesandbox-api'
+import getTemplate from '@codesandbox/common/lib/templates';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
-import getTemplate from '../../../packages/common/lib/templates';
 
 import Cube from './Cube';
 
