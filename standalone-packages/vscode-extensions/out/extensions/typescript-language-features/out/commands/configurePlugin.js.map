@@ -1,1 +1,0 @@
-{"version":3,"file":"configurePlugin.js","sourceRoot":"../../src","sources":["commands/configurePlugin.ts"],"names":[],"mappings":";AAAA;;;gGAGgG;;AAKhG,MAAa,sBAAsB;IAGlC,YACkB,aAA4B;QAA5B,kBAAa,GAAb,aAAa,CAAe;QAH9B,OAAE,GAAG,6BAA6B,CAAC;IAI/C,CAAC;IAEE,OAAO,CAAC,QAAgB,EAAE,aAAkB;QAClD,IAAI,CAAC,aAAa,CAAC,gBAAgB,CAAC,QAAQ,EAAE,aAAa,CAAC,CAAC;IAC9D,CAAC;CACD;AAVD,wDAUC"}
