@@ -67,6 +67,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
             {repository.private ? (
               <Icon color="#999" name="lock" size={12} />
             ) : null}
+
             <Stack align="center" gap={1}>
               <Icon color="#999" name="branch" />
               <Text color="#999" size={12}>

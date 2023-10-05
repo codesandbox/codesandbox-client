@@ -4,22 +4,13 @@ import { Element, Stack, Text, Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 import { SuggestedRepositories } from 'app/components/CreateSandbox/Import/SuggestedRepositories';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 
 export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
-  const { restrictsPublicRepos } = useGitHuPermissions();
-
-  const handleImportClicked = () => {
-    track('New Team - Imported repository', {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
-
-    onComplete();
-  };
+  const { restrictsPublicRepos } = useGitHubPermissions();
 
   return (
-    <Element css={{ width: '100%', height: '546px' }} padding={8}>
+    <Element css={{ width: '100%' }} padding={12}>
       <Stack
         align="center"
         direction="vertical"
@@ -52,27 +43,26 @@ export const TeamImport = ({ onComplete }: { onComplete: () => void }) => {
             <RestrictedPublicReposImport />
           ) : (
             <Element css={{ width: '100%' }}>
-              <SuggestedRepositories
-                isImportOnly
-                onImportClicked={handleImportClicked}
-              />
+              <SuggestedRepositories isImportOnly />
             </Element>
           )}
         </Stack>
-        <Button
-          css={{ width: 'auto' }}
-          onClick={() => {
-            track('New Team - Skip import', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
+        <Stack css={{ width: '100%', justifyContent: 'flex-end' }}>
+          <Button
+            css={{ width: 'auto' }}
+            onClick={() => {
+              track('New Team - Done import', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
 
-            onComplete();
-          }}
-          variant="link"
-        >
-          Skip
-        </Button>
+              onComplete();
+            }}
+            variant="link"
+          >
+            Done
+          </Button>
+        </Stack>
       </Stack>
     </Element>
   );

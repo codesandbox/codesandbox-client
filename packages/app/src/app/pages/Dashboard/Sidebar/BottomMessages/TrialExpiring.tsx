@@ -30,12 +30,12 @@ export const TrialExpiring: React.FC<{
 
       {cancelAtPeriodEnd ? (
         <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-          After this period, your Team will be migrated to the Free plan.
+          After this period, your Workspace will be inactive.
         </Text>
       ) : (
         <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
           {hasPaymentMethod
-            ? 'After this period, your Team Pro subscription will be automatically renewed.'
+            ? 'After this period, your Pro subscription will be automatically renewed.'
             : 'Update your payment method to continue this Pro subscription.'}
         </Text>
       )}

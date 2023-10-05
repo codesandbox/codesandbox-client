@@ -4,11 +4,7 @@ export class ReactTemplate extends Template {
   getViews(): ViewConfig[] {
     const REACT_VIEWS: ViewConfig[] = [
       {
-        views: [
-          { id: 'codesandbox.browser' },
-          { id: 'codesandbox.tests' },
-          { id: 'codesandbox.terminalUpgrade', hideOnEmbedPage: true },
-        ],
+        views: [{ id: 'codesandbox.browser' }, { id: 'codesandbox.tests' }],
       },
       {
         views: [

@@ -14,15 +14,18 @@ import {
 import css from '@styled-system/css';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { privacyUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
   const proTracking = () =>
     track('Dashboard - Permissions panel - Clicked on Pro upgrade');
 
+  const { activeTeam, environment } = useAppState();
   const { isFree, isPro } = useWorkspaceSubscription();
   const {
     isTeamSpace,
@@ -36,14 +39,16 @@ export const PermissionSettings = () => {
       {isFree ? (
         <MessageStripe justify="space-between">
           <span>
-            You need a{' '}
-            <Text weight="bold">{isTeamSpace ? 'Team Pro' : 'Pro'}</Text>{' '}
-            subscription to change sandbox permissions.
+            You need a <Text weight="bold">Pro</Text> subscription to change
+            sandbox permissions.
           </span>
           {isBillingManager || isPersonalSpace ? (
             <MessageStripe.Action
               as="a"
-              href="/pro?utm_source=dashboard_permission_settings"
+              href={proUrl({
+                ...(isPersonalSpace ? {} : { workspaceId: activeTeam }),
+                source: 'dashboard_permission_settings',
+              })}
               onClick={proTracking}
             >
               Upgrade now
@@ -51,7 +56,7 @@ export const PermissionSettings = () => {
           ) : (
             <MessageStripe.Action
               as="a"
-              href="https://codesandbox.io/docs/learn/plan-billing/trials"
+              href="https://codesandbox.io/docs/learn/plans/trials"
               target="_blank"
               rel="noreferrer"
               onClick={proTracking}
@@ -75,7 +80,7 @@ export const PermissionSettings = () => {
             <SandboxSecurity disabled={isFree || !isBillingManager} />
           </Column>
         )}
-        {isPro && (
+        {isPro && !environment.isOnPrem && (
           <Column span={[12, 12, 6]}>
             <AIPermission disabled={!isAdmin} />
           </Column>
@@ -343,11 +348,7 @@ const AIPermission = ({ disabled }: { disabled: boolean }) => {
 
           <Text variant="muted" size={2}>
             Read our{' '}
-            <a
-              href="https://codesandbox.io/legal/privacy"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={privacyUrl()} target="_blank" rel="noreferrer">
               Privacy Policy
             </a>{' '}
             to check what data AI will be have access

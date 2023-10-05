@@ -83,6 +83,7 @@ const commonStyles = {
   display: 'inline-flex',
   justifyContent: 'center',
   alignItems: 'center',
+  cursor: 'pointer',
   flex: 'none', // as a flex child
   fontFamily: 'Inter, sans-serif',
   paddingY: '4px',
@@ -179,7 +180,7 @@ const Dot = styled.span`
   animation: ${transition} 1.5s ease-out infinite;
 `;
 
-const AnimatingDots = () => (
+export const AnimatingDots = () => (
   <>
     <VisuallyHidden>Loading</VisuallyHidden>
     <span role="presentation">

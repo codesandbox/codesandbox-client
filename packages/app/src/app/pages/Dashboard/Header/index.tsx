@@ -37,7 +37,12 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const { activeWorkspaceAuthorization, hasLogIn } = useAppState();
+    const {
+      activeWorkspaceAuthorization,
+      hasLogIn,
+      environment,
+    } = useAppState();
+    const showDiscover = !environment.isOnPrem;
 
     return (
       <Stack
@@ -121,21 +126,23 @@ export const Header: React.FC<HeaderProps> = React.memo(
             Create
           </Button>
 
-          <Button
-            variant="ghost"
-            autoWidth
-            onClick={() => {
-              window.open('http://codesandbox.io/discover', '_blank');
-            }}
-          >
-            <Icon
-              name="discover"
-              size={16}
-              title="New"
-              css={{ marginRight: '8px' }}
-            />
-            Discover
-          </Button>
+          {showDiscover && (
+            <Button
+              variant="ghost"
+              autoWidth
+              onClick={() => {
+                window.open('http://codesandbox.io/discover', '_blank');
+              }}
+            >
+              <Icon
+                name="discover"
+                size={16}
+                title="New"
+                css={{ marginRight: '8px' }}
+              />
+              Discover
+            </Button>
+          )}
 
           {hasLogIn && <Notifications dashboard />}
         </Stack>

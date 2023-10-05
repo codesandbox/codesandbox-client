@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { MessageStripe, Text } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 const LinkButton = styled.button`
   border: none;
@@ -19,6 +20,7 @@ const LinkButton = styled.button`
 `;
 
 export const FreeViewOnlyStripe = () => {
+  const { activeTeam } = useAppState();
   const { sandboxPrivacyChanged } = useActions().workspace;
   const { isPersonalSpace, isBillingManager } = useWorkspaceAuthorization();
 
@@ -29,15 +31,18 @@ export const FreeViewOnlyStripe = () => {
   return (
     <MessageStripe>
       <span>
-        You are no longer in a <Text weight="bold">PRO account</Text>. This
-        sandbox is in view mode only.{' '}
+        Private or unlisted sandboxes need a <Text weight="bold">Pro</Text>{' '}
+        subscription. This sandbox is in view mode only.{' '}
         <LinkButton onClick={changeToPublic}>Make it public</LinkButton> or
-        upgrade to <Text weight="bold">PRO</Text>.
+        upgrade to <Text weight="bold">Pro</Text>.
       </span>
       {isPersonalSpace || isBillingManager ? (
         <MessageStripe.Action
           as="a"
-          href="/pro?utm_source=v1_sandbox_view_only_upgrade"
+          href={proUrl({
+            source: 'v1_sandbox_view_only_upgrade',
+            ...(isPersonalSpace ? {} : { workspaceId: activeTeam }),
+          })}
           onClick={() => {
             track('Limit banner: editor - Upgrade', {
               codesandbox: 'V1',

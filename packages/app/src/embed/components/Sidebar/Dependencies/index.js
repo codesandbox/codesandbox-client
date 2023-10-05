@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
+import { packageExamplesUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Container, Row, Link } from './elements';
 
 function Dependencies({ sandbox }) {
@@ -23,7 +24,7 @@ function Dependencies({ sandbox }) {
     <Container>
       {Object.keys(npmDependencies).map(dep => (
         <Row key={dep}>
-          <Link href={`/examples/package/${dep}`} target="_blank">
+          <Link href={packageExamplesUrl(dep)} target="_blank">
             {dep}
           </Link>
           <span>{formatVersion(npmDependencies[dep])}</span>

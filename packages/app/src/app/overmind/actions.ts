@@ -155,7 +155,6 @@ export const onInitializeOvermind = async (
 
   effects.preview.initialize();
 
-  actions.internal.showPrivacyPolicyNotification();
   actions.internal.setViewModeForDashboard();
 
   effects.browser.onWindowMessage(event => {
@@ -167,6 +166,12 @@ export const onInitializeOvermind = async (
   effects.browserExtension.hasExtension().then(hasExtension => {
     actions.preview.setExtension(hasExtension);
   });
+
+  try {
+    state.features = await effects.api.getFeatures();
+  } catch {
+    // Just for safety so it doesn't crash the overmind initialize flow
+  }
 };
 
 export const appUnmounted = async ({ effects, actions }: Context) => {
@@ -259,9 +264,6 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'selectWorkspaceToUpgrade'
-  | 'selectWorkspaceToStartTrial'
-  | 'midTrial'
   | 'editorSeatsUpgrade';
 
 export const modalOpened = (
@@ -617,7 +619,7 @@ export const openCreateTeamModal = (
   props?: OpenCreateTeamModalParams
 ) => {
   actions.modals.newTeamModal.open({
-    step: props?.step ?? 'info',
+    step: props?.step ?? 'name',
     hasNextStep: props?.hasNextStep ?? true,
   });
 };

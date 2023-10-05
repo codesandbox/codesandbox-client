@@ -2,12 +2,14 @@ import {
   curatorUrl,
   profileUrl,
   docsUrl,
+  csbSite,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
-import { TeamMemberAuthorization } from 'app/graphql/types';
 
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
@@ -18,12 +20,9 @@ export const UserMenu: FunctionComponent & {
     signOutClicked,
     files: { gotUploadedFiles },
   } = useActions();
-  const {
-    user,
-    activeTeamInfo,
-    activeTeam,
-    activeWorkspaceAuthorization,
-  } = useAppState();
+  const { user, activeTeam, environment } = useAppState();
+  const { isAdmin } = useWorkspaceAuthorization();
+  const { isPro, isFree } = useWorkspaceSubscription();
 
   if (!user) {
     return (
@@ -38,7 +37,7 @@ export const UserMenu: FunctionComponent & {
               </Stack>
             </Menu.Link>
             <Menu.Divider />
-            <Menu.Link href="/?from-app=1">
+            <Menu.Link href={`${csbSite()}/?from-app=1`}>
               <Stack align="center" gap={2}>
                 <Icon name="external" size={16} />
                 <Text>codesandbox.io</Text>
@@ -52,10 +51,9 @@ export const UserMenu: FunctionComponent & {
 
   const showCurator = user.curatorAt;
 
-  const showBecomePro = !activeTeamInfo?.subscription;
-  const showManageSubscription =
-    activeTeamInfo?.subscription &&
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+  const showBecomePro = isFree;
+  const showManageSubscription = isPro && isAdmin && !environment.isOnPrem;
+  const showStorage = !environment.isOnPrem;
 
   return (
     <Element>
@@ -121,12 +119,14 @@ export const UserMenu: FunctionComponent & {
             </Menu.Link>
           )}
 
-          <Menu.Item onClick={() => gotUploadedFiles(null)}>
-            <Stack align="center" gap={2}>
-              <Icon name="folder" size={16} />
-              <Text>Storage</Text>
-            </Stack>
-          </Menu.Item>
+          {showStorage && (
+            <Menu.Item onClick={() => gotUploadedFiles(null)}>
+              <Stack align="center" gap={2}>
+                <Icon name="folder" size={16} />
+                <Text>Storage</Text>
+              </Stack>
+            </Menu.Item>
+          )}
 
           <Menu.Item onClick={() => modalOpened({ modal: 'preferences' })}>
             <Stack align="center" gap={2}>
@@ -137,7 +137,7 @@ export const UserMenu: FunctionComponent & {
 
           <Menu.Divider />
 
-          <Menu.Link href="/?from-app=1">
+          <Menu.Link href={`${csbSite()}/?from-app=1`}>
             <Stack align="center" gap={2}>
               <Icon name="external" size={16} />
               <Text>codesandbox.io</Text>

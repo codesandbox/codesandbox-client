@@ -1,6 +1,6 @@
 import { dispatch, listen, iframeHandshake } from 'codesandbox-api';
-import Hook from 'csb-console-feed/lib/Hook';
-import { Encode } from 'csb-console-feed/lib/Transform';
+import Hook from 'console-feed/lib/Hook';
+import { Encode } from 'console-feed/lib/Transform';
 
 export default function setupConsole() {
   Hook(window.console, async log => {
@@ -52,4 +52,42 @@ export default function setupConsole() {
   }
 
   return listen(handleMessage);
+}
+
+const isIFramePreview = window.top !== window.self;
+
+// Only run this script in editor context
+if (isIFramePreview) {
+  // This script is used to enable Chrome DevTools functionality
+  (function ChromeDevtools() {
+    const script = document.createElement('script');
+    script.src = 'https://codesandbox.io/p/chrome-devtool/protocol/index.js';
+
+    script.onload = () => {
+      const devtoolProtocol = window.chobitsu;
+      if (devtoolProtocol) {
+        window.addEventListener('message', event => {
+          const { type, data } = event.data;
+
+          if (type === 'FROM_DEVTOOL') {
+            devtoolProtocol.sendRawMessage(data);
+          }
+        });
+
+        devtoolProtocol.setOnMessage(data => {
+          if (data.includes('"id":"tmp')) {
+            return;
+          }
+
+          window.parent.postMessage({ type: 'TO_DEVTOOL', data }, '*');
+        });
+
+        devtoolProtocol.sendRawMessage(
+          `{"id":5,"method":"Runtime.enable","params":{}}`
+        );
+      }
+    };
+
+    (document.head || document.documentElement).prepend(script);
+  })();
 }

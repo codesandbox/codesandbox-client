@@ -13,7 +13,12 @@ interface SignInProps {
 }
 
 export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
-  const { duplicateAccountStatus, pendingUser, pendingUserId } = useAppState();
+  const {
+    duplicateAccountStatus,
+    pendingUser,
+    pendingUserId,
+    features,
+  } = useAppState();
   const { getPendingUser } = useActions();
 
   useEffect(() => {
@@ -22,8 +27,12 @@ export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
     }
   }, [getPendingUser, pendingUserId]);
 
+  const isAnyRegularAuthProviderAvailable =
+    features.loginWithApple ||
+    features.loginWithGithub ||
+    features.loginWithGoogle;
   const defaultSignInMode: SignInMode =
-    new URLSearchParams(location.search).get('sso_mode') === 'true'
+    features.loginWithWorkos && !isAnyRegularAuthProviderAvailable
       ? 'SSO'
       : 'DEFAULT';
 

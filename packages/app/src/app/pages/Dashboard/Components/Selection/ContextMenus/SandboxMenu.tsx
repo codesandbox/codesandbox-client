@@ -23,7 +23,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 }) => {
   const actions = useActions();
   const { user, activeTeam } = useAppState();
-  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isFree, isPro, isInactiveTeam } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const {
     browser: { copyToClipboard },
@@ -180,7 +180,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               sandboxIds: [item.sandbox.id],
               preventSandboxLeaving:
                 item.sandbox.permissions.preventSandboxLeaving ||
-                hasMaxPublicSandboxes,
+                hasMaxPublicSandboxes ||
+                isInactiveTeam,
             });
           }}
         >

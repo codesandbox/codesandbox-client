@@ -1,39 +1,55 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ComboButton, Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useEffects } from 'app/overmind';
 
 type TeamSubscriptionOptionsProps = {
   buttonVariant?: React.ComponentProps<typeof ComboButton>['variant'];
   buttonStyles?: React.ComponentProps<typeof ComboButton>['customStyles'];
   ctaCopy?: string;
-  trackingLocation: string;
+  trackingLocation: 'settings_upgrade' | 'pro_page';
+  createTeam?: boolean;
 };
 export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = ({
   buttonVariant,
   buttonStyles,
   ctaCopy,
   trackingLocation,
+  createTeam,
 }) => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
+  const effects = useEffects();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
   const disabled = checkout.status === 'loading';
 
+  useEffect(() => {
+    if (checkout.status === 'error') {
+      effects.notificationToast.error(
+        `Could not create stripe checkout link. ${checkout.error}`
+      );
+    }
+  }, [checkout]);
+
   const createMonthlyCheckout = () => {
     createCheckout({
-      utm_source: 'settings_upgrade',
+      trackingLocation,
+      createTeam,
     });
   };
 
   const createYearlyCheckout = () => {
     createCheckout({
-      utm_source: 'settings_upgrade',
+      interval: 'year',
+      trackingLocation,
+      createTeam,
     });
   };
 
-  if (!canCheckout) {
+  // Only show this for existing teams, not for the create team flow
+  if (!createTeam && !canCheckout) {
     return (
       <Text as="p" variant="body" css={{ marginTop: 0 }}>
         Contact your team admin to upgrade.
@@ -44,7 +60,6 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   return (
     <ComboButton
       disabled={disabled}
-      as="a"
       customStyles={buttonStyles}
       onClick={() => {
         createMonthlyCheckout();

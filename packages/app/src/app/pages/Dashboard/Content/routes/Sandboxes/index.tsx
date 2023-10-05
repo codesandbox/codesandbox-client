@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { CreateCard } from '@codesandbox/components';
+import { CreateCard, Element } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { Header } from 'app/pages/Dashboard/Components/Header';
@@ -10,9 +10,11 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { InactiveTeamStripe } from 'app/pages/Dashboard/Components/shared/InactiveTeamStripe';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
-import { SandboxesRestrictionsBanner } from './RestrictionsBanner';
+import { MaxSandboxesRestrictionsBanner } from './MaxSandboxesRestrictionsBanner';
 
 export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
@@ -27,6 +29,7 @@ export const SandboxesPage = () => {
     activeTeam,
   } = useAppState();
 
+  const { isInactiveTeam } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   React.useEffect(() => {
@@ -57,6 +60,22 @@ export const SandboxesPage = () => {
   const pageType: PageTypes = 'sandboxes';
   const isEmpty = itemsToShow.length === 0;
 
+  const renderMessageStripe = () => {
+    if (hasMaxPublicSandboxes) {
+      return <MaxSandboxesRestrictionsBanner />;
+    }
+
+    if (isInactiveTeam) {
+      return (
+        <InactiveTeamStripe>
+          Re-activate your workspace to create new sandboxes.
+        </InactiveTeamStripe>
+      );
+    }
+  };
+
+  const messageStripe = renderMessageStripe();
+
   return (
     <SelectionProvider
       items={itemsToShow}
@@ -64,7 +83,7 @@ export const SandboxesPage = () => {
       activeTeamId={activeTeam}
       createNewFolder={() => setCreating(true)}
       createNewSandbox={
-        currentCollection && !hasMaxPublicSandboxes
+        currentCollection && !hasMaxPublicSandboxes && !isInactiveTeam
           ? () => {
               actions.modals.newSandboxModal.open({
                 collectionId: currentCollection.id,
@@ -89,9 +108,13 @@ export const SandboxesPage = () => {
         showSortOptions={!isEmpty && Boolean(currentPath)}
       />
 
-      {hasMaxPublicSandboxes ? <SandboxesRestrictionsBanner /> : null}
+      {messageStripe && (
+        <Element paddingX={4} paddingBottom={4}>
+          {messageStripe}
+        </Element>
+      )}
 
-      {isEmpty ? (
+      {isEmpty && !isInactiveTeam ? (
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledGrid>
             <CreateCard

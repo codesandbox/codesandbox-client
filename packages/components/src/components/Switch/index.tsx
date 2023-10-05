@@ -7,6 +7,7 @@ const SwitchBackground = styled.div(
   css({
     width: 7,
     height: 4,
+    cursor: 'pointer',
     backgroundColor: 'switch.backgroundOff',
     borderRadius: 'large',
     position: 'relative',

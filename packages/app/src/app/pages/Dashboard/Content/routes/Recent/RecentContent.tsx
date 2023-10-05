@@ -22,6 +22,7 @@ import {
   PageTypes,
 } from 'app/pages/Dashboard/types';
 
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { DocumentationRow } from './DocumentationRow';
 import { RecentHeader } from './RecentHeader';
 
@@ -68,9 +69,13 @@ export const RecentContent: React.FC<RecentContentProps> = ({
 }) => {
   const {
     activeTeam,
+    environment: { isOnPrem },
     dashboard: { viewMode },
   } = useAppState();
+  const { restrictsPublicRepos } = useGitHubPermissions();
   const page: PageTypes = 'recent';
+  const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
+  const showDocsLine = !isOnPrem;
 
   return (
     <StyledWrapper>
@@ -115,9 +120,9 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           </StyledItemsWrapper>
         </SelectionProvider>
       </Stack>
-      <DocumentationRow />
+      {showDocsLine && <DocumentationRow />}
       <TemplatesRow />
-      <SuggestionsRow page="recent" />
+      {showRepositoryImport && <SuggestionsRow page="recent" />}
     </StyledWrapper>
   );
 };

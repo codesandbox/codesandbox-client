@@ -6,7 +6,6 @@ import { isGithubDependency, JSDelivrGHFetcher } from './jsdelivr/jsdelivr-gh';
 import { isTarDependency, TarFetcher } from './tar';
 import { GistFetcher } from './gist';
 import { FetchProtocol } from '../fetch-npm-module';
-import { ProtocolTransformer } from './transformer';
 
 let contributedProtocols: ProtocolDefinition[] = [];
 
@@ -28,17 +27,23 @@ const protocols: ProtocolDefinition[] = [
     protocol: new JSDelivrGHFetcher(),
     condition: (name, version) => isGithubDependency(version),
   },
-  {
-    protocol: new ProtocolTransformer(new TarFetcher(), (name, version) => [
-      name,
-      version.replace(
-        'https://registry.npmjs.org/',
-        'https://registry.npmjs.cf/'
-      ),
-    ]),
-    condition: (name, version) =>
-      version.startsWith('https://registry.npmjs.org/'),
-  },
+  /**
+   * npmjs.cf has been deprecated, while registry.npmjs.org has CORS supports now:
+   *
+   * - npmjs.cf depreacation notice: https://github.com/npmjs-cf/meta/issues/8
+   * - npm registry CORS support: https://github.com/npm/feedback/discussions/117#discussioncomment-2691120
+   */
+  // {
+  //   protocol: new ProtocolTransformer(new TarFetcher(), (name, version) => [
+  //     name,
+  //     version.replace(
+  //       'https://registry.npmjs.org/',
+  //       'https://registry.npmjs.cf/'
+  //     ),
+  //   ]),
+  //   condition: (name, version) =>
+  //     version.startsWith('https://registry.npmjs.org/'),
+  // },
   {
     protocol: new TarFetcher(),
     condition: (name, version) => isTarDependency(version),

@@ -41,6 +41,7 @@ import {
   SandboxAPIResponse,
   AvatarAPIResponse,
   FinalizeSignUpOptions,
+  MetaFeatures,
 } from './types';
 
 let api: Api;
@@ -641,7 +642,7 @@ export default {
     }>(`/sandboxes/limits`);
   },
   getPrices() {
-    return api.get(`/prices`, undefined, undefined, true);
+    return api.get(`/prices`, undefined, { version: '2023-08-15' }, true);
   },
   stripeCreateCheckout({
     success_path,
@@ -704,5 +705,10 @@ export default {
     return api.get<{ redirectUrl: string }>('/auth/workos/initialize', {
       email,
     });
+  },
+  getFeatures(): Promise<MetaFeatures> {
+    // useRoot = true since this is on /api/meta/features
+    // TODO: Refactor api factory to start from /api and apply /v1 as a legacy feature
+    return api.get('/meta/features', undefined, undefined, true);
   },
 };

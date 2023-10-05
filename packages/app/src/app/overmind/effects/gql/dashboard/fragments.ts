@@ -117,9 +117,11 @@ export const teamFragmentDashboard = gql`
   fragment teamFragmentDashboard on Team {
     id
     name
+    type
     description
     creatorId
     avatarUrl
+    legacy
     settings {
       minimumPrivacy
     }
@@ -160,8 +162,9 @@ export const currentTeamInfoFragment = gql`
     description
     inviteToken
     name
+    type
     avatarUrl
-
+    legacy
     users {
       id
       avatarUrl
@@ -270,6 +273,7 @@ export const branchFragment = gql`
 
 export const projectFragment = gql`
   fragment project on Project {
+    appInstalled
     branchCount
     lastAccessedAt
     repository {
@@ -288,6 +292,7 @@ export const projectFragment = gql`
 
 export const projectWithBranchesFragment = gql`
   fragment projectWithBranches on Project {
+    appInstalled
     branches {
       ...branch
     }

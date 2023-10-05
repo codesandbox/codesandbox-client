@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-
-elm-make Main.elm --output bin/elm-oracle
-awk 'NR==1{print "#!/usr/bin/env node"}1' bin/elm-oracle > tmp
-chmod +x tmp
-mv tmp bin/elm-oracle

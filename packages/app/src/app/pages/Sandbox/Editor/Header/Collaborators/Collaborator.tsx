@@ -9,6 +9,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { Mail, WarningIcon } from './icons';
 import { PermissionSelect } from './PermissionSelect';
@@ -276,7 +277,7 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
         <Text size={3} variant="muted" align="center">
           Changing sandbox access is available with{' '}
           <a
-            href="/pro?utm_source=v1_share"
+            href={proUrl({ source: 'v1_share' })}
             target="_blank"
             rel="noreferrer noopener"
             onClick={() => track('Editor - Share sandbox Pricing link')}

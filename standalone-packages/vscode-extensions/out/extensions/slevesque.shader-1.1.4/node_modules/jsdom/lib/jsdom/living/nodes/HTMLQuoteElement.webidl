@@ -1,3 +1,0 @@
-interface HTMLQuoteElement : HTMLElement {
-  [Reflect] attribute DOMString cite;
-};

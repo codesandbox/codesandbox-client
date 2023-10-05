@@ -33,7 +33,11 @@ type MenuItem = ComponentProps<typeof SideNavigation>['menuItems'][0] & {
   Content: ComponentType;
 };
 
-const getItems = (isLoggedIn: boolean, user: CurrentUser): MenuItem[] =>
+const getItems = (
+  isLoggedIn: boolean,
+  user: CurrentUser,
+  isOnPrem: boolean
+): MenuItem[] =>
   [
     {
       Content: Appearance,
@@ -65,19 +69,20 @@ const getItems = (isLoggedIn: boolean, user: CurrentUser): MenuItem[] =>
       id: 'keybindings',
       title: 'Key Bindings',
     },
-    isLoggedIn && {
-      Content: Integrations,
-      Icon: IntegrationIcon,
-      id: 'integrations',
-      title: 'Integrations',
-    },
+    isLoggedIn &&
+      !isOnPrem && {
+        Content: Integrations,
+        Icon: IntegrationIcon,
+        id: 'integrations',
+        title: 'Integrations',
+      },
     user && {
       Content: MailPreferences,
       Icon: MailIcon,
       id: 'notifications',
       title: 'Notifications',
     },
-    {
+    !isOnPrem && {
       Content: Experiments,
       Icon: FlaskIcon,
       id: 'experiments',
@@ -96,8 +101,9 @@ export const PreferencesModal: FunctionComponent = () => {
     isLoggedIn,
     user,
     preferences: { itemId = 'appearance' },
+    environment,
   } = useAppState();
-  const items = getItems(isLoggedIn, user);
+  const items = getItems(isLoggedIn, user, environment.isOnPrem);
 
   const { Content } = items.find(({ id }) => id === itemId);
 

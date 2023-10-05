@@ -5,6 +5,8 @@ import css from '@styled-system/css';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { CreateRegistryParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
 
@@ -66,17 +68,23 @@ export const RegistrySettings = () => {
       {isFree ? (
         <MessageStripe justify="space-between">
           <span>
-            You need a <Text weight="bold">Team Pro</Text> subscription to set a
+            You need a <Text weight="bold">Pro</Text> subscription to set a
             custom npm Registry.
           </span>
           {isTeamAdmin ? (
-            <MessageStripe.Action as="a" href="/pro?utm_source=dashboard_npm">
+            <MessageStripe.Action
+              as="a"
+              href={proUrl({
+                workspaceId: activeTeam,
+                source: 'dashboard_permission_settings',
+              })}
+            >
               Upgrade now
             </MessageStripe.Action>
           ) : (
             <MessageStripe.Action
               as="a"
-              href="https://codesandbox.io/docs/learn/plan-billing/trials"
+              href={docsUrl('/learn/plans/trials')}
               target="_blank"
               rel="noreferrer"
             >

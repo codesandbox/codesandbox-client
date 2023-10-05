@@ -23,7 +23,7 @@ import { StyledCard } from 'app/pages/Dashboard/Components/shared/StyledCard';
 import { SolidSkeleton } from 'app/pages/Dashboard/Components/Skeleton';
 import { ProjectFragment as Repository } from 'app/graphql/types';
 import { AuthorizeForSuggested } from 'app/components/CreateSandbox/Import/AuthorizeForSuggested';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
@@ -35,7 +35,7 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const [isImporting, setIsImporting] = useState<boolean>(false);
   const githubAccounts = useGithubAccounts();
-  const { restrictsPrivateRepos } = useGitHuPermissions();
+  const { restrictsPrivateRepos } = useGitHubPermissions();
   const { isTeamSpace } = useWorkspaceAuthorization();
   const { isFree } = useWorkspaceSubscription();
 

@@ -1,4 +1,0 @@
-coverage
-
-# until eslint can parse `import.meta.url`
-test/node.mjs

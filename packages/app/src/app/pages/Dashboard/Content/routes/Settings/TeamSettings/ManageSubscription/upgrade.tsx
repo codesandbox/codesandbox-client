@@ -28,7 +28,7 @@ export const Upgrade = () => {
         gap={4}
         css={css({ color: 'grays.800', fontWeight: '500' })}
       >
-        <Text size={4}>Upgrade to Team Pro</Text>
+        <Text size={4}>Upgrade to Pro</Text>
         <StyledList
           direction="vertical"
           gap={1}
@@ -51,7 +51,7 @@ export const Upgrade = () => {
 
         <TeamSubscriptionOptions
           buttonVariant="trial"
-          trackingLocation="Team Settings"
+          trackingLocation="settings_upgrade"
         />
       </Stack>
     </Card>

@@ -21,10 +21,9 @@ import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH } from './constants';
-import { AdminUpgradeToTeamPro } from './BottomMessages/AdminUpgradeToTeamPro';
-import { UserUpgradeToTeamPro } from './BottomMessages/UserUpgradeToTeamPro';
+import { UpgradeFreeTeamToPro } from './BottomMessages/UpgradeFreeTeamToPro';
 import { TrialExpiring } from './BottomMessages/TrialExpiring';
-import { UpgradeToPersonalPro } from './BottomMessages/UpgradeToPersonalPro';
+import { CreateProWorkspace } from './BottomMessages/CreateProWorkspace';
 import { StartTrial } from './BottomMessages/StartTrial';
 import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
@@ -92,6 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
+  const showRespositories = !state.environment.isOnPrem;
 
   const {
     isPersonalSpace,
@@ -217,39 +217,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="heart"
             />
           )}
-          <Element marginTop={4} />
-          <Element paddingX={7} paddingY={2}>
-            <Text
-              variant="muted"
-              size={2}
-              css={css({ color: 'sideBarSectionHeader.foreground' })}
-            >
-              Repositories
-            </Text>
-          </Element>
-          {isPersonalSpace && (
-            <RowItem
-              name="My contributions"
-              page="my-contributions"
-              path={dashboardUrls.myContributions(activeTeam)}
-              icon="contribution"
-            />
+          {showRespositories && (
+            <>
+              <Element marginTop={4} />
+              <Element paddingX={7} paddingY={2}>
+                <Text
+                  variant="muted"
+                  size={2}
+                  css={css({ color: 'sideBarSectionHeader.foreground' })}
+                >
+                  Repositories
+                </Text>
+              </Element>
+              {isPersonalSpace && (
+                <RowItem
+                  name="My contributions"
+                  page="my-contributions"
+                  path={dashboardUrls.myContributions(activeTeam)}
+                  icon="contribution"
+                />
+              )}
+              <RowItem
+                name="All repositories"
+                page="repositories"
+                path={dashboardUrls.repositories(activeTeam)}
+                icon="repository"
+              />
+              {dashboard.starredRepos.map(repo => (
+                <RowItem
+                  name={repo.name}
+                  page="repositories"
+                  path={dashboardUrls.repository(repo)}
+                  icon="star"
+                  nestingLevel={1}
+                />
+              ))}
+            </>
           )}
-          <RowItem
-            name="All repositories"
-            page="repositories"
-            path={dashboardUrls.repositories(activeTeam)}
-            icon="repository"
-          />
-          {dashboard.starredRepos.map(repo => (
-            <RowItem
-              name={repo.name}
-              page="repositories"
-              path={dashboardUrls.repository(repo)}
-              icon="star"
-              nestingLevel={1}
-            />
-          ))}
+
           <Element marginTop={4} />
           <Element paddingX={7} paddingY={2}>
             <Text
@@ -309,17 +314,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && isFree ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isEligibleForTrial ? <StartTrial activeTeam={activeTeam} /> : null}
-
-            {isBillingManager && isTeamSpace && !isEligibleForTrial ? (
-              <AdminUpgradeToTeamPro />
+            {isTeamSpace && isBillingManager && isEligibleForTrial ? (
+              <StartTrial activeTeam={activeTeam} />
             ) : null}
 
-            {isTeamSpace && !isBillingManager && !isEligibleForTrial ? (
-              <UserUpgradeToTeamPro />
+            {isTeamSpace && !isEligibleForTrial ? (
+              <UpgradeFreeTeamToPro activeTeam={activeTeam} />
             ) : null}
 
-            {isPersonalSpace ? <UpgradeToPersonalPro /> : null}
+            {isPersonalSpace ? (
+              <CreateProWorkspace userCanStartTrial={state.userCanStartTrial} />
+            ) : null}
           </Element>
         ) : null}
 

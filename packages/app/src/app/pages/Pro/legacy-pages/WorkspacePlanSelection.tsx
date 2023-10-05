@@ -1,9 +1,13 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { sortBy } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
-import { VisuallyHidden } from 'reakit/VisuallyHidden';
-import { Element, Stack, Text, SkeletonText } from '@codesandbox/components';
+import {
+  Element,
+  Stack,
+  Text,
+  SkeletonText,
+  Badge,
+} from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
@@ -12,12 +16,11 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { formatCurrency } from 'app/utils/currency';
 import {
-  PERSONAL_FREE_FEATURES,
-  PERSONAL_FEATURES,
-  TEAM_FREE_FEATURES,
+  PERSONAL_PRO_FEATURES,
   TEAM_PRO_FEATURES,
+  ORG_FEATURES,
+  ORGANIZATION_CONTACT_LINK,
 } from 'app/constants';
-import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
 import { StyledPricingDetailsText } from '../components/elements';
@@ -45,7 +48,14 @@ export const WorkspacePlanSelection: React.FC = () => {
   } = useWorkspaceAuthorization();
   // const isPersonalSpace = false; // DEBUG
   // const isBillingManager = true; // DEBUG
-  const { subscription, isPatron, isPro, isFree } = useWorkspaceSubscription();
+  const {
+    subscription,
+    isPro,
+    isFree,
+    isLegacyFreeTeam,
+    isInactiveTeam,
+    isLegacyPersonalPro,
+  } = useWorkspaceSubscription();
 
   // Based on the 'type' search param we redirect to the personal pro page if
   // it's not yet active.
@@ -66,18 +76,6 @@ export const WorkspacePlanSelection: React.FC = () => {
   // isPaddle or isPatron which are part of activeTeam. However, we can't guarantee
   // that this comopnent will only be used there so we will keep this check for now.
   if (!activeTeam || !dashboard.teams.length) return null;
-
-  const personalWorkspace = dashboard.teams.find(
-    t => t.id === personalWorkspaceId
-  )!;
-
-  const workspacesList = [
-    personalWorkspace,
-    ...sortBy(
-      dashboard.teams.filter(team => team.id !== personalWorkspaceId),
-      team => team.name.toLowerCase()
-    ),
-  ];
 
   const personalProCta: CTA = {
     text: 'Manage subscription',
@@ -146,12 +144,12 @@ export const WorkspacePlanSelection: React.FC = () => {
     <div>
       <Stack gap={10} direction="vertical">
         <Stack gap={3} direction="vertical" align="center">
-          <Switcher
-            workspaces={workspacesList}
-            setActiveTeam={setActiveTeam}
-            personalWorkspaceId={personalWorkspaceId}
-            activeTeamInfo={activeTeamInfo}
-          />
+          <Stack gap={2} direction="horizontal" align="center">
+            <Text size={24}>{activeTeamInfo.name}</Text>
+            {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
+            {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
+            {isLegacyPersonalPro && <Badge variant="pro">Pro</Badge>}
+          </Stack>
 
           <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
             <Text
@@ -167,7 +165,7 @@ export const WorkspacePlanSelection: React.FC = () => {
                 ? 'You have an active Personal Pro subscription'
                 : null}
               {isPro && isTeamSpace
-                ? 'You have an active Team Pro subscription'
+                ? 'You have an active Pro subscription'
                 : null}
               {isFree ? 'Upgrade for Pro features' : null}
             </Text>
@@ -189,28 +187,16 @@ export const WorkspacePlanSelection: React.FC = () => {
             },
           }}
         >
-          <SubscriptionCard
-            title="Free plan"
-            subTitle="1 editor only"
-            features={
-              isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
-            }
-          >
-            <Stack gap={1} direction="vertical">
-              <Text aria-hidden size={32} weight="400">
-                $0
-              </Text>
-              <VisuallyHidden>Zero dollar</VisuallyHidden>
-              <StyledPricingDetailsText>forever</StyledPricingDetailsText>
-            </Stack>
-          </SubscriptionCard>
-
-          {isPersonalSpace ? (
+          {isLegacyPersonalPro ? (
             <>
               <SubscriptionCard
-                title={isPatron ? 'Patron' : 'Personal Pro'}
-                subTitle="1 editor only"
-                features={PERSONAL_FEATURES}
+                title={
+                  <Stack gap={2}>
+                    <Text>Personal</Text>
+                    <Badge variant="pro">Pro</Badge>
+                  </Stack>
+                }
+                features={PERSONAL_PRO_FEATURES}
                 cta={personalProCta}
                 isHighlighted
               >
@@ -240,8 +226,7 @@ export const WorkspacePlanSelection: React.FC = () => {
             </>
           ) : (
             <SubscriptionCard
-              title="Team Pro"
-              subTitle="Up to 20 editors"
+              title="Pro"
               features={TEAM_PRO_FEATURES}
               cta={teamProCta}
               isHighlighted
@@ -277,6 +262,31 @@ export const WorkspacePlanSelection: React.FC = () => {
               </Stack>
             </SubscriptionCard>
           )}
+          <SubscriptionCard
+            title="Organization"
+            features={ORG_FEATURES}
+            cta={{
+              text: 'Contact us',
+              href: ORGANIZATION_CONTACT_LINK,
+              variant: 'dark',
+              onClick: () => {
+                track('subscription page - contact us', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+              },
+            }}
+          >
+            <Stack gap={1} direction="vertical">
+              <Text size={32} weight="400">
+                Custom
+              </Text>
+              <StyledPricingDetailsText>
+                <div>tailor-made plan.</div>
+                <div>bulk pricing for seats.</div>
+              </StyledPricingDetailsText>
+            </Stack>
+          </SubscriptionCard>
         </Stack>
       </Stack>
     </div>

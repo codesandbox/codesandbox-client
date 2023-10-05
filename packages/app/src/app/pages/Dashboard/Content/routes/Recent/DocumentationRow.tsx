@@ -1,5 +1,6 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ArticleCard, VideoCard } from '@codesandbox/components';
+import { blogUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
@@ -65,7 +66,7 @@ const DOCS: DocsItem[] = [
   {
     label: 'cta_blog',
     title: 'Latest news and releases',
-    url: 'https://codesandbox.io/blog',
+    url: blogUrl(),
     thumbnail: '/static/img/thumbnails/blog.png',
   },
 ];

@@ -7,9 +7,11 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
+import { InactiveTeamStripe } from 'app/pages/Dashboard/Components/shared/InactiveTeamStripe';
 import { useDismissible } from 'app/hooks';
 import { EmptyRepositories } from './EmptyRepositories';
 
@@ -36,12 +38,13 @@ export const RepositoriesPage = () => {
     });
   }, [activeTeam]);
 
+  const { isInactiveTeam } = useWorkspaceSubscription();
   const {
     hasMaxPublicRepositories,
     hasMaxPrivateRepositories,
   } = useWorkspaceLimits();
 
-  const { restrictsPublicRepos } = useGitHuPermissions();
+  const { restrictsPublicRepos } = useGitHubPermissions();
 
   const pageType: PageTypes = 'repositories';
 
@@ -61,7 +64,10 @@ export const RepositoriesPage = () => {
         onImportClicked: () => {
           actions.openCreateSandboxModal({ initialTab: 'import' });
         },
-        disabled: hasMaxPublicRepositories || hasMaxPrivateRepositories,
+        disabled:
+          hasMaxPublicRepositories ||
+          hasMaxPrivateRepositories ||
+          isInactiveTeam,
       });
     }
 
@@ -70,6 +76,28 @@ export const RepositoriesPage = () => {
 
   const itemsToShow = getItemsToShow();
   const isEmpty = itemsToShow.length === 0;
+
+  const renderMessageStripe = () => {
+    if (hasMaxPublicRepositories || hasMaxPrivateRepositories) {
+      return <MaxReposFreeTeam />;
+    }
+
+    if (isInactiveTeam) {
+      return (
+        <InactiveTeamStripe>
+          Re-activate your workspace to import new repositories.
+        </InactiveTeamStripe>
+      );
+    }
+
+    if (restrictsPublicRepos && !dismissedPermissionsBanner) {
+      return (
+        <RestrictedPublicReposImport onDismiss={dismissPermissionsBanner} />
+      );
+    }
+  };
+
+  const messageStripe = renderMessageStripe();
 
   return (
     <SelectionProvider
@@ -83,21 +111,14 @@ export const RepositoriesPage = () => {
       <Header
         activeTeam={activeTeam}
         showViewOptions={!isEmpty}
-        showBetaBadge
         title="All repositories"
       />
 
-      {hasMaxPublicRepositories || hasMaxPrivateRepositories ? (
-        <Element paddingLeft={4} paddingRight={6} paddingY={4}>
-          <MaxReposFreeTeam />
+      {messageStripe && (
+        <Element paddingX={4} paddingBottom={4}>
+          {messageStripe}
         </Element>
-      ) : null}
-
-      {restrictsPublicRepos && !dismissedPermissionsBanner ? (
-        <Element paddingLeft={4} paddingRight={6} paddingY={4}>
-          <RestrictedPublicReposImport onDismiss={dismissPermissionsBanner} />
-        </Element>
-      ) : null}
+      )}
 
       {isEmpty ? (
         <EmptyRepositories />

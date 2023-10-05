@@ -15,6 +15,10 @@ import {
   CodeSandboxIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
+import {
+  privacyUrl,
+  tosUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import history from 'app/utils/history';
 import { Button } from './components/Button';
@@ -205,11 +209,18 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
     setLoadingAuth,
     toggleSignInModal,
   } = useActions();
-  const { loadingAuth, cancelOnLogin } = useAppState();
+  const { loadingAuth, cancelOnLogin, features } = useAppState();
 
   const [signInMode, setSignInMode] = React.useState<SignInMode>(
     defaultSignInMode
   );
+
+  const showSwitchToSSO = signInMode === 'DEFAULT' && features.loginWithWorkos;
+  const showSwitchToDefault =
+    signInMode === 'SSO' &&
+    (features.loginWithApple ||
+      features.loginWithGoogle ||
+      features.loginWithGithub);
 
   const handleSignIn = async (
     provider: 'github' | 'google' | 'apple' | 'sso',
@@ -281,26 +292,29 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
               </Text>
             </Stack>
             <Stack direction="vertical" gap={3}>
-              <Button
-                css={{
-                  width: '100%',
-                  height: '48px',
-                }}
-                loading={loadingAuth.github}
-                onClick={() => handleSignIn('github')}
-              >
-                <GitHubIcon />
-                <Text
-                  as="span"
+              {features.loginWithGithub && (
+                <Button
                   css={{
-                    lineHeight: 1,
+                    width: '100%',
+                    height: '48px',
                   }}
-                  size={4}
-                  weight="medium"
+                  loading={loadingAuth.github}
+                  onClick={() => handleSignIn('github')}
                 >
-                  Sign in with GitHub
-                </Text>
-              </Button>
+                  <GitHubIcon />
+                  <Text
+                    as="span"
+                    css={{
+                      lineHeight: 1,
+                    }}
+                    size={4}
+                    weight="medium"
+                  >
+                    Sign in with GitHub
+                  </Text>
+                </Button>
+              )}
+
               <Stack
                 css={{
                   '@media screen and (max-width: 440px)': {
@@ -309,46 +323,50 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
                 }}
                 gap={3}
               >
-                <Button
-                  css={{
-                    width: '100%',
-                    height: '40px',
-                    flex: 1,
-                  }}
-                  loading={loadingAuth.google}
-                  onClick={() => handleSignIn('google')}
-                  secondary
-                >
-                  <GoogleIcon />
-                  <Text
-                    as="span"
-                    css={{ lineHeight: 1 }}
-                    size={3}
-                    weight="medium"
+                {features.loginWithGoogle && (
+                  <Button
+                    css={{
+                      width: '100%',
+                      height: '40px',
+                      flex: 1,
+                    }}
+                    loading={loadingAuth.google}
+                    onClick={() => handleSignIn('google')}
+                    secondary
                   >
-                    Sign in with Google
-                  </Text>
-                </Button>
-                <Button
-                  css={{
-                    width: '100%',
-                    height: '40px',
-                    flex: 1,
-                  }}
-                  loading={loadingAuth.apple}
-                  onClick={() => handleSignIn('apple')}
-                  secondary
-                >
-                  <AppleIcon />
-                  <Text
-                    as="span"
-                    css={{ lineHeight: 1 }}
-                    size={3}
-                    weight="medium"
+                    <GoogleIcon />
+                    <Text
+                      as="span"
+                      css={{ lineHeight: 1 }}
+                      size={3}
+                      weight="medium"
+                    >
+                      Sign in with Google
+                    </Text>
+                  </Button>
+                )}
+                {features.loginWithApple && (
+                  <Button
+                    css={{
+                      width: '100%',
+                      height: '40px',
+                      flex: 1,
+                    }}
+                    loading={loadingAuth.apple}
+                    onClick={() => handleSignIn('apple')}
+                    secondary
                   >
-                    Sign in with Apple
-                  </Text>
-                </Button>
+                    <AppleIcon />
+                    <Text
+                      as="span"
+                      css={{ lineHeight: 1 }}
+                      size={3}
+                      weight="medium"
+                    >
+                      Sign in with Apple
+                    </Text>
+                  </Button>
+                )}
               </Stack>
             </Stack>
             {cancelOnLogin && (
@@ -373,7 +391,7 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
         )}
 
         <Stack as="footer" align="center" direction="vertical">
-          {signInMode === 'DEFAULT' && (
+          {showSwitchToSSO && (
             <StyledGhostButton
               onClick={() => setSignInMode('SSO')}
               variant="ghost"
@@ -381,7 +399,7 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
               Sign in with SSO
             </StyledGhostButton>
           )}
-          {signInMode === 'SSO' && (
+          {showSwitchToDefault && (
             <Text lineHeight="16px" size={13} variant="muted">
               Not SSO?{''}
               <StyledGhostButton
@@ -409,19 +427,11 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
             block
           >
             By continuing, you agree to CodeSandbox{' '}
-            <a
-              href="https://codesandbox.io/legal/terms"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={tosUrl()} target="_blank" rel="noreferrer">
               Terms of Service
             </a>
             ,{' '}
-            <a
-              href="https://codesandbox.io/legal/privacy"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={privacyUrl()} target="_blank" rel="noreferrer">
               Privacy Policy
             </a>
           </Text>

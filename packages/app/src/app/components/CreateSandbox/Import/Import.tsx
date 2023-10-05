@@ -12,7 +12,10 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  v2DefaultBranchUrl,
+  docsUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import {
   GithubRepoAuthorization,
@@ -22,9 +25,10 @@ import {
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 
+import { InactiveTeam } from './InactiveTeam';
 import { MaxPublicRepos } from './MaxPublicRepos';
 import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
 import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
@@ -77,12 +81,15 @@ type ImportProps = {
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { activeTeam, hasLogIn } = useAppState();
-  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
+  const {
+    restrictsPublicRepos,
+    restrictsPrivateRepos,
+  } = useGitHubPermissions();
   const {
     dashboard: { importGitHubRepository },
   } = useActions();
 
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
 
   // Use a variable instead of `loading` from `useLazyQuery` because
@@ -165,7 +172,9 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     privateRepoFreeAccountError === url.raw;
   const hasExistingImports =
     existingRepositoryTeams && existingRepositoryTeams.length >= 1;
-  const disableImport = hasMaxPublicRepositories || restrictsPublicRepos;
+
+  const disableImport =
+    hasMaxPublicRepositories || restrictsPublicRepos || isInactiveTeam;
 
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -245,7 +254,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             <br />
             Learn more about Repositories{' '}
             <a
-              href="https://codesandbox.io/docs/learn/repositories/overview"
+              href={docsUrl('/learn/repositories/overview')}
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -255,6 +264,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           </Text>
         </Stack>
 
+        {isInactiveTeam ? <InactiveTeam /> : null}
         {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
         {restrictsPublicRepos ? <RestrictedPublicReposImport /> : null}
         <Element>

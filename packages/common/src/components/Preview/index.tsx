@@ -82,12 +82,22 @@ const sseDomain = process.env.STAGING_API
   ? 'codesandbox.stream'
   : 'codesandbox.io';
 
-const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
-  `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
+const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') => {
+  // @ts-ignore
+  const usesStaticPreviewURL = window._env_?.USE_STATIC_PREVIEW === 'true';
+  // @ts-ignore
+  const previewDomain = window._env_?.PREVIEW_DOMAIN;
+
+  if (usesStaticPreviewURL && previewDomain) {
+    return `${location.protocol}//${previewDomain}/${initialPath}`;
+  }
+
+  return `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
     process.env.NODE_ENV === 'development' || process.env.STAGING
       ? sseDomain
       : host()
   }${initialPath}`;
+};
 
 interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };

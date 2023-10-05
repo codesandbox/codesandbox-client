@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react';
+import React, { InputHTMLAttributes, forwardRef } from 'react';
 import styled from 'styled-components';
 import { Stack } from '@codesandbox/components';
 import { Label } from './Label';
@@ -29,23 +29,22 @@ interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   name: string;
   isInvalid?: boolean;
+  hideLabel?: boolean;
 }
 
-export const InputText = ({
-  id,
-  label,
-  name,
-  isInvalid,
-  ...restProps
-}: InputTextProps) => (
-  <Stack gap={2} direction="vertical">
-    <Label htmlFor={id}>{label}</Label>
-    <StyledInput
-      id={id}
-      name={name}
-      type="text"
-      isInvalid={isInvalid}
-      {...restProps}
-    />
-  </Stack>
+export const InputText = forwardRef<HTMLInputElement, InputTextProps>(
+  ({ id, label, name, isInvalid, hideLabel, ...restProps }, ref) => (
+    <Stack gap={2} direction="vertical">
+      {!hideLabel && <Label htmlFor={id}>{label}</Label>}
+      <StyledInput
+        id={id}
+        name={name}
+        type="text"
+        aria-label={label}
+        isInvalid={isInvalid}
+        ref={ref}
+        {...restProps}
+      />
+    </Stack>
+  )
 );

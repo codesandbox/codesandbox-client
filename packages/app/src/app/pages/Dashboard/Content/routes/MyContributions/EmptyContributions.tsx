@@ -1,5 +1,8 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  v2DefaultBranchUrl,
+  docsUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { ArticleCard, CreateCard, Element } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
@@ -78,7 +81,9 @@ export const EmptyContributions: React.FC = () => {
               })
             }
             url={appendOnboardingTracking(
-              'https://codesandbox.io/docs/learn/getting-started/open-source#introducing-contribution-branches'
+              docsUrl(
+                '/learn/getting-started/open-source#introducing-contribution-branches'
+              )
             )}
           />
         </EmptyPage.StyledGrid>

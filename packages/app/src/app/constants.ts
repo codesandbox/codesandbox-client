@@ -3,11 +3,12 @@ export const DIALOG_WIDTH = 420;
 export const REPLY_TRANSITION_DELAY = 0.5;
 export const SUBSCRIPTION_DOCS_URLS = {
   teams: {
-    trial: '/docs/learn/plan-billing/trials',
-    non_trial:
-      '/docs/learn/introduction/workspace#managing-teams-and-subscriptions',
+    trial: '/docs/learn/plans/trials',
+    non_trial: '/docs/learn/plans/workspace#managing-teams-and-subscriptions',
   },
 };
+export const ORGANIZATION_CONTACT_LINK =
+  'https://webforms.pipedrive.com/f/ckvSiEQynHckLBoq0wghZhoy9cQGYZrzaCwP7suEln3tMu5zgFKxY6sSZjTYLRC16X';
 
 export interface Feature {
   key: string;
@@ -16,133 +17,96 @@ export interface Feature {
   highlighted?: boolean;
 }
 
-export const PERSONAL_FREE_FEATURES: Feature[] = [
+export const FREE_FEATURES: Feature[] = [
   {
-    key: 'limit_sandboxes',
-    label: 'Unlimited public sandboxes',
+    key: 'editor',
+    label: 'Single editor',
   },
   {
-    key: 'limit_repositories',
-    label: 'Unlimited public repositories',
+    key: 'public_limit',
+    label: 'Public repositories & sandboxes',
   },
+  {
+    key: 'ai',
+    label: 'No access to AI tools',
+  },
+  { key: 'npm', label: 'Public npm packages' },
+  { key: 'permissions', label: 'Limited permissions' },
   { key: 'vm_mem', label: '2GiB RAM' },
   { key: 'vm_cpu', label: '2 vCPUs' },
   { key: 'vm_disk', label: '6GB Disk' },
 ];
 
-export const PERSONAL_FEATURES: Feature[] = [
+export const PERSONAL_PRO_FEATURES: Feature[] = [
   {
-    key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
+    key: 'editor',
+    label: 'Single editor',
   },
   {
-    key: 'limit_repositories',
-    label: 'Unlimited private repositories',
+    key: 'limit_sandboxes',
+    label: 'Unlimited private repositories & sandboxes',
   },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  { key: 'npm', label: 'Public NPM packages' },
+  { key: 'npm', label: 'Public npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },
   { key: 'vm_mem', label: '8GiB RAM' },
-  { key: 'vm_cpu', label: '4vCPUs' },
+  { key: 'vm_cpu', label: '4 vCPUs' },
   { key: 'vm_disk', label: '12GB Disk' },
-];
-
-export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
-  {
-    key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
-  },
-  {
-    key: 'limit_repositories',
-    label: 'Unlimited private repositories',
-  },
-  {
-    key: 'ai',
-    label: '✨ Full access to AI tools',
-  },
-  { key: 'npm', label: 'Public NPM packages' },
-  { key: 'live_sessions', label: 'Live sessions' },
-  { key: 'vm_mem', label: '8GiB RAM', pill: '4x capacity' },
-  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
-  { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
-];
-
-export const TEAM_FREE_FEATURES: Feature[] = [
-  {
-    key: 'limit_sandboxes',
-    label: '20 public sandboxes',
-  },
-  {
-    key: 'limit_repositories',
-    label: '3 public repositories',
-  },
-  { key: 'npm', label: 'Public NPM packages' },
-  { key: 'vm_mem', label: '2GiB RAM' },
-  { key: 'vm_cpu', label: '2vCPUs' },
-  { key: 'vm_disk', label: '6GB Disk' },
 ];
 
 export const TEAM_PRO_FEATURES: Feature[] = [
   {
-    key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
+    key: 'editors',
+    label: 'Unlimited editors',
   },
   {
-    key: 'limit_repositories',
-    label: 'Unlimited private repositories',
+    key: 'private',
+    label: 'Unlimited private repositories & sandboxes',
   },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  { key: 'npm', label: 'Private NPM packages' },
+  { key: 'npm', label: 'Private npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },
+
   { key: 'vm_mem', label: '8GiB RAM' },
-  { key: 'vm_cpu', label: '4vCPUs' },
+  { key: 'vm_cpu', label: '4 vCPUs' },
   { key: 'vm_disk', label: '12GB Disk' },
 ];
 
 export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
   {
-    key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
+    key: 'editors',
+    label: 'Unlimited editors',
   },
   {
-    key: 'limit_repositories',
-    label: 'Unlimited private repositories',
+    key: 'private',
+    label: 'Unlimited private repositories & sandboxes',
   },
   {
     key: 'ai',
     label: '✨ Full access to AI tools',
   },
-  { key: 'npm', label: 'Private NPM packages' },
+  { key: 'npm', label: 'Private npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },
+
   { key: 'vm_mem', label: '8GiB RAM', pill: '4x capacity' },
-  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
+  { key: 'vm_cpu', label: '4 vCPUs', pill: '2x faster' },
   { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
 ];
 
 export const ORG_FEATURES: Feature[] = [
   {
-    key: 'limit_sandboxes',
-    label: 'Unlimited private sandboxes',
+    key: 'intro',
+    label: 'All Pro features, plus:',
   },
-  {
-    key: 'limit_repositories',
-    label: 'Unlimited private repositories',
-  },
-  {
-    key: 'ai',
-    label: '✨ Full access to AI tools',
-  },
-  { key: 'npm', label: 'Private NPM packages' },
-  { key: 'live_sessions', label: 'Live sessions' },
-  { key: 'vm_mem', label: 'Custom VM Specs' },
-  { key: 'vm_cpu', label: '+ Custom support and Slack channel' },
-  { key: 'vm_disk', label: '+ Customer success manager' },
+  { key: 'specs', label: 'Custom VM Specs' },
+  { key: 'support', label: 'Custom support and Slack channel' },
+  { key: 'customer', label: 'Customer success manager' },
 ];
 
 // Soft limit of maximum amount of pro
@@ -151,10 +115,4 @@ export const ORG_FEATURES: Feature[] = [
 // custom pricing.
 export const MAX_PRO_EDITORS = 20;
 
-export const TEAM_FREE_LIMITS = {
-  editors: 5,
-  public_sandboxes: 20,
-  private_sandboxes: 0,
-  public_repos: 3,
-  private_repos: 0,
-};
+export const MAX_TEAM_FREE_EDITORS = 5;

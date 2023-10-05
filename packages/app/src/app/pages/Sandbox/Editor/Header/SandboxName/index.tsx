@@ -241,7 +241,7 @@ export const SandboxName: FunctionComponent = () => {
             content={
               <>
                 This sandbox is a template, you can learn about templates in the{' '}
-                <Link target="_blank" to="/docs/templates">
+                <Link target="_blank" to="/docs/learn/sandboxes/templates">
                   docs
                 </Link>
                 .

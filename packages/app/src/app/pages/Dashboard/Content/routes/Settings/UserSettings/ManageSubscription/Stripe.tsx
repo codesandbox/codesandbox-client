@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Text, Link, Button } from '@codesandbox/components';
+import { Stack, Text, Button } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 import { format } from 'date-fns';
 
@@ -14,14 +14,14 @@ export const Stripe = () => {
 
   return (
     <Stack direction="vertical" gap={2}>
-      <Link
+      <Button
+        autoWidth
+        css={{ height: 'auto', padding: 0 }}
+        variant="link"
         onClick={createCustomerPortal}
-        size={3}
-        variant="active"
-        css={css({ fontWeight: 'medium' })}
       >
         {loading ? 'Loading...' : 'Manage subscription'}
-      </Link>
+      </Button>
 
       {!loading && team.subscription.cancelAt && (
         <Text size={3} css={css({ color: '#F7CC66' })}>

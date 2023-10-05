@@ -1,5 +1,5 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Element, Link as StyledLink } from '@codesandbox/components';
+import { Link as StyledLink } from '@codesandbox/components';
 import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -20,14 +20,16 @@ export const PrivateRepoFreeTeam: React.FC = () => {
    * Can't checkout? '/docs/learn/introduction/workspace#managing-teams-and-subscriptions'
    */
 
-  const ctaURL = ((): string | false => {
-    if (!canCheckout) {
-      return isPersonalSpace
-        ? '/pro'
-        : '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
+  const ctaURL = ((): string | null => {
+    if (isPersonalSpace) {
+      return '/pro';
     }
 
-    return false;
+    if (!canCheckout) {
+      return '/docs/learn/plans/workspace#managing-teams-and-subscriptions';
+    }
+
+    return null;
   })();
 
   return (
@@ -49,7 +51,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
             modals.newSandboxModal.close();
           } else {
             createCheckout({
-              utm_source: 'dashboard_import_limits',
+              trackingLocation: 'dashboard_import_limits',
             });
           }
 
@@ -59,11 +61,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
           });
         }}
       >
-        upgrade to{' '}
-        <Element as="span" css={{ textTransform: 'uppercase' }}>
-          pro
-        </Element>
-        .
+        upgrade to Pro.
       </StyledLink>
     </>
   );

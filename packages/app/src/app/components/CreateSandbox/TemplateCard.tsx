@@ -7,6 +7,7 @@ import {
   Text,
 } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
+import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
@@ -98,7 +99,7 @@ export const TemplateCard = ({
                 <div style={{ fontSize: 13 }}>
                   This is a cloud sandbox that runs in a microVM, learn more{' '}
                   <a
-                    href="https://codesandbox.io/docs/learn/sandboxes/overview?tab=cloud"
+                    href={docsUrl('/learn/sandboxes/overview?tab=cloud')}
                     target="_blank"
                     rel="noreferrer noopener"
                   >

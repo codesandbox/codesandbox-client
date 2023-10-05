@@ -2,18 +2,21 @@ import React from 'react';
 
 import { ArticleCard, CreateCard, Element } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useActions } from 'app/overmind';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import { RestrictedImportDisclaimer } from 'app/pages/Dashboard/Components/shared/RestrictedImportDisclaimer';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 
 const DESCRIPTION =
   'Save hours every week by shortening the review cycle and empowering everyone to contribute.<br />Every branch in Repositories is connected to git and has its own sandbox running in a fast microVM.';
 
 export const EmptyRepositories: React.FC = () => {
   const actions = useActions();
+  const { restrictsPublicRepos } = useGitHubPermissions();
 
   return (
     <EmptyPage.StyledWrapper
@@ -48,7 +51,7 @@ export const EmptyRepositories: React.FC = () => {
           title="More about repositories"
           thumbnail="/static/img/thumbnails/page_repositories.png"
           url={appendOnboardingTracking(
-            'https://codesandbox.io/docs/learn/repositories/overview'
+            docsUrl('/learn/repositories/overview')
           )}
           onClick={() =>
             track('Empty State Card - Content Card', {
@@ -61,7 +64,9 @@ export const EmptyRepositories: React.FC = () => {
       </EmptyPage.StyledGrid>
       <RestrictedImportDisclaimer />
       <Element css={{ minHeight: 32 }} />
-      <SuggestionsRow page="empty repositories" />
+      {restrictsPublicRepos === false && (
+        <SuggestionsRow page="empty repositories" />
+      )}
     </EmptyPage.StyledWrapper>
   );
 };

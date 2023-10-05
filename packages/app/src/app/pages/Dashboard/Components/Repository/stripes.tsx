@@ -39,7 +39,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
               window.location.href = '/pro';
             } else {
               createCheckout({
-                utm_source: 'dashboard_private_repo_upgrade',
+                trackingLocation: 'dashboard_private_repo_upgrade',
               });
             }
           }}
@@ -66,7 +66,7 @@ export const MaxReposFreeTeam: React.FC = () => {
           disabled={checkout.status === 'loading'}
           onClick={() => {
             createCheckout({
-              utm_source: 'dashboard_private_repo_upgrade',
+              trackingLocation: 'dashboard_private_repo_upgrade',
             });
 
             track(getEventName(isEligibleForTrial, isBillingManager), {
@@ -80,7 +80,7 @@ export const MaxReposFreeTeam: React.FC = () => {
       ) : (
         <MessageStripe.Action
           as="a"
-          href="https://codesandbox.io/docs/learn/plan-billing/trials"
+          href="https://codesandbox.io/docs/learn/plans/trials"
           onClick={() => {
             track('Limit banner: repos - Learn More', {
               codesandbox: 'V1',

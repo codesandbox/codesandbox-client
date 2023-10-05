@@ -1,6 +1,6 @@
 import { Icon } from '@codesandbox/components';
 import { useDismissible } from 'app/hooks';
-import { useGitHuPermissions } from 'app/hooks/useGitHubPermissions';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { useActions } from 'app/overmind';
 import React from 'react';
 import {
@@ -13,14 +13,18 @@ export const RestrictedImportDisclaimer: React.FC<{ insideGrid?: boolean }> = ({
   insideGrid = false,
 }) => {
   const actions = useActions();
-  const { restrictsPublicRepos, restrictsPrivateRepos } = useGitHuPermissions();
+  const {
+    restrictsPublicRepos,
+    restrictsPrivateRepos,
+  } = useGitHubPermissions();
   const [dismissedPermissionsBanner] = useDismissible(
     'DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER'
   );
 
   const dismissedBannerButRestrictsPublicRepos =
     dismissedPermissionsBanner && restrictsPublicRepos;
-  const onlyAllowsPublicRepos = !restrictsPublicRepos && restrictsPrivateRepos;
+  const onlyAllowsPublicRepos =
+    restrictsPublicRepos === false && restrictsPrivateRepos === true;
 
   if (dismissedBannerButRestrictsPublicRepos || onlyAllowsPublicRepos) {
     return (

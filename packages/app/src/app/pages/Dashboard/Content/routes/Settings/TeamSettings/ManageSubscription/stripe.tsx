@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { Stack, Text, Link } from '@codesandbox/components';
+import { Stack, Text, Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -30,13 +30,19 @@ export const Stripe: React.FC = () => {
         direction="vertical"
         justify="space-between"
       >
-        <Text size={3} css={{ color: '#F7CC66' }}>
+        <Text size={3} color="#F7CC66">
           Your access to Pro features will expire on on{' '}
           {format(new Date(subscription.cancelAt), 'PP')}. After this period,
           your team will be automatically migrated to the Free plan.
         </Text>
 
-        <Link
+        <Button
+          autoWidth
+          variant="link"
+          css={{
+            height: 'auto',
+            padding: 0,
+          }}
           onClick={() => {
             track('Team Settings - Renew subscription', {
               codesandbox: 'V1',
@@ -45,11 +51,9 @@ export const Stripe: React.FC = () => {
 
             createCustomerPortal();
           }}
-          size={3}
-          variant="active"
         >
           {loading ? 'Loading...' : 'Upgrade to Pro'}
-        </Link>
+        </Button>
       </Stack>
     );
   }
@@ -60,7 +64,13 @@ export const Stripe: React.FC = () => {
 
   return (
     <Stack direction="vertical" gap={2}>
-      <Link
+      <Button
+        autoWidth
+        variant="link"
+        css={{
+          height: 'auto',
+          padding: 0,
+        }}
         onClick={() => {
           track('Team Settings - Update payment details', {
             codesandbox: 'V1',
@@ -69,13 +79,17 @@ export const Stripe: React.FC = () => {
 
           createCustomerPortal();
         }}
-        size={3}
-        variant="active"
       >
         {loading ? 'Loading...' : updateSubscriptionText}
-      </Link>
-      <Link
-        color="#EE8269"
+      </Button>
+      <Button
+        autoWidth
+        variant="link"
+        css={{
+          height: 'auto',
+          padding: 0,
+          color: '#EE8269',
+        }}
         onClick={() => {
           track(
             hasActiveTeamTrial
@@ -89,10 +103,9 @@ export const Stripe: React.FC = () => {
 
           openCancelSubscriptionModal();
         }}
-        size={3}
       >
         {hasActiveTeamTrial ? 'Cancel trial' : 'Cancel subscription'}
-      </Link>
+      </Button>
     </Stack>
   );
 };

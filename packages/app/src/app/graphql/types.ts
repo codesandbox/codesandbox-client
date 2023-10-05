@@ -230,9 +230,12 @@ export type CurrentUser = {
   collection: Maybe<Collection>;
   collections: Array<Collection>;
   deletionRequested: Scalars['Boolean'];
+  /**
+   * Whether this user should be offered a trial.
+   *     Returns false if they have created any teams that have used a trial in the last 6 months.
+   */
+  eligibleForTrial: Scalars['Boolean'];
   email: Scalars['String'];
-  /** @deprecated Field no longer supported */
-  featureFlags: Array<FeatureFlag>;
   /** Get all of the current user's GitHub organizations */
   githubOrganizations: Maybe<Array<GithubOrganization>>;
   /** GitHub profile information for the current user */
@@ -323,17 +326,6 @@ export enum Direction {
   Asc = 'ASC',
   Desc = 'DESC',
 }
-
-/** A feature flag */
-export type FeatureFlag = {
-  __typename?: 'FeatureFlag';
-  description: Scalars['String'];
-  enabled: Scalars['Boolean'];
-  id: Scalars['UUID4'];
-  name: Scalars['String'];
-  /** @deprecated Field no longer supported */
-  teams: Array<Team>;
-};
 
 /** A v1 git object */
 export type Git = {
@@ -599,21 +591,28 @@ export type GitHubRepository = {
 };
 
 /**
- * Information about a GitHub organization team. Currently very limited, but
- * hopefully we can include member information in the future
+ * Information about a GitHub user who has been requested to review
+ * a pull request and its associated CSB user if available
  */
-export type GithubTeam = {
-  __typename?: 'GithubTeam';
-  name: Scalars['String'];
-};
-
-/** Information about a GitHub user and its associated CSB user if available */
-export type GithubUser = {
-  __typename?: 'GithubUser';
+export type GithubRequestedReviewer = {
+  __typename?: 'GithubRequestedReviewer';
+  /** Timestamp that the user was last requested to review this PR */
+  requestedAt: Maybe<Scalars['DateTime']>;
   /** CodeSandbox user associated with this GitHub account, if available */
   user: Maybe<User>;
   /** GitHub username */
   username: Scalars['String'];
+};
+
+/**
+ * Information about a GitHub organization team. Currently very limited, but
+ * hopefully we can include member information in the future
+ */
+export type GithubRequestedTeam = {
+  __typename?: 'GithubRequestedTeam';
+  name: Scalars['String'];
+  /** Timestamp that the team was last requested to review this PR */
+  requestedAt: Maybe<Scalars['DateTime']>;
 };
 
 export enum GitProvider {
@@ -814,12 +813,8 @@ export type Project = {
   lastAccessedAt: Maybe<Scalars['String']>;
   /** Information about the last commit made by CodeSandbox on any branch */
   lastCommit: Maybe<LastCommit>;
-  /** @deprecated Use repository->owner instead */
-  owner: Scalars['String'];
   /** Open pull requests from head branches in this repository */
   pullRequests: Array<PullRequest>;
-  /** @deprecated Use repository->name instead */
-  repo: Scalars['String'];
   /** Git repository for the project, as it appears on the original git provider */
   repository: Repository;
   /** Compute resources for the project, based on settings and team subscription */
@@ -834,8 +829,6 @@ export type Project = {
    * looking up the team.
    */
   team: Maybe<Team>;
-  /** @deprecated Use team instead */
-  teams: Array<Team>;
 };
 
 /**
@@ -957,9 +950,9 @@ export type PullRequest = {
   /** When information about a PR was last changed */
   prUpdatedAt: Scalars['DateTime'];
   /** Information about users who have been requested to review this PR. */
-  requestedReviewers: Array<GithubUser>;
+  requestedReviewers: Array<GithubRequestedReviewer>;
   /** Information about teams who have been requested to review this PR. */
-  requestedTeams: Array<GithubTeam>;
+  requestedTeams: Array<GithubRequestedTeam>;
   /** Number of review comments on this PR. Only available for GHA repositories. */
   reviewCommentsCount: Maybe<Scalars['Int']>;
   /** Information about reviews that have been submitted for this PR. */
@@ -1424,7 +1417,7 @@ export type RootMutationType = {
    * Remove one or more GH users from the list of requested reviewers for this pull request.
    * Returns the list of users that are still requested to review.
    */
-  removeRequestedGithubPullRequestReviewers: Array<GithubUser>;
+  removeRequestedGithubPullRequestReviewers: Array<GithubRequestedReviewer>;
   /** Remove sandboxes from album (idempotent) */
   removeSandboxesFromAlbum: Maybe<Album>;
   /** Rename a collection and all subfolders */
@@ -1444,7 +1437,7 @@ export type RootMutationType = {
    * Request one or more GH users to review a pull request
    * Returns complete list of users  requested to review.
    */
-  requestGithubPullRequestReviewers: Array<GithubUser>;
+  requestGithubPullRequestReviewers: Array<GithubRequestedReviewer>;
   /**
    * Request access to a team by ID
    *
@@ -2166,7 +2159,7 @@ export type RootQueryType = {
   /** Get a sandbox */
   sandbox: Maybe<Sandbox>;
   /** A team from an invite token */
-  teamByToken: Maybe<Team>;
+  teamByToken: Maybe<TeamPreview>;
 };
 
 export type RootQueryTypeAlbumArgs = {
@@ -2495,6 +2488,7 @@ export type Team = {
   invitees: Array<User>;
   /** @deprecated There's no such thing as a pilot team anymore */
   joinedPilotAt: Maybe<Scalars['DateTime']>;
+  legacy: Scalars['Boolean'];
   limits: TeamLimits;
   members: Array<TeamMember>;
   name: Scalars['String'];
@@ -3372,7 +3366,7 @@ export type TemplateFragmentDashboardFragment = {
 
 export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl'
+  'id' | 'name' | 'type' | 'description' | 'creatorId' | 'avatarUrl' | 'legacy'
 > & {
     settings: Maybe<
       { __typename?: 'WorkspaceSandboxSettings' } & Pick<
@@ -3408,7 +3402,14 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
 
 export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'creatorId' | 'description' | 'inviteToken' | 'name' | 'avatarUrl'
+  | 'id'
+  | 'creatorId'
+  | 'description'
+  | 'inviteToken'
+  | 'name'
+  | 'type'
+  | 'avatarUrl'
+  | 'legacy'
 > & {
     users: Array<
       { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
@@ -3507,7 +3508,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
 
 export type ProjectFragment = { __typename?: 'Project' } & Pick<
   Project,
-  'branchCount' | 'lastAccessedAt'
+  'appInstalled' | 'branchCount' | 'lastAccessedAt'
 > & {
     repository: { __typename?: 'GitHubRepository' } & Pick<
       GitHubRepository,
@@ -3516,14 +3517,17 @@ export type ProjectFragment = { __typename?: 'Project' } & Pick<
     team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
   };
 
-export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
-  branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
-  repository: { __typename?: 'GitHubRepository' } & Pick<
-    GitHubRepository,
-    'owner' | 'name' | 'defaultBranch' | 'private'
-  >;
-  team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
-};
+export type ProjectWithBranchesFragment = { __typename?: 'Project' } & Pick<
+  Project,
+  'appInstalled'
+> & {
+    branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
+    repository: { __typename?: 'GitHubRepository' } & Pick<
+      GitHubRepository,
+      'owner' | 'name' | 'defaultBranch' | 'private'
+    >;
+    team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
+  };
 
 export type TeamLimitsFragment = { __typename?: 'TeamLimits' } & Pick<
   TeamLimits,
@@ -4235,7 +4239,7 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & Pick<
       CurrentUser,
-      'personalWorkspaceId'
+      'personalWorkspaceId' | 'eligibleForTrial'
     > & {
         workspaces: Array<
           { __typename?: 'Team' } & TeamFragmentDashboardFragment
@@ -4544,6 +4548,19 @@ export type LimitsQuery = { __typename?: 'RootQueryType' } & {
     personalPro: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
     teamFree: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
     teamPro: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+  };
+};
+
+export type TeamEventsSubscriptionVariables = Exact<{
+  teamId: Scalars['ID'];
+}>;
+
+export type TeamEventsSubscription = { __typename?: 'RootSubscriptionType' } & {
+  teamEvents: { __typename?: 'TeamSubscriptionEvent' } & {
+    subscription: { __typename?: 'ProSubscription' } & Pick<
+      ProSubscription,
+      'active'
+    >;
   };
 };
 
@@ -5092,7 +5109,9 @@ export type TeamByTokenQueryVariables = Exact<{
 }>;
 
 export type TeamByTokenQuery = { __typename?: 'RootQueryType' } & {
-  teamByToken: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
+  teamByToken: Maybe<
+    { __typename?: 'TeamPreview' } & Pick<TeamPreview, 'name'>
+  >;
 };
 
 export type JoinTeamByTokenMutationVariables = Exact<{

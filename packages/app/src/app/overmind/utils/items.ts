@@ -179,7 +179,12 @@ export default function getItems(
     items.push(SERVER);
   }
 
-  if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
+  if (
+    store.isLoggedIn &&
+    !store.environment.isOnPrem &&
+    currentSandbox &&
+    !currentSandbox.git
+  ) {
     if (
       currentSandbox.featureFlags.comments &&
       hasPermission(currentSandbox.authorization, 'comment')
@@ -190,7 +195,7 @@ export default function getItems(
     }
   }
 
-  if (store.isLoggedIn) {
+  if (store.isLoggedIn && !store.environment.isOnPrem) {
     items.push(DEPLOYMENT);
   }
 
@@ -202,6 +207,10 @@ export default function getItems(
     items.push(LIVE);
   }
 
-  // Add docker and vs code as last item in the navigation
+  if (store.environment.isOnPrem) {
+    return items;
+  }
+
+  // Add docker, vs code and AI tools as conversion to v2 screens
   return [...items, DOCKER, VSCODE, AITOOLS];
 }

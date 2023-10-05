@@ -154,21 +154,24 @@ export const TeamMembers: React.FC<{
           width: '100%',
         }}
       >
-        <Text
-          as="h2"
-          size={32}
-          weight="500"
-          align="center"
-          css={{
-            margin: 0,
-            color: '#ffffff',
-            fontFamily: 'Everett, sans-serif',
-            lineHeight: '42px',
-            letterSpacing: '-0.01em',
-          }}
-        >
-          {activeTeamInfo.name}
-        </Text>
+        <Stack gap={2} direction="vertical">
+          <Text
+            as="h2"
+            size={32}
+            weight="500"
+            align="center"
+            css={{
+              margin: 0,
+              color: '#ffffff',
+              fontFamily: 'Everett, sans-serif',
+              lineHeight: '42px',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Invite team members
+          </Text>
+          <Text color="#999">Insert email addresses separated by a comma</Text>
+        </Stack>
         <Stack
           as="form"
           onSubmit={handleSubmit}
@@ -178,9 +181,7 @@ export const TeamMembers: React.FC<{
         >
           <Stack gap={4} direction="vertical">
             <Textarea
-              aria-describedby="invitees-role"
               id="member"
-              label="Invite up to 4 additional team members (Insert email addresses separated by a comma)"
               name="members"
               value={addressesString}
               onChange={e => {
@@ -208,7 +209,7 @@ export const TeamMembers: React.FC<{
             ) : null}
 
             <StyledButton loading={inviteLoading} type="submit">
-              Invite members
+              Send invites
             </StyledButton>
           </Stack>
           <Text
@@ -238,7 +239,7 @@ export const TeamMembers: React.FC<{
       <Stack
         css={{
           width: '100%',
-          padding: '48px 56px',
+          padding: '48px',
         }}
         justify={hideSkip ? 'center' : 'space-between'}
       >
@@ -266,7 +267,7 @@ export const TeamMembers: React.FC<{
             }}
             variant="link"
           >
-            Skip
+            Next
           </Button>
         )}
       </Stack>

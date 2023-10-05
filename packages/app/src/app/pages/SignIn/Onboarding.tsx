@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Element, Text, Stack } from '@codesandbox/components';
-import { useAppState, useActions, useEffects } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { InputText } from 'app/components/dashboard/InputText';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
 import { StyledButton } from 'app/components/dashboard/Button';
@@ -11,6 +10,8 @@ const ROLE_OPTIONS = [
   { value: 'frontend', label: 'Front-End Developer' },
   { value: 'backend', label: 'Back-End Developer' },
   { value: 'fullstack', label: 'Full-Stack Developer' },
+  { value: 'lead-dev', label: 'Lead Developer' },
+  { value: 'engineering-manager', label: 'Engineering Manager' },
   { value: 'designer', label: 'Designer' },
   { value: 'product-manager', label: 'Product Manager' },
   { value: 'educator', label: 'Educator' },
@@ -23,8 +24,6 @@ const USAGE_OPTIONS = [
   { value: 'personal', label: 'Personal' },
   { value: 'education', label: 'Education' },
 ];
-
-export const NUOCT22 = 'NUOCT22'; // = new user oct 22
 
 export const Onboarding = () => {
   /**
@@ -49,8 +48,6 @@ export const Onboarding = () => {
     };
   }
 
-  const { pathname } = useLocation();
-  const { browser } = useEffects();
   const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState(pendingUser?.username || '');
   const [newDisplayName, setNewDisplayName] = useState(pendingUser?.name || '');
@@ -58,16 +55,6 @@ export const Onboarding = () => {
   const [usage, setUsage] = useState('');
   const [loadingUsername, setLoadingUserName] = useState(false);
   const firstName = (pendingUser?.name || '').split(' ')[0];
-
-  if (pathname.includes('/invite')) {
-    // Set flag to neither show the create team modal and the
-    // what's new modal.
-    browser.storage.set(NUOCT22, 'invite');
-  } else {
-    // Set flag to make sure we show the create team modal and
-    // not the what's new modal after signup.
-    browser.storage.set(NUOCT22, 'signup');
-  }
 
   return (
     <Stack

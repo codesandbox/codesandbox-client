@@ -6,6 +6,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { InactiveTeamStripe } from 'app/pages/Dashboard/Components/shared/InactiveTeamStripe';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { PrivateRepoFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
@@ -14,6 +15,7 @@ import {
   sortByLastAccessed,
 } from 'app/overmind/namespaces/dashboard/utils';
 import { BranchFragment } from 'app/graphql/types';
+import { InstallGHAppStripe } from 'app/pages/Dashboard/Components/shared/InstallGHAppStripe';
 
 type MappedBranches = {
   defaultBranch: BranchFragment | null;
@@ -47,9 +49,9 @@ export const RepositoryBranchesPage = () => {
     }
   }, [activeTeam]);
 
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
   const isPrivate = repositoryProject?.repository.private;
-  const isReadOnlyRepo = isFree && isPrivate;
+  const restricted = isFree && isPrivate;
 
   const pageType: PageTypes = 'repository-branches';
 
@@ -115,6 +117,37 @@ export const RepositoryBranchesPage = () => {
   const itemsToShow = getItemsToShow();
   const ownerNamePath = `${owner}/${name}`;
 
+  const renderMessageStripe = () => {
+    if (restricted) {
+      return <PrivateRepoFreeTeam />;
+    }
+
+    if (isInactiveTeam) {
+      return (
+        <InactiveTeamStripe>
+          Re-activate your workspace to continue working on the repository
+        </InactiveTeamStripe>
+      );
+    }
+
+    if (repositoryProject?.appInstalled === false) {
+      return (
+        <InstallGHAppStripe
+          onCloseWindow={() => {
+            // Refetch repo data to get rid of the banner until we implement the GH app subscription
+            actions.dashboard.getRepositoryWithBranches({
+              activeTeam,
+              owner,
+              name,
+            });
+          }}
+        />
+      );
+    }
+  };
+
+  const messageStripe = renderMessageStripe();
+
   return (
     <SelectionProvider
       page={pageType}
@@ -128,19 +161,18 @@ export const RepositoryBranchesPage = () => {
         activeTeam={activeTeam}
         path={ownerNamePath}
         showViewOptions
-        showBetaBadge
         nestedPageType={pageType}
         selectedRepo={{
           owner: repositoryProject?.repository.owner,
           name: repositoryProject?.repository.name,
           assignedTeamId: repositoryProject?.team?.id,
         }}
-        readOnly={isReadOnlyRepo}
+        readOnly={restricted || isInactiveTeam}
       />
 
-      {isReadOnlyRepo && (
-        <Element paddingX={4} paddingY={2}>
-          {isPrivate && <PrivateRepoFreeTeam />}
+      {messageStripe && (
+        <Element paddingX={4} paddingBottom={4}>
+          {messageStripe}
         </Element>
       )}
 
