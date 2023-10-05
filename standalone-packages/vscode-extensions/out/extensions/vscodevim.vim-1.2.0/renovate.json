@@ -1,7 +1,0 @@
-{
-  "extends": [
-    "config:base",
-    "default:pinDigestsDisabled"
-  ],
-  "automerge": true
-}

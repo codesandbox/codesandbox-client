@@ -1,1 +1,0 @@
-{"version":3,"file":"openTsServerLog.js","sourceRoot":"../../src","sources":["commands/openTsServerLog.ts"],"names":[],"mappings":";AAAA;;;gGAGgG;;AAMhG,MAAa,sBAAsB;IAGlC,YACkB,cAAiD;QAAjD,mBAAc,GAAd,cAAc,CAAmC;QAHnD,OAAE,GAAG,4BAA4B,CAAC;IAI9C,CAAC;IAEE,OAAO;QACb,IAAI,CAAC,cAAc,CAAC,KAAK,CAAC,aAAa,CAAC,mBAAmB,EAAE,CAAC;IAC/D,CAAC;CACD;AAVD,wDAUC"}

@@ -1,1 +1,0 @@
-interface HTMLHeadElement : HTMLElement {};
