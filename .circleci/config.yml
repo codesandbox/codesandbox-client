@@ -154,6 +154,9 @@ commands:
       - restore_cache: *restore_standalone_deps_cache
       # Add extra items to yarnclean so the cache doesn't grow too big
       - run:
+          name: Install ZSTD
+          command: apt update -y && apt install -y zstd
+      - run:
           name: Configure .yarnclean
           command: cat .yarnclean.ci >> .yarnclean
       - run:
