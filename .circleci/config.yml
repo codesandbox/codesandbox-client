@@ -29,6 +29,7 @@ aliases:
       - standalone-packages/codesandbox-browserfs/build
       - standalone-packages/vscode-textmate/out
       - standalone-packages/vscode-textmate/node_modules
+      - standalone-packages/vscode-extensions/out/extensions
 
   - &restore_deps_cache
     keys:
