@@ -74,6 +74,19 @@ aliases:
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
+  - &save_vscode_extensions_cache
+    key:
+      v37-vscode-extensions-cache-{{ .Branch }}-{{ checksum
+      "standalone-packages/vscode-extensions/vscode-extensions.tar.zst" }}
+    paths:
+      - standalone-packages/vscode-extensions/out/extensions
+
+  - &restore_vscode_extensions_cache
+    keys:
+      - v37-vscode-extensions-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v37-vscode-extensions-cache-{{ .Branch }}
+      - v37-vscode-extensions-cache
+
   - &restore_prod_result
     key:
       v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH
@@ -168,11 +181,13 @@ commands:
       - run:
           name: Build
           command: yarn build:deps
+      - save_cache: *save_vscode_extensions_cache
       - persist_to_workspace: *build_deps_paths
   build_prod:
     description: 'Build the Application with `yarn build:prod`'
     steps:
       - restore_cache: *restore_deps_cache
+      - restore_cache: *restore_vscode_extensions_cache
       - attach_workspace: *attach_deps_workspace
       - restore_cache: *restore_prod_build_cache
       - run:
