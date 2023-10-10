@@ -252,6 +252,13 @@ module.exports = {
         ].filter(Boolean),
       },
 
+      // mjs support
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+      },
+
       // `eslint` has some dynamic `require(...)`.
       // Delete those.
       {
