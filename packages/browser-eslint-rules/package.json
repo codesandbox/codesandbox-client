@@ -22,6 +22,6 @@
     "rollup": "^2.28.1",
     "rollup-plugin-ignore": "^1.0.9",
     "rollup-plugin-node-builtins": "^2.1.2",
-    "terser": "^5.3.2"
+    "terser": "^4.8.1"
   }
 }
