@@ -266,7 +266,7 @@ export default class App extends React.PureComponent<
           likeCount: s.sandbox.likeCount - 1,
         },
       }));
-      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+      fetch(`/api/v1/sandboxes/${sandboxId}/likes`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -274,7 +274,7 @@ export default class App extends React.PureComponent<
           'x-codesandbox-client': 'legacy-embed',
         },
         body: JSON.stringify({
-          id: this.state.sandbox.id,
+          id: sandboxId,
         }),
       })
         .then(x => x.json())
@@ -304,7 +304,7 @@ export default class App extends React.PureComponent<
           likeCount: s.sandbox.likeCount + 1,
         },
       }));
-      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+      fetch(`/api/v1/sandboxes/${sandboxId}/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
