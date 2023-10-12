@@ -257,6 +257,12 @@ module.exports = {
         test: /\.mjs$/,
         include: /node_modules/,
         type: 'javascript/auto',
+        use: [
+          {
+            loader: 'babel-loader',
+            options: babelConfig,
+          },
+        ],
       },
 
       // `eslint` has some dynamic `require(...)`.
