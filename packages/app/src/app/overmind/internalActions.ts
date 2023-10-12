@@ -12,7 +12,10 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
-import { TeamFragmentDashboardFragment } from 'app/graphql/types';
+import {
+  TeamFragmentDashboardFragment,
+  SubscriptionStatus,
+} from 'app/graphql/types';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
@@ -578,10 +581,6 @@ export const setViewModeForDashboard = ({ effects, state }: Context) => {
   }
 };
 
-const INVALID_ID_TITLE = 'Workspace not recognized.';
-const INVALID_ID_MESSAGE =
-  "The workspace in the URL or stored in your browser is unknown. We've automatically switched to your personal workspace.";
-
 // TODO we could rename the function to initializeTeam (because we also use
 // personalWorkspaceId);
 export const setActiveWorkspaceFromUrlOrStore = async ({
@@ -594,19 +593,10 @@ export const setActiveWorkspaceFromUrlOrStore = async ({
     // Set active team from url or storage.
     actions.setActiveTeam({ id });
   } else {
-    // If an id was set but it's not valid we show a toast message informing the user
-    // we changed the workspace to the personal workspace. If no id was set we silently
-    // activate the personal team.
-    if (id) {
-      effects.notificationToast.add({
-        title: INVALID_ID_TITLE,
-        message: INVALID_ID_MESSAGE,
-        status: NotificationStatus.NOTICE,
-      });
-    }
-
-    // Change to personal workspace.
-    actions.internal.setActiveTeamFromPersonalWorkspaceId();
+    // Change to first pro workspace or personal space if no pro exists
+    // TODO: In the future, the fallback will be the first workspace in
+    // the list, when no personal exists
+    actions.internal.inferWorkspaceFromUserData();
   }
 };
 
@@ -671,15 +661,22 @@ export const getTeamIdFromLocalStorage = ({ effects }): string | null => {
 };
 
 /**
- * Function to activate the personal workspace. We call this function when
- * no initial team id is known (from url or localStorage).
+ * Infers the workspace if the URL or localStorage does not contain it
  */
-export const setActiveTeamFromPersonalWorkspaceId = async ({
+export const inferWorkspaceFromUserData = async ({
   actions,
   state,
   effects,
 }: Context) => {
-  if (state.personalWorkspaceId) {
+  const firstProWorkspace = state.dashboard.teams.find(
+    team =>
+      team.subscription?.status === SubscriptionStatus.Active ||
+      team.subscription?.status === SubscriptionStatus.Trialing
+  );
+
+  if (firstProWorkspace) {
+    actions.setActiveTeam({ id: firstProWorkspace.id });
+  } else if (state.personalWorkspaceId) {
     actions.setActiveTeam({ id: state.personalWorkspaceId });
   } else {
     const res = await effects.gql.queries.getPersonalWorkspaceId({});
