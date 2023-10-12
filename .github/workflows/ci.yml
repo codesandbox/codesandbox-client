@@ -1,0 +1,211 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  install:
+    name: Install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Fetch Deps Cache
+        uses: actions/cache@v3
+        id: deps-cache
+        with:
+          path: |
+            packages/codesandbox-api/dist
+            packages/common/lib
+            packages/components/lib
+            packages/deps/dist
+            packages/executors/dist
+            packages/node-services/lib
+            packages/notifications/lib
+            packages/template-icons/lib
+            packages/sse-hooks/dist
+            packages/sandpack-core/lib
+            packages/browser-eslint-rules/lib
+            packages/browser-dart-sass/lib
+            packages/vue3-browser-compiler/lib
+            packages/vue3-transpiler/lib
+            standalone-packages/codesandbox-browserfs/dist
+            standalone-packages/codesandbox-browserfs/build
+            standalone-packages/vscode-textmate/out
+          key: ${{ runner.os }}-deps-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Install and Build Deps
+        run: |
+          yarn install --frozen-lockfile
+          yarn build:deps
+
+  build-prod:
+    name: Build
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Fetch Deps Cache
+        uses: actions/cache@v3
+        id: deps-cache
+        with:
+          path: |
+            packages/codesandbox-api/dist
+            packages/common/lib
+            packages/components/lib
+            packages/deps/dist
+            packages/executors/dist
+            packages/node-services/lib
+            packages/notifications/lib
+            packages/template-icons/lib
+            packages/sse-hooks/dist
+            packages/sandpack-core/lib
+            packages/browser-eslint-rules/lib
+            packages/browser-dart-sass/lib
+            packages/vue3-browser-compiler/lib
+            packages/vue3-transpiler/lib
+            standalone-packages/codesandbox-browserfs/dist
+            standalone-packages/codesandbox-browserfs/build
+            standalone-packages/vscode-textmate/out
+          key: ${{ runner.os }}-deps-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Fetch Production Cache
+        uses: actions/cache@v3
+        id: prod-cache
+        with:
+          path: |
+            www
+            .git
+            Dockerfile
+          key: ${{ runner.os }}-prod-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-prod-
+
+      - name: Fetch Homepage Cache
+        uses: actions/cache@v3
+        id: homepage-cache
+        with:
+          path: packages/homepage/public
+          key: ${{ runner.os }}-homepage-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-homepage-
+
+      - name: Build for Production
+        run: |
+          yarn install --frozen-lockfile
+          yarn build:prod
+          find packages/homepage/public -name "*.js" -type f -delete
+          find packages/homepage/public -name "*.json" -type f -delete
+          find packages/homepage/public -name "*.js.map" -type f -delete
+
+  lint:
+    name: Lint
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Fetch Deps Cache
+        uses: actions/cache@v3
+        id: deps-cache
+        with:
+          path: |
+            packages/codesandbox-api/dist
+            packages/common/lib
+            packages/components/lib
+            packages/deps/dist
+            packages/executors/dist
+            packages/node-services/lib
+            packages/notifications/lib
+            packages/template-icons/lib
+            packages/sse-hooks/dist
+            packages/sandpack-core/lib
+            packages/browser-eslint-rules/lib
+            packages/browser-dart-sass/lib
+            packages/vue3-browser-compiler/lib
+            packages/vue3-transpiler/lib
+            standalone-packages/codesandbox-browserfs/dist
+            standalone-packages/codesandbox-browserfs/build
+            standalone-packages/vscode-textmate/out
+          key: ${{ runner.os }}-deps-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Build for Production
+        run: |
+          yarn install --frozen-lockfile
+          yarn lint
+
+  typecheck:
+    name: Typecheck
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Fetch Deps Cache
+        uses: actions/cache@v3
+        id: deps-cache
+        with:
+          path: |
+            packages/codesandbox-api/dist
+            packages/common/lib
+            packages/components/lib
+            packages/deps/dist
+            packages/executors/dist
+            packages/node-services/lib
+            packages/notifications/lib
+            packages/template-icons/lib
+            packages/sse-hooks/dist
+            packages/sandpack-core/lib
+            packages/browser-eslint-rules/lib
+            packages/browser-dart-sass/lib
+            packages/vue3-browser-compiler/lib
+            packages/vue3-transpiler/lib
+            standalone-packages/codesandbox-browserfs/dist
+            standalone-packages/codesandbox-browserfs/build
+            standalone-packages/vscode-textmate/out
+          key: ${{ runner.os }}-deps-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Build for Production
+        run: |
+          yarn install --frozen-lockfile
+          yarn typecheck

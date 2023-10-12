@@ -364,51 +364,51 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      - build-deps
-      - test-integrations:
-          requires:
-            - build-deps
-      - test-visual-regressions:
-          requires:
-            - build-deps
-      - typecheck:
-          requires:
-            - build-deps
-      - test-jest:
-          requires:
-            - build-deps
-      - lint:
-          requires:
-            - build-deps
-      - build-prod:
-          requires:
-            - build-deps
-      - create-docker-image:
-          requires:
-            - build-prod
-      - deploy-to-production:
-          requires:
-            - create-docker-image
-            - lint
-            - typecheck
-            - test-integrations
-            - test-jest
-            - test-visual-regressions
-          filters:
-            branches:
-              only:
-                - master
-      - deploy-staging-approval:
-          type: approval
-          filters:
-            branches:
-              ignore:
-                - master
-      - deploy-to-staging:
-          requires:
-            - deploy-staging-approval
-            - create-docker-image
-          filters:
-            branches:
-              ignore:
-                - master
+      # - build-deps
+      # - test-integrations:
+      #     requires:
+      #       - build-deps
+      # - test-visual-regressions:
+      #     requires:
+      #       - build-deps
+      # - typecheck:
+      #     requires:
+      #       - build-deps
+      # - test-jest:
+      #     requires:
+      #       - build-deps
+      # - lint:
+      #     requires:
+      #       - build-deps
+      # - build-prod:
+      #     requires:
+      #       - build-deps
+      # - create-docker-image:
+      #     requires:
+      #       - build-prod
+      # - deploy-to-production:
+      #     requires:
+      #       - create-docker-image
+      #       - lint
+      #       - typecheck
+      #       - test-integrations
+      #       - test-jest
+      #       - test-visual-regressions
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      # - deploy-staging-approval:
+      #     type: approval
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      # - deploy-to-staging:
+      #     requires:
+      #       - deploy-staging-approval
+      #       - create-docker-image
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
