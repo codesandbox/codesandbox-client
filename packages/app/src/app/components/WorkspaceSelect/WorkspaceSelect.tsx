@@ -30,8 +30,8 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const history = useHistory();
     const {
       isLegacyFreeTeam,
-      isLegacyPersonalPro,
       isInactiveTeam,
+      isPro,
     } = useWorkspaceSubscription();
 
     if (dashboard.teams.length === 0) return null;
@@ -108,7 +108,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 </Text>
 
                 {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
-                {isLegacyPersonalPro && <Badge variant="pro">Pro</Badge>}
+                {isPro && <Badge variant="pro">Pro</Badge>}
                 {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
               </Stack>
 
@@ -125,11 +125,10 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               }}
             >
               {workspaces.map(team => {
-                const {
-                  isPersonalProLegacy,
-                  isTeamFreeLegacy,
-                  isInactive,
-                } = determineSpecialBadges(team, state.environment.isOnPrem);
+                const { isTeamFreeLegacy, isInactive } = determineSpecialBadges(
+                  team,
+                  state.environment.isOnPrem
+                );
 
                 return (
                   <Stack
@@ -167,7 +166,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                       </Text>
 
                       {isTeamFreeLegacy && <Badge variant="trial">Free</Badge>}
-                      {isPersonalProLegacy && <Badge variant="pro">Pro</Badge>}
                       {isInactive && <Badge variant="neutral">Inactive</Badge>}
                     </Stack>
                   </Stack>

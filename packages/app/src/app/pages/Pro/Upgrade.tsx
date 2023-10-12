@@ -132,7 +132,7 @@ export const ProUpgrade = () => {
               <Text size={24}>{activeTeamInfo.name}</Text>
               {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
               {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
-              {isLegacyPersonalPro && <Badge variant="pro">Pro</Badge>}
+              {isPro && <Badge variant="pro">Pro</Badge>}
             </Stack>
 
             <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
