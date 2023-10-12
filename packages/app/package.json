@@ -277,7 +277,7 @@
     "@types/debug": "^4.1.1",
     "@types/gsap": "^1.20.1",
     "@types/jest": "24.0.13",
-    "@types/lodash-es": "^4.17.9",
+    "@types/lodash-es": "4.17.2",
     "@types/lru-cache": "^5.1.0",
     "@types/ot": "^0.0.3",
     "@types/phoenix": "^1.4.0",
