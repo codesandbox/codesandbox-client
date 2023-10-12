@@ -440,6 +440,7 @@ export const signOutClicked = async ({ state, effects, actions }: Context) => {
     actions.live.internal.disconnect();
   }
   await effects.api.signout();
+  effects.browser.storage.remove(TEAM_ID_LOCAL_STORAGE);
   identify('signed_in', false);
   document.cookie = 'signedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   document.cookie =
