@@ -131,6 +131,8 @@ export const RowItem: React.FC<RowItemProps> = ({
         minHeight: nestingLevel ? '32px' : '36px',
         paddingX: 0,
         opacity: isDragging && !canDrop ? 0.25 : 1,
+        display: 'flex',
+        flexDirection: 'column',
         color:
           isCurrentLink || (isDragging && canDrop)
             ? 'sideBar.foreground'

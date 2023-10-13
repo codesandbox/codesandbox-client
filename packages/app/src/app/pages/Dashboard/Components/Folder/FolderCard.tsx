@@ -32,10 +32,16 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
   showDropStyles,
   // drag preview
   thumbnailRef,
+
+  'data-selection-id': dataSelectionId,
   ...props
 }) => (
   <InteractiveOverlay>
-    <StyledCard dimmed={isDragging} selected={selected || showDropStyles}>
+    <StyledCard
+      data-selection-id={dataSelectionId}
+      dimmed={isDragging}
+      selected={selected || showDropStyles}
+    >
       <Stack justify="space-between">
         <Icon size={20} name="folder" color="#E3FF73" />
         {!isNewFolder ? (
