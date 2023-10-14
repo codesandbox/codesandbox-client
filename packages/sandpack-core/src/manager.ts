@@ -508,6 +508,14 @@ export default class Manager implements IEvaluator {
   }
 
   addTranspiledModule(module: Module, query: string = ''): TranspiledModule {
+    if (
+      this.transpiledModules[module.path] &&
+      this.transpiledModules[module.path].tModules[query] &&
+      this.transpiledModules[module.path].module.code === module.code
+    ) {
+      // fix: loaderContext.emitModule() may replace tModule directly
+      return this.transpiledModules[module.path].tModules[query];
+    }
     if (!this.transpiledModules[module.path]) {
       this.addModule(module);
     }
