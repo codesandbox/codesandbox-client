@@ -217,6 +217,8 @@ export const SandboxCard = ({
   // drag preview
   thumbnailRef,
   isDragging,
+
+  'data-selection-id': dataSelectionId,
   ...props
 }: SandboxItemComponentProps) => {
   const thumbnail = useSandboxThumbnail({
@@ -235,6 +237,7 @@ export const SandboxCard = ({
     <InteractiveOverlay>
       <StyledCard
         dimmed={isDragging}
+        data-selection-id={dataSelectionId}
         css={{
           overflow: 'hidden',
 
