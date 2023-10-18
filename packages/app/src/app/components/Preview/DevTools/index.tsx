@@ -13,6 +13,7 @@ import { problems } from './Problems';
 import { reactDevTools } from './React-Devtools';
 import { DevToolTabs } from './Tabs';
 import { terminal } from './Terminal';
+import { terminalUpgrade } from './TerminalUpgrade';
 import { tests } from './Tests';
 
 function unFocus(document, window) {
@@ -80,6 +81,7 @@ const VIEWS: IViews = {
   [tests.id]: tests,
   [terminal.id]: terminal,
   [reactDevTools.id]: reactDevTools,
+  [terminalUpgrade.id]: terminalUpgrade,
 };
 
 type Props = {
@@ -503,10 +505,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     } = this.props;
     const { hidden, height } = this.state;
 
-    // Filter out legacy panel that might be persisted
-    const panes = viewConfig.views.filter(
-      v => v.id !== 'codesandbox.terminalUpgrade'
-    );
+    const panes = viewConfig.views;
 
     return (
       <Container
@@ -544,6 +543,8 @@ export class DevTools extends React.PureComponent<Props, State> {
               closeTab={this.props.closeTab}
               disableLogging={disableLogging}
               isOnEmbedPage={this.props.isOnEmbedPage}
+              // @ts-ignore
+              isOnPrem={window._env_.IS_ONPREM === 'true'}
             />
 
             {!primary && (
