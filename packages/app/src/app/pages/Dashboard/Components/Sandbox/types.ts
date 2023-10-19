@@ -33,4 +33,6 @@ export interface SandboxItemComponentProps {
 
   thumbnailRef: React.Ref<HTMLDivElement>;
   isDragging: boolean;
+
+  'data-selection-id'?: string;
 }

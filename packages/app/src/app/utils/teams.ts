@@ -48,7 +48,11 @@ export const getTrialEligibleTeams = (teams: TeamFragmentDashboardFragment[]) =>
 export const determineSpecialBadges = (
   team: TeamFragmentDashboardFragment,
   isOnPrem = false
-) => {
+): {
+  isPersonalProLegacy: boolean;
+  isTeamFreeLegacy: boolean;
+  isInactive: boolean;
+} => {
   if (isOnPrem) {
     return {
       isPersonalProLegacy: false,

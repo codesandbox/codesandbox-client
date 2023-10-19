@@ -13,6 +13,7 @@ import {
   Text,
 } from '@codesandbox/components';
 import { useCreateCheckout, useDismissible } from 'app/hooks';
+import { SubscriptionStatus } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -27,7 +28,7 @@ const WRAP_WIDTH = 1320;
 
 export const UpgradeBanner: React.FC = () => {
   const history = useHistory();
-  const { userCanStartTrial } = useAppState();
+  const { userCanStartTrial, dashboard } = useAppState();
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
@@ -39,6 +40,13 @@ export const UpgradeBanner: React.FC = () => {
     isPro,
   } = useWorkspaceSubscription();
 
+  // If user has any pro workspace, don't show the banner
+  const userIsInProWorkspace = dashboard.teams.some(
+    team =>
+      team.subscription?.status === SubscriptionStatus.Active ||
+      team.subscription?.status === SubscriptionStatus.Trialing
+  );
+
   // Either the workspace is eligible for trial or user is on
   // a personal space and cand start a trial
   const trialAvailable =
@@ -47,7 +55,7 @@ export const UpgradeBanner: React.FC = () => {
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
-  if (isBannerDismissed || !hasVisited || isPro) {
+  if (userIsInProWorkspace || isBannerDismissed || !hasVisited || isPro) {
     return null;
   }
 

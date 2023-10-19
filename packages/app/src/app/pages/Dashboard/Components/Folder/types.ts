@@ -22,4 +22,6 @@ export interface FolderItemComponentProps {
   showDropStyles?: boolean;
   // drag preview
   thumbnailRef?: React.Ref<HTMLDivElement>;
+
+  'data-selection-id'?: string;
 }

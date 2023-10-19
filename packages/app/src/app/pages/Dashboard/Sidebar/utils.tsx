@@ -27,5 +27,6 @@ export const linkStyles = {
   alignItems: 'center',
   paddingLeft: 8,
   paddingRight: 8,
-  flexShrink: 0,
+  flex: 1,
+  color: 'inherit',
 };

@@ -106,7 +106,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
     const thumbnailElement = thumbnailRef.current;
     const thumbnailSize = React.useMemo(() => {
       if (!thumbnailElement) {
-        return { width: 0, height: 0 };
+        return { width: 318, height: 154 };
       }
 
       const thumbnailRect = thumbnailElement.getBoundingClientRect();
