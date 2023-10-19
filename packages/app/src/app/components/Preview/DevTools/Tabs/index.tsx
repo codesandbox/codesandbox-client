@@ -23,7 +23,6 @@ interface Props {
   views: IViews;
   disableLogging: boolean;
   isOnEmbedPage: boolean;
-  isOnPrem: boolean;
 }
 
 export const DevToolTabs = ({
@@ -39,7 +38,6 @@ export const DevToolTabs = ({
   disableLogging,
   status,
   isOnEmbedPage,
-  isOnPrem,
 }: Props) => {
   const currentPane = views[panes[currentPaneIndex].id];
   const actions =
@@ -56,7 +54,6 @@ export const DevToolTabs = ({
       <Tabs>
         {panes
           .filter(pane => (isOnEmbedPage ? !pane.hideOnEmbedPage : true))
-          .filter(pane => (isOnPrem ? !pane.hideOnEmbedPage : true))
           .map((pane, i) => {
             const active = !hidden && i === currentPaneIndex;
             const view = views[pane.id];
