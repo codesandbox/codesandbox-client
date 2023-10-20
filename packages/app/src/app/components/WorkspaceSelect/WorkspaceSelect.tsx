@@ -36,23 +36,15 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
 
     if (dashboard.teams.length === 0) return null;
 
-    const personalWorkspace = dashboard.teams.find(
-      t => t.type === TeamType.Personal
-    )!;
+    const primaryWorkspace = dashboard.teams.find(
+      t => t.id === state.primaryWorkspaceId
+    );
 
     const selectedTeam = dashboard.teams.find(t => t.id === selectedTeamId);
 
     const workspaces = [
-      personalWorkspace,
-      ...sortBy(
-        dashboard.teams.filter(
-          t =>
-            t.type === TeamType.Team &&
-            // New teams with no subscription information are automatically filtered out
-            !(t.legacy === false && t.subscription === null)
-        ),
-        t => t.name.toLowerCase()
-      ),
+      ...(primaryWorkspace ? [primaryWorkspace] : []),
+      ...sortBy(dashboard.teams, t => t.name.toLowerCase()),
     ];
 
     // The <Menu /> component doesn't have a callback like `onOpenChange`

@@ -17,7 +17,7 @@ export const ProPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
   const searchQuery = new URLSearchParams(location.search);
-  const { hasLoadedApp, isLoggedIn, personalWorkspaceId } = useAppState();
+  const { hasLoadedApp, isLoggedIn } = useAppState();
   const { isPaddle } = useWorkspaceSubscription();
 
   React.useEffect(() => {
@@ -31,10 +31,8 @@ export const ProPage: React.FC = () => {
   React.useEffect(() => {
     if (urlWorkspaceId) {
       setActiveTeam({ id: urlWorkspaceId });
-    } else {
-      setActiveTeam({ id: personalWorkspaceId });
     }
-  }, [urlWorkspaceId, personalWorkspaceId]);
+  }, [urlWorkspaceId]);
 
   if (hasLoadedApp && !isLoggedIn) {
     history.push(signInPageUrl('/pro'));

@@ -254,6 +254,7 @@ export type CurrentUser = {
   notificationPreferences: Maybe<NotificationPreferences>;
   notifications: Array<Notification>;
   personalWorkspaceId: Scalars['UUID4'];
+  primaryWorkspaceId: Scalars['UUID4'];
   provider: ProviderName;
   recentBranches: Array<Branch>;
   recentProjects: Array<Project>;
@@ -4239,7 +4240,7 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & Pick<
       CurrentUser,
-      'personalWorkspaceId' | 'eligibleForTrial'
+      'personalWorkspaceId' | 'primaryWorkspaceId' | 'eligibleForTrial'
     > & {
         workspaces: Array<
           { __typename?: 'Team' } & TeamFragmentDashboardFragment

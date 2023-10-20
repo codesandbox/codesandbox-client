@@ -6,17 +6,11 @@ import css from '@styled-system/css';
 
 import { Header } from '../../../Components/Header';
 import { TeamSettings } from './TeamSettings';
-import { UserSettings } from './UserSettings';
 
 import { GRID_MAX_WIDTH } from '../../../Components/VariableGrid/constants';
 
 export const Settings = () => {
-  const {
-    activeTeam,
-    user,
-    activeTeamInfo,
-    personalWorkspaceId,
-  } = useAppState();
+  const { activeTeam, user, activeTeamInfo } = useAppState();
 
   const {
     dashboard: { dashboardMounted },
@@ -34,12 +28,9 @@ export const Settings = () => {
     );
   }
 
-  const Component =
-    activeTeam === personalWorkspaceId ? UserSettings : TeamSettings;
-
   return (
     <Element css={css({ width: '100%', maxWidth: GRID_MAX_WIDTH })} marginY={7}>
-      <Component />
+      <TeamSettings />
     </Element>
   );
 };

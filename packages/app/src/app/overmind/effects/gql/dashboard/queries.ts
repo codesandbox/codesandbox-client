@@ -35,8 +35,6 @@ import {
   TeamDraftsQueryVariables,
   GetTeamReposQueryVariables,
   GetTeamReposQuery,
-  GetPersonalWorkspaceIdQuery,
-  GetPersonalWorkspaceIdQueryVariables,
   GetPrivateNpmRegistryQuery,
   GetPrivateNpmRegistryQueryVariables,
   _AlwaysOnTeamSandboxesQuery,
@@ -228,6 +226,7 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   query AllTeams {
     me {
       personalWorkspaceId
+      primaryWorkspaceId
       eligibleForTrial
       workspaces {
         ...teamFragmentDashboard
@@ -412,17 +411,6 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
     }
   }
   ${currentTeamInfoFragment}
-`;
-
-export const getPersonalWorkspaceId: Query<
-  GetPersonalWorkspaceIdQuery,
-  GetPersonalWorkspaceIdQueryVariables
-> = gql`
-  query getPersonalWorkspaceId {
-    me {
-      personalWorkspaceId
-    }
-  }
 `;
 
 export const getPrivateNpmRegistry: Query<

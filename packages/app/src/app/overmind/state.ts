@@ -34,6 +34,7 @@ type State = {
   user: CurrentUser | null;
   activeWorkspaceAuthorization: TeamMemberAuthorization;
   personalWorkspaceId: string | null;
+  primaryWorkspaceId: string | null;
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
   userCanStartTrial: boolean;

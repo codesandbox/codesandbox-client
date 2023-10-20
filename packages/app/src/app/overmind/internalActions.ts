@@ -581,22 +581,31 @@ export const setViewModeForDashboard = ({ effects, state }: Context) => {
   }
 };
 
-// TODO we could rename the function to initializeTeam (because we also use
-// personalWorkspaceId);
-export const setActiveWorkspaceFromUrlOrStore = async ({
+export const initializeActiveWorkspace = async ({
   actions,
-  effects,
+  state,
 }: Context) => {
   const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
 
   if (isValid && id) {
     // Set active team from url or storage.
     actions.setActiveTeam({ id });
+  } else if (state.primaryWorkspaceId) {
+    actions.setActiveTeam({ id: state.primaryWorkspaceId });
   } else {
-    // Change to first pro workspace or personal space if no pro exists
-    // TODO: In the future, the fallback will be the first workspace in
-    // the list, when no personal exists
-    actions.internal.inferWorkspaceFromUserData();
+    const firstWorkspace =
+      state.dashboard.teams.length > 0 ? state.dashboard.teams[0] : null;
+    const firstProWorkspace = state.dashboard.teams.find(
+      team =>
+        team.subscription?.status === SubscriptionStatus.Active ||
+        team.subscription?.status === SubscriptionStatus.Trialing
+    );
+
+    if (firstProWorkspace) {
+      actions.setActiveTeam({ id: firstProWorkspace.id });
+    } else if (firstWorkspace) {
+      actions.setActiveTeam({ id: firstWorkspace.id });
+    }
   }
 };
 
@@ -625,6 +634,7 @@ export const getTeamIdFromUrlOrStore = async ({
       // Also set state while we're at it
       state.dashboard.teams = teams.me.workspaces;
       state.personalWorkspaceId = teams.me.personalWorkspaceId;
+      state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
       state.userCanStartTrial = teams.me.eligibleForTrial;
     }
   }
@@ -658,33 +668,6 @@ export const getTeamIdFromLocalStorage = ({ effects }): string | null => {
   }
 
   return null;
-};
-
-/**
- * Infers the workspace if the URL or localStorage does not contain it
- */
-export const inferWorkspaceFromUserData = async ({
-  actions,
-  state,
-  effects,
-}: Context) => {
-  const firstProWorkspace = state.dashboard.teams.find(
-    team =>
-      team.subscription?.status === SubscriptionStatus.Active ||
-      team.subscription?.status === SubscriptionStatus.Trialing
-  );
-
-  if (firstProWorkspace) {
-    actions.setActiveTeam({ id: firstProWorkspace.id });
-  } else if (state.personalWorkspaceId) {
-    actions.setActiveTeam({ id: state.personalWorkspaceId });
-  } else {
-    const res = await effects.gql.queries.getPersonalWorkspaceId({});
-
-    if (res.me) {
-      actions.setActiveTeam({ id: res.me.personalWorkspaceId });
-    }
-  }
 };
 
 export const replaceWorkspaceParameterInUrl = ({ state }: Context) => {

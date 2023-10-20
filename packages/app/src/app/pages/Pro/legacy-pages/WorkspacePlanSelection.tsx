@@ -1,6 +1,5 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { useLocation } from 'react-router-dom';
 import {
   Element,
   Stack,
@@ -11,7 +10,7 @@ import {
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
-import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
+import { SubscriptionInterval } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { formatCurrency } from 'app/utils/currency';
@@ -28,19 +27,12 @@ import { UpsellTeamProCard } from '../components/UpsellTeamProCard';
 
 // TODO: Rename
 export const WorkspacePlanSelection: React.FC = () => {
+  const { activeTeam, activeTeamInfo, dashboard } = useAppState();
   const {
-    personalWorkspaceId,
-    activeTeam,
-    activeTeamInfo,
-    dashboard,
-  } = useAppState();
-  const {
-    setActiveTeam,
     modalOpened,
     pro: { setStep },
   } = useActions();
 
-  const location = useLocation();
   const {
     isPersonalSpace,
     isTeamSpace,
@@ -56,20 +48,6 @@ export const WorkspacePlanSelection: React.FC = () => {
     isInactiveTeam,
     isLegacyPersonalPro,
   } = useWorkspaceSubscription();
-
-  // Based on the 'type' search param we redirect to the personal pro page if
-  // it's not yet active.
-  const searchParams = new URLSearchParams(location.search);
-  const subTypeParam = searchParams.get('type') as SubscriptionType | null;
-
-  React.useEffect(
-    function switchToPersonalWorkspaceBasedOnParam() {
-      if (!isPersonalSpace && subTypeParam === SubscriptionType.PersonalPro) {
-        setActiveTeam({ id: personalWorkspaceId });
-      }
-    },
-    [isPersonalSpace, subTypeParam, setActiveTeam, personalWorkspaceId]
-  );
 
   // Q: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx?
   // A: It doesn't ever occur because before this component is rendered we check for
