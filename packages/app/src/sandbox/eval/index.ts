@@ -44,7 +44,7 @@ export default async function getPreset(template: string, pkg: PackageJSON) {
     }
     case preact.name:
       if (isPreact10(pkg.dependencies, pkg.devDependencies)) {
-        return preactPreset();
+        return preactPreset(pkg);
       }
       return preactPresetV8();
     case reason.name:

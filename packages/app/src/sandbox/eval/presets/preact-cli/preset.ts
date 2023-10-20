@@ -1,4 +1,5 @@
 import { Preset } from 'sandpack-core';
+import { PackageJSON } from '@codesandbox/common/lib/types';
 
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
@@ -7,10 +8,17 @@ import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
 import lessTranspiler from '../../transpilers/less';
+import prefreshTranspiler from './transpilers/refresh-transpiler';
+import { createRefreshEntry } from './utils/createRefreshEntry';
 
 import asyncTranspiler from './transpilers/async';
 
-export default function PreactPreset() {
+
+export default function PreactPreset(pkg: PackageJSON) {
+  const hasRefresh = pkg.devDependencies['@prefresh/core'];
+
+  // if(hasRefresh) console.log('prefresh enabled')
+
   const preactPreset = new Preset(
     'preact-cli',
     ['js', 'jsx', 'ts', 'tsx', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
@@ -21,6 +29,25 @@ export default function PreactPreset() {
       'react-dom': 'preact/compat',
       'create-react-class': 'preact/compat/lib/create-react-class',
       'react-addons-css-transition-group': 'preact-css-transition-group',
+    },
+    {
+      processDependencies: async originalDeps => {
+        const deps = { ...originalDeps };
+
+        if (!deps['@babel/runtime']) {
+          deps['@babel/runtime'] = '^7.3.4';
+        }
+
+        deps['@prefresh/utils'] = '1.2.0';
+        deps['@prefresh/core'] = '1.5.2';
+
+        return deps;
+      },
+      preEvaluate: async manager => {
+        if (hasRefresh) {
+          await createRefreshEntry(manager);
+        }
+      },
     }
   );
 
@@ -35,7 +62,13 @@ export default function PreactPreset() {
           // config is derived from babelrc at packages/common/src/templates/configuration/babelrc/index.ts
         },
       },
-    ]
+      hasRefresh
+        ? {
+            transpiler: prefreshTranspiler,
+            options: {},
+          }
+        : null,
+    ].filter(Boolean)
   );
 
   // For these routes we need to enable css modules
