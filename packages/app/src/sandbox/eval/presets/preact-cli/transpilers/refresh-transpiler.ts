@@ -165,7 +165,7 @@ if (moduleHot) {
         __prefresh_errors__.handleRuntimeError(error);
       }
 
-      require.cache[module.id].hot.accept(errorRecovery);
+      // require.cache[module.id].hot.accept(errorRecovery);
     });
   }
 }`.trim()
