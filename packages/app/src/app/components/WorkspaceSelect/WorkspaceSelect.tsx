@@ -1,6 +1,5 @@
 import React from 'react';
 import { useActions, useAppState } from 'app/overmind';
-import { TeamType } from 'app/graphql/types';
 import {
   Badge,
   Text,
@@ -26,7 +25,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
     const actions = useActions();
-    const { dashboard, user } = state;
+    const { dashboard } = state;
     const history = useHistory();
     const {
       isLegacyFreeTeam,
@@ -44,7 +43,10 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
 
     const workspaces = [
       ...(primaryWorkspace ? [primaryWorkspace] : []),
-      ...sortBy(dashboard.teams, t => t.name.toLowerCase()),
+      ...sortBy(
+        dashboard.teams.filter(t => t.id !== state.primaryWorkspaceId),
+        t => t.name.toLowerCase()
+      ),
     ];
 
     // The <Menu /> component doesn't have a callback like `onOpenChange`
@@ -138,11 +140,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     }}
                   >
                     <TeamAvatar
-                      avatar={
-                        team.type === TeamType.Personal && user
-                          ? user.avatarUrl
-                          : team.avatarUrl
-                      }
+                      avatar={team.avatarUrl}
                       name={team.name}
                       size="small"
                       style={{ overflow: 'hidden' }}

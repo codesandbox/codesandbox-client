@@ -162,7 +162,6 @@ export const currentTeamInfoFragment = gql`
     description
     inviteToken
     name
-    type
     avatarUrl
     legacy
     users {
