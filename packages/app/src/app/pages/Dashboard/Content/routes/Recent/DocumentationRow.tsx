@@ -1,7 +1,6 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ArticleCard, VideoCard } from '@codesandbox/components';
 import { blogUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
@@ -10,10 +9,7 @@ import React from 'react';
 type ArticleProps = React.ComponentProps<typeof ArticleCard>;
 type VideoProps = React.ComponentProps<typeof VideoCard>;
 
-type DocsItem = { label: string; workspaceType?: 'personal' | 'team' } & (
-  | VideoProps
-  | ArticleProps
-);
+type DocsItem = { label: string } & (VideoProps | ArticleProps);
 
 const DOCS: DocsItem[] = [
   {
@@ -38,7 +34,6 @@ const DOCS: DocsItem[] = [
     durationLabel: '5 minutes, 33 seconds',
     url: 'https://www.youtube.com/watch?v=HCs49B6VVl8',
     thumbnail: '/static/img/thumbnails/video_contribution-branches.png',
-    workspaceType: 'team',
   },
   {
     label: 'video_command-palette',
@@ -72,8 +67,6 @@ const DOCS: DocsItem[] = [
 ];
 
 export const DocumentationRow: React.FC = () => {
-  const { isPersonalSpace, isTeamSpace } = useWorkspaceAuthorization();
-
   const handleTrack = (label: string) => {
     track('Empty State Card - Content card', {
       codesandbox: 'V1',
@@ -82,14 +75,7 @@ export const DocumentationRow: React.FC = () => {
     });
   };
 
-  const items = DOCS.map(({ label, url, workspaceType, ...item }) => {
-    if (
-      (workspaceType === 'personal' && !isPersonalSpace) ||
-      (workspaceType === 'team' && !isTeamSpace)
-    ) {
-      return null;
-    }
-
+  const items = DOCS.map(({ label, url, ...item }) => {
     const urlWithTracking = appendOnboardingTracking(url);
 
     return {

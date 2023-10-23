@@ -5,22 +5,15 @@ import { useActions, useAppState } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
   const { environment } = useAppState();
-  const history = useHistory();
 
-  const {
-    isTeamSpace,
-    isPersonalSpace,
-    isTeamViewer,
-  } = useWorkspaceAuthorization();
+  const { isTeamViewer } = useWorkspaceAuthorization();
 
   const showRepositoryImport = !environment.isOnPrem;
-  const showProWorkspace = !environment.isOnPrem && isPersonalSpace;
 
   return (
     <Stack direction="vertical" gap={9}>
@@ -68,7 +61,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           </ButtonInverseLarge>
         )}
 
-        {isTeamSpace && !isTeamViewer ? (
+        {!isTeamViewer ? (
           <ButtonInverseLarge
             onClick={() => {
               track('Empty State Card - Invite members', {
@@ -83,21 +76,6 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
             }}
           >
             <Icon name="addMember" /> Invite team members
-          </ButtonInverseLarge>
-        ) : null}
-
-        {showProWorkspace ? (
-          <ButtonInverseLarge
-            onClick={() => {
-              track('Empty State Card - Create team', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-                card_type: 'get-started-action',
-              });
-              history.push('/pro');
-            }}
-          >
-            <Icon name="team" /> Create pro workspace
           </ButtonInverseLarge>
         ) : null}
       </EmptyPage.StyledGrid>

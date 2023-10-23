@@ -1,4 +1,4 @@
-import { TeamMemberAuthorization, TeamType } from 'app/graphql/types';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 
 type WorkspaceAuthorizationReturn = {
@@ -20,19 +20,15 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
     {};
 
   /**
-   * Personal states
+   * TODO: Remove when all references are cleaned
    */
 
-  const isPersonalSpace = activeTeamInfo?.type === TeamType.Personal;
-
-  /**
-   * User states
-   */
+  const isPersonalSpace = false;
 
   const isAdmin = authorization === TeamMemberAuthorization.Admin;
 
   /**
-   * Team states
+   * TODO: Remove when all references are cleaned
    */
 
   const isTeamSpace = activeTeamInfo !== null && !isPersonalSpace;

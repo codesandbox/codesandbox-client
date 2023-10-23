@@ -18,7 +18,6 @@ import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useActions, useAppState } from 'app/overmind';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
@@ -39,7 +38,6 @@ export const SuggestedRepositories = ({
   } = useAppState();
   const { modals, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHubPermissions();
-  const { isTeamSpace } = useWorkspaceAuthorization();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
   const [importsInProgress, setImportsInProgress] = useState<
     Array<{ owner: string; name: string }>
@@ -193,7 +191,7 @@ export const SuggestedRepositories = ({
                               repo.owner.login ===
                               githubAccounts?.data?.personal?.login;
 
-                            if (isPersonalRepository && isTeamSpace) {
+                            if (isPersonalRepository) {
                               track(
                                 `Suggested repos ${
                                   isImportOnly

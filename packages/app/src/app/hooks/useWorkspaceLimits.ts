@@ -1,7 +1,6 @@
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { folder, useControls } from 'leva';
-import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 import {
   SubscriptionDebugStatus,
   useWorkspaceSubscription,
@@ -9,7 +8,6 @@ import {
 
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const { activeTeamInfo } = useAppState();
-  const { isTeamSpace } = useWorkspaceAuthorization();
   const { isFree, isInactiveTeam } = useWorkspaceSubscription();
   const debugLimits = useControls('Limits', {
     debugLimits: folder(
@@ -55,9 +53,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       authorization === TeamMemberAuthorization.Write
   );
 
-  const numberOfEditors = isTeamSpace
-    ? editorOrAdminAuthorizations?.length || 1
-    : 1; // Personal
+  const numberOfEditors = editorOrAdminAuthorizations?.length || 1;
 
   if (isInactiveTeam) {
     return {

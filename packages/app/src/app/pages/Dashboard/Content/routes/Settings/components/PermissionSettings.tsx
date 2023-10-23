@@ -27,12 +27,7 @@ export const PermissionSettings = () => {
 
   const { activeTeam, environment } = useAppState();
   const { isFree, isPro } = useWorkspaceSubscription();
-  const {
-    isTeamSpace,
-    isBillingManager,
-    isAdmin,
-    isPersonalSpace,
-  } = useWorkspaceAuthorization();
+  const { isBillingManager, isAdmin } = useWorkspaceAuthorization();
 
   return (
     <Stack direction="vertical" gap={6}>
@@ -42,11 +37,11 @@ export const PermissionSettings = () => {
             You need a <Text weight="bold">Pro</Text> subscription to change
             sandbox permissions.
           </span>
-          {isBillingManager || isPersonalSpace ? (
+          {isBillingManager ? (
             <MessageStripe.Action
               as="a"
               href={proUrl({
-                ...(isPersonalSpace ? {} : { workspaceId: activeTeam }),
+                workspaceId: activeTeam,
                 source: 'dashboard_permission_settings',
               })}
               onClick={proTracking}
@@ -67,7 +62,7 @@ export const PermissionSettings = () => {
         </MessageStripe>
       ) : null}
 
-      {isPro && isTeamSpace && !isBillingManager ? (
+      {isPro && !isBillingManager ? (
         <Alert message="Please contact your admin to change sandbox permissions." />
       ) : null}
 
@@ -75,11 +70,11 @@ export const PermissionSettings = () => {
         <Column span={[12, 12, 6]}>
           <MinimumPrivacy disabled={isFree || !isAdmin} />
         </Column>
-        {!isPersonalSpace && (
-          <Column span={[12, 12, 6]}>
-            <SandboxSecurity disabled={isFree || !isBillingManager} />
-          </Column>
-        )}
+
+        <Column span={[12, 12, 6]}>
+          <SandboxSecurity disabled={isFree || !isBillingManager} />
+        </Column>
+
         {isPro && !environment.isOnPrem && (
           <Column span={[12, 12, 6]}>
             <AIPermission disabled={!isAdmin} />

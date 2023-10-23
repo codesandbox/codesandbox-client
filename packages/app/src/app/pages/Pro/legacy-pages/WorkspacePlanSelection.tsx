@@ -33,12 +33,7 @@ export const WorkspacePlanSelection: React.FC = () => {
     pro: { setStep },
   } = useActions();
 
-  const {
-    isPersonalSpace,
-    isTeamSpace,
-    isBillingManager,
-  } = useWorkspaceAuthorization();
-  // const isPersonalSpace = false; // DEBUG
+  const { isBillingManager } = useWorkspaceAuthorization();
   // const isBillingManager = true; // DEBUG
   const {
     subscription,
@@ -139,12 +134,7 @@ export const WorkspacePlanSelection: React.FC = () => {
               lineHeight="56px"
               margin={0}
             >
-              {isPro && isPersonalSpace
-                ? 'You have an active Personal Pro subscription'
-                : null}
-              {isPro && isTeamSpace
-                ? 'You have an active Pro subscription'
-                : null}
+              {isPro ? 'You have an active Pro subscription' : null}
               {isFree ? 'Upgrade for Pro features' : null}
             </Text>
           </Element>

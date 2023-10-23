@@ -19,7 +19,6 @@ import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
-import { useHistory } from 'react-router';
 import { useAppState } from 'app/overmind';
 
 // When flex wraps and the list of features
@@ -27,12 +26,11 @@ import { useAppState } from 'app/overmind';
 const WRAP_WIDTH = 1320;
 
 export const UpgradeBanner: React.FC = () => {
-  const history = useHistory();
-  const { userCanStartTrial, dashboard } = useAppState();
+  const { dashboard } = useAppState();
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
-  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const {
     isEligibleForTrial,
     isInactiveTeam,
@@ -47,10 +45,6 @@ export const UpgradeBanner: React.FC = () => {
       team.subscription?.status === SubscriptionStatus.Trialing
   );
 
-  // Either the workspace is eligible for trial or user is on
-  // a personal space and cand start a trial
-  const trialAvailable =
-    (isPersonalSpace && userCanStartTrial) || isEligibleForTrial;
   const { hasVisited } = useDashboardVisit();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
@@ -92,27 +86,6 @@ export const UpgradeBanner: React.FC = () => {
       );
     }
 
-    // Banner only shows for personal space, to upsell the pro workspaces
-    // Takes the user to the /pro page
-    if (isPersonalSpace) {
-      return (
-        <Button
-          css={{ padding: '4px 20px' }}
-          onClick={() => {
-            track('Home Banner - Start trial from personal workspace', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-
-            history.push('/pro');
-          }}
-          autoWidth
-        >
-          {userCanStartTrial ? 'Start 14-day free trial' : 'Upgrade'}
-        </Button>
-      );
-    }
-
     return null;
   };
 
@@ -121,7 +94,7 @@ export const UpgradeBanner: React.FC = () => {
       return 'Reactivate Pro';
     }
 
-    if (trialAvailable) {
+    if (isEligibleForTrial) {
       return 'Try Pro for free';
     }
 
@@ -165,7 +138,7 @@ export const UpgradeBanner: React.FC = () => {
                 {renderMainCTA()}
                 <Link
                   href={
-                    trialAvailable
+                    isEligibleForTrial
                       ? SUBSCRIPTION_DOCS_URLS.teams.trial
                       : SUBSCRIPTION_DOCS_URLS.teams.non_trial
                   }

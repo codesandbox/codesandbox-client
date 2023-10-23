@@ -23,7 +23,6 @@ import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH } from './constants';
 import { UpgradeFreeTeamToPro } from './BottomMessages/UpgradeFreeTeamToPro';
 import { TrialExpiring } from './BottomMessages/TrialExpiring';
-import { CreateProWorkspace } from './BottomMessages/CreateProWorkspace';
 import { StartTrial } from './BottomMessages/StartTrial';
 import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
@@ -91,11 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
   const showRespositories = !state.environment.isOnPrem;
 
-  const {
-    isPersonalSpace,
-    isTeamSpace,
-    isBillingManager,
-  } = useWorkspaceAuthorization();
+  const { isPersonalSpace, isBillingManager } = useWorkspaceAuthorization();
 
   const {
     subscription,
@@ -310,19 +305,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Element marginTop={3} />
         </List>
 
-        {teamDataLoaded && isFree ? (
+        {teamDataLoaded && isFree && isBillingManager ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isTeamSpace && isBillingManager && isEligibleForTrial ? (
+            {isEligibleForTrial ? (
               <StartTrial activeTeam={activeTeam} />
-            ) : null}
-
-            {isTeamSpace && !isEligibleForTrial ? (
+            ) : (
               <UpgradeFreeTeamToPro activeTeam={activeTeam} />
-            ) : null}
-
-            {isPersonalSpace ? (
-              <CreateProWorkspace userCanStartTrial={state.userCanStartTrial} />
-            ) : null}
+            )}
           </Element>
         ) : null}
 

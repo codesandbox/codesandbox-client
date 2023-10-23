@@ -18,7 +18,7 @@ const getEventName = (
 
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
@@ -35,13 +35,9 @@ export const PrivateRepoFreeTeam: React.FC = () => {
               event_source: 'UI',
             });
 
-            if (isPersonalSpace) {
-              window.location.href = '/pro';
-            } else {
-              createCheckout({
-                trackingLocation: 'dashboard_private_repo_upgrade',
-              });
-            }
+            createCheckout({
+              trackingLocation: 'dashboard_private_repo_upgrade',
+            });
           }}
         >
           {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -22,7 +21,7 @@ export const LiveSessionRestricted: React.FC = () => {
       currentSandbox: { id },
     },
   } = useAppState();
-  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
@@ -47,42 +46,31 @@ export const LiveSessionRestricted: React.FC = () => {
           >
             Learn more
           </Button>
-          {isPersonalSpace ? (
-            <Button
-              as="a"
-              href={proUrl({ source: 'v1_live_session_upgrade' })}
-              variant="primary"
-              autoWidth
-            >
-              Upgrade to Pro
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              disabled={disabled}
-              onClick={() => {
-                if (isEligibleForTrial) {
-                  const event = 'Live Session - trial clicked';
-                  track(
-                    isBillingManager ? event : `${event} - As non-admin`,
-                    EVENT_PARAMS
-                  );
-                } else {
-                  track('Live Session - upgrade clicked', EVENT_PARAMS);
-                }
+          <Button
+            variant="primary"
+            disabled={disabled}
+            onClick={() => {
+              if (isEligibleForTrial) {
+                const event = 'Live Session - trial clicked';
+                track(
+                  isBillingManager ? event : `${event} - As non-admin`,
+                  EVENT_PARAMS
+                );
+              } else {
+                track('Live Session - upgrade clicked', EVENT_PARAMS);
+              }
 
-                createCheckout({
-                  cancelPath: sandboxUrl({ id }),
-                  trackingLocation: 'v1_live_session_upgrade',
-                });
-              }}
-              autoWidth
-            >
-              <Text>
-                {isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro'}
-              </Text>
-            </Button>
-          )}
+              createCheckout({
+                cancelPath: sandboxUrl({ id }),
+                trackingLocation: 'v1_live_session_upgrade',
+              });
+            }}
+            autoWidth
+          >
+            <Text>
+              {isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro'}
+            </Text>
+          </Button>
         </Stack>
       ) : (
         <Stack direction="vertical" gap={6}>
