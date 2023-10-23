@@ -2,6 +2,7 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { BACKTICK } from '@codesandbox/common/lib/utils/keycodes';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
 import { DevTools } from 'app/components/Preview/DevTools';
+import { terminalUpgrade } from 'app/components/Preview/DevTools/TerminalUpgrade';
 import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
 import useKey from 'react-use/lib/useKey';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -219,6 +220,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     devToolsOpen={devToolsOpen}
                     addedViews={{
                       'codesandbox.browser': browserConfig,
+                      'codesandbox.terminalUpgrade': terminalUpgrade,
                     }}
                     setDragging={dragging => {
                       if (dragging) {
