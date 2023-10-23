@@ -581,16 +581,19 @@ export const setViewModeForDashboard = ({ effects, state }: Context) => {
   }
 };
 
-export const initializeActiveWorkspace = async ({
-  actions,
-  state,
-}: Context) => {
+export const initializeActiveWorkspace = async ({ actions }: Context) => {
   const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
 
   if (isValid && id) {
     // Set active team from url or storage.
     actions.setActiveTeam({ id });
-  } else if (state.primaryWorkspaceId) {
+  } else {
+    actions.internal.setFallbackWorkspace();
+  }
+};
+
+export const setFallbackWorkspace = ({ actions, state }: Context) => {
+  if (state.primaryWorkspaceId) {
     actions.setActiveTeam({ id: state.primaryWorkspaceId });
   } else {
     const firstWorkspace =
@@ -605,6 +608,8 @@ export const initializeActiveWorkspace = async ({
       actions.setActiveTeam({ id: firstProWorkspace.id });
     } else if (firstWorkspace) {
       actions.setActiveTeam({ id: firstWorkspace.id });
+    } else {
+      // TODO: Redirect to workspace setup
     }
   }
 };
@@ -633,7 +638,6 @@ export const getTeamIdFromUrlOrStore = async ({
 
       // Also set state while we're at it
       state.dashboard.teams = teams.me.workspaces;
-      state.personalWorkspaceId = teams.me.personalWorkspaceId;
       state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
       state.userCanStartTrial = teams.me.eligibleForTrial;
     }

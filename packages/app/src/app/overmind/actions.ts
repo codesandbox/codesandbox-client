@@ -550,7 +550,7 @@ export const setActiveTeam = async (
       await actions.getActiveTeamInfo();
     } catch (e) {
       // Reset the active workspace if something goes wrong
-      actions.internal.initializeActiveWorkspace();
+      actions.internal.setFallbackWorkspace();
     }
   }
 
