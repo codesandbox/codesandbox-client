@@ -90,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
   const showRespositories = !state.environment.isOnPrem;
 
-  const { isPersonalSpace, isBillingManager } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   const {
     subscription,
@@ -194,22 +194,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="clock"
           />
 
-          {isPersonalSpace && (
-            <RowItem
-              name="Shared with me"
-              page="shared"
-              path={dashboardUrls.shared(activeTeam)}
-              icon="sharing"
-            />
-          )}
-          {isPersonalSpace && (
-            <RowItem
-              name="Likes"
-              page="liked"
-              path={dashboardUrls.liked(activeTeam)}
-              icon="heart"
-            />
-          )}
+          <RowItem
+            name="Shared with me"
+            page="shared"
+            path={dashboardUrls.shared(activeTeam)}
+            icon="sharing"
+          />
+
+          <RowItem
+            name="Likes"
+            page="liked"
+            path={dashboardUrls.liked(activeTeam)}
+            icon="heart"
+          />
+
           {showRespositories && (
             <>
               <Element marginTop={4} />
@@ -222,14 +220,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   Repositories
                 </Text>
               </Element>
-              {isPersonalSpace && (
-                <RowItem
-                  name="My contributions"
-                  page="my-contributions"
-                  path={dashboardUrls.myContributions(activeTeam)}
-                  icon="contribution"
-                />
-              )}
+
+              <RowItem
+                name="My contributions"
+                page="my-contributions"
+                path={dashboardUrls.myContributions(activeTeam)}
+                icon="contribution"
+              />
+
               <RowItem
                 name="All repositories"
                 page="repositories"

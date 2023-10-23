@@ -1,5 +1,4 @@
 import React from 'react';
-import { format } from 'date-fns';
 import {
   Element,
   Stack,
@@ -15,7 +14,6 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { formatCurrency } from 'app/utils/currency';
 import {
-  PERSONAL_PRO_FEATURES,
   TEAM_PRO_FEATURES,
   ORG_FEATURES,
   ORGANIZATION_CONTACT_LINK,
@@ -23,13 +21,11 @@ import {
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
 import { StyledPricingDetailsText } from '../components/elements';
-import { UpsellTeamProCard } from '../components/UpsellTeamProCard';
 
 // TODO: Rename
 export const WorkspacePlanSelection: React.FC = () => {
   const { activeTeam, activeTeamInfo, dashboard } = useAppState();
   const {
-    modalOpened,
     pro: { setStep },
   } = useActions();
 
@@ -41,7 +37,6 @@ export const WorkspacePlanSelection: React.FC = () => {
     isFree,
     isLegacyFreeTeam,
     isInactiveTeam,
-    isLegacyPersonalPro,
   } = useWorkspaceSubscription();
 
   // Q: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx?
@@ -49,14 +44,6 @@ export const WorkspacePlanSelection: React.FC = () => {
   // isPaddle or isPatron which are part of activeTeam. However, we can't guarantee
   // that this comopnent will only be used there so we will keep this check for now.
   if (!activeTeam || !dashboard.teams.length) return null;
-
-  const personalProCta: CTA = {
-    text: 'Manage subscription',
-    onClick: () => {
-      modalOpened({ modal: 'legacyPayment' });
-    },
-    variant: 'light',
-  };
 
   const teamProCta: CTA =
     // eslint-disable-next-line no-nested-ternary
@@ -121,7 +108,7 @@ export const WorkspacePlanSelection: React.FC = () => {
             <Text size={24}>{activeTeamInfo.name}</Text>
             {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
             {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
-            {isLegacyPersonalPro && <Badge variant="pro">Pro</Badge>}
+            {isPro && <Badge variant="pro">Pro</Badge>}
           </Stack>
 
           <Element css={{ maxWidth: '976px', textAlign: 'center' }}>
@@ -155,81 +142,43 @@ export const WorkspacePlanSelection: React.FC = () => {
             },
           }}
         >
-          {isLegacyPersonalPro ? (
-            <>
-              <SubscriptionCard
-                title={
-                  <Stack gap={2}>
-                    <Text>Personal</Text>
-                    <Badge variant="pro">Pro</Badge>
-                  </Stack>
-                }
-                features={PERSONAL_PRO_FEATURES}
-                cta={personalProCta}
-                isHighlighted
-              >
-                <Stack gap={1} direction="vertical">
-                  <Text size={32} weight="500">
+          <SubscriptionCard
+            title="Pro"
+            features={TEAM_PRO_FEATURES}
+            cta={teamProCta}
+            isHighlighted
+          >
+            <Stack gap={1} direction="vertical">
+              <Text size={32} weight="500">
+                {subscription ? (
+                  getPrice({ perEditor: true })
+                ) : (
+                  <SkeletonText css={{ width: '60px', height: '40px' }} />
+                )}
+              </Text>
+              <Text>
+                <div>per editor{isBillingManager ? ',' : null}</div>
+                {isBillingManager ? (
+                  <div>
+                    a total of{' '}
                     {subscription ? (
                       getPrice()
                     ) : (
-                      <SkeletonText css={{ width: '60px', height: '40px' }} />
-                    )}
-                  </Text>
-                  {isYearlyInterval ? (
-                    <StyledPricingDetailsText>
-                      charged annually on{' '}
-                      {format(new Date(subscription.nextBillDate), 'MMM dd')}
-                    </StyledPricingDetailsText>
-                  ) : (
-                    <StyledPricingDetailsText>
-                      charged on the{' '}
-                      {format(new Date(subscription.nextBillDate), 'do')} of
-                      each month
-                    </StyledPricingDetailsText>
-                  )}
-                </Stack>
-              </SubscriptionCard>
-              <UpsellTeamProCard trackingLocation="legacy subscription page" />
-            </>
-          ) : (
-            <SubscriptionCard
-              title="Pro"
-              features={TEAM_PRO_FEATURES}
-              cta={teamProCta}
-              isHighlighted
-            >
-              <Stack gap={1} direction="vertical">
-                <Text size={32} weight="500">
-                  {subscription ? (
-                    getPrice({ perEditor: true })
-                  ) : (
-                    <SkeletonText css={{ width: '60px', height: '40px' }} />
-                  )}
-                </Text>
-                <Text>
-                  <div>per editor{isBillingManager ? ',' : null}</div>
-                  {isBillingManager ? (
-                    <div>
-                      a total of{' '}
-                      {subscription ? (
-                        getPrice()
-                      ) : (
-                        <SkeletonText
-                          css={{
-                            display: 'inline-block',
-                            marginBottom: '-4px',
-                            width: '20px',
-                          }}
-                        />
-                      )}{' '}
-                      will be billed each {isYearlyInterval ? 'year' : 'month'}
-                    </div>
-                  ) : null}
-                </Text>
-              </Stack>
-            </SubscriptionCard>
-          )}
+                      <SkeletonText
+                        css={{
+                          display: 'inline-block',
+                          marginBottom: '-4px',
+                          width: '20px',
+                        }}
+                      />
+                    )}{' '}
+                    will be billed each {isYearlyInterval ? 'year' : 'month'}
+                  </div>
+                ) : null}
+              </Text>
+            </Stack>
+          </SubscriptionCard>
+
           <SubscriptionCard
             title="Organization"
             features={ORG_FEATURES}

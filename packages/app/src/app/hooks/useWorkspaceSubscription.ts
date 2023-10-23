@@ -16,8 +16,7 @@ export enum SubscriptionDebugStatus {
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { activeTeamInfo, userCanStartTrial, environment } = useAppState();
-  const { isTeamSpace, isBillingManager } = useWorkspaceAuthorization();
-  const isPersonalSpace = !isTeamSpace;
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
 
@@ -49,10 +48,10 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   if (!subscription) {
     return {
       ...NO_SUBSCRIPTION,
-      isLegacyFreeTeam: isTeamSpace && activeTeamInfo.legacy,
+      isLegacyFreeTeam: activeTeamInfo.legacy,
       isEligibleForTrial: userCanStartTrial,
       // If no subscription, all non-legacy teams without subscription are inactive
-      isInactiveTeam: isTeamSpace && !activeTeamInfo.legacy,
+      isInactiveTeam: !activeTeamInfo.legacy,
       numberOfSeats: activeTeamInfo.limits.maxEditors ?? MAX_TEAM_FREE_EDITORS,
     };
   }
@@ -66,24 +65,21 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isFree = !isPro;
 
   const isInactiveTeam =
-    isTeamSpace &&
     !isLegacySpace &&
     (subscription.status === SubscriptionStatus.Cancelled ||
       subscription.status === SubscriptionStatus.IncompleteExpired);
 
-  const isLegacyPersonalPro = isPro && isPersonalSpace && isLegacySpace;
-  const isLegacyFreeTeam = isFree && isTeamSpace && isLegacySpace;
+  const isLegacyFreeTeam = isFree && isLegacySpace;
   const isEligibleForTrial =
     userCanStartTrial && isLegacyFreeTeam && isBillingManager;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
 
   const hasActiveTeamTrial =
-    isTeamSpace && subscription.status === SubscriptionStatus.Trialing;
+    subscription.status === SubscriptionStatus.Trialing;
 
   const today = startOfToday();
   const hasExpiredTeamTrial =
-    isTeamSpace && // is a team
     subscription.status !== SubscriptionStatus.Active && // the subscription isn't active
     !hasPaymentMethod && // there's no payment method attached
     isBefore(new Date(subscription.trialEnd), today); // the trial ended before today;
@@ -103,7 +99,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     isEligibleForTrial,
     isPro,
     isFree,
-    isLegacyPersonalPro,
     isLegacyFreeTeam,
     isInactiveTeam,
     hasActiveTeamTrial,
@@ -119,7 +114,6 @@ const NO_WORKSPACE = {
   numberOfSeats: undefined,
   isPro: undefined,
   isFree: undefined,
-  isLegacyPersonalPro: undefined,
   isLegacyFreeTeam: undefined,
   isInactiveTeam: undefined,
   isEligibleForTrial: undefined,
@@ -134,7 +128,6 @@ const NO_SUBSCRIPTION = {
   subscription: null,
   isPro: false,
   isFree: true,
-  isLegacyPersonalPro: false,
   isLegacyFreeTeam: false,
   isInactiveTeam: false,
   hasActiveTeamTrial: false,
@@ -155,7 +148,6 @@ export type WorkspaceSubscriptionReturn =
       numberOfSeats: number;
       isPro: boolean;
       isFree: boolean;
-      isLegacyPersonalPro: boolean;
       isLegacyFreeTeam: boolean;
       isInactiveTeam: boolean;
       isEligibleForTrial: boolean;

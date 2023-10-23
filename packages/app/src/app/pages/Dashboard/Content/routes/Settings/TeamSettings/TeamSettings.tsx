@@ -47,7 +47,7 @@ export const TeamSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation personal={false} teamId={activeTeam} />
+          <SettingNavigation teamId={activeTeam} />
 
           {activeTeam === activeTeamInfo.id ? (
             <BrowserRouter>

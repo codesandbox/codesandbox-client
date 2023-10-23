@@ -4,8 +4,6 @@ import { useAppState } from 'app/overmind';
 type WorkspaceAuthorizationReturn = {
   isAdmin: boolean;
   isBillingManager: boolean;
-  isPersonalSpace: boolean;
-  isTeamSpace: boolean;
   isTeamAdmin: boolean;
   isTeamEditor: boolean;
   isTeamViewer: boolean;
@@ -20,32 +18,20 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
     {};
 
   /**
-   * TODO: Remove when all references are cleaned
+   * TODO: Drop the team prefix from all these flags and replace all ocurrences
    */
-
-  const isPersonalSpace = false;
 
   const isAdmin = authorization === TeamMemberAuthorization.Admin;
 
-  /**
-   * TODO: Remove when all references are cleaned
-   */
+  const isTeamAdmin = isAdmin;
 
-  const isTeamSpace = activeTeamInfo !== null && !isPersonalSpace;
+  const isTeamEditor = authorization === TeamMemberAuthorization.Write;
 
-  const isTeamAdmin = isTeamSpace && isAdmin;
-
-  const isTeamEditor =
-    isTeamSpace && authorization === TeamMemberAuthorization.Write;
-
-  const isTeamViewer =
-    isTeamSpace && authorization === TeamMemberAuthorization.Read;
+  const isTeamViewer = authorization === TeamMemberAuthorization.Read;
 
   return {
     isBillingManager: Boolean(teamManager) || isAdmin,
     isAdmin,
-    isPersonalSpace,
-    isTeamSpace,
     isTeamAdmin,
     isTeamEditor,
     isTeamViewer,

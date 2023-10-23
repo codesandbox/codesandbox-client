@@ -6,19 +6,16 @@ import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Header } from '../../../../Components/Header';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
 } from '../../../../Components/VariableGrid/constants';
-import { SettingNavigation } from '../components/Navigation';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { PermissionSettings } from '../components/PermissionSettings';
 
 export const UserSettings = () => {
   const { activeTeam, activeTeamInfo } = useAppState();
-  const { isLegacyPersonalPro } = useWorkspaceSubscription();
   const location = useLocation();
 
   return (
@@ -43,10 +40,6 @@ export const UserSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          {isLegacyPersonalPro && (
-            <SettingNavigation personal teamId={activeTeam} />
-          )}
-
           {activeTeam === activeTeamInfo.id ? (
             <BrowserRouter>
               <Switch location={location}>
