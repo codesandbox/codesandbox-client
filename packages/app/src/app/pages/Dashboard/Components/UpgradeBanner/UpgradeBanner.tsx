@@ -13,36 +13,26 @@ import {
   Text,
 } from '@codesandbox/components';
 import { useCreateCheckout, useDismissible } from 'app/hooks';
-import { SubscriptionStatus } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
-import { useAppState } from 'app/overmind';
 
 // When flex wraps and the list of features
 // is shown below the call to action.
 const WRAP_WIDTH = 1320;
 
 export const UpgradeBanner: React.FC = () => {
-  const { dashboard } = useAppState();
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
   const { isEligibleForTrial, isPro } = useWorkspaceSubscription();
 
-  // If user has any pro workspace, don't show the banner
-  const userIsInProWorkspace = dashboard.teams.some(
-    team =>
-      team.subscription?.status === SubscriptionStatus.Active ||
-      team.subscription?.status === SubscriptionStatus.Trialing
-  );
-
   const { hasVisited } = useDashboardVisit();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
-  if (userIsInProWorkspace || isBannerDismissed || !hasVisited || isPro) {
+  if (isBannerDismissed || !hasVisited || isPro) {
     return null;
   }
 

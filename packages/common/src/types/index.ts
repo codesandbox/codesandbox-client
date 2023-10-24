@@ -383,7 +383,6 @@ export type SandboxAuthor = {
   badges: Badge[];
   subscriptionSince: string | null;
   subscriptionPlan: 'pro' | 'patron';
-  personalWorkspaceId: string;
 };
 
 export type NpmRegistry = {

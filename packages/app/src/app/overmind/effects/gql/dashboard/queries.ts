@@ -225,7 +225,6 @@ export const ownedTemplates: Query<
 export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   query AllTeams {
     me {
-      personalWorkspaceId
       primaryWorkspaceId
       eligibleForTrial
       workspaces {
