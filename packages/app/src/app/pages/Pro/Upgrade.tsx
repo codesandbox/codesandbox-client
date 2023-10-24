@@ -39,12 +39,7 @@ export const ProUpgrade = () => {
     isLoggedIn,
   } = useAppState();
   const { isBillingManager } = useWorkspaceAuthorization();
-  const {
-    isFree,
-    isPro,
-    isLegacyFreeTeam,
-    isInactiveTeam,
-  } = useWorkspaceSubscription();
+  const { isFree, isPro } = useWorkspaceSubscription();
 
   /**
    * There is currently no way to know if teams have a custom subscription. This means we will
@@ -117,8 +112,6 @@ export const ProUpgrade = () => {
           <Stack gap={3} direction="vertical" align="center">
             <Stack gap={2} direction="horizontal" align="center">
               <Text size={24}>{activeTeamInfo.name}</Text>
-              {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
-              {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
               {isPro && <Badge variant="pro">Pro</Badge>}
             </Stack>
 

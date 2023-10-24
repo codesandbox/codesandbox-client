@@ -27,11 +27,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const actions = useActions();
     const { dashboard } = state;
     const history = useHistory();
-    const {
-      isLegacyFreeTeam,
-      isInactiveTeam,
-      isPro,
-    } = useWorkspaceSubscription();
+    const { isPro } = useWorkspaceSubscription();
 
     if (dashboard.teams.length === 0) return null;
 
@@ -101,9 +97,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   {selectedTeam?.name}
                 </Text>
 
-                {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
                 {isPro && <Badge variant="pro">Pro</Badge>}
-                {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
               </Stack>
 
               <Icon name="chevronDown" size={8} />

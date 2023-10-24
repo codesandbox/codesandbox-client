@@ -8,7 +8,7 @@ import {
 
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const { activeTeamInfo } = useAppState();
-  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
+  const { isFree } = useWorkspaceSubscription();
   const debugLimits = useControls('Limits', {
     debugLimits: folder(
       {
@@ -54,17 +54,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   );
 
   const numberOfEditors = editorOrAdminAuthorizations?.length || 1;
-
-  if (isInactiveTeam) {
-    return {
-      numberOfEditors,
-      hasMaxNumberOfEditors: undefined,
-      numberOfEditorsIsOverTheLimit: undefined,
-      hasMaxPublicRepositories: undefined,
-      hasMaxPrivateRepositories: undefined,
-      hasMaxPublicSandboxes: undefined,
-    };
-  }
 
   const hasMaxNumberOfEditors =
     debugLimits?.restrictEditors ||

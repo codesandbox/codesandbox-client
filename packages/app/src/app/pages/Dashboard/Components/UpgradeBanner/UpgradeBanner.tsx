@@ -16,7 +16,6 @@ import { useCreateCheckout, useDismissible } from 'app/hooks';
 import { SubscriptionStatus } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { useAppState } from 'app/overmind';
@@ -30,13 +29,7 @@ export const UpgradeBanner: React.FC = () => {
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
-  const { isBillingManager } = useWorkspaceAuthorization();
-  const {
-    isEligibleForTrial,
-    isInactiveTeam,
-    isLegacyFreeTeam,
-    isPro,
-  } = useWorkspaceSubscription();
+  const { isEligibleForTrial, isPro } = useWorkspaceSubscription();
 
   // If user has any pro workspace, don't show the banner
   const userIsInProWorkspace = dashboard.teams.some(
@@ -56,27 +49,19 @@ export const UpgradeBanner: React.FC = () => {
   const renderMainCTA = () => {
     // Dealing with workspaces that can upgrade to Pro
     // Go directly to the stripe page for the checkout
-    if (canCheckout && (isInactiveTeam || isLegacyFreeTeam)) {
+    if (canCheckout) {
       return (
         <Button
           disabled={checkout.status === 'loading'}
           css={{ padding: '4px 20px' }}
           onClick={() => {
-            if (isLegacyFreeTeam) {
-              const event = 'Home Banner - Start trial';
-              track(isBillingManager ? event : `${event} - As non-admin`, {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-            } else {
-              track('Home Banner - Upgrade', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-            }
+            track('Home Banner - Upgrade', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
 
             createCheckout({
-              trackingLocation: 'restrictions_banner',
+              trackingLocation: 'dashboard_upgrade_banner',
             });
           }}
           autoWidth
@@ -90,10 +75,6 @@ export const UpgradeBanner: React.FC = () => {
   };
 
   const renderTitle = () => {
-    if (isInactiveTeam) {
-      return 'Reactivate Pro';
-    }
-
     if (isEligibleForTrial) {
       return 'Try Pro for free';
     }

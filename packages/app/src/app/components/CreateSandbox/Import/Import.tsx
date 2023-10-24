@@ -28,7 +28,6 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 
-import { InactiveTeam } from './InactiveTeam';
 import { MaxPublicRepos } from './MaxPublicRepos';
 import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
 import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
@@ -89,7 +88,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     dashboard: { importGitHubRepository },
   } = useActions();
 
-  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
+  const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
 
   // Use a variable instead of `loading` from `useLazyQuery` because
@@ -173,8 +172,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const hasExistingImports =
     existingRepositoryTeams && existingRepositoryTeams.length >= 1;
 
-  const disableImport =
-    hasMaxPublicRepositories || restrictsPublicRepos || isInactiveTeam;
+  const disableImport = hasMaxPublicRepositories || restrictsPublicRepos;
 
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -264,7 +262,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           </Text>
         </Stack>
 
-        {isInactiveTeam ? <InactiveTeam /> : null}
         {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
         {restrictsPublicRepos ? <RestrictedPublicReposImport /> : null}
         <Element>

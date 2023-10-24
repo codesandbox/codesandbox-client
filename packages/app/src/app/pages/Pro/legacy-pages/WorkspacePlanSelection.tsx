@@ -31,13 +31,7 @@ export const WorkspacePlanSelection: React.FC = () => {
 
   const { isBillingManager } = useWorkspaceAuthorization();
   // const isBillingManager = true; // DEBUG
-  const {
-    subscription,
-    isPro,
-    isFree,
-    isLegacyFreeTeam,
-    isInactiveTeam,
-  } = useWorkspaceSubscription();
+  const { subscription, isPro, isFree } = useWorkspaceSubscription();
 
   // Q: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx?
   // A: It doesn't ever occur because before this component is rendered we check for
@@ -106,8 +100,6 @@ export const WorkspacePlanSelection: React.FC = () => {
         <Stack gap={3} direction="vertical" align="center">
           <Stack gap={2} direction="horizontal" align="center">
             <Text size={24}>{activeTeamInfo.name}</Text>
-            {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
-            {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
             {isPro && <Badge variant="pro">Pro</Badge>}
           </Stack>
 
