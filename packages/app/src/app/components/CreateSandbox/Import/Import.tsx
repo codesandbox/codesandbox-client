@@ -23,12 +23,10 @@ import {
   RepositoryTeamsQueryVariables,
 } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 
-import { MaxPublicRepos } from './MaxPublicRepos';
 import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
 import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
 import { GithubRepoToImport } from './types';
@@ -89,7 +87,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   } = useActions();
 
   const { isFree } = useWorkspaceSubscription();
-  const { hasMaxPublicRepositories } = useWorkspaceLimits();
 
   // Use a variable instead of `loading` from `useLazyQuery` because
   // we want the UI to look like it's loading before the debounced fn
@@ -172,7 +169,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const hasExistingImports =
     existingRepositoryTeams && existingRepositoryTeams.length >= 1;
 
-  const disableImport = hasMaxPublicRepositories || restrictsPublicRepos;
+  const disableImport = restrictsPublicRepos;
 
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -262,12 +259,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           </Text>
         </Stack>
 
-        {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
         {restrictsPublicRepos ? <RestrictedPublicReposImport /> : null}
         <Element>
           <Stack as="form" onSubmit={handleFormSubmit} gap={2}>
             <Input
-              aria-disabled={hasMaxPublicRepositories}
               aria-describedby="form-title form-error repo-teams"
               aria-invalid={Boolean(url.error)}
               css={{ height: '32px' }}

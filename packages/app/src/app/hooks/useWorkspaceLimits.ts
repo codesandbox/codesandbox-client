@@ -87,7 +87,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const maxPublicSandboxes = limits.maxPublicSandboxes;
 
   const hasMaxPublicSandboxes =
-    debugLimits?.hasMaxPrivateRepositories ||
+    debugLimits?.hasMaxPublicSandboxes ||
     (isFree === true &&
       maxPublicSandboxes !== null &&
       publicSandboxesQuantity >= maxPublicSandboxes);

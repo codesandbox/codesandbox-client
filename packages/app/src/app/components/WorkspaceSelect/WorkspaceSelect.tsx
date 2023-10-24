@@ -8,11 +8,11 @@ import {
   Icon,
   Tooltip,
 } from '@codesandbox/components';
+import { SubscriptionStatus } from 'app/graphql/types';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { determineSpecialBadges } from 'app/utils/teams';
 import { useHistory } from 'react-router';
 
 interface WorkspaceSelectProps {
@@ -113,10 +113,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               }}
             >
               {workspaces.map(team => {
-                const { isTeamFreeLegacy, isInactive } = determineSpecialBadges(
-                  team,
-                  state.environment.isOnPrem
-                );
+                const showPro =
+                  team.subscription?.status === SubscriptionStatus.Active ||
+                  team.subscription?.status === SubscriptionStatus.Trialing;
 
                 return (
                   <Stack
@@ -149,8 +148,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                         {team.name}
                       </Text>
 
-                      {isTeamFreeLegacy && <Badge variant="trial">Free</Badge>}
-                      {isInactive && <Badge variant="neutral">Inactive</Badge>}
+                      {showPro && <Badge variant="pro">Pro</Badge>}
                     </Stack>
                   </Stack>
                 );

@@ -11,7 +11,7 @@ import { WorkspaceName } from './WorkspaceName';
 
 export const Header = () => {
   const { editor, isAuthenticating, activeTeamInfo } = useAppState();
-  const { isLegacyFreeTeam } = useWorkspaceSubscription();
+  const { isPro } = useWorkspaceSubscription();
 
   return (
     <Stack
@@ -32,10 +32,7 @@ export const Header = () => {
       <Stack align="center">
         <AppMenu />
         {activeTeamInfo && (
-          <WorkspaceName
-            name={activeTeamInfo.name}
-            legacyFreeTeam={isLegacyFreeTeam}
-          />
+          <WorkspaceName name={activeTeamInfo.name} isPro={isPro} />
         )}
       </Stack>
 

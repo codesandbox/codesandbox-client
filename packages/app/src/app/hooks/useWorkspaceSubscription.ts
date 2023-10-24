@@ -48,13 +48,10 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   if (!subscription) {
     return {
       ...NO_SUBSCRIPTION,
-      isLegacyFreeTeam: activeTeamInfo.legacy,
       isEligibleForTrial: userCanStartTrial,
       numberOfSeats: activeTeamInfo.limits.maxEditors ?? MAX_TEAM_FREE_EDITORS,
     };
   }
-
-  const isLegacySpace = activeTeamInfo.legacy;
 
   const isPro =
     environment.isOnPrem || // On prem workspaces are pro by default
@@ -62,9 +59,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     subscription.status === SubscriptionStatus.Trialing;
   const isFree = !isPro;
 
-  const isLegacyFreeTeam = isFree && isLegacySpace;
-  const isEligibleForTrial =
-    userCanStartTrial && isLegacyFreeTeam && isBillingManager;
+  const isEligibleForTrial = userCanStartTrial && isBillingManager;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
 
@@ -92,7 +87,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     isEligibleForTrial,
     isPro,
     isFree,
-    isLegacyFreeTeam,
     hasActiveTeamTrial,
     hasExpiredTeamTrial,
     hasPaymentMethod,
@@ -106,7 +100,6 @@ const NO_WORKSPACE = {
   numberOfSeats: undefined,
   isPro: undefined,
   isFree: undefined,
-  isLegacyFreeTeam: undefined,
   isEligibleForTrial: undefined,
   hasActiveTeamTrial: undefined,
   hasExpiredTeamTrial: undefined,
@@ -119,7 +112,6 @@ const NO_SUBSCRIPTION = {
   subscription: null,
   isPro: false,
   isFree: true,
-  isLegacyFreeTeam: false,
   hasActiveTeamTrial: false,
   hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
@@ -138,7 +130,6 @@ export type WorkspaceSubscriptionReturn =
       numberOfSeats: number;
       isPro: boolean;
       isFree: boolean;
-      isLegacyFreeTeam: boolean;
       isEligibleForTrial: boolean;
       hasActiveTeamTrial: boolean;
       hasExpiredTeamTrial: boolean;

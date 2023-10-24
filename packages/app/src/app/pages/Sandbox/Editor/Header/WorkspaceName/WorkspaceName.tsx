@@ -2,13 +2,12 @@ import * as React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { Stack, Text } from '@codesandbox/components';
-import { UpgradeToolTip } from './UpgradeToolTip';
+import { Stack, Text, Badge } from '@codesandbox/components';
 
 export const WorkspaceName: React.FC<{
   name: string;
-  legacyFreeTeam: boolean;
-}> = ({ name, legacyFreeTeam }) => (
+  isPro: boolean;
+}> = ({ name, isPro }) => (
   <Stack gap={2} align="center">
     <RouterLink
       to={dashboardUrl()}
@@ -17,9 +16,9 @@ export const WorkspaceName: React.FC<{
       <Text css={{ lineHeight: 1 }}>{name}</Text>
     </RouterLink>
 
-    {legacyFreeTeam && (
+    {isPro && (
       <Stack>
-        <UpgradeToolTip />
+        <Badge variant="pro">Pro</Badge>
       </Stack>
     )}
   </Stack>
