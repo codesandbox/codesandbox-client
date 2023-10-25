@@ -15,20 +15,18 @@ export const RestrictedPublicReposImport: React.FC<{
       variant="warning"
     >
       Adjust your GitHub permissions to access your repositories.
-      <MessageStripe.MultiActions
-        onClick={() => signInGithubClicked('private_repos')}
-        loading={isLoadingGithub}
-        options={
-          <MessageStripe.MultiActionsItem
-            disabled={isLoadingGithub}
-            onSelect={() => signInGithubClicked('public_repos')}
-          >
-            Access only public repositories
-          </MessageStripe.MultiActionsItem>
-        }
+      <MessageStripe.Action
+        disabled={isLoadingGithub}
+        onClick={() => signInGithubClicked('public_repos')}
       >
-        Access all repositories
-      </MessageStripe.MultiActions>
+        Allow public repositories
+      </MessageStripe.Action>
+      <MessageStripe.Action
+        onClick={() => signInGithubClicked('private_repos')}
+        disabled={isLoadingGithub}
+      >
+        Allow all repositories
+      </MessageStripe.Action>
     </MessageStripe>
   );
 };

@@ -77,9 +77,8 @@ export const WorkspacePlanSelection: React.FC = () => {
       return null;
     }
 
-    const multiplier = isYearlyInterval ? 12 : 1;
     const quantity = options?.perEditor ? 1 : subscription.quantity;
-    const price = quantity * subscription.unitPrice * multiplier;
+    const price = quantity * subscription.unitPrice;
 
     // A Paddle subscription returns the currency in uppercase EUR. A Stripe
     // subscription returns the currency in lowercase usd. The formatCurrency

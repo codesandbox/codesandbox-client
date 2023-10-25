@@ -201,13 +201,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="sharing"
           />
 
-          <RowItem
-            name="Likes"
-            page="liked"
-            path={dashboardUrls.liked(activeTeam)}
-            icon="heart"
-          />
-
           {showRespositories && (
             <>
               <Element marginTop={4} />
