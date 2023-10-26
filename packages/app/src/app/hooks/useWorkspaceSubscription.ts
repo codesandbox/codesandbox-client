@@ -16,7 +16,7 @@ export enum SubscriptionDebugStatus {
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { activeTeamInfo, userCanStartTrial, environment } = useAppState();
-  const { isBillingManager } = useWorkspaceAuthorization();
+  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
 
@@ -59,6 +59,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     subscription.status === SubscriptionStatus.Trialing;
   const isFree = !isPro;
 
+  const isLegacyPersonalPro = isPro && isPersonalSpace;
+
   const isEligibleForTrial = userCanStartTrial && isBillingManager;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
@@ -86,6 +88,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     numberOfSeats,
     isEligibleForTrial,
     isPro,
+    isLegacyPersonalPro,
     isFree,
     hasActiveTeamTrial,
     hasExpiredTeamTrial,
@@ -99,6 +102,7 @@ const NO_WORKSPACE = {
   subscription: undefined,
   numberOfSeats: undefined,
   isPro: undefined,
+  isLegacyPersonalPro: undefined,
   isFree: undefined,
   isEligibleForTrial: undefined,
   hasActiveTeamTrial: undefined,
@@ -111,6 +115,7 @@ const NO_WORKSPACE = {
 const NO_SUBSCRIPTION = {
   subscription: null,
   isPro: false,
+  isLegacyPersonalPro: false,
   isFree: true,
   hasActiveTeamTrial: false,
   hasExpiredTeamTrial: false,
@@ -129,6 +134,7 @@ export type WorkspaceSubscriptionReturn =
       subscription: CurrentTeamInfoFragmentFragment['subscription'];
       numberOfSeats: number;
       isPro: boolean;
+      isLegacyPersonalPro: boolean;
       isFree: boolean;
       isEligibleForTrial: boolean;
       hasActiveTeamTrial: boolean;

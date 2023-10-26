@@ -49,9 +49,13 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({
 
 type SettingsNavigationProps = {
   teamId: string;
+  isPersonal: boolean;
 };
 
-export const SettingNavigation = ({ teamId }: SettingsNavigationProps) => {
+export const SettingsNavigation = ({
+  teamId,
+  isPersonal,
+}: SettingsNavigationProps) => {
   return (
     <Stack direction="vertical">
       <Stack
@@ -68,9 +72,11 @@ export const SettingNavigation = ({ teamId }: SettingsNavigationProps) => {
           Account
         </NavigationLink>
 
-        <NavigationLink url={dashboardUrls.registrySettings(teamId)}>
-          NPM Registry
-        </NavigationLink>
+        {!isPersonal && (
+          <NavigationLink url={dashboardUrls.registrySettings(teamId)}>
+            NPM Registry
+          </NavigationLink>
+        )}
 
         <NavigationLink url={dashboardUrls.permissionSettings(teamId)}>
           Permissions

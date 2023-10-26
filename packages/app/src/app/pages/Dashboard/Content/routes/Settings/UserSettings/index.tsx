@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Header } from '../../../../Components/Header';
 import {
   GRID_MAX_WIDTH,
@@ -13,10 +14,13 @@ import {
 } from '../../../../Components/VariableGrid/constants';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { PermissionSettings } from '../components/PermissionSettings';
+import { SettingsNavigation } from '../components/Navigation';
 
 export const UserSettings = () => {
   const { activeTeam, activeTeamInfo } = useAppState();
   const location = useLocation();
+
+  const { isPro } = useWorkspaceSubscription();
 
   return (
     <>
@@ -40,6 +44,8 @@ export const UserSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
+          {isPro && <SettingsNavigation isPersonal teamId={activeTeam} />}
+
           {activeTeam === activeTeamInfo.id ? (
             <BrowserRouter>
               <Switch location={location}>

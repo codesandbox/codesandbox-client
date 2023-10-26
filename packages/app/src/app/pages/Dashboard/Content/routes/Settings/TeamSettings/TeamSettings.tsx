@@ -16,7 +16,7 @@ import {
 } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
-import { SettingNavigation } from '../components/Navigation';
+import { SettingsNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { RegistrySettings } from './RegistrySettings';
@@ -47,7 +47,7 @@ export const TeamSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation teamId={activeTeam} />
+          <SettingsNavigation isPersonal={false} teamId={activeTeam} />
 
           {activeTeam === activeTeamInfo.id ? (
             <BrowserRouter>

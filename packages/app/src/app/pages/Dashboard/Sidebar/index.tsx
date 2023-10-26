@@ -90,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
   const showRespositories = !state.environment.isOnPrem;
 
-  const { isBillingManager } = useWorkspaceAuthorization();
+  const { isBillingManager, isPrimarySpace } = useWorkspaceAuthorization();
 
   const {
     subscription,
@@ -214,12 +214,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </Text>
               </Element>
 
-              <RowItem
-                name="My contributions"
-                page="my-contributions"
-                path={dashboardUrls.myContributions(activeTeam)}
-                icon="contribution"
-              />
+              {isPrimarySpace && (
+                <RowItem
+                  name="My contributions"
+                  page="my-contributions"
+                  path={dashboardUrls.myContributions(activeTeam)}
+                  icon="contribution"
+                />
+              )}
 
               <RowItem
                 name="All repositories"
