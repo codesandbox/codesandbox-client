@@ -603,7 +603,7 @@ export const initializeActiveWorkspace = async ({
     team => team.id === persistedWorkspaceId
   );
 
-  if (isPersistedWorkspaceValid) {
+  if (isPersistedWorkspaceValid && persistedWorkspaceId) {
     // Set active team from url or storage.
     actions.setActiveTeam({ id: persistedWorkspaceId });
   } else {
