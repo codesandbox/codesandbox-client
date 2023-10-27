@@ -12,10 +12,7 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
-import {
-  TeamFragmentDashboardFragment,
-  SubscriptionStatus,
-} from 'app/graphql/types';
+import { SubscriptionStatus } from 'app/graphql/types';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
@@ -33,7 +30,7 @@ export const initializeNewUser = async ({
   effects,
   actions,
 }: Context) => {
-  actions.dashboard.getTeams();
+  // actions.dashboard.getTeams();
   effects.analytics.identify('signed_in', true);
   effects.analytics.setUserId(state.user!.id, state.user!.email);
 
@@ -581,12 +578,34 @@ export const setViewModeForDashboard = ({ effects, state }: Context) => {
   }
 };
 
-export const initializeActiveWorkspace = async ({ actions }: Context) => {
-  const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
+export const initializeActiveWorkspace = async ({
+  actions,
+  state,
+  effects,
+}: Context) => {
+  const persistedWorkspaceId = actions.internal.getTeamIdFromUrlOrStore();
 
-  if (isValid && id) {
+  const hasWorkspaces =
+    state.dashboard?.teams && state.dashboard.teams.length > 0;
+  if (!hasWorkspaces) {
+    const teams = await effects.gql.queries.getTeams({});
+
+    if (teams?.me) {
+      state.dashboard.teams = teams.me.workspaces;
+      state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
+      state.userCanStartTrial = teams.me.eligibleForTrial;
+    }
+
+    // TODO: Treat here future scenario when no workspaces are available
+  }
+
+  const isPersistedWorkspaceValid = state.dashboard.teams.some(
+    team => team.id === persistedWorkspaceId
+  );
+
+  if (isPersistedWorkspaceValid) {
     // Set active team from url or storage.
-    actions.setActiveTeam({ id });
+    actions.setActiveTeam({ id: persistedWorkspaceId });
   } else {
     actions.internal.setFallbackWorkspace();
   }
@@ -614,43 +633,13 @@ export const setFallbackWorkspace = ({ actions, state }: Context) => {
   }
 };
 
-export const getTeamIdFromUrlOrStore = async ({
-  state,
-  effects,
+export const getTeamIdFromUrlOrStore = ({
   actions,
-}: Context): Promise<{ id: string | null; isValid: boolean }> => {
-  const suggestedTeamId =
+}: Context): string | null => {
+  return (
     actions.internal.getTeamIdFromUrl() ||
-    actions.internal.getTeamIdFromLocalStorage();
-  const hasTeams = state.dashboard?.teams && state.dashboard.teams.length > 0;
-
-  let userTeams: TeamFragmentDashboardFragment[] | undefined;
-
-  if (hasTeams) {
-    userTeams = state.dashboard.teams;
-  } else {
-    // TODO: Instead of actions.dashboard.getTeams();
-    // We might be able to use it though, and then use state.dashboard.teams!
-    const teams = await effects.gql.queries.getTeams({});
-
-    if (teams?.me) {
-      userTeams = teams.me.workspaces;
-
-      // Also set state while we're at it
-      state.dashboard.teams = teams.me.workspaces;
-      state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
-      state.userCanStartTrial = teams.me.eligibleForTrial;
-    }
-  }
-
-  const isSuggestedTeamValid = userTeams?.some(
-    team => team.id === suggestedTeamId
+    actions.internal.getTeamIdFromLocalStorage()
   );
-
-  return {
-    id: suggestedTeamId!,
-    isValid: Boolean(isSuggestedTeamValid),
-  };
 };
 
 export const getTeamIdFromUrl = (): string | null => {

@@ -39,7 +39,7 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
   return {
     isBillingManager: Boolean(teamManager) || isAdmin,
     isAdmin,
-    isPersonalSpace: activeTeamInfo.type === TeamType.Personal,
+    isPersonalSpace: activeTeamInfo?.type === TeamType.Personal,
     isPrimarySpace: activeTeam === primaryWorkspaceId,
     isTeamAdmin,
     isTeamEditor,
