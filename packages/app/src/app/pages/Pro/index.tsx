@@ -6,7 +6,6 @@ import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { ProLegacy } from './Legacy';
 import { ProUpgrade } from './Upgrade';
-import { ProCreate } from './Create';
 
 export const ProPage: React.FC = () => {
   const {
@@ -44,12 +43,7 @@ export const ProPage: React.FC = () => {
     return <ProLegacy />;
   }
 
-  // When  you are on pro?workspaceId=... the flow is set to manage existing workspace
-  // either by upgrading to pro or managing the subscription
-  if (urlWorkspaceId) {
-    return <ProUpgrade />;
-  }
+  return <ProUpgrade />;
 
-  // When you are on the /pro page, the flow is set to create a new pro subscription
-  return <ProCreate />;
+  // TODO: Cleanup ProCreate which is not used anymore
 };

@@ -17,20 +17,16 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useHistory } from 'react-router';
 
 // When flex wraps and the list of features
 // is shown below the call to action.
 const WRAP_WIDTH = 1320;
 
 export const UpgradeBanner: React.FC = () => {
-  const history = useHistory();
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
   const { isEligibleForTrial, isPro } = useWorkspaceSubscription();
-  const { isPersonalSpace } = useWorkspaceAuthorization();
 
   const { hasVisited } = useDashboardVisit();
 
@@ -41,27 +37,6 @@ export const UpgradeBanner: React.FC = () => {
   }
 
   const renderMainCTA = () => {
-    // Banner only shows for personal space, to upsell the pro workspaces
-    // Takes the user to the /pro page
-    if (isPersonalSpace) {
-      return (
-        <Button
-          css={{ padding: '4px 20px' }}
-          onClick={() => {
-            track('Home Banner - Start trial from personal workspace', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-
-            history.push('/pro');
-          }}
-          autoWidth
-        >
-          {isEligibleForTrial ? 'Start 14-day free trial' : 'Upgrade'}
-        </Button>
-      );
-    }
-
     // Dealing with workspaces that can upgrade to Pro
     // Go directly to the stripe page for the checkout
     if (canCheckout) {

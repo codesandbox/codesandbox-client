@@ -13,7 +13,6 @@ import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useHistory } from 'react-router';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -26,7 +25,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const state = useAppState();
     const actions = useActions();
     const { dashboard } = state;
-    const history = useHistory();
     const { isPro } = useWorkspaceSubscription();
 
     if (dashboard.teams.length === 0) return null;
@@ -162,16 +160,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   textAlign: 'left',
                 }}
                 onSelect={() => {
-                  if (state.environment.isOnPrem) {
-                    actions.openCreateTeamModal({ step: 'create' });
-                  } else {
-                    track('Workspace Selector - Create Team', {
-                      codesandbox: 'V1',
-                      event_source: 'UI',
-                    });
-
-                    history.push('/pro');
-                  }
+                  actions.openCreateTeamModal({ step: 'create' });
                 }}
               >
                 <Stack
@@ -186,11 +175,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 >
                   <Icon name="plus" size={10} />
                 </Stack>
-                <Text size={3}>
-                  {state.environment.isOnPrem
-                    ? 'Create workspace'
-                    : 'Create a pro workspace'}
-                </Text>
+                <Text size={3}>Create workspace</Text>
               </Stack>
             </Menu.List>
           </Menu>
