@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`theme can adjust colors 1`] = `"rgb(19, 21, 22)"`;
+exports[`theme can adjust colors 1`] = `"rgb(18, 20, 21)"`;
 
-exports[`theme can chain color adjustments 1`] = `"rgb(24, 26, 27)"`;
+exports[`theme can chain color adjustments 1`] = `"rgb(22, 24, 25)"`;
 
 exports[`theme has a theme 1`] = `
-Object {
+{
   "background": [Function],
   "background2": [Function],
   "background3": [Function],
@@ -14,14 +14,14 @@ Object {
   "black": [Function],
   "dangerBackground": [Function],
   "darkBlue": [Function],
-  "fonts": Object {
-    "editor": Object {
-      "base": Array [
+  "fonts": {
+    "editor": {
+      "base": [
         "
   font-family: 'Roboto';
 ",
       ],
-      "huge": Array [
+      "huge": [
         "
     ",
         "
@@ -34,7 +34,7 @@ Object {
     letter-spacing: -0.02em;
   ",
       ],
-      "large": Array [
+      "large": [
         "
     ",
         "
@@ -46,7 +46,7 @@ Object {
     line-height: 28px;
   ",
       ],
-      "medium": Array [
+      "medium": [
         "
     ",
         "
@@ -57,7 +57,7 @@ Object {
     line-height: 21px;
   ",
       ],
-      "normal": Array [
+      "normal": [
         "
     ",
         "
@@ -68,7 +68,7 @@ Object {
     line-height: 16px;
   ",
       ],
-      "small": Array [
+      "small": [
         "
     ",
         "
@@ -79,7 +79,7 @@ Object {
     line-height: 14px;
   ",
       ],
-      "tiny": Array [
+      "tiny": [
         "
     ",
         "
@@ -91,13 +91,13 @@ Object {
   ",
       ],
     },
-    "header": Object {
-      "base": Array [
+    "header": {
+      "base": [
         "
   font-family: 'Roboto';
 ",
       ],
-      "huge": Array [
+      "huge": [
         "
     ",
         "
@@ -109,7 +109,7 @@ Object {
     letter-spacing: -0.02em;
   ",
       ],
-      "large": Array [
+      "large": [
         "
     ",
         "
@@ -121,7 +121,7 @@ Object {
     line-height: 28px;
   ",
       ],
-      "medium": Array [
+      "medium": [
         "
     ",
         "
@@ -133,7 +133,7 @@ Object {
     line-height: 21px;
   ",
       ],
-      "normal": Array [
+      "normal": [
         "
     ",
         "
@@ -145,7 +145,7 @@ Object {
     line-height: 16px;
   ",
       ],
-      "small": Array [
+      "small": [
         "
     ",
         "
@@ -157,7 +157,7 @@ Object {
     line-height: 14px;
   ",
       ],
-      "tiny": Array [
+      "tiny": [
         "
     ",
         "
@@ -170,13 +170,13 @@ Object {
   ",
       ],
     },
-    "primary": Object {
-      "base": Array [
+    "primary": {
+      "base": [
         "
   font-family: 'Open Sans';
 ",
       ],
-      "huge": Array [
+      "huge": [
         "
     ",
         "
@@ -189,7 +189,7 @@ Object {
     letter-spacing: -0.06em;
   ",
       ],
-      "large": Array [
+      "large": [
         "
     ",
         "
@@ -202,7 +202,7 @@ Object {
     letter-spacing: -0.04em;
   ",
       ],
-      "medium": Array [
+      "medium": [
         "
     ",
         "
@@ -214,7 +214,7 @@ Object {
     letter-spacing: -0.02em;
   ",
       ],
-      "normal": Array [
+      "normal": [
         "
     ",
         "
@@ -226,7 +226,7 @@ Object {
     letter-spacing: -0.04em;
   ",
       ],
-      "small": Array [
+      "small": [
         "
     ",
         "
@@ -238,7 +238,7 @@ Object {
     letter-spacing: -0.04em;
   ",
       ],
-      "tiny": Array [
+      "tiny": [
         "
     ",
         "
@@ -251,13 +251,13 @@ Object {
   ",
       ],
     },
-    "secondary": Object {
-      "base": Array [
+    "secondary": {
+      "base": [
         "
   font-family: 'Poppins';
 ",
       ],
-      "huge": Array [
+      "huge": [
         "
     ",
         "
@@ -269,7 +269,7 @@ Object {
     letter-spacing: -0.04em;
   ",
       ],
-      "large": Array [
+      "large": [
         "
     ",
         "
@@ -281,7 +281,7 @@ Object {
     letter-spacing: -0.02em;
   ",
       ],
-      "medium": Array [
+      "medium": [
         "
     ",
         "
@@ -293,7 +293,7 @@ Object {
     line-height: 27px;
   ",
       ],
-      "normal": Array [
+      "normal": [
         "
     ",
         "
@@ -306,7 +306,7 @@ Object {
     letter-spacing: -0.02em;
   ",
       ],
-      "small": Array [
+      "small": [
         "
     ",
         "
@@ -319,7 +319,7 @@ Object {
     letter-spacing: -0.02em;
   ",
       ],
-      "tiny": Array [
+      "tiny": [
         "
     ",
         "
@@ -333,13 +333,13 @@ Object {
   ",
       ],
     },
-    "title": Object {
-      "base": Array [
+    "title": {
+      "base": [
         "
   font-family: 'Poppins';
 ",
       ],
-      "huge": Array [
+      "huge": [
         "
     ",
         "
@@ -352,7 +352,7 @@ Object {
     letter-spacing: -0.03em;
   ",
       ],
-      "large": Array [
+      "large": [
         "
     ",
         "
@@ -365,7 +365,7 @@ Object {
     letter-spacing: -0.02em;
   ",
       ],
-      "medium": Array [
+      "medium": [
         "
     ",
         "
@@ -377,7 +377,7 @@ Object {
     line-height: 27px;
   ",
       ],
-      "normal": Array [
+      "normal": [
         "
     ",
         "
@@ -389,7 +389,7 @@ Object {
     line-height: 21px;
   ",
       ],
-      "small": Array [
+      "small": [
         "
     ",
         "
@@ -401,7 +401,7 @@ Object {
     line-height: 18px;
   ",
       ],
-      "tiny": Array [
+      "tiny": [
         "
     ",
         "
@@ -418,13 +418,13 @@ Object {
   "gray": [Function],
   "green": [Function],
   "lightText": [Function],
-  "media": Object {
+  "media": {
     "between": [Function],
     "greaterThan": [Function],
     "lessThan": [Function],
     "size": [Function],
   },
-  "new": Object {
+  "new": {
     "bg": [Function],
     "description": [Function],
     "title": [Function],
@@ -437,35 +437,35 @@ Object {
   "secondary": [Function],
   "shySecondary": [Function],
   "sidebar": [Function],
-  "sizes": Object {
-    "large": Object {
+  "sizes": {
+    "large": {
       "max": 1279,
       "min": 980,
     },
-    "medium": Object {
+    "medium": {
       "max": 979,
       "min": 768,
     },
-    "small": Object {
+    "small": {
       "max": 767,
       "min": 600,
     },
-    "xlarge": Object {
+    "xlarge": {
       "max": 1339,
       "min": 1280,
     },
-    "xsmall": Object {
+    "xsmall": {
       "max": 599,
       "min": 0,
     },
-    "xxlarge": Object {
+    "xxlarge": {
       "max": Infinity,
       "min": 1340,
     },
   },
-  "vscodeTheme": Object {
+  "vscodeTheme": {
     "$schema": "vscode://schemas/color-theme",
-    "colors": Object {
+    "colors": {
       "activityBar.background": "#1C2022",
       "activityBar.border": "#2d2d2d",
       "activityBarBadge.background": "#C0C0C0",
@@ -511,247 +511,247 @@ Object {
       "titleBar.border": "#2d2d2d",
     },
     "isCodeSandbox": true,
-    "tokenColors": Array [
-      Object {
+    "tokenColors": [
+      {
         "name": "Comment",
-        "scope": Array [
+        "scope": [
           "comment",
         ],
-        "settings": Object {
+        "settings": {
           "fontStyle": "italic",
           "foreground": "#5C6370",
         },
       },
-      Object {
+      {
         "name": "Comment Markup Link",
-        "scope": Array [
+        "scope": [
           "comment markup.link",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#5C6370",
         },
       },
-      Object {
+      {
         "name": "Entity Name Type",
-        "scope": Array [
+        "scope": [
           "entity.name.type",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "Entity Other Inherited Class",
-        "scope": Array [
+        "scope": [
           "entity.other.inherited-class",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "Keyword",
-        "scope": Array [
+        "scope": [
           "keyword",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Keyword Control",
-        "scope": Array [
+        "scope": [
           "keyword.control",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Keyword Operator",
-        "scope": Array [
+        "scope": [
           "keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Keyword Other Special Method",
-        "scope": Array [
+        "scope": [
           "keyword.other.special-method",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Keyword Other Unit",
-        "scope": Array [
+        "scope": [
           "keyword.other.unit",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Storage",
-        "scope": Array [
+        "scope": [
           "storage",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Storage Type Annotation,storage Type Primitive",
-        "scope": Array [
+        "scope": [
           "storage.type.annotation",
           "storage.type.primitive",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Storage Modifier Package,storage Modifier Import",
-        "scope": Array [
+        "scope": [
           "storage.modifier.package",
           "storage.modifier.import",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Constant",
-        "scope": Array [
+        "scope": [
           "constant",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Constant Variable",
-        "scope": Array [
+        "scope": [
           "constant.variable",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Constant Character Escape",
-        "scope": Array [
+        "scope": [
           "constant.character.escape",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "Constant Numeric",
-        "scope": Array [
+        "scope": [
           "constant.numeric",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Constant Other Color",
-        "scope": Array [
+        "scope": [
           "constant.other.color",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "Constant Other Symbol",
-        "scope": Array [
+        "scope": [
           "constant.other.symbol",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "Variable",
-        "scope": Array [
+        "scope": [
           "variable",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Variable Interpolation",
-        "scope": Array [
+        "scope": [
           "variable.interpolation",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#BE5046",
         },
       },
-      Object {
+      {
         "name": "Variable Parameter",
-        "scope": Array [
+        "scope": [
           "variable.parameter",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "String",
-        "scope": Array [
+        "scope": [
           "string",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "String Regexp",
-        "scope": Array [
+        "scope": [
           "string.regexp",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "String Regexp Source Ruby Embedded",
-        "scope": Array [
+        "scope": [
           "string.regexp source.ruby.embedded",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "String Other Link",
-        "scope": Array [
+        "scope": [
           "string.other.link",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Punctuation Definition Comment",
-        "scope": Array [
+        "scope": [
           "punctuation.definition.comment",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#5C6370",
         },
       },
-      Object {
+      {
         "name": "Punctuation Definition Method Parameters,punctuation Definition Function Parameters,punctuation Definition Parameters,punctuation Definition Separator,punctuation Definition Seperator,punctuation Definition Array",
-        "scope": Array [
+        "scope": [
           "punctuation.definition.method-parameters",
           "punctuation.definition.function-parameters",
           "punctuation.definition.parameters",
@@ -759,504 +759,504 @@ Object {
           "punctuation.definition.seperator",
           "punctuation.definition.array",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Punctuation Definition Heading,punctuation Definition Identity",
-        "scope": Array [
+        "scope": [
           "punctuation.definition.heading",
           "punctuation.definition.identity",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Punctuation Definition Bold",
-        "scope": Array [
+        "scope": [
           "punctuation.definition.bold",
         ],
-        "settings": Object {
+        "settings": {
           "fontStyle": "bold",
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "Punctuation Definition Italic",
-        "scope": Array [
+        "scope": [
           "punctuation.definition.italic",
         ],
-        "settings": Object {
+        "settings": {
           "fontStyle": "italic",
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Punctuation Section Embedded",
-        "scope": Array [
+        "scope": [
           "punctuation.section.embedded",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#BE5046",
         },
       },
-      Object {
+      {
         "name": "Punctuation Section Method,punctuation Section Class,punctuation Section Inner Class",
-        "scope": Array [
+        "scope": [
           "punctuation.section.method",
           "punctuation.section.class",
           "punctuation.section.inner-class",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Support Class",
-        "scope": Array [
+        "scope": [
           "support.class",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "Support Type",
-        "scope": Array [
+        "scope": [
           "support.type",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "Support Function",
-        "scope": Array [
+        "scope": [
           "support.function",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "Support Function Any Method",
-        "scope": Array [
+        "scope": [
           "support.function.any-method",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Entity Name Function",
-        "scope": Array [
+        "scope": [
           "entity.name.function",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Entity Name Class,entity Name Type Class",
-        "scope": Array [
+        "scope": [
           "entity.name.class",
           "entity.name.type.class",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "Entity Name Section",
-        "scope": Array [
+        "scope": [
           "entity.name.section",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Entity Name Tag",
-        "scope": Array [
+        "scope": [
           "entity.name.tag",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Entity Other Attribute Name",
-        "scope": Array [
+        "scope": [
           "entity.other.attribute-name",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Entity Other Attribute Name Id",
-        "scope": Array [
+        "scope": [
           "entity.other.attribute-name.id",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Meta Class",
-        "scope": Array [
+        "scope": [
           "meta.class",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "Meta Class Body",
-        "scope": Array [
+        "scope": [
           "meta.class.body",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Meta Method Call,meta Method",
-        "scope": Array [
+        "scope": [
           "meta.method-call",
           "meta.method",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Meta Definition Variable",
-        "scope": Array [
+        "scope": [
           "meta.definition.variable",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Meta Link",
-        "scope": Array [
+        "scope": [
           "meta.link",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Meta Require",
-        "scope": Array [
+        "scope": [
           "meta.require",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Meta Selector",
-        "scope": Array [
+        "scope": [
           "meta.selector",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Meta Separator",
-        "scope": Array [
+        "scope": [
           "meta.separator",
         ],
-        "settings": Object {
+        "settings": {
           "background": "#373B41",
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Meta Tag",
-        "scope": Array [
+        "scope": [
           "meta.tag",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Underline",
-        "scope": Array [
+        "scope": [
           "underline",
         ],
-        "settings": Object {
+        "settings": {
           "text-decoration": "underline",
         },
       },
-      Object {
+      {
         "name": "None",
-        "scope": Array [
+        "scope": [
           "none",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Invalid Deprecated",
-        "scope": Array [
+        "scope": [
           "invalid.deprecated",
         ],
-        "settings": Object {
+        "settings": {
           "background": "#E0C285",
           "foreground": "#523D14",
         },
       },
-      Object {
+      {
         "name": "Invalid Illegal",
-        "scope": Array [
+        "scope": [
           "invalid.illegal",
         ],
-        "settings": Object {
+        "settings": {
           "background": "#E05252",
           "foreground": "white",
         },
       },
-      Object {
+      {
         "name": "Markup Bold",
-        "scope": Array [
+        "scope": [
           "markup.bold",
         ],
-        "settings": Object {
+        "settings": {
           "fontStyle": "bold",
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Markup Changed",
-        "scope": Array [
+        "scope": [
           "markup.changed",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Markup Deleted",
-        "scope": Array [
+        "scope": [
           "markup.deleted",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Markup Italic",
-        "scope": Array [
+        "scope": [
           "markup.italic",
         ],
-        "settings": Object {
+        "settings": {
           "fontStyle": "italic",
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Markup Heading",
-        "scope": Array [
+        "scope": [
           "markup.heading",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Markup Heading Punctuation Definition Heading",
-        "scope": Array [
+        "scope": [
           "markup.heading punctuation.definition.heading",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Markup Link",
-        "scope": Array [
+        "scope": [
           "markup.link",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Markup Inserted",
-        "scope": Array [
+        "scope": [
           "markup.inserted",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "Markup Quote",
-        "scope": Array [
+        "scope": [
           "markup.quote",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Markup Raw",
-        "scope": Array [
+        "scope": [
           "markup.raw",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "Source C Keyword Operator",
-        "scope": Array [
+        "scope": [
           "source.c keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Source Cpp Keyword Operator",
-        "scope": Array [
+        "scope": [
           "source.cpp keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Source Cs Keyword Operator",
-        "scope": Array [
+        "scope": [
           "source.cs keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Source Css Property Name,source Css Property Value",
-        "scope": Array [
+        "scope": [
           "source.css property-name",
           "source.css property-value",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#828997",
         },
       },
-      Object {
+      {
         "name": "Source Css Property Name Support,source Css Property Value Support",
-        "scope": Array [
+        "scope": [
           "source.css property-name.support",
           "source.css property-value.support",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Source Gfm Markup",
-        "scope": Array [
+        "scope": [
           "source.gfm markup",
         ],
-        "settings": Object {
+        "settings": {
           "-webkit-font-smoothing": "auto",
         },
       },
-      Object {
+      {
         "name": "Source Gfm Link Entity",
-        "scope": Array [
+        "scope": [
           "source.gfm link entity",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "Source Go Storage Type String",
-        "scope": Array [
+        "scope": [
           "source.go storage.type.string",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Source Ini Keyword Other Definition Ini",
-        "scope": Array [
+        "scope": [
           "source.ini keyword.other.definition.ini",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Source Java Storage Modifier Import",
-        "scope": Array [
+        "scope": [
           "source.java storage.modifier.import",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "Source Java Storage Type",
-        "scope": Array [
+        "scope": [
           "source.java storage.type",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "Source Java Keyword Operator Instanceof",
-        "scope": Array [
+        "scope": [
           "source.java keyword.operator.instanceof",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Source Java Properties Meta Key Pair",
-        "scope": Array [
+        "scope": [
           "source.java-properties meta.key-pair",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Source Java Properties Meta Key Pair > Punctuation",
-        "scope": Array [
+        "scope": [
           "source.java-properties meta.key-pair > punctuation",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "Source Js Keyword Operator",
-        "scope": Array [
+        "scope": [
           "source.js keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "Source Js Keyword Operator Delete,source Js Keyword Operator In,source Js Keyword Operator Of,source Js Keyword Operator Instanceof,source Js Keyword Operator New,source Js Keyword Operator Typeof,source Js Keyword Operator Void",
-        "scope": Array [
+        "scope": [
           "source.js keyword.operator.delete",
           "source.js keyword.operator.in",
           "source.js keyword.operator.of",
@@ -1265,289 +1265,289 @@ Object {
           "source.js keyword.operator.typeof",
           "source.js keyword.operator.void",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Source Json Meta Structure Dictionary Json > String Quoted Json",
-        "scope": Array [
+        "scope": [
           "source.json meta.structure.dictionary.json > string.quoted.json",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Source Json Meta Structure Dictionary Json > String Quoted Json > Punctuation String",
-        "scope": Array [
+        "scope": [
           "source.json meta.structure.dictionary.json > string.quoted.json > punctuation.string",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "Source Json Meta Structure Dictionary Json > Value Json > String Quoted Json,source Json Meta Structure Array Json > Value Json > String Quoted Json,source Json Meta Structure Dictionary Json > Value Json > String Quoted Json > Punctuation,source Json Meta Structure Array Json > Value Json > String Quoted Json > Punctuation",
-        "scope": Array [
+        "scope": [
           "source.json meta.structure.dictionary.json > value.json > string.quoted.json",
           "source.json meta.structure.array.json > value.json > string.quoted.json",
           "source.json meta.structure.dictionary.json > value.json > string.quoted.json > punctuation",
           "source.json meta.structure.array.json > value.json > string.quoted.json > punctuation",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "Source Json Meta Structure Dictionary Json > Constant Language Json,source Json Meta Structure Array Json > Constant Language Json",
-        "scope": Array [
+        "scope": [
           "source.json meta.structure.dictionary.json > constant.language.json",
           "source.json meta.structure.array.json > constant.language.json",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "Source Ruby Constant Other Symbol > Punctuation",
-        "scope": Array [
+        "scope": [
           "source.ruby constant.other.symbol > punctuation",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "inherit",
         },
       },
-      Object {
+      {
         "name": "Source Python Keyword Operator Logical Python",
-        "scope": Array [
+        "scope": [
           "source.python keyword.operator.logical.python",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "Source Python Variable Parameter",
-        "scope": Array [
+        "scope": [
           "source.python variable.parameter",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "Meta Attribute Rust",
-        "scope": Array [
+        "scope": [
           "meta.attribute.rust",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#BCC199",
         },
       },
-      Object {
+      {
         "name": "Storage Modifier Lifetime Rust,entity Name Lifetime Rust",
-        "scope": Array [
+        "scope": [
           "storage.modifier.lifetime.rust",
           "entity.name.lifetime.rust",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#33E8EC",
         },
       },
-      Object {
+      {
         "name": "Keyword Unsafe Rust",
-        "scope": Array [
+        "scope": [
           "keyword.unsafe.rust",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#CC6B73",
         },
       },
-      Object {
+      {
         "name": "customrule",
         "scope": "customrule",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Support Type Property Name",
         "scope": "support.type.property-name",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Punctuation for Quoted String",
         "scope": "string.quoted.double punctuation",
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Support Constant",
         "scope": "support.constant",
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JSON Property Name",
         "scope": "support.type.property-name.json",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JSON Punctuation for Property Name",
         "scope": "support.type.property-name.json punctuation",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Punctuation for key-value",
-        "scope": Array [
+        "scope": [
           "punctuation.separator.key-value.ts",
           "punctuation.separator.key-value.js",
           "punctuation.separator.key-value.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Embedded Operator",
-        "scope": Array [
+        "scope": [
           "source.js.embedded.html keyword.operator",
           "source.ts.embedded.html keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Variable Other Readwrite",
-        "scope": Array [
+        "scope": [
           "variable.other.readwrite.js",
           "variable.other.readwrite.ts",
           "variable.other.readwrite.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Support Variable Dom",
-        "scope": Array [
+        "scope": [
           "support.variable.dom.js",
           "support.variable.dom.ts",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Support Variable Property Dom",
-        "scope": Array [
+        "scope": [
           "support.variable.property.dom.js",
           "support.variable.property.dom.ts",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Interpolation String Punctuation",
-        "scope": Array [
+        "scope": [
           "meta.template.expression.js punctuation.definition",
           "meta.template.expression.ts punctuation.definition",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#BE5046",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Punctuation Type Parameters",
-        "scope": Array [
+        "scope": [
           "source.ts punctuation.definition.typeparameters",
           "source.js punctuation.definition.typeparameters",
           "source.tsx punctuation.definition.typeparameters",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Definition Block",
-        "scope": Array [
+        "scope": [
           "source.ts punctuation.definition.block",
           "source.js punctuation.definition.block",
           "source.tsx punctuation.definition.block",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Punctuation Separator Comma",
-        "scope": Array [
+        "scope": [
           "source.ts punctuation.separator.comma",
           "source.js punctuation.separator.comma",
           "source.tsx punctuation.separator.comma",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Variable Property",
-        "scope": Array [
+        "scope": [
           "support.variable.property.js",
           "support.variable.property.ts",
           "support.variable.property.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Default Keyword",
-        "scope": Array [
+        "scope": [
           "keyword.control.default.js",
           "keyword.control.default.ts",
           "keyword.control.default.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Instanceof Keyword",
-        "scope": Array [
+        "scope": [
           "keyword.operator.expression.instanceof.js",
           "keyword.operator.expression.instanceof.ts",
           "keyword.operator.expression.instanceof.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Of Keyword",
-        "scope": Array [
+        "scope": [
           "keyword.operator.expression.of.js",
           "keyword.operator.expression.of.ts",
           "keyword.operator.expression.of.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Braces/Brackets",
-        "scope": Array [
+        "scope": [
           "meta.brace.round.js",
           "meta.array-binding-pattern-variable.js",
           "meta.brace.square.js",
@@ -1558,646 +1558,646 @@ Object {
           "meta.array-binding-pattern-variable.tsx",
           "meta.brace.square.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Punctuation Accessor",
-        "scope": Array [
+        "scope": [
           "source.js punctuation.accessor",
           "source.ts punctuation.accessor",
           "source.tsx punctuation.accessor",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Punctuation Terminator Statement",
-        "scope": Array [
+        "scope": [
           "punctuation.terminator.statement.js",
           "punctuation.terminator.statement.ts",
           "punctuation.terminator.statement.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Array variables",
-        "scope": Array [
+        "scope": [
           "meta.array-binding-pattern-variable.js variable.other.readwrite.js",
           "meta.array-binding-pattern-variable.ts variable.other.readwrite.ts",
           "meta.array-binding-pattern-variable.tsx variable.other.readwrite.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Support Variables",
-        "scope": Array [
+        "scope": [
           "source.js support.variable",
           "source.ts support.variable",
           "source.tsx support.variable",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Support Variables",
-        "scope": Array [
+        "scope": [
           "variable.other.constant.property.js",
           "variable.other.constant.property.ts",
           "variable.other.constant.property.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Keyword New",
-        "scope": Array [
+        "scope": [
           "keyword.operator.new.ts",
           "keyword.operator.new.j",
           "keyword.operator.new.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] TS Keyword Operator",
-        "scope": Array [
+        "scope": [
           "source.ts keyword.operator",
           "source.tsx keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Punctuation Parameter Separator",
-        "scope": Array [
+        "scope": [
           "punctuation.separator.parameter.js",
           "punctuation.separator.parameter.ts",
           "punctuation.separator.parameter.tsx ",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Import",
-        "scope": Array [
+        "scope": [
           "constant.language.import-export-all.js",
           "constant.language.import-export-all.ts",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JSX/TSX Import",
-        "scope": Array [
+        "scope": [
           "constant.language.import-export-all.jsx",
           "constant.language.import-export-all.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Keyword Control As",
-        "scope": Array [
+        "scope": [
           "keyword.control.as.js",
           "keyword.control.as.ts",
           "keyword.control.as.jsx",
           "keyword.control.as.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Variable Alias",
-        "scope": Array [
+        "scope": [
           "variable.other.readwrite.alias.js",
           "variable.other.readwrite.alias.ts",
           "variable.other.readwrite.alias.jsx",
           "variable.other.readwrite.alias.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Constants",
-        "scope": Array [
+        "scope": [
           "variable.other.constant.js",
           "variable.other.constant.ts",
           "variable.other.constant.jsx",
           "variable.other.constant.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Export Variable",
-        "scope": Array [
+        "scope": [
           "meta.export.default.js variable.other.readwrite.js",
           "meta.export.default.ts variable.other.readwrite.ts",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Template Strings Punctuation Accessor",
-        "scope": Array [
+        "scope": [
           "source.js meta.template.expression.js punctuation.accessor",
           "source.ts meta.template.expression.ts punctuation.accessor",
           "source.tsx meta.template.expression.tsx punctuation.accessor",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Import equals",
-        "scope": Array [
+        "scope": [
           "source.js meta.import-equals.external.js keyword.operator",
           "source.jsx meta.import-equals.external.jsx keyword.operator",
           "source.ts meta.import-equals.external.ts keyword.operator",
           "source.tsx meta.import-equals.external.tsx keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Type Module",
         "scope": "entity.name.type.module.js,entity.name.type.module.ts,entity.name.type.module.jsx,entity.name.type.module.tsx",
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Meta Class",
         "scope": "meta.class.js,meta.class.ts,meta.class.jsx,meta.class.tsx",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Property Definition Variable",
-        "scope": Array [
+        "scope": [
           "meta.definition.property.js variable",
           "meta.definition.property.ts variable",
           "meta.definition.property.jsx variable",
           "meta.definition.property.tsx variable",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Meta Type Parameters Type",
-        "scope": Array [
+        "scope": [
           "meta.type.parameters.js support.type",
           "meta.type.parameters.jsx support.type",
           "meta.type.parameters.ts support.type",
           "meta.type.parameters.tsx support.type",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Meta Tag Keyword Operator",
-        "scope": Array [
+        "scope": [
           "source.js meta.tag.js keyword.operator",
           "source.jsx meta.tag.jsx keyword.operator",
           "source.ts meta.tag.ts keyword.operator",
           "source.tsx meta.tag.tsx keyword.operator",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Meta Tag Punctuation",
-        "scope": Array [
+        "scope": [
           "meta.tag.js punctuation.section.embedded",
           "meta.tag.jsx punctuation.section.embedded",
           "meta.tag.ts punctuation.section.embedded",
           "meta.tag.tsx punctuation.section.embedded",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Meta Array Literal Variable",
-        "scope": Array [
+        "scope": [
           "meta.array.literal.js variable",
           "meta.array.literal.jsx variable",
           "meta.array.literal.ts variable",
           "meta.array.literal.tsx variable",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Module Exports",
-        "scope": Array [
+        "scope": [
           "support.type.object.module.js",
           "support.type.object.module.jsx",
           "support.type.object.module.ts",
           "support.type.object.module.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JSON Constants",
-        "scope": Array [
+        "scope": [
           "constant.language.json",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Object Constants",
-        "scope": Array [
+        "scope": [
           "variable.other.constant.object.js",
           "variable.other.constant.object.jsx",
           "variable.other.constant.object.ts",
           "variable.other.constant.object.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Properties Keyword",
-        "scope": Array [
+        "scope": [
           "storage.type.property.js",
           "storage.type.property.jsx",
           "storage.type.property.ts",
           "storage.type.property.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#56B6C2",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Single Quote Inside Templated String",
-        "scope": Array [
+        "scope": [
           "meta.template.expression.js string.quoted punctuation.definition",
           "meta.template.expression.jsx string.quoted punctuation.definition",
           "meta.template.expression.ts string.quoted punctuation.definition",
           "meta.template.expression.tsx string.quoted punctuation.definition",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS Backtick inside Templated String",
-        "scope": Array [
+        "scope": [
           "meta.template.expression.js string.template punctuation.definition.string.template",
           "meta.template.expression.jsx string.template punctuation.definition.string.template",
           "meta.template.expression.ts string.template punctuation.definition.string.template",
           "meta.template.expression.tsx string.template punctuation.definition.string.template",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] JS/TS In Keyword for Loops",
-        "scope": Array [
+        "scope": [
           "keyword.operator.expression.in.js",
           "keyword.operator.expression.in.jsx",
           "keyword.operator.expression.in.ts",
           "keyword.operator.expression.in.tsx",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Python Constants Other",
         "scope": "source.python constant.other",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Python Constants",
         "scope": "source.python constant",
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Python Placeholder Character",
         "scope": "constant.character.format.placeholder.other.python storage",
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Python Magic",
         "scope": "support.variable.magic.python",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Python Meta Function Parameters",
         "scope": "meta.function.parameters.python",
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Python Function Separator Annotation",
         "scope": "punctuation.separator.annotation.python",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Python Function Separator Punctuation",
         "scope": "punctuation.separator.parameters.python",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] CSharp Fields",
         "scope": "entity.name.variable.field.cs",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] CSharp Keyword Operators",
         "scope": "source.cs keyword.operator",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] CSharp Variables",
         "scope": "variable.other.readwrite.cs",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] CSharp Variables Other",
         "scope": "variable.other.object.cs",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] CSharp Property Other",
         "scope": "variable.other.object.property.cs",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] CSharp Property",
         "scope": "entity.name.variable.property.cs",
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] CSharp Storage Type",
         "scope": "storage.type.cs",
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Rust Unsafe Keyword",
         "scope": "keyword.other.unsafe.rust",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown Raw Block",
         "scope": "markup.raw.block.markdown",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Shell Variables Punctuation Definition",
         "scope": "punctuation.definition.variable.shell",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Css Support Constant Value",
         "scope": "support.constant.property-value.css",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Css Punctuation Definition Constant",
         "scope": "punctuation.definition.constant.css",
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Sass Punctuation for key-value",
         "scope": "punctuation.separator.key-value.scss",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Sass Punctuation for constants",
         "scope": "punctuation.definition.constant.scss",
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Sass Punctuation for key-value",
         "scope": "meta.property-list.scss punctuation.separator.key-value.scss",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Java Storage Type Primitive Array",
         "scope": "storage.type.primitive.array.java",
-        "settings": Object {
+        "settings": {
           "foreground": "#E5C07B",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown headings",
         "scope": "entity.name.section.markdown",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown heading Punctuation Definition",
         "scope": "punctuation.definition.heading.markdown",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown heading setext",
         "scope": "markup.heading.setext",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown Punctuation Definition Bold",
         "scope": "punctuation.definition.bold.markdown",
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown Inline Raw",
         "scope": "markup.inline.raw.markdown",
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown List Punctuation Definition",
         "scope": "beginning.punctuation.definition.list.markdown",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown Quote",
         "scope": "markup.quote.markdown",
-        "settings": Object {
+        "settings": {
           "fontStyle": "italic",
           "foreground": "#5C6370",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown Punctuation Definition String",
-        "scope": Array [
+        "scope": [
           "punctuation.definition.string.begin.markdown",
           "punctuation.definition.string.end.markdown",
           "punctuation.definition.metadata.markdown",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown Punctuation Definition Link",
         "scope": "punctuation.definition.metadata.markdown",
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown Underline Link/Image",
-        "scope": Array [
+        "scope": [
           "markup.underline.link.markdown",
           "markup.underline.link.image.markdown",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#C678DD",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Markdown Link Title/Description",
-        "scope": Array [
+        "scope": [
           "string.other.link.title.markdown",
           "string.other.link.description.markdown",
         ],
-        "settings": Object {
+        "settings": {
           "foreground": "#61AFEF",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Ruby Punctuation Separator Variable",
         "scope": "punctuation.separator.variable.ruby",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Ruby Other Constant Variable",
         "scope": "variable.other.constant.ruby",
-        "settings": Object {
+        "settings": {
           "foreground": "#D19A66",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] Ruby Keyword Operator Other",
         "scope": "keyword.operator.other.ruby",
-        "settings": Object {
+        "settings": {
           "foreground": "#98C379",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] PHP Punctuation Variable Definition",
         "scope": "punctuation.definition.variable.php",
-        "settings": Object {
+        "settings": {
           "foreground": "#E06C75",
         },
       },
-      Object {
+      {
         "name": "[VSCODE-CUSTOM] PHP Meta Class",
         "scope": "meta.class.php",
-        "settings": Object {
+        "settings": {
           "foreground": "#ABB2BF",
         },
       },
-      Object {
+      {
         "scope": "token.info-token",
-        "settings": Object {
+        "settings": {
           "foreground": "#6796e6",
         },
       },
-      Object {
+      {
         "scope": "token.warn-token",
-        "settings": Object {
+        "settings": {
           "foreground": "#cd9731",
         },
       },
-      Object {
+      {
         "scope": "token.error-token",
-        "settings": Object {
+        "settings": {
           "foreground": "#f44747",
         },
       },
-      Object {
+      {
         "scope": "token.debug-token",
-        "settings": Object {
+        "settings": {
           "foreground": "#b267e6",
         },
       },

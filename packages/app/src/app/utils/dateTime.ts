@@ -19,5 +19,7 @@ export const getDaysUntil = (target: string | null): number | null => {
     targetDate.getDate()
   );
 
-  return (targetOnlyDay.getTime() - nowOnlyDay.getTime()) / dayInMiliseconds;
+  return Math.floor(
+    (targetOnlyDay.getTime() - nowOnlyDay.getTime()) / dayInMiliseconds
+  );
 };

@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`process package.json Should correctly handle nested pkg#exports fields (solid-js) 1`] = `
-Object {
-  "aliases": Object {
+{
+  "aliases": {
     "/node_modules/solid-js": "/node_modules/solid-js/dist/solid.cjs",
     "/node_modules/solid-js/dist/*": "/node_modules/solid-js/dist/$1",
     "/node_modules/solid-js/dist/server.cjs": "/node_modules/solid-js/dist/solid.cjs",
@@ -23,8 +23,8 @@ Object {
 `;
 
 exports[`process package.json Should correctly handle root pkg.json 1`] = `
-Object {
-  "aliases": Object {
+{
+  "aliases": {
     "aliased": "foo",
     "aliased-file": "/bar.js",
     "aliased-file/*": "/bar.js/$1",
@@ -45,8 +45,8 @@ Object {
 `;
 
 exports[`process package.json Should correctly process pkg.exports from @babel/runtime 1`] = `
-Object {
-  "aliases": Object {
+{
+  "aliases": {
     "/node_modules/@babel/runtime/helpers/AsyncGenerator": "/node_modules/@babel/runtime/helpers/AsyncGenerator.js",
     "/node_modules/@babel/runtime/helpers/AwaitValue": "/node_modules/@babel/runtime/helpers/AwaitValue.js",
     "/node_modules/@babel/runtime/helpers/applyDecoratedDescriptor": "/node_modules/@babel/runtime/helpers/applyDecoratedDescriptor.js",

@@ -30,7 +30,8 @@ const colorMethods = [
 const addModifier = (fn, method, ...modifierArgs) => (...args) =>
   Color(fn(...args))
     [method](...modifierArgs)
-    .rgbString();
+    .rgb()
+    .string();
 /**
  * Add useful methods directly to selector function, as well as put an rgbString() call at the end
  * @param selector

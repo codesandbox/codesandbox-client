@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/components",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "lib/index",
   "source": true,
   "contributors": [
@@ -43,7 +43,6 @@
     "@reach/tooltip": "0.12.1",
     "@reach/visually-hidden": "0.10.2",
     "@styled-system/css": "^5.1.4",
-    "chromatic": "^4.0.2",
     "codesandbox-api": "0.0.32",
     "color": "^3.2.0",
     "date-fns": "^2.8.1",
@@ -66,6 +65,7 @@
     "@types/lodash": "^4.14.149",
     "@types/styled-components": "^5.1.7",
     "babel-preset-react-app": "^9.1.2",
+    "chromatic": "^7.5.4",
     "cpx": "^1.5.0",
     "if-env": "^1.0.4",
     "np": "^5.2.1",

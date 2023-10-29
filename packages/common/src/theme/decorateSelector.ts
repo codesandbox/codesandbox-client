@@ -27,7 +27,8 @@ const addModifier = (fn: Function, method: string, ...modifierArgs: any[]) => (
 ) =>
   Color(fn(...args))
     [method](...modifierArgs)
-    .rgbString();
+    .rgb()
+    .string();
 /* new syntax in color@latest, replace with:
  * .rgb()
  * .string()

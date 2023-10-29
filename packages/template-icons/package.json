@@ -23,9 +23,9 @@
     "build": "babel src --out-dir lib --extensions .ts,.tsx",
     "build:dev": "npm run build",
     "lint": "eslint ./src",
-    "test": "yarn lint && yarn typecheck && jest -c ./jest.config.js",
-    "test:watch": "jest -c ./jest.config.js --watch",
-    "test:coverage": "jest -c ./jest.config.js && codecov",
+    "test": "yarn lint && yarn typecheck && jest --env=jsdom -c ./jest.config.js",
+    "test:watch": "jest --env=jsdom -c ./jest.config.js --watch",
+    "test:coverage": "jest --env=jsdom -c ./jest.config.js && codecov",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {},
