@@ -389,18 +389,18 @@ workflows:
       - create-docker-image:
           requires:
             - build-prod
-      - deploy-to-production:
-          requires:
-            - create-docker-image
-            - lint
-            - typecheck
-            - test-integrations
-            - test-jest
-            - test-visual-regressions
-          filters:
-            branches:
-              only:
-                - master
+      # - deploy-to-production:
+      #     requires:
+      #       - create-docker-image
+      #       - lint
+      #       - typecheck
+      #       - test-integrations
+      #       - test-jest
+      #       - test-visual-regressions
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
       - deploy-staging-approval:
           type: approval
           filters:
