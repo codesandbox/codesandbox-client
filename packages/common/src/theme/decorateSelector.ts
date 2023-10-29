@@ -24,11 +24,22 @@ const colorMethods = [
  */
 const addModifier = (fn: Function, method: string, ...modifierArgs: any[]) => (
   ...args: any[]
-) =>
-  Color(fn(...args))
+) => {
+  if (method === 'clearer') {
+    return (
+      Color(fn(...args))
+        // @ts-ignore
+        .lighten(...modifierArgs)
+        .rgb()
+        .string()
+    );
+  }
+
+  return Color(fn(...args))
     [method](...modifierArgs)
     .rgb()
     .string();
+};
 /* new syntax in color@latest, replace with:
  * .rgb()
  * .string()

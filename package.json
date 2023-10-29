@@ -44,7 +44,7 @@
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:prod": "lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
-    "postinstall": "yarn lerna run install-dependencies --stream --concurrency 1 && opencollective postinstall",
+    "postinstall": "yarn lerna run install-dependencies --stream --concurrency 1 && cd packages/app/src/app/overmind/effects/vscode/LinterWorker && yarn install",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "lint": "lerna run lint --stream",
@@ -75,12 +75,12 @@
     "prettify": "prettier -w ."
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.2.0",
-    "@typescript-eslint/parser": "^4.2.0",
     "opencollective": "^1.0.3",
     "postinstall-postinstall": "^2.1.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "all-contributors-cli": "^6.26.1",
     "babel-eslint": "10.0.2",
     "concurrently": "^4.1.0",
@@ -102,11 +102,8 @@
     "lint-staged": "10.5.4",
     "prettier": "2.1.1",
     "pretty-quick": "^3.0.0",
-    "typescript": "4.1.2",
+    "typescript": "^5.2.2",
     "username": "^5.1.0"
-  },
-  "resolutions": {
-    "eslint/esquery": "1.0.1"
   },
   "husky": {
     "hooks": {

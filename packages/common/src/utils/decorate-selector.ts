@@ -27,11 +27,22 @@ const colorMethods = [
  *
  * vy60q8l043
  */
-const addModifier = (fn, method, ...modifierArgs) => (...args) =>
-  Color(fn(...args))
+const addModifier = (fn, method, ...modifierArgs) => (...args: any[]) => {
+  if (method === 'clearer') {
+    return (
+      Color(fn(...args))
+        // @ts-ignore
+        .lighten(...modifierArgs)
+        .rgb()
+        .string()
+    );
+  }
+
+  return Color(fn(...args))
     [method](...modifierArgs)
     .rgb()
     .string();
+};
 /**
  * Add useful methods directly to selector function, as well as put an rgbString() call at the end
  * @param selector

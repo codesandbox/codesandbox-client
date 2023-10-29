@@ -1,7 +1,7 @@
 import Color from 'color';
 import { decorateSelector } from './decorateSelector';
 
-type NestedColor = { [P in keyof Color.Color]: (val: number) => NestedColor } &
+type NestedColor = { [P in keyof Color]: (val: number) => NestedColor } &
   (() => string);
 
 export const createTheme = <T>(colors: T): { [P in keyof T]: NestedColor } =>
