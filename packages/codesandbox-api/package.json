@@ -70,7 +70,7 @@
     "cz-conventional-changelog": "^2.0.0",
     "jest": "^29.7.0",
     "lodash.camelcase": "^4.3.0",
-    "nodemon": "^1.11.0",
+    "nodemon": "^3.0.1",
     "prompt": "^1.0.0",
     "replace-in-file": "^2.5.0",
     "rimraf": "^2.6.1",
