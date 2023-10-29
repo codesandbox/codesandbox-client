@@ -10,6 +10,7 @@
     "test": "jest --env=jsdom"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.3",
     "@types/jest": "^26.0.14",
     "@types/micromatch": "^4.0.2",
     "@types/node-fetch": "^2.5.10",
@@ -29,9 +30,9 @@
     "lodash-es": "^4.17.21",
     "micromatch": "^4.0.4",
     "node-fetch": "^2.6.1",
+    "p-queue": "^6.6.2",
     "sandbox-hooks": "0.1.0",
     "source-map": "^0.7.3",
-    "strip-json-comments": "3",
-    "p-queue": "^6.6.2"
+    "strip-json-comments": "3"
   }
 }
