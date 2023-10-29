@@ -66,10 +66,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
-"@types/filesystem@0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@types/filesystem/-/filesystem-0.0.28.tgz#3fd7735830f2c7413cb5ac45780bc45904697b0e"
-  integrity sha512-OwTyNsuCtSn3run4JhiKE1WqIVQ6T3/RVInGjLiD8xc8Dg5Py9LYE6NfhzcIUy9mCgKG9J4plW1pJORLW8NxSA==
+"@types/filesystem@0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@types/filesystem/-/filesystem-0.0.34.tgz#9b0d0d791ab6b217528cce8d391764b4b47607bf"
+  integrity sha512-La4bGrgck8/rosDUA1DJJP8hrFcKq0BV6JaaVlNnOo1rJdJDcft3//slEbAmsWNUJwXRCc0DXpeO40yuATlexw==
   dependencies:
     "@types/filewriter" "*"
 
@@ -163,15 +163,15 @@
   dependencies:
     undici-types "~5.26.4"
 
+"@types/node@^10":
+  version "10.17.60"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.60.tgz#35f3d6213daed95da7f0f73e75bcc6980e90597b"
+  integrity sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==
+
 "@types/node@^12.0.3":
   version "12.20.55"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.55.tgz#c329cbd434c42164f846b909bd6f85b5537f6240"
   integrity sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==
-
-"@types/node@~10.5.8":
-  version "10.5.8"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.5.8.tgz#6f14ccecad1d19332f063a6a764f8907801fece0"
-  integrity sha512-sWSjw+bYW/2W+1V3m8tVsm9PKJcxk3NHN7oRqNUfEdofKg0Imbdu1dQbFvLKjZQXEDXRN6IfSMACjJ7Wv4NGCQ==
 
 "@types/qs@*":
   version "6.9.9"
@@ -5987,10 +5987,10 @@ typescript@2.7.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.7.2.tgz#2d615a1ef4aee4f574425cdff7026edf81919836"
   integrity sha512-p5TCYZDAO0m4G344hD+wx/LATebLWZNkkh2asWUFqSsD2OrDNhbAHuSjobrmsUmdzjJjEeZVU9g1h3O6vpstnw==
 
-typescript@~3.0.1:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.0.3.tgz#4853b3e275ecdaa27f78fda46dc273a7eb7fc1c8"
-  integrity sha512-kk80vLW9iGtjMnIv11qyxLqZm20UklzuR2tL0QAnDIygIUIemcZMxlMWudl9OOt76H3ntVzcTiddQ1/pAAJMYg==
+typescript@^5.0.0:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.2.2.tgz#5ebb5e5a5b75f085f22bc3f8460fba308310fa78"
+  integrity sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==
 
 uglify-js@^3.1.4:
   version "3.17.4"

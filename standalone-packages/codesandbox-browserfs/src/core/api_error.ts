@@ -49,7 +49,7 @@ ErrorStrings[ErrorCode.ENOTSUP] = 'Operation is not supported.';
  */
 export class ApiError extends Error implements NodeJS.ErrnoException {
   public static fromJSON(json: any): ApiError {
-    const err = new ApiError(0);
+    const err = new ApiError(0 as ErrorCode);
     err.errno = json.errno;
     err.code = json.code;
     err.path = json.path;
