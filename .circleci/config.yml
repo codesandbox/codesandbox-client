@@ -33,12 +33,12 @@ aliases:
 
   - &restore_deps_cache
     keys:
-      - v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v37-dependency-cache-{{ .Branch }}
-      - v37-dependency-cache
+      - v38-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v38-dependency-cache-{{ .Branch }}
+      - v38-dependency-cache
 
   - &save_deps_cache
-    key: v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v38-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -59,43 +59,44 @@ aliases:
       - packages/browser-dart-sass/node_modules
       - packages/vue3-browser-compiler/node_modules
       - packages/vue3-transpiler/node_modules
+      - packages/app/src/app/overmind/effects/vscode/LinterWorker/node_modules
 
   - &restore_standalone_deps_cache
     keys:
-      - v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      - v38-standalone-dependency-cache-{{ .Branch }}-{{ checksum
         "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v37-standalone-dependency-cache-{{ .Branch }}
-      - v37-standalone-dependency-cache
+      - v38-standalone-dependency-cache-{{ .Branch }}
+      - v38-standalone-dependency-cache
 
   - &save_standalone_deps_cache
     key:
-      v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      v38-standalone-dependency-cache-{{ .Branch }}-{{ checksum
       "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_result
     key:
-      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH
+      v38-prod-build-result-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
 
   - &save_prod_build_cache
     key:
-      v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
     paths:
       - packages/app/node_modules/.cache
 
   - &restore_prod_build_cache
     keys:
-      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      - v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
         }}-{{.Environment.CIRCLE_SHA1 }}
-      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
-      - v37-prod-build-cache-master-
+      - v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
+      - v38-prod-build-cache-master-
 
   - &save_prod_result
     key:
-      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v38-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
@@ -138,14 +139,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v37-source-cache-{{ .Branch }}-{{ .Revision }}
-            - v37-source-cache-{{ .Branch }}-
-            - v37-source-cache-
+            - v38-source-cache-{{ .Branch }}-{{ .Revision }}
+            - v38-source-cache-{{ .Branch }}-
+            - v38-source-cache-
 
       - checkout
 
       - save_cache:
-          key: v37-source-cache-{{ .Branch }}-{{ .Revision }}
+          key: v38-source-cache-{{ .Branch }}-{{ .Revision }}
           paths:
             - '.git'
   build_deps:
