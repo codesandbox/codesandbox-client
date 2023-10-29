@@ -75,7 +75,6 @@
     "prettify": "prettier -w ."
   },
   "dependencies": {
-    "opencollective": "^1.0.3",
     "postinstall-postinstall": "^2.1.0"
   },
   "devDependencies": {
@@ -118,10 +117,5 @@
   },
   "engines": {
     "node": "^16.0.0"
-  },
-  "collective": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/codesandbox",
-    "logo": "https://opencollective.com/codesandbox/logo.txt"
   }
 }
