@@ -1,5 +1,12 @@
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type InputMaybe<T> = Maybe<T>;
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -7,27 +14,208 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /**
-   * The `UUID` scalar type represents UUID4 compliant string data, represented as UTF-8
-   * character sequences. The UUID4 type is most often used to represent unique
-   * human-readable ID strings.
-   */
   UUID4: any;
-  /**
-   * The `DateTime` scalar type represents a date and time in the UTC
-   * timezone. The DateTime appears in a JSON response as an ISO8601 formatted
-   * string, including UTC timezone ("Z"). The parsed date and time string will
-   * be converted to UTC if there is an offset.
-   */
   DateTime: any;
-  /**
-   * The `Naive DateTime` scalar type represents a naive date and time without
-   * timezone. The DateTime appears in a JSON response as an ISO8601 formatted
-   * string.
-   */
   NaiveDateTime: any;
-  /** Base64 encoded file contents. */
   Base64: any;
+};
+
+export type RootQueryType = {
+  __typename?: 'RootQueryType';
+  album: Maybe<Album>;
+  albums: Array<Album>;
+  /**
+   * Get a single branch by its short ID.
+   *
+   * Returns a "not found" error if the branch does not exist or is inaccessible by the current user.
+   * Anonymous users may use this endpoint for branches that exist on read-only projects (see
+   * `mutation importReadOnlyProject`).
+   *
+   * Branches represent real or potential git branches on a particular team's project. Branch short
+   * IDs are short alphanumeric strings that point to a particular repository + team + branch name.
+   * Remember that a user may have access to the same branch on multiple teams' projects.
+   *
+   * To look up a branch by repository + team + branch name, see `query branchByName`.
+   *
+   * Example (for branch with short ID `abc123`):
+   *
+   * ```gql
+   * query branchById(id: "abc123") {
+   *   name
+   * }
+   * ```
+   */
+  branchById: Branch;
+  /**
+   * Get a single branch by its repository, team, and name.
+   *
+   * Returns a "not found" error if the branch does not exist or is inaccessible by the current user.
+   * Anonymous users may use this endpoint for branches that exist on read-only projects (see
+   * `mutation importReadOnlyProject`).
+   *
+   * Branches represent real or potential git branches on a particular team's project. Remember that
+   * a user may have access to the same branch on multiple teams' projects.
+   *
+   * To look up a branch by its short ID, see `query branchById`.
+   *
+   * Example (for `codesandbox/test-repo` branch `test-branch`):
+   *
+   * ```gql
+   * query branchByName(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo",
+   *   branch: "test-branch",
+   *   team: "987b6fcd-2a3b-41fe-b1e6-ac33565824b9"
+   * )
+   * ```
+   */
+  branchByName: Branch;
+  curatedAlbums: Array<Album>;
+  /** Get git repo and related V1 sandboxes */
+  git: Maybe<Git>;
+  /**
+   * Get repositories owned by a GitHub organization.
+   *
+   * If either `page` or `perPage` are specified, then a single page of results will be returned.
+   * If neither argument is given, then all results will be returned. Note that this still requires
+   * paginated requests to the GitHub API, but the server will concatenate the results.
+   */
+  githubOrganizationRepos: Maybe<Array<GithubRepo>>;
+  /** Get a repository as it appears on GitHub */
+  githubRepo: Maybe<GithubRepo>;
+  /** The various limits in place for free and paying users and teams */
+  limits: Limits;
+  /** Get current user */
+  me: Maybe<CurrentUser>;
+  /**
+   * Get a single project by its repository and team.
+   *
+   * Projects are identified by repository-team pairs. For public repositories, there may also be a
+   * single project that does not have an associated team. For a list of all projects for a given
+   * repository, see `query projectsByRepository`.
+   *
+   * Example (for `https://github.com/codesandbox/test-repo.git`):
+   *
+   * ```gql
+   * query project(
+   *   git_provider: GITHUB,
+   *   owner: "codesandbox",
+   *   repo: "test-repo",
+   *   team: "57ca3ef5-475b-47bf-9530-a686c527e174"
+   * ) { id }
+   * ```
+   */
+  project: Maybe<Project>;
+  /**
+   * Get all projects for the given repository accessible by the current user. Returns an empty list
+   * if no such projects are available, or no version of this project has been imported yet.
+   *
+   * Projects are identified by repository-team pairs. For public repositories, there may also be a
+   * single project that does not have an associated team. This query returns all of the projects
+   * accessible by the current user (as many as `[# of user teams] + 1`). For information about
+   * a project associated with a specific team, see `query project`.
+   *
+   * Example (for `https://github.com/codesandbox/test-repo.git`):
+   *
+   * ```gql
+   * query projects(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo"
+   * ) { id }
+   * ```
+   */
+  projects: Array<Project>;
+  /**
+   * Get a list of teams that have interacted with a repository recently
+   *
+   * This endpoint is intended to be used when a user has access to a repository, but does not
+   * belong to any teams where the repository has been imported. It returns a brief list of teams
+   * (10) that have interacted with that repository recently, with the intention that the user may
+   * wish to request an invitation to one of those teams.
+   *
+   * **Note**: The teams returned by this endpoint are likely to be relevant for **private**
+   * repositories only, and unlikely to be relevant for public repositories.
+   *
+   * ```gql
+   * query recentTeamsByRepository(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo"
+   * ) { id }
+   * ```
+   */
+  recentTeamsByRepository: Array<TeamPreview>;
+  /** Get a sandbox */
+  sandbox: Maybe<Sandbox>;
+  /** A team from an invite token */
+  teamByToken: Maybe<TeamPreview>;
+};
+
+export type RootQueryTypeAlbumArgs = {
+  albumId: Scalars['ID'];
+};
+
+export type RootQueryTypeAlbumsArgs = {
+  username: Scalars['String'];
+};
+
+export type RootQueryTypeBranchByIdArgs = {
+  id: Scalars['String'];
+};
+
+export type RootQueryTypeBranchByNameArgs = {
+  branch: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+  team: InputMaybe<Scalars['ID']>;
+};
+
+export type RootQueryTypeGitArgs = {
+  branch: Scalars['String'];
+  path: Scalars['String'];
+  repo: Scalars['String'];
+  username: Scalars['String'];
+};
+
+export type RootQueryTypeGithubOrganizationReposArgs = {
+  organization: Scalars['String'];
+  page: InputMaybe<Scalars['Int']>;
+  perPage: InputMaybe<Scalars['Int']>;
+};
+
+export type RootQueryTypeGithubRepoArgs = {
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+};
+
+export type RootQueryTypeProjectArgs = {
+  gitProvider: InputMaybe<GitProvider>;
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+  team: InputMaybe<Scalars['ID']>;
+};
+
+export type RootQueryTypeProjectsArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+};
+
+export type RootQueryTypeRecentTeamsByRepositoryArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+};
+
+export type RootQueryTypeSandboxArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootQueryTypeTeamByTokenArgs = {
+  inviteToken: Scalars['String'];
 };
 
 export type Album = {
@@ -35,6 +223,71 @@ export type Album = {
   id: Scalars['ID'];
   sandboxes: Array<Sandbox>;
   title: Maybe<Scalars['String']>;
+};
+
+/** A Sandbox */
+export type Sandbox = {
+  __typename?: 'Sandbox';
+  alias: Maybe<Scalars['String']>;
+  alwaysOn: Maybe<Scalars['Boolean']>;
+  author: Maybe<User>;
+  authorId: Maybe<Scalars['UUID4']>;
+  authorization: Authorization;
+  /** If the sandbox has created a PR, this will refer to the git that you will merge into */
+  baseGit: Maybe<Git>;
+  collaborators: Array<Collaborator>;
+  collection: Maybe<Collection>;
+  comment: Maybe<Comment>;
+  comments: Array<Comment>;
+  /** If the sandbox is a template this will be set */
+  customTemplate: Maybe<Template>;
+  description: Maybe<Scalars['String']>;
+  forkCount: Scalars['Int'];
+  forkedTemplate: Maybe<Template>;
+  /** If the sandbox has a v1 git repo tied to it this will be set */
+  git: Maybe<Git>;
+  id: Scalars['ID'];
+  insertedAt: Scalars['String'];
+  invitations: Array<Invitation>;
+  isFrozen: Scalars['Boolean'];
+  isSse: Maybe<Scalars['Boolean']>;
+  isV2: Scalars['Boolean'];
+  /** Depending on the context, this may be the last access of the current user or the aggregate last access for all users */
+  lastAccessedAt: Scalars['DateTime'];
+  likeCount: Scalars['Int'];
+  /** If the sandbox has been made into a git sandbox, then this will be set */
+  originalGit: Maybe<Git>;
+  permissions: Maybe<SandboxProtectionSettings>;
+  privacy: Scalars['Int'];
+  /** If a PR has been opened on the sandbox, this will be set to the PR number */
+  prNumber: Maybe<Scalars['Int']>;
+  removedAt: Maybe<Scalars['String']>;
+  screenshotOutdated: Scalars['Boolean'];
+  screenshotUrl: Maybe<Scalars['String']>;
+  settings: SandboxSettings;
+  source: Source;
+  team: Maybe<TeamPreview>;
+  teamId: Maybe<Scalars['UUID4']>;
+  title: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
+  viewCount: Scalars['Int'];
+};
+
+/** A Sandbox */
+export type SandboxCommentArgs = {
+  commentId: Scalars['UUID4'];
+};
+
+/** A CodeSandbox User */
+export type User = {
+  __typename?: 'User';
+  avatarUrl: Scalars['String'];
+  bio: Maybe<Scalars['String']>;
+  id: Scalars['UUID4'];
+  name: Maybe<Scalars['String']>;
+  personalWorkspaceId: Scalars['UUID4'];
+  socialLinks: Maybe<Array<Scalars['String']>>;
+  username: Scalars['String'];
 };
 
 export enum Authorization {
@@ -46,131 +299,27 @@ export enum Authorization {
   WriteProject = 'WRITE_PROJECT',
 }
 
-export enum AuthType {
-  Basic = 'BASIC',
-  Bearer = 'BEARER',
-}
-
-export type BillingDetails = {
-  __typename?: 'BillingDetails';
-  amount: Scalars['Int'];
-  currency: Scalars['String'];
-  date: Scalars['String'];
+/** A v1 git object */
+export type Git = {
+  __typename?: 'Git';
+  baseGitSandboxes: Array<Sandbox>;
+  branch: Maybe<Scalars['String']>;
+  commitSha: Maybe<Scalars['String']>;
+  id: Maybe<Scalars['UUID4']>;
+  originalGitSandboxes: Array<Sandbox>;
+  path: Maybe<Scalars['String']>;
+  repo: Maybe<Scalars['String']>;
+  username: Maybe<Scalars['String']>;
 };
 
-export type BillingPreview = {
-  __typename?: 'BillingPreview';
-  immediatePayment: Maybe<BillingDetails>;
-  nextPayment: Maybe<BillingDetails>;
+/** A v1 git object */
+export type GitBaseGitSandboxesArgs = {
+  teamId: InputMaybe<Scalars['UUID4']>;
 };
 
-export type Bookmarked = {
-  __typename?: 'Bookmarked';
-  entity: Maybe<BookmarkEntity>;
-  isBookmarked: Maybe<Scalars['Boolean']>;
-};
-
-/** A team or the current user */
-export type BookmarkEntity = Team | User;
-
-/**
- * Branch of a Repository imported to CodeSandbox.
- *
- * Branches often represent git branches available from the git provider, but they can also
- * represent the contributions of read-only users that have not yet forked and committed their work.
- * Branches on CodeSandbox do not persist to the git provider until a commit is made, and branches
- * on the git provider don't appear in CodeSandbox unless imported by an automated process (like the
- * GitHub App webhooks) or manually by a user.
- */
-export type Branch = {
-  __typename?: 'Branch';
-  /**
-   * Whether or not AI features should be enabled for this branch.
-   *     This is the final calculated value based on the team subscription status, team settings, and project settings.
-   */
-  aiConsent: Scalars['Boolean'];
-  /** Active users connected to this branch */
-  connections: Array<Connection>;
-  /** Whether this branch is a contribution branch made by a read-only user */
-  contribution: Scalars['Boolean'];
-  /**
-   * Whether the current user is the owner of this contribution branch. Can be
-   *     used to override project-level `READ` authorization. Always returns `false` if the
-   *     current branch is not a contribution branch.
-   */
-  contributionOwner: Scalars['Boolean'];
-  /** Alphanumeric short ID of the branch, for use with Pitcher */
-  id: Scalars['String'];
-  /** Timestamp of the last time the current user accessed this branch on CodeSandbox */
-  lastAccessedAt: Maybe<Scalars['String']>;
-  /** Information about the last commit made by CodeSandbox on this branch */
-  lastCommit: Maybe<LastCommit>;
-  /** Branch name as it appears in git */
-  name: Scalars['String'];
-  /** Branch owner, in the case of a contribution branch by a read-only user */
-  owner: Maybe<User>;
-  /** Parent project of this branch */
-  project: Project;
-  /** Open pull requests from this head branch */
-  pullRequests: Array<PullRequest>;
-  settings: BranchSettings;
-  /** The name of the branch the current branch was created from. Only available if this branch was created via CodeSandbox. */
-  sourceBranch: Maybe<Scalars['String']>;
-  /** Information about the underlying git status of this branch */
-  status: Maybe<Status>;
-  /** Whether or not this branch exists on GitHub. Deduced from local information, so not guaranteed 100% accurate */
-  upstream: Scalars['Boolean'];
-};
-
-/** Subscription update about active users connected to a branch */
-export type BranchConnections = {
-  __typename?: 'BranchConnections';
-  branchId: Scalars['String'];
-  connections: Array<Connection>;
-};
-
-/** Events related to a specific branch. */
-export type BranchEvent =
-  | PullRequestCommentEvent
-  | PullRequestEvent
-  | PullRequestReviewCommentEvent
-  | PullRequestReviewEvent;
-
-/** Subscription update about a commit made by CodeSandbox for a branch */
-export type BranchLastCommit = {
-  __typename?: 'BranchLastCommit';
-  branchId: Scalars['String'];
-  lastCommit: LastCommit;
-};
-
-/** Settings for this branch. Stored with the branch so does not incur an extra db query */
-export type BranchSettings = {
-  __typename?: 'BranchSettings';
-  protected: Scalars['Boolean'];
-};
-
-/** Subscription update about the underlying git status of a branch */
-export type BranchStatus = {
-  __typename?: 'BranchStatus';
-  branchId: Scalars['String'];
-  status: Status;
-};
-
-export type CodeReference = {
-  anchor: Scalars['Int'];
-  code: Scalars['String'];
-  head: Scalars['Int'];
-  lastUpdatedAt: Scalars['String'];
-  path: Scalars['String'];
-};
-
-export type CodeReferenceMetadata = {
-  __typename?: 'CodeReferenceMetadata';
-  anchor: Scalars['Int'];
-  code: Scalars['String'];
-  head: Scalars['Int'];
-  path: Scalars['String'];
-  sandboxId: Scalars['String'];
+/** A v1 git object */
+export type GitOriginalGitSandboxesArgs = {
+  teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 /** A collaborator on a sandbox */
@@ -195,131 +344,101 @@ export type Collection = {
   user: Maybe<User>;
 };
 
-/** A comment on a sandbox. A comment can also have replies and references. */
-export type Comment = {
-  __typename?: 'Comment';
-  anchorReference: Maybe<Reference>;
-  comments: Array<Comment>;
-  content: Maybe<Scalars['String']>;
-  id: Scalars['UUID4'];
-  insertedAt: Scalars['NaiveDateTime'];
-  isRead: Scalars['Boolean'];
-  isResolved: Scalars['Boolean'];
-  parentComment: Maybe<Comment>;
-  references: Array<Reference>;
-  replyCount: Scalars['Int'];
-  sandbox: Sandbox;
-  updatedAt: Scalars['NaiveDateTime'];
-  user: User;
-};
-
-/** Information about an active user connection to a project branch */
-export type Connection = {
-  __typename?: 'Connection';
-  appId: Scalars['String'];
-  clientId: Scalars['String'];
-  color: Scalars['String'];
-  timestamp: Scalars['String'];
-  user: Maybe<User>;
-};
-
-export type CurrentUser = {
-  __typename?: 'CurrentUser';
+export type Team = {
+  __typename?: 'Team';
+  avatarUrl: Maybe<Scalars['String']>;
   bookmarkedTemplates: Array<Template>;
-  collaboratorSandboxes: Array<Sandbox>;
-  collection: Maybe<Collection>;
   collections: Array<Collection>;
-  deletionRequested: Scalars['Boolean'];
-  /**
-   * Whether this user should be offered a trial.
-   *     Returns false if they have created any teams that have used a trial in the last 6 months.
-   */
-  eligibleForTrial: Scalars['Boolean'];
-  email: Scalars['String'];
-  /** Get all of the current user's GitHub organizations */
-  githubOrganizations: Maybe<Array<GithubOrganization>>;
-  /** GitHub profile information for the current user */
-  githubProfile: Maybe<GithubProfile>;
-  /**
-   * Get GitHub repositories owned by the current user.
-   *
-   * If either `page` or `perPage` are specified, then a single page of results will be returned.
-   * If neither argument is given, then all results will be returned. Note that this still requires
-   * paginated requests to the GitHub API, but the server will concatenate the results.
-   */
-  githubRepos: Array<GithubRepo>;
+  creatorId: Maybe<Scalars['UUID4']>;
+  description: Maybe<Scalars['String']>;
+  /** Draft sandboxes by everyone on the team */
+  drafts: Array<Sandbox>;
   id: Scalars['UUID4'];
-  likedSandboxes: Array<Sandbox>;
-  name: Maybe<Scalars['String']>;
-  notificationPreferences: Maybe<NotificationPreferences>;
-  notifications: Array<Notification>;
-  personalWorkspaceId: Scalars['UUID4'];
-  provider: ProviderName;
-  recentBranches: Array<Branch>;
-  recentProjects: Array<Project>;
-  recentlyAccessedSandboxes: Array<Sandbox>;
-  recentlyUsedTemplates: Array<Template>;
+  invitees: Array<User>;
+  inviteToken: Scalars['String'];
+  /** @deprecated There's no such thing as a pilot team anymore */
+  joinedPilotAt: Maybe<Scalars['DateTime']>;
+  legacy: Scalars['Boolean'];
+  limits: TeamLimits;
+  members: Array<TeamMember>;
+  name: Scalars['String'];
+  privateRegistry: Maybe<PrivateRegistry>;
+  /**
+   * Projects assigned to the team
+   *
+   * By default, repository and permission data older than a certain TTL will be synced from the
+   * GitHub API. Using `syncData: false`, clients can request a faster but possibly incorrect
+   * response. The incorrect response will be "safe", defaulting to "no" or "read-only" access
+   * when a definitive answer isn't available.
+   *
+   * Projects are returned in the order of the most recent recorded commit on the related
+   * repository. Manual ordering by `lastAccessedAt` may be desired.
+   */
+  projects: Array<Project>;
   sandboxes: Array<Sandbox>;
-  team: Maybe<Team>;
-  teams: Array<Team>;
+  settings: Maybe<WorkspaceSandboxSettings>;
+  shortid: Scalars['String'];
+  subscription: Maybe<ProSubscription>;
   templates: Array<Template>;
-  username: Scalars['String'];
-  workspaces: Array<Team>;
+  type: TeamType;
+  usage: TeamUsage;
+  userAuthorizations: Array<UserAuthorization>;
+  users: Array<User>;
 };
 
-export type CurrentUserCollectionArgs = {
-  path: Scalars['String'];
-  teamId: Maybe<Scalars['ID']>;
+export type TeamDraftsArgs = {
+  authorId: InputMaybe<Scalars['UUID4']>;
+  limit: InputMaybe<Scalars['Int']>;
+  orderBy: InputMaybe<OrderBy>;
 };
 
-export type CurrentUserCollectionsArgs = {
-  teamId: Maybe<Scalars['ID']>;
+export type TeamProjectsArgs = {
+  syncData?: InputMaybe<Scalars['Boolean']>;
 };
 
-export type CurrentUserGithubReposArgs = {
-  page: Maybe<Scalars['Int']>;
-  perPage: Maybe<Scalars['Int']>;
+export type TeamSandboxesArgs = {
+  alwaysOn: InputMaybe<Scalars['Boolean']>;
+  authorId: InputMaybe<Scalars['UUID4']>;
+  hasOriginalGit: InputMaybe<Scalars['Boolean']>;
+  limit: InputMaybe<Scalars['Int']>;
+  orderBy: InputMaybe<OrderBy>;
+  showDeleted: InputMaybe<Scalars['Boolean']>;
 };
 
-export type CurrentUserNotificationsArgs = {
-  limit: Maybe<Scalars['Int']>;
-  orderBy: Maybe<OrderBy>;
-  type: Maybe<Array<Maybe<Scalars['String']>>>;
+export type TeamSubscriptionArgs = {
+  includeCancelled?: InputMaybe<Scalars['Boolean']>;
 };
 
-export type CurrentUserRecentBranchesArgs = {
-  contribution: Maybe<Scalars['Boolean']>;
-  limit?: Maybe<Scalars['Int']>;
-  teamId: Maybe<Scalars['UUID4']>;
-};
-
-export type CurrentUserRecentProjectsArgs = {
-  limit?: Maybe<Scalars['Int']>;
-};
-
-export type CurrentUserRecentlyAccessedSandboxesArgs = {
-  limit: Maybe<Scalars['Int']>;
-  teamId: Maybe<Scalars['UUID4']>;
-};
-
-export type CurrentUserRecentlyUsedTemplatesArgs = {
-  teamId: Maybe<Scalars['UUID4']>;
-};
-
-export type CurrentUserSandboxesArgs = {
-  hasOriginalGit: Maybe<Scalars['Boolean']>;
-  limit: Maybe<Scalars['Int']>;
-  orderBy: Maybe<OrderBy>;
-  showDeleted: Maybe<Scalars['Boolean']>;
-};
-
-export type CurrentUserTeamArgs = {
+/** A Template */
+export type Template = {
+  __typename?: 'Template';
+  bookmarked: Maybe<Array<Maybe<Bookmarked>>>;
+  color: Maybe<Scalars['String']>;
+  /** @deprecated This field is deprecated and will always be null. Query sandbox > description instead */
+  description: Maybe<Scalars['String']>;
+  iconUrl: Maybe<Scalars['String']>;
   id: Maybe<Scalars['UUID4']>;
+  insertedAt: Maybe<Scalars['String']>;
+  official: Scalars['Boolean'];
+  published: Maybe<Scalars['Boolean']>;
+  sandbox: Maybe<Sandbox>;
+  /** @deprecated This field is deprecated and will always be null. Query sandbox > title instead */
+  title: Maybe<Scalars['String']>;
+  updatedAt: Maybe<Scalars['String']>;
 };
 
-export type CurrentUserTemplatesArgs = {
-  showAll: Maybe<Scalars['Boolean']>;
-  teamId: Maybe<Scalars['UUID4']>;
+export type Bookmarked = {
+  __typename?: 'Bookmarked';
+  entity: Maybe<BookmarkEntity>;
+  isBookmarked: Maybe<Scalars['Boolean']>;
+};
+
+/** A team or the current user */
+export type BookmarkEntity = Team | User;
+
+export type OrderBy = {
+  direction: Direction;
+  field: Scalars['String'];
 };
 
 export enum Direction {
@@ -327,423 +446,23 @@ export enum Direction {
   Desc = 'DESC',
 }
 
-/** A v1 git object */
-export type Git = {
-  __typename?: 'Git';
-  baseGitSandboxes: Array<Sandbox>;
-  branch: Maybe<Scalars['String']>;
-  commitSha: Maybe<Scalars['String']>;
-  id: Maybe<Scalars['UUID4']>;
-  originalGitSandboxes: Array<Sandbox>;
-  path: Maybe<Scalars['String']>;
-  repo: Maybe<Scalars['String']>;
-  username: Maybe<Scalars['String']>;
+export type TeamLimits = {
+  __typename?: 'TeamLimits';
+  maxEditors: Maybe<Scalars['Int']>;
+  maxPrivateProjects: Maybe<Scalars['Int']>;
+  maxPrivateSandboxes: Maybe<Scalars['Int']>;
+  maxPublicProjects: Maybe<Scalars['Int']>;
+  maxPublicSandboxes: Maybe<Scalars['Int']>;
 };
 
-/** A v1 git object */
-export type GitBaseGitSandboxesArgs = {
-  teamId: Maybe<Scalars['UUID4']>;
-};
-
-/** A v1 git object */
-export type GitOriginalGitSandboxesArgs = {
-  teamId: Maybe<Scalars['UUID4']>;
-};
-
-/** Relationship between a user and repository */
-export enum GitHubAuthorAssociation {
-  Collaborator = 'COLLABORATOR',
-  Contributor = 'CONTRIBUTOR',
-  FirstTimer = 'FIRST_TIMER',
-  FirstTimeContributor = 'FIRST_TIME_CONTRIBUTOR',
-  Mannequin = 'MANNEQUIN',
-  Member = 'MEMBER',
-  None = 'NONE',
-  Owner = 'OWNER',
-}
-
-/**
- * Organization as it appears on GitHub (intersection of Open API `simple-user` and
- * `organization-simple`)
- */
-export type GithubOrganization = {
-  __typename?: 'GithubOrganization';
-  /** URL for organization image */
+export type TeamMember = {
+  __typename?: 'TeamMember';
   avatarUrl: Scalars['String'];
-  /** Optional organization description */
-  description: Maybe<Scalars['String']>;
-  /** Integer ID */
-  id: Scalars['ID'];
-  /** Organization name */
-  login: Scalars['String'];
-};
-
-/** Current user's permission to the parent resource */
-export enum GithubPermission {
-  Admin = 'ADMIN',
-  None = 'NONE',
-  Read = 'READ',
-  Write = 'WRITE',
-}
-
-/**
- * User profile for an authenticated user.
- *
- * This field can be used to determine if a user has explicitly connected their GH account, since it
- * will be null unless we have a GitHub token. Just having created an account with GitHub is not
- * enough to populate this field.
- */
-export type GithubProfile = {
-  __typename?: 'GithubProfile';
-  /** URL for user profile image */
-  avatarUrl: Scalars['String'];
-  /** Integer ID */
-  id: Scalars['ID'];
-  /** GitHub username */
-  login: Scalars['String'];
-  /** Real name */
-  name: Maybe<Scalars['String']>;
-  /** List of OAuth scopes the user has granted */
-  scopes: Array<Scalars['String']>;
-};
-
-/** Comment on a GitHub pull request that is not part of a review */
-export type GitHubPullRequestComment = {
-  __typename?: 'GitHubPullRequestComment';
-  /** Relationship between the comment author and the repository */
-  authorAssociation: GitHubAuthorAssociation;
-  /** Raw (markdown and/or HTML) body of the comment */
-  body: Scalars['String'];
-  /** Original creation date of the comment */
-  createdAt: Scalars['DateTime'];
-  /** Link to view the comment on GitHub */
-  htmlUrl: Scalars['String'];
-  /** GitHub ID */
-  id: Scalars['Int'];
-  /** ID of the parent pull request */
-  issueId: Scalars['Int'];
-  /** Last edit or reaction date of the comment */
-  updatedAt: Scalars['DateTime'];
-  /** If available, the CodeSandbox user who created the comment */
-  user: Maybe<User>;
-  /** GitHub username of the user who created the comment */
-  username: Scalars['String'];
-};
-
-/** Ways to merge a pull request */
-export enum GitHubPullRequestMergeMethod {
-  Merge = 'MERGE',
-  Rebase = 'REBASE',
-  Squash = 'SQUASH',
-}
-
-/** The action to take with a pull request review */
-export enum GitHubPullRequestReviewAction {
-  Approve = 'APPROVE',
-  Comment = 'COMMENT',
-  RequestChanges = 'REQUEST_CHANGES',
-}
-
-/** Comment on a GitHub pull request review */
-export type GitHubPullRequestReviewComment = {
-  __typename?: 'GitHubPullRequestReviewComment';
-  /** Relationship between the comment author and the repository */
-  authorAssociation: GitHubAuthorAssociation;
-  /** Raw (markdown and/or HTML) body of the comment */
-  body: Scalars['String'];
-  /** SHA of the commit to which the comment applies */
-  commitId: Scalars['String'];
-  /** Original creation date of the comment */
-  createdAt: Scalars['DateTime'];
-  /** Diff of the line that the comment refers to */
-  diffHunk: Scalars['String'];
-  /** Link to view the comment on GitHub */
-  htmlUrl: Scalars['String'];
-  /** GitHub ID */
-  id: Scalars['Int'];
-  /** Parent comment ID (in the context of a thread) */
-  inReplyToId: Maybe<Scalars['Int']>;
-  /** Line of the blob to which the comment applies. Last line of the range for a multi-line comment. */
-  line: Maybe<Scalars['Int']>;
-  /** SHA of the original commit to which the comment applies */
-  originalCommitId: Scalars['String'];
-  /** Line of the blob to which the comment applies. Last line of the range for a multi-line comment */
-  originalLine: Maybe<Scalars['Int']>;
-  /** First line of the range for a multi-line comment */
-  originalStartLine: Maybe<Scalars['Int']>;
-  /** Relative path of the file to which the comment applies */
-  path: Scalars['String'];
-  /** ID of the parent pull request review */
-  pullRequestReviewId: Maybe<Scalars['Int']>;
-  /** Side of the diff to which the comment applies. Side of the last line of the range for a multi-line comment */
-  side: Maybe<GitHubPullRequestReviewCommentSide>;
-  /** First line of the range for a multi-line comment */
-  startLine: Maybe<Scalars['Int']>;
-  /** Side of the first line of the range for a multi-line comment */
-  startSide: Maybe<GitHubPullRequestReviewCommentSide>;
-  /** Level at which the comment is targeted, can be a diff line or a file */
-  subjectType: Maybe<GitHubPullRequestReviewCommentSubjectType>;
-  /** Last edit or reaction date of the comment */
-  updatedAt: Scalars['DateTime'];
-  /** If available, the CodeSandbox user who created the comment */
-  user: Maybe<User>;
-  /** GitHub username of the user who created the comment */
-  username: Scalars['String'];
-};
-
-export type GithubPullRequestReviewCommentInput = {
-  /** Body text of the review comment */
-  body: Scalars['String'];
-  /** Line number of the file to comment on. Note: This line must be part of the diff */
-  line: Scalars['Int'];
-  /** Relative path to the file being commented on */
-  path: Scalars['String'];
-  /** Which side of the diff to comment on. */
-  side: GitHubPullRequestReviewCommentSide;
-  /** Start line of multi-line comment. Only needed for multi-line comments. */
-  startLine: Maybe<Scalars['Int']>;
-  /** Start side of multi-line comment. Only needed for multi-line comments. */
-  startSide: Maybe<GitHubPullRequestReviewCommentSide>;
-};
-
-/** Which side of a side-by-side diff a PR review comment pertains to */
-export enum GitHubPullRequestReviewCommentSide {
-  Left = 'LEFT',
-  Right = 'RIGHT',
-}
-
-/** Whether a review comment pertains to an entire file or specific line(s) */
-export enum GitHubPullRequestReviewCommentSubjectType {
-  File = 'FILE',
-  Line = 'LINE',
-}
-
-/** Details about a repository as it appears on GitHub (Open API `repository`) */
-export type GithubRepo = {
-  __typename?: 'GithubRepo';
-  /** Current users's access to the GitHub repo */
-  authorization: GithubRepoAuthorization;
-  /** Full repository name, e.g. owner/name */
-  fullName: Scalars['String'];
-  /** Integer ID */
-  id: Scalars['ID'];
-  /** Short repository name */
-  name: Scalars['String'];
-  /** Owning user or organization */
-  owner: GithubOrganization;
-  /** Whether the repository is marked as private */
-  private: Scalars['Boolean'];
-  /** ISO 8601 datetime */
-  pushedAt: Maybe<Scalars['String']>;
-  /** ISO 8601 datetime */
-  updatedAt: Scalars['String'];
-};
-
-export enum GithubRepoAuthorization {
-  Read = 'READ',
-  Write = 'WRITE',
-}
-
-/**
- * Repository as it appears on GitHub
- *
- * Repositories may be imported to CodeSandbox multiple times (for multiple teams). When possible,
- * data in this object will match what is currently available on GitHub. Note that some data may
- * be out of date.
- *
- * Over time, multiple distinct repositories (with different IDs) may have the same owner and name.
- * CodeSandbox will always communicate information about the most recent repository it knows about.
- */
-export type GitHubRepository = {
-  __typename?: 'GitHubRepository';
-  /** Whether the repository can be forked; may be disabled in the GitHub repository settings */
-  allowForking: Scalars['Boolean'];
-  /** Whether the repository is archived (and therefore read-only) */
-  archived: Scalars['Boolean'];
-  /** Original creation date of the repository */
-  createdAt: Scalars['DateTime'];
-  /** Default branch, for example `main` */
-  defaultBranch: Scalars['String'];
-  /** Optional description of the repository */
-  description: Maybe<Scalars['String']>;
-  /** Whether the repository is a fork of another repository */
-  fork: Scalars['Boolean'];
-  /** Integer ID assigned by GitHub */
-  id: Scalars['Int'];
-  /** Whether the repository is configured as a template repository */
-  isTemplate: Scalars['Boolean'];
-  /** Name of the repository, not including the owner */
-  name: Scalars['String'];
-  /** Login name of the owning user or organization */
-  owner: Scalars['String'];
-  /** Direct ascendant repository, if this repository is a fork */
-  parent: Maybe<GitHubRepository>;
-  /** Current user's permission to the repository; `none` if unavailable */
-  permission: GithubPermission;
-  /** Whether the repository is private to a user or organization */
-  private: Scalars['Boolean'];
-  /** Time of the most recent push to any branch on the repository */
-  pushedAt: Scalars['DateTime'];
-  /** Original ascendant repository, if this repository is a fork; may be the same as the parent */
-  source: Maybe<GitHubRepository>;
-  /** Time of the most recent change to the repository's metadata */
-  updatedAt: Scalars['DateTime'];
-};
-
-/**
- * Information about a GitHub user who has been requested to review
- * a pull request and its associated CSB user if available
- */
-export type GithubRequestedReviewer = {
-  __typename?: 'GithubRequestedReviewer';
-  /** Timestamp that the user was last requested to review this PR */
-  requestedAt: Maybe<Scalars['DateTime']>;
-  /** CodeSandbox user associated with this GitHub account, if available */
-  user: Maybe<User>;
-  /** GitHub username */
-  username: Scalars['String'];
-};
-
-/**
- * Information about a GitHub organization team. Currently very limited, but
- * hopefully we can include member information in the future
- */
-export type GithubRequestedTeam = {
-  __typename?: 'GithubRequestedTeam';
-  name: Scalars['String'];
-  /** Timestamp that the team was last requested to review this PR */
-  requestedAt: Maybe<Scalars['DateTime']>;
-};
-
-export enum GitProvider {
-  Github = 'GITHUB',
-}
-
-export type ImageReference = {
-  fileName: Scalars['String'];
-  resolution: Array<Scalars['Int']>;
-  src: Maybe<Scalars['Base64']>;
-  url: Maybe<Scalars['String']>;
-};
-
-export type ImageReferenceMetadata = {
-  __typename?: 'ImageReferenceMetadata';
-  fileName: Scalars['String'];
-  resolution: Array<Scalars['Int']>;
-  uploadId: Scalars['UUID4'];
-  url: Scalars['String'];
-};
-
-/** GitHub webhook event about the status of a GitHub App installation. */
-export type InstallationEvent = {
-  __typename?: 'InstallationEvent';
-  action: InstallationEventAction;
-  event: Scalars['String'];
-};
-
-export enum InstallationEventAction {
-  Created = 'CREATED',
-}
-
-/** An invitation to a sandbox */
-export type Invitation = {
-  __typename?: 'Invitation';
-  authorization: Authorization;
-  email: Maybe<Scalars['String']>;
-  id: Maybe<Scalars['ID']>;
-  sandbox: Sandbox;
-  token: Scalars['String'];
-};
-
-/** Information about the last commit made by CodeSandbox for a project or branch */
-export type LastCommit = {
-  __typename?: 'LastCommit';
-  color: Scalars['String'];
-  message: Maybe<Scalars['String']>;
-  sha: Scalars['String'];
-  timestamp: Scalars['String'];
-  user: Maybe<User>;
-};
-
-export type Limits = {
-  __typename?: 'Limits';
-  personalFree: TeamLimits;
-  personalPro: TeamLimits;
-  teamFree: TeamLimits;
-  teamPro: TeamLimits;
-};
-
-export type MemberAuthorization = {
-  authorization: TeamMemberAuthorization;
-  teamManager: Maybe<Scalars['Boolean']>;
-  userId: Scalars['UUID4'];
-};
-
-export type Notification = {
-  __typename?: 'Notification';
-  archived: Scalars['Boolean'];
-  data: Scalars['String'];
+  bio: Maybe<Scalars['String']>;
+  githubUsername: Maybe<Scalars['String']>;
   id: Scalars['UUID4'];
-  insertedAt: Scalars['NaiveDateTime'];
-  read: Scalars['Boolean'];
-  type: Scalars['String'];
-};
-
-export type NotificationPreferences = {
-  __typename?: 'NotificationPreferences';
-  emailCommentMention: Scalars['Boolean'];
-  emailCommentReply: Scalars['Boolean'];
-  /**
-   * Whether or not a user wants to receive marketing emails.
-   * Since we do not receive webhooks from the marketing email service, it is possible for this to show
-   * `true` when in reality a user has already unsubscribed via the link in an email.
-   * This is inevitable, but does not affect whether or not they get emails.
-   */
-  emailMarketing: Scalars['Boolean'];
-  emailNewComment: Scalars['Boolean'];
-  emailSandboxInvite: Scalars['Boolean'];
-  emailTeamInvite: Scalars['Boolean'];
-  emailTeamRequest: Scalars['Boolean'];
-  /**
-   * Whether or not a user wants an in-browser notification if someone submits a review on their PR.
-   *
-   * This will only be sent when a repository has the GitHub App installed and the PR owner is a
-   * member of a CodeSandbox team that has the project imported.
-   */
-  inAppPrReviewReceived: Scalars['Boolean'];
-  /**
-   * Whether or not a user wants an in-browser notification if someone requests their review on a PR.
-   *
-   * This will only be sent when a repository has the GitHub App installed and the requested reviewer is a
-   * member of a CodeSandbox team that has the project imported.
-   */
-  inAppPrReviewRequest: Scalars['Boolean'];
-};
-
-export type OrderBy = {
-  direction: Direction;
-  field: Scalars['String'];
-};
-
-export type PreviewReference = {
-  height: Scalars['Int'];
-  previewPath: Scalars['String'];
-  screenshotSrc: Maybe<Scalars['Base64']>;
-  userAgent: Scalars['String'];
-  width: Scalars['Int'];
-  x: Scalars['Int'];
-  y: Scalars['Int'];
-};
-
-export type PreviewReferenceMetadata = {
-  __typename?: 'PreviewReferenceMetadata';
-  height: Scalars['Int'];
-  previewPath: Scalars['String'];
-  screenshotUrl: Maybe<Scalars['String']>;
-  userAgent: Scalars['String'];
-  width: Scalars['Int'];
-  x: Scalars['Int'];
-  y: Scalars['Int'];
+  name: Maybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 /** A private package registry */
@@ -760,6 +479,17 @@ export type PrivateRegistry = {
   sandpackTrustedDomains: Array<Scalars['String']>;
   teamId: Scalars['UUID4'];
 };
+
+export enum AuthType {
+  Basic = 'BASIC',
+  Bearer = 'BEARER',
+}
+
+export enum RegistryType {
+  Custom = 'CUSTOM',
+  Github = 'GITHUB',
+  Npm = 'NPM',
+}
 
 /**
  * Repository imported to a CodeSandbox team.
@@ -856,53 +586,74 @@ export enum ProjectAuthorization {
   Write = 'WRITE',
 }
 
-/** Events related to a project (repository). */
-export type ProjectEvent =
-  | PullRequestCommentEvent
-  | PullRequestEvent
-  | PullRequestReviewCommentEvent
-  | PullRequestReviewEvent;
-
-/** User-editable settings for a project */
-export type ProjectSettings = {
-  __typename?: 'ProjectSettings';
-  /** Whether AI features are explicitly enabled or disabled for this project. If `null`, the team-wide setting applies. */
-  aiConsent: Maybe<Scalars['Boolean']>;
-};
-
-export type ProSubscription = {
-  __typename?: 'ProSubscription';
-  active: Scalars['Boolean'];
-  billingInterval: Maybe<SubscriptionInterval>;
-  cancelAt: Maybe<Scalars['DateTime']>;
-  cancelAtPeriodEnd: Scalars['Boolean'];
-  currency: Maybe<Scalars['String']>;
-  id: Maybe<Scalars['UUID4']>;
-  nextBillDate: Maybe<Scalars['DateTime']>;
-  origin: Maybe<SubscriptionOrigin>;
+/**
+ * Branch of a Repository imported to CodeSandbox.
+ *
+ * Branches often represent git branches available from the git provider, but they can also
+ * represent the contributions of read-only users that have not yet forked and committed their work.
+ * Branches on CodeSandbox do not persist to the git provider until a commit is made, and branches
+ * on the git provider don't appear in CodeSandbox unless imported by an automated process (like the
+ * GitHub App webhooks) or manually by a user.
+ */
+export type Branch = {
+  __typename?: 'Branch';
   /**
-   * Whether or not this subscription has a payment method attached to it. It will
-   * almost always be true, except when a team started a trial without a credit
-   * card and has not yet added one.
+   * Whether or not AI features should be enabled for this branch.
+   *     This is the final calculated value based on the team subscription status, team settings, and project settings.
    */
-  paymentMethodAttached: Scalars['Boolean'];
-  paymentProvider: Maybe<SubscriptionPaymentProvider>;
-  quantity: Maybe<Scalars['Int']>;
-  status: SubscriptionStatus;
-  trialEnd: Maybe<Scalars['DateTime']>;
-  trialStart: Maybe<Scalars['DateTime']>;
-  type: SubscriptionType;
-  /** Per-seat price for the billing interval as an integer of the smallest denomination of the local currency. */
-  unitPrice: Maybe<Scalars['Int']>;
-  updateBillingUrl: Maybe<Scalars['String']>;
+  aiConsent: Scalars['Boolean'];
+  /** Active users connected to this branch */
+  connections: Array<Connection>;
+  /** Whether this branch is a contribution branch made by a read-only user */
+  contribution: Scalars['Boolean'];
+  /**
+   * Whether the current user is the owner of this contribution branch. Can be
+   *     used to override project-level `READ` authorization. Always returns `false` if the
+   *     current branch is not a contribution branch.
+   */
+  contributionOwner: Scalars['Boolean'];
+  /** Alphanumeric short ID of the branch, for use with Pitcher */
+  id: Scalars['String'];
+  /** Timestamp of the last time the current user accessed this branch on CodeSandbox */
+  lastAccessedAt: Maybe<Scalars['String']>;
+  /** Information about the last commit made by CodeSandbox on this branch */
+  lastCommit: Maybe<LastCommit>;
+  /** Branch name as it appears in git */
+  name: Scalars['String'];
+  /** Branch owner, in the case of a contribution branch by a read-only user */
+  owner: Maybe<User>;
+  /** Parent project of this branch */
+  project: Project;
+  /** Open pull requests from this head branch */
+  pullRequests: Array<PullRequest>;
+  settings: BranchSettings;
+  /** The name of the branch the current branch was created from. Only available if this branch was created via CodeSandbox. */
+  sourceBranch: Maybe<Scalars['String']>;
+  /** Information about the underlying git status of this branch */
+  status: Maybe<Status>;
+  /** Whether or not this branch exists on GitHub. Deduced from local information, so not guaranteed 100% accurate */
+  upstream: Scalars['Boolean'];
 };
 
-/** The oAuth provider used to create the account */
-export enum ProviderName {
-  Apple = 'APPLE',
-  Github = 'GITHUB',
-  Google = 'GOOGLE',
-}
+/** Information about an active user connection to a project branch */
+export type Connection = {
+  __typename?: 'Connection';
+  appId: Scalars['String'];
+  clientId: Scalars['String'];
+  color: Scalars['String'];
+  timestamp: Scalars['String'];
+  user: Maybe<User>;
+};
+
+/** Information about the last commit made by CodeSandbox for a project or branch */
+export type LastCommit = {
+  __typename?: 'LastCommit';
+  color: Scalars['String'];
+  message: Maybe<Scalars['String']>;
+  sha: Scalars['String'];
+  timestamp: Scalars['String'];
+  user: Maybe<User>;
+};
 
 /** Pull Request as it appears on GitHub */
 export type PullRequest = {
@@ -963,50 +714,119 @@ export type PullRequest = {
   title: Scalars['String'];
 };
 
+/** Repository as seen on one of our git providers */
+export type Repository = GitHubRepository;
+
 /**
- * Event about a comment on a pull request (outside the context of a review)
+ * Repository as it appears on GitHub
  *
- * GitHub does not distinguish between PR and issue comments, so the event will be "issue_comment"
- * for both types. The API will attempt to distinguish between them using additional information
- * from the event.
+ * Repositories may be imported to CodeSandbox multiple times (for multiple teams). When possible,
+ * data in this object will match what is currently available on GitHub. Note that some data may
+ * be out of date.
+ *
+ * Over time, multiple distinct repositories (with different IDs) may have the same owner and name.
+ * CodeSandbox will always communicate information about the most recent repository it knows about.
  */
-export type PullRequestCommentEvent = {
-  __typename?: 'PullRequestCommentEvent';
-  action: PullRequestCommentEventAction;
-  comment: GitHubPullRequestComment;
-  event: Scalars['String'];
-  /**
-   * Pull request on which the comment appears
-   *
-   * This field is nullable due to an edge case that may cause comments to be saved without the
-   * parent PR. Clients can observe the comment's `issueId` field to see if the pull request is
-   * already known based on its ID.
-   */
-  pullRequest: Maybe<PullRequest>;
+export type GitHubRepository = {
+  __typename?: 'GitHubRepository';
+  /** Whether the repository can be forked; may be disabled in the GitHub repository settings */
+  allowForking: Scalars['Boolean'];
+  /** Whether the repository is archived (and therefore read-only) */
+  archived: Scalars['Boolean'];
+  /** Original creation date of the repository */
+  createdAt: Scalars['DateTime'];
+  /** Default branch, for example `main` */
+  defaultBranch: Scalars['String'];
+  /** Optional description of the repository */
+  description: Maybe<Scalars['String']>;
+  /** Whether the repository is a fork of another repository */
+  fork: Scalars['Boolean'];
+  /** Integer ID assigned by GitHub */
+  id: Scalars['Int'];
+  /** Whether the repository is configured as a template repository */
+  isTemplate: Scalars['Boolean'];
+  /** Name of the repository, not including the owner */
+  name: Scalars['String'];
+  /** Login name of the owning user or organization */
+  owner: Scalars['String'];
+  /** Direct ascendant repository, if this repository is a fork */
+  parent: Maybe<GitHubRepository>;
+  /** Current user's permission to the repository; `none` if unavailable */
+  permission: GithubPermission;
+  /** Whether the repository is private to a user or organization */
+  private: Scalars['Boolean'];
+  /** Time of the most recent push to any branch on the repository */
+  pushedAt: Scalars['DateTime'];
+  /** Original ascendant repository, if this repository is a fork; may be the same as the parent */
+  source: Maybe<GitHubRepository>;
+  /** Time of the most recent change to the repository's metadata */
+  updatedAt: Scalars['DateTime'];
 };
 
-export enum PullRequestCommentEventAction {
-  Created = 'CREATED',
-  Deleted = 'DELETED',
-  Edited = 'EDITED',
+/** Current user's permission to the parent resource */
+export enum GithubPermission {
+  Admin = 'ADMIN',
+  None = 'NONE',
+  Read = 'READ',
+  Write = 'WRITE',
 }
 
-/** Event about activity on a pull request */
-export type PullRequestEvent = {
-  __typename?: 'PullRequestEvent';
-  action: PullRequestEventAction;
-  event: Scalars['String'];
-  pullRequest: PullRequest;
+/** Comment on a GitHub pull request that is not part of a review */
+export type GitHubPullRequestComment = {
+  __typename?: 'GitHubPullRequestComment';
+  /** Relationship between the comment author and the repository */
+  authorAssociation: GitHubAuthorAssociation;
+  /** Raw (markdown and/or HTML) body of the comment */
+  body: Scalars['String'];
+  /** Original creation date of the comment */
+  createdAt: Scalars['DateTime'];
+  /** Link to view the comment on GitHub */
+  htmlUrl: Scalars['String'];
+  /** GitHub ID */
+  id: Scalars['Int'];
+  /** ID of the parent pull request */
+  issueId: Scalars['Int'];
+  /** Last edit or reaction date of the comment */
+  updatedAt: Scalars['DateTime'];
+  /** If available, the CodeSandbox user who created the comment */
+  user: Maybe<User>;
+  /** GitHub username of the user who created the comment */
+  username: Scalars['String'];
 };
 
-export enum PullRequestEventAction {
-  Closed = 'CLOSED',
-  ConvertedToDraft = 'CONVERTED_TO_DRAFT',
-  Opened = 'OPENED',
-  ReadyForReview = 'READY_FOR_REVIEW',
-  ReviewRequestRemoved = 'REVIEW_REQUEST_REMOVED',
-  ReviewRequested = 'REVIEW_REQUESTED',
+/** Relationship between a user and repository */
+export enum GitHubAuthorAssociation {
+  Collaborator = 'COLLABORATOR',
+  Contributor = 'CONTRIBUTOR',
+  FirstTimeContributor = 'FIRST_TIME_CONTRIBUTOR',
+  FirstTimer = 'FIRST_TIMER',
+  Mannequin = 'MANNEQUIN',
+  Member = 'MEMBER',
+  None = 'NONE',
+  Owner = 'OWNER',
 }
+
+/**
+ * Information about a GitHub user who has been requested to review
+ * a pull request and its associated CSB user if available
+ */
+export type GithubRequestedReviewer = {
+  __typename?: 'GithubRequestedReviewer';
+  /** Timestamp that the user was last requested to review this PR */
+  requestedAt: Maybe<Scalars['DateTime']>;
+  /** CodeSandbox user associated with this GitHub account, if available */
+  user: Maybe<User>;
+  /** GitHub username */
+  username: Scalars['String'];
+};
+
+/** Information about a GitHub organization team. Currently very limited, but hopefully we can include member information in the future */
+export type GithubRequestedTeam = {
+  __typename?: 'GithubRequestedTeam';
+  name: Scalars['String'];
+  /** Timestamp that the team was last requested to review this PR */
+  requestedAt: Maybe<Scalars['DateTime']>;
+};
 
 /** Pull Request review */
 export type PullRequestReview = {
@@ -1030,34 +850,63 @@ export type PullRequestReview = {
   username: Scalars['String'];
 };
 
-/** Event about a comment on a pull request review */
-export type PullRequestReviewCommentEvent = {
-  __typename?: 'PullRequestReviewCommentEvent';
-  action: PullRequestReviewCommentEventAction;
-  comment: GitHubPullRequestReviewComment;
-  event: Scalars['String'];
-  pullRequest: PullRequest;
+/** Comment on a GitHub pull request review */
+export type GitHubPullRequestReviewComment = {
+  __typename?: 'GitHubPullRequestReviewComment';
+  /** Relationship between the comment author and the repository */
+  authorAssociation: GitHubAuthorAssociation;
+  /** Raw (markdown and/or HTML) body of the comment */
+  body: Scalars['String'];
+  /** SHA of the commit to which the comment applies */
+  commitId: Scalars['String'];
+  /** Original creation date of the comment */
+  createdAt: Scalars['DateTime'];
+  /** Diff of the line that the comment refers to */
+  diffHunk: Scalars['String'];
+  /** Link to view the comment on GitHub */
+  htmlUrl: Scalars['String'];
+  /** GitHub ID */
+  id: Scalars['Int'];
+  /** Parent comment ID (in the context of a thread) */
+  inReplyToId: Maybe<Scalars['Int']>;
+  /** Line of the blob to which the comment applies. Last line of the range for a multi-line comment. */
+  line: Maybe<Scalars['Int']>;
+  /** SHA of the original commit to which the comment applies */
+  originalCommitId: Scalars['String'];
+  /** Line of the blob to which the comment applies. Last line of the range for a multi-line comment */
+  originalLine: Maybe<Scalars['Int']>;
+  /** First line of the range for a multi-line comment */
+  originalStartLine: Maybe<Scalars['Int']>;
+  /** Relative path of the file to which the comment applies */
+  path: Scalars['String'];
+  /** ID of the parent pull request review */
+  pullRequestReviewId: Maybe<Scalars['Int']>;
+  /** Side of the diff to which the comment applies. Side of the last line of the range for a multi-line comment */
+  side: Maybe<GitHubPullRequestReviewCommentSide>;
+  /** First line of the range for a multi-line comment */
+  startLine: Maybe<Scalars['Int']>;
+  /** Side of the first line of the range for a multi-line comment */
+  startSide: Maybe<GitHubPullRequestReviewCommentSide>;
+  /** Level at which the comment is targeted, can be a diff line or a file */
+  subjectType: Maybe<GitHubPullRequestReviewCommentSubjectType>;
+  /** Last edit or reaction date of the comment */
+  updatedAt: Scalars['DateTime'];
+  /** If available, the CodeSandbox user who created the comment */
+  user: Maybe<User>;
+  /** GitHub username of the user who created the comment */
+  username: Scalars['String'];
 };
 
-export enum PullRequestReviewCommentEventAction {
-  Created = 'CREATED',
-  Deleted = 'DELETED',
-  Edited = 'EDITED',
+/** Which side of a side-by-side diff a PR review comment pertains to */
+export enum GitHubPullRequestReviewCommentSide {
+  Left = 'LEFT',
+  Right = 'RIGHT',
 }
 
-/** Event about review activity on a pull request */
-export type PullRequestReviewEvent = {
-  __typename?: 'PullRequestReviewEvent';
-  action: PullRequestReviewEventAction;
-  event: Scalars['String'];
-  pullRequest: PullRequest;
-  review: PullRequestReview;
-};
-
-export enum PullRequestReviewEventAction {
-  Dismissed = 'DISMISSED',
-  Edited = 'EDITED',
-  Submitted = 'SUBMITTED',
+/** Whether a review comment pertains to an entire file or specific line(s) */
+export enum GitHubPullRequestReviewCommentSubjectType {
+  File = 'FILE',
+  Line = 'LINE',
 }
 
 /** Current state of a GitHub pull request review */
@@ -1067,6 +916,169 @@ export enum PullRequestReviewState {
   Commented = 'COMMENTED',
   Dismissed = 'DISMISSED',
 }
+
+/** Settings for this branch. Stored with the branch so does not incur an extra db query */
+export type BranchSettings = {
+  __typename?: 'BranchSettings';
+  protected: Scalars['Boolean'];
+};
+
+/** Information about the underlying git status of a branch */
+export type Status = {
+  __typename?: 'Status';
+  hasChanges: Scalars['Boolean'];
+  hasConflicts: Scalars['Boolean'];
+  remote: StatusCommitCounts;
+  target: StatusCommitCounts;
+};
+
+/** Counts of how many commits ahead and behind a branch is */
+export type StatusCommitCounts = {
+  __typename?: 'StatusCommitCounts';
+  ahead: Scalars['Int'];
+  behind: Scalars['Int'];
+};
+
+/**
+ * Available computing resources for the project
+ *
+ * These resources may be custom for a project, or they may be determined by the team's subscription.
+ */
+export type Resources = {
+  __typename?: 'Resources';
+  /** CPU core count */
+  cpu: Scalars['Int'];
+  /** RAM in Gi */
+  memory: Scalars['Int'];
+  /** Disk space in Gi */
+  storage: Scalars['Int'];
+};
+
+/** User-editable settings for a project */
+export type ProjectSettings = {
+  __typename?: 'ProjectSettings';
+  /** Whether AI features are explicitly enabled or disabled for this project. If `null`, the team-wide setting applies. */
+  aiConsent: Maybe<Scalars['Boolean']>;
+};
+
+export type WorkspaceSandboxSettings = {
+  __typename?: 'WorkspaceSandboxSettings';
+  aiConsent: TeamAiConsent;
+  defaultAuthorization: TeamMemberAuthorization;
+  minimumPrivacy: Scalars['Int'];
+  preventSandboxExport: Scalars['Boolean'];
+  preventSandboxLeaving: Scalars['Boolean'];
+};
+
+export type TeamAiConsent = {
+  __typename?: 'TeamAiConsent';
+  privateRepositories: Scalars['Boolean'];
+  privateSandboxes: Scalars['Boolean'];
+  publicRepositories: Scalars['Boolean'];
+  publicSandboxes: Scalars['Boolean'];
+};
+
+export enum TeamMemberAuthorization {
+  /** Permission to add/remove users and change permissions (in addition to write and read). */
+  Admin = 'ADMIN',
+  /** Permission view and comment on team sandboxes. */
+  Read = 'READ',
+  /** Permission create and edit team sandboxes (in addition to read). */
+  Write = 'WRITE',
+}
+
+export type ProSubscription = {
+  __typename?: 'ProSubscription';
+  active: Scalars['Boolean'];
+  billingInterval: Maybe<SubscriptionInterval>;
+  cancelAt: Maybe<Scalars['DateTime']>;
+  cancelAtPeriodEnd: Scalars['Boolean'];
+  currency: Maybe<Scalars['String']>;
+  id: Maybe<Scalars['UUID4']>;
+  nextBillDate: Maybe<Scalars['DateTime']>;
+  origin: Maybe<SubscriptionOrigin>;
+  /** Whether or not this subscription has a payment method attached to it. It will almost always be true, except when a team started a trial without a credit card and has not yet added one. */
+  paymentMethodAttached: Scalars['Boolean'];
+  paymentProvider: Maybe<SubscriptionPaymentProvider>;
+  quantity: Maybe<Scalars['Int']>;
+  status: SubscriptionStatus;
+  trialEnd: Maybe<Scalars['DateTime']>;
+  trialStart: Maybe<Scalars['DateTime']>;
+  type: SubscriptionType;
+  /** Per-seat price for the billing interval as an integer of the smallest denomination of the local currency. */
+  unitPrice: Maybe<Scalars['Int']>;
+  updateBillingUrl: Maybe<Scalars['String']>;
+};
+
+export enum SubscriptionInterval {
+  Monthly = 'MONTHLY',
+  Yearly = 'YEARLY',
+}
+
+export enum SubscriptionOrigin {
+  Legacy = 'LEGACY',
+  Patron = 'PATRON',
+  Pilot = 'PILOT',
+}
+
+export enum SubscriptionPaymentProvider {
+  Paddle = 'PADDLE',
+  Stripe = 'STRIPE',
+}
+
+export enum SubscriptionStatus {
+  Active = 'ACTIVE',
+  Cancelled = 'CANCELLED',
+  IncompleteExpired = 'INCOMPLETE_EXPIRED',
+  Paused = 'PAUSED',
+  Trialing = 'TRIALING',
+  Unknown = 'UNKNOWN',
+  Unpaid = 'UNPAID',
+}
+
+export enum SubscriptionType {
+  PersonalPro = 'PERSONAL_PRO',
+  TeamPro = 'TEAM_PRO',
+}
+
+export enum TeamType {
+  Personal = 'PERSONAL',
+  Team = 'TEAM',
+}
+
+export type TeamUsage = {
+  __typename?: 'TeamUsage';
+  editorsQuantity: Scalars['Int'];
+  privateProjectsQuantity: Scalars['Int'];
+  privateSandboxesQuantity: Scalars['Int'];
+  publicProjectsQuantity: Scalars['Int'];
+  publicSandboxesQuantity: Scalars['Int'];
+};
+
+export type UserAuthorization = {
+  __typename?: 'UserAuthorization';
+  authorization: TeamMemberAuthorization;
+  teamManager: Scalars['Boolean'];
+  userId: Scalars['UUID4'];
+};
+
+/** A comment on a sandbox. A comment can also have replies and references. */
+export type Comment = {
+  __typename?: 'Comment';
+  anchorReference: Maybe<Reference>;
+  comments: Array<Comment>;
+  content: Maybe<Scalars['String']>;
+  id: Scalars['UUID4'];
+  insertedAt: Scalars['NaiveDateTime'];
+  isRead: Scalars['Boolean'];
+  isResolved: Scalars['Boolean'];
+  parentComment: Maybe<Comment>;
+  references: Array<Reference>;
+  replyCount: Scalars['Int'];
+  sandbox: Sandbox;
+  updatedAt: Scalars['NaiveDateTime'];
+  user: User;
+};
 
 export type Reference = {
   __typename?: 'Reference';
@@ -1083,32 +1095,309 @@ export type ReferenceMetadata =
   | PreviewReferenceMetadata
   | UserReferenceMetadata;
 
-export enum RegistryType {
-  Custom = 'CUSTOM',
+export type CodeReferenceMetadata = {
+  __typename?: 'CodeReferenceMetadata';
+  anchor: Scalars['Int'];
+  code: Scalars['String'];
+  head: Scalars['Int'];
+  path: Scalars['String'];
+  sandboxId: Scalars['String'];
+};
+
+export type ImageReferenceMetadata = {
+  __typename?: 'ImageReferenceMetadata';
+  fileName: Scalars['String'];
+  resolution: Array<Scalars['Int']>;
+  uploadId: Scalars['UUID4'];
+  url: Scalars['String'];
+};
+
+export type PreviewReferenceMetadata = {
+  __typename?: 'PreviewReferenceMetadata';
+  height: Scalars['Int'];
+  previewPath: Scalars['String'];
+  screenshotUrl: Maybe<Scalars['String']>;
+  userAgent: Scalars['String'];
+  width: Scalars['Int'];
+  x: Scalars['Int'];
+  y: Scalars['Int'];
+};
+
+export type UserReferenceMetadata = {
+  __typename?: 'UserReferenceMetadata';
+  userId: Scalars['String'];
+  username: Scalars['String'];
+};
+
+/** An invitation to a sandbox */
+export type Invitation = {
+  __typename?: 'Invitation';
+  authorization: Authorization;
+  email: Maybe<Scalars['String']>;
+  id: Maybe<Scalars['ID']>;
+  sandbox: Sandbox;
+  token: Scalars['String'];
+};
+
+export type SandboxProtectionSettings = {
+  __typename?: 'SandboxProtectionSettings';
+  preventSandboxExport: Scalars['Boolean'];
+  preventSandboxLeaving: Scalars['Boolean'];
+};
+
+/** User-editable settings for a sandbox */
+export type SandboxSettings = {
+  __typename?: 'SandboxSettings';
+  /** Whether AI features are explicitly enabled or disabled for this sandbox. If `null`, the team-wide setting applies. */
+  aiConsent: Maybe<Scalars['Boolean']>;
+};
+
+export type Source = {
+  __typename?: 'Source';
+  id: Maybe<Scalars['UUID4']>;
+  template: Maybe<Scalars['String']>;
+};
+
+export type TeamPreview = {
+  __typename?: 'TeamPreview';
+  avatarUrl: Maybe<Scalars['String']>;
+  description: Maybe<Scalars['String']>;
+  id: Scalars['UUID4'];
+  name: Scalars['String'];
+  shortid: Scalars['String'];
+};
+
+export enum GitProvider {
   Github = 'GITHUB',
-  Npm = 'NPM',
 }
 
-/** Repository as seen on one of our git providers */
-export type Repository = GitHubRepository;
+/** Details about a repository as it appears on GitHub (Open API `repository`) */
+export type GithubRepo = {
+  __typename?: 'GithubRepo';
+  /** Current users's access to the GitHub repo */
+  authorization: GithubRepoAuthorization;
+  /** Full repository name, e.g. owner/name */
+  fullName: Scalars['String'];
+  /** Integer ID */
+  id: Scalars['ID'];
+  /** Short repository name */
+  name: Scalars['String'];
+  /** Owning user or organization */
+  owner: GithubOrganization;
+  /** Whether this repository is marked as private */
+  private: Scalars['Boolean'];
+  /** ISO 8601 datetime */
+  pushedAt: Maybe<Scalars['String']>;
+  /** ISO 8601 datetime */
+  updatedAt: Scalars['String'];
+};
 
-/** GitHub webhook event about a repository. */
-export type RepositoryEvent = InstallationEvent;
+export enum GithubRepoAuthorization {
+  Read = 'READ',
+  Write = 'WRITE',
+}
 
 /**
- * Available computing resources for the project
- *
- * These resources may be custom for a project, or they may be determined by the team's subscription.
+ * Organization as it appears on GitHub (intersection of Open API `simple-user` and
+ * `organization-simple`)
  */
-export type Resources = {
-  __typename?: 'Resources';
-  /** CPU core count */
-  cpu: Scalars['Int'];
-  /** RAM in Gi */
-  memory: Scalars['Int'];
-  /** Disk space in Gi */
-  storage: Scalars['Int'];
+export type GithubOrganization = {
+  __typename?: 'GithubOrganization';
+  /** URL for organization image */
+  avatarUrl: Scalars['String'];
+  /** Optional organization description */
+  description: Maybe<Scalars['String']>;
+  /** Integer ID */
+  id: Scalars['ID'];
+  /** Organization name */
+  login: Scalars['String'];
 };
+
+export type Limits = {
+  __typename?: 'Limits';
+  personalFree: TeamLimits;
+  personalPro: TeamLimits;
+  teamFree: TeamLimits;
+  teamPro: TeamLimits;
+};
+
+export type CurrentUser = {
+  __typename?: 'CurrentUser';
+  bookmarkedTemplates: Array<Template>;
+  collaboratorSandboxes: Array<Sandbox>;
+  collection: Maybe<Collection>;
+  collections: Array<Collection>;
+  deletionRequested: Scalars['Boolean'];
+  /**
+   * Whether this user should be offered a trial
+   *
+   * Returns false if they have created any teams that have used a trial in the last 6 months.
+   */
+  eligibleForTrial: Scalars['Boolean'];
+  email: Scalars['String'];
+  /** Get all of the current user's GitHub organizations */
+  githubOrganizations: Maybe<Array<GithubOrganization>>;
+  /** GitHub profile information for the current user */
+  githubProfile: Maybe<GithubProfile>;
+  /**
+   * Get GitHub repositories owned by the current user.
+   *
+   * If either `page` or `perPage` are specified, then a single page of results will be returned.
+   * If neither argument is given, then all results will be returned. Note that this still requires
+   * paginated requests to the GitHub API, but the server will concatenate the results.
+   */
+  githubRepos: Array<GithubRepo>;
+  id: Scalars['UUID4'];
+  likedSandboxes: Array<Sandbox>;
+  name: Maybe<Scalars['String']>;
+  notificationPreferences: Maybe<NotificationPreferences>;
+  notifications: Array<Notification>;
+  personalWorkspaceId: Scalars['UUID4'];
+  primaryWorkspaceId: Maybe<Scalars['UUID4']>;
+  provider: ProviderName;
+  recentBranches: Array<Branch>;
+  recentlyAccessedSandboxes: Array<Sandbox>;
+  recentlyUsedTemplates: Array<Template>;
+  recentProjects: Array<Project>;
+  sandboxes: Array<Sandbox>;
+  team: Maybe<Team>;
+  teams: Array<Team>;
+  templates: Array<Template>;
+  username: Scalars['String'];
+  workspaces: Array<Team>;
+};
+
+export type CurrentUserCollectionArgs = {
+  path: Scalars['String'];
+  teamId: InputMaybe<Scalars['ID']>;
+};
+
+export type CurrentUserCollectionsArgs = {
+  teamId: InputMaybe<Scalars['ID']>;
+};
+
+export type CurrentUserGithubReposArgs = {
+  affiliation?: InputMaybe<Array<UserRepoAffiliation>>;
+  page: InputMaybe<Scalars['Int']>;
+  perPage: InputMaybe<Scalars['Int']>;
+};
+
+export type CurrentUserNotificationsArgs = {
+  limit: InputMaybe<Scalars['Int']>;
+  orderBy: InputMaybe<OrderBy>;
+  type: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type CurrentUserRecentBranchesArgs = {
+  contribution: InputMaybe<Scalars['Boolean']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
+};
+
+export type CurrentUserRecentlyAccessedSandboxesArgs = {
+  limit: InputMaybe<Scalars['Int']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
+};
+
+export type CurrentUserRecentlyUsedTemplatesArgs = {
+  teamId: InputMaybe<Scalars['UUID4']>;
+};
+
+export type CurrentUserRecentProjectsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+};
+
+export type CurrentUserSandboxesArgs = {
+  hasOriginalGit: InputMaybe<Scalars['Boolean']>;
+  limit: InputMaybe<Scalars['Int']>;
+  orderBy: InputMaybe<OrderBy>;
+  showDeleted: InputMaybe<Scalars['Boolean']>;
+};
+
+export type CurrentUserTeamArgs = {
+  id: InputMaybe<Scalars['UUID4']>;
+};
+
+export type CurrentUserTemplatesArgs = {
+  showAll: InputMaybe<Scalars['Boolean']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
+};
+
+/**
+ * User profile for an authenticated user.
+ *
+ * This field can be used to determine if a user has explicitly connected their GH account, since it
+ * will be null unless we have a GitHub token. Just having created an account with GitHub is not
+ * enough to populate this field.
+ */
+export type GithubProfile = {
+  __typename?: 'GithubProfile';
+  /** URL for user profile image */
+  avatarUrl: Scalars['String'];
+  /** Integer ID */
+  id: Scalars['ID'];
+  /** GitHub username */
+  login: Scalars['String'];
+  /** Real name */
+  name: Maybe<Scalars['String']>;
+  /** List of OAuth scopes the user has granted */
+  scopes: Array<Scalars['String']>;
+};
+
+/** The relationship between a user and a repository they have access to */
+export enum UserRepoAffiliation {
+  Collaborator = 'COLLABORATOR',
+  OrganizationMember = 'ORGANIZATION_MEMBER',
+  Owner = 'OWNER',
+}
+
+export type NotificationPreferences = {
+  __typename?: 'NotificationPreferences';
+  emailCommentMention: Scalars['Boolean'];
+  emailCommentReply: Scalars['Boolean'];
+  /**
+   * Whether or not a user wants to receive marketing emails.
+   * Since we do not receive webhooks from the marketing email service, it is possible for this to show
+   * `true` when in reality a user has already unsubscribed via the link in an email.
+   * This is inevitable, but does not affect whether or not they get emails.
+   */
+  emailMarketing: Scalars['Boolean'];
+  emailNewComment: Scalars['Boolean'];
+  emailSandboxInvite: Scalars['Boolean'];
+  emailTeamInvite: Scalars['Boolean'];
+  emailTeamRequest: Scalars['Boolean'];
+  /**
+   * Whether or not a user wants an in-browser notification if someone submits a review on their PR.
+   *
+   * This will only be sent when a repository has the GitHub App installed and the PR owner is a
+   * member of a CodeSandbox team that has the project imported.
+   */
+  inAppPrReviewReceived: Scalars['Boolean'];
+  /**
+   * Whether or not a user wants an in-browser notification if someone requests their review on a PR.
+   *
+   * This will only be sent when a repository has the GitHub App installed and the requested reviewer is a
+   * member of a CodeSandbox team that has the project imported.
+   */
+  inAppPrReviewRequest: Scalars['Boolean'];
+};
+
+export type Notification = {
+  __typename?: 'Notification';
+  archived: Scalars['Boolean'];
+  data: Scalars['String'];
+  id: Scalars['UUID4'];
+  insertedAt: Scalars['NaiveDateTime'];
+  read: Scalars['Boolean'];
+  type: Scalars['String'];
+};
+
+/** The oAuth provider used to create the account */
+export enum ProviderName {
+  Apple = 'APPLE',
+  Github = 'GITHUB',
+  Google = 'GOOGLE',
+}
 
 export type RootMutationType = {
   __typename?: 'RootMutationType';
@@ -1169,10 +1458,7 @@ export type RootMutationType = {
   /**
    * Create a contribution branch on a non-team-assinged project.
    *
-   * This endpoint allows users to create a contribution branch on a read-only
-   * project. This branch will only be created on CodeSandbox and the branch will
-   * be a _contribution branch_, which will automatically fork a new repository
-   * andproject on the first commit.
+   * This endpoint allows users to create a contribution branch on a read-only project. This branch will only be created on CodeSandbox and the branch will be a _contribution branch_, which will automatically fork a new repository andproject on the first commit.
    *
    * A team ID is not accepted for this mutation. To create a branch on a team-assigned project, see `mutation createBranch`.
    *
@@ -1223,7 +1509,46 @@ export type RootMutationType = {
   deleteCollection: Array<Collection>;
   /** Soft delete a comment. Note: all child comments will also be deleted. */
   deleteComment: Comment;
-  /** Request deletion of current user */
+  /**
+   * Request deletion of current user
+   *
+   * This mutation does not immediately delete the current user, but instead schedules the deletion
+   * for some time in the next 24 hours. Users have an opportunity to cancel the deletion request
+   * using `mutation cancelDeleteCurrentUser`.
+   *
+   * There are three situations in which this mutation will fail:
+   *
+   * 1. If no user is currently authenticated
+   * 2. If the user is the only admin to a team that has other members
+   * 3. If the user is an admin of a team with an active subscription or trial
+   *
+   * The third situation can be ignored by passing `true` to the argument `confirm`. It is intended
+   * that users may try to delete once, read the error message, and then check a box to confirm
+   * their choice and submit again.
+   *
+   * **Note**: If not supplied, `confirm` is automatically `true` for backwards compatibility.
+   *
+   * ## Examples
+   *
+   * For a first attempt at deletion, use `confirm: false`.
+   *
+   * ```gql
+   * deleteCurrentUser(confirm: false)
+   * ```
+   *
+   * This will return successful if the user does not meet any of the failure criteria listed
+   * above. Otherwise, one of the following errors will be returned:
+   *
+   * * `Please log in`
+   * * `You are the only admin of a team. Please designate another admin or delete the following teams: ...`
+   * * `You have active subscription(s) on the following teams: ... Are you sure you want to remove your account?`
+   *
+   * For the last error, if the user confirms their desire to delete the account, use
+   * `confirm: true` to bypass the final check. In this case, only these two errors will occur:
+   *
+   * * `Please log in`
+   * * `You are the only admin of a team. Please designate another admin or delete the following teams: ...`
+   */
   deleteCurrentUser: Scalars['String'];
   /**
    * Delete a comment from a pull request review
@@ -1527,14 +1852,14 @@ export type RootMutationTypeAddSandboxesToAlbumArgs = {
 
 export type RootMutationTypeAddToCollectionArgs = {
   collectionPath: Scalars['String'];
-  sandboxIds: Maybe<Array<Maybe<Scalars['ID']>>>;
-  teamId: Maybe<Scalars['UUID4']>;
+  sandboxIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 export type RootMutationTypeAddToCollectionOrTeamArgs = {
-  collectionPath: Maybe<Scalars['String']>;
-  sandboxIds: Maybe<Array<Maybe<Scalars['ID']>>>;
-  teamId: Maybe<Scalars['UUID4']>;
+  collectionPath: InputMaybe<Scalars['String']>;
+  sandboxIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 export type RootMutationTypeArchiveNotificationArgs = {
@@ -1542,7 +1867,7 @@ export type RootMutationTypeArchiveNotificationArgs = {
 };
 
 export type RootMutationTypeBookmarkTemplateArgs = {
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
   templateId: Scalars['UUID4'];
 };
 
@@ -1559,18 +1884,18 @@ export type RootMutationTypeChangeSandboxInvitationAuthorizationArgs = {
 };
 
 export type RootMutationTypeChangeTeamMemberAuthorizationsArgs = {
-  memberAuthorizations: Maybe<Array<MemberAuthorization>>;
+  memberAuthorizations: InputMaybe<Array<MemberAuthorization>>;
   teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeCreateAlbumArgs = {
-  description: Maybe<Scalars['String']>;
+  description: InputMaybe<Scalars['String']>;
   title: Scalars['String'];
 };
 
 export type RootMutationTypeCreateBranchArgs = {
-  branch: Maybe<Scalars['String']>;
-  from: Maybe<Scalars['String']>;
+  branch: InputMaybe<Scalars['String']>;
+  from: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   owner: Scalars['String'];
   provider: GitProvider;
@@ -1579,42 +1904,42 @@ export type RootMutationTypeCreateBranchArgs = {
 
 export type RootMutationTypeCreateCodeCommentArgs = {
   anchorReference: CodeReference;
-  codeReferences: Maybe<Array<CodeReference>>;
+  codeReferences: InputMaybe<Array<CodeReference>>;
   content: Scalars['String'];
-  id: Maybe<Scalars['ID']>;
-  imageReferences: Maybe<Array<ImageReference>>;
-  parentCommentId: Maybe<Scalars['ID']>;
+  id: InputMaybe<Scalars['ID']>;
+  imageReferences: InputMaybe<Array<ImageReference>>;
+  parentCommentId: InputMaybe<Scalars['ID']>;
   sandboxId: Scalars['ID'];
-  userReferences: Maybe<Array<UserReference>>;
+  userReferences: InputMaybe<Array<UserReference>>;
 };
 
 export type RootMutationTypeCreateCollectionArgs = {
   path: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 export type RootMutationTypeCreateCommentArgs = {
-  codeReference: Maybe<CodeReference>;
-  codeReferences: Maybe<Array<CodeReference>>;
+  codeReference: InputMaybe<CodeReference>;
+  codeReferences: InputMaybe<Array<CodeReference>>;
   content: Scalars['String'];
-  id: Maybe<Scalars['ID']>;
-  imageReferences: Maybe<Array<ImageReference>>;
-  parentCommentId: Maybe<Scalars['ID']>;
+  id: InputMaybe<Scalars['ID']>;
+  imageReferences: InputMaybe<Array<ImageReference>>;
+  parentCommentId: InputMaybe<Scalars['ID']>;
   sandboxId: Scalars['ID'];
-  userReferences: Maybe<Array<UserReference>>;
+  userReferences: InputMaybe<Array<UserReference>>;
 };
 
 export type RootMutationTypeCreateContributionBranchArgs = {
-  from: Maybe<Scalars['String']>;
+  from: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   owner: Scalars['String'];
   provider: GitProvider;
 };
 
 export type RootMutationTypeCreateGithubPullRequestReviewArgs = {
-  body: Maybe<Scalars['String']>;
-  comments: Maybe<Array<GithubPullRequestReviewCommentInput>>;
-  commitId: Maybe<Scalars['String']>;
+  body: InputMaybe<Scalars['String']>;
+  comments: InputMaybe<Array<GithubPullRequestReviewCommentInput>>;
+  commitId: InputMaybe<Scalars['String']>;
   event: GitHubPullRequestReviewAction;
   name: Scalars['String'];
   owner: Scalars['String'];
@@ -1622,26 +1947,26 @@ export type RootMutationTypeCreateGithubPullRequestReviewArgs = {
 };
 
 export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
-  authType: Maybe<AuthType>;
+  authType: InputMaybe<AuthType>;
   enabledScopes: Array<Scalars['String']>;
   limitToScopes: Scalars['Boolean'];
   proxyEnabled: Scalars['Boolean'];
-  registryAuthKey: Maybe<Scalars['String']>;
+  registryAuthKey: InputMaybe<Scalars['String']>;
   registryType: RegistryType;
-  registryUrl: Maybe<Scalars['String']>;
-  sandpackTrustedDomains: Maybe<Array<Scalars['String']>>;
+  registryUrl: InputMaybe<Scalars['String']>;
+  sandpackTrustedDomains: InputMaybe<Array<Scalars['String']>>;
   teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeCreatePreviewCommentArgs = {
   anchorReference: PreviewReference;
-  codeReferences: Maybe<Array<CodeReference>>;
+  codeReferences: InputMaybe<Array<CodeReference>>;
   content: Scalars['String'];
-  id: Maybe<Scalars['ID']>;
-  imageReferences: Maybe<Array<ImageReference>>;
-  parentCommentId: Maybe<Scalars['ID']>;
+  id: InputMaybe<Scalars['ID']>;
+  imageReferences: InputMaybe<Array<ImageReference>>;
+  parentCommentId: InputMaybe<Scalars['ID']>;
   sandboxId: Scalars['ID'];
-  userReferences: Maybe<Array<UserReference>>;
+  userReferences: InputMaybe<Array<UserReference>>;
 };
 
 export type RootMutationTypeCreateSandboxInvitationArgs = {
@@ -1652,7 +1977,7 @@ export type RootMutationTypeCreateSandboxInvitationArgs = {
 
 export type RootMutationTypeCreateTeamArgs = {
   name: Scalars['String'];
-  pilot: Maybe<Scalars['Boolean']>;
+  pilot: InputMaybe<Scalars['Boolean']>;
 };
 
 export type RootMutationTypeDeleteAlbumArgs = {
@@ -1665,12 +1990,16 @@ export type RootMutationTypeDeleteBranchArgs = {
 
 export type RootMutationTypeDeleteCollectionArgs = {
   path: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 export type RootMutationTypeDeleteCommentArgs = {
   commentId: Scalars['UUID4'];
   sandboxId: Scalars['ID'];
+};
+
+export type RootMutationTypeDeleteCurrentUserArgs = {
+  confirm?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type RootMutationTypeDeleteGithubPullRequestReviewCommentArgs = {
@@ -1743,13 +2072,13 @@ export type RootMutationTypeIncrementSandboxVersionArgs = {
 };
 
 export type RootMutationTypeInviteToTeamArgs = {
-  authorization: Maybe<TeamMemberAuthorization>;
+  authorization: InputMaybe<TeamMemberAuthorization>;
   teamId: Scalars['UUID4'];
   username: Scalars['String'];
 };
 
 export type RootMutationTypeInviteToTeamViaEmailArgs = {
-  authorization: Maybe<TeamMemberAuthorization>;
+  authorization: InputMaybe<TeamMemberAuthorization>;
   email: Scalars['String'];
   teamId: Scalars['UUID4'];
 };
@@ -1767,7 +2096,7 @@ export type RootMutationTypeMarkNotificationAsReadArgs = {
 };
 
 export type RootMutationTypeMergeGithubPullRequestArgs = {
-  mergeMethod?: Maybe<GitHubPullRequestMergeMethod>;
+  mergeMethod: InputMaybe<GitHubPullRequestMergeMethod>;
   name: Scalars['String'];
   owner: Scalars['String'];
   pullRequestNumber: Scalars['Int'];
@@ -1825,9 +2154,9 @@ export type RootMutationTypeRemoveSandboxesFromAlbumArgs = {
 
 export type RootMutationTypeRenameCollectionArgs = {
   newPath: Scalars['String'];
-  newTeamId: Maybe<Scalars['UUID4']>;
+  newTeamId: InputMaybe<Scalars['UUID4']>;
   path: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 export type RootMutationTypeRenameSandboxArgs = {
@@ -1900,7 +2229,7 @@ export type RootMutationTypeSetSandboxesFrozenArgs = {
 };
 
 export type RootMutationTypeSetSandboxesPrivacyArgs = {
-  privacy: Maybe<Scalars['Int']>;
+  privacy: InputMaybe<Scalars['Int']>;
   sandboxIds: Array<Scalars['ID']>;
 };
 
@@ -1940,7 +2269,7 @@ export type RootMutationTypeSoftCancelSubscriptionArgs = {
 };
 
 export type RootMutationTypeUnbookmarkTemplateArgs = {
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
   templateId: Scalars['UUID4'];
 };
 
@@ -1954,24 +2283,24 @@ export type RootMutationTypeUnresolveCommentArgs = {
 };
 
 export type RootMutationTypeUpdateAlbumArgs = {
-  description: Maybe<Scalars['String']>;
+  description: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
-  title: Maybe<Scalars['String']>;
+  title: InputMaybe<Scalars['String']>;
 };
 
 export type RootMutationTypeUpdateCommentArgs = {
-  codeReferences: Maybe<Array<CodeReference>>;
+  codeReferences: InputMaybe<Array<CodeReference>>;
   commentId: Scalars['UUID4'];
-  content: Maybe<Scalars['String']>;
-  imageReferences: Maybe<Array<ImageReference>>;
+  content: InputMaybe<Scalars['String']>;
+  imageReferences: InputMaybe<Array<ImageReference>>;
   sandboxId: Scalars['ID'];
-  userReferences: Maybe<Array<UserReference>>;
+  userReferences: InputMaybe<Array<UserReference>>;
 };
 
 export type RootMutationTypeUpdateCurrentUserArgs = {
-  bio: Maybe<Scalars['String']>;
-  name: Maybe<Scalars['String']>;
-  socialLinks: Maybe<Array<Scalars['String']>>;
+  bio: InputMaybe<Scalars['String']>;
+  name: InputMaybe<Scalars['String']>;
+  socialLinks: InputMaybe<Array<Scalars['String']>>;
   username: Scalars['String'];
 };
 
@@ -1991,15 +2320,15 @@ export type RootMutationTypeUpdateGithubPullRequestReviewCommentArgs = {
 };
 
 export type RootMutationTypeUpdateNotificationPreferencesArgs = {
-  emailCommentMention: Maybe<Scalars['Boolean']>;
-  emailCommentReply: Maybe<Scalars['Boolean']>;
-  emailMarketing: Maybe<Scalars['Boolean']>;
-  emailNewComment: Maybe<Scalars['Boolean']>;
-  emailSandboxInvite: Maybe<Scalars['Boolean']>;
-  emailTeamInvite: Maybe<Scalars['Boolean']>;
-  emailTeamRequest: Maybe<Scalars['Boolean']>;
-  inAppPrReviewReceived: Maybe<Scalars['Boolean']>;
-  inAppPrReviewRequest: Maybe<Scalars['Boolean']>;
+  emailCommentMention: InputMaybe<Scalars['Boolean']>;
+  emailCommentReply: InputMaybe<Scalars['Boolean']>;
+  emailMarketing: InputMaybe<Scalars['Boolean']>;
+  emailNewComment: InputMaybe<Scalars['Boolean']>;
+  emailSandboxInvite: InputMaybe<Scalars['Boolean']>;
+  emailTeamInvite: InputMaybe<Scalars['Boolean']>;
+  emailTeamRequest: InputMaybe<Scalars['Boolean']>;
+  inAppPrReviewReceived: InputMaybe<Scalars['Boolean']>;
+  inAppPrReviewRequest: InputMaybe<Scalars['Boolean']>;
 };
 
 export type RootMutationTypeUpdateNotificationReadStatusArgs = {
@@ -2008,17 +2337,17 @@ export type RootMutationTypeUpdateNotificationReadStatusArgs = {
 };
 
 export type RootMutationTypeUpdateProjectSettingsArgs = {
-  aiConsent: Maybe<Scalars['Boolean']>;
+  aiConsent: InputMaybe<Scalars['Boolean']>;
   projectId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeUpdateSandboxSettingsArgs = {
-  aiConsent: Maybe<Scalars['Boolean']>;
+  aiConsent: InputMaybe<Scalars['Boolean']>;
   sandboxId: Scalars['ID'];
 };
 
 export type RootMutationTypeUpdateSubscriptionArgs = {
-  quantity: Maybe<Scalars['Int']>;
+  quantity: InputMaybe<Scalars['Int']>;
   subscriptionId: Scalars['UUID4'];
   teamId: Scalars['UUID4'];
 };
@@ -2029,202 +2358,82 @@ export type RootMutationTypeUpdateSubscriptionBillingIntervalArgs = {
   teamId: Scalars['UUID4'];
 };
 
-export type RootQueryType = {
-  __typename?: 'RootQueryType';
-  album: Maybe<Album>;
-  albums: Array<Album>;
-  /**
-   * Get a single branch by its short ID.
-   *
-   * Returns a "not found" error if the branch does not exist or is inaccessible by the current user.
-   * Anonymous users may use this endpoint for branches that exist on read-only projects (see
-   * `mutation importReadOnlyProject`).
-   *
-   * Branches represent real or potential git branches on a particular team's project. Branch short
-   * IDs are short alphanumeric strings that point to a particular repository + team + branch name.
-   * Remember that a user may have access to the same branch on multiple teams' projects.
-   *
-   * To look up a branch by repository + team + branch name, see `query branchByName`.
-   *
-   * Example (for branch with short ID `abc123`):
-   *
-   * ```gql
-   * query branchById(id: "abc123") {
-   *   name
-   * }
-   * ```
-   */
-  branchById: Branch;
-  /**
-   * Get a single branch by its repository, team, and name.
-   *
-   * Returns a "not found" error if the branch does not exist or is inaccessible by the current user.
-   * Anonymous users may use this endpoint for branches that exist on read-only projects (see
-   * `mutation importReadOnlyProject`).
-   *
-   * Branches represent real or potential git branches on a particular team's project. Remember that
-   * a user may have access to the same branch on multiple teams' projects.
-   *
-   * To look up a branch by its short ID, see `query branchById`.
-   *
-   * Example (for `codesandbox/test-repo` branch `test-branch`):
-   *
-   * ```gql
-   * query branchByName(
-   *   provider: GITHUB,
-   *   owner: "codesandbox",
-   *   name: "test-repo",
-   *   branch: "test-branch",
-   *   team: "987b6fcd-2a3b-41fe-b1e6-ac33565824b9"
-   * )
-   * ```
-   */
-  branchByName: Branch;
-  curatedAlbums: Array<Album>;
-  /** Get git repo and related V1 sandboxes */
-  git: Maybe<Git>;
-  /**
-   * Get repositories owned by a GitHub organization.
-   *
-   * If either `page` or `perPage` are specified, then a single page of results will be returned.
-   * If neither argument is given, then all results will be returned. Note that this still requires
-   * paginated requests to the GitHub API, but the server will concatenate the results.
-   */
-  githubOrganizationRepos: Maybe<Array<GithubRepo>>;
-  /** Get a repository as it appears on GitHub */
-  githubRepo: Maybe<GithubRepo>;
-  /** The various limits in place for free and paying users and teams */
-  limits: Limits;
-  /** Get current user */
-  me: Maybe<CurrentUser>;
-  /**
-   * Get a single project by its repository and team.
-   *
-   * Projects are identified by repository-team pairs. For public repositories, there may also be a
-   * single project that does not have an associated team. For a list of all projects for a given
-   * repository, see `query projectsByRepository`.
-   *
-   * Example (for `https://github.com/codesandbox/test-repo.git`):
-   *
-   * ```gql
-   * query project(
-   *   git_provider: GITHUB,
-   *   owner: "codesandbox",
-   *   repo: "test-repo",
-   *   team: "57ca3ef5-475b-47bf-9530-a686c527e174"
-   * ) { id }
-   * ```
-   */
-  project: Maybe<Project>;
-  /**
-   * Get all projects for the given repository accessible by the current user. Returns an empty list
-   * if no such projects are available, or no version of this project has been imported yet.
-   *
-   * Projects are identified by repository-team pairs. For public repositories, there may also be a
-   * single project that does not have an associated team. This query returns all of the projects
-   * accessible by the current user (as many as `[# of user teams] + 1`). For information about
-   * a project associated with a specific team, see `query project`.
-   *
-   * Example (for `https://github.com/codesandbox/test-repo.git`):
-   *
-   * ```gql
-   * query projects(
-   *   provider: GITHUB,
-   *   owner: "codesandbox",
-   *   name: "test-repo"
-   * ) { id }
-   * ```
-   */
-  projects: Array<Project>;
-  /**
-   * Get a list of teams that have interacted with a repository recently
-   *
-   * This endpoint is intended to be used when a user has access to a repository, but does not
-   * belong to any teams where the repository has been imported. It returns a brief list of teams
-   * (10) that have interacted with that repository recently, with the intention that the user may
-   * wish to request an invitation to one of those teams.
-   *
-   * **Note**: The teams returned by this endpoint are likely to be relevant for **private**
-   * repositories only, and unlikely to be relevant for public repositories.
-   *
-   * ```gql
-   * query recentTeamsByRepository(
-   *   provider: GITHUB,
-   *   owner: "codesandbox",
-   *   name: "test-repo"
-   * ) { id }
-   * ```
-   */
-  recentTeamsByRepository: Array<TeamPreview>;
-  /** Get a sandbox */
-  sandbox: Maybe<Sandbox>;
-  /** A team from an invite token */
-  teamByToken: Maybe<TeamPreview>;
+export type MemberAuthorization = {
+  authorization: TeamMemberAuthorization;
+  teamManager: InputMaybe<Scalars['Boolean']>;
+  userId: Scalars['UUID4'];
 };
 
-export type RootQueryTypeAlbumArgs = {
-  albumId: Scalars['ID'];
-};
-
-export type RootQueryTypeAlbumsArgs = {
-  username: Scalars['String'];
-};
-
-export type RootQueryTypeBranchByIdArgs = {
-  id: Scalars['String'];
-};
-
-export type RootQueryTypeBranchByNameArgs = {
-  branch: Scalars['String'];
-  name: Scalars['String'];
-  owner: Scalars['String'];
-  provider: GitProvider;
-  team: Maybe<Scalars['ID']>;
-};
-
-export type RootQueryTypeGitArgs = {
-  branch: Scalars['String'];
+export type CodeReference = {
+  anchor: Scalars['Int'];
+  code: Scalars['String'];
+  head: Scalars['Int'];
+  lastUpdatedAt: Scalars['String'];
   path: Scalars['String'];
-  repo: Scalars['String'];
+};
+
+export type ImageReference = {
+  fileName: Scalars['String'];
+  resolution: Array<Scalars['Int']>;
+  src: InputMaybe<Scalars['Base64']>;
+  url: InputMaybe<Scalars['String']>;
+};
+
+export type UserReference = {
+  userId: Scalars['String'];
   username: Scalars['String'];
 };
 
-export type RootQueryTypeGithubOrganizationReposArgs = {
-  organization: Scalars['String'];
-  page: Maybe<Scalars['Int']>;
-  perPage: Maybe<Scalars['Int']>;
+export type GithubPullRequestReviewCommentInput = {
+  /** Body text of the review comment */
+  body: Scalars['String'];
+  /** Line number of the file to comment on. Note: This line must be part of the diff */
+  line: Scalars['Int'];
+  /** Relative path to the file being commented on */
+  path: Scalars['String'];
+  /** Which side of the diff to comment on. */
+  side: GitHubPullRequestReviewCommentSide;
+  /** Start line of multi-line comment. Only needed for multi-line comments. */
+  startLine: InputMaybe<Scalars['Int']>;
+  /** Start side of multi-line comment. Only needed for multi-line comments. */
+  startSide: InputMaybe<GitHubPullRequestReviewCommentSide>;
 };
 
-export type RootQueryTypeGithubRepoArgs = {
-  owner: Scalars['String'];
-  repo: Scalars['String'];
+/** The action to take with a pull request review */
+export enum GitHubPullRequestReviewAction {
+  Approve = 'APPROVE',
+  Comment = 'COMMENT',
+  RequestChanges = 'REQUEST_CHANGES',
+}
+
+export type PreviewReference = {
+  height: Scalars['Int'];
+  previewPath: Scalars['String'];
+  screenshotSrc: InputMaybe<Scalars['Base64']>;
+  userAgent: Scalars['String'];
+  width: Scalars['Int'];
+  x: Scalars['Int'];
+  y: Scalars['Int'];
 };
 
-export type RootQueryTypeProjectArgs = {
-  gitProvider?: Maybe<GitProvider>;
-  owner: Scalars['String'];
-  repo: Scalars['String'];
-  team: Maybe<Scalars['ID']>;
+/** Ways to merge a pull request */
+export enum GitHubPullRequestMergeMethod {
+  Merge = 'MERGE',
+  Rebase = 'REBASE',
+  Squash = 'SQUASH',
+}
+
+export type BillingPreview = {
+  __typename?: 'BillingPreview';
+  immediatePayment: Maybe<BillingDetails>;
+  nextPayment: Maybe<BillingDetails>;
 };
 
-export type RootQueryTypeProjectsArgs = {
-  name: Scalars['String'];
-  owner: Scalars['String'];
-  provider: GitProvider;
-};
-
-export type RootQueryTypeRecentTeamsByRepositoryArgs = {
-  name: Scalars['String'];
-  owner: Scalars['String'];
-  provider: GitProvider;
-};
-
-export type RootQueryTypeSandboxArgs = {
-  sandboxId: Scalars['ID'];
-};
-
-export type RootQueryTypeTeamByTokenArgs = {
-  inviteToken: Scalars['String'];
+export type BillingDetails = {
+  __typename?: 'BillingDetails';
+  amount: Scalars['Int'];
+  currency: Scalars['String'];
+  date: Scalars['String'];
 };
 
 export type RootSubscriptionType = {
@@ -2325,13 +2534,13 @@ export type RootSubscriptionTypeInvitationRemovedArgs = {
 };
 
 export type RootSubscriptionTypeProjectCommitsArgs = {
-  branchId: Maybe<Scalars['String']>;
+  branchId: InputMaybe<Scalars['String']>;
   owner: Scalars['String'];
   repo: Scalars['String'];
 };
 
 export type RootSubscriptionTypeProjectConnectionsArgs = {
-  branchId: Maybe<Scalars['String']>;
+  branchId: InputMaybe<Scalars['String']>;
   owner: Scalars['String'];
   repo: Scalars['String'];
 };
@@ -2342,7 +2551,7 @@ export type RootSubscriptionTypeProjectEventsArgs = {
 };
 
 export type RootSubscriptionTypeProjectStatusArgs = {
-  branchId: Maybe<Scalars['String']>;
+  branchId: InputMaybe<Scalars['String']>;
   owner: Scalars['String'];
   repo: Scalars['String'];
 };
@@ -2352,240 +2561,135 @@ export type RootSubscriptionTypeSandboxChangedArgs = {
 };
 
 export type RootSubscriptionTypeTeamEventsArgs = {
-  teamId: Maybe<Scalars['ID']>;
+  teamId: InputMaybe<Scalars['ID']>;
 };
 
-/** A Sandbox */
-export type Sandbox = {
-  __typename?: 'Sandbox';
-  alias: Maybe<Scalars['String']>;
-  alwaysOn: Maybe<Scalars['Boolean']>;
-  author: Maybe<User>;
-  authorId: Maybe<Scalars['UUID4']>;
-  authorization: Authorization;
-  /** If the sandbox has created a PR, this will refer to the git that you will merge into */
-  baseGit: Maybe<Git>;
-  collaborators: Array<Collaborator>;
-  collection: Maybe<Collection>;
-  comment: Maybe<Comment>;
-  comments: Array<Comment>;
-  /** If the sandbox is a template this will be set */
-  customTemplate: Maybe<Template>;
-  description: Maybe<Scalars['String']>;
-  forkCount: Scalars['Int'];
-  forkedTemplate: Maybe<Template>;
-  /** If the sandbox has a v1 git repo tied to it this will be set */
-  git: Maybe<Git>;
-  id: Scalars['ID'];
-  insertedAt: Scalars['String'];
-  invitations: Array<Invitation>;
-  isFrozen: Scalars['Boolean'];
-  isSse: Maybe<Scalars['Boolean']>;
-  isV2: Scalars['Boolean'];
-  /** Depending on the context, this may be the last access of the current user or the aggregate last access for all users */
-  lastAccessedAt: Scalars['DateTime'];
-  likeCount: Scalars['Int'];
-  /** If the sandbox has been made into a git sandbox, then this will be set */
-  originalGit: Maybe<Git>;
-  permissions: Maybe<SandboxProtectionSettings>;
-  /** If a PR has been opened on the sandbox, this will be set to the PR number */
-  prNumber: Maybe<Scalars['Int']>;
-  privacy: Scalars['Int'];
-  removedAt: Maybe<Scalars['String']>;
-  screenshotOutdated: Scalars['Boolean'];
-  screenshotUrl: Maybe<Scalars['String']>;
-  settings: SandboxSettings;
-  source: Source;
-  team: Maybe<TeamPreview>;
-  teamId: Maybe<Scalars['UUID4']>;
-  title: Maybe<Scalars['String']>;
-  updatedAt: Scalars['String'];
-  viewCount: Scalars['Int'];
-};
+/** Events related to a specific branch. */
+export type BranchEvent =
+  | PullRequestCommentEvent
+  | PullRequestEvent
+  | PullRequestReviewCommentEvent
+  | PullRequestReviewEvent;
 
-/** A Sandbox */
-export type SandboxCommentArgs = {
-  commentId: Scalars['UUID4'];
-};
-
-export type SandboxProtectionSettings = {
-  __typename?: 'SandboxProtectionSettings';
-  preventSandboxExport: Scalars['Boolean'];
-  preventSandboxLeaving: Scalars['Boolean'];
-};
-
-/** User-editable settings for a sandbox */
-export type SandboxSettings = {
-  __typename?: 'SandboxSettings';
-  /** Whether AI features are explicitly enabled or disabled for this sandbox. If `null`, the team-wide setting applies. */
-  aiConsent: Maybe<Scalars['Boolean']>;
-};
-
-export type Source = {
-  __typename?: 'Source';
-  id: Maybe<Scalars['UUID4']>;
-  template: Maybe<Scalars['String']>;
-};
-
-/** Information about the underlying git status of a branch */
-export type Status = {
-  __typename?: 'Status';
-  hasChanges: Scalars['Boolean'];
-  hasConflicts: Scalars['Boolean'];
-  remote: StatusCommitCounts;
-  target: StatusCommitCounts;
-};
-
-/** Counts of how many commits ahead and behind a branch is */
-export type StatusCommitCounts = {
-  __typename?: 'StatusCommitCounts';
-  ahead: Scalars['Int'];
-  behind: Scalars['Int'];
-};
-
-export enum SubscriptionInterval {
-  Monthly = 'MONTHLY',
-  Yearly = 'YEARLY',
-}
-
-export enum SubscriptionOrigin {
-  Legacy = 'LEGACY',
-  Patron = 'PATRON',
-  Pilot = 'PILOT',
-}
-
-export enum SubscriptionPaymentProvider {
-  Paddle = 'PADDLE',
-  Stripe = 'STRIPE',
-}
-
-export enum SubscriptionStatus {
-  Active = 'ACTIVE',
-  Cancelled = 'CANCELLED',
-  IncompleteExpired = 'INCOMPLETE_EXPIRED',
-  Paused = 'PAUSED',
-  Trialing = 'TRIALING',
-  Unknown = 'UNKNOWN',
-  Unpaid = 'UNPAID',
-}
-
-export enum SubscriptionType {
-  PersonalPro = 'PERSONAL_PRO',
-  TeamPro = 'TEAM_PRO',
-}
-
-export type Team = {
-  __typename?: 'Team';
-  avatarUrl: Maybe<Scalars['String']>;
-  bookmarkedTemplates: Array<Template>;
-  collections: Array<Collection>;
-  creatorId: Maybe<Scalars['UUID4']>;
-  description: Maybe<Scalars['String']>;
-  /** Draft sandboxes by everyone on the team */
-  drafts: Array<Sandbox>;
-  id: Scalars['UUID4'];
-  inviteToken: Scalars['String'];
-  invitees: Array<User>;
-  /** @deprecated There's no such thing as a pilot team anymore */
-  joinedPilotAt: Maybe<Scalars['DateTime']>;
-  legacy: Scalars['Boolean'];
-  limits: TeamLimits;
-  members: Array<TeamMember>;
-  name: Scalars['String'];
-  privateRegistry: Maybe<PrivateRegistry>;
+/**
+ * Event about a comment on a pull request (outside the context of a review)
+ *
+ * GitHub does not distinguish between PR and issue comments, so the event will be "issue_comment"
+ * for both types. The API will attempt to distinguish between them using additional information
+ * from the event.
+ */
+export type PullRequestCommentEvent = {
+  __typename?: 'PullRequestCommentEvent';
+  action: PullRequestCommentEventAction;
+  comment: GitHubPullRequestComment;
+  event: Scalars['String'];
   /**
-   * Projects assigned to the team
+   * Pull request on which the comment appears
    *
-   * By default, repository and permission data older than a certain TTL will be synced from the
-   * GitHub API. Using `syncData: false`, clients can request a faster but possibly incorrect
-   * response. The incorrect response will be "safe", defaulting to "no" or "read-only" access
-   * when a definitive answer isn't available.
-   *
-   * Projects are returned in the order of the most recent recorded commit on the related
-   * repository. Manual ordering by `lastAccessedAt` may be desired.
+   * This field is nullable due to an edge case that may cause comments to be saved without the
+   * parent PR. Clients can observe the comment's `issueId` field to see if the pull request is
+   * already known based on its ID.
    */
-  projects: Array<Project>;
-  sandboxes: Array<Sandbox>;
-  settings: Maybe<WorkspaceSandboxSettings>;
-  shortid: Scalars['String'];
-  subscription: Maybe<ProSubscription>;
-  templates: Array<Template>;
-  type: TeamType;
-  usage: TeamUsage;
-  userAuthorizations: Array<UserAuthorization>;
-  users: Array<User>;
+  pullRequest: Maybe<PullRequest>;
 };
 
-export type TeamDraftsArgs = {
-  authorId: Maybe<Scalars['UUID4']>;
-  limit: Maybe<Scalars['Int']>;
-  orderBy: Maybe<OrderBy>;
+export enum PullRequestCommentEventAction {
+  Created = 'CREATED',
+  Deleted = 'DELETED',
+  Edited = 'EDITED',
+}
+
+/** Event about activity on a pull request */
+export type PullRequestEvent = {
+  __typename?: 'PullRequestEvent';
+  action: PullRequestEventAction;
+  event: Scalars['String'];
+  pullRequest: PullRequest;
 };
 
-export type TeamProjectsArgs = {
-  syncData?: Maybe<Scalars['Boolean']>;
+export enum PullRequestEventAction {
+  Closed = 'CLOSED',
+  ConvertedToDraft = 'CONVERTED_TO_DRAFT',
+  Opened = 'OPENED',
+  ReadyForReview = 'READY_FOR_REVIEW',
+  ReviewRequestRemoved = 'REVIEW_REQUEST_REMOVED',
+  ReviewRequested = 'REVIEW_REQUESTED',
+}
+
+/** Event about a comment on a pull request review */
+export type PullRequestReviewCommentEvent = {
+  __typename?: 'PullRequestReviewCommentEvent';
+  action: PullRequestReviewCommentEventAction;
+  comment: GitHubPullRequestReviewComment;
+  event: Scalars['String'];
+  pullRequest: PullRequest;
 };
 
-export type TeamSandboxesArgs = {
-  alwaysOn: Maybe<Scalars['Boolean']>;
-  authorId: Maybe<Scalars['UUID4']>;
-  hasOriginalGit: Maybe<Scalars['Boolean']>;
-  limit: Maybe<Scalars['Int']>;
-  orderBy: Maybe<OrderBy>;
-  showDeleted: Maybe<Scalars['Boolean']>;
+export enum PullRequestReviewCommentEventAction {
+  Created = 'CREATED',
+  Deleted = 'DELETED',
+  Edited = 'EDITED',
+}
+
+/** Event about review activity on a pull request */
+export type PullRequestReviewEvent = {
+  __typename?: 'PullRequestReviewEvent';
+  action: PullRequestReviewEventAction;
+  event: Scalars['String'];
+  pullRequest: PullRequest;
+  review: PullRequestReview;
 };
 
-export type TeamSubscriptionArgs = {
-  includeCancelled?: Maybe<Scalars['Boolean']>;
+export enum PullRequestReviewEventAction {
+  Dismissed = 'DISMISSED',
+  Edited = 'EDITED',
+  Submitted = 'SUBMITTED',
+}
+
+/** GitHub webhook event about a repository. */
+export type RepositoryEvent = InstallationEvent;
+
+/** GitHub webhook event about the status of a GitHub App installation. */
+export type InstallationEvent = {
+  __typename?: 'InstallationEvent';
+  action: InstallationEventAction;
+  event: Scalars['String'];
 };
 
-export type TeamAiConsent = {
-  __typename?: 'TeamAiConsent';
-  privateRepositories: Scalars['Boolean'];
-  privateSandboxes: Scalars['Boolean'];
-  publicRepositories: Scalars['Boolean'];
-  publicSandboxes: Scalars['Boolean'];
+export enum InstallationEventAction {
+  Created = 'CREATED',
+}
+
+/** Subscription update about a commit made by CodeSandbox for a branch */
+export type BranchLastCommit = {
+  __typename?: 'BranchLastCommit';
+  branchId: Scalars['String'];
+  lastCommit: LastCommit;
+};
+
+/** Subscription update about active users connected to a branch */
+export type BranchConnections = {
+  __typename?: 'BranchConnections';
+  branchId: Scalars['String'];
+  connections: Array<Connection>;
+};
+
+/** Events related to a project (repository). */
+export type ProjectEvent =
+  | PullRequestCommentEvent
+  | PullRequestEvent
+  | PullRequestReviewCommentEvent
+  | PullRequestReviewEvent;
+
+/** Subscription update about the underlying git status of a branch */
+export type BranchStatus = {
+  __typename?: 'BranchStatus';
+  branchId: Scalars['String'];
+  status: Status;
 };
 
 /** Events related to a team */
 export type TeamEvent = TeamSubscriptionEvent;
-
-export type TeamLimits = {
-  __typename?: 'TeamLimits';
-  maxEditors: Maybe<Scalars['Int']>;
-  maxPrivateProjects: Maybe<Scalars['Int']>;
-  maxPrivateSandboxes: Maybe<Scalars['Int']>;
-  maxPublicProjects: Maybe<Scalars['Int']>;
-  maxPublicSandboxes: Maybe<Scalars['Int']>;
-};
-
-export type TeamMember = {
-  __typename?: 'TeamMember';
-  avatarUrl: Scalars['String'];
-  bio: Maybe<Scalars['String']>;
-  githubUsername: Maybe<Scalars['String']>;
-  id: Scalars['UUID4'];
-  name: Maybe<Scalars['String']>;
-  username: Scalars['String'];
-};
-
-export enum TeamMemberAuthorization {
-  /** Permission to add/remove users and change permissions (in addition to write and read). */
-  Admin = 'ADMIN',
-  /** Permission view and comment on team sandboxes. */
-  Read = 'READ',
-  /** Permission create and edit team sandboxes (in addition to read). */
-  Write = 'WRITE',
-}
-
-export type TeamPreview = {
-  __typename?: 'TeamPreview';
-  avatarUrl: Maybe<Scalars['String']>;
-  description: Maybe<Scalars['String']>;
-  id: Scalars['UUID4'];
-  name: Scalars['String'];
-  shortid: Scalars['String'];
-};
 
 /** Change to a team's subscription status */
 export type TeamSubscriptionEvent = {
@@ -2595,136 +2699,150 @@ export type TeamSubscriptionEvent = {
   teamId: Scalars['ID'];
 };
 
-export enum TeamType {
-  Personal = 'PERSONAL',
-  Team = 'TEAM',
-}
-
-export type TeamUsage = {
-  __typename?: 'TeamUsage';
-  editorsQuantity: Scalars['Int'];
-  privateProjectsQuantity: Scalars['Int'];
-  privateSandboxesQuantity: Scalars['Int'];
-  publicProjectsQuantity: Scalars['Int'];
-  publicSandboxesQuantity: Scalars['Int'];
-};
-
-/** A Template */
-export type Template = {
+export type TemplateFragment = {
   __typename?: 'Template';
-  bookmarked: Maybe<Array<Maybe<Bookmarked>>>;
-  color: Maybe<Scalars['String']>;
-  /** @deprecated This field is deprecated and will always be null. Query sandbox > description instead */
-  description: Maybe<Scalars['String']>;
-  iconUrl: Maybe<Scalars['String']>;
-  id: Maybe<Scalars['UUID4']>;
-  insertedAt: Maybe<Scalars['String']>;
-  official: Scalars['Boolean'];
-  published: Maybe<Scalars['Boolean']>;
-  sandbox: Maybe<Sandbox>;
-  /** @deprecated This field is deprecated and will always be null. Query sandbox > title instead */
-  title: Maybe<Scalars['String']>;
-  updatedAt: Maybe<Scalars['String']>;
+  id: any | null;
+  color: string | null;
+  iconUrl: string | null;
+  published: boolean | null;
+  sandbox: {
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    insertedAt: string;
+    updatedAt: string;
+    isV2: boolean;
+    team: { __typename?: 'TeamPreview'; name: string } | null;
+    author: { __typename?: 'User'; username: string } | null;
+    source: { __typename?: 'Source'; template: string | null };
+  } | null;
 };
-
-/** A CodeSandbox User */
-export type User = {
-  __typename?: 'User';
-  avatarUrl: Scalars['String'];
-  bio: Maybe<Scalars['String']>;
-  id: Scalars['UUID4'];
-  name: Maybe<Scalars['String']>;
-  personalWorkspaceId: Scalars['UUID4'];
-  socialLinks: Maybe<Array<Scalars['String']>>;
-  username: Scalars['String'];
-};
-
-export type UserAuthorization = {
-  __typename?: 'UserAuthorization';
-  authorization: TeamMemberAuthorization;
-  teamManager: Scalars['Boolean'];
-  userId: Scalars['UUID4'];
-};
-
-export type UserReference = {
-  userId: Scalars['String'];
-  username: Scalars['String'];
-};
-
-export type UserReferenceMetadata = {
-  __typename?: 'UserReferenceMetadata';
-  userId: Scalars['String'];
-  username: Scalars['String'];
-};
-
-export type WorkspaceSandboxSettings = {
-  __typename?: 'WorkspaceSandboxSettings';
-  aiConsent: TeamAiConsent;
-  defaultAuthorization: TeamMemberAuthorization;
-  minimumPrivacy: Scalars['Int'];
-  preventSandboxExport: Scalars['Boolean'];
-  preventSandboxLeaving: Scalars['Boolean'];
-};
-
-export type TemplateFragment = { __typename?: 'Template' } & Pick<
-  Template,
-  'id' | 'color' | 'iconUrl' | 'published'
-> & {
-    sandbox: Maybe<
-      { __typename?: 'Sandbox' } & Pick<
-        Sandbox,
-        | 'id'
-        | 'alias'
-        | 'title'
-        | 'description'
-        | 'insertedAt'
-        | 'updatedAt'
-        | 'isV2'
-      > & {
-          team: Maybe<
-            { __typename?: 'TeamPreview' } & Pick<TeamPreview, 'name'>
-          >;
-          author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
-          source: { __typename?: 'Source' } & Pick<Source, 'template'>;
-        }
-    >;
-  };
 
 export type ListPersonalTemplatesQueryVariables = Exact<{
   [key: string]: never;
 }>;
 
-export type ListPersonalTemplatesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      templates: Array<{ __typename?: 'Template' } & TemplateFragment>;
-      recentlyUsedTemplates: Array<
-        { __typename?: 'Template' } & {
-          sandbox: Maybe<
-            { __typename?: 'Sandbox' } & {
-              git: Maybe<
-                { __typename?: 'Git' } & Pick<
-                  Git,
-                  'id' | 'username' | 'commitSha' | 'path' | 'repo' | 'branch'
-                >
-              >;
-            }
-          >;
-        } & TemplateFragment
-      >;
-      bookmarkedTemplates: Array<
-        { __typename?: 'Template' } & TemplateFragment
-      >;
-      teams: Array<
-        { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
-            bookmarkedTemplates: Array<
-              { __typename?: 'Template' } & TemplateFragment
-            >;
-            templates: Array<{ __typename?: 'Template' } & TemplateFragment>;
-          }
-      >;
-    }
-  >;
+export type ListPersonalTemplatesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    templates: Array<{
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+      published: boolean | null;
+      sandbox: {
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        insertedAt: string;
+        updatedAt: string;
+        isV2: boolean;
+        team: { __typename?: 'TeamPreview'; name: string } | null;
+        author: { __typename?: 'User'; username: string } | null;
+        source: { __typename?: 'Source'; template: string | null };
+      } | null;
+    }>;
+    recentlyUsedTemplates: Array<{
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+      published: boolean | null;
+      sandbox: {
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        insertedAt: string;
+        updatedAt: string;
+        isV2: boolean;
+        git: {
+          __typename?: 'Git';
+          id: any | null;
+          username: string | null;
+          commitSha: string | null;
+          path: string | null;
+          repo: string | null;
+          branch: string | null;
+        } | null;
+        team: { __typename?: 'TeamPreview'; name: string } | null;
+        author: { __typename?: 'User'; username: string } | null;
+        source: { __typename?: 'Source'; template: string | null };
+      } | null;
+    }>;
+    bookmarkedTemplates: Array<{
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+      published: boolean | null;
+      sandbox: {
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        insertedAt: string;
+        updatedAt: string;
+        isV2: boolean;
+        team: { __typename?: 'TeamPreview'; name: string } | null;
+        author: { __typename?: 'User'; username: string } | null;
+        source: { __typename?: 'Source'; template: string | null };
+      } | null;
+    }>;
+    teams: Array<{
+      __typename?: 'Team';
+      id: any;
+      name: string;
+      bookmarkedTemplates: Array<{
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+        published: boolean | null;
+        sandbox: {
+          __typename?: 'Sandbox';
+          id: string;
+          alias: string | null;
+          title: string | null;
+          description: string | null;
+          insertedAt: string;
+          updatedAt: string;
+          isV2: boolean;
+          team: { __typename?: 'TeamPreview'; name: string } | null;
+          author: { __typename?: 'User'; username: string } | null;
+          source: { __typename?: 'Source'; template: string | null };
+        } | null;
+      }>;
+      templates: Array<{
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+        published: boolean | null;
+        sandbox: {
+          __typename?: 'Sandbox';
+          id: string;
+          alias: string | null;
+          title: string | null;
+          description: string | null;
+          insertedAt: string;
+          updatedAt: string;
+          isV2: boolean;
+          team: { __typename?: 'TeamPreview'; name: string } | null;
+          author: { __typename?: 'User'; username: string } | null;
+          source: { __typename?: 'Source'; template: string | null };
+        } | null;
+      }>;
+    }>;
+  } | null;
 };
 
 export type GetGithubRepoQueryVariables = Exact<{
@@ -2732,105 +2850,106 @@ export type GetGithubRepoQueryVariables = Exact<{
   name: Scalars['String'];
 }>;
 
-export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
-  githubRepo: Maybe<
-    { __typename?: 'GithubRepo' } & Pick<
-      GithubRepo,
-      | 'name'
-      | 'fullName'
-      | 'updatedAt'
-      | 'pushedAt'
-      | 'authorization'
-      | 'private'
-    > & {
-        owner: { __typename?: 'GithubOrganization' } & Pick<
-          GithubOrganization,
-          'id' | 'login' | 'avatarUrl'
-        >;
-      }
-  >;
+export type GetGithubRepoQuery = {
+  __typename?: 'RootQueryType';
+  githubRepo: {
+    __typename?: 'GithubRepo';
+    name: string;
+    fullName: string;
+    updatedAt: string;
+    pushedAt: string | null;
+    authorization: GithubRepoAuthorization;
+    private: boolean;
+    owner: {
+      __typename?: 'GithubOrganization';
+      id: string;
+      login: string;
+      avatarUrl: string;
+    };
+  } | null;
 };
 
-export type ProfileFragment = { __typename?: 'GithubProfile' } & Pick<
-  GithubProfile,
-  'id' | 'login' | 'name'
->;
+export type ProfileFragment = {
+  __typename?: 'GithubProfile';
+  id: string;
+  login: string;
+  name: string | null;
+};
 
-export type OrganizationFragment = { __typename?: 'GithubOrganization' } & Pick<
-  GithubOrganization,
-  'id' | 'login'
->;
+export type OrganizationFragment = {
+  __typename?: 'GithubOrganization';
+  id: string;
+  login: string;
+};
 
 export type GetGithubAccountsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetGithubAccountsQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      githubProfile: Maybe<{ __typename?: 'GithubProfile' } & ProfileFragment>;
-      githubOrganizations: Maybe<
-        Array<{ __typename?: 'GithubOrganization' } & OrganizationFragment>
-      >;
-    }
-  >;
+export type GetGithubAccountsQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    githubProfile: {
+      __typename?: 'GithubProfile';
+      id: string;
+      login: string;
+      name: string | null;
+    } | null;
+    githubOrganizations: Array<{
+      __typename?: 'GithubOrganization';
+      id: string;
+      login: string;
+    }> | null;
+  } | null;
 };
 
 export type GetGitHubAccountReposQueryVariables = Exact<{
-  perPage: Maybe<Scalars['Int']>;
-  page: Maybe<Scalars['Int']>;
+  perPage: InputMaybe<Scalars['Int']>;
+  page: InputMaybe<Scalars['Int']>;
 }>;
 
-export type GetGitHubAccountReposQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & Pick<CurrentUser, 'id'> & {
-        githubRepos: Array<
-          { __typename?: 'GithubRepo' } & Pick<
-            GithubRepo,
-            | 'id'
-            | 'authorization'
-            | 'fullName'
-            | 'name'
-            | 'private'
-            | 'updatedAt'
-            | 'pushedAt'
-          > & {
-              owner: { __typename?: 'GithubOrganization' } & Pick<
-                GithubOrganization,
-                'id' | 'login' | 'avatarUrl'
-              >;
-            }
-        >;
-      }
-  >;
+export type GetGitHubAccountReposQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
+    githubRepos: Array<{
+      __typename?: 'GithubRepo';
+      id: string;
+      authorization: GithubRepoAuthorization;
+      fullName: string;
+      name: string;
+      private: boolean;
+      updatedAt: string;
+      pushedAt: string | null;
+      owner: {
+        __typename?: 'GithubOrganization';
+        id: string;
+        login: string;
+        avatarUrl: string;
+      };
+    }>;
+  } | null;
 };
 
 export type GetGitHubOrganizationReposQueryVariables = Exact<{
   organization: Scalars['String'];
-  perPage: Maybe<Scalars['Int']>;
-  page: Maybe<Scalars['Int']>;
+  perPage: InputMaybe<Scalars['Int']>;
+  page: InputMaybe<Scalars['Int']>;
 }>;
 
 export type GetGitHubOrganizationReposQuery = {
   __typename?: 'RootQueryType';
-} & {
-  githubOrganizationRepos: Maybe<
-    Array<
-      { __typename?: 'GithubRepo' } & Pick<
-        GithubRepo,
-        | 'id'
-        | 'authorization'
-        | 'fullName'
-        | 'name'
-        | 'private'
-        | 'updatedAt'
-        | 'pushedAt'
-      > & {
-          owner: { __typename?: 'GithubOrganization' } & Pick<
-            GithubOrganization,
-            'id' | 'login'
-          >;
-        }
-    >
-  >;
+  githubOrganizationRepos: Array<{
+    __typename?: 'GithubRepo';
+    id: string;
+    authorization: GithubRepoAuthorization;
+    fullName: string;
+    name: string;
+    private: boolean;
+    updatedAt: string;
+    pushedAt: string | null;
+    owner: { __typename?: 'GithubOrganization'; id: string; login: string };
+  }> | null;
 };
 
 export type RepositoryTeamsQueryVariables = Exact<{
@@ -2838,30 +2957,38 @@ export type RepositoryTeamsQueryVariables = Exact<{
   name: Scalars['String'];
 }>;
 
-export type RepositoryTeamsQuery = { __typename?: 'RootQueryType' } & {
-  projects: Array<
-    { __typename?: 'Project' } & {
-      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
-    }
-  >;
+export type RepositoryTeamsQuery = {
+  __typename?: 'RootQueryType';
+  projects: Array<{
+    __typename?: 'Project';
+    team: { __typename?: 'Team'; id: any; name: string } | null;
+  }>;
 };
 
-export type CollaboratorFragment = { __typename?: 'Collaborator' } & Pick<
-  Collaborator,
-  'id' | 'authorization' | 'lastSeenAt' | 'warning'
-> & {
-    user: { __typename?: 'User' } & Pick<User, 'id' | 'username' | 'avatarUrl'>;
-  };
+export type CollaboratorFragment = {
+  __typename?: 'Collaborator';
+  id: any;
+  authorization: Authorization;
+  lastSeenAt: any | null;
+  warning: string | null;
+  user: { __typename?: 'User'; id: any; username: string; avatarUrl: string };
+};
 
-export type InvitationFragment = { __typename?: 'Invitation' } & Pick<
-  Invitation,
-  'id' | 'authorization' | 'email'
->;
+export type InvitationFragment = {
+  __typename?: 'Invitation';
+  id: string | null;
+  authorization: Authorization;
+  email: string | null;
+};
 
-export type SandboxChangedFragment = { __typename?: 'Sandbox' } & Pick<
-  Sandbox,
-  'id' | 'privacy' | 'title' | 'description' | 'authorization'
->;
+export type SandboxChangedFragment = {
+  __typename?: 'Sandbox';
+  id: string;
+  privacy: number;
+  title: string | null;
+  description: string | null;
+  authorization: Authorization;
+};
 
 export type AddCollaboratorMutationVariables = Exact<{
   sandboxId: Scalars['ID'];
@@ -2869,8 +2996,16 @@ export type AddCollaboratorMutationVariables = Exact<{
   authorization: Authorization;
 }>;
 
-export type AddCollaboratorMutation = { __typename?: 'RootMutationType' } & {
-  addCollaborator: { __typename?: 'Collaborator' } & CollaboratorFragment;
+export type AddCollaboratorMutation = {
+  __typename?: 'RootMutationType';
+  addCollaborator: {
+    __typename?: 'Collaborator';
+    id: any;
+    authorization: Authorization;
+    lastSeenAt: any | null;
+    warning: string | null;
+    user: { __typename?: 'User'; id: any; username: string; avatarUrl: string };
+  };
 };
 
 export type RemoveCollaboratorMutationVariables = Exact<{
@@ -2878,8 +3013,16 @@ export type RemoveCollaboratorMutationVariables = Exact<{
   username: Scalars['String'];
 }>;
 
-export type RemoveCollaboratorMutation = { __typename?: 'RootMutationType' } & {
-  removeCollaborator: { __typename?: 'Collaborator' } & CollaboratorFragment;
+export type RemoveCollaboratorMutation = {
+  __typename?: 'RootMutationType';
+  removeCollaborator: {
+    __typename?: 'Collaborator';
+    id: any;
+    authorization: Authorization;
+    lastSeenAt: any | null;
+    warning: string | null;
+    user: { __typename?: 'User'; id: any; username: string; avatarUrl: string };
+  };
 };
 
 export type ChangeCollaboratorAuthorizationMutationVariables = Exact<{
@@ -2890,10 +3033,14 @@ export type ChangeCollaboratorAuthorizationMutationVariables = Exact<{
 
 export type ChangeCollaboratorAuthorizationMutation = {
   __typename?: 'RootMutationType';
-} & {
   changeCollaboratorAuthorization: {
     __typename?: 'Collaborator';
-  } & CollaboratorFragment;
+    id: any;
+    authorization: Authorization;
+    lastSeenAt: any | null;
+    warning: string | null;
+    user: { __typename?: 'User'; id: any; username: string; avatarUrl: string };
+  };
 };
 
 export type InviteCollaboratorMutationVariables = Exact<{
@@ -2902,8 +3049,14 @@ export type InviteCollaboratorMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
 
-export type InviteCollaboratorMutation = { __typename?: 'RootMutationType' } & {
-  createSandboxInvitation: { __typename?: 'Invitation' } & InvitationFragment;
+export type InviteCollaboratorMutation = {
+  __typename?: 'RootMutationType';
+  createSandboxInvitation: {
+    __typename?: 'Invitation';
+    id: string | null;
+    authorization: Authorization;
+    email: string | null;
+  };
 };
 
 export type RevokeSandboxInvitationMutationVariables = Exact<{
@@ -2913,8 +3066,12 @@ export type RevokeSandboxInvitationMutationVariables = Exact<{
 
 export type RevokeSandboxInvitationMutation = {
   __typename?: 'RootMutationType';
-} & {
-  revokeSandboxInvitation: { __typename?: 'Invitation' } & InvitationFragment;
+  revokeSandboxInvitation: {
+    __typename?: 'Invitation';
+    id: string | null;
+    authorization: Authorization;
+    email: string | null;
+  };
 };
 
 export type ChangeSandboxInvitationAuthorizationMutationVariables = Exact<{
@@ -2925,10 +3082,12 @@ export type ChangeSandboxInvitationAuthorizationMutationVariables = Exact<{
 
 export type ChangeSandboxInvitationAuthorizationMutation = {
   __typename?: 'RootMutationType';
-} & {
   changeSandboxInvitationAuthorization: {
     __typename?: 'Invitation';
-  } & InvitationFragment;
+    id: string | null;
+    authorization: Authorization;
+    email: string | null;
+  };
 };
 
 export type RedeemSandboxInvitationMutationVariables = Exact<{
@@ -2938,34 +3097,53 @@ export type RedeemSandboxInvitationMutationVariables = Exact<{
 
 export type RedeemSandboxInvitationMutation = {
   __typename?: 'RootMutationType';
-} & {
-  redeemSandboxInvitation: { __typename?: 'Invitation' } & InvitationFragment;
+  redeemSandboxInvitation: {
+    __typename?: 'Invitation';
+    id: string | null;
+    authorization: Authorization;
+    email: string | null;
+  };
 };
 
 export type SandboxCollaboratorsQueryVariables = Exact<{
   sandboxId: Scalars['ID'];
 }>;
 
-export type SandboxCollaboratorsQuery = { __typename?: 'RootQueryType' } & {
-  sandbox: Maybe<
-    { __typename?: 'Sandbox' } & {
-      collaborators: Array<
-        { __typename?: 'Collaborator' } & CollaboratorFragment
-      >;
-    }
-  >;
+export type SandboxCollaboratorsQuery = {
+  __typename?: 'RootQueryType';
+  sandbox: {
+    __typename?: 'Sandbox';
+    collaborators: Array<{
+      __typename?: 'Collaborator';
+      id: any;
+      authorization: Authorization;
+      lastSeenAt: any | null;
+      warning: string | null;
+      user: {
+        __typename?: 'User';
+        id: any;
+        username: string;
+        avatarUrl: string;
+      };
+    }>;
+  } | null;
 };
 
 export type SandboxInvitationsQueryVariables = Exact<{
   sandboxId: Scalars['ID'];
 }>;
 
-export type SandboxInvitationsQuery = { __typename?: 'RootQueryType' } & {
-  sandbox: Maybe<
-    { __typename?: 'Sandbox' } & {
-      invitations: Array<{ __typename?: 'Invitation' } & InvitationFragment>;
-    }
-  >;
+export type SandboxInvitationsQuery = {
+  __typename?: 'RootQueryType';
+  sandbox: {
+    __typename?: 'Sandbox';
+    invitations: Array<{
+      __typename?: 'Invitation';
+      id: string | null;
+      authorization: Authorization;
+      email: string | null;
+    }>;
+  } | null;
 };
 
 export type OnCollaboratorAddedSubscriptionVariables = Exact<{
@@ -2974,8 +3152,14 @@ export type OnCollaboratorAddedSubscriptionVariables = Exact<{
 
 export type OnCollaboratorAddedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & {
-  collaboratorAdded: { __typename?: 'Collaborator' } & CollaboratorFragment;
+  collaboratorAdded: {
+    __typename?: 'Collaborator';
+    id: any;
+    authorization: Authorization;
+    lastSeenAt: any | null;
+    warning: string | null;
+    user: { __typename?: 'User'; id: any; username: string; avatarUrl: string };
+  };
 };
 
 export type OnCollaboratorChangedSubscriptionVariables = Exact<{
@@ -2984,8 +3168,14 @@ export type OnCollaboratorChangedSubscriptionVariables = Exact<{
 
 export type OnCollaboratorChangedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & {
-  collaboratorChanged: { __typename?: 'Collaborator' } & CollaboratorFragment;
+  collaboratorChanged: {
+    __typename?: 'Collaborator';
+    id: any;
+    authorization: Authorization;
+    lastSeenAt: any | null;
+    warning: string | null;
+    user: { __typename?: 'User'; id: any; username: string; avatarUrl: string };
+  };
 };
 
 export type OnCollaboratorRemovedSubscriptionVariables = Exact<{
@@ -2994,8 +3184,14 @@ export type OnCollaboratorRemovedSubscriptionVariables = Exact<{
 
 export type OnCollaboratorRemovedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & {
-  collaboratorRemoved: { __typename?: 'Collaborator' } & CollaboratorFragment;
+  collaboratorRemoved: {
+    __typename?: 'Collaborator';
+    id: any;
+    authorization: Authorization;
+    lastSeenAt: any | null;
+    warning: string | null;
+    user: { __typename?: 'User'; id: any; username: string; avatarUrl: string };
+  };
 };
 
 export type OnInvitationCreatedSubscriptionVariables = Exact<{
@@ -3004,7 +3200,13 @@ export type OnInvitationCreatedSubscriptionVariables = Exact<{
 
 export type OnInvitationCreatedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & { invitationCreated: { __typename?: 'Invitation' } & InvitationFragment };
+  invitationCreated: {
+    __typename?: 'Invitation';
+    id: string | null;
+    authorization: Authorization;
+    email: string | null;
+  };
+};
 
 export type OnInvitationRemovedSubscriptionVariables = Exact<{
   sandboxId: Scalars['ID'];
@@ -3012,7 +3214,13 @@ export type OnInvitationRemovedSubscriptionVariables = Exact<{
 
 export type OnInvitationRemovedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & { invitationRemoved: { __typename?: 'Invitation' } & InvitationFragment };
+  invitationRemoved: {
+    __typename?: 'Invitation';
+    id: string | null;
+    authorization: Authorization;
+    email: string | null;
+  };
+};
 
 export type OnInvitationChangedSubscriptionVariables = Exact<{
   sandboxId: Scalars['ID'];
@@ -3020,7 +3228,13 @@ export type OnInvitationChangedSubscriptionVariables = Exact<{
 
 export type OnInvitationChangedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & { invitationChanged: { __typename?: 'Invitation' } & InvitationFragment };
+  invitationChanged: {
+    __typename?: 'Invitation';
+    id: string | null;
+    authorization: Authorization;
+    email: string | null;
+  };
+};
 
 export type OnSandboxChangedSubscriptionVariables = Exact<{
   sandboxId: Scalars['ID'];
@@ -3028,182 +3242,491 @@ export type OnSandboxChangedSubscriptionVariables = Exact<{
 
 export type OnSandboxChangedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & { sandboxChanged: { __typename?: 'Sandbox' } & SandboxChangedFragment };
+  sandboxChanged: {
+    __typename?: 'Sandbox';
+    id: string;
+    privacy: number;
+    title: string | null;
+    description: string | null;
+    authorization: Authorization;
+  };
+};
 
 export type CodeReferenceMetadataFragment = {
   __typename?: 'CodeReferenceMetadata';
-} & Pick<CodeReferenceMetadata, 'anchor' | 'code' | 'head' | 'path'>;
+  anchor: number;
+  code: string;
+  head: number;
+  path: string;
+};
 
 export type UserReferenceMetadataFragment = {
   __typename?: 'UserReferenceMetadata';
-} & Pick<UserReferenceMetadata, 'username' | 'userId'>;
+  username: string;
+  userId: string;
+};
 
 export type ImageReferenceMetadataFragment = {
   __typename?: 'ImageReferenceMetadata';
-} & Pick<ImageReferenceMetadata, 'fileName'>;
+  fileName: string;
+};
 
 export type PreviewReferenceMetadataFragment = {
   __typename?: 'PreviewReferenceMetadata';
-} & Pick<
-  PreviewReferenceMetadata,
-  'width' | 'height' | 'x' | 'y' | 'screenshotUrl' | 'userAgent'
->;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  screenshotUrl: string | null;
+  userAgent: string;
+};
 
-export type CommentFragment = { __typename?: 'Comment' } & Pick<
-  Comment,
-  'id' | 'content' | 'insertedAt' | 'updatedAt' | 'isResolved' | 'replyCount'
-> & {
-    anchorReference: Maybe<
-      { __typename?: 'Reference' } & Pick<
-        Reference,
-        'id' | 'resource' | 'type'
-      > & {
-          metadata:
-            | ({
-                __typename?: 'CodeReferenceMetadata';
-              } & CodeReferenceMetadataFragment)
-            | { __typename?: 'ImageReferenceMetadata' }
-            | ({
-                __typename?: 'PreviewReferenceMetadata';
-              } & PreviewReferenceMetadataFragment)
-            | { __typename?: 'UserReferenceMetadata' };
+export type CommentFragment = {
+  __typename?: 'Comment';
+  id: any;
+  content: string | null;
+  insertedAt: any;
+  updatedAt: any;
+  isResolved: boolean;
+  replyCount: number;
+  anchorReference: {
+    __typename?: 'Reference';
+    id: any;
+    resource: string;
+    type: string;
+    metadata:
+      | {
+          __typename?: 'CodeReferenceMetadata';
+          anchor: number;
+          code: string;
+          head: number;
+          path: string;
         }
-    >;
-    references: Array<
-      { __typename?: 'Reference' } & Pick<
-        Reference,
-        'id' | 'resource' | 'type'
-      > & {
-          metadata:
-            | ({
-                __typename?: 'CodeReferenceMetadata';
-              } & CodeReferenceMetadataFragment)
-            | ({
-                __typename?: 'ImageReferenceMetadata';
-              } & ImageReferenceMetadataFragment)
-            | { __typename?: 'PreviewReferenceMetadata' }
-            | ({
-                __typename?: 'UserReferenceMetadata';
-              } & UserReferenceMetadataFragment);
+      | { __typename?: 'ImageReferenceMetadata' }
+      | {
+          __typename?: 'PreviewReferenceMetadata';
+          width: number;
+          height: number;
+          x: number;
+          y: number;
+          screenshotUrl: string | null;
+          userAgent: string;
         }
-    >;
-    user: { __typename?: 'User' } & Pick<
-      User,
-      'id' | 'name' | 'username' | 'avatarUrl'
-    >;
-    parentComment: Maybe<{ __typename?: 'Comment' } & Pick<Comment, 'id'>>;
+      | { __typename?: 'UserReferenceMetadata' };
+  } | null;
+  references: Array<{
+    __typename?: 'Reference';
+    id: any;
+    resource: string;
+    type: string;
+    metadata:
+      | {
+          __typename?: 'CodeReferenceMetadata';
+          anchor: number;
+          code: string;
+          head: number;
+          path: string;
+        }
+      | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+      | { __typename?: 'PreviewReferenceMetadata' }
+      | {
+          __typename?: 'UserReferenceMetadata';
+          username: string;
+          userId: string;
+        };
+  }>;
+  user: {
+    __typename?: 'User';
+    id: any;
+    name: string | null;
+    username: string;
+    avatarUrl: string;
   };
+  parentComment: { __typename?: 'Comment'; id: any } | null;
+};
 
-export type CommentWithRepliesFragment = { __typename?: 'Comment' } & Pick<
-  Comment,
-  'id' | 'content' | 'insertedAt' | 'updatedAt' | 'isResolved' | 'replyCount'
-> & {
-    anchorReference: Maybe<
-      { __typename?: 'Reference' } & Pick<
-        Reference,
-        'id' | 'resource' | 'type'
-      > & {
-          metadata:
-            | ({
-                __typename?: 'CodeReferenceMetadata';
-              } & CodeReferenceMetadataFragment)
-            | { __typename?: 'ImageReferenceMetadata' }
-            | ({
-                __typename?: 'PreviewReferenceMetadata';
-              } & PreviewReferenceMetadataFragment)
-            | { __typename?: 'UserReferenceMetadata' };
+export type CommentWithRepliesFragment = {
+  __typename?: 'Comment';
+  id: any;
+  content: string | null;
+  insertedAt: any;
+  updatedAt: any;
+  isResolved: boolean;
+  replyCount: number;
+  anchorReference: {
+    __typename?: 'Reference';
+    id: any;
+    resource: string;
+    type: string;
+    metadata:
+      | {
+          __typename?: 'CodeReferenceMetadata';
+          anchor: number;
+          code: string;
+          head: number;
+          path: string;
         }
-    >;
-    references: Array<
-      { __typename?: 'Reference' } & Pick<
-        Reference,
-        'id' | 'resource' | 'type'
-      > & {
-          metadata:
-            | ({
-                __typename?: 'CodeReferenceMetadata';
-              } & CodeReferenceMetadataFragment)
-            | ({
-                __typename?: 'ImageReferenceMetadata';
-              } & ImageReferenceMetadataFragment)
-            | { __typename?: 'PreviewReferenceMetadata' }
-            | ({
-                __typename?: 'UserReferenceMetadata';
-              } & UserReferenceMetadataFragment);
+      | { __typename?: 'ImageReferenceMetadata' }
+      | {
+          __typename?: 'PreviewReferenceMetadata';
+          width: number;
+          height: number;
+          x: number;
+          y: number;
+          screenshotUrl: string | null;
+          userAgent: string;
         }
-    >;
-    user: { __typename?: 'User' } & Pick<
-      User,
-      'id' | 'name' | 'username' | 'avatarUrl'
-    >;
-    parentComment: Maybe<{ __typename?: 'Comment' } & Pick<Comment, 'id'>>;
-    comments: Array<{ __typename?: 'Comment' } & CommentFragment>;
+      | { __typename?: 'UserReferenceMetadata' };
+  } | null;
+  references: Array<{
+    __typename?: 'Reference';
+    id: any;
+    resource: string;
+    type: string;
+    metadata:
+      | {
+          __typename?: 'CodeReferenceMetadata';
+          anchor: number;
+          code: string;
+          head: number;
+          path: string;
+        }
+      | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+      | { __typename?: 'PreviewReferenceMetadata' }
+      | {
+          __typename?: 'UserReferenceMetadata';
+          username: string;
+          userId: string;
+        };
+  }>;
+  user: {
+    __typename?: 'User';
+    id: any;
+    name: string | null;
+    username: string;
+    avatarUrl: string;
   };
+  parentComment: { __typename?: 'Comment'; id: any } | null;
+  comments: Array<{
+    __typename?: 'Comment';
+    id: any;
+    content: string | null;
+    insertedAt: any;
+    updatedAt: any;
+    isResolved: boolean;
+    replyCount: number;
+    anchorReference: {
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata' }
+        | {
+            __typename?: 'PreviewReferenceMetadata';
+            width: number;
+            height: number;
+            x: number;
+            y: number;
+            screenshotUrl: string | null;
+            userAgent: string;
+          }
+        | { __typename?: 'UserReferenceMetadata' };
+    } | null;
+    references: Array<{
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+        | { __typename?: 'PreviewReferenceMetadata' }
+        | {
+            __typename?: 'UserReferenceMetadata';
+            username: string;
+            userId: string;
+          };
+    }>;
+    user: {
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    };
+    parentComment: { __typename?: 'Comment'; id: any } | null;
+  }>;
+};
 
 export type CreateCommentMutationVariables = Exact<{
-  id: Maybe<Scalars['ID']>;
+  id: InputMaybe<Scalars['ID']>;
   content: Scalars['String'];
   sandboxId: Scalars['ID'];
-  parentCommentId: Maybe<Scalars['ID']>;
-  userReferences: Maybe<Array<UserReference>>;
-  codeReferences: Maybe<Array<CodeReference>>;
-  imageReferences: Maybe<Array<ImageReference>>;
+  parentCommentId: InputMaybe<Scalars['ID']>;
+  userReferences: InputMaybe<Array<UserReference> | UserReference>;
+  codeReferences: InputMaybe<Array<CodeReference> | CodeReference>;
+  imageReferences: InputMaybe<Array<ImageReference> | ImageReference>;
 }>;
 
-export type CreateCommentMutation = { __typename?: 'RootMutationType' } & {
-  createComment: { __typename?: 'Comment' } & CommentFragment;
+export type CreateCommentMutation = {
+  __typename?: 'RootMutationType';
+  createComment: {
+    __typename?: 'Comment';
+    id: any;
+    content: string | null;
+    insertedAt: any;
+    updatedAt: any;
+    isResolved: boolean;
+    replyCount: number;
+    anchorReference: {
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata' }
+        | {
+            __typename?: 'PreviewReferenceMetadata';
+            width: number;
+            height: number;
+            x: number;
+            y: number;
+            screenshotUrl: string | null;
+            userAgent: string;
+          }
+        | { __typename?: 'UserReferenceMetadata' };
+    } | null;
+    references: Array<{
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+        | { __typename?: 'PreviewReferenceMetadata' }
+        | {
+            __typename?: 'UserReferenceMetadata';
+            username: string;
+            userId: string;
+          };
+    }>;
+    user: {
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    };
+    parentComment: { __typename?: 'Comment'; id: any } | null;
+  };
 };
 
 export type CreateCodeCommentMutationVariables = Exact<{
-  id: Maybe<Scalars['ID']>;
+  id: InputMaybe<Scalars['ID']>;
   content: Scalars['String'];
   sandboxId: Scalars['ID'];
-  parentCommentId: Maybe<Scalars['ID']>;
+  parentCommentId: InputMaybe<Scalars['ID']>;
   anchorReference: CodeReference;
-  userReferences: Maybe<Array<UserReference>>;
-  codeReferences: Maybe<Array<CodeReference>>;
-  imageReferences: Maybe<Array<ImageReference>>;
+  userReferences: InputMaybe<Array<UserReference> | UserReference>;
+  codeReferences: InputMaybe<Array<CodeReference> | CodeReference>;
+  imageReferences: InputMaybe<Array<ImageReference> | ImageReference>;
 }>;
 
-export type CreateCodeCommentMutation = { __typename?: 'RootMutationType' } & {
-  createCodeComment: { __typename?: 'Comment' } & CommentFragment;
+export type CreateCodeCommentMutation = {
+  __typename?: 'RootMutationType';
+  createCodeComment: {
+    __typename?: 'Comment';
+    id: any;
+    content: string | null;
+    insertedAt: any;
+    updatedAt: any;
+    isResolved: boolean;
+    replyCount: number;
+    anchorReference: {
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata' }
+        | {
+            __typename?: 'PreviewReferenceMetadata';
+            width: number;
+            height: number;
+            x: number;
+            y: number;
+            screenshotUrl: string | null;
+            userAgent: string;
+          }
+        | { __typename?: 'UserReferenceMetadata' };
+    } | null;
+    references: Array<{
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+        | { __typename?: 'PreviewReferenceMetadata' }
+        | {
+            __typename?: 'UserReferenceMetadata';
+            username: string;
+            userId: string;
+          };
+    }>;
+    user: {
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    };
+    parentComment: { __typename?: 'Comment'; id: any } | null;
+  };
 };
 
 export type CreatePreviewCommentMutationVariables = Exact<{
-  id: Maybe<Scalars['ID']>;
+  id: InputMaybe<Scalars['ID']>;
   content: Scalars['String'];
   sandboxId: Scalars['ID'];
-  parentCommentId: Maybe<Scalars['ID']>;
+  parentCommentId: InputMaybe<Scalars['ID']>;
   anchorReference: PreviewReference;
-  userReferences: Maybe<Array<UserReference>>;
-  codeReferences: Maybe<Array<CodeReference>>;
-  imageReferences: Maybe<Array<ImageReference>>;
+  userReferences: InputMaybe<Array<UserReference> | UserReference>;
+  codeReferences: InputMaybe<Array<CodeReference> | CodeReference>;
+  imageReferences: InputMaybe<Array<ImageReference> | ImageReference>;
 }>;
 
 export type CreatePreviewCommentMutation = {
   __typename?: 'RootMutationType';
-} & { createPreviewComment: { __typename?: 'Comment' } & CommentFragment };
+  createPreviewComment: {
+    __typename?: 'Comment';
+    id: any;
+    content: string | null;
+    insertedAt: any;
+    updatedAt: any;
+    isResolved: boolean;
+    replyCount: number;
+    anchorReference: {
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata' }
+        | {
+            __typename?: 'PreviewReferenceMetadata';
+            width: number;
+            height: number;
+            x: number;
+            y: number;
+            screenshotUrl: string | null;
+            userAgent: string;
+          }
+        | { __typename?: 'UserReferenceMetadata' };
+    } | null;
+    references: Array<{
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+        | { __typename?: 'PreviewReferenceMetadata' }
+        | {
+            __typename?: 'UserReferenceMetadata';
+            username: string;
+            userId: string;
+          };
+    }>;
+    user: {
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    };
+    parentComment: { __typename?: 'Comment'; id: any } | null;
+  };
+};
 
 export type DeleteCommentMutationVariables = Exact<{
   commentId: Scalars['UUID4'];
   sandboxId: Scalars['ID'];
 }>;
 
-export type DeleteCommentMutation = { __typename?: 'RootMutationType' } & {
-  deleteComment: { __typename?: 'Comment' } & Pick<Comment, 'id'>;
+export type DeleteCommentMutation = {
+  __typename?: 'RootMutationType';
+  deleteComment: { __typename?: 'Comment'; id: any };
 };
 
 export type UpdateCommentMutationVariables = Exact<{
   commentId: Scalars['UUID4'];
   sandboxId: Scalars['ID'];
-  content: Maybe<Scalars['String']>;
-  userReferences: Maybe<Array<UserReference>>;
-  codeReferences: Maybe<Array<CodeReference>>;
-  imageReferences: Maybe<Array<ImageReference>>;
+  content: InputMaybe<Scalars['String']>;
+  userReferences: InputMaybe<Array<UserReference> | UserReference>;
+  codeReferences: InputMaybe<Array<CodeReference> | CodeReference>;
+  imageReferences: InputMaybe<Array<ImageReference> | ImageReference>;
 }>;
 
-export type UpdateCommentMutation = { __typename?: 'RootMutationType' } & {
-  updateComment: { __typename?: 'Comment' } & Pick<Comment, 'id'>;
+export type UpdateCommentMutation = {
+  __typename?: 'RootMutationType';
+  updateComment: { __typename?: 'Comment'; id: any };
 };
 
 export type ResolveCommentMutationVariables = Exact<{
@@ -3211,8 +3734,9 @@ export type ResolveCommentMutationVariables = Exact<{
   sandboxId: Scalars['ID'];
 }>;
 
-export type ResolveCommentMutation = { __typename?: 'RootMutationType' } & {
-  resolveComment: { __typename?: 'Comment' } & Pick<Comment, 'id'>;
+export type ResolveCommentMutation = {
+  __typename?: 'RootMutationType';
+  resolveComment: { __typename?: 'Comment'; id: any };
 };
 
 export type UnresolveCommentMutationVariables = Exact<{
@@ -3220,8 +3744,9 @@ export type UnresolveCommentMutationVariables = Exact<{
   sandboxId: Scalars['ID'];
 }>;
 
-export type UnresolveCommentMutation = { __typename?: 'RootMutationType' } & {
-  unresolveComment: { __typename?: 'Comment' } & Pick<Comment, 'id'>;
+export type UnresolveCommentMutation = {
+  __typename?: 'RootMutationType';
+  unresolveComment: { __typename?: 'Comment'; id: any };
 };
 
 export type SandboxCommentQueryVariables = Exact<{
@@ -3229,24 +3754,211 @@ export type SandboxCommentQueryVariables = Exact<{
   commentId: Scalars['UUID4'];
 }>;
 
-export type SandboxCommentQuery = { __typename?: 'RootQueryType' } & {
-  sandbox: Maybe<
-    { __typename?: 'Sandbox' } & {
-      comment: Maybe<{ __typename?: 'Comment' } & CommentWithRepliesFragment>;
-    }
-  >;
+export type SandboxCommentQuery = {
+  __typename?: 'RootQueryType';
+  sandbox: {
+    __typename?: 'Sandbox';
+    comment: {
+      __typename?: 'Comment';
+      id: any;
+      content: string | null;
+      insertedAt: any;
+      updatedAt: any;
+      isResolved: boolean;
+      replyCount: number;
+      anchorReference: {
+        __typename?: 'Reference';
+        id: any;
+        resource: string;
+        type: string;
+        metadata:
+          | {
+              __typename?: 'CodeReferenceMetadata';
+              anchor: number;
+              code: string;
+              head: number;
+              path: string;
+            }
+          | { __typename?: 'ImageReferenceMetadata' }
+          | {
+              __typename?: 'PreviewReferenceMetadata';
+              width: number;
+              height: number;
+              x: number;
+              y: number;
+              screenshotUrl: string | null;
+              userAgent: string;
+            }
+          | { __typename?: 'UserReferenceMetadata' };
+      } | null;
+      references: Array<{
+        __typename?: 'Reference';
+        id: any;
+        resource: string;
+        type: string;
+        metadata:
+          | {
+              __typename?: 'CodeReferenceMetadata';
+              anchor: number;
+              code: string;
+              head: number;
+              path: string;
+            }
+          | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+          | { __typename?: 'PreviewReferenceMetadata' }
+          | {
+              __typename?: 'UserReferenceMetadata';
+              username: string;
+              userId: string;
+            };
+      }>;
+      user: {
+        __typename?: 'User';
+        id: any;
+        name: string | null;
+        username: string;
+        avatarUrl: string;
+      };
+      parentComment: { __typename?: 'Comment'; id: any } | null;
+      comments: Array<{
+        __typename?: 'Comment';
+        id: any;
+        content: string | null;
+        insertedAt: any;
+        updatedAt: any;
+        isResolved: boolean;
+        replyCount: number;
+        anchorReference: {
+          __typename?: 'Reference';
+          id: any;
+          resource: string;
+          type: string;
+          metadata:
+            | {
+                __typename?: 'CodeReferenceMetadata';
+                anchor: number;
+                code: string;
+                head: number;
+                path: string;
+              }
+            | { __typename?: 'ImageReferenceMetadata' }
+            | {
+                __typename?: 'PreviewReferenceMetadata';
+                width: number;
+                height: number;
+                x: number;
+                y: number;
+                screenshotUrl: string | null;
+                userAgent: string;
+              }
+            | { __typename?: 'UserReferenceMetadata' };
+        } | null;
+        references: Array<{
+          __typename?: 'Reference';
+          id: any;
+          resource: string;
+          type: string;
+          metadata:
+            | {
+                __typename?: 'CodeReferenceMetadata';
+                anchor: number;
+                code: string;
+                head: number;
+                path: string;
+              }
+            | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+            | { __typename?: 'PreviewReferenceMetadata' }
+            | {
+                __typename?: 'UserReferenceMetadata';
+                username: string;
+                userId: string;
+              };
+        }>;
+        user: {
+          __typename?: 'User';
+          id: any;
+          name: string | null;
+          username: string;
+          avatarUrl: string;
+        };
+        parentComment: { __typename?: 'Comment'; id: any } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type SandboxCommentsQueryVariables = Exact<{
   sandboxId: Scalars['ID'];
 }>;
 
-export type SandboxCommentsQuery = { __typename?: 'RootQueryType' } & {
-  sandbox: Maybe<
-    { __typename?: 'Sandbox' } & {
-      comments: Array<{ __typename?: 'Comment' } & CommentFragment>;
-    }
-  >;
+export type SandboxCommentsQuery = {
+  __typename?: 'RootQueryType';
+  sandbox: {
+    __typename?: 'Sandbox';
+    comments: Array<{
+      __typename?: 'Comment';
+      id: any;
+      content: string | null;
+      insertedAt: any;
+      updatedAt: any;
+      isResolved: boolean;
+      replyCount: number;
+      anchorReference: {
+        __typename?: 'Reference';
+        id: any;
+        resource: string;
+        type: string;
+        metadata:
+          | {
+              __typename?: 'CodeReferenceMetadata';
+              anchor: number;
+              code: string;
+              head: number;
+              path: string;
+            }
+          | { __typename?: 'ImageReferenceMetadata' }
+          | {
+              __typename?: 'PreviewReferenceMetadata';
+              width: number;
+              height: number;
+              x: number;
+              y: number;
+              screenshotUrl: string | null;
+              userAgent: string;
+            }
+          | { __typename?: 'UserReferenceMetadata' };
+      } | null;
+      references: Array<{
+        __typename?: 'Reference';
+        id: any;
+        resource: string;
+        type: string;
+        metadata:
+          | {
+              __typename?: 'CodeReferenceMetadata';
+              anchor: number;
+              code: string;
+              head: number;
+              path: string;
+            }
+          | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+          | { __typename?: 'PreviewReferenceMetadata' }
+          | {
+              __typename?: 'UserReferenceMetadata';
+              username: string;
+              userId: string;
+            };
+      }>;
+      user: {
+        __typename?: 'User';
+        id: any;
+        name: string | null;
+        username: string;
+        avatarUrl: string;
+      };
+      parentComment: { __typename?: 'Comment'; id: any } | null;
+    }>;
+  } | null;
 };
 
 export type CommentAddedSubscriptionVariables = Exact<{
@@ -3255,10 +3967,70 @@ export type CommentAddedSubscriptionVariables = Exact<{
 
 export type CommentAddedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & {
-  commentAdded: { __typename?: 'Comment' } & {
-    sandbox: { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>;
-  } & CommentFragment;
+  commentAdded: {
+    __typename?: 'Comment';
+    id: any;
+    content: string | null;
+    insertedAt: any;
+    updatedAt: any;
+    isResolved: boolean;
+    replyCount: number;
+    sandbox: { __typename?: 'Sandbox'; id: string };
+    anchorReference: {
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata' }
+        | {
+            __typename?: 'PreviewReferenceMetadata';
+            width: number;
+            height: number;
+            x: number;
+            y: number;
+            screenshotUrl: string | null;
+            userAgent: string;
+          }
+        | { __typename?: 'UserReferenceMetadata' };
+    } | null;
+    references: Array<{
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+        | { __typename?: 'PreviewReferenceMetadata' }
+        | {
+            __typename?: 'UserReferenceMetadata';
+            username: string;
+            userId: string;
+          };
+    }>;
+    user: {
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    };
+    parentComment: { __typename?: 'Comment'; id: any } | null;
+  };
 };
 
 export type CommentChangedSubscriptionVariables = Exact<{
@@ -3267,10 +4039,70 @@ export type CommentChangedSubscriptionVariables = Exact<{
 
 export type CommentChangedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & {
-  commentChanged: { __typename?: 'Comment' } & {
-    sandbox: { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>;
-  } & CommentFragment;
+  commentChanged: {
+    __typename?: 'Comment';
+    id: any;
+    content: string | null;
+    insertedAt: any;
+    updatedAt: any;
+    isResolved: boolean;
+    replyCount: number;
+    sandbox: { __typename?: 'Sandbox'; id: string };
+    anchorReference: {
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata' }
+        | {
+            __typename?: 'PreviewReferenceMetadata';
+            width: number;
+            height: number;
+            x: number;
+            y: number;
+            screenshotUrl: string | null;
+            userAgent: string;
+          }
+        | { __typename?: 'UserReferenceMetadata' };
+    } | null;
+    references: Array<{
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+        | { __typename?: 'PreviewReferenceMetadata' }
+        | {
+            __typename?: 'UserReferenceMetadata';
+            username: string;
+            userId: string;
+          };
+    }>;
+    user: {
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    };
+    parentComment: { __typename?: 'Comment'; id: any } | null;
+  };
 };
 
 export type CommentRemovedSubscriptionVariables = Exact<{
@@ -3279,350 +4111,731 @@ export type CommentRemovedSubscriptionVariables = Exact<{
 
 export type CommentRemovedSubscription = {
   __typename?: 'RootSubscriptionType';
-} & {
-  commentRemoved: { __typename?: 'Comment' } & {
-    sandbox: { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>;
-  } & CommentFragment;
+  commentRemoved: {
+    __typename?: 'Comment';
+    id: any;
+    content: string | null;
+    insertedAt: any;
+    updatedAt: any;
+    isResolved: boolean;
+    replyCount: number;
+    sandbox: { __typename?: 'Sandbox'; id: string };
+    anchorReference: {
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata' }
+        | {
+            __typename?: 'PreviewReferenceMetadata';
+            width: number;
+            height: number;
+            x: number;
+            y: number;
+            screenshotUrl: string | null;
+            userAgent: string;
+          }
+        | { __typename?: 'UserReferenceMetadata' };
+    } | null;
+    references: Array<{
+      __typename?: 'Reference';
+      id: any;
+      resource: string;
+      type: string;
+      metadata:
+        | {
+            __typename?: 'CodeReferenceMetadata';
+            anchor: number;
+            code: string;
+            head: number;
+            path: string;
+          }
+        | { __typename?: 'ImageReferenceMetadata'; fileName: string }
+        | { __typename?: 'PreviewReferenceMetadata' }
+        | {
+            __typename?: 'UserReferenceMetadata';
+            username: string;
+            userId: string;
+          };
+    }>;
+    user: {
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    };
+    parentComment: { __typename?: 'Comment'; id: any } | null;
+  };
 };
 
 export type SandboxFragmentDashboardFragment = {
   __typename?: 'Sandbox';
-} & Pick<
-  Sandbox,
-  | 'id'
-  | 'alias'
-  | 'title'
-  | 'description'
-  | 'lastAccessedAt'
-  | 'insertedAt'
-  | 'updatedAt'
-  | 'removedAt'
-  | 'privacy'
-  | 'isFrozen'
-  | 'screenshotUrl'
-  | 'screenshotOutdated'
-  | 'viewCount'
-  | 'likeCount'
-  | 'alwaysOn'
-  | 'isV2'
-  | 'authorId'
-  | 'teamId'
-> & {
-    source: { __typename?: 'Source' } & Pick<Source, 'template'>;
-    customTemplate: Maybe<
-      { __typename?: 'Template' } & Pick<Template, 'id' | 'iconUrl'>
-    >;
-    forkedTemplate: Maybe<
-      { __typename?: 'Template' } & Pick<Template, 'id' | 'color' | 'iconUrl'>
-    >;
-    collection: Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'path'>>;
-    permissions: Maybe<
-      { __typename?: 'SandboxProtectionSettings' } & Pick<
-        SandboxProtectionSettings,
-        'preventSandboxLeaving' | 'preventSandboxExport'
-      >
-    >;
-  };
+  id: string;
+  alias: string | null;
+  title: string | null;
+  description: string | null;
+  lastAccessedAt: any;
+  insertedAt: string;
+  updatedAt: string;
+  removedAt: string | null;
+  privacy: number;
+  isFrozen: boolean;
+  screenshotUrl: string | null;
+  screenshotOutdated: boolean;
+  viewCount: number;
+  likeCount: number;
+  alwaysOn: boolean | null;
+  isV2: boolean;
+  authorId: any | null;
+  teamId: any | null;
+  source: { __typename?: 'Source'; template: string | null };
+  customTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    iconUrl: string | null;
+  } | null;
+  forkedTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    color: string | null;
+    iconUrl: string | null;
+  } | null;
+  collection: { __typename?: 'Collection'; path: string } | null;
+  permissions: {
+    __typename?: 'SandboxProtectionSettings';
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  } | null;
+};
 
-export type RepoFragmentDashboardFragment = { __typename?: 'Sandbox' } & Pick<
-  Sandbox,
-  'prNumber'
-> & {
-    baseGit: Maybe<
-      { __typename?: 'Git' } & Pick<
-        Git,
-        'branch' | 'id' | 'repo' | 'username' | 'path'
-      >
-    >;
-    originalGit: Maybe<
-      { __typename?: 'Git' } & Pick<
-        Git,
-        'branch' | 'id' | 'repo' | 'username' | 'path'
-      >
-    >;
-  } & SandboxFragmentDashboardFragment;
+export type RepoFragmentDashboardFragment = {
+  __typename?: 'Sandbox';
+  prNumber: number | null;
+  id: string;
+  alias: string | null;
+  title: string | null;
+  description: string | null;
+  lastAccessedAt: any;
+  insertedAt: string;
+  updatedAt: string;
+  removedAt: string | null;
+  privacy: number;
+  isFrozen: boolean;
+  screenshotUrl: string | null;
+  screenshotOutdated: boolean;
+  viewCount: number;
+  likeCount: number;
+  alwaysOn: boolean | null;
+  isV2: boolean;
+  authorId: any | null;
+  teamId: any | null;
+  baseGit: {
+    __typename?: 'Git';
+    branch: string | null;
+    id: any | null;
+    repo: string | null;
+    username: string | null;
+    path: string | null;
+  } | null;
+  originalGit: {
+    __typename?: 'Git';
+    branch: string | null;
+    id: any | null;
+    repo: string | null;
+    username: string | null;
+    path: string | null;
+  } | null;
+  source: { __typename?: 'Source'; template: string | null };
+  customTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    iconUrl: string | null;
+  } | null;
+  forkedTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    color: string | null;
+    iconUrl: string | null;
+  } | null;
+  collection: { __typename?: 'Collection'; path: string } | null;
+  permissions: {
+    __typename?: 'SandboxProtectionSettings';
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  } | null;
+};
 
 export type SidebarCollectionDashboardFragment = {
   __typename?: 'Collection';
-} & Pick<Collection, 'id' | 'path' | 'sandboxCount'>;
+  id: any | null;
+  path: string;
+  sandboxCount: number;
+};
 
 export type TemplateFragmentDashboardFragment = {
   __typename?: 'Template';
-} & Pick<Template, 'id' | 'color' | 'iconUrl' | 'published'> & {
-    sandbox: Maybe<
-      { __typename?: 'Sandbox' } & {
-        git: Maybe<
-          { __typename?: 'Git' } & Pick<
-            Git,
-            'id' | 'username' | 'commitSha' | 'path' | 'repo' | 'branch'
-          >
-        >;
-        team: Maybe<{ __typename?: 'TeamPreview' } & Pick<TeamPreview, 'name'>>;
-        author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
-        source: { __typename?: 'Source' } & Pick<Source, 'template'>;
-      } & SandboxFragmentDashboardFragment
-    >;
-  };
+  id: any | null;
+  color: string | null;
+  iconUrl: string | null;
+  published: boolean | null;
+  sandbox: {
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    lastAccessedAt: any;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    isFrozen: boolean;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    viewCount: number;
+    likeCount: number;
+    alwaysOn: boolean | null;
+    isV2: boolean;
+    authorId: any | null;
+    teamId: any | null;
+    git: {
+      __typename?: 'Git';
+      id: any | null;
+      username: string | null;
+      commitSha: string | null;
+      path: string | null;
+      repo: string | null;
+      branch: string | null;
+    } | null;
+    team: { __typename?: 'TeamPreview'; name: string } | null;
+    author: { __typename?: 'User'; username: string } | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      iconUrl: string | null;
+    } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+    } | null;
+    collection: { __typename?: 'Collection'; path: string } | null;
+    permissions: {
+      __typename?: 'SandboxProtectionSettings';
+      preventSandboxLeaving: boolean;
+      preventSandboxExport: boolean;
+    } | null;
+  } | null;
+};
 
-export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
-  Team,
-  'id' | 'name' | 'type' | 'description' | 'creatorId' | 'avatarUrl' | 'legacy'
-> & {
-    settings: Maybe<
-      { __typename?: 'WorkspaceSandboxSettings' } & Pick<
-        WorkspaceSandboxSettings,
-        'minimumPrivacy'
-      >
-    >;
-    userAuthorizations: Array<
-      { __typename?: 'UserAuthorization' } & Pick<
-        UserAuthorization,
-        'userId' | 'authorization' | 'teamManager'
-      >
-    >;
-    users: Array<
-      { __typename?: 'User' } & Pick<
-        User,
-        'id' | 'name' | 'username' | 'avatarUrl'
-      >
-    >;
-    invitees: Array<
-      { __typename?: 'User' } & Pick<
-        User,
-        'id' | 'name' | 'username' | 'avatarUrl'
-      >
-    >;
-    subscription: Maybe<
-      { __typename?: 'ProSubscription' } & Pick<
-        ProSubscription,
-        'origin' | 'type' | 'status' | 'paymentProvider'
-      >
-    >;
-  };
+export type TeamFragmentDashboardFragment = {
+  __typename?: 'Team';
+  id: any;
+  name: string;
+  type: TeamType;
+  description: string | null;
+  creatorId: any | null;
+  avatarUrl: string | null;
+  legacy: boolean;
+  settings: {
+    __typename?: 'WorkspaceSandboxSettings';
+    minimumPrivacy: number;
+  } | null;
+  userAuthorizations: Array<{
+    __typename?: 'UserAuthorization';
+    userId: any;
+    authorization: TeamMemberAuthorization;
+    teamManager: boolean;
+  }>;
+  users: Array<{
+    __typename?: 'User';
+    id: any;
+    name: string | null;
+    username: string;
+    avatarUrl: string;
+  }>;
+  invitees: Array<{
+    __typename?: 'User';
+    id: any;
+    name: string | null;
+    username: string;
+    avatarUrl: string;
+  }>;
+  subscription: {
+    __typename?: 'ProSubscription';
+    origin: SubscriptionOrigin | null;
+    type: SubscriptionType;
+    status: SubscriptionStatus;
+    paymentProvider: SubscriptionPaymentProvider | null;
+  } | null;
+};
 
-export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
-  Team,
-  | 'id'
-  | 'creatorId'
-  | 'description'
-  | 'inviteToken'
-  | 'name'
-  | 'type'
-  | 'avatarUrl'
-  | 'legacy'
-> & {
-    users: Array<
-      { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
-    >;
-    invitees: Array<
-      { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
-    >;
-    userAuthorizations: Array<
-      { __typename?: 'UserAuthorization' } & Pick<
-        UserAuthorization,
-        'userId' | 'authorization' | 'teamManager'
-      >
-    >;
-    settings: Maybe<
-      { __typename?: 'WorkspaceSandboxSettings' } & Pick<
-        WorkspaceSandboxSettings,
-        | 'minimumPrivacy'
-        | 'preventSandboxExport'
-        | 'preventSandboxLeaving'
-        | 'defaultAuthorization'
-      > & {
-          aiConsent: { __typename?: 'TeamAiConsent' } & Pick<
-            TeamAiConsent,
-            | 'privateRepositories'
-            | 'privateSandboxes'
-            | 'publicRepositories'
-            | 'publicSandboxes'
-          >;
-        }
-    >;
-    subscription: Maybe<
-      { __typename?: 'ProSubscription' } & Pick<
-        ProSubscription,
-        | 'billingInterval'
-        | 'cancelAt'
-        | 'cancelAtPeriodEnd'
-        | 'currency'
-        | 'id'
-        | 'nextBillDate'
-        | 'origin'
-        | 'paymentMethodAttached'
-        | 'paymentProvider'
-        | 'quantity'
-        | 'status'
-        | 'trialEnd'
-        | 'trialStart'
-        | 'type'
-        | 'unitPrice'
-        | 'updateBillingUrl'
-      >
-    >;
-    limits: { __typename?: 'TeamLimits' } & Pick<
-      TeamLimits,
-      | 'maxEditors'
-      | 'maxPrivateProjects'
-      | 'maxPrivateSandboxes'
-      | 'maxPublicProjects'
-      | 'maxPublicSandboxes'
-    >;
-    usage: { __typename?: 'TeamUsage' } & Pick<
-      TeamUsage,
-      | 'editorsQuantity'
-      | 'privateProjectsQuantity'
-      | 'privateSandboxesQuantity'
-      | 'publicProjectsQuantity'
-      | 'publicSandboxesQuantity'
-    >;
-  };
-
-export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
-  PrivateRegistry,
-  | 'id'
-  | 'authType'
-  | 'enabledScopes'
-  | 'limitToScopes'
-  | 'proxyEnabled'
-  | 'registryAuthKey'
-  | 'registryType'
-  | 'registryUrl'
-  | 'teamId'
-  | 'sandpackTrustedDomains'
->;
-
-export type BranchFragment = { __typename?: 'Branch' } & Pick<
-  Branch,
-  'id' | 'name' | 'contribution' | 'lastAccessedAt' | 'upstream'
-> & {
-    project: { __typename?: 'Project' } & {
-      repository: { __typename?: 'GitHubRepository' } & Pick<
-        GitHubRepository,
-        'defaultBranch' | 'name' | 'owner' | 'private'
-      >;
-      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
+export type CurrentTeamInfoFragmentFragment = {
+  __typename?: 'Team';
+  id: any;
+  creatorId: any | null;
+  description: string | null;
+  inviteToken: string;
+  name: string;
+  type: TeamType;
+  avatarUrl: string | null;
+  legacy: boolean;
+  users: Array<{
+    __typename?: 'User';
+    id: any;
+    avatarUrl: string;
+    username: string;
+  }>;
+  invitees: Array<{
+    __typename?: 'User';
+    id: any;
+    avatarUrl: string;
+    username: string;
+  }>;
+  userAuthorizations: Array<{
+    __typename?: 'UserAuthorization';
+    userId: any;
+    authorization: TeamMemberAuthorization;
+    teamManager: boolean;
+  }>;
+  settings: {
+    __typename?: 'WorkspaceSandboxSettings';
+    minimumPrivacy: number;
+    preventSandboxExport: boolean;
+    preventSandboxLeaving: boolean;
+    defaultAuthorization: TeamMemberAuthorization;
+    aiConsent: {
+      __typename?: 'TeamAiConsent';
+      privateRepositories: boolean;
+      privateSandboxes: boolean;
+      publicRepositories: boolean;
+      publicSandboxes: boolean;
     };
+  } | null;
+  subscription: {
+    __typename?: 'ProSubscription';
+    billingInterval: SubscriptionInterval | null;
+    cancelAt: any | null;
+    cancelAtPeriodEnd: boolean;
+    currency: string | null;
+    id: any | null;
+    nextBillDate: any | null;
+    origin: SubscriptionOrigin | null;
+    paymentMethodAttached: boolean;
+    paymentProvider: SubscriptionPaymentProvider | null;
+    quantity: number | null;
+    status: SubscriptionStatus;
+    trialEnd: any | null;
+    trialStart: any | null;
+    type: SubscriptionType;
+    unitPrice: number | null;
+    updateBillingUrl: string | null;
+  } | null;
+  limits: {
+    __typename?: 'TeamLimits';
+    maxEditors: number | null;
+    maxPrivateProjects: number | null;
+    maxPrivateSandboxes: number | null;
+    maxPublicProjects: number | null;
+    maxPublicSandboxes: number | null;
   };
-
-export type ProjectFragment = { __typename?: 'Project' } & Pick<
-  Project,
-  'appInstalled' | 'branchCount' | 'lastAccessedAt'
-> & {
-    repository: { __typename?: 'GitHubRepository' } & Pick<
-      GitHubRepository,
-      'owner' | 'name' | 'defaultBranch' | 'private'
-    >;
-    team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
+  usage: {
+    __typename?: 'TeamUsage';
+    editorsQuantity: number;
+    privateProjectsQuantity: number;
+    privateSandboxesQuantity: number;
+    publicProjectsQuantity: number;
+    publicSandboxesQuantity: number;
   };
+};
 
-export type ProjectWithBranchesFragment = { __typename?: 'Project' } & Pick<
-  Project,
-  'appInstalled'
-> & {
-    branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
-    repository: { __typename?: 'GitHubRepository' } & Pick<
-      GitHubRepository,
-      'owner' | 'name' | 'defaultBranch' | 'private'
-    >;
-    team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
+export type NpmRegistryFragment = {
+  __typename?: 'PrivateRegistry';
+  id: any;
+  authType: AuthType | null;
+  enabledScopes: Array<string>;
+  limitToScopes: boolean | null;
+  proxyEnabled: boolean | null;
+  registryAuthKey: string | null;
+  registryType: RegistryType;
+  registryUrl: string | null;
+  teamId: any;
+  sandpackTrustedDomains: Array<string>;
+};
+
+export type BranchFragment = {
+  __typename?: 'Branch';
+  id: string;
+  name: string;
+  contribution: boolean;
+  lastAccessedAt: string | null;
+  upstream: boolean;
+  project: {
+    __typename?: 'Project';
+    repository: {
+      __typename?: 'GitHubRepository';
+      defaultBranch: string;
+      name: string;
+      owner: string;
+      private: boolean;
+    };
+    team: { __typename?: 'Team'; id: any } | null;
   };
+};
 
-export type TeamLimitsFragment = { __typename?: 'TeamLimits' } & Pick<
-  TeamLimits,
-  | 'maxEditors'
-  | 'maxPrivateProjects'
-  | 'maxPrivateSandboxes'
-  | 'maxPublicProjects'
-  | 'maxPublicSandboxes'
->;
+export type ProjectFragment = {
+  __typename?: 'Project';
+  appInstalled: boolean;
+  branchCount: number;
+  lastAccessedAt: string | null;
+  repository: {
+    __typename?: 'GitHubRepository';
+    owner: string;
+    name: string;
+    defaultBranch: string;
+    private: boolean;
+  };
+  team: { __typename?: 'Team'; id: any } | null;
+};
+
+export type ProjectWithBranchesFragment = {
+  __typename?: 'Project';
+  appInstalled: boolean;
+  branches: Array<{
+    __typename?: 'Branch';
+    id: string;
+    name: string;
+    contribution: boolean;
+    lastAccessedAt: string | null;
+    upstream: boolean;
+    project: {
+      __typename?: 'Project';
+      repository: {
+        __typename?: 'GitHubRepository';
+        defaultBranch: string;
+        name: string;
+        owner: string;
+        private: boolean;
+      };
+      team: { __typename?: 'Team'; id: any } | null;
+    };
+  }>;
+  repository: {
+    __typename?: 'GitHubRepository';
+    owner: string;
+    name: string;
+    defaultBranch: string;
+    private: boolean;
+  };
+  team: { __typename?: 'Team'; id: any } | null;
+};
+
+export type TeamLimitsFragment = {
+  __typename?: 'TeamLimits';
+  maxEditors: number | null;
+  maxPrivateProjects: number | null;
+  maxPrivateSandboxes: number | null;
+  maxPublicProjects: number | null;
+  maxPublicSandboxes: number | null;
+};
 
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
 
-export type _CreateTeamMutation = { __typename?: 'RootMutationType' } & {
-  createTeam: { __typename?: 'Team' } & TeamFragmentDashboardFragment;
+export type _CreateTeamMutation = {
+  __typename?: 'RootMutationType';
+  createTeam: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    type: TeamType;
+    description: string | null;
+    creatorId: any | null;
+    avatarUrl: string | null;
+    legacy: boolean;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+    } | null;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    subscription: {
+      __typename?: 'ProSubscription';
+      origin: SubscriptionOrigin | null;
+      type: SubscriptionType;
+      status: SubscriptionStatus;
+      paymentProvider: SubscriptionPaymentProvider | null;
+    } | null;
+  };
 };
 
 export type CreateFolderMutationVariables = Exact<{
   path: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type CreateFolderMutation = { __typename?: 'RootMutationType' } & {
+export type CreateFolderMutation = {
+  __typename?: 'RootMutationType';
   createCollection: {
     __typename?: 'Collection';
-  } & SidebarCollectionDashboardFragment;
+    id: any | null;
+    path: string;
+    sandboxCount: number;
+  };
 };
 
 export type DeleteFolderMutationVariables = Exact<{
   path: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type DeleteFolderMutation = { __typename?: 'RootMutationType' } & {
-  deleteCollection: Array<
-    { __typename?: 'Collection' } & SidebarCollectionDashboardFragment
-  >;
+export type DeleteFolderMutation = {
+  __typename?: 'RootMutationType';
+  deleteCollection: Array<{
+    __typename?: 'Collection';
+    id: any | null;
+    path: string;
+    sandboxCount: number;
+  }>;
 };
 
 export type RenameFolderMutationVariables = Exact<{
   path: Scalars['String'];
   newPath: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
-  newTeamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
+  newTeamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type RenameFolderMutation = { __typename?: 'RootMutationType' } & {
-  renameCollection: Array<
-    { __typename?: 'Collection' } & SidebarCollectionDashboardFragment
-  >;
+export type RenameFolderMutation = {
+  __typename?: 'RootMutationType';
+  renameCollection: Array<{
+    __typename?: 'Collection';
+    id: any | null;
+    path: string;
+    sandboxCount: number;
+  }>;
 };
 
 export type AddToFolderMutationVariables = Exact<{
-  collectionPath: Maybe<Scalars['String']>;
-  sandboxIds: Array<Scalars['ID']>;
-  teamId: Maybe<Scalars['UUID4']>;
+  collectionPath: InputMaybe<Scalars['String']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type AddToFolderMutation = { __typename?: 'RootMutationType' } & {
-  addToCollectionOrTeam: Array<
-    Maybe<{ __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment>
-  >;
+export type AddToFolderMutation = {
+  __typename?: 'RootMutationType';
+  addToCollectionOrTeam: Array<{
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    lastAccessedAt: any;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    isFrozen: boolean;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    viewCount: number;
+    likeCount: number;
+    alwaysOn: boolean | null;
+    isV2: boolean;
+    authorId: any | null;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      iconUrl: string | null;
+    } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+    } | null;
+    collection: { __typename?: 'Collection'; path: string } | null;
+    permissions: {
+      __typename?: 'SandboxProtectionSettings';
+      preventSandboxLeaving: boolean;
+      preventSandboxExport: boolean;
+    } | null;
+  } | null>;
 };
 
 export type MoveToTrashMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
-export type MoveToTrashMutation = { __typename?: 'RootMutationType' } & {
-  deleteSandboxes: Array<
-    { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-  >;
+export type MoveToTrashMutation = {
+  __typename?: 'RootMutationType';
+  deleteSandboxes: Array<{
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    lastAccessedAt: any;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    isFrozen: boolean;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    viewCount: number;
+    likeCount: number;
+    alwaysOn: boolean | null;
+    isV2: boolean;
+    authorId: any | null;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      iconUrl: string | null;
+    } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+    } | null;
+    collection: { __typename?: 'Collection'; path: string } | null;
+    permissions: {
+      __typename?: 'SandboxProtectionSettings';
+      preventSandboxLeaving: boolean;
+      preventSandboxExport: boolean;
+    } | null;
+  }>;
 };
 
 export type ChangePrivacyMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
   privacy: Scalars['Int'];
 }>;
 
-export type ChangePrivacyMutation = { __typename?: 'RootMutationType' } & {
-  setSandboxesPrivacy: Array<
-    { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-  >;
+export type ChangePrivacyMutation = {
+  __typename?: 'RootMutationType';
+  setSandboxesPrivacy: Array<{
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    lastAccessedAt: any;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    isFrozen: boolean;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    viewCount: number;
+    likeCount: number;
+    alwaysOn: boolean | null;
+    isV2: boolean;
+    authorId: any | null;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      iconUrl: string | null;
+    } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+    } | null;
+    collection: { __typename?: 'Collection'; path: string } | null;
+    permissions: {
+      __typename?: 'SandboxProtectionSettings';
+      preventSandboxLeaving: boolean;
+      preventSandboxExport: boolean;
+    } | null;
+  }>;
 };
 
 export type ChangeFrozenMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
   isFrozen: Scalars['Boolean'];
 }>;
 
-export type ChangeFrozenMutation = { __typename?: 'RootMutationType' } & {
-  setSandboxesFrozen: Array<
-    { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-  >;
+export type ChangeFrozenMutation = {
+  __typename?: 'RootMutationType';
+  setSandboxesFrozen: Array<{
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    lastAccessedAt: any;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    isFrozen: boolean;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    viewCount: number;
+    likeCount: number;
+    alwaysOn: boolean | null;
+    isV2: boolean;
+    authorId: any | null;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      iconUrl: string | null;
+    } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+    } | null;
+    collection: { __typename?: 'Collection'; path: string } | null;
+    permissions: {
+      __typename?: 'SandboxProtectionSettings';
+      preventSandboxLeaving: boolean;
+      preventSandboxExport: boolean;
+    } | null;
+  }>;
 };
 
 export type _RenameSandboxMutationVariables = Exact<{
@@ -3630,59 +4843,215 @@ export type _RenameSandboxMutationVariables = Exact<{
   title: Scalars['String'];
 }>;
 
-export type _RenameSandboxMutation = { __typename?: 'RootMutationType' } & {
-  renameSandbox: { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment;
+export type _RenameSandboxMutation = {
+  __typename?: 'RootMutationType';
+  renameSandbox: {
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    lastAccessedAt: any;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    isFrozen: boolean;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    viewCount: number;
+    likeCount: number;
+    alwaysOn: boolean | null;
+    isV2: boolean;
+    authorId: any | null;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      iconUrl: string | null;
+    } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+    } | null;
+    collection: { __typename?: 'Collection'; path: string } | null;
+    permissions: {
+      __typename?: 'SandboxProtectionSettings';
+      preventSandboxLeaving: boolean;
+      preventSandboxExport: boolean;
+    } | null;
+  };
 };
 
 export type _PermanentlyDeleteSandboxesMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
 export type _PermanentlyDeleteSandboxesMutation = {
   __typename?: 'RootMutationType';
-} & {
-  permanentlyDeleteSandboxes: Array<
-    { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>
-  >;
+  permanentlyDeleteSandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
 export type _LeaveTeamMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
 
-export type _LeaveTeamMutation = { __typename?: 'RootMutationType' } & Pick<
-  RootMutationType,
-  'leaveTeam'
->;
+export type _LeaveTeamMutation = {
+  __typename?: 'RootMutationType';
+  leaveTeam: string;
+};
 
 export type _RemoveFromTeamMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   userId: Scalars['UUID4'];
 }>;
 
-export type _RemoveFromTeamMutation = { __typename?: 'RootMutationType' } & {
-  removeFromTeam: { __typename?: 'Team' } & TeamFragmentDashboardFragment;
+export type _RemoveFromTeamMutation = {
+  __typename?: 'RootMutationType';
+  removeFromTeam: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    type: TeamType;
+    description: string | null;
+    creatorId: any | null;
+    avatarUrl: string | null;
+    legacy: boolean;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+    } | null;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    subscription: {
+      __typename?: 'ProSubscription';
+      origin: SubscriptionOrigin | null;
+      type: SubscriptionType;
+      status: SubscriptionStatus;
+      paymentProvider: SubscriptionPaymentProvider | null;
+    } | null;
+  };
 };
 
 export type _InviteToTeamMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   username: Scalars['String'];
-  authorization: Maybe<TeamMemberAuthorization>;
+  authorization: InputMaybe<TeamMemberAuthorization>;
 }>;
 
-export type _InviteToTeamMutation = { __typename?: 'RootMutationType' } & {
-  inviteToTeam: { __typename?: 'Team' } & CurrentTeamInfoFragmentFragment;
+export type _InviteToTeamMutation = {
+  __typename?: 'RootMutationType';
+  inviteToTeam: {
+    __typename?: 'Team';
+    id: any;
+    creatorId: any | null;
+    description: string | null;
+    inviteToken: string;
+    name: string;
+    type: TeamType;
+    avatarUrl: string | null;
+    legacy: boolean;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      avatarUrl: string;
+      username: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      avatarUrl: string;
+      username: string;
+    }>;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+      preventSandboxExport: boolean;
+      preventSandboxLeaving: boolean;
+      defaultAuthorization: TeamMemberAuthorization;
+      aiConsent: {
+        __typename?: 'TeamAiConsent';
+        privateRepositories: boolean;
+        privateSandboxes: boolean;
+        publicRepositories: boolean;
+        publicSandboxes: boolean;
+      };
+    } | null;
+    subscription: {
+      __typename?: 'ProSubscription';
+      billingInterval: SubscriptionInterval | null;
+      cancelAt: any | null;
+      cancelAtPeriodEnd: boolean;
+      currency: string | null;
+      id: any | null;
+      nextBillDate: any | null;
+      origin: SubscriptionOrigin | null;
+      paymentMethodAttached: boolean;
+      paymentProvider: SubscriptionPaymentProvider | null;
+      quantity: number | null;
+      status: SubscriptionStatus;
+      trialEnd: any | null;
+      trialStart: any | null;
+      type: SubscriptionType;
+      unitPrice: number | null;
+      updateBillingUrl: string | null;
+    } | null;
+    limits: {
+      __typename?: 'TeamLimits';
+      maxEditors: number | null;
+      maxPrivateProjects: number | null;
+      maxPrivateSandboxes: number | null;
+      maxPublicProjects: number | null;
+      maxPublicSandboxes: number | null;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      editorsQuantity: number;
+      privateProjectsQuantity: number;
+      privateSandboxesQuantity: number;
+      publicProjectsQuantity: number;
+      publicSandboxesQuantity: number;
+    };
+  };
 };
 
 export type _InviteToTeamViaEmailMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   email: Scalars['String'];
-  authorization: Maybe<TeamMemberAuthorization>;
+  authorization: InputMaybe<TeamMemberAuthorization>;
 }>;
 
 export type _InviteToTeamViaEmailMutation = {
   __typename?: 'RootMutationType';
-} & Pick<RootMutationType, 'inviteToTeamViaEmail'>;
+  inviteToTeamViaEmail: string;
+};
 
 export type _RevokeTeamInvitationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
@@ -3691,10 +5060,84 @@ export type _RevokeTeamInvitationMutationVariables = Exact<{
 
 export type _RevokeTeamInvitationMutation = {
   __typename?: 'RootMutationType';
-} & {
   revokeTeamInvitation: {
     __typename?: 'Team';
-  } & CurrentTeamInfoFragmentFragment;
+    id: any;
+    creatorId: any | null;
+    description: string | null;
+    inviteToken: string;
+    name: string;
+    type: TeamType;
+    avatarUrl: string | null;
+    legacy: boolean;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      avatarUrl: string;
+      username: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      avatarUrl: string;
+      username: string;
+    }>;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+      preventSandboxExport: boolean;
+      preventSandboxLeaving: boolean;
+      defaultAuthorization: TeamMemberAuthorization;
+      aiConsent: {
+        __typename?: 'TeamAiConsent';
+        privateRepositories: boolean;
+        privateSandboxes: boolean;
+        publicRepositories: boolean;
+        publicSandboxes: boolean;
+      };
+    } | null;
+    subscription: {
+      __typename?: 'ProSubscription';
+      billingInterval: SubscriptionInterval | null;
+      cancelAt: any | null;
+      cancelAtPeriodEnd: boolean;
+      currency: string | null;
+      id: any | null;
+      nextBillDate: any | null;
+      origin: SubscriptionOrigin | null;
+      paymentMethodAttached: boolean;
+      paymentProvider: SubscriptionPaymentProvider | null;
+      quantity: number | null;
+      status: SubscriptionStatus;
+      trialEnd: any | null;
+      trialStart: any | null;
+      type: SubscriptionType;
+      unitPrice: number | null;
+      updateBillingUrl: string | null;
+    } | null;
+    limits: {
+      __typename?: 'TeamLimits';
+      maxEditors: number | null;
+      maxPrivateProjects: number | null;
+      maxPrivateSandboxes: number | null;
+      maxPublicProjects: number | null;
+      maxPublicSandboxes: number | null;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      editorsQuantity: number;
+      privateProjectsQuantity: number;
+      privateSandboxesQuantity: number;
+      publicProjectsQuantity: number;
+      publicSandboxesQuantity: number;
+    };
+  };
 };
 
 export type _AcceptTeamInvitationMutationVariables = Exact<{
@@ -3703,8 +5146,47 @@ export type _AcceptTeamInvitationMutationVariables = Exact<{
 
 export type _AcceptTeamInvitationMutation = {
   __typename?: 'RootMutationType';
-} & {
-  acceptTeamInvitation: { __typename?: 'Team' } & TeamFragmentDashboardFragment;
+  acceptTeamInvitation: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    type: TeamType;
+    description: string | null;
+    creatorId: any | null;
+    avatarUrl: string | null;
+    legacy: boolean;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+    } | null;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    subscription: {
+      __typename?: 'ProSubscription';
+      origin: SubscriptionOrigin | null;
+      type: SubscriptionType;
+      status: SubscriptionStatus;
+      paymentProvider: SubscriptionPaymentProvider | null;
+    } | null;
+  };
 };
 
 export type _RejectTeamInvitationMutationVariables = Exact<{
@@ -3713,7 +5195,8 @@ export type _RejectTeamInvitationMutationVariables = Exact<{
 
 export type _RejectTeamInvitationMutation = {
   __typename?: 'RootMutationType';
-} & Pick<RootMutationType, 'rejectTeamInvitation'>;
+  rejectTeamInvitation: string;
+};
 
 export type _SetTeamDescriptionMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
@@ -3722,32 +5205,65 @@ export type _SetTeamDescriptionMutationVariables = Exact<{
 
 export type _SetTeamDescriptionMutation = {
   __typename?: 'RootMutationType';
-} & {
-  setTeamDescription: { __typename?: 'Team' } & TeamFragmentDashboardFragment;
+  setTeamDescription: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    type: TeamType;
+    description: string | null;
+    creatorId: any | null;
+    avatarUrl: string | null;
+    legacy: boolean;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+    } | null;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    subscription: {
+      __typename?: 'ProSubscription';
+      origin: SubscriptionOrigin | null;
+      type: SubscriptionType;
+      status: SubscriptionStatus;
+      paymentProvider: SubscriptionPaymentProvider | null;
+    } | null;
+  };
 };
 
 export type _UnmakeSandboxesTemplateMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
 export type _UnmakeSandboxesTemplateMutation = {
   __typename?: 'RootMutationType';
-} & {
-  unmakeSandboxesTemplates: Array<
-    { __typename?: 'Template' } & Pick<Template, 'id'>
-  >;
+  unmakeSandboxesTemplates: Array<{ __typename?: 'Template'; id: any | null }>;
 };
 
 export type _MakeSandboxesTemplateMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
 export type _MakeSandboxesTemplateMutation = {
   __typename?: 'RootMutationType';
-} & {
-  makeSandboxesTemplates: Array<
-    { __typename?: 'Template' } & Pick<Template, 'id'>
-  >;
+  makeSandboxesTemplates: Array<{ __typename?: 'Template'; id: any | null }>;
 };
 
 export type _SetTeamNameMutationVariables = Exact<{
@@ -3755,51 +5271,111 @@ export type _SetTeamNameMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
 
-export type _SetTeamNameMutation = { __typename?: 'RootMutationType' } & {
-  setTeamName: { __typename?: 'Team' } & TeamFragmentDashboardFragment;
+export type _SetTeamNameMutation = {
+  __typename?: 'RootMutationType';
+  setTeamName: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    type: TeamType;
+    description: string | null;
+    creatorId: any | null;
+    avatarUrl: string | null;
+    legacy: boolean;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+    } | null;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    subscription: {
+      __typename?: 'ProSubscription';
+      origin: SubscriptionOrigin | null;
+      type: SubscriptionType;
+      status: SubscriptionStatus;
+      paymentProvider: SubscriptionPaymentProvider | null;
+    } | null;
+  };
 };
 
 export type ChangeTeamMemberAuthorizationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   userId: Scalars['UUID4'];
   authorization: TeamMemberAuthorization;
-  teamManager: Maybe<Scalars['Boolean']>;
+  teamManager: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ChangeTeamMemberAuthorizationMutation = {
   __typename?: 'RootMutationType';
-} & {
-  changeTeamMemberAuthorizations: { __typename?: 'Team' } & Pick<Team, 'id'>;
+  changeTeamMemberAuthorizations: { __typename?: 'Team'; id: any };
 };
 
 export type CreateOrUpdateNpmRegistryMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   registryType: RegistryType;
-  registryUrl: Maybe<Scalars['String']>;
+  registryUrl: InputMaybe<Scalars['String']>;
   registryAuthKey: Scalars['String'];
-  registryAuthType: Maybe<AuthType>;
+  registryAuthType: InputMaybe<AuthType>;
   proxyEnabled: Scalars['Boolean'];
   limitToScopes: Scalars['Boolean'];
-  enabledScopes: Array<Scalars['String']>;
-  sandpackTrustedDomains: Array<Scalars['String']>;
+  enabledScopes: Array<Scalars['String']> | Scalars['String'];
+  sandpackTrustedDomains: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 export type CreateOrUpdateNpmRegistryMutation = {
   __typename?: 'RootMutationType';
-} & {
   createOrUpdatePrivateNpmRegistry: {
     __typename?: 'PrivateRegistry';
-  } & NpmRegistryFragment;
+    id: any;
+    authType: AuthType | null;
+    enabledScopes: Array<string>;
+    limitToScopes: boolean | null;
+    proxyEnabled: boolean | null;
+    registryAuthKey: string | null;
+    registryType: RegistryType;
+    registryUrl: string | null;
+    teamId: any;
+    sandpackTrustedDomains: Array<string>;
+  };
 };
 
 export type DeleteNpmRegistryMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
 
-export type DeleteNpmRegistryMutation = { __typename?: 'RootMutationType' } & {
-  deletePrivateNpmRegistry: Maybe<
-    { __typename?: 'PrivateRegistry' } & NpmRegistryFragment
-  >;
+export type DeleteNpmRegistryMutation = {
+  __typename?: 'RootMutationType';
+  deletePrivateNpmRegistry: {
+    __typename?: 'PrivateRegistry';
+    id: any;
+    authType: AuthType | null;
+    enabledScopes: Array<string>;
+    limitToScopes: boolean | null;
+    proxyEnabled: boolean | null;
+    registryAuthKey: string | null;
+    registryType: RegistryType;
+    registryUrl: string | null;
+    teamId: any;
+    sandpackTrustedDomains: Array<string>;
+  } | null;
 };
 
 export type DeleteWorkspaceMutationVariables = Exact<{
@@ -3808,7 +5384,8 @@ export type DeleteWorkspaceMutationVariables = Exact<{
 
 export type DeleteWorkspaceMutation = {
   __typename?: 'RootMutationType';
-} & Pick<RootMutationType, 'deleteWorkspace'>;
+  deleteWorkspace: string;
+};
 
 export type SetTeamMinimumPrivacyMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
@@ -3818,11 +5395,10 @@ export type SetTeamMinimumPrivacyMutationVariables = Exact<{
 
 export type SetTeamMinimumPrivacyMutation = {
   __typename?: 'RootMutationType';
-} & {
-  setTeamMinimumPrivacy: { __typename?: 'WorkspaceSandboxSettings' } & Pick<
-    WorkspaceSandboxSettings,
-    'minimumPrivacy'
-  >;
+  setTeamMinimumPrivacy: {
+    __typename?: 'WorkspaceSandboxSettings';
+    minimumPrivacy: number;
+  };
 };
 
 export type SetWorkspaceSandboxSettingsMutationVariables = Exact<{
@@ -3833,39 +5409,34 @@ export type SetWorkspaceSandboxSettingsMutationVariables = Exact<{
 
 export type SetWorkspaceSandboxSettingsMutation = {
   __typename?: 'RootMutationType';
-} & {
   setWorkspaceSandboxSettings: {
     __typename?: 'WorkspaceSandboxSettings';
-  } & Pick<
-    WorkspaceSandboxSettings,
-    'preventSandboxLeaving' | 'preventSandboxExport'
-  >;
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  };
 };
 
 export type SetPreventSandboxesLeavingWorkspaceMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
   preventSandboxLeaving: Scalars['Boolean'];
 }>;
 
 export type SetPreventSandboxesLeavingWorkspaceMutation = {
   __typename?: 'RootMutationType';
-} & {
-  setPreventSandboxesLeavingWorkspace: Array<
-    { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>
-  >;
+  setPreventSandboxesLeavingWorkspace: Array<{
+    __typename?: 'Sandbox';
+    id: string;
+  }>;
 };
 
 export type SetPreventSandboxesExportMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
   preventSandboxExport: Scalars['Boolean'];
 }>;
 
 export type SetPreventSandboxesExportMutation = {
   __typename?: 'RootMutationType';
-} & {
-  setPreventSandboxesExport: Array<
-    { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>
-  >;
+  setPreventSandboxesExport: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
 export type SetDefaultTeamMemberAuthorizationMutationVariables = Exact<{
@@ -3875,10 +5446,10 @@ export type SetDefaultTeamMemberAuthorizationMutationVariables = Exact<{
 
 export type SetDefaultTeamMemberAuthorizationMutation = {
   __typename?: 'RootMutationType';
-} & {
   setDefaultTeamMemberAuthorization: {
     __typename?: 'WorkspaceSandboxSettings';
-  } & Pick<WorkspaceSandboxSettings, 'defaultAuthorization'>;
+    defaultAuthorization: TeamMemberAuthorization;
+  };
 };
 
 export type DeleteCurrentUserMutationVariables = Exact<{
@@ -3887,7 +5458,8 @@ export type DeleteCurrentUserMutationVariables = Exact<{
 
 export type DeleteCurrentUserMutation = {
   __typename?: 'RootMutationType';
-} & Pick<RootMutationType, 'deleteCurrentUser'>;
+  deleteCurrentUser: string;
+};
 
 export type CancelDeleteCurrentUserMutationVariables = Exact<{
   [key: string]: never;
@@ -3895,7 +5467,8 @@ export type CancelDeleteCurrentUserMutationVariables = Exact<{
 
 export type CancelDeleteCurrentUserMutation = {
   __typename?: 'RootMutationType';
-} & Pick<RootMutationType, 'cancelDeleteCurrentUser'>;
+  cancelDeleteCurrentUser: string;
+};
 
 export type UpdateSubscriptionBillingIntervalMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
@@ -3905,11 +5478,10 @@ export type UpdateSubscriptionBillingIntervalMutationVariables = Exact<{
 
 export type UpdateSubscriptionBillingIntervalMutation = {
   __typename?: 'RootMutationType';
-} & {
-  updateSubscriptionBillingInterval: { __typename?: 'ProSubscription' } & Pick<
-    ProSubscription,
-    'id'
-  >;
+  updateSubscriptionBillingInterval: {
+    __typename?: 'ProSubscription';
+    id: any | null;
+  };
 };
 
 export type PreviewUpdateSubscriptionBillingIntervalMutationVariables = Exact<{
@@ -3920,22 +5492,18 @@ export type PreviewUpdateSubscriptionBillingIntervalMutationVariables = Exact<{
 
 export type PreviewUpdateSubscriptionBillingIntervalMutation = {
   __typename?: 'RootMutationType';
-} & {
   previewUpdateSubscriptionBillingInterval: {
     __typename?: 'BillingPreview';
-  } & {
-    immediatePayment: Maybe<
-      { __typename?: 'BillingDetails' } & Pick<
-        BillingDetails,
-        'amount' | 'currency'
-      >
-    >;
-    nextPayment: Maybe<
-      { __typename?: 'BillingDetails' } & Pick<
-        BillingDetails,
-        'amount' | 'currency'
-      >
-    >;
+    immediatePayment: {
+      __typename?: 'BillingDetails';
+      amount: number;
+      currency: string;
+    } | null;
+    nextPayment: {
+      __typename?: 'BillingDetails';
+      amount: number;
+      currency: string;
+    } | null;
   };
 };
 
@@ -3946,11 +5514,11 @@ export type SoftCancelSubscriptionMutationVariables = Exact<{
 
 export type SoftCancelSubscriptionMutation = {
   __typename?: 'RootMutationType';
-} & {
-  softCancelSubscription: { __typename?: 'ProSubscription' } & Pick<
-    ProSubscription,
-    'id' | 'cancelAt'
-  >;
+  softCancelSubscription: {
+    __typename?: 'ProSubscription';
+    id: any | null;
+    cancelAt: any | null;
+  };
 };
 
 export type ReactivateSubscriptionMutationVariables = Exact<{
@@ -3960,55 +5528,54 @@ export type ReactivateSubscriptionMutationVariables = Exact<{
 
 export type ReactivateSubscriptionMutation = {
   __typename?: 'RootMutationType';
-} & {
-  reactivateSubscription: { __typename?: 'ProSubscription' } & Pick<
-    ProSubscription,
-    'id'
-  >;
+  reactivateSubscription: { __typename?: 'ProSubscription'; id: any | null };
 };
 
 export type UpdateCurrentUserMutationVariables = Exact<{
   username: Scalars['String'];
-  name: Maybe<Scalars['String']>;
-  bio: Maybe<Scalars['String']>;
-  socialLinks: Maybe<Array<Scalars['String']>>;
+  name: InputMaybe<Scalars['String']>;
+  bio: InputMaybe<Scalars['String']>;
+  socialLinks: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
-export type UpdateCurrentUserMutation = { __typename?: 'RootMutationType' } & {
-  updateCurrentUser: { __typename?: 'User' } & Pick<
-    User,
-    'username' | 'name' | 'bio' | 'socialLinks'
-  >;
+export type UpdateCurrentUserMutation = {
+  __typename?: 'RootMutationType';
+  updateCurrentUser: {
+    __typename?: 'User';
+    username: string;
+    name: string | null;
+    bio: string | null;
+    socialLinks: Array<string> | null;
+  };
 };
 
 export type AddSandboxesToAlbumMutationVariables = Exact<{
   albumId: Scalars['ID'];
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
 export type AddSandboxesToAlbumMutation = {
   __typename?: 'RootMutationType';
-} & {
-  addSandboxesToAlbum: Maybe<{ __typename?: 'Album' } & Pick<Album, 'id'>>;
+  addSandboxesToAlbum: { __typename?: 'Album'; id: string } | null;
 };
 
 export type RemoveSandboxesFromAlbumMutationVariables = Exact<{
   albumId: Scalars['ID'];
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
 export type RemoveSandboxesFromAlbumMutation = {
   __typename?: 'RootMutationType';
-} & {
-  removeSandboxesFromAlbum: Maybe<{ __typename?: 'Album' } & Pick<Album, 'id'>>;
+  removeSandboxesFromAlbum: { __typename?: 'Album'; id: string } | null;
 };
 
 export type CreateAlbumMutationVariables = Exact<{
   title: Scalars['String'];
 }>;
 
-export type CreateAlbumMutation = { __typename?: 'RootMutationType' } & {
-  createAlbum: { __typename?: 'Album' } & Pick<Album, 'id' | 'title'>;
+export type CreateAlbumMutation = {
+  __typename?: 'RootMutationType';
+  createAlbum: { __typename?: 'Album'; id: string; title: string | null };
 };
 
 export type UpdateAlbumMutationVariables = Exact<{
@@ -4016,8 +5583,9 @@ export type UpdateAlbumMutationVariables = Exact<{
   title: Scalars['String'];
 }>;
 
-export type UpdateAlbumMutation = { __typename?: 'RootMutationType' } & {
-  updateAlbum: { __typename?: 'Album' } & Pick<Album, 'id'>;
+export type UpdateAlbumMutation = {
+  __typename?: 'RootMutationType';
+  updateAlbum: { __typename?: 'Album'; id: string };
 };
 
 export type ImportProjectMutationVariables = Exact<{
@@ -4026,10 +5594,13 @@ export type ImportProjectMutationVariables = Exact<{
   teamId: Scalars['ID'];
 }>;
 
-export type ImportProjectMutation = { __typename?: 'RootMutationType' } & {
-  importProject: { __typename?: 'Project' } & Pick<Project, 'id'> & {
-      defaultBranch: { __typename?: 'Branch' } & Pick<Branch, 'name'>;
-    };
+export type ImportProjectMutation = {
+  __typename?: 'RootMutationType';
+  importProject: {
+    __typename?: 'Project';
+    id: string;
+    defaultBranch: { __typename?: 'Branch'; name: string };
+  };
 };
 
 export type DeleteProjectMutationVariables = Exact<{
@@ -4038,19 +5609,19 @@ export type DeleteProjectMutationVariables = Exact<{
   teamId: Scalars['ID'];
 }>;
 
-export type DeleteProjectMutation = { __typename?: 'RootMutationType' } & Pick<
-  RootMutationType,
-  'deleteProject'
->;
+export type DeleteProjectMutation = {
+  __typename?: 'RootMutationType';
+  deleteProject: boolean;
+};
 
 export type DeleteBranchMutationVariables = Exact<{
   branchId: Scalars['String'];
 }>;
 
-export type DeleteBranchMutation = { __typename?: 'RootMutationType' } & Pick<
-  RootMutationType,
-  'deleteBranch'
->;
+export type DeleteBranchMutation = {
+  __typename?: 'RootMutationType';
+  deleteBranch: boolean;
+};
 
 export type CreateBranchMutationVariables = Exact<{
   owner: Scalars['String'];
@@ -4058,8 +5629,9 @@ export type CreateBranchMutationVariables = Exact<{
   teamId: Scalars['ID'];
 }>;
 
-export type CreateBranchMutation = { __typename?: 'RootMutationType' } & {
-  createBranch: { __typename?: 'Branch' } & Pick<Branch, 'id' | 'name'>;
+export type CreateBranchMutation = {
+  __typename?: 'RootMutationType';
+  createBranch: { __typename?: 'Branch'; id: string; name: string };
 };
 
 export type SetTeamAiConsentMutationVariables = Exact<{
@@ -4070,14 +5642,15 @@ export type SetTeamAiConsentMutationVariables = Exact<{
   publicRepositories: Scalars['Boolean'];
 }>;
 
-export type SetTeamAiConsentMutation = { __typename?: 'RootMutationType' } & {
-  setTeamAiConsent: { __typename?: 'TeamAiConsent' } & Pick<
-    TeamAiConsent,
-    | 'privateRepositories'
-    | 'privateSandboxes'
-    | 'publicSandboxes'
-    | 'publicRepositories'
-  >;
+export type SetTeamAiConsentMutation = {
+  __typename?: 'RootMutationType';
+  setTeamAiConsent: {
+    __typename?: 'TeamAiConsent';
+    privateRepositories: boolean;
+    privateSandboxes: boolean;
+    publicSandboxes: boolean;
+    publicRepositories: boolean;
+  };
 };
 
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
@@ -4086,14 +5659,48 @@ export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
 
 export type RecentlyDeletedPersonalSandboxesQuery = {
   __typename?: 'RootQueryType';
-} & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      sandboxes: Array<
-        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-      >;
-    }
-  >;
+  me: {
+    __typename?: 'CurrentUser';
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      likeCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{
@@ -4102,212 +5709,917 @@ export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{
 
 export type RecentlyDeletedTeamSandboxesQuery = {
   __typename?: 'RootQueryType';
-} & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & {
-          sandboxes: Array<
-            { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-          >;
-        }
-      >;
-    }
-  >;
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      sandboxes: Array<{
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type SandboxesByPathQueryVariables = Exact<{
   path: Scalars['String'];
-  teamId: Maybe<Scalars['ID']>;
+  teamId: InputMaybe<Scalars['ID']>;
 }>;
 
-export type SandboxesByPathQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      collections: Array<
-        { __typename?: 'Collection' } & SidebarCollectionDashboardFragment
-      >;
-      collection: Maybe<
-        { __typename?: 'Collection' } & Pick<Collection, 'id' | 'path'> & {
-            sandboxes: Array<
-              { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-            >;
-          }
-      >;
-    }
-  >;
+export type SandboxesByPathQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    collections: Array<{
+      __typename?: 'Collection';
+      id: any | null;
+      path: string;
+      sandboxCount: number;
+    }>;
+    collection: {
+      __typename?: 'Collection';
+      id: any | null;
+      path: string;
+      sandboxes: Array<{
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type TeamDraftsQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
-  authorId: Maybe<Scalars['UUID4']>;
+  authorId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type TeamDraftsQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & {
-          drafts: Array<
-            { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-          >;
-        }
-      >;
-    }
-  >;
+export type TeamDraftsQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      drafts: Array<{
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type AllCollectionsQueryVariables = Exact<{
-  teamId: Maybe<Scalars['ID']>;
+  teamId: InputMaybe<Scalars['ID']>;
 }>;
 
-export type AllCollectionsQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      collections: Array<
-        { __typename?: 'Collection' } & SidebarCollectionDashboardFragment
-      >;
-    }
-  >;
+export type AllCollectionsQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    collections: Array<{
+      __typename?: 'Collection';
+      id: any | null;
+      path: string;
+      sandboxCount: number;
+    }>;
+  } | null;
 };
 
 export type GetPersonalReposQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetPersonalReposQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      sandboxes: Array<
-        { __typename?: 'Sandbox' } & RepoFragmentDashboardFragment
-      >;
-    }
-  >;
+export type GetPersonalReposQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      prNumber: number | null;
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      likeCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      baseGit: {
+        __typename?: 'Git';
+        branch: string | null;
+        id: any | null;
+        repo: string | null;
+        username: string | null;
+        path: string | null;
+      } | null;
+      originalGit: {
+        __typename?: 'Git';
+        branch: string | null;
+        id: any | null;
+        repo: string | null;
+        username: string | null;
+        path: string | null;
+      } | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type GetTeamReposQueryVariables = Exact<{
   id: Scalars['UUID4'];
 }>;
 
-export type GetTeamReposQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & {
-          sandboxes: Array<
-            { __typename?: 'Sandbox' } & RepoFragmentDashboardFragment
-          >;
-        }
-      >;
-    }
-  >;
+export type GetTeamReposQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      sandboxes: Array<{
+        __typename?: 'Sandbox';
+        prNumber: number | null;
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        baseGit: {
+          __typename?: 'Git';
+          branch: string | null;
+          id: any | null;
+          repo: string | null;
+          username: string | null;
+          path: string | null;
+        } | null;
+        originalGit: {
+          __typename?: 'Git';
+          branch: string | null;
+          id: any | null;
+          repo: string | null;
+          username: string | null;
+          path: string | null;
+        } | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type TeamTemplatesQueryVariables = Exact<{
   id: Scalars['UUID4'];
 }>;
 
-export type TeamTemplatesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
-            templates: Array<
-              { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-            >;
-          }
-      >;
-    }
-  >;
+export type TeamTemplatesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      id: any;
+      name: string;
+      templates: Array<{
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+        published: boolean | null;
+        sandbox: {
+          __typename?: 'Sandbox';
+          id: string;
+          alias: string | null;
+          title: string | null;
+          description: string | null;
+          lastAccessedAt: any;
+          insertedAt: string;
+          updatedAt: string;
+          removedAt: string | null;
+          privacy: number;
+          isFrozen: boolean;
+          screenshotUrl: string | null;
+          screenshotOutdated: boolean;
+          viewCount: number;
+          likeCount: number;
+          alwaysOn: boolean | null;
+          isV2: boolean;
+          authorId: any | null;
+          teamId: any | null;
+          git: {
+            __typename?: 'Git';
+            id: any | null;
+            username: string | null;
+            commitSha: string | null;
+            path: string | null;
+            repo: string | null;
+            branch: string | null;
+          } | null;
+          team: { __typename?: 'TeamPreview'; name: string } | null;
+          author: { __typename?: 'User'; username: string } | null;
+          source: { __typename?: 'Source'; template: string | null };
+          customTemplate: {
+            __typename?: 'Template';
+            id: any | null;
+            iconUrl: string | null;
+          } | null;
+          forkedTemplate: {
+            __typename?: 'Template';
+            id: any | null;
+            color: string | null;
+            iconUrl: string | null;
+          } | null;
+          collection: { __typename?: 'Collection'; path: string } | null;
+          permissions: {
+            __typename?: 'SandboxProtectionSettings';
+            preventSandboxLeaving: boolean;
+            preventSandboxExport: boolean;
+          } | null;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type OwnedTemplatesQueryVariables = Exact<{
-  showAll: Maybe<Scalars['Boolean']>;
+  showAll: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type OwnedTemplatesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      templates: Array<
-        { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-      >;
-    }
-  >;
+export type OwnedTemplatesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    templates: Array<{
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+      published: boolean | null;
+      sandbox: {
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        git: {
+          __typename?: 'Git';
+          id: any | null;
+          username: string | null;
+          commitSha: string | null;
+          path: string | null;
+          repo: string | null;
+          branch: string | null;
+        } | null;
+        team: { __typename?: 'TeamPreview'; name: string } | null;
+        author: { __typename?: 'User'; username: string } | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type AllTeamsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & Pick<
-      CurrentUser,
-      'personalWorkspaceId' | 'eligibleForTrial'
-    > & {
-        workspaces: Array<
-          { __typename?: 'Team' } & TeamFragmentDashboardFragment
-        >;
-      }
-  >;
+export type AllTeamsQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    personalWorkspaceId: any;
+    eligibleForTrial: boolean;
+    workspaces: Array<{
+      __typename?: 'Team';
+      id: any;
+      name: string;
+      type: TeamType;
+      description: string | null;
+      creatorId: any | null;
+      avatarUrl: string | null;
+      legacy: boolean;
+      settings: {
+        __typename?: 'WorkspaceSandboxSettings';
+        minimumPrivacy: number;
+      } | null;
+      userAuthorizations: Array<{
+        __typename?: 'UserAuthorization';
+        userId: any;
+        authorization: TeamMemberAuthorization;
+        teamManager: boolean;
+      }>;
+      users: Array<{
+        __typename?: 'User';
+        id: any;
+        name: string | null;
+        username: string;
+        avatarUrl: string;
+      }>;
+      invitees: Array<{
+        __typename?: 'User';
+        id: any;
+        name: string | null;
+        username: string;
+        avatarUrl: string;
+      }>;
+      subscription: {
+        __typename?: 'ProSubscription';
+        origin: SubscriptionOrigin | null;
+        type: SubscriptionType;
+        status: SubscriptionStatus;
+        paymentProvider: SubscriptionPaymentProvider | null;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type _SearchPersonalSandboxesQueryVariables = Exact<{
   [key: string]: never;
 }>;
 
-export type _SearchPersonalSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      sandboxes: Array<
-        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-      >;
-    }
-  >;
+export type _SearchPersonalSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      likeCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type _SearchTeamSandboxesQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
 
-export type _SearchTeamSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & {
-          sandboxes: Array<
-            { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-          >;
-        }
-      >;
-    }
-  >;
+export type _SearchTeamSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      sandboxes: Array<{
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type ListUserTemplatesQueryVariables = Exact<{
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type ListUserTemplatesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & Pick<CurrentUser, 'id'> & {
-        templates: Array<
-          { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-        >;
-        recentlyUsedTemplates: Array<
-          { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-        >;
-        bookmarkedTemplates: Array<
-          { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-        >;
-        teams: Array<
-          { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
-              bookmarkedTemplates: Array<
-                { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-              >;
-              templates: Array<
-                { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-              >;
-            }
-        >;
-      }
-  >;
+export type ListUserTemplatesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
+    templates: Array<{
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+      published: boolean | null;
+      sandbox: {
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        git: {
+          __typename?: 'Git';
+          id: any | null;
+          username: string | null;
+          commitSha: string | null;
+          path: string | null;
+          repo: string | null;
+          branch: string | null;
+        } | null;
+        team: { __typename?: 'TeamPreview'; name: string } | null;
+        author: { __typename?: 'User'; username: string } | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      } | null;
+    }>;
+    recentlyUsedTemplates: Array<{
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+      published: boolean | null;
+      sandbox: {
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        git: {
+          __typename?: 'Git';
+          id: any | null;
+          username: string | null;
+          commitSha: string | null;
+          path: string | null;
+          repo: string | null;
+          branch: string | null;
+        } | null;
+        team: { __typename?: 'TeamPreview'; name: string } | null;
+        author: { __typename?: 'User'; username: string } | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      } | null;
+    }>;
+    bookmarkedTemplates: Array<{
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+      iconUrl: string | null;
+      published: boolean | null;
+      sandbox: {
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        git: {
+          __typename?: 'Git';
+          id: any | null;
+          username: string | null;
+          commitSha: string | null;
+          path: string | null;
+          repo: string | null;
+          branch: string | null;
+        } | null;
+        team: { __typename?: 'TeamPreview'; name: string } | null;
+        author: { __typename?: 'User'; username: string } | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      } | null;
+    }>;
+    teams: Array<{
+      __typename?: 'Team';
+      id: any;
+      name: string;
+      bookmarkedTemplates: Array<{
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+        published: boolean | null;
+        sandbox: {
+          __typename?: 'Sandbox';
+          id: string;
+          alias: string | null;
+          title: string | null;
+          description: string | null;
+          lastAccessedAt: any;
+          insertedAt: string;
+          updatedAt: string;
+          removedAt: string | null;
+          privacy: number;
+          isFrozen: boolean;
+          screenshotUrl: string | null;
+          screenshotOutdated: boolean;
+          viewCount: number;
+          likeCount: number;
+          alwaysOn: boolean | null;
+          isV2: boolean;
+          authorId: any | null;
+          teamId: any | null;
+          git: {
+            __typename?: 'Git';
+            id: any | null;
+            username: string | null;
+            commitSha: string | null;
+            path: string | null;
+            repo: string | null;
+            branch: string | null;
+          } | null;
+          team: { __typename?: 'TeamPreview'; name: string } | null;
+          author: { __typename?: 'User'; username: string } | null;
+          source: { __typename?: 'Source'; template: string | null };
+          customTemplate: {
+            __typename?: 'Template';
+            id: any | null;
+            iconUrl: string | null;
+          } | null;
+          forkedTemplate: {
+            __typename?: 'Template';
+            id: any | null;
+            color: string | null;
+            iconUrl: string | null;
+          } | null;
+          collection: { __typename?: 'Collection'; path: string } | null;
+          permissions: {
+            __typename?: 'SandboxProtectionSettings';
+            preventSandboxLeaving: boolean;
+            preventSandboxExport: boolean;
+          } | null;
+        } | null;
+      }>;
+      templates: Array<{
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+        published: boolean | null;
+        sandbox: {
+          __typename?: 'Sandbox';
+          id: string;
+          alias: string | null;
+          title: string | null;
+          description: string | null;
+          lastAccessedAt: any;
+          insertedAt: string;
+          updatedAt: string;
+          removedAt: string | null;
+          privacy: number;
+          isFrozen: boolean;
+          screenshotUrl: string | null;
+          screenshotOutdated: boolean;
+          viewCount: number;
+          likeCount: number;
+          alwaysOn: boolean | null;
+          isV2: boolean;
+          authorId: any | null;
+          teamId: any | null;
+          git: {
+            __typename?: 'Git';
+            id: any | null;
+            username: string | null;
+            commitSha: string | null;
+            path: string | null;
+            repo: string | null;
+            branch: string | null;
+          } | null;
+          team: { __typename?: 'TeamPreview'; name: string } | null;
+          author: { __typename?: 'User'; username: string } | null;
+          source: { __typename?: 'Source'; template: string | null };
+          customTemplate: {
+            __typename?: 'Template';
+            id: any | null;
+            iconUrl: string | null;
+          } | null;
+          forkedTemplate: {
+            __typename?: 'Template';
+            id: any | null;
+            color: string | null;
+            iconUrl: string | null;
+          } | null;
+          collection: { __typename?: 'Collection'; path: string } | null;
+          permissions: {
+            __typename?: 'SandboxProtectionSettings';
+            preventSandboxLeaving: boolean;
+            preventSandboxExport: boolean;
+          } | null;
+        } | null;
+      }>;
+    }>;
+  } | null;
 };
 
 export type LatestSandboxesQueryVariables = Exact<{
@@ -4316,70 +6628,230 @@ export type LatestSandboxesQueryVariables = Exact<{
   orderDirection: Direction;
 }>;
 
-export type LatestSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      sandboxes: Array<
-        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-      >;
-    }
-  >;
+export type LatestSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      likeCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type RecentlyAccessedSandboxesQueryVariables = Exact<{
   limit: Scalars['Int'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
 export type RecentlyAccessedSandboxesQuery = {
   __typename?: 'RootQueryType';
-} & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      recentlyAccessedSandboxes: Array<
-        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-      >;
-    }
-  >;
+  me: {
+    __typename?: 'CurrentUser';
+    recentlyAccessedSandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      likeCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type RecentlyAccessedBranchesQueryVariables = Exact<{
   limit: Scalars['Int'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type RecentlyAccessedBranchesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      recentBranches: Array<{ __typename?: 'Branch' } & BranchFragment>;
-    }
-  >;
+export type RecentlyAccessedBranchesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    recentBranches: Array<{
+      __typename?: 'Branch';
+      id: string;
+      name: string;
+      contribution: boolean;
+      lastAccessedAt: string | null;
+      upstream: boolean;
+      project: {
+        __typename?: 'Project';
+        repository: {
+          __typename?: 'GitHubRepository';
+          defaultBranch: string;
+          name: string;
+          owner: string;
+          private: boolean;
+        };
+        team: { __typename?: 'Team'; id: any } | null;
+      };
+    }>;
+  } | null;
 };
 
 export type SharedWithMeSandboxesQueryVariables = Exact<{
   [key: string]: never;
 }>;
 
-export type SharedWithMeSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      collaboratorSandboxes: Array<
-        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-      >;
-    }
-  >;
+export type SharedWithMeSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    collaboratorSandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      likeCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type LikedSandboxesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type LikedSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      likedSandboxes: Array<
-        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-      >;
-    }
-  >;
+export type LikedSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    likedSandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      likeCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type LatestTeamSandboxesQueryVariables = Exact<{
@@ -4389,165 +6861,487 @@ export type LatestTeamSandboxesQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
 
-export type LatestTeamSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & {
-          sandboxes: Array<
-            { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-          >;
-        }
-      >;
-    }
-  >;
+export type LatestTeamSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      sandboxes: Array<{
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type GetTeamQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
 
-export type GetTeamQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<{ __typename?: 'Team' } & CurrentTeamInfoFragmentFragment>;
-    }
-  >;
+export type GetTeamQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      id: any;
+      creatorId: any | null;
+      description: string | null;
+      inviteToken: string;
+      name: string;
+      type: TeamType;
+      avatarUrl: string | null;
+      legacy: boolean;
+      users: Array<{
+        __typename?: 'User';
+        id: any;
+        avatarUrl: string;
+        username: string;
+      }>;
+      invitees: Array<{
+        __typename?: 'User';
+        id: any;
+        avatarUrl: string;
+        username: string;
+      }>;
+      userAuthorizations: Array<{
+        __typename?: 'UserAuthorization';
+        userId: any;
+        authorization: TeamMemberAuthorization;
+        teamManager: boolean;
+      }>;
+      settings: {
+        __typename?: 'WorkspaceSandboxSettings';
+        minimumPrivacy: number;
+        preventSandboxExport: boolean;
+        preventSandboxLeaving: boolean;
+        defaultAuthorization: TeamMemberAuthorization;
+        aiConsent: {
+          __typename?: 'TeamAiConsent';
+          privateRepositories: boolean;
+          privateSandboxes: boolean;
+          publicRepositories: boolean;
+          publicSandboxes: boolean;
+        };
+      } | null;
+      subscription: {
+        __typename?: 'ProSubscription';
+        billingInterval: SubscriptionInterval | null;
+        cancelAt: any | null;
+        cancelAtPeriodEnd: boolean;
+        currency: string | null;
+        id: any | null;
+        nextBillDate: any | null;
+        origin: SubscriptionOrigin | null;
+        paymentMethodAttached: boolean;
+        paymentProvider: SubscriptionPaymentProvider | null;
+        quantity: number | null;
+        status: SubscriptionStatus;
+        trialEnd: any | null;
+        trialStart: any | null;
+        type: SubscriptionType;
+        unitPrice: number | null;
+        updateBillingUrl: string | null;
+      } | null;
+      limits: {
+        __typename?: 'TeamLimits';
+        maxEditors: number | null;
+        maxPrivateProjects: number | null;
+        maxPrivateSandboxes: number | null;
+        maxPublicProjects: number | null;
+        maxPublicSandboxes: number | null;
+      };
+      usage: {
+        __typename?: 'TeamUsage';
+        editorsQuantity: number;
+        privateProjectsQuantity: number;
+        privateSandboxesQuantity: number;
+        publicProjectsQuantity: number;
+        publicSandboxesQuantity: number;
+      };
+    } | null;
+  } | null;
 };
 
 export type GetPersonalWorkspaceIdQueryVariables = Exact<{
   [key: string]: never;
 }>;
 
-export type GetPersonalWorkspaceIdQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & Pick<CurrentUser, 'personalWorkspaceId'>
-  >;
+export type GetPersonalWorkspaceIdQuery = {
+  __typename?: 'RootQueryType';
+  me: { __typename?: 'CurrentUser'; personalWorkspaceId: any } | null;
 };
 
 export type GetPrivateNpmRegistryQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
 
-export type GetPrivateNpmRegistryQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & {
-          privateRegistry: Maybe<
-            { __typename?: 'PrivateRegistry' } & NpmRegistryFragment
-          >;
-        }
-      >;
-    }
-  >;
+export type GetPrivateNpmRegistryQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      privateRegistry: {
+        __typename?: 'PrivateRegistry';
+        id: any;
+        authType: AuthType | null;
+        enabledScopes: Array<string>;
+        limitToScopes: boolean | null;
+        proxyEnabled: boolean | null;
+        registryAuthKey: string | null;
+        registryType: RegistryType;
+        registryUrl: string | null;
+        teamId: any;
+        sandpackTrustedDomains: Array<string>;
+      } | null;
+    } | null;
+  } | null;
 };
 
 export type _AlwaysOnTeamSandboxesQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
 
-export type _AlwaysOnTeamSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & {
-          sandboxes: Array<
-            { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-          >;
-        }
-      >;
-    }
-  >;
+export type _AlwaysOnTeamSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      sandboxes: Array<{
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        alwaysOn: boolean | null;
+        isV2: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
-  curatedAlbums: Array<
-    { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
-        sandboxes: Array<
-          { __typename?: 'Sandbox' } & Pick<
-            Sandbox,
-            'forkCount' | 'likeCount'
-          > & {
-              author: Maybe<
-                { __typename?: 'User' } & Pick<User, 'username' | 'avatarUrl'>
-              >;
-            } & SandboxFragmentDashboardFragment
-        >;
-      }
-  >;
+export type CuratedAlbumsQuery = {
+  __typename?: 'RootQueryType';
+  curatedAlbums: Array<{
+    __typename?: 'Album';
+    id: string;
+    title: string | null;
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      forkCount: number;
+      likeCount: number;
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      author: {
+        __typename?: 'User';
+        username: string;
+        avatarUrl: string;
+      } | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  }>;
 };
 
 export type CuratedAlbumByIdQueryVariables = Exact<{
   albumId: Scalars['ID'];
 }>;
 
-export type CuratedAlbumByIdQuery = { __typename?: 'RootQueryType' } & {
-  album: Maybe<
-    { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
-        sandboxes: Array<
-          { __typename?: 'Sandbox' } & Pick<
-            Sandbox,
-            'forkCount' | 'likeCount'
-          > & {
-              author: Maybe<
-                { __typename?: 'User' } & Pick<User, 'username' | 'avatarUrl'>
-              >;
-            } & SandboxFragmentDashboardFragment
-        >;
-      }
-  >;
+export type CuratedAlbumByIdQuery = {
+  __typename?: 'RootQueryType';
+  album: {
+    __typename?: 'Album';
+    id: string;
+    title: string | null;
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      forkCount: number;
+      likeCount: number;
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      lastAccessedAt: any;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      isFrozen: boolean;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      viewCount: number;
+      alwaysOn: boolean | null;
+      isV2: boolean;
+      authorId: any | null;
+      teamId: any | null;
+      author: {
+        __typename?: 'User';
+        username: string;
+        avatarUrl: string;
+      } | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+        iconUrl: string | null;
+      } | null;
+      collection: { __typename?: 'Collection'; path: string } | null;
+      permissions: {
+        __typename?: 'SandboxProtectionSettings';
+        preventSandboxLeaving: boolean;
+        preventSandboxExport: boolean;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type ContributionBranchesQueryVariables = Exact<{
   [key: string]: never;
 }>;
 
-export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      recentBranches: Array<{ __typename?: 'Branch' } & BranchFragment>;
-    }
-  >;
+export type ContributionBranchesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    recentBranches: Array<{
+      __typename?: 'Branch';
+      id: string;
+      name: string;
+      contribution: boolean;
+      lastAccessedAt: string | null;
+      upstream: boolean;
+      project: {
+        __typename?: 'Project';
+        repository: {
+          __typename?: 'GitHubRepository';
+          defaultBranch: string;
+          name: string;
+          owner: string;
+          private: boolean;
+        };
+        team: { __typename?: 'Team'; id: any } | null;
+      };
+    }>;
+  } | null;
 };
 
 export type RepositoriesByTeamQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
-  syncData: Maybe<Scalars['Boolean']>;
+  syncData: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type RepositoriesByTeamQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
-            projects: Array<{ __typename?: 'Project' } & ProjectFragment>;
-          }
-      >;
-    }
-  >;
+export type RepositoriesByTeamQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      id: any;
+      name: string;
+      projects: Array<{
+        __typename?: 'Project';
+        appInstalled: boolean;
+        branchCount: number;
+        lastAccessedAt: string | null;
+        repository: {
+          __typename?: 'GitHubRepository';
+          owner: string;
+          name: string;
+          defaultBranch: string;
+          private: boolean;
+        };
+        team: { __typename?: 'Team'; id: any } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type RepositoryByDetailsQueryVariables = Exact<{
   owner: Scalars['String'];
   name: Scalars['String'];
-  teamId: Maybe<Scalars['ID']>;
+  teamId: InputMaybe<Scalars['ID']>;
 }>;
 
-export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
-  project: Maybe<{ __typename?: 'Project' } & ProjectWithBranchesFragment>;
+export type RepositoryByDetailsQuery = {
+  __typename?: 'RootQueryType';
+  project: {
+    __typename?: 'Project';
+    appInstalled: boolean;
+    branches: Array<{
+      __typename?: 'Branch';
+      id: string;
+      name: string;
+      contribution: boolean;
+      lastAccessedAt: string | null;
+      upstream: boolean;
+      project: {
+        __typename?: 'Project';
+        repository: {
+          __typename?: 'GitHubRepository';
+          defaultBranch: string;
+          name: string;
+          owner: string;
+          private: boolean;
+        };
+        team: { __typename?: 'Team'; id: any } | null;
+      };
+    }>;
+    repository: {
+      __typename?: 'GitHubRepository';
+      owner: string;
+      name: string;
+      defaultBranch: string;
+      private: boolean;
+    };
+    team: { __typename?: 'Team'; id: any } | null;
+  } | null;
 };
 
 export type LimitsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type LimitsQuery = { __typename?: 'RootQueryType' } & {
-  limits: { __typename?: 'Limits' } & {
-    personalFree: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
-    personalPro: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
-    teamFree: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
-    teamPro: { __typename?: 'TeamLimits' } & TeamLimitsFragment;
+export type LimitsQuery = {
+  __typename?: 'RootQueryType';
+  limits: {
+    __typename?: 'Limits';
+    personalFree: {
+      __typename?: 'TeamLimits';
+      maxEditors: number | null;
+      maxPrivateProjects: number | null;
+      maxPrivateSandboxes: number | null;
+      maxPublicProjects: number | null;
+      maxPublicSandboxes: number | null;
+    };
+    personalPro: {
+      __typename?: 'TeamLimits';
+      maxEditors: number | null;
+      maxPrivateProjects: number | null;
+      maxPrivateSandboxes: number | null;
+      maxPublicProjects: number | null;
+      maxPublicSandboxes: number | null;
+    };
+    teamFree: {
+      __typename?: 'TeamLimits';
+      maxEditors: number | null;
+      maxPrivateProjects: number | null;
+      maxPrivateSandboxes: number | null;
+      maxPublicProjects: number | null;
+      maxPublicSandboxes: number | null;
+    };
+    teamPro: {
+      __typename?: 'TeamLimits';
+      maxEditors: number | null;
+      maxPrivateProjects: number | null;
+      maxPrivateSandboxes: number | null;
+      maxPublicProjects: number | null;
+      maxPublicSandboxes: number | null;
+    };
   };
 };
 
@@ -4555,47 +7349,47 @@ export type TeamEventsSubscriptionVariables = Exact<{
   teamId: Scalars['ID'];
 }>;
 
-export type TeamEventsSubscription = { __typename?: 'RootSubscriptionType' } & {
-  teamEvents: { __typename?: 'TeamSubscriptionEvent' } & {
-    subscription: { __typename?: 'ProSubscription' } & Pick<
-      ProSubscription,
-      'active'
-    >;
+export type TeamEventsSubscription = {
+  __typename?: 'RootSubscriptionType';
+  teamEvents: {
+    __typename?: 'TeamSubscriptionEvent';
+    subscription: { __typename?: 'ProSubscription'; active: boolean };
   };
 };
 
-export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
-  Notification,
-  'id' | 'type' | 'data' | 'insertedAt' | 'read'
->;
+export type RecentNotificationFragment = {
+  __typename?: 'Notification';
+  id: any;
+  type: string;
+  data: string;
+  insertedAt: any;
+  read: boolean;
+};
 
 export type UpdateNotificationPreferencesMutationVariables = Exact<{
-  emailCommentMention: Maybe<Scalars['Boolean']>;
-  emailCommentReply: Maybe<Scalars['Boolean']>;
-  emailMarketing: Maybe<Scalars['Boolean']>;
-  emailNewComment: Maybe<Scalars['Boolean']>;
-  emailSandboxInvite: Maybe<Scalars['Boolean']>;
-  emailTeamInvite: Maybe<Scalars['Boolean']>;
-  inAppPrReviewReceived: Maybe<Scalars['Boolean']>;
-  inAppPrReviewRequest: Maybe<Scalars['Boolean']>;
+  emailCommentMention: InputMaybe<Scalars['Boolean']>;
+  emailCommentReply: InputMaybe<Scalars['Boolean']>;
+  emailMarketing: InputMaybe<Scalars['Boolean']>;
+  emailNewComment: InputMaybe<Scalars['Boolean']>;
+  emailSandboxInvite: InputMaybe<Scalars['Boolean']>;
+  emailTeamInvite: InputMaybe<Scalars['Boolean']>;
+  inAppPrReviewReceived: InputMaybe<Scalars['Boolean']>;
+  inAppPrReviewRequest: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateNotificationPreferencesMutation = {
   __typename?: 'RootMutationType';
-} & {
   updateNotificationPreferences: {
     __typename?: 'NotificationPreferences';
-  } & Pick<
-    NotificationPreferences,
-    | 'emailCommentMention'
-    | 'emailCommentReply'
-    | 'emailMarketing'
-    | 'emailNewComment'
-    | 'emailSandboxInvite'
-    | 'emailTeamInvite'
-    | 'inAppPrReviewReceived'
-    | 'inAppPrReviewRequest'
-  >;
+    emailCommentMention: boolean;
+    emailCommentReply: boolean;
+    emailMarketing: boolean;
+    emailNewComment: boolean;
+    emailSandboxInvite: boolean;
+    emailTeamInvite: boolean;
+    inAppPrReviewReceived: boolean;
+    inAppPrReviewRequest: boolean;
+  };
 };
 
 export type MarkNotificationsAsReadMutationVariables = Exact<{
@@ -4604,7 +7398,8 @@ export type MarkNotificationsAsReadMutationVariables = Exact<{
 
 export type MarkNotificationsAsReadMutation = {
   __typename?: 'RootMutationType';
-} & { markAllNotificationsAsRead: { __typename?: 'User' } & Pick<User, 'id'> };
+  markAllNotificationsAsRead: { __typename?: 'User'; id: any };
+};
 
 export type ArchiveAllNotificationsMutationVariables = Exact<{
   [key: string]: never;
@@ -4612,7 +7407,8 @@ export type ArchiveAllNotificationsMutationVariables = Exact<{
 
 export type ArchiveAllNotificationsMutation = {
   __typename?: 'RootMutationType';
-} & { archiveAllNotifications: { __typename?: 'User' } & Pick<User, 'id'> };
+  archiveAllNotifications: { __typename?: 'User'; id: any };
+};
 
 export type UpdateNotificationReadStatusMutationVariables = Exact<{
   notificationId: Scalars['UUID4'];
@@ -4621,11 +7417,7 @@ export type UpdateNotificationReadStatusMutationVariables = Exact<{
 
 export type UpdateNotificationReadStatusMutation = {
   __typename?: 'RootMutationType';
-} & {
-  updateNotificationReadStatus: { __typename?: 'Notification' } & Pick<
-    Notification,
-    'id'
-  >;
+  updateNotificationReadStatus: { __typename?: 'Notification'; id: any };
 };
 
 export type ArchiveNotificationMutationVariables = Exact<{
@@ -4634,11 +7426,7 @@ export type ArchiveNotificationMutationVariables = Exact<{
 
 export type ArchiveNotificationMutation = {
   __typename?: 'RootMutationType';
-} & {
-  archiveNotification: { __typename?: 'Notification' } & Pick<
-    Notification,
-    'id'
-  >;
+  archiveNotification: { __typename?: 'Notification'; id: any };
 };
 
 export type ClearNotificationCountMutationVariables = Exact<{
@@ -4647,239 +7435,352 @@ export type ClearNotificationCountMutationVariables = Exact<{
 
 export type ClearNotificationCountMutation = {
   __typename?: 'RootMutationType';
-} & { clearNotificationCount: { __typename?: 'User' } & Pick<User, 'id'> };
+  clearNotificationCount: { __typename?: 'User'; id: any };
+};
 
 export type EmailPreferencesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EmailPreferencesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      notificationPreferences: Maybe<
-        { __typename?: 'NotificationPreferences' } & Pick<
-          NotificationPreferences,
-          | 'emailCommentMention'
-          | 'emailCommentReply'
-          | 'emailMarketing'
-          | 'emailNewComment'
-          | 'emailSandboxInvite'
-          | 'emailTeamInvite'
-          | 'inAppPrReviewRequest'
-          | 'inAppPrReviewReceived'
-        >
-      >;
-    }
-  >;
+export type EmailPreferencesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    notificationPreferences: {
+      __typename?: 'NotificationPreferences';
+      emailCommentMention: boolean;
+      emailCommentReply: boolean;
+      emailMarketing: boolean;
+      emailNewComment: boolean;
+      emailSandboxInvite: boolean;
+      emailTeamInvite: boolean;
+      inAppPrReviewRequest: boolean;
+      inAppPrReviewReceived: boolean;
+    } | null;
+  } | null;
 };
 
 export type RecentNotificationsQueryVariables = Exact<{
-  type: Maybe<Array<Maybe<Scalars['String']>>>;
+  type: InputMaybe<
+    Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>
+  >;
 }>;
 
-export type RecentNotificationsQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      notifications: Array<
-        { __typename?: 'Notification' } & RecentNotificationFragment
-      >;
-    }
-  >;
+export type RecentNotificationsQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    notifications: Array<{
+      __typename?: 'Notification';
+      id: any;
+      type: string;
+      data: string;
+      insertedAt: any;
+      read: boolean;
+    }>;
+  } | null;
 };
 
 export type SidebarSyncedSandboxFragmentFragment = {
   __typename?: 'Sandbox';
-} & Pick<Sandbox, 'id'>;
+  id: string;
+};
 
 export type SidebarTemplateFragmentFragment = {
   __typename?: 'Template';
-} & Pick<Template, 'id'>;
+  id: any | null;
+};
 
 export type PersonalSidebarDataQueryVariables = Exact<{ [key: string]: never }>;
 
-export type PersonalSidebarDataQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      sandboxes: Array<
-        { __typename?: 'Sandbox' } & SidebarSyncedSandboxFragmentFragment
-      >;
-      templates: Array<
-        { __typename?: 'Template' } & SidebarTemplateFragmentFragment
-      >;
-    }
-  >;
+export type PersonalSidebarDataQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    sandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
+    templates: Array<{ __typename?: 'Template'; id: any | null }>;
+  } | null;
 };
 
 export type TeamSidebarDataQueryVariables = Exact<{
   id: Scalars['UUID4'];
 }>;
 
-export type TeamSidebarDataQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & {
-          sandboxes: Array<
-            { __typename?: 'Sandbox' } & SidebarSyncedSandboxFragmentFragment
-          >;
-          templates: Array<
-            { __typename?: 'Template' } & SidebarTemplateFragmentFragment
-          >;
-        }
-      >;
-    }
-  >;
+export type TeamSidebarDataQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      sandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
+      templates: Array<{ __typename?: 'Template'; id: any | null }>;
+    } | null;
+  } | null;
 };
 
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type TeamsQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      workspaces: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
-    }
-  >;
+export type TeamsQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    workspaces: Array<{ __typename?: 'Team'; id: any; name: string }>;
+  } | null;
 };
 
-export type SidebarCollectionFragment = { __typename?: 'Collection' } & Pick<
-  Collection,
-  'id' | 'path'
->;
+export type SidebarCollectionFragment = {
+  __typename?: 'Collection';
+  id: any | null;
+  path: string;
+};
 
-export type SandboxFragment = { __typename?: 'Sandbox' } & Pick<
-  Sandbox,
-  | 'id'
-  | 'alias'
-  | 'title'
-  | 'description'
-  | 'insertedAt'
-  | 'updatedAt'
-  | 'removedAt'
-  | 'privacy'
-  | 'screenshotUrl'
-  | 'screenshotOutdated'
-  | 'teamId'
-> & {
-    source: { __typename?: 'Source' } & Pick<Source, 'template'>;
-    customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
-    forkedTemplate: Maybe<
-      { __typename?: 'Template' } & Pick<Template, 'id' | 'color'>
-    >;
-    collection: Maybe<
-      { __typename?: 'Collection' } & Pick<Collection, 'path' | 'teamId'>
-    >;
-  };
+export type SandboxFragment = {
+  __typename?: 'Sandbox';
+  id: string;
+  alias: string | null;
+  title: string | null;
+  description: string | null;
+  insertedAt: string;
+  updatedAt: string;
+  removedAt: string | null;
+  privacy: number;
+  screenshotUrl: string | null;
+  screenshotOutdated: boolean;
+  teamId: any | null;
+  source: { __typename?: 'Source'; template: string | null };
+  customTemplate: { __typename?: 'Template'; id: any | null } | null;
+  forkedTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    color: string | null;
+  } | null;
+  collection: {
+    __typename?: 'Collection';
+    path: string;
+    teamId: any | null;
+  } | null;
+};
 
-export type TeamFragment = { __typename?: 'Team' } & Pick<
-  Team,
-  'id' | 'name' | 'inviteToken' | 'description' | 'creatorId'
-> & {
-    users: Array<
-      { __typename?: 'User' } & Pick<
-        User,
-        'id' | 'name' | 'username' | 'avatarUrl'
-      >
-    >;
-    invitees: Array<
-      { __typename?: 'User' } & Pick<
-        User,
-        'id' | 'name' | 'username' | 'avatarUrl'
-      >
-    >;
-  };
+export type TeamFragment = {
+  __typename?: 'Team';
+  id: any;
+  name: string;
+  inviteToken: string;
+  description: string | null;
+  creatorId: any | null;
+  users: Array<{
+    __typename?: 'User';
+    id: any;
+    name: string | null;
+    username: string;
+    avatarUrl: string;
+  }>;
+  invitees: Array<{
+    __typename?: 'User';
+    id: any;
+    name: string | null;
+    username: string;
+    avatarUrl: string;
+  }>;
+};
 
 export type TeamsSidebarQueryVariables = Exact<{ [key: string]: never }>;
 
-export type TeamsSidebarQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
-    }
-  >;
+export type TeamsSidebarQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    teams: Array<{ __typename?: 'Team'; id: any; name: string }>;
+  } | null;
 };
 
 export type CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
 
-export type CreateTeamMutation = { __typename?: 'RootMutationType' } & {
-  createTeam: { __typename?: 'Team' } & TeamFragment;
+export type CreateTeamMutation = {
+  __typename?: 'RootMutationType';
+  createTeam: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    inviteToken: string;
+    description: string | null;
+    creatorId: any | null;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+  };
 };
 
 export type PathedSandboxesFoldersQueryVariables = Exact<{
-  teamId: Maybe<Scalars['ID']>;
+  teamId: InputMaybe<Scalars['ID']>;
 }>;
 
-export type PathedSandboxesFoldersQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      collections: Array<
-        { __typename?: 'Collection' } & SidebarCollectionFragment
-      >;
-    }
-  >;
+export type PathedSandboxesFoldersQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    collections: Array<{
+      __typename?: 'Collection';
+      id: any | null;
+      path: string;
+    }>;
+  } | null;
 };
 
 export type CreateCollectionMutationVariables = Exact<{
   path: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type CreateCollectionMutation = { __typename?: 'RootMutationType' } & {
-  createCollection: { __typename?: 'Collection' } & SidebarCollectionFragment;
+export type CreateCollectionMutation = {
+  __typename?: 'RootMutationType';
+  createCollection: { __typename?: 'Collection'; id: any | null; path: string };
 };
 
 export type DeleteCollectionMutationVariables = Exact<{
   path: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type DeleteCollectionMutation = { __typename?: 'RootMutationType' } & {
-  deleteCollection: Array<
-    { __typename?: 'Collection' } & SidebarCollectionFragment
-  >;
+export type DeleteCollectionMutation = {
+  __typename?: 'RootMutationType';
+  deleteCollection: Array<{
+    __typename?: 'Collection';
+    id: any | null;
+    path: string;
+  }>;
 };
 
 export type RenameCollectionMutationVariables = Exact<{
   path: Scalars['String'];
   newPath: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
-  newTeamId: Maybe<Scalars['UUID4']>;
+  teamId: InputMaybe<Scalars['UUID4']>;
+  newTeamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type RenameCollectionMutation = { __typename?: 'RootMutationType' } & {
-  renameCollection: Array<
-    { __typename?: 'Collection' } & SidebarCollectionFragment
-  >;
+export type RenameCollectionMutation = {
+  __typename?: 'RootMutationType';
+  renameCollection: Array<{
+    __typename?: 'Collection';
+    id: any | null;
+    path: string;
+  }>;
 };
 
 export type AddToCollectionMutationVariables = Exact<{
-  collectionPath: Maybe<Scalars['String']>;
-  sandboxIds: Array<Scalars['ID']>;
-  teamId: Maybe<Scalars['UUID4']>;
+  collectionPath: InputMaybe<Scalars['String']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type AddToCollectionMutation = { __typename?: 'RootMutationType' } & {
-  addToCollectionOrTeam: Array<
-    Maybe<{ __typename?: 'Sandbox' } & SandboxFragment>
-  >;
+export type AddToCollectionMutation = {
+  __typename?: 'RootMutationType';
+  addToCollectionOrTeam: Array<{
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: { __typename?: 'Template'; id: any | null } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+    } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      teamId: any | null;
+    } | null;
+  } | null>;
 };
 
 export type DeleteSandboxesMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
-export type DeleteSandboxesMutation = { __typename?: 'RootMutationType' } & {
-  deleteSandboxes: Array<{ __typename?: 'Sandbox' } & SandboxFragment>;
+export type DeleteSandboxesMutation = {
+  __typename?: 'RootMutationType';
+  deleteSandboxes: Array<{
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: { __typename?: 'Template'; id: any | null } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+    } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      teamId: any | null;
+    } | null;
+  }>;
 };
 
 export type SetSandboxesPrivacyMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
   privacy: Scalars['Int'];
 }>;
 
 export type SetSandboxesPrivacyMutation = {
   __typename?: 'RootMutationType';
-} & {
-  setSandboxesPrivacy: Array<{ __typename?: 'Sandbox' } & SandboxFragment>;
+  setSandboxesPrivacy: Array<{
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: { __typename?: 'Template'; id: any | null } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+    } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      teamId: any | null;
+    } | null;
+  }>;
 };
 
 export type RenameSandboxMutationVariables = Exact<{
@@ -4887,40 +7788,91 @@ export type RenameSandboxMutationVariables = Exact<{
   title: Scalars['String'];
 }>;
 
-export type RenameSandboxMutation = { __typename?: 'RootMutationType' } & {
-  renameSandbox: { __typename?: 'Sandbox' } & SandboxFragment;
+export type RenameSandboxMutation = {
+  __typename?: 'RootMutationType';
+  renameSandbox: {
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    insertedAt: string;
+    updatedAt: string;
+    removedAt: string | null;
+    privacy: number;
+    screenshotUrl: string | null;
+    screenshotOutdated: boolean;
+    teamId: any | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: { __typename?: 'Template'; id: any | null } | null;
+    forkedTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      color: string | null;
+    } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      teamId: any | null;
+    } | null;
+  };
 };
 
 export type PermanentlyDeleteSandboxesMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
 export type PermanentlyDeleteSandboxesMutation = {
   __typename?: 'RootMutationType';
-} & {
-  permanentlyDeleteSandboxes: Array<
-    { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>
-  >;
+  permanentlyDeleteSandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
 export type PathedSandboxesQueryVariables = Exact<{
   path: Scalars['String'];
-  teamId: Maybe<Scalars['ID']>;
+  teamId: InputMaybe<Scalars['ID']>;
 }>;
 
-export type PathedSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      collections: Array<
-        { __typename?: 'Collection' } & SidebarCollectionFragment
-      >;
-      collection: Maybe<
-        { __typename?: 'Collection' } & Pick<Collection, 'id' | 'path'> & {
-            sandboxes: Array<{ __typename?: 'Sandbox' } & SandboxFragment>;
-          }
-      >;
-    }
-  >;
+export type PathedSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    collections: Array<{
+      __typename?: 'Collection';
+      id: any | null;
+      path: string;
+    }>;
+    collection: {
+      __typename?: 'Collection';
+      id: any | null;
+      path: string;
+      sandboxes: Array<{
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        teamId: any | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: { __typename?: 'Template'; id: any | null } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+        } | null;
+        collection: {
+          __typename?: 'Collection';
+          path: string;
+          teamId: any | null;
+        } | null;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type RecentSandboxesQueryVariables = Exact<{
@@ -4928,62 +7880,180 @@ export type RecentSandboxesQueryVariables = Exact<{
   orderDirection: Direction;
 }>;
 
-export type RecentSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      sandboxes: Array<{ __typename?: 'Sandbox' } & SandboxFragment>;
-    }
-  >;
+export type RecentSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: { __typename?: 'Template'; id: any | null } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+      } | null;
+      collection: {
+        __typename?: 'Collection';
+        path: string;
+        teamId: any | null;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type SearchSandboxesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type SearchSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      sandboxes: Array<{ __typename?: 'Sandbox' } & SandboxFragment>;
-    }
-  >;
+export type SearchSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: { __typename?: 'Template'; id: any | null } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+      } | null;
+      collection: {
+        __typename?: 'Collection';
+        path: string;
+        teamId: any | null;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type DeletedSandboxesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type DeletedSandboxesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      sandboxes: Array<{ __typename?: 'Sandbox' } & SandboxFragment>;
-    }
-  >;
+export type DeletedSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    sandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      alias: string | null;
+      title: string | null;
+      description: string | null;
+      insertedAt: string;
+      updatedAt: string;
+      removedAt: string | null;
+      privacy: number;
+      screenshotUrl: string | null;
+      screenshotOutdated: boolean;
+      teamId: any | null;
+      source: { __typename?: 'Source'; template: string | null };
+      customTemplate: { __typename?: 'Template'; id: any | null } | null;
+      forkedTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        color: string | null;
+      } | null;
+      collection: {
+        __typename?: 'Collection';
+        path: string;
+        teamId: any | null;
+      } | null;
+    }>;
+  } | null;
 };
 
 export type TeamQueryVariables = Exact<{
   id: Scalars['UUID4'];
 }>;
 
-export type TeamQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      team: Maybe<{ __typename?: 'Team' } & TeamFragment>;
-    }
-  >;
+export type TeamQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    team: {
+      __typename?: 'Team';
+      id: any;
+      name: string;
+      inviteToken: string;
+      description: string | null;
+      creatorId: any | null;
+      users: Array<{
+        __typename?: 'User';
+        id: any;
+        name: string | null;
+        username: string;
+        avatarUrl: string;
+      }>;
+      invitees: Array<{
+        __typename?: 'User';
+        id: any;
+        name: string | null;
+        username: string;
+        avatarUrl: string;
+      }>;
+    } | null;
+  } | null;
 };
 
 export type LeaveTeamMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
 
-export type LeaveTeamMutation = { __typename?: 'RootMutationType' } & Pick<
-  RootMutationType,
-  'leaveTeam'
->;
+export type LeaveTeamMutation = {
+  __typename?: 'RootMutationType';
+  leaveTeam: string;
+};
 
 export type RemoveFromTeamMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   userId: Scalars['UUID4'];
 }>;
 
-export type RemoveFromTeamMutation = { __typename?: 'RootMutationType' } & {
-  removeFromTeam: { __typename?: 'Team' } & TeamFragment;
+export type RemoveFromTeamMutation = {
+  __typename?: 'RootMutationType';
+  removeFromTeam: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    inviteToken: string;
+    description: string | null;
+    creatorId: any | null;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+  };
 };
 
 export type InviteToTeamMutationVariables = Exact<{
@@ -4991,8 +8061,30 @@ export type InviteToTeamMutationVariables = Exact<{
   username: Scalars['String'];
 }>;
 
-export type InviteToTeamMutation = { __typename?: 'RootMutationType' } & {
-  inviteToTeam: { __typename?: 'Team' } & TeamFragment;
+export type InviteToTeamMutation = {
+  __typename?: 'RootMutationType';
+  inviteToTeam: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    inviteToken: string;
+    description: string | null;
+    creatorId: any | null;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+  };
 };
 
 export type InviteToTeamViaEmailMutationVariables = Exact<{
@@ -5002,7 +8094,8 @@ export type InviteToTeamViaEmailMutationVariables = Exact<{
 
 export type InviteToTeamViaEmailMutation = {
   __typename?: 'RootMutationType';
-} & Pick<RootMutationType, 'inviteToTeamViaEmail'>;
+  inviteToTeamViaEmail: string;
+};
 
 export type RevokeTeamInvitationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
@@ -5011,7 +8104,29 @@ export type RevokeTeamInvitationMutationVariables = Exact<{
 
 export type RevokeTeamInvitationMutation = {
   __typename?: 'RootMutationType';
-} & { revokeTeamInvitation: { __typename?: 'Team' } & TeamFragment };
+  revokeTeamInvitation: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    inviteToken: string;
+    description: string | null;
+    creatorId: any | null;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+  };
+};
 
 export type AcceptTeamInvitationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
@@ -5019,7 +8134,29 @@ export type AcceptTeamInvitationMutationVariables = Exact<{
 
 export type AcceptTeamInvitationMutation = {
   __typename?: 'RootMutationType';
-} & { acceptTeamInvitation: { __typename?: 'Team' } & TeamFragment };
+  acceptTeamInvitation: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    inviteToken: string;
+    description: string | null;
+    creatorId: any | null;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+  };
+};
 
 export type RejectTeamInvitationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
@@ -5027,15 +8164,38 @@ export type RejectTeamInvitationMutationVariables = Exact<{
 
 export type RejectTeamInvitationMutation = {
   __typename?: 'RootMutationType';
-} & Pick<RootMutationType, 'rejectTeamInvitation'>;
+  rejectTeamInvitation: string;
+};
 
 export type SetTeamDescriptionMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   description: Scalars['String'];
 }>;
 
-export type SetTeamDescriptionMutation = { __typename?: 'RootMutationType' } & {
-  setTeamDescription: { __typename?: 'Team' } & TeamFragment;
+export type SetTeamDescriptionMutation = {
+  __typename?: 'RootMutationType';
+  setTeamDescription: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    inviteToken: string;
+    description: string | null;
+    creatorId: any | null;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+  };
 };
 
 export type SetTeamNameMutationVariables = Exact<{
@@ -5043,81 +8203,126 @@ export type SetTeamNameMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
 
-export type SetTeamNameMutation = { __typename?: 'RootMutationType' } & {
-  setTeamName: { __typename?: 'Team' } & TeamFragment;
+export type SetTeamNameMutation = {
+  __typename?: 'RootMutationType';
+  setTeamName: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    inviteToken: string;
+    description: string | null;
+    creatorId: any | null;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+  };
 };
 
 export type BookmarkTemplateMutationVariables = Exact<{
   template: Scalars['UUID4'];
-  team: Maybe<Scalars['UUID4']>;
+  team: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type BookmarkTemplateMutation = { __typename?: 'RootMutationType' } & {
-  template: Maybe<{ __typename?: 'Template' } & BookmarkTemplateFieldsFragment>;
+export type BookmarkTemplateMutation = {
+  __typename?: 'RootMutationType';
+  template: {
+    __typename?: 'Template';
+    id: any | null;
+    bookmarked: Array<{
+      __typename?: 'Bookmarked';
+      isBookmarked: boolean | null;
+      entity:
+        | { __typename: 'Team'; id: any; name: string }
+        | { __typename: 'User'; id: any; name: string }
+        | null;
+    } | null> | null;
+  } | null;
 };
 
 export type UnbookmarkTemplateMutationVariables = Exact<{
   template: Scalars['UUID4'];
-  team: Maybe<Scalars['UUID4']>;
+  team: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type UnbookmarkTemplateMutation = { __typename?: 'RootMutationType' } & {
-  template: Maybe<{ __typename?: 'Template' } & BookmarkTemplateFieldsFragment>;
+export type UnbookmarkTemplateMutation = {
+  __typename?: 'RootMutationType';
+  template: {
+    __typename?: 'Template';
+    id: any | null;
+    bookmarked: Array<{
+      __typename?: 'Bookmarked';
+      isBookmarked: boolean | null;
+      entity:
+        | { __typename: 'Team'; id: any; name: string }
+        | { __typename: 'User'; id: any; name: string }
+        | null;
+    } | null> | null;
+  } | null;
 };
 
-export type BookmarkTemplateFieldsFragment = { __typename?: 'Template' } & Pick<
-  Template,
-  'id'
-> & {
-    bookmarked: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'Bookmarked' } & Pick<Bookmarked, 'isBookmarked'> & {
-              entity: Maybe<
-                | ({ __typename: 'Team' } & Pick<Team, 'id' | 'name'>)
-                | ({ __typename: 'User' } & Pick<User, 'id'> & {
-                      name: User['username'];
-                    })
-              >;
-            }
-        >
-      >
-    >;
-  };
+export type BookmarkTemplateFieldsFragment = {
+  __typename?: 'Template';
+  id: any | null;
+  bookmarked: Array<{
+    __typename?: 'Bookmarked';
+    isBookmarked: boolean | null;
+    entity:
+      | { __typename: 'Team'; id: any; name: string }
+      | { __typename: 'User'; id: any; name: string }
+      | null;
+  } | null> | null;
+};
 
 export type BookmarkedSandboxInfoQueryVariables = Exact<{
   sandboxId: Scalars['ID'];
 }>;
 
-export type BookmarkedSandboxInfoQuery = { __typename?: 'RootQueryType' } & {
-  sandbox: Maybe<
-    { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'> & {
-        author: Maybe<
-          { __typename?: 'User' } & Pick<User, 'id'> & {
-              name: User['username'];
-            }
-        >;
-        customTemplate: Maybe<
-          { __typename?: 'Template' } & BookmarkTemplateFieldsFragment
-        >;
-      }
-  >;
+export type BookmarkedSandboxInfoQuery = {
+  __typename?: 'RootQueryType';
+  sandbox: {
+    __typename?: 'Sandbox';
+    id: string;
+    author: { __typename?: 'User'; id: any; name: string } | null;
+    customTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      bookmarked: Array<{
+        __typename?: 'Bookmarked';
+        isBookmarked: boolean | null;
+        entity:
+          | { __typename: 'Team'; id: any; name: string }
+          | { __typename: 'User'; id: any; name: string }
+          | null;
+      } | null> | null;
+    } | null;
+  } | null;
 };
 
 export type TeamByTokenQueryVariables = Exact<{
   inviteToken: Scalars['String'];
 }>;
 
-export type TeamByTokenQuery = { __typename?: 'RootQueryType' } & {
-  teamByToken: Maybe<
-    { __typename?: 'TeamPreview' } & Pick<TeamPreview, 'name'>
-  >;
+export type TeamByTokenQuery = {
+  __typename?: 'RootQueryType';
+  teamByToken: { __typename?: 'TeamPreview'; name: string } | null;
 };
 
 export type JoinTeamByTokenMutationVariables = Exact<{
   inviteToken: Scalars['String'];
 }>;
 
-export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
-  redeemTeamInviteToken: { __typename?: 'Team' } & Pick<Team, 'id' | 'name'>;
+export type JoinTeamByTokenMutation = {
+  __typename?: 'RootMutationType';
+  redeemTeamInviteToken: { __typename?: 'Team'; id: any; name: string };
 };
