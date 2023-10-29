@@ -442,7 +442,7 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/common@^1.0.8":
+"@codesandbox/common@^1.0.11":
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/@codesandbox/common/-/common-1.0.11.tgz#074d4ad003e31a9c8e1fed25f38538fabb81733b"
   integrity sha512-PUhU/AlvUh4FsVNviZKPDt6mnjuEcjXxNNkhrPTL65L1L1dTNn/QAzHLUxUruFifFQr4WTCMg1eT5TeNq/p5iw==
@@ -3993,7 +3993,7 @@ human-signals@^2.1.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
 
-humps@CompuIves/humps:
+"humps@github:CompuIves/humps":
   version "2.0.0"
   resolved "https://codeload.github.com/CompuIves/humps/tar.gz/7ee34e874c808cf60e7119ee71ac71b8bf2189b7"
 
