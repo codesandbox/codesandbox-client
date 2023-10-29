@@ -88,7 +88,6 @@
     "tslint": "^5.4.3",
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^6.0.0",
-    "typedoc": "^0.7.1",
     "typescript": "^5.2.2",
     "uuid": "^3.3.2",
     "validate-commit-msg": "^2.12.2"
