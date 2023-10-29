@@ -32,10 +32,6 @@
   "config": {
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
-    },
-    "validate-commit-msg": {
-      "types": "conventional-commit-types",
-      "helpMessage": "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
     }
   },
   "jest": {
@@ -89,8 +85,7 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^6.0.0",
     "typescript": "^5.2.2",
-    "uuid": "^3.3.2",
-    "validate-commit-msg": "^2.12.2"
+    "uuid": "^3.3.2"
   },
   "engines": {
     "node": ">=6.0.0"
