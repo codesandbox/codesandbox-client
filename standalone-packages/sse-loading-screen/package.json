@@ -25,12 +25,11 @@
     "babel-preset-react": "^6.24.1",
     "babel-runtime": "^6.26.0",
     "cssnano": "^4.0.5",
-    "parcel-bundler": "^1.12.5",
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "start": "parcel src/index.html",
-    "build": "rimraf dist && parcel build src/index.html --no-source-maps",
+    "start": "npx parcel-bundler@1.12.5 src/index.html",
+    "build": "rimraf dist && npx parcel-bundler@1.12.5 build src/index.html --no-source-maps",
     "install-dependencies": "yarn install"
   }
 }
