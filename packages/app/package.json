@@ -108,7 +108,7 @@
     "codemirror": "^5.27.4",
     "codesandbox-api": "0.0.32",
     "codesandbox-import-utils": "^2.2.2",
-    "color": "^0.11.4",
+    "color": "^3.2.0",
     "comlink": "^4.3.0",
     "comlink-loader": "^2.0.0",
     "compare-versions": "^3.1.0",

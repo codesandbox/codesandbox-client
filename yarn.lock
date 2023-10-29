@@ -1530,6 +1530,28 @@
     styled-components "^4.4.1"
     typeface-inter "^3.11.2"
 
+"@codesandbox/components@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@codesandbox/components/-/components-0.0.4.tgz#239e41142c23de39b4b89c4544af02b3b7b1b9eb"
+  integrity sha512-sPTQnjYhofwWbqRM3+R8xpkuQcgPMLlJ7V4L9zx1XWlN6MOs0cGJoIFD54BWQKi0JqtpNp+dGoJzfr/c/4UpNA==
+  dependencies:
+    "@reach/auto-id" "0.10.3"
+    "@reach/menu-button" "0.10.3"
+    "@reach/skip-nav" "^0.10.4"
+    "@reach/tooltip" "0.10.3"
+    "@reach/visually-hidden" "0.10.2"
+    "@styled-system/css" "^5.1.4"
+    chromatic "^4.0.2"
+    codesandbox-api "0.0.24"
+    color "3.1.2"
+    date-fns "^2.8.1"
+    deepmerge "^4.2.2"
+    dot-object "^2.1.3"
+    react-router-dom "^5.2.0"
+    react-tagsinput "^3.19.0"
+    styled-components "^5.2.0"
+    typeface-inter "^3.11.2"
+
 "@codesandbox/sandpack-client@^1.12.1":
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-client/-/sandpack-client-1.12.1.tgz#fa3b66ecb08547c47e1cdf6248f5004bf5be68fb"
@@ -4501,6 +4523,19 @@
     "@reach/utils" "0.10.4"
     tslib "^2.0.0"
 
+"@reach/tooltip@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@reach/tooltip/-/tooltip-0.10.3.tgz#0f34630aceaba7da7ad2dd23f92cc0d484e7113f"
+  integrity sha512-tbj569uSJ+O86fAvR62lK8Tb00aTQxah6dFKgf06lskCGUoYzeFxkZTds9b+TRjzz9G1v68McQHwuAZUH0XrGA==
+  dependencies:
+    "@reach/auto-id" "^0.10.3"
+    "@reach/portal" "^0.10.3"
+    "@reach/rect" "^0.10.3"
+    "@reach/utils" "^0.10.3"
+    "@reach/visually-hidden" "^0.10.2"
+    prop-types "^15.7.2"
+    tslib "^1.11.2"
+
 "@reach/tooltip@0.12.1":
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/@reach/tooltip/-/tooltip-0.12.1.tgz#76f8e2337aa7dda20928ec4bbca247d39b4326af"
@@ -4564,6 +4599,13 @@
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/@reach/visually-hidden/-/visually-hidden-0.12.0.tgz#c6c39f0bf292ae97a480ba3ed32e8a6149e852d4"
   integrity sha512-VXtyR36WOS0FHmFQ/BzfswwPyBXICl/YjmTPtx/I0Vy5C6djjhD9kDsE+h/FpHzP3ugTdqdqiPBVElIZTSwOSA==
+  dependencies:
+    tslib "^2.0.0"
+
+"@reach/visually-hidden@^0.10.2":
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/@reach/visually-hidden/-/visually-hidden-0.10.4.tgz#ab390db0adf759393af4d856f84375468b1df676"
+  integrity sha512-GnuPuTRCf+Ih47BoKvGyB+jP8EVWLb04GfbGa5neOrjdp90qrb4zr7pMSL4ZvTsrxt9MRooJA2BhSxs5DbyqCQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -10181,7 +10223,7 @@ collection-visit@^1.0.0:
     map-visit "^1.0.0"
     object-visit "^1.0.0"
 
-color-convert@^1.3.0, color-convert@^1.9.0, color-convert@^1.9.1, color-convert@^1.9.3:
+color-convert@^1.9.0, color-convert@^1.9.1, color-convert@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
   integrity sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==
@@ -10204,12 +10246,6 @@ color-name@^1.0.0, color-name@~1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
-
-color-string@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/color-string/-/color-string-0.3.0.tgz#27d46fb67025c5c2fa25993bfbf579e47841b991"
-  dependencies:
-    color-name "^1.0.0"
 
 color-string@^1.5.2:
   version "1.5.3"
@@ -10238,14 +10274,6 @@ color@3.1.2, color@^3.0.0:
   dependencies:
     color-convert "^1.9.1"
     color-string "^1.5.2"
-
-color@^0.11.4:
-  version "0.11.4"
-  resolved "https://registry.yarnpkg.com/color/-/color-0.11.4.tgz#6d7b5c74fb65e841cd48792ad1ed5e07b904d764"
-  dependencies:
-    clone "^1.0.2"
-    color-convert "^1.3.0"
-    color-string "^0.3.0"
 
 color@^3.2.0:
   version "3.2.1"
