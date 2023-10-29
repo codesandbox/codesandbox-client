@@ -97,7 +97,7 @@
     "gulp": "^4.0.2",
     "husky": "^8.0.3",
     "jest-environment-jsdom": "^29.7.0",
-    "lerna": "^7.4.1",
+    "lerna": "^6",
     "lint-staged": "10.5.4",
     "prettier": "2.1.1",
     "pretty-quick": "^3.0.0",
