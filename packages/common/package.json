@@ -56,7 +56,7 @@
     "codesandbox-api": "0.0.32",
     "color": "^3.2.0",
     "date-fns": "^2.0.0",
-    "dot-object": "1.9.0",
+    "dot-object": "^2.0.0",
     "error-polyfill": "^0.1.2",
     "humps": "CompuIves/humps",
     "image-extensions": "^1.1.0",
