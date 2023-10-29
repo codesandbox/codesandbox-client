@@ -8,7 +8,7 @@
     "directory": "packages/sandbox-hooks"
   },
   "scripts": {
-    "build-sse-404": "rimraf dist && parcel build --no-source-maps not-found-screen/index.html && node inline-js"
+    "build-sse-404": "rimraf dist && npx parcel-bundler@1.12.5 build --no-source-maps not-found-screen/index.html && node inline-js"
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
@@ -20,7 +20,6 @@
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/plugin-transform-runtime": "^7.6.2",
-    "@babel/runtime": "^7.6.3",
-    "parcel-bundler": "^1.12.5"
+    "@babel/runtime": "^7.6.3"
   }
 }

@@ -81,7 +81,7 @@
     "postinstall-postinstall": "^2.1.0"
   },
   "devDependencies": {
-    "all-contributors-cli": "^6.9.2",
+    "all-contributors-cli": "^6.26.1",
     "babel-eslint": "10.0.2",
     "concurrently": "^4.1.0",
     "cross-env": "^6.0.0",
