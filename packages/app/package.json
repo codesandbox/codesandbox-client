@@ -205,7 +205,7 @@
     "react-input-autosize": "^2.2.1",
     "react-instantsearch": "^5.7.0",
     "react-loadable": "^3.3.1",
-    "react-markdown": "^4.3.1",
+    "react-markdown": "^5.0.0",
     "react-media": "^1.10.0",
     "react-modal": "^3.6.1",
     "react-motion": "^0.5.0",
