@@ -154,6 +154,9 @@ commands:
       - restore_cache: *restore_deps_cache
       - restore_cache: *restore_standalone_deps_cache
       - run:
+          name: Install sudo
+          command: apt update -y && apt install -y sudo
+      - run:
           name: Install ZSTD
           command: sudo apt update -y && sudo apt install -y zstd
       # Add extra items to yarnclean so the cache doesn't grow too big
