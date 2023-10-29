@@ -68,7 +68,6 @@
     "chromatic": "^7.5.4",
     "cpx": "^1.5.0",
     "if-env": "^1.0.4",
-    "np": "^5.2.1",
     "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.0",
     "simple-git": "^2.17.0",
