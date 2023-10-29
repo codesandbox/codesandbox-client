@@ -54,6 +54,9 @@
     "typeface-inter": "^3.11.2"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "@typescript-eslint/typescript-estree": "^6.9.0",
     "@storybook/addon-a11y": "^7.5.1",
     "@storybook/addon-actions": "^7.5.1",
     "@storybook/addon-knobs": "^7.0.2",

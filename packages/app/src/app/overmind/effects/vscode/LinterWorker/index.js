@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Linter from 'eslint/lib/linter';
 import semver from 'semver';
 

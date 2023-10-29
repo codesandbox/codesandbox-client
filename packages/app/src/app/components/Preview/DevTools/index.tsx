@@ -366,7 +366,7 @@ export class DevTools extends React.PureComponent<Props, State> {
       } else {
         setTimeout(() => {
           const { height } = this.state;
-          if (height > 64) {
+          if (typeof height === 'number' && height > 64) {
             store.set('devtools.height', height);
           }
         }, 50);

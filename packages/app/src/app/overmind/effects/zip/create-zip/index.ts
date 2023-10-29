@@ -211,6 +211,10 @@ export async function createDirectoryWithFiles(
 ) {
   const newZip = zip.folder(directory.title);
 
+  if (!newZip) {
+    return;
+  }
+
   await Promise.all(
     modules
       .filter(x => x.directoryShortid === directory.shortid)

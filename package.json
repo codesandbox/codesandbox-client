@@ -82,7 +82,7 @@
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "all-contributors-cli": "^6.26.1",
-    "babel-eslint": "10.0.2",
+    "babel-eslint": "10.1.0",
     "concurrently": "^4.1.0",
     "cross-env": "^6.0.0",
     "eslint": "5.16.0",
