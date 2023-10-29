@@ -72,7 +72,8 @@
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
     "chromatic": "lerna run chromatic --scope=@codesandbox/components --stream",
     "typecheck": "lerna run typecheck",
-    "prettify": "prettier -w ."
+    "prettify": "prettier -w .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "postinstall-postinstall": "^2.1.0"
