@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/common",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -48,7 +48,7 @@
     "@amplitude/analytics-browser": "^2.2.0",
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/polyfill": "^7.4.4",
-    "@codesandbox/components": "^0.0.3",
+    "@codesandbox/components": "^0.0.4",
     "@codesandbox/notifications": "^1.0.6",
     "@sentry/browser": "^5.19.0",
     "@styled-system/css": "^5.0.23",
@@ -56,7 +56,7 @@
     "babel-plugin-preval": "^3.0.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "codesandbox-api": "0.0.32",
-    "color": "3.2.0",
+    "color": "^3.2.0",
     "date-fns": "^2.0.0",
     "dot-object": "1.9.0",
     "error-polyfill": "^0.1.2",

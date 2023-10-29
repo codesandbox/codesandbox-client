@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/components",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "main": "lib/index",
   "source": true,
   "contributors": [
@@ -45,7 +45,7 @@
     "@styled-system/css": "^5.1.4",
     "chromatic": "^4.0.2",
     "codesandbox-api": "0.0.32",
-    "color": "3.1.2",
+    "color": "^3.2.0",
     "date-fns": "^2.8.1",
     "deepmerge": "^4.2.2",
     "dot-object": "^2.1.3",
