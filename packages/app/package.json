@@ -226,7 +226,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "sandpack-core": "1.0.0",
     "sha1": "^1.1.1",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.5",
     "shortid": "^2.2.16",
     "store": "^2.0.12",
     "string-replace-loader": "^2.1.1",
@@ -248,7 +248,7 @@
     "vue-template-compiler": "^2.6.10",
     "vue-template-es2015-compiler": "^1.9.1",
     "vue3-transpiler": "1.0.0",
-    "xterm": "3.7.0"
+    "xterm": "^3.8.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
