@@ -191,6 +191,9 @@ commands:
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
+          name: Install sudo
+          command: apt update -y && apt install -y sudo
+      - run:
           name: Install binaries
           command:
             sudo apt-get update && 
