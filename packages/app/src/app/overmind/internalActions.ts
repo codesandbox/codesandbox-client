@@ -30,7 +30,6 @@ export const initializeNewUser = async ({
   effects,
   actions,
 }: Context) => {
-  // actions.dashboard.getTeams();
   effects.analytics.identify('signed_in', true);
   effects.analytics.setUserId(state.user!.id, state.user!.email);
 
@@ -46,6 +45,11 @@ export const initializeNewUser = async ({
   actions.userNotifications.internal.initialize();
   actions.internal.setStoredSettings();
   effects.api.preloadTemplates();
+
+  // Fallback scenario when the teams are not initialized
+  if (state.dashboard.teams.length === 0) {
+    await actions.dashboard.getTeams();
+  }
 };
 
 export const signIn = async (

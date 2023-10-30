@@ -36,7 +36,6 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
   const createMonthlyCheckout = () => {
     createCheckout({
       trackingLocation,
-      createTeam,
     });
   };
 
@@ -44,7 +43,6 @@ export const TeamSubscriptionOptions: React.FC<TeamSubscriptionOptionsProps> = (
     createCheckout({
       interval: 'year',
       trackingLocation,
-      createTeam,
     });
   };
 

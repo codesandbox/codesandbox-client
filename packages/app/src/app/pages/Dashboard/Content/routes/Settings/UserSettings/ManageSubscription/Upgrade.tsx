@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { Card } from '../../components';
 
 const List = styled(Stack)`
@@ -16,9 +16,10 @@ const List = styled(Stack)`
   }
 `;
 
-export const Upgrade: React.FC<{ userCanStartTrial: boolean }> = ({
-  userCanStartTrial,
-}) => {
+export const Upgrade: React.FC<{
+  userCanStartTrial: boolean;
+  workspaceId: string;
+}> = ({ workspaceId, userCanStartTrial }) => {
   return (
     <Card
       css={{
@@ -56,7 +57,7 @@ export const Upgrade: React.FC<{ userCanStartTrial: boolean }> = ({
               codesandbox: 'V1',
               event_source: 'UI',
             });
-            window.location.href = '/pro';
+            window.location.href = proUrl({ workspaceId });
           }}
           variant="trial"
         >
