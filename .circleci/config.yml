@@ -126,7 +126,7 @@ executors:
     working_directory: ~/codesandbox-client
   docker_machine:
     machine:
-      image: ubuntu-2004:202201-02
+      image: docker:24.0.7-git
     working_directory: ~/codesandbox-client
 
 ################################
