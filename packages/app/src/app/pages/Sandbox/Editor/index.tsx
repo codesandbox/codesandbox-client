@@ -170,7 +170,9 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               />
             )}
 
-            {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
+            {sandbox?.privacy !== 0 && sandbox?.freePlanEditingRestricted ? (
+              <FreeViewOnlyStripe />
+            ) : null}
             {showCloudSandboxConvert ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>

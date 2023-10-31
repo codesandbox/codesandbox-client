@@ -1,6 +1,5 @@
 import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 
@@ -11,7 +10,6 @@ import { WorkspaceName } from './WorkspaceName';
 
 export const Header = () => {
   const { editor, isAuthenticating, activeTeamInfo } = useAppState();
-  const { isPro } = useWorkspaceSubscription();
 
   return (
     <Stack
@@ -31,9 +29,7 @@ export const Header = () => {
     >
       <Stack align="center">
         <AppMenu />
-        {activeTeamInfo && (
-          <WorkspaceName name={activeTeamInfo.name} isPro={isPro} />
-        )}
+        {activeTeamInfo && <WorkspaceName name={activeTeamInfo.name} />}
       </Stack>
 
       {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}
