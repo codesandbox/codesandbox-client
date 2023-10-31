@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`get-require-statements can find dynamic imports 1`] = `
-Array [
-  Object {
+[
+  {
     "path": "./page/",
     "type": "glob",
   },
@@ -10,12 +10,12 @@ Array [
 `;
 
 exports[`get-require-statements can find plain requires 1`] = `
-Array [
-  Object {
+[
+  {
     "path": "react",
     "type": "direct",
   },
-  Object {
+  {
     "path": "react-dom",
     "type": "direct",
   },
@@ -23,8 +23,8 @@ Array [
 `;
 
 exports[`get-require-statements can find reexports 1`] = `
-Array [
-  Object {
+[
+  {
     "path": "./Hello",
     "type": "direct",
   },
@@ -32,12 +32,12 @@ Array [
 `;
 
 exports[`get-require-statements can find simple requires 1`] = `
-Array [
-  Object {
+[
+  {
     "path": "react",
     "type": "direct",
   },
-  Object {
+  {
     "path": "react-dom",
     "type": "direct",
   },
@@ -45,32 +45,32 @@ Array [
 `;
 
 exports[`get-require-statements can work with real life code 1`] = `
-Array [
-  Object {
+[
+  {
     "path": "react",
     "type": "direct",
   },
-  Object {
+  {
     "path": "react-redux",
     "type": "direct",
   },
-  Object {
+  {
     "path": "transition-group",
     "type": "direct",
   },
-  Object {
+  {
     "path": "react-universal-component",
     "type": "direct",
   },
-  Object {
+  {
     "path": "../selectors/isLoading",
     "type": "direct",
   },
-  Object {
+  {
     "path": "../css/Switcher.css",
     "type": "direct",
   },
 ]
 `;
 
-exports[`get-require-statements does not find import promises 1`] = `Array []`;
+exports[`get-require-statements does not find import promises 1`] = `[]`;

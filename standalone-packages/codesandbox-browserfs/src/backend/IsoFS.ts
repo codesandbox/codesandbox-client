@@ -962,7 +962,7 @@ class TFEntry extends SystemUseEntry {
   public modify(): Date | null {
     if (this.flags() & TFFlags.MODIFY) {
       const previousDates = (this.flags() & TFFlags.CREATION) ? 1 : 0;
-      if (this._longFormDates) {
+      if (this._longFormDates()) {
         return getDate(this._data, 5 + (previousDates * 17));
       } else {
         return getShortFormDate(this._data, 5 + (previousDates * 7));
@@ -975,7 +975,7 @@ class TFEntry extends SystemUseEntry {
     if (this.flags() & TFFlags.ACCESS) {
       let previousDates = (this.flags() & TFFlags.CREATION) ? 1 : 0;
       previousDates += (this.flags() & TFFlags.MODIFY) ? 1 : 0;
-      if (this._longFormDates) {
+      if (this._longFormDates()) {
         return getDate(this._data, 5 + (previousDates * 17));
       } else {
         return getShortFormDate(this._data, 5 + (previousDates * 7));
@@ -989,7 +989,7 @@ class TFEntry extends SystemUseEntry {
       let previousDates = (this.flags() & TFFlags.CREATION) ? 1 : 0;
       previousDates += (this.flags() & TFFlags.MODIFY) ? 1 : 0;
       previousDates += (this.flags() & TFFlags.ACCESS) ? 1 : 0;
-      if (this._longFormDates) {
+      if (this._longFormDates()) {
         return getDate(this._data, 5 + (previousDates * 17));
       } else {
         return getShortFormDate(this._data, 5 + (previousDates * 7));
@@ -1004,7 +1004,7 @@ class TFEntry extends SystemUseEntry {
       previousDates += (this.flags() & TFFlags.MODIFY) ? 1 : 0;
       previousDates += (this.flags() & TFFlags.ACCESS) ? 1 : 0;
       previousDates += (this.flags() & TFFlags.BACKUP) ? 1 : 0;
-      if (this._longFormDates) {
+      if (this._longFormDates()) {
         return getDate(this._data, 5 + (previousDates * 17));
       } else {
         return getShortFormDate(this._data, 5 + (previousDates * 7));
@@ -1020,7 +1020,7 @@ class TFEntry extends SystemUseEntry {
       previousDates += (this.flags() & TFFlags.ACCESS) ? 1 : 0;
       previousDates += (this.flags() & TFFlags.BACKUP) ? 1 : 0;
       previousDates += (this.flags() & TFFlags.EXPIRATION) ? 1 : 0;
-      if (this._longFormDates) {
+      if (this._longFormDates()) {
         return getDate(this._data, 5 + (previousDates * 17));
       } else {
         return getShortFormDate(this._data, 5 + (previousDates * 7));

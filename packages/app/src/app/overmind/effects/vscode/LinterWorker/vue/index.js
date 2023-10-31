@@ -1,3 +1,4 @@
+/* eslint-disable */
 import plugin from 'browser-eslint-rules/lib/eslint-plugin-vue';
 import parser from 'browser-eslint-rules/lib/vue-eslint-parser';
 import vue2Config from './default-vue-2-config';

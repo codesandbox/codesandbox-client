@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<Input /> rendering basic 1`] = `ReactWrapper {}`;
-
-exports[`<Input /> rendering error 1`] = `ReactWrapper {}`;
-
-exports[`<Input /> rendering placeholder 1`] = `ReactWrapper {}`;

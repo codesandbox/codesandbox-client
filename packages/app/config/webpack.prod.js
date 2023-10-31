@@ -3,7 +3,6 @@
 // const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -358,11 +357,6 @@ module.exports = merge(commonConfig, {
           to: 'public/sse-hooks/[name].[contenthash].[ext]',
         },
       ],
-    }),
-    new ImageminPlugin({
-      pngquant: {
-        quality: '95-100',
-      },
     }),
     // isMaster &&
     //   new SentryWebpackPlugin({

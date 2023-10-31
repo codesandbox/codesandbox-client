@@ -366,7 +366,7 @@ export class DevTools extends React.PureComponent<Props, State> {
       } else {
         setTimeout(() => {
           const { height } = this.state;
-          if (height > 64) {
+          if (typeof height === 'number' && height > 64) {
             store.set('devtools.height', height);
           }
         }, 50);
@@ -503,10 +503,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     } = this.props;
     const { hidden, height } = this.state;
 
-    // Filter out legacy panel that might be persisted
-    const panes = viewConfig.views.filter(
-      v => v.id !== 'codesandbox.terminalUpgrade'
-    );
+    const panes = viewConfig.views;
 
     return (
       <Container
@@ -544,6 +541,8 @@ export class DevTools extends React.PureComponent<Props, State> {
               closeTab={this.props.closeTab}
               disableLogging={disableLogging}
               isOnEmbedPage={this.props.isOnEmbedPage}
+              // @ts-ignore
+              isOnPrem={window._env_.IS_ONPREM === 'true'}
             />
 
             {!primary && (

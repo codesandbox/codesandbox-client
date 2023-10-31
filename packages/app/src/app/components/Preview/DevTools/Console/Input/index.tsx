@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 /* @flow */
 import React from 'react';
 import CodeMirror from 'codemirror';

@@ -33,12 +33,12 @@ aliases:
 
   - &restore_deps_cache
     keys:
-      - v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v37-dependency-cache-{{ .Branch }}
-      - v37-dependency-cache
+      - v38-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v38-dependency-cache-{{ .Branch }}
+      - v38-dependency-cache
 
   - &save_deps_cache
-    key: v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v38-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -59,43 +59,44 @@ aliases:
       - packages/browser-dart-sass/node_modules
       - packages/vue3-browser-compiler/node_modules
       - packages/vue3-transpiler/node_modules
+      - packages/app/src/app/overmind/effects/vscode/LinterWorker/node_modules
 
   - &restore_standalone_deps_cache
     keys:
-      - v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      - v38-standalone-dependency-cache-{{ .Branch }}-{{ checksum
         "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v37-standalone-dependency-cache-{{ .Branch }}
-      - v37-standalone-dependency-cache
+      - v38-standalone-dependency-cache-{{ .Branch }}
+      - v38-standalone-dependency-cache
 
   - &save_standalone_deps_cache
     key:
-      v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      v38-standalone-dependency-cache-{{ .Branch }}-{{ checksum
       "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_result
     key:
-      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH
+      v38-prod-build-result-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
 
   - &save_prod_build_cache
     key:
-      v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
     paths:
       - packages/app/node_modules/.cache
 
   - &restore_prod_build_cache
     keys:
-      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      - v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
         }}-{{.Environment.CIRCLE_SHA1 }}
-      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
-      - v37-prod-build-cache-master-
+      - v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
+      - v38-prod-build-cache-master-
 
   - &save_prod_result
     key:
-      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v38-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
@@ -116,11 +117,11 @@ aliases:
 executors:
   node:
     docker:
-      - image: circleci/node:16.13.1
+      - image: node:16.14.2-bullseye
     working_directory: ~/codesandbox-client
   node-xlarge:
     docker:
-      - image: circleci/node:16.13.1
+      - image: node:16.14.2-bullseye
     resource_class: xlarge
     working_directory: ~/codesandbox-client
   docker_machine:
@@ -138,14 +139,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v37-source-cache-{{ .Branch }}-{{ .Revision }}
-            - v37-source-cache-{{ .Branch }}-
-            - v37-source-cache-
+            - v38-source-cache-{{ .Branch }}-{{ .Revision }}
+            - v38-source-cache-{{ .Branch }}-
+            - v38-source-cache-
 
       - checkout
 
       - save_cache:
-          key: v37-source-cache-{{ .Branch }}-{{ .Revision }}
+          key: v38-source-cache-{{ .Branch }}-{{ .Revision }}
           paths:
             - '.git'
   build_deps:
@@ -153,6 +154,9 @@ commands:
     steps:
       - restore_cache: *restore_deps_cache
       - restore_cache: *restore_standalone_deps_cache
+      - run:
+          name: Install sudo
+          command: apt update -y && apt install -y sudo
       - run:
           name: Install ZSTD
           command: sudo apt update -y && sudo apt install -y zstd
@@ -186,6 +190,9 @@ commands:
     steps:
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
+      - run:
+          name: Install sudo
+          command: apt update -y && apt install -y sudo
       - run:
           name: Install binaries
           command:
@@ -386,18 +393,18 @@ workflows:
       - create-docker-image:
           requires:
             - build-prod
-      - deploy-to-production:
-          requires:
-            - create-docker-image
-            - lint
-            - typecheck
-            - test-integrations
-            - test-jest
-            - test-visual-regressions
-          filters:
-            branches:
-              only:
-                - master
+      # - deploy-to-production:
+      #     requires:
+      #       - create-docker-image
+      #       - lint
+      #       - typecheck
+      #       - test-integrations
+      #       - test-jest
+      #       - test-visual-regressions
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
       - deploy-staging-approval:
           type: approval
           filters:

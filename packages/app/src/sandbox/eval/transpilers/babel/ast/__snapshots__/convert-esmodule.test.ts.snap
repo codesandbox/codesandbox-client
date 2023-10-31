@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`convert-esmodule can convert class default exports 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 class A {}
@@ -11,8 +11,8 @@ exports.default = A;
 `;
 
 exports[`convert-esmodule can convert default exports 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 function test() {}
@@ -21,8 +21,8 @@ exports.default = test;
 `;
 
 exports[`convert-esmodule can convert default imports 1`] = `
-"\\"use strict\\";
-var $csb___b = require(\\"./b\\");
+""use strict";
+var $csb___b = require("./b");
 var a = $_csb__interopRequireDefault($csb___b);
 (0, a.default)();
 function $_csb__interopRequireDefault(obj) {
@@ -34,14 +34,14 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule can convert exports containing overlapping exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.some = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___some_js = require(\\"./some.js\\");
-var $csb___some_js_ = $_csb__interopRequireDefault(require(\\"./some.js\\"));
-Object.defineProperty(exports, \\"some\\", {
+var $csb___some_js = require("./some.js");
+var $csb___some_js_ = $_csb__interopRequireDefault(require("./some.js"));
+Object.defineProperty(exports, "some", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
@@ -49,7 +49,7 @@ Object.defineProperty(exports, \\"some\\", {
   }
 });
 Object.keys($csb___some_js).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -68,9 +68,9 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule can convert function exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.Test = exports.test2 = exports.test = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.test = test;
@@ -83,14 +83,14 @@ exports.Test = Test;
 `;
 
 exports[`convert-esmodule can convert import expressions 1`] = `
-"\\"use strict\\";
+""use strict";
 $csbImport('test');
 "
 `;
 
 exports[`convert-esmodule can convert imports with spaces 1`] = `
-"\\"use strict\\";
-var $csb__a_test = require(\\"a test\\");
+""use strict";
+var $csb__a_test = require("a test");
 var aTest = $_csb__interopRequireDefault($csb__a_test);
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
@@ -101,8 +101,8 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule can convert named imports 1`] = `
-"\\"use strict\\";
-var $csb___b = require(\\"./b\\");
+""use strict";
+var $csb___b = require("./b");
 (0, $csb___b.a)();
 (0, $csb___b.b)();
 (0, $csb___b.c)();
@@ -110,8 +110,8 @@ var $csb___b = require(\\"./b\\");
 `;
 
 exports[`convert-esmodule can convert named imports with different scopes 1`] = `
-"\\"use strict\\";
-var $csb___b = require(\\"./b\\");
+""use strict";
+var $csb___b = require("./b");
 (0, $csb___b.a)();
 function test1() {
   (0, $csb___b.a)();
@@ -126,20 +126,20 @@ function test2(a) {
 `;
 
 exports[`convert-esmodule can convert normal exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.test2 = exports.test = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___test_store_js = require(\\"./test/store.js\\");
-Object.defineProperty(exports, \\"test\\", {
+var $csb___test_store_js = require("./test/store.js");
+Object.defineProperty(exports, "test", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___test_store_js.test;
   }
 });
-Object.defineProperty(exports, \\"test2\\", {
+Object.defineProperty(exports, "test2", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
@@ -150,13 +150,13 @@ Object.defineProperty(exports, \\"test2\\", {
 `;
 
 exports[`convert-esmodule can convert reexports 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___test_store_js = require(\\"./test/store.js\\");
+var $csb___test_store_js = require("./test/store.js");
 Object.keys($csb___test_store_js).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -170,8 +170,8 @@ Object.keys($csb___test_store_js).forEach(function (key) {
 `;
 
 exports[`convert-esmodule can convert weird default exports 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var $csb__default = a = 'b';
@@ -180,9 +180,9 @@ exports.default = $csb__default;
 `;
 
 exports[`convert-esmodule can do array exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.y = exports.x = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 function a() {
@@ -195,15 +195,15 @@ exports.y = y;
 `;
 
 exports[`convert-esmodule can handle as imports 1`] = `
-"\\"use strict\\";
-var $csb___b = require(\\"./b\\");
+""use strict";
+var $csb___b = require("./b");
 const func = (0, $csb___b.a)();
 "
 `;
 
 exports[`convert-esmodule can handle async code 1`] = `
-"\\"use strict\\";
-var $csb___test = require(\\"./test\\");
+""use strict";
+var $csb___test = require("./test");
 var T = $_csb__interopRequireDefault($csb___test);
 (async () => {
   const test = await test2();
@@ -217,8 +217,8 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule can handle block scopes 1`] = `
-"\\"use strict\\";
-var $csb___interop_ui_utils = require(\\"@interop-ui/utils\\");
+""use strict";
+var $csb___interop_ui_utils = require("@interop-ui/utils");
 if (true) {
   let e = c;
 }
@@ -227,8 +227,8 @@ if (true) {
 `;
 
 exports[`convert-esmodule can handle class properties 1`] = `
-"\\"use strict\\";
-var $csb___test = require(\\"./test\\");
+""use strict";
+var $csb___test = require("./test");
 var T = $_csb__interopRequireDefault($csb___test);
 class T2 {
   a = () => {
@@ -247,16 +247,16 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule can handle inline comments 1`] = `
-"\\"use strict\\";
-var $csb___b = require(\\"./b\\");
+""use strict";
+var $csb___b = require("./b");
 (0, $csb___b.a)();
 (0, $csb___b.c)();
 "
 `;
 
 exports[`convert-esmodule changes default imports inline 1`] = `
-"\\"use strict\\";
-var $csb___rgb = require(\\"./rgb\\");
+""use strict";
+var $csb___rgb = require("./rgb");
 var rgb = $_csb__interopRequireDefault($csb___rgb);
 (0, rgb.default).a;
 function $_csb__interopRequireDefault(obj) {
@@ -268,8 +268,8 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule converts object shorthands 1`] = `
-"\\"use strict\\";
-var $csb__plate_factory_js = require(\\"./template-factory.js\\");
+""use strict";
+var $csb__plate_factory_js = require("./template-factory.js");
 const short = {
   templateFactory: (0, $csb__plate_factory_js.templateFactory)
 };
@@ -277,13 +277,13 @@ const short = {
 `;
 
 exports[`convert-esmodule defines its exports before requires 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.get = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.get = get;
-var $csb___colors_values = require(\\"./colors-values\\");
+var $csb___colors_values = require("./colors-values");
 function get() {
   return 5;
 }
@@ -291,23 +291,23 @@ function get() {
 `;
 
 exports[`convert-esmodule does empty exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.EuiDataGrid = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb__g_draggable = require(\\"./column_sorting_draggable\\");
-var $csb___data_grid = require(\\"./data_grid\\");
-Object.defineProperty(exports, \\"EuiDataGrid\\", {
+var $csb__g_draggable = require("./column_sorting_draggable");
+var $csb___data_grid = require("./data_grid");
+Object.defineProperty(exports, "EuiDataGrid", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___data_grid.EuiDataGrid;
   }
 });
-var $csb___data_grid_types = require(\\"./data_grid_types\\");
+var $csb___data_grid_types = require("./data_grid_types");
 Object.keys($csb___data_grid_types).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -321,15 +321,15 @@ Object.keys($csb___data_grid_types).forEach(function (key) {
 `;
 
 exports[`convert-esmodule doesn't hoist single import above export 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb__rflow_tfjs_core = require(\\"@tensorflow/tfjs-core\\");
-var $csb__rflow_tfjs_data = require(\\"@tensorflow/tfjs-data\\");
+var $csb__rflow_tfjs_core = require("@tensorflow/tfjs-core");
+var $csb__rflow_tfjs_data = require("@tensorflow/tfjs-data");
 var data = $csb__rflow_tfjs_data;
 Object.keys($csb__rflow_tfjs_core).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -343,8 +343,8 @@ Object.keys($csb__rflow_tfjs_core).forEach(function (key) {
 `;
 
 exports[`convert-esmodule doesn't remove object initializers 1`] = `
-"\\"use strict\\";
-var $csb__ct_spring_shared = require(\\"@react-spring/shared\\");
+""use strict";
+var $csb__ct_spring_shared = require("@react-spring/shared");
 const createHost = (components, {a = () => {}} = {}) => {
   (0, $csb__ct_spring_shared.is)();
 };
@@ -352,9 +352,9 @@ const createHost = (components, {a = () => {}} = {}) => {
 `;
 
 exports[`convert-esmodule doesn't set var definitions 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.global = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var global = typeof  window !== 'undefined' ? window : {};
@@ -363,7 +363,7 @@ exports.global = global;
 `;
 
 exports[`convert-esmodule exports that are not on the root scope are not renamed 1`] = `
-"\\"use strict\\";
+""use strict";
 function a() {
   var exports = 'blaat';
 }
@@ -371,15 +371,15 @@ function a() {
 `;
 
 exports[`convert-esmodule generates parseable var name with @ 1`] = `
-"\\"use strict\\";
-var $csb___a_kjaw = require(\\"./a-@kjaw\\");
+""use strict";
+var $csb___a_kjaw = require("./a-@kjaw");
 "
 `;
 
 exports[`convert-esmodule handles assignments and exports at the same time 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.TweenPlugin = exports.Power4 = exports.Power3 = exports.Power2 = exports.Power1 = exports.Power0 = exports.Linear = exports.C = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 const {Ease: C, Linear: Linear, Power0: Power0, Power1: Power1, Power2: Power2, Power3: Power3, Power4: Power4, TweenPlugin: TweenPlugin} = _gsScope;
@@ -395,23 +395,23 @@ exports.TweenPlugin = TweenPlugin;
 `;
 
 exports[`convert-esmodule handles concurrent import and exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.a = void  0;
-Object.defineProperty(exports, \\"a\\", {
+Object.defineProperty(exports, "a", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return a;
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb__test_lib_dom = require(\\"test-lib-dom\\");
-var $csb__test_lib_dom_ = require(\\"test-lib-dom\\");
+var $csb__test_lib_dom = require("test-lib-dom");
+var $csb__test_lib_dom_ = require("test-lib-dom");
 var a = () => (0, $csb__test_lib_dom.a);
 Object.keys($csb__test_lib_dom_).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -425,13 +425,13 @@ Object.keys($csb__test_lib_dom_).forEach(function (key) {
 `;
 
 exports[`convert-esmodule handles default as exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.Field = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___Field = $_csb__interopRequireDefault(require(\\"./Field\\"));
-Object.defineProperty(exports, \\"Field\\", {
+var $csb___Field = $_csb__interopRequireDefault(require("./Field"));
+Object.defineProperty(exports, "Field", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
@@ -447,32 +447,32 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule handles default imports 1`] = `
-"\\"use strict\\";
-var $csb__react = require(\\"react\\");
+""use strict";
+var $csb__react = require("react");
 var React = $csb__react;
 console.log(React.Component);
 "
 `;
 
 exports[`convert-esmodule handles export alias 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.default = void  0;
-Object.defineProperty(exports, \\"default\\", {
+Object.defineProperty(exports, "default", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return Subscription;
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 "
 `;
 
 exports[`convert-esmodule handles export mutations 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 function test() {}
@@ -482,8 +482,8 @@ exports.default = test = 5;
 `;
 
 exports[`convert-esmodule handles export mutations with no named function 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 function $csb__default() {}
@@ -492,109 +492,109 @@ exports.default = $csb__default;
 `;
 
 exports[`convert-esmodule handles export mutations with variables 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.to = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var to;
 exports.to = to;
 function assign() {
-  exports.to = to = \\"test\\";
+  exports.to = to = "test";
 }
 function assign2(to) {
-  to = \\"test\\";
+  to = "test";
 }
 "
 `;
 
 exports[`convert-esmodule handles export object 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.c = exports.b = exports.a = void  0;
-Object.defineProperty(exports, \\"c\\", {
+Object.defineProperty(exports, "c", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return c;
   }
 });
-Object.defineProperty(exports, \\"b\\", {
+Object.defineProperty(exports, "b", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return b;
   }
 });
-Object.defineProperty(exports, \\"a\\", {
+Object.defineProperty(exports, "a", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return a;
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 "
 `;
 
 exports[`convert-esmodule handles import statement after default export 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___types = require(\\"./types\\");
+var $csb___types = require("./types");
 function defaultOverscanIndicesGetter(_ref) {}
 exports.default = defaultOverscanIndicesGetter;
 "
 `;
 
 exports[`convert-esmodule handles multiple aliased exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.f = exports.getSetObserver = exports.d = exports.getMapObserver = exports.b = exports.getArrayObserver = void  0;
-Object.defineProperty(exports, \\"f\\", {
+Object.defineProperty(exports, "f", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return e;
   }
 });
-Object.defineProperty(exports, \\"getSetObserver\\", {
+Object.defineProperty(exports, "getSetObserver", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return _getSetObserver;
   }
 });
-Object.defineProperty(exports, \\"d\\", {
+Object.defineProperty(exports, "d", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return c;
   }
 });
-Object.defineProperty(exports, \\"getMapObserver\\", {
+Object.defineProperty(exports, "getMapObserver", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return _getMapObserver;
   }
 });
-Object.defineProperty(exports, \\"b\\", {
+Object.defineProperty(exports, "b", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return a;
   }
 });
-Object.defineProperty(exports, \\"getArrayObserver\\", {
+Object.defineProperty(exports, "getArrayObserver", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return _getArrayObserver;
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 f.test();
@@ -604,9 +604,9 @@ b.test();
 `;
 
 exports[`convert-esmodule handles multiple var exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.b = exports.a = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 const a = 5, b = 6;
@@ -616,16 +616,16 @@ exports.b = b;
 `;
 
 exports[`convert-esmodule handles named exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.a = void  0;
-Object.defineProperty(exports, \\"a\\", {
+Object.defineProperty(exports, "a", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return a;
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 const a = 'c';
@@ -633,63 +633,63 @@ const a = 'c';
 `;
 
 exports[`convert-esmodule handles re-exports in named exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.a = void  0;
-Object.defineProperty(exports, \\"a\\", {
+Object.defineProperty(exports, "a", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return (0, $csb___b.a);
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___b = require(\\"./b\\");
+var $csb___b = require("./b");
 "
 `;
 
 exports[`convert-esmodule handles re-exports in named exports with a alias 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.c = exports.b = void  0;
-Object.defineProperty(exports, \\"c\\", {
+Object.defineProperty(exports, "c", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return c;
   }
 });
-Object.defineProperty(exports, \\"b\\", {
+Object.defineProperty(exports, "b", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return (0, $csb___b.a);
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___b = require(\\"./b\\");
+var $csb___b = require("./b");
 const c = 'test';
 "
 `;
 
 exports[`convert-esmodule hoists exports as well 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.c = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___a = require(\\"./a\\");
-Object.defineProperty(exports, \\"c\\", {
+var $csb___a = require("./a");
+Object.defineProperty(exports, "c", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___a.c;
   }
 });
-var $csb___b = require(\\"./b\\");
-Object.defineProperty(exports, \\"data\\", {
+var $csb___b = require("./b");
+Object.defineProperty(exports, "data", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
@@ -703,21 +703,21 @@ function a() {
 `;
 
 exports[`convert-esmodule hoists function exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.test3 = exports.test2 = exports.test = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.test3 = test3;
-var $csb___test_store_js = require(\\"./test/store.js\\");
-Object.defineProperty(exports, \\"test\\", {
+var $csb___test_store_js = require("./test/store.js");
+Object.defineProperty(exports, "test", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___test_store_js.test;
   }
 });
-Object.defineProperty(exports, \\"test2\\", {
+Object.defineProperty(exports, "test2", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
@@ -729,8 +729,8 @@ function test3() {}
 `;
 
 exports[`convert-esmodule hoists imports at bottom 1`] = `
-"\\"use strict\\";
-var $csb__prop_types = require(\\"prop-types\\");
+""use strict";
+var $csb__prop_types = require("prop-types");
 var PropTypes = $_csb__interopRequireDefault($csb__prop_types);
 const a = (0, PropTypes.default).a;
 function $_csb__interopRequireDefault(obj) {
@@ -742,55 +742,55 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule ignores comments 1`] = `
-"\\"use strict\\";
+""use strict";
 "
 `;
 
 exports[`convert-esmodule keeps import order 1`] = `
-"\\"use strict\\";
-var $csb__1 = require(\\"1\\");
-var $csb__2 = require(\\"2\\");
+""use strict";
+var $csb__1 = require("1");
+var $csb__2 = require("2");
 "
 `;
 
 exports[`convert-esmodule keeps star exports after default export order 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.a = exports.WithSearch = exports.withSearch = void  0;
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___withSearch = $_csb__interopRequireDefault(require(\\"./withSearch\\"));
-Object.defineProperty(exports, \\"withSearch\\", {
+var $csb___withSearch = $_csb__interopRequireDefault(require("./withSearch"));
+Object.defineProperty(exports, "withSearch", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___withSearch.default;
   }
 });
-var $csb___WithSearch = $_csb__interopRequireDefault(require(\\"./WithSearch\\"));
-Object.defineProperty(exports, \\"WithSearch\\", {
+var $csb___WithSearch = $_csb__interopRequireDefault(require("./WithSearch"));
+Object.defineProperty(exports, "WithSearch", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___WithSearch.default;
   }
 });
-var $csb___test = require(\\"./test\\");
-Object.defineProperty(exports, \\"a\\", {
+var $csb___test = require("./test");
+Object.defineProperty(exports, "a", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___test.a;
   }
 });
-var $csb___containers = require(\\"./containers\\");
+var $csb___containers = require("./containers");
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj
   };
 }
 Object.keys($csb___containers).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -804,49 +804,49 @@ Object.keys($csb___containers).forEach(function (key) {
 `;
 
 exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
-"\\"use strict\\";
-var WS_CHARS = 'u2000-\\\\u200a\\\\u2028\\\\u2029\\\\u202f\\\\u205f\\\\u3000\\\\ufeff';
+""use strict";
+var WS_CHARS = 'u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff';
 "
 `;
 
 exports[`convert-esmodule predefines possible exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.default = exports.l = exports.j = exports.bah = exports.f = exports.e1 = exports.d = exports.c = exports.b = exports.a = void  0;
-Object.defineProperty(exports, \\"e1\\", {
+Object.defineProperty(exports, "e1", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return e;
   }
 });
-Object.defineProperty(exports, \\"d\\", {
+Object.defineProperty(exports, "d", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return d;
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___foo = require(\\"./foo\\");
-Object.defineProperty(exports, \\"j\\", {
+var $csb___foo = require("./foo");
+Object.defineProperty(exports, "j", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___foo.j;
   }
 });
-var $csb___foo_ = require(\\"./foo\\");
-Object.defineProperty(exports, \\"l\\", {
+var $csb___foo_ = require("./foo");
+Object.defineProperty(exports, "l", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return $csb___foo_.k;
   }
 });
-var $csb___foo__ = require(\\"./foo\\");
-Object.defineProperty(exports, \\"default\\", {
+var $csb___foo__ = require("./foo");
+Object.defineProperty(exports, "default", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
@@ -876,7 +876,7 @@ exports.default = i;
 `;
 
 exports[`convert-esmodule renames exports that are already defined, even in block scope 1`] = `
-"\\"use strict\\";
+""use strict";
 var __$csb_exports = 'testtest';
 function a() {
   __$csb_exports = 'blaat';
@@ -885,29 +885,29 @@ function a() {
 `;
 
 exports[`convert-esmodule retains import orders with re-exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.getDataGroupBy = exports.Kikker = exports.TypeChecker = void  0;
-Object.defineProperty(exports, \\"Kikker\\", {
+Object.defineProperty(exports, "Kikker", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return _Kikker;
   }
 });
-Object.defineProperty(exports, \\"TypeChecker\\", {
+Object.defineProperty(exports, "TypeChecker", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return _TypeChecker;
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb___propTypeChecker = require(\\"./propTypeChecker\\");
+var $csb___propTypeChecker = require("./propTypeChecker");
 var _TypeChecker = $csb___propTypeChecker;
-var $csb___getDataGroupBy = $_csb__interopRequireDefault(require(\\"./getDataGroupBy\\"));
-Object.defineProperty(exports, \\"getDataGroupBy\\", {
+var $csb___getDataGroupBy = $_csb__interopRequireDefault(require("./getDataGroupBy"));
+Object.defineProperty(exports, "getDataGroupBy", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
@@ -923,27 +923,27 @@ function $_csb__interopRequireDefault(obj) {
 `;
 
 exports[`convert-esmodule retains the order of re-exports 1`] = `
-"\\"use strict\\";
+""use strict";
 exports.data = void  0;
-Object.defineProperty(exports, \\"data\\", {
+Object.defineProperty(exports, "data", {
   enumerable: true,
   configurable: true,
   get: function $csbGet() {
     return data;
   }
 });
-Object.defineProperty(exports, \\"__esModule\\", {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $csb__rflow_tfjs_core = require(\\"@tensorflow/tfjs-core\\");
-var $csb__rflow_tfjs_test = require(\\"@tensorflow/tfjs-test\\");
+var $csb__rflow_tfjs_core = require("@tensorflow/tfjs-core");
+var $csb__rflow_tfjs_test = require("@tensorflow/tfjs-test");
 var data2 = $csb__rflow_tfjs_test;
-var $csb__w_tfjs_layers = require(\\"@tensorflow/tfjs-layers\\");
-var $csb___converter = require(\\"@tensorflow/tfjs-converter\\");
-var $csb__rflow_tfjs_data = require(\\"@tensorflow/tfjs-data\\");
+var $csb__w_tfjs_layers = require("@tensorflow/tfjs-layers");
+var $csb___converter = require("@tensorflow/tfjs-converter");
+var $csb__rflow_tfjs_data = require("@tensorflow/tfjs-data");
 var data = $csb__rflow_tfjs_data;
 Object.keys($csb__rflow_tfjs_core).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -954,7 +954,7 @@ Object.keys($csb__rflow_tfjs_core).forEach(function (key) {
   });
 });
 Object.keys($csb__w_tfjs_layers).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -965,7 +965,7 @@ Object.keys($csb__w_tfjs_layers).forEach(function (key) {
   });
 });
 Object.keys($csb___converter).forEach(function (key) {
-  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
@@ -979,8 +979,8 @@ Object.keys($csb___converter).forEach(function (key) {
 `;
 
 exports[`convert-esmodule works with variables that are named exports 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", {
+""use strict";
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var __$csb_exports = [eventedState, eventedShowHideState];

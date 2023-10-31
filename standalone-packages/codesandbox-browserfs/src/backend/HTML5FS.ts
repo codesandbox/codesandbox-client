@@ -59,6 +59,7 @@ function _toArray(list?: any[]): any[] {
  * @url https://developer.mozilla.org/en-US/docs/Web/API/DOMError
  * @hidden
  */
+// @ts-ignore
 function convertError(err: DOMError, p: string, expectedDir: boolean): ApiError {
   switch (err.name) {
     /* The user agent failed to create a file or directory due to the existence of a file or
@@ -252,6 +253,7 @@ export default class HTML5FS extends BaseFileSystem implements IFileSystem {
         };
         // Loop through the entries and remove them, then call the callback
         // when they're all finished.
+        // @ts-ignore
         asyncEach(entries!, deleteEntry, finished);
       }
     });

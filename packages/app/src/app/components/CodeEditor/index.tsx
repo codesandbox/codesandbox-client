@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';

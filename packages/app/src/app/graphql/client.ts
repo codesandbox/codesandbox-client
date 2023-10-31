@@ -9,10 +9,11 @@ import {
 import { onError } from 'apollo-link-error';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
-import introspectionQueryResultData from './introspection-result';
+// import introspectionQueryResultData from './introspection-result';
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData,
+  // TODO: find why this does not match
+  // introspectionQueryResultData,
 });
 
 const httpLink = new BatchHttpLink({

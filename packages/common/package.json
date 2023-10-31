@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/common",
-  "version": "1.0.8",
+  "version": "1.0.12",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -21,8 +21,8 @@
     "prepublish": "yarn build",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
-    "test": "cross-env NODE_ENV=test jest --maxWorkers 2",
-    "test:update": "cross-env NODE_ENV=test jest --updateSnapshot",
+    "test": "cross-env NODE_ENV=test jest --env=jsdom --maxWorkers 2",
+    "test:update": "cross-env NODE_ENV=test jest --env=jsdom --updateSnapshot",
     "typecheck": "tsc --noEmit"
   },
   "jest": {
@@ -35,10 +35,8 @@
     "setupFilesAfterEnv": [
       "<rootDir>src/test/setupTests.ts"
     ],
-    "testEnvironment": "enzyme",
     "transform": {
-      "^.+\\.[t|j]sx?$": "babel-jest",
-      "^.+\\.svg$": "jest-svg-transformer"
+      "^.+\\.[t|j]sx?$": "babel-jest"
     },
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js"
@@ -48,7 +46,7 @@
     "@amplitude/analytics-browser": "^2.2.0",
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/polyfill": "^7.4.4",
-    "@codesandbox/components": "^0.0.3",
+    "@codesandbox/components": "^0.0.7",
     "@codesandbox/notifications": "^1.0.6",
     "@sentry/browser": "^5.19.0",
     "@styled-system/css": "^5.0.23",
@@ -56,9 +54,9 @@
     "babel-plugin-preval": "^3.0.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "codesandbox-api": "0.0.32",
-    "color": "0.11.4",
+    "color": "^3.2.0",
     "date-fns": "^2.0.0",
-    "dot-object": "1.9.0",
+    "dot-object": "^2.0.0",
     "error-polyfill": "^0.1.2",
     "humps": "CompuIves/humps",
     "image-extensions": "^1.1.0",
@@ -89,18 +87,17 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-async-to-generator": "^7.5.0",
     "@babel/plugin-transform-runtime": "^7.5.5",
-    "@storybook/addon-a11y": "^5.1.11",
-    "@storybook/addon-actions": "^5.1.9",
-    "@storybook/addon-knobs": "^5.1.9",
-    "@storybook/addon-storysource": "^5.1.11",
-    "@storybook/addon-viewport": "^5.1.11",
-    "@storybook/react": "^5.1.9",
-    "@types/color": "0.12.1",
+    "@storybook/addon-a11y": "^7.5.1",
+    "@storybook/addon-actions": "^7.5.1",
+    "@storybook/addon-knobs": "^7.0.2",
+    "@storybook/addon-storysource": "^7.5.1",
+    "@storybook/addon-viewport": "^7.5.1",
+    "@storybook/react": "^7.5.1",
+    "@types/color": "3.0.5",
     "@types/humps": "^1.1.2",
-    "@types/lodash": "^4.14.123",
+    "@types/lodash": "^4.14.200",
     "@types/react": "^16.9.17",
     "@types/react-icons": "^2.2.7",
-    "@types/storybook__addon-actions": "^3.4.3",
     "@types/styled-components": "^5.1.7",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
@@ -108,16 +105,10 @@
     "babel-plugin-macros": "^2.6.1",
     "babel-plugin-system-import-transformer": "^4.0.0",
     "cpx": "^1.5.0",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
-    "enzyme-to-json": "^3.4.0",
-    "jest": "^24.9.0",
-    "jest-environment-enzyme": "^7.1.0",
-    "jest-enzyme": "^7.1.0",
+    "jest": "^29.7.0",
     "jest-styled-components": "^7.0.2",
-    "jest-svg-transformer": "^1.0.0",
     "rimraf": "^2.6.3",
-    "typescript": "^4.9.5",
+    "typescript": "^5.2.2",
     "yarn": "^1.17.3"
   }
 }

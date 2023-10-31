@@ -1,11 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import theme from '@codesandbox/common/lib/theme';
-import ansiHTML from 'ansi-html';
 
 import { escapeHtml } from 'app/utils/escape';
 
 import { TestError } from '../..';
+
+const ansiHTML = require('ansi-html');
 
 const Container = styled.div`
   font-family: Menlo, Source Code Pro, monospace;

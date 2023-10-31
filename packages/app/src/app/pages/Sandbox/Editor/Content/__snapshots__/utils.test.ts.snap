@@ -1,23 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`addDevToolsTab can add a tab 1`] = `
-Object {
-  "devTools": Array [
-    Object {
-      "views": Array [
-        Object {
+{
+  "devTools": [
+    {
+      "views": [
+        {
           "id": "codesandbox.browser",
         },
-        Object {
+        {
           "id": "codesandbox.tests",
         },
-        Object {
+        {
           "id": "codesandbox.browser",
         },
       ],
     },
   ],
-  "position": Object {
+  "position": {
     "devToolIndex": 0,
     "tabPosition": 2,
   },
@@ -25,23 +25,23 @@ Object {
 `;
 
 exports[`addDevToolsTab can add a tab on specific position 1`] = `
-Object {
-  "devTools": Array [
-    Object {
-      "views": Array [
-        Object {
+{
+  "devTools": [
+    {
+      "views": [
+        {
           "id": "codesandbox.tests",
         },
-        Object {
+        {
           "id": "codesandbox.browser",
         },
-        Object {
+        {
           "id": "codesandbox.tests",
         },
       ],
     },
   ],
-  "position": Object {
+  "position": {
     "devToolIndex": 0,
     "tabPosition": 0,
   },
@@ -49,23 +49,23 @@ Object {
 `;
 
 exports[`moveDevToolsTab can move a tab from one devtools to the other 1`] = `
-Array [
-  Object {
-    "views": Array [
-      Object {
+[
+  {
+    "views": [
+      {
         "id": "codesandbox.tests",
       },
     ],
   },
-  Object {
-    "views": Array [
-      Object {
+  {
+    "views": [
+      {
         "id": "codesandbox.console",
       },
-      Object {
+      {
         "id": "codesandbox.browser",
       },
-      Object {
+      {
         "id": "codesandbox.problems",
       },
     ],
@@ -74,23 +74,23 @@ Array [
 `;
 
 exports[`moveDevToolsTab can move a tab from one devtools to the other and move it back 1`] = `
-Array [
-  Object {
-    "views": Array [
-      Object {
+[
+  {
+    "views": [
+      {
         "id": "codesandbox.browser",
       },
-      Object {
+      {
         "id": "codesandbox.tests",
       },
     ],
   },
-  Object {
-    "views": Array [
-      Object {
+  {
+    "views": [
+      {
         "id": "codesandbox.console",
       },
-      Object {
+      {
         "id": "codesandbox.problems",
       },
     ],
@@ -99,23 +99,23 @@ Array [
 `;
 
 exports[`moveDevToolsTab can move a tab in same devtools 1`] = `
-Array [
-  Object {
-    "views": Array [
-      Object {
+[
+  {
+    "views": [
+      {
         "id": "codesandbox.tests",
       },
-      Object {
+      {
         "id": "codesandbox.browser",
       },
     ],
   },
-  Object {
-    "views": Array [
-      Object {
+  {
+    "views": [
+      {
         "id": "codesandbox.console",
       },
-      Object {
+      {
         "id": "codesandbox.problems",
       },
     ],
@@ -124,23 +124,23 @@ Array [
 `;
 
 exports[`moveDevToolsTab can move a tab in same devtools and move the tab back 1`] = `
-Array [
-  Object {
-    "views": Array [
-      Object {
+[
+  {
+    "views": [
+      {
         "id": "codesandbox.browser",
       },
-      Object {
+      {
         "id": "codesandbox.tests",
       },
     ],
   },
-  Object {
-    "views": Array [
-      Object {
+  {
+    "views": [
+      {
         "id": "codesandbox.console",
       },
-      Object {
+      {
         "id": "codesandbox.problems",
       },
     ],
@@ -149,23 +149,23 @@ Array [
 `;
 
 exports[`moveDevToolsTab can move the tab to the same position 1`] = `
-Array [
-  Object {
-    "views": Array [
-      Object {
+[
+  {
+    "views": [
+      {
         "id": "codesandbox.browser",
       },
-      Object {
+      {
         "id": "codesandbox.tests",
       },
     ],
   },
-  Object {
-    "views": Array [
-      Object {
+  {
+    "views": [
+      {
         "id": "codesandbox.console",
       },
-      Object {
+      {
         "id": "codesandbox.problems",
       },
     ],
