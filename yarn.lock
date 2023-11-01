@@ -5333,9 +5333,9 @@
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
 "@types/phoenix@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@types/phoenix/-/phoenix-1.4.0.tgz#e8414a225c6c7e310cd6e2db5a2156fbbbf862dd"
-  integrity sha512-bsuR5rj81NxgJ1w+Z5mgHlcIFBJKa2ChtbFbd1xDXxNJaBqYocAL53vsQ9T/CIZOSEs4A3WK7VMvzOOsG5cbJQ==
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@types/phoenix/-/phoenix-1.6.3.tgz#873801490511e0a3cc192eb51c8a3bbf14e08e70"
+  integrity sha512-D8TtchWVnU2ZdPVDY6tBJuz8MUDmCNVduilZTrf0Gn/u5I/uZEXOsaL4Gs4F0j43cysHsU/4h7eqAKc+SF2boQ==
 
 "@types/pretty-hrtime@^1.0.0":
   version "1.0.2"
@@ -19352,10 +19352,10 @@ performance-now@^2.1.0:
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
 
-phoenix@^1.4.13, phoenix@^1.5.3:
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/phoenix/-/phoenix-1.5.3.tgz#994487b67adc8ca683f76c41dca3271e476184bd"
-  integrity sha512-wcyHTac54uxpyycKsdXfSpN+5YuYwaXQnkLahxseznDn+V5K3mIEJg+d6QhLBdrn5/0pWIPE7bBC6SBswnIvOg==
+phoenix@^1.4.13, phoenix@^1.7.0:
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/phoenix/-/phoenix-1.7.9.tgz#dde09b4232e90bc11711a2aa888098571d2611a2"
+  integrity sha512-oHBka/WCKVtFHNCCqnVDxiSHQZ0vvV0pU1I4oBmm68rNvGH3lVjdNGLRhK0+c3zcfsrqgpRS2p+Et6N4QAd2LQ==
 
 picocolors@^1.0.0:
   version "1.0.0"
