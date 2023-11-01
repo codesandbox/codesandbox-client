@@ -73,8 +73,11 @@ export const Preference: FunctionComponent<Props> = ({
         return <PreferenceDropdown {...stylingProps} {...contentProps} />;
       case 'keybinding':
         return <PreferenceKeybinding {...stylingProps} {...contentProps} />;
-      default:
+      case 'number':
         return <PreferenceNumber {...stylingProps} {...contentProps} />;
+      default: {
+        return null;
+      }
     }
   };
 

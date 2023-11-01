@@ -114,8 +114,9 @@ export const Dashboard: FunctionComponent = () => {
       actions.openCreateSandboxModal({ initialTab: 'import' });
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {
       actions.openCreateSandboxModal();
-    } else if (JSON.parse(searchParams.get('preferences'))) {
-      actions.preferences.openPreferencesModal();
+    } else if (searchParams.get('preferences')) {
+      const toToOpen = searchParams.get('preferences');
+      actions.preferences.openPreferencesModal(toToOpen);
     }
 
     history.replace({ search: searchParams.toString() });

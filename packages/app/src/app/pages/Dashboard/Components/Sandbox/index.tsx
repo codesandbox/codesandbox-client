@@ -13,6 +13,7 @@ import track, {
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -68,6 +69,10 @@ function getFolderName(item: GenericSandboxProps['item']): string | undefined {
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const { dashboard, activeWorkspaceAuthorization } = useAppState();
+  const [hasBetaEditorExperiment] = useGlobalPersistedState(
+    'BETA_SANDBOX_EDITOR',
+    false
+  );
   const actions = useActions();
   const { isFree } = useWorkspaceSubscription();
 
@@ -87,7 +92,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const viewCount = formatNumber(sandbox.viewCount);
 
-  const url = sandboxUrl(sandbox);
+  const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
+  const linksToV2 = sandbox.isV2 || hasBetaEditorExperiment;
 
   const TemplateIcon = getTemplateIcon(sandbox);
   const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
@@ -175,7 +181,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
       if (event.ctrlKey || event.metaKey) {
         window.open(url, '_blank');
-      } else if (sandbox.isV2) {
+      } else if (linksToV2) {
         window.location.href = url;
       } else {
         history.push(url);
@@ -233,9 +239,9 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
       ? {
           ...baseInteractions,
           interaction: 'link' as const,
-          as: sandbox.isV2 ? 'a' : Link,
-          to: sandbox.isV2 ? undefined : url,
-          href: sandbox.isV2 ? url : undefined,
+          as: linksToV2 ? 'a' : Link,
+          to: linksToV2 ? undefined : url,
+          href: linksToV2 ? url : undefined,
           onClick: () => {
             // On the recent page the sandbox card is an anchor, so we only have
             // to track using onclick, the sandbox is opened through native anchor

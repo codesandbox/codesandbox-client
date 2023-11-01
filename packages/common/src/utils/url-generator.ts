@@ -110,15 +110,29 @@ export const editorUrl = () => `/s/`;
 
 export const v2EditorUrl = () => `/p/`;
 
-export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
-  const baseUrl = sandboxDetails.isV2
-    ? `${v2EditorUrl()}sandbox/`
-    : editorUrl();
+export const sandboxUrl = (
+  sandboxDetails: SandboxUrlSourceData,
+  hasBetaEditorExperiment?: boolean
+) => {
+  const baseUrl =
+    sandboxDetails.isV2 || hasBetaEditorExperiment
+      ? `${v2EditorUrl()}sandbox/`
+      : editorUrl();
 
   let queryParams = '';
+  const appendBetaBrowserParam =
+    !sandboxDetails.isV2 && hasBetaEditorExperiment;
 
-  if (sandboxDetails.query) {
-    queryParams = `?${new URLSearchParams(sandboxDetails.query).toString()}`;
+  const sandboxQueryParams =
+    sandboxDetails.query || appendBetaBrowserParam
+      ? {
+          ...(sandboxDetails.query ? sandboxDetails.query : {}),
+          ...(appendBetaBrowserParam ? { betaBrowser: 'true' } : {}),
+        }
+      : null;
+
+  if (sandboxQueryParams) {
+    queryParams = `?${new URLSearchParams(sandboxQueryParams).toString()}`;
   }
 
   if (sandboxDetails.git) {
