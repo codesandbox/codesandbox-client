@@ -633,6 +633,7 @@ export const setFallbackWorkspace = ({ actions, state }: Context) => {
       actions.setActiveTeam({ id: firstWorkspace.id });
     } else {
       // TODO: Redirect to workspace setup
+      // https://linear.app/codesandbox/issue/PC-1341/handle-empty-state-for-primary-workspaces
     }
   }
 };
