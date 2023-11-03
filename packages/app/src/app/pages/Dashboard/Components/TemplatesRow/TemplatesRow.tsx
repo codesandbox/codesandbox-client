@@ -7,6 +7,7 @@ import { useActions, useAppState } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { EmptyPage } from '../EmptyPage';
 
 const TEMPLATE_IDS = [
@@ -22,6 +23,10 @@ export const TemplatesRow: React.FC = () => {
   const actions = useActions();
   const { dashboard } = useAppState();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
+  const [hasBetaEditorExperiment] = useGlobalPersistedState(
+    'BETA_SANDBOX_EDITOR',
+    false
+  );
 
   const filteredTemplates = React.useMemo(() => {
     return officialTemplates.state === 'ready'
@@ -42,7 +47,7 @@ export const TemplatesRow: React.FC = () => {
 
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
-    const url = sandboxUrl(sandbox);
+    const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
 
     handleTemplateTracking(sandbox.id, 'open');
 
@@ -58,6 +63,7 @@ export const TemplatesRow: React.FC = () => {
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
       openInNewWindow: false,
+      hasBetaEditorExperiment,
       body: {
         collectionId: collection?.id,
       },

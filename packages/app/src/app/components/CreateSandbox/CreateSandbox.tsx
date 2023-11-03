@@ -16,6 +16,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useCreateCheckout } from 'app/hooks';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import {
   Container,
   Tab,
@@ -187,6 +188,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     });
   };
 
+  const [hasBetaEditorExperiment] = useGlobalPersistedState(
+    'BETA_SANDBOX_EDITOR',
+    false
+  );
+
   const createFromTemplate = (
     template: TemplateFragment,
     { name }: CreateSandboxParams
@@ -196,6 +202,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
       openInNewWindow: false,
+      hasBetaEditorExperiment,
       body: {
         alias: name,
         collectionId,
@@ -215,7 +222,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const openTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
-    const url = sandboxUrl(sandbox);
+    const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
     window.open(url, '_blank');
   };
 

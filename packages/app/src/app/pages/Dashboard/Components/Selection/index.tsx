@@ -19,6 +19,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
 import {
@@ -103,6 +104,10 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   children,
   interactive = true,
 }) => {
+  const [hasBetaEditorExperiment] = useGlobalPersistedState(
+    'BETA_SANDBOX_EDITOR',
+    false
+  );
   const possibleItems = (items || []).filter(
     item =>
       item.type === 'sandbox' ||
@@ -336,7 +341,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId
         );
-        url = sandboxUrl(selectedItem.sandbox);
+        url = sandboxUrl(selectedItem.sandbox, hasBetaEditorExperiment);
       }
 
       if (event.ctrlKey || event.metaKey) {

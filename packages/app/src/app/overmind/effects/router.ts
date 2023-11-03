@@ -30,9 +30,12 @@ export default new (class RouterEffect {
       git?: GitInfo | null;
       v2?: boolean;
     },
-    { openInNewWindow = false }: { openInNewWindow?: boolean } = {}
+    {
+      openInNewWindow = false,
+      hasBetaEditorExperiment = false,
+    }: { openInNewWindow?: boolean; hasBetaEditorExperiment?: boolean } = {}
   ) {
-    const url = sandboxUrl({ id, alias, isV2: v2 });
+    const url = sandboxUrl({ id, alias, isV2: v2 }, hasBetaEditorExperiment);
 
     if (openInNewWindow) {
       window.open(url, '_blank');

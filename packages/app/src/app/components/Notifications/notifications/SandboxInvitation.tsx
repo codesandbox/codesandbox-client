@@ -14,6 +14,7 @@ import { useActions } from 'app/overmind';
 import { formatDistanceStrict } from 'date-fns';
 import { useHistory } from 'react-router-dom';
 import { zonedTimeToUtc } from 'date-fns-tz';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { Menu } from './Menu';
 import { InvitationIcon } from './Icons';
 
@@ -43,6 +44,10 @@ export const SandboxInvitation = ({
   const { updateReadStatus } = useActions().userNotifications;
   const [hover, setHover] = useState(false);
   const history = useHistory();
+  const [hasBetaEditorExperiment] = useGlobalPersistedState(
+    'BETA_SANDBOX_EDITOR',
+    false
+  );
   const niceSandboxTitle = sandboxTitle || sandboxAlias || sandboxId;
 
   let nicePermissionName = 'view';
@@ -62,10 +67,13 @@ export const SandboxInvitation = ({
           await updateReadStatus(id);
         }
         history.push(
-          sandboxUrl({
-            id: sandboxId,
-            alias: sandboxAlias,
-          })
+          sandboxUrl(
+            {
+              id: sandboxId,
+              alias: sandboxAlias,
+            },
+            hasBetaEditorExperiment
+          )
         );
       }}
       key={sandboxId}

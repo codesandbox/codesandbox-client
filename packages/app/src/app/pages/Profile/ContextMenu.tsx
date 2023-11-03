@@ -3,6 +3,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { SandboxType } from './constants';
 
 export const ContextMenu = () => {
@@ -27,6 +28,10 @@ export const ContextMenu = () => {
     modalClosed,
   } = useActions();
   const location = useLocation();
+  const [hasBetaEditorExperiment] = useGlobalPersistedState(
+    'BETA_SANDBOX_EDITOR',
+    false
+  );
 
   if (!sandboxId) return null;
 
@@ -113,14 +118,21 @@ export const ContextMenu = () => {
       )}
       <Menu.Item
         onSelect={() => {
-          window.location.href = sandboxUrl({ id: sandboxId });
+          window.location.href = sandboxUrl(
+            { id: sandboxId },
+            hasBetaEditorExperiment
+          );
         }}
       >
         Open sandbox
       </Menu.Item>
       <Menu.Item
         onSelect={() => {
-          forkExternalSandbox({ sandboxId, openInNewWindow: true });
+          forkExternalSandbox({
+            sandboxId,
+            openInNewWindow: true,
+            hasBetaEditorExperiment,
+          });
         }}
       >
         Fork sandbox

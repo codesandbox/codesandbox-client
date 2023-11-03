@@ -123,6 +123,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.editor.forkExternalSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
+              hasBetaEditorExperiment,
             });
           }}
         >
@@ -172,6 +173,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.editor.forkExternalSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
+              hasBetaEditorExperiment,
             });
           }}
           disabled={restricted}

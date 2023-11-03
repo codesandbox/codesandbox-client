@@ -729,10 +729,12 @@ export const forkExternalSandbox = async (
   {
     sandboxId,
     openInNewWindow,
+    hasBetaEditorExperiment,
     body,
   }: {
     sandboxId: string;
     openInNewWindow?: boolean;
+    hasBetaEditorExperiment?: boolean;
     body?: { collectionId: string; alias?: string };
   }
 ) => {
@@ -748,7 +750,10 @@ export const forkExternalSandbox = async (
     const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
 
     state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
-    effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+    effects.router.updateSandboxUrl(forkedSandbox, {
+      openInNewWindow,
+      hasBetaEditorExperiment,
+    });
   } catch (error) {
     actions.internal.handleError({
       message: 'We were unable to fork the sandbox',
