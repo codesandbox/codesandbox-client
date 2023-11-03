@@ -29,6 +29,7 @@ export const TeamCreate: React.FC<{ onComplete: () => void }> = ({
         teamName,
       });
 
+      await actions.dashboard.getTeams();
       await actions.setActiveTeam({ id: team.id });
     } catch {
       setError('There was a problem creating your workspace');

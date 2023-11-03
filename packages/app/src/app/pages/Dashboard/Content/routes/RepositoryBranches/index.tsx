@@ -6,7 +6,6 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { InactiveTeamStripe } from 'app/pages/Dashboard/Components/shared/InactiveTeamStripe';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { PrivateRepoFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
@@ -49,7 +48,7 @@ export const RepositoryBranchesPage = () => {
     }
   }, [activeTeam]);
 
-  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
+  const { isFree } = useWorkspaceSubscription();
   const isPrivate = repositoryProject?.repository.private;
   const restricted = isFree && isPrivate;
 
@@ -122,14 +121,6 @@ export const RepositoryBranchesPage = () => {
       return <PrivateRepoFreeTeam />;
     }
 
-    if (isInactiveTeam) {
-      return (
-        <InactiveTeamStripe>
-          Re-activate your workspace to continue working on the repository
-        </InactiveTeamStripe>
-      );
-    }
-
     if (repositoryProject?.appInstalled === false) {
       return (
         <InstallGHAppStripe
@@ -167,7 +158,7 @@ export const RepositoryBranchesPage = () => {
           name: repositoryProject?.repository.name,
           assignedTeamId: repositoryProject?.team?.id,
         }}
-        readOnly={restricted || isInactiveTeam}
+        readOnly={restricted}
       />
 
       {messageStripe && (

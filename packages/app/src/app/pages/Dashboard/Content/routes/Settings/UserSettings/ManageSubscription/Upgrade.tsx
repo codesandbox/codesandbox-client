@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-
+import { useCreateCheckout } from 'app/hooks';
 import { Card } from '../../components';
 
 const List = styled(Stack)`
@@ -16,9 +16,12 @@ const List = styled(Stack)`
   }
 `;
 
-export const Upgrade: React.FC<{ userCanStartTrial: boolean }> = ({
-  userCanStartTrial,
-}) => {
+export const Upgrade: React.FC<{
+  userCanStartTrial: boolean;
+  workspaceId: string;
+}> = ({ userCanStartTrial }) => {
+  const [checkout, createCheckout] = useCreateCheckout();
+
   return (
     <Card
       css={{
@@ -34,9 +37,6 @@ export const Upgrade: React.FC<{ userCanStartTrial: boolean }> = ({
 
         <List direction="vertical" gap={1} as="ul">
           <Text as="li" size={3}>
-            Unlimited editors
-          </Text>
-          <Text as="li" size={3}>
             Unlimited private sandboxes & repositories
           </Text>
           <Text as="li" size={3}>
@@ -46,7 +46,7 @@ export const Upgrade: React.FC<{ userCanStartTrial: boolean }> = ({
             Higher upload limits
           </Text>
           <Text as="li" size={3}>
-            Flexible permissions
+            Full access to AI tools
           </Text>
         </List>
 
@@ -56,8 +56,11 @@ export const Upgrade: React.FC<{ userCanStartTrial: boolean }> = ({
               codesandbox: 'V1',
               event_source: 'UI',
             });
-            window.location.href = '/pro';
+            createCheckout({
+              trackingLocation: 'user_settings',
+            });
           }}
+          loading={checkout.status === 'loading'}
           variant="trial"
         >
           {userCanStartTrial ? 'Start trial' : 'Upgrade to Pro'}

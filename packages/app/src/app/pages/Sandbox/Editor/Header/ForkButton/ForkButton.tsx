@@ -11,7 +11,7 @@ import {
 import { useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { CurrentUser } from '@codesandbox/common/lib/types';
-import { MemberAuthorization, TeamType } from 'app/graphql/types';
+import { MemberAuthorization } from 'app/graphql/types';
 import { ForkIcon } from '../icons';
 
 interface TeamItemProps {
@@ -106,9 +106,9 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
   let currentSpace: ITeamItem | null = null;
   let otherWorkspaces: ITeamItem[] = [];
 
-  const userSpace = state.dashboard.teams.find(
-    t => t.type === TeamType.Personal
-  )!;
+  const primarySpace = state.dashboard.teams.find(
+    t => t.id === state.primaryWorkspaceId
+  );
 
   const allTeams: {
     id: string;
@@ -116,8 +116,8 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
     avatarUrl: string;
     userAuthorizations: MemberAuthorization[];
   }[] = [
-    userSpace,
-    ...state.dashboard.teams.filter(t => t.type === TeamType.Team),
+    ...(primarySpace ? [primarySpace] : []),
+    ...state.dashboard.teams.filter(t => state.primaryWorkspaceId),
   ].filter(Boolean);
 
   if (allTeams.length) {

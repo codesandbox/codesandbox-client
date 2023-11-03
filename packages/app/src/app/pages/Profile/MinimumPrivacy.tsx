@@ -1,5 +1,4 @@
 import React from 'react';
-import { TeamType } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
 import {
   Stack,
@@ -31,15 +30,15 @@ export const MinimumPrivacy: React.FC<{ closeModal?: () => void }> = ({
 }) => {
   const {
     dashboard: { teams },
-    personalWorkspaceId,
+    primaryWorkspaceId,
   } = useAppState();
   const {
     dashboard: { setTeamMinimumPrivacy },
     profile: { fetchSandboxes },
   } = useActions();
-  const personalWorkspace = teams.find(team => team.type === TeamType.Personal);
+  const primaryWorkspace = teams.find(team => team.id === primaryWorkspaceId);
   const [minimumPrivacy, setMinimumPrivacy] = React.useState(
-    personalWorkspace.settings.minimumPrivacy
+    primaryWorkspace?.settings.minimumPrivacy || 0
   );
 
   const [updateDrafts, setUpdateDrafts] = React.useState(true);
@@ -91,7 +90,7 @@ export const MinimumPrivacy: React.FC<{ closeModal?: () => void }> = ({
           autoWidth
           onClick={async () => {
             await setTeamMinimumPrivacy({
-              teamId: personalWorkspaceId,
+              teamId: primaryWorkspaceId,
               minimumPrivacy,
               updateDrafts,
               source: 'Profiles',

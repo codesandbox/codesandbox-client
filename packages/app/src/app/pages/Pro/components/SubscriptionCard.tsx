@@ -87,7 +87,7 @@ type SubscriptionCardProps = {
   isHighlighted?: boolean;
 } & (
   | {
-      cta?: CTA;
+      cta?: CTA | null;
     }
   | { customCta?: React.ReactNode }
 );
@@ -146,7 +146,7 @@ export const SubscriptionCard = ({
       </Stack>
       {
         // eslint-disable-next-line no-nested-ternary
-        'cta' in props && typeof props.cta !== 'undefined' ? (
+        'cta' in props && !!props.cta ? (
           <StyledSubscriptionLink
             variant={props.cta.variant}
             {...(props.cta.href
@@ -162,7 +162,7 @@ export const SubscriptionCard = ({
           >
             {props.cta.isLoading ? 'Loading...' : props.cta.text}
           </StyledSubscriptionLink>
-        ) : 'customCta' in props && typeof props.customCta !== 'undefined' ? (
+        ) : 'customCta' in props && !!props.customCta ? (
           props.customCta
         ) : (
           <Element css={{ height: '48px' }} />

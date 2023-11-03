@@ -4,12 +4,8 @@ import { Button, Text, Stack } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TemplateCard } from './TemplateCard';
 import { TemplateGrid } from './elements';
-import { MaxPublicSandboxes, InactiveTeam } from './stripes';
 
 interface TemplateCategoryListProps {
   title: string;
@@ -34,15 +30,10 @@ export const TemplateCategoryList = ({
 }: TemplateCategoryListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
-  const { isEligibleForTrial, isInactiveTeam } = useWorkspaceSubscription();
-  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
-  const { isBillingManager } = useWorkspaceAuthorization();
 
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: title });
   }, [title]);
-
-  const limitNewSandboxes = isInCollection && hasMaxPublicSandboxes;
 
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={4}>
@@ -67,21 +58,7 @@ export const TemplateCategoryList = ({
           {title}
         </Text>
       </Stack>
-      {limitNewSandboxes ? (
-        <MaxPublicSandboxes
-          onCreateCheckout={onCreateCheckout}
-          isEligibleForTrial={isEligibleForTrial}
-          isBillingManager={isBillingManager}
-          canCheckout={canCheckout}
-        />
-      ) : null}
-      {isInactiveTeam ? (
-        <InactiveTeam
-          onCreateCheckout={onCreateCheckout}
-          isBillingManager={isBillingManager}
-          canCheckout={canCheckout}
-        />
-      ) : null}
+
       {!hasLogIn && isCloudTemplateList ? (
         <Stack direction="vertical" gap={4}>
           <Text id="unauthenticated-label" css={{ color: '#999999' }} size={3}>
@@ -104,7 +81,6 @@ export const TemplateCategoryList = ({
           templates.map(template => (
             <TemplateCard
               key={template.id}
-              disabled={limitNewSandboxes || isInactiveTeam}
               template={template}
               onSelectTemplate={onSelectTemplate}
               onOpenTemplate={onOpenTemplate}

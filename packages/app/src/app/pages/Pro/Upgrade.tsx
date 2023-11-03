@@ -16,7 +16,6 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ORGANIZATION_CONTACT_LINK,
   ORG_FEATURES,
-  PERSONAL_PRO_FEATURES,
   TEAM_PRO_FEATURES,
   TEAM_PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
@@ -26,7 +25,6 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
-import { UpsellTeamProCard } from './components/UpsellTeamProCard';
 import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
 import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
@@ -41,13 +39,7 @@ export const ProUpgrade = () => {
     isLoggedIn,
   } = useAppState();
   const { isBillingManager } = useWorkspaceAuthorization();
-  const {
-    isFree,
-    isPro,
-    isLegacyPersonalPro,
-    isLegacyFreeTeam,
-    isInactiveTeam,
-  } = useWorkspaceSubscription();
+  const { isFree, isPro } = useWorkspaceSubscription();
 
   /**
    * There is currently no way to know if teams have a custom subscription. This means we will
@@ -71,16 +63,6 @@ export const ProUpgrade = () => {
   const extraSeatsTeamPrice = usePriceCalculation({
     billingInterval: 'year',
     maxSeats: 3,
-  });
-
-  const personalProPriceBilledYearly = usePriceCalculation({
-    plan: 'individual',
-    billingInterval: 'year',
-  });
-
-  const personalProPriceBilledMonthly = usePriceCalculation({
-    plan: 'individual',
-    billingInterval: 'month',
   });
 
   const proCTA: CTA =
@@ -130,8 +112,6 @@ export const ProUpgrade = () => {
           <Stack gap={3} direction="vertical" align="center">
             <Stack gap={2} direction="horizontal" align="center">
               <Text size={24}>{activeTeamInfo.name}</Text>
-              {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
-              {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
               {isPro && <Badge variant="pro">Pro</Badge>}
             </Stack>
 
@@ -168,93 +148,54 @@ export const ProUpgrade = () => {
               },
             }}
           >
-            {isLegacyPersonalPro ? (
-              <>
-                <SubscriptionCard
-                  title={
-                    <Stack gap={2}>
-                      <Text>Personal</Text>
-                      <Badge variant="pro">Pro</Badge>
-                    </Stack>
-                  }
-                  features={PERSONAL_PRO_FEATURES}
-                  isHighlighted={!hasCustomSubscription}
-                  cta={proCTA}
-                >
-                  <Stack gap={1} direction="vertical">
-                    <Text size={32} weight="500">
-                      {personalProPriceBilledYearly || (
-                        <SkeletonText css={{ width: '60px', height: '40px' }} />
-                      )}
-                    </Text>
-                    <StyledPricingDetailsText>
-                      per editor per month,
-                      <br /> billed annually, or{' '}
-                      {personalProPriceBilledMonthly || (
-                        <SkeletonText
-                          css={{
-                            display: 'inline-block',
-                            marginBottom: '-4px',
-                            width: '20px',
-                          }}
-                        />
-                      )}{' '}
-                      per month.
-                    </StyledPricingDetailsText>
-                  </Stack>
-                </SubscriptionCard>
-                <UpsellTeamProCard trackingLocation="legacy personal pro page" />
-              </>
-            ) : (
-              <SubscriptionCard
-                title="Pro"
-                features={
-                  isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
-                }
-                isHighlighted={!hasCustomSubscription}
-                {...(isFree
-                  ? {
-                      customCta: (
-                        <TeamSubscriptionOptions
-                          buttonVariant="dark"
-                          buttonStyles={{
-                            padding: '12px 20px !important', // Otherwise it gets overridden.
-                            fontSize: '16px',
-                            lineHeight: '24px',
-                            fontWeight: 500,
-                            height: 'auto',
-                          }}
-                          trackingLocation="pro_page"
-                        />
-                      ),
-                    }
-                  : {
-                      cta: proCTA,
-                    })}
-              >
-                <Stack gap={1} direction="vertical">
-                  <Text size={32} weight="500">
-                    {oneSeatTeamPrice || (
-                      <SkeletonText css={{ width: '60px', height: '40px' }} />
-                    )}
-                  </Text>
-                  <StyledPricingDetailsText>
-                    per editor per month,
-                    <br /> **
-                    {extraSeatsTeamPrice || (
-                      <SkeletonText
-                        css={{
-                          display: 'inline-block',
-                          marginBottom: '-4px',
-                          width: '20px',
+            <SubscriptionCard
+              title="Pro"
+              features={
+                isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
+              }
+              isHighlighted={!hasCustomSubscription}
+              {...(isFree
+                ? {
+                    customCta: (
+                      <TeamSubscriptionOptions
+                        buttonVariant="dark"
+                        buttonStyles={{
+                          padding: '12px 20px !important', // Otherwise it gets overridden.
+                          fontSize: '16px',
+                          lineHeight: '24px',
+                          fontWeight: 500,
+                          height: 'auto',
                         }}
+                        trackingLocation="pro_page"
                       />
-                    )}{' '}
-                    extra for the 2nd and 3rd editor
-                  </StyledPricingDetailsText>
-                </Stack>
-              </SubscriptionCard>
-            )}
+                    ),
+                  }
+                : {
+                    cta: proCTA,
+                  })}
+            >
+              <Stack gap={1} direction="vertical">
+                <Text size={32} weight="500">
+                  {oneSeatTeamPrice || (
+                    <SkeletonText css={{ width: '60px', height: '40px' }} />
+                  )}
+                </Text>
+                <StyledPricingDetailsText>
+                  per editor per month,
+                  <br /> **
+                  {extraSeatsTeamPrice || (
+                    <SkeletonText
+                      css={{
+                        display: 'inline-block',
+                        marginBottom: '-4px',
+                        width: '20px',
+                      }}
+                    />
+                  )}{' '}
+                  extra for the 2nd and 3rd editor
+                </StyledPricingDetailsText>
+              </Stack>
+            </SubscriptionCard>
 
             <SubscriptionCard
               title="Organization"

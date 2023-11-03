@@ -9,12 +9,8 @@ import { connectStateResults } from 'react-instantsearch-dom';
 import { createGlobalStyle } from 'styled-components';
 import { Text, Stack } from '@codesandbox/components';
 import { TemplateFragment } from 'app/graphql/types';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { SearchResultList } from './SearchResultList';
 import { Loader } from '../Loader';
-import { MaxPublicSandboxes, InactiveTeam } from '../stripes';
 
 const LoadingIndicator = connectStateResults(({ isSearchStalled }) =>
   isSearchStalled ? <Loader /> : null
@@ -35,7 +31,6 @@ export const SearchResults = ({
   onSelectTemplate,
   onOpenTemplate,
   officialTemplates,
-  canCheckout,
 }: {
   onCreateCheckout: () => void;
   isInCollection: boolean;
@@ -43,14 +38,7 @@ export const SearchResults = ({
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
   officialTemplates: TemplateFragment[];
-  canCheckout: boolean;
 }) => {
-  const { isEligibleForTrial, isInactiveTeam } = useWorkspaceSubscription();
-  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
-  const { isBillingManager } = useWorkspaceAuthorization();
-
-  const limitNewSandboxes = isInCollection && hasMaxPublicSandboxes;
-
   return (
     <>
       <GlobalSearchStyles />
@@ -82,25 +70,8 @@ export const SearchResults = ({
             />
           </Text>
 
-          {limitNewSandboxes ? (
-            <MaxPublicSandboxes
-              onCreateCheckout={onCreateCheckout}
-              isEligibleForTrial={isEligibleForTrial}
-              isBillingManager={isBillingManager}
-              canCheckout={canCheckout}
-            />
-          ) : null}
-          {isInactiveTeam ? (
-            <InactiveTeam
-              onCreateCheckout={onCreateCheckout}
-              isBillingManager={isBillingManager}
-              canCheckout={canCheckout}
-            />
-          ) : null}
-
           <LoadingIndicator />
           <SearchResultList
-            disableTemplates={limitNewSandboxes}
             onSelectTemplate={onSelectTemplate}
             onOpenTemplate={onOpenTemplate}
             officialTemplates={officialTemplates}

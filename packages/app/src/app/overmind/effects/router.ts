@@ -76,4 +76,10 @@ export default new (class RouterEffect {
     const currentUrl = new URL(location.href);
     return currentUrl.searchParams.get(key);
   }
+
+  clearWorkspaceId(): void {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.delete('workspace');
+    history.replace({ search: searchParams.toString() });
+  }
 })();

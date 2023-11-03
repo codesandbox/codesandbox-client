@@ -6171,7 +6171,7 @@ export type AllTeamsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
-    personalWorkspaceId: any;
+    primaryWorkspaceId: any | null;
     eligibleForTrial: boolean;
     workspaces: Array<{
       __typename?: 'Team';
@@ -6999,15 +6999,6 @@ export type GetTeamQuery = {
   } | null;
 };
 
-export type GetPersonalWorkspaceIdQueryVariables = Exact<{
-  [key: string]: never;
-}>;
-
-export type GetPersonalWorkspaceIdQuery = {
-  __typename?: 'RootQueryType';
-  me: { __typename?: 'CurrentUser'; personalWorkspaceId: any } | null;
-};
-
 export type GetPrivateNpmRegistryQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -7487,17 +7478,6 @@ export type SidebarSyncedSandboxFragmentFragment = {
 export type SidebarTemplateFragmentFragment = {
   __typename?: 'Template';
   id: any | null;
-};
-
-export type PersonalSidebarDataQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PersonalSidebarDataQuery = {
-  __typename?: 'RootQueryType';
-  me: {
-    __typename?: 'CurrentUser';
-    sandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
-    templates: Array<{ __typename?: 'Template'; id: any | null }>;
-  } | null;
 };
 
 export type TeamSidebarDataQueryVariables = Exact<{

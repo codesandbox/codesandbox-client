@@ -5,22 +5,20 @@ import { useActions, useAppState } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
   const { environment } = useAppState();
   const history = useHistory();
 
-  const {
-    isTeamSpace,
-    isPersonalSpace,
-    isTeamViewer,
-  } = useWorkspaceAuthorization();
+  const { isPro } = useWorkspaceSubscription();
+  const { isPersonalSpace, isTeamViewer } = useWorkspaceAuthorization();
 
   const showRepositoryImport = !environment.isOnPrem;
-  const showProWorkspace = !environment.isOnPrem && isPersonalSpace;
+  const showProWorkspace = !environment.isOnPrem && !isPro && isPersonalSpace;
 
   return (
     <Stack direction="vertical" gap={9}>
@@ -68,7 +66,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           </ButtonInverseLarge>
         )}
 
-        {isTeamSpace && !isTeamViewer ? (
+        {!isPersonalSpace && !isTeamViewer ? (
           <ButtonInverseLarge
             onClick={() => {
               track('Empty State Card - Invite members', {

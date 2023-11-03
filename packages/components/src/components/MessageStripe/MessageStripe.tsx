@@ -103,7 +103,7 @@ const MessageStripe = ({
     }
 
     return (
-      <Text size={13} lineHeight="16px">
+      <Text size={13} css={{ flexGrow: 1 }} lineHeight="16px">
         {child}
       </Text>
     );
