@@ -24,6 +24,7 @@ export type CheckoutOptions = {
     | 'editor_seats_upgrade'
     | 'pro_page'
     | 'user_settings'
+    | 'user_menu'
     | 'dashboard_workspace_settings'
     | 'restrictions_banner'
     | 'max_public_repos';
