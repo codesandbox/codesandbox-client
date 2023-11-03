@@ -1,5 +1,5 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { useState } from 'react';
+import { useEffects } from 'app/overmind';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 export const useGlobalPersistedState = <T>(
   key: string,
@@ -24,9 +24,10 @@ const usePersistedState = <T>(
   key: string,
   initialValue: T
 ): [T, Dispatch<SetStateAction<T>>, () => void] => {
+  const { browser } = useEffects();
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
-      const item: T | null = JSON.parse(localStorage.getItem(key));
+      const item: T | null = browser.storage.get<T>(key);
       return item ?? initialValue;
     } catch (error) {
       console.error(
@@ -37,12 +38,24 @@ const usePersistedState = <T>(
     }
   });
 
+  useEffect(
+    () =>
+      browser.storage.subscribe<T>(key, updatedValue => {
+        if (updatedValue) {
+          setStoredValue(updatedValue);
+        } else {
+          setStoredValue(initialValue);
+        }
+      }),
+    []
+  );
+
   const setValue: Dispatch<SetStateAction<T>> = value => {
     try {
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
-      localStorage.setItem(key, JSON.stringify(valueToStore));
+      browser.storage.set<T>(key, valueToStore);
     } catch (error) {
       console.error(`[persisted-state]:`, error);
     }
@@ -51,7 +64,7 @@ const usePersistedState = <T>(
   const clearValue = () => {
     try {
       setStoredValue(initialValue);
-      localStorage.removeItem(key);
+      browser.storage.remove(key);
     } catch (error) {
       console.error(`[persisted-state]:`, error);
     }
