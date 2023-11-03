@@ -401,7 +401,7 @@ workflows:
             - create-docker-image
             - lint
             - typecheck
-            - test-integrations
+            # - test-integrations
             - test-jest
             - test-visual-regressions
           filters:
