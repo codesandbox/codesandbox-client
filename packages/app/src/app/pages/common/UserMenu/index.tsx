@@ -103,6 +103,7 @@ export const UserMenu: FunctionComponent & {
 
           {showBecomePro && isPersonalSpace && (
             <Menu.Item
+              disabled={checkout.status === 'loading'}
               onClick={() => createCheckout({ trackingLocation: 'user_menu' })}
             >
               <Stack align="center" gap={2}>
