@@ -2,19 +2,10 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { BatchHttpLink } from 'apollo-link-batch-http';
 import { setContext } from 'apollo-link-context';
-import {
-  InMemoryCache,
-  IntrospectionFragmentMatcher,
-} from 'apollo-cache-inmemory';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import { onError } from 'apollo-link-error';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
-// import introspectionQueryResultData from './introspection-result';
-
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-  // TODO: find why this does not match
-  // introspectionQueryResultData,
-});
 
 const httpLink = new BatchHttpLink({
   uri: '/api/graphql',
@@ -70,7 +61,6 @@ export const client = new ApolloClient({
   ),
   cache: new InMemoryCache({
     dataIdFromObject: o => o.id,
-    fragmentMatcher,
     cacheRedirects: {
       Query: {
         collection: (_, args, { getCacheKey }) =>

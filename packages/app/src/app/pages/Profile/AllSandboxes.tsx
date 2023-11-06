@@ -10,7 +10,6 @@ import {
   IconButton,
   Menu,
 } from '@codesandbox/components';
-import { TeamType } from 'app/graphql/types';
 import css from '@styled-system/css';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { motion } from 'framer-motion';
@@ -221,6 +220,7 @@ const UpgradeBanner = () => {
     profile: { current },
     dashboard: { teams },
     activeTeamInfo,
+    primaryWorkspaceId,
   } = useAppState();
   const { modalOpened } = useActions();
   const { storage } = useEffects().browser;
@@ -242,7 +242,7 @@ const UpgradeBanner = () => {
 
   if (!showUpgradeMessage) return null;
 
-  const personalWorkspace = teams.find(team => team.type === TeamType.Personal);
+  const primaryWorkspace = teams.find(team => team.id === primaryWorkspaceId);
 
   return (
     <Stack
@@ -280,7 +280,7 @@ const UpgradeBanner = () => {
         />
         {isPro ? (
           <Text size={2} css={{ lineHeight: '16px' }}>
-            {personalWorkspace.settings.minimumPrivacy === 0
+            {primaryWorkspace?.settings.minimumPrivacy === 0
               ? 'Change default privacy settings to hide your drafts'
               : 'Your drafts are hidden. Change default privacy settings to show drafts'}
           </Text>

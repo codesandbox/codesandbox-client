@@ -17,9 +17,9 @@ import {
   sandboxUrl,
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
 import {
@@ -157,8 +157,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const actions = useActions();
   const { dashboard, activeTeam } = useAppState();
   const { analytics } = useEffects();
-  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
-  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {
@@ -462,10 +460,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           collectionPath: activeTeam ? null : '/',
         });
       } else if (dropPage === 'sandboxes') {
-        if ((isFree && hasMaxPublicSandboxes) || isInactiveTeam) {
-          return;
-        }
-
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,

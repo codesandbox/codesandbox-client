@@ -5,7 +5,6 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { Alert } from '../Common/Alert';
 
 const EVENT_PARAMS = {
@@ -17,7 +16,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
   const disabled = checkout.status === 'loading';
 
-  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const docsUrl = `${
@@ -41,41 +40,31 @@ export const EditorSeatsUpgrade: React.FC = () => {
           >
             Learn more
           </Button>
-          {isPersonalSpace ? (
-            <Button
-              as="a"
-              href={proUrl({ source: 'editor_seats_upgrade' })}
-              variant="primary"
-              autoWidth
-            >
-              Upgrade to Pro
-            </Button>
-          ) : (
-            <Button
-              disabled={disabled}
-              variant="primary"
-              onClick={() => {
-                if (isEligibleForTrial) {
-                  const event = 'Editor seats modal - trial clicked';
-                  track(
-                    isBillingManager ? event : `${event} - As non-admin`,
-                    EVENT_PARAMS
-                  );
-                } else {
-                  track('Editor seats modal - upgrade clicked', EVENT_PARAMS);
-                }
 
-                createCheckout({
-                  trackingLocation: 'editor_seats_upgrade',
-                });
-              }}
-              autoWidth
-            >
-              <Text>
-                {isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro'}
-              </Text>
-            </Button>
-          )}
+          <Button
+            disabled={disabled}
+            variant="primary"
+            onClick={() => {
+              if (isEligibleForTrial) {
+                const event = 'Editor seats modal - trial clicked';
+                track(
+                  isBillingManager ? event : `${event} - As non-admin`,
+                  EVENT_PARAMS
+                );
+              } else {
+                track('Editor seats modal - upgrade clicked', EVENT_PARAMS);
+              }
+
+              createCheckout({
+                trackingLocation: 'editor_seats_upgrade',
+              });
+            }}
+            autoWidth
+          >
+            <Text>
+              {isEligibleForTrial ? 'Start free trial' : 'Upgrade to Pro'}
+            </Text>
+          </Button>
         </Stack>
       ) : (
         <Stack direction="vertical" gap={6}>

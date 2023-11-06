@@ -24,7 +24,6 @@ import { SolidSkeleton } from 'app/pages/Dashboard/Components/Skeleton';
 import { ProjectFragment as Repository } from 'app/graphql/types';
 import { AuthorizeForSuggested } from 'app/components/CreateSandbox/Import/AuthorizeForSuggested';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 import { EmptyPage } from '../EmptyPage';
@@ -36,7 +35,6 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
   const [isImporting, setIsImporting] = useState<boolean>(false);
   const githubAccounts = useGithubAccounts();
   const { restrictsPrivateRepos } = useGitHubPermissions();
-  const { isTeamSpace } = useWorkspaceAuthorization();
   const { isFree } = useWorkspaceSubscription();
 
   const selectOptions = useMemo(
@@ -86,7 +84,7 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
     const isPersonalRepository =
       repo.owner === githubAccounts?.data?.personal?.login;
 
-    if (isPersonalRepository && isTeamSpace) {
+    if (isPersonalRepository) {
       track(
         `Suggested repos ${page} page - Imported personal repository into team space`,
         {

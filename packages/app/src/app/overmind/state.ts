@@ -33,7 +33,7 @@ type State = {
   contributors: string[];
   user: CurrentUser | null;
   activeWorkspaceAuthorization: TeamMemberAuthorization;
-  personalWorkspaceId: string | null;
+  primaryWorkspaceId: string | null;
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
   userCanStartTrial: boolean;
@@ -135,7 +135,7 @@ export const state: State = {
   ),
   activeTeam: null,
   activeTeamInfo: null,
-  personalWorkspaceId: null,
+  primaryWorkspaceId: null,
   userCanStartTrial: false,
   connected: true,
   notifications: [],

@@ -200,7 +200,6 @@ class Live {
 
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params,
-        // @ts-expect-error Wrong typings
         reconnectAfterMs,
       });
 

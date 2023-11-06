@@ -4,19 +4,16 @@ import { useActions, useAppState } from 'app/overmind';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Header } from '../../../Components/Header';
 import { TeamSettings } from './TeamSettings';
-import { UserSettings } from './UserSettings';
 
 import { GRID_MAX_WIDTH } from '../../../Components/VariableGrid/constants';
+import { UserSettings } from './UserSettings';
 
 export const Settings = () => {
-  const {
-    activeTeam,
-    user,
-    activeTeamInfo,
-    personalWorkspaceId,
-  } = useAppState();
+  const { activeTeam, user, activeTeamInfo } = useAppState();
+  const { isPersonalSpace } = useWorkspaceAuthorization();
 
   const {
     dashboard: { dashboardMounted },
@@ -34,12 +31,9 @@ export const Settings = () => {
     );
   }
 
-  const Component =
-    activeTeam === personalWorkspaceId ? UserSettings : TeamSettings;
-
   return (
     <Element css={css({ width: '100%', maxWidth: GRID_MAX_WIDTH })} marginY={7}>
-      <Component />
+      {isPersonalSpace ? <UserSettings /> : <TeamSettings />}
     </Element>
   );
 };

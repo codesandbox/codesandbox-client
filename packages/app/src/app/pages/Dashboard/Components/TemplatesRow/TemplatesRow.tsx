@@ -6,7 +6,6 @@ import { TemplateCard } from 'app/components/CreateSandbox/TemplateCard';
 import { useActions, useAppState } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { EmptyPage } from '../EmptyPage';
 
@@ -22,7 +21,7 @@ export const TemplatesRow: React.FC = () => {
   const officialTemplates = useOfficialTemplates();
   const actions = useActions();
   const { dashboard } = useAppState();
-  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
+
   const [hasBetaEditorExperiment] = useGlobalPersistedState(
     'BETA_SANDBOX_EDITOR',
     false
@@ -93,7 +92,6 @@ export const TemplatesRow: React.FC = () => {
               <Stack as="li" key={template.id}>
                 <TemplateCard
                   key={template.id}
-                  disabled={hasMaxPublicSandboxes}
                   padding={24}
                   template={template}
                   onOpenTemplate={handleOpenTemplate}

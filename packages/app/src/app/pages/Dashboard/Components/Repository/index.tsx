@@ -34,10 +34,10 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     else onMenuEvent(event, repositoryId);
   };
 
-  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
+  const { isFree } = useWorkspaceSubscription();
 
   const isPrivate = providerRepository?.private;
-  const restricted = (isFree && isPrivate) || isInactiveTeam;
+  const restricted = isFree && isPrivate;
 
   const props: RepositoryProps = {
     repository: {

@@ -455,7 +455,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   onSelectTemplate={selectTemplate}
                   onOpenTemplate={openTemplate}
                   officialTemplates={officialTemplates}
-                  canCheckout={canCheckout}
                 />
               ) : (
                 <Stack direction="vertical" gap={2}>

@@ -72,24 +72,22 @@ export const CollaboratorList = () => {
         paddingBottom: 4,
       })}
     >
-      {team && team.id !== author.personalWorkspaceId && (
-        <Animated showMountAnimations={showMountAnimations}>
-          <CollaboratorItem
-            name={team.name}
-            avatarComponent={
-              <TeamAvatar
-                style={{ width: '100%', height: '100%', borderWidth: 0 }}
-                name={team.name}
-                avatar={team.avatarUrl}
-              />
-            }
-            authorization={Authorization.Owner}
-            permissions={[]}
-            permissionText="Can Access"
-            subtext="All team members"
-          />
-        </Animated>
-      )}
+      <Animated showMountAnimations={showMountAnimations}>
+        <CollaboratorItem
+          name={team.name}
+          avatarComponent={
+            <TeamAvatar
+              style={{ width: '100%', height: '100%', borderWidth: 0 }}
+              name={team.name}
+              avatar={team.avatarUrl}
+            />
+          }
+          authorization={Authorization.Owner}
+          permissions={[]}
+          permissionText="Can edit"
+          subtext="All workspace members"
+        />
+      </Animated>
 
       <Animated showMountAnimations={showMountAnimations}>
         <CollaboratorItem

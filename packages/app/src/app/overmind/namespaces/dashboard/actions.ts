@@ -164,7 +164,7 @@ export const getTeams = async ({ state, effects }: Context) => {
   }
 
   state.dashboard.teams = teams.me.workspaces;
-  state.personalWorkspaceId = teams.me.personalWorkspaceId;
+  state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
   state.userCanStartTrial = teams.me.eligibleForTrial;
 };
 
@@ -203,8 +203,9 @@ export const leaveTeam = async ({ state, effects, actions }: Context) => {
       teamId: state.activeTeam,
     });
 
-    actions.setActiveTeam({ id: state.personalWorkspaceId! });
-    actions.dashboard.getTeams();
+    await actions.dashboard.getTeams();
+
+    actions.internal.setFallbackWorkspace();
 
     effects.notificationToast.success(
       `You successfully left the ${state.activeTeamInfo.name} workspace`
@@ -1316,23 +1317,14 @@ export const updateTeamAvatar = async (
 ) => {
   if (!state.activeTeamInfo || !state.user) return;
   const oldAvatar = state.activeTeamInfo.avatarUrl;
-  const isPersonalWorkspace =
-    state.activeTeamInfo.id === state.personalWorkspaceId;
-  state.activeTeamInfo.avatarUrl = url;
-  if (isPersonalWorkspace) {
-    state.user.avatarUrl = url;
-  }
 
+  state.activeTeamInfo.avatarUrl = url;
   effects.analytics.track('Team - Update Team Avatar', { dashboardVersion: 2 });
 
   try {
     await effects.api.updateTeamAvatar(name, url, teamId);
   } catch (error) {
     state.activeTeamInfo.avatarUrl = oldAvatar;
-    if (isPersonalWorkspace) {
-      // @ts-ignore
-      state.user.avatarUrl = oldAvatar;
-    }
 
     actions.internal.handleError({
       message: "We weren't able to update your team avatar",
@@ -1469,9 +1461,10 @@ export const deleteWorkspace = async ({ actions, effects, state }: Context) => {
     await effects.gql.mutations.deleteWorkspace({ teamId: state.activeTeam });
 
     actions.modalClosed();
-    actions.setActiveTeam({ id: state.personalWorkspaceId! });
     effects.router.redirectToDashboard();
-    actions.dashboard.getTeams();
+    await actions.dashboard.getTeams();
+
+    actions.internal.setFallbackWorkspace();
 
     effects.notificationToast.success(`Your workspace was deleted`);
   } catch (error) {
@@ -1540,9 +1533,7 @@ export const setTeamMinimumPrivacy = async (
       updateDrafts,
     });
 
-    const selectedTeam = state.dashboard.teams.find(
-      team => team.id === state.personalWorkspaceId
-    );
+    const selectedTeam = state.dashboard.teams.find(team => team.id === teamId);
 
     if (selectedTeam && selectedTeam.settings) {
       selectedTeam.settings.minimumPrivacy = minimumPrivacy;

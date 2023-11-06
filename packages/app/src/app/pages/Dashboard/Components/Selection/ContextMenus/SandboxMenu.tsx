@@ -8,7 +8,6 @@ import {
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { Context, MenuItem } from '../ContextMenu';
@@ -24,12 +23,13 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 }) => {
   const actions = useActions();
   const { user, activeTeam } = useAppState();
-  const { isFree, isPro, isInactiveTeam } = useWorkspaceSubscription();
-  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
+
+  const { isFree, isPro } = useWorkspaceSubscription();
   const [hasBetaEditorExperiment] = useGlobalPersistedState(
     'BETA_SANDBOX_EDITOR',
     false
   );
+
   const {
     browser: { copyToClipboard },
   } = useEffects();
@@ -187,9 +187,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.modals.moveSandboxModal.open({
               sandboxIds: [item.sandbox.id],
               preventSandboxLeaving:
-                item.sandbox.permissions.preventSandboxLeaving ||
-                hasMaxPublicSandboxes ||
-                isInactiveTeam,
+                item.sandbox.permissions.preventSandboxLeaving,
             });
           }}
         >

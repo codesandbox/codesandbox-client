@@ -18,7 +18,7 @@ const getEventName = (
 
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
 
@@ -35,61 +35,12 @@ export const PrivateRepoFreeTeam: React.FC = () => {
               event_source: 'UI',
             });
 
-            if (isPersonalSpace) {
-              window.location.href = '/pro';
-            } else {
-              createCheckout({
-                trackingLocation: 'dashboard_private_repo_upgrade',
-              });
-            }
-          }}
-        >
-          {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
-        </MessageStripe.Action>
-      )}
-    </MessageStripe>
-  );
-};
-
-export const MaxReposFreeTeam: React.FC = () => {
-  const { isEligibleForTrial } = useWorkspaceSubscription();
-  const { isBillingManager } = useWorkspaceAuthorization();
-
-  const [checkout, createCheckout, canCheckout] = useCreateCheckout();
-
-  return (
-    <MessageStripe justify="space-between" variant="trial">
-      Free teams are limited to 3 public repositories. Upgrade for unlimited
-      public and private repositories.
-      {canCheckout ? (
-        <MessageStripe.Action
-          disabled={checkout.status === 'loading'}
-          onClick={() => {
             createCheckout({
               trackingLocation: 'dashboard_private_repo_upgrade',
             });
-
-            track(getEventName(isEligibleForTrial, isBillingManager), {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
           }}
         >
           {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
-        </MessageStripe.Action>
-      ) : (
-        <MessageStripe.Action
-          as="a"
-          href="https://codesandbox.io/docs/learn/plans/trials"
-          onClick={() => {
-            track('Limit banner: repos - Learn More', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-          }}
-          variant="trial"
-        >
-          Learn more
         </MessageStripe.Action>
       )}
     </MessageStripe>

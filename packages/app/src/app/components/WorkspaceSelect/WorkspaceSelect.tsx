@@ -1,6 +1,5 @@
 import React from 'react';
 import { useActions, useAppState } from 'app/overmind';
-import { TeamType } from 'app/graphql/types';
 import {
   Badge,
   Text,
@@ -9,12 +8,11 @@ import {
   Icon,
   Tooltip,
 } from '@codesandbox/components';
+import { SubscriptionStatus } from 'app/graphql/types';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { determineSpecialBadges } from 'app/utils/teams';
-import { useHistory } from 'react-router';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -26,31 +24,21 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
     const actions = useActions();
-    const { dashboard, user } = state;
-    const history = useHistory();
-    const {
-      isLegacyFreeTeam,
-      isInactiveTeam,
-      isPro,
-    } = useWorkspaceSubscription();
+    const { dashboard } = state;
+    const { isPro } = useWorkspaceSubscription();
 
     if (dashboard.teams.length === 0) return null;
 
-    const personalWorkspace = dashboard.teams.find(
-      t => t.type === TeamType.Personal
-    )!;
+    const primaryWorkspace = dashboard.teams.find(
+      t => t.id === state.primaryWorkspaceId
+    );
 
     const selectedTeam = dashboard.teams.find(t => t.id === selectedTeamId);
 
     const workspaces = [
-      personalWorkspace,
+      ...(primaryWorkspace ? [primaryWorkspace] : []),
       ...sortBy(
-        dashboard.teams.filter(
-          t =>
-            t.type === TeamType.Team &&
-            // New teams with no subscription information are automatically filtered out
-            !(t.legacy === false && t.subscription === null)
-        ),
+        dashboard.teams.filter(t => t.id !== state.primaryWorkspaceId),
         t => t.name.toLowerCase()
       ),
     ];
@@ -107,9 +95,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   {selectedTeam?.name}
                 </Text>
 
-                {isLegacyFreeTeam && <Badge variant="trial">Free</Badge>}
                 {isPro && <Badge variant="pro">Pro</Badge>}
-                {isInactiveTeam && <Badge variant="neutral">Inactive</Badge>}
               </Stack>
 
               <Icon name="chevronDown" size={8} />
@@ -125,10 +111,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               }}
             >
               {workspaces.map(team => {
-                const { isTeamFreeLegacy, isInactive } = determineSpecialBadges(
-                  team,
-                  state.environment.isOnPrem
-                );
+                const showPro =
+                  team.subscription?.status === SubscriptionStatus.Active ||
+                  team.subscription?.status === SubscriptionStatus.Trialing;
 
                 return (
                   <Stack
@@ -146,11 +131,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     }}
                   >
                     <TeamAvatar
-                      avatar={
-                        team.type === TeamType.Personal && user
-                          ? user.avatarUrl
-                          : team.avatarUrl
-                      }
+                      avatar={team.avatarUrl}
                       name={team.name}
                       size="small"
                       style={{ overflow: 'hidden' }}
@@ -165,8 +146,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                         {team.name}
                       </Text>
 
-                      {isTeamFreeLegacy && <Badge variant="trial">Free</Badge>}
-                      {isInactive && <Badge variant="neutral">Inactive</Badge>}
+                      {showPro && <Badge variant="pro">Pro</Badge>}
                     </Stack>
                   </Stack>
                 );
@@ -180,16 +160,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   textAlign: 'left',
                 }}
                 onSelect={() => {
-                  if (state.environment.isOnPrem) {
-                    actions.openCreateTeamModal({ step: 'create' });
-                  } else {
-                    track('Workspace Selector - Create Team', {
-                      codesandbox: 'V1',
-                      event_source: 'UI',
-                    });
-
-                    history.push('/pro');
-                  }
+                  actions.openCreateTeamModal({ step: 'create' });
                 }}
               >
                 <Stack
@@ -204,11 +175,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 >
                   <Icon name="plus" size={10} />
                 </Stack>
-                <Text size={3}>
-                  {state.environment.isOnPrem
-                    ? 'Create workspace'
-                    : 'Create a pro workspace'}
-                </Text>
+                <Text size={3}>Create workspace</Text>
               </Stack>
             </Menu.List>
           </Menu>

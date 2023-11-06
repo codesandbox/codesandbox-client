@@ -1,7 +1,6 @@
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { folder, useControls } from 'leva';
-import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 import {
   SubscriptionDebugStatus,
   useWorkspaceSubscription,
@@ -9,8 +8,7 @@ import {
 
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const { activeTeamInfo } = useAppState();
-  const { isTeamSpace } = useWorkspaceAuthorization();
-  const { isFree, isInactiveTeam } = useWorkspaceSubscription();
+  const { isFree } = useWorkspaceSubscription();
   const debugLimits = useControls('Limits', {
     debugLimits: folder(
       {
@@ -55,20 +53,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       authorization === TeamMemberAuthorization.Write
   );
 
-  const numberOfEditors = isTeamSpace
-    ? editorOrAdminAuthorizations?.length || 1
-    : 1; // Personal
-
-  if (isInactiveTeam) {
-    return {
-      numberOfEditors,
-      hasMaxNumberOfEditors: undefined,
-      numberOfEditorsIsOverTheLimit: undefined,
-      hasMaxPublicRepositories: undefined,
-      hasMaxPrivateRepositories: undefined,
-      hasMaxPublicSandboxes: undefined,
-    };
-  }
+  const numberOfEditors = editorOrAdminAuthorizations?.length || 1;
 
   const hasMaxNumberOfEditors =
     debugLimits?.restrictEditors ||
@@ -102,7 +87,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const maxPublicSandboxes = limits.maxPublicSandboxes;
 
   const hasMaxPublicSandboxes =
-    debugLimits?.hasMaxPrivateRepositories ||
+    debugLimits?.hasMaxPublicSandboxes ||
     (isFree === true &&
       maxPublicSandboxes !== null &&
       publicSandboxesQuantity >= maxPublicSandboxes);
