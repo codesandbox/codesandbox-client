@@ -3,7 +3,7 @@ import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 import { Select } from '@codesandbox/components';
 
 export const Container = styled.div`
-  height: 500px;
+  height: 530px;
   overflow: hidden;
   border-radius: 4px;
   background-color: #151515;

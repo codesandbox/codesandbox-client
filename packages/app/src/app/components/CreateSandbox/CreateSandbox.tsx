@@ -674,7 +674,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         </Panel>
                       ))
                     : null}
-                  <ExperimentalBetaEditor />
+                  {tabState.selectedId === 'quickstart' && (
+                    <ExperimentalBetaEditor />
+                  )}
                 </Stack>
               ))}
 

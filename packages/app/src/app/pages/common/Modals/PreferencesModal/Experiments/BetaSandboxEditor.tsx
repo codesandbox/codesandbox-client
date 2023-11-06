@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { useAppState, useEffects } from 'app/overmind';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { PaddedPreference } from '../elements';
 
 const FEEDBACK_OPTIONS_LABEL = {
@@ -45,7 +46,9 @@ export const BetaSandboxEditor = () => {
     value => value
   );
 
-  const isInProd = window.location.host === 'codesandbox.io';
+  const isInProd =
+    window.location.host === 'codesandbox.io' ||
+    window.location.host === 'codesandbox.stream';
 
   return (
     <>
@@ -55,6 +58,7 @@ export const BetaSandboxEditor = () => {
             setFeedbackMode(true);
           } else {
             setBetaSandboxEditor(true);
+            track('Enable new sandbox editor - User preferences');
           }
         }}
         title="Sandbox beta editor"
@@ -64,8 +68,7 @@ export const BetaSandboxEditor = () => {
       />
 
       <Text block marginTop={2} size={3} variant="muted">
-        Run your sandboxes in a faster, more stable, and collaborative by
-        default editor.
+        Run your sandboxes in a faster and more stable editor.
       </Text>
 
       {feedbackMode && (
@@ -90,6 +93,7 @@ export const BetaSandboxEditor = () => {
 
             setFeedbackMode(false);
             setBetaSandboxEditor(false);
+            track('Disable new sandbox editor - User preferences');
             setFeedbackOptions({
               buggyExperience: false,
               missingLiveRoom: false,

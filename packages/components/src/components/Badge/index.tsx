@@ -13,7 +13,7 @@ const BG_MAP: Record<BadgeProps['variant'], string> = {
   pro: '#EDFFA5',
   neutral: '#2e2e2e',
   warning: 'rgba(255, 255, 255, 0.06)',
-  highlight: '#edffa5',
+  highlight: '#ffffff',
   error: '#EF7A7A',
 };
 

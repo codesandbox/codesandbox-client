@@ -8,6 +8,7 @@ import {
 } from '@codesandbox/components';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { useActions } from 'app/overmind';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { UnstyledButtonLink } from './elements';
 
 export const ExperimentalBetaEditor = () => {
@@ -19,7 +20,7 @@ export const ExperimentalBetaEditor = () => {
 
   if (betaSandboxEditor) {
     return (
-      <Stack justify="center">
+      <Stack justify="center" padding={2}>
         <Text size={3}>
           Open{' '}
           <UnstyledButtonLink
@@ -30,7 +31,7 @@ export const ExperimentalBetaEditor = () => {
           >
             experiments
           </UnstyledButtonLink>{' '}
-          to disable the beta editor
+          to disable the new sandbox editor
         </Text>
       </Stack>
     );
@@ -38,15 +39,20 @@ export const ExperimentalBetaEditor = () => {
 
   return (
     <MessageStripe variant="primary">
-      <Stack direction="horizontal" justify="space-between" gap={4}>
-        <Stack direction="horizontal" gap={1}>
+      <Stack direction="horizontal" justify="space-between" align="center">
+        <Stack direction="horizontal" align="center" gap={1}>
           <Badge icon="sandbox" variant="highlight">
             Beta
           </Badge>
           <Text weight="500">Try the new sandbox editor.</Text>
-          <Text>Faster, more stable, and collaborative by default.</Text>
+          <Text>For a faster and more stable prototyping experience.</Text>
         </Stack>
-        <Switch onChange={() => setBetaSandboxEditor(true)} />
+        <Switch
+          onChange={() => {
+            setBetaSandboxEditor(true);
+            track('Enable new sandbox editor - Create modal');
+          }}
+        />
       </Stack>
     </MessageStripe>
   );
