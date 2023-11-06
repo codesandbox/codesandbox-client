@@ -8,7 +8,7 @@ import {
 import React, { useState } from 'react';
 
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
-import { useAppState } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import { PaddedPreference } from '../elements';
 
 const FEEDBACK_OPTIONS_LABEL = {
@@ -19,8 +19,13 @@ const FEEDBACK_OPTIONS_LABEL = {
   other: 'Something else',
 };
 
+const ROWS_REQUEST_URL =
+  'https://api.rows.com/v1beta1/spreadsheets/JFBFxxAPvXEYDY7cU9GCA/tables/15558697-182d-43f7-a1f2-6c293a557295/values/A:F:append';
+const ROWS_API_KEY = '1WcvujvzSSQ1GtbnoYvrGb8liPJFWud915ELpjwnVfV5';
+
 export const BetaSandboxEditor = () => {
   const { user } = useAppState();
+  const effects = useEffects();
 
   const [betaSandboxEditor, setBetaSandboxEditor] = useGlobalPersistedState(
     'BETA_SANDBOX_EDITOR',
@@ -39,6 +44,8 @@ export const BetaSandboxEditor = () => {
   const atLeastOneFeedbackOptionSelected = Object.values(feedbackOptions).some(
     value => value
   );
+
+  const isInProd = window.location.host === 'codesandbox.io';
 
   return (
     <>
@@ -66,8 +73,20 @@ export const BetaSandboxEditor = () => {
           as="form"
           onSubmit={ev => {
             ev.preventDefault();
-
-            // TODO: http request with feedbackOptions + user.id;
+            if (isInProd) {
+              effects.http.post(
+                ROWS_REQUEST_URL,
+                {
+                  values: [[user.id, ...Object.values(feedbackOptions)]],
+                },
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + ROWS_API_KEY,
+                  },
+                }
+              );
+            }
 
             setFeedbackMode(false);
             setBetaSandboxEditor(false);

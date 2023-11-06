@@ -40,6 +40,7 @@ import { GithubRepoToImport } from './Import/types';
 import { ImportInfo } from './Import/ImportInfo';
 import { FromRepo } from './Import/FromRepo';
 import { ImportSandbox } from './ImportSandbox';
+import { ExperimentalBetaEditor } from './ExperimentalBetaEditor';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -457,7 +458,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   canCheckout={canCheckout}
                 />
               ) : (
-                <>
+                <Stack direction="vertical" gap={2}>
                   <Panel tab={tabState} id="quickstart">
                     <TemplateCategoryList
                       canCheckout={canCheckout}
@@ -674,7 +675,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         </Panel>
                       ))
                     : null}
-                </>
+                  <ExperimentalBetaEditor />
+                </Stack>
               ))}
 
             {viewState === 'fromTemplate' ? (

@@ -158,3 +158,15 @@ export const StyledSelect = styled(Select)`
     color: #e5e5e5;
   }
 `;
+
+export const UnstyledButtonLink = styled.button`
+  appearance: none;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  border: none;
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+`;
