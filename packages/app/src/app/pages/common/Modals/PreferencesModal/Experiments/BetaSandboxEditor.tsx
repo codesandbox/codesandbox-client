@@ -22,7 +22,8 @@ const FEEDBACK_OPTIONS_LABEL = {
 
 const ROWS_REQUEST_URL =
   'https://api.rows.com/v1beta1/spreadsheets/JFBFxxAPvXEYDY7cU9GCA/tables/15558697-182d-43f7-a1f2-6c293a557295/values/A:F:append';
-const ROWS_API_KEY = '1WcvujvzSSQ1GtbnoYvrGb8liPJFWud915ELpjwnVfV5';
+
+const ROWS_API_KEY = window._env_?.ROWS_API_KEY;
 
 export const BetaSandboxEditor = () => {
   const { user } = useAppState();
@@ -76,7 +77,7 @@ export const BetaSandboxEditor = () => {
           as="form"
           onSubmit={ev => {
             ev.preventDefault();
-            if (isInProd) {
+            if (isInProd && ROWS_API_KEY) {
               effects.http.post(
                 ROWS_REQUEST_URL,
                 {
