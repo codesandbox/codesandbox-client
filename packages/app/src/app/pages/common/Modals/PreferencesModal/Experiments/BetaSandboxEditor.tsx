@@ -48,9 +48,7 @@ export const BetaSandboxEditor = () => {
     value => value
   );
 
-  const isInProd =
-    window.location.host === 'codesandbox.io' ||
-    window.location.host === 'codesandbox.stream';
+  const isInProd = window.location.host === 'codesandbox.io';
 
   return (
     <>
