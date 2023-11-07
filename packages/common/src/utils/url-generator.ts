@@ -115,13 +115,13 @@ export const sandboxUrl = (
   hasBetaEditorExperiment?: boolean
 ) => {
   const baseUrl =
-    sandboxDetails.isV2 || hasBetaEditorExperiment
+    !sandboxDetails.isSse && (sandboxDetails.isV2 || hasBetaEditorExperiment)
       ? `${v2EditorUrl()}sandbox/`
       : editorUrl();
 
   let queryParams = '';
   const appendBetaBrowserParam =
-    !sandboxDetails.isV2 && hasBetaEditorExperiment;
+    !sandboxDetails.isV2 && !sandboxDetails.isSse && hasBetaEditorExperiment;
 
   const sandboxQueryParams =
     sandboxDetails.query || appendBetaBrowserParam

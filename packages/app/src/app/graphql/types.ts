@@ -4189,6 +4189,7 @@ export type SandboxFragmentDashboardFragment = {
   removedAt: string | null;
   privacy: number;
   isFrozen: boolean;
+  isSse: boolean | null;
   screenshotUrl: string | null;
   screenshotOutdated: boolean;
   viewCount: number;
@@ -4230,6 +4231,7 @@ export type RepoFragmentDashboardFragment = {
   removedAt: string | null;
   privacy: number;
   isFrozen: boolean;
+  isSse: boolean | null;
   screenshotUrl: string | null;
   screenshotOutdated: boolean;
   viewCount: number;
@@ -4299,6 +4301,7 @@ export type TemplateFragmentDashboardFragment = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
+    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4666,6 +4669,7 @@ export type AddToFolderMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
+    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4713,6 +4717,7 @@ export type MoveToTrashMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
+    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4761,6 +4766,7 @@ export type ChangePrivacyMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
+    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4809,6 +4815,7 @@ export type ChangeFrozenMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
+    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4857,6 +4864,7 @@ export type _RenameSandboxMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
+    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -5673,6 +5681,7 @@ export type RecentlyDeletedPersonalSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -5725,6 +5734,7 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -5787,6 +5797,7 @@ export type SandboxesByPathQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -5841,6 +5852,7 @@ export type TeamDraftsQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -5908,6 +5920,7 @@ export type GetPersonalReposQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -5977,6 +5990,7 @@ export type GetTeamReposQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6054,6 +6068,7 @@ export type TeamTemplatesQuery = {
           removedAt: string | null;
           privacy: number;
           isFrozen: boolean;
+          isSse: boolean | null;
           screenshotUrl: string | null;
           screenshotOutdated: boolean;
           viewCount: number;
@@ -6123,6 +6138,7 @@ export type OwnedTemplatesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6237,6 +6253,7 @@ export type _SearchPersonalSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -6289,6 +6306,7 @@ export type _SearchTeamSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6347,6 +6365,7 @@ export type ListUserTemplatesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6404,6 +6423,7 @@ export type ListUserTemplatesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6461,6 +6481,7 @@ export type ListUserTemplatesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6522,6 +6543,7 @@ export type ListUserTemplatesQuery = {
           removedAt: string | null;
           privacy: number;
           isFrozen: boolean;
+          isSse: boolean | null;
           screenshotUrl: string | null;
           screenshotOutdated: boolean;
           viewCount: number;
@@ -6579,6 +6601,7 @@ export type ListUserTemplatesQuery = {
           removedAt: string | null;
           privacy: number;
           isFrozen: boolean;
+          isSse: boolean | null;
           screenshotUrl: string | null;
           screenshotOutdated: boolean;
           viewCount: number;
@@ -6644,6 +6667,7 @@ export type LatestSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -6695,6 +6719,7 @@ export type RecentlyAccessedSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -6776,6 +6801,7 @@ export type SharedWithMeSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -6824,6 +6850,7 @@ export type LikedSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -6879,6 +6906,7 @@ export type LatestTeamSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -7048,6 +7076,7 @@ export type _AlwaysOnTeamSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
+        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -7101,6 +7130,7 @@ export type CuratedAlbumsQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -7159,6 +7189,7 @@ export type CuratedAlbumByIdQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
+      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
