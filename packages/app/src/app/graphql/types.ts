@@ -2714,6 +2714,7 @@ export type TemplateFragment = {
     insertedAt: string;
     updatedAt: string;
     isV2: boolean;
+    isSse: boolean | null;
     team: { __typename?: 'TeamPreview'; name: string } | null;
     author: { __typename?: 'User'; username: string } | null;
     source: { __typename?: 'Source'; template: string | null };
@@ -2743,6 +2744,7 @@ export type ListPersonalTemplatesQuery = {
         insertedAt: string;
         updatedAt: string;
         isV2: boolean;
+        isSse: boolean | null;
         team: { __typename?: 'TeamPreview'; name: string } | null;
         author: { __typename?: 'User'; username: string } | null;
         source: { __typename?: 'Source'; template: string | null };
@@ -2763,6 +2765,7 @@ export type ListPersonalTemplatesQuery = {
         insertedAt: string;
         updatedAt: string;
         isV2: boolean;
+        isSse: boolean | null;
         git: {
           __typename?: 'Git';
           id: any | null;
@@ -2792,6 +2795,7 @@ export type ListPersonalTemplatesQuery = {
         insertedAt: string;
         updatedAt: string;
         isV2: boolean;
+        isSse: boolean | null;
         team: { __typename?: 'TeamPreview'; name: string } | null;
         author: { __typename?: 'User'; username: string } | null;
         source: { __typename?: 'Source'; template: string | null };
@@ -2816,6 +2820,7 @@ export type ListPersonalTemplatesQuery = {
           insertedAt: string;
           updatedAt: string;
           isV2: boolean;
+          isSse: boolean | null;
           team: { __typename?: 'TeamPreview'; name: string } | null;
           author: { __typename?: 'User'; username: string } | null;
           source: { __typename?: 'Source'; template: string | null };
@@ -2836,6 +2841,7 @@ export type ListPersonalTemplatesQuery = {
           insertedAt: string;
           updatedAt: string;
           isV2: boolean;
+          isSse: boolean | null;
           team: { __typename?: 'TeamPreview'; name: string } | null;
           author: { __typename?: 'User'; username: string } | null;
           source: { __typename?: 'Source'; template: string | null };

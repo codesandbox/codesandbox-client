@@ -24,18 +24,23 @@ export default new (class RouterEffect {
       alias,
       git,
       v2,
+      isSse,
     }: {
       id?: string | null;
       alias?: string | null;
       git?: GitInfo | null;
       v2?: boolean;
+      isSse?: boolean;
     },
     {
       openInNewWindow = false,
       hasBetaEditorExperiment = false,
     }: { openInNewWindow?: boolean; hasBetaEditorExperiment?: boolean } = {}
   ) {
-    const url = sandboxUrl({ id, alias, isV2: v2 }, hasBetaEditorExperiment);
+    const url = sandboxUrl(
+      { id, alias, isV2: v2, isSse },
+      hasBetaEditorExperiment
+    );
 
     if (openInNewWindow) {
       window.open(url, '_blank');
