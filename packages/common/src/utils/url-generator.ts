@@ -115,7 +115,7 @@ export const sandboxUrl = (
   hasBetaEditorExperiment?: boolean
 ) => {
   const baseUrl =
-    !sandboxDetails.isSse && (sandboxDetails.isV2 || hasBetaEditorExperiment)
+    sandboxDetails.isV2 || (!sandboxDetails.isSse && hasBetaEditorExperiment)
       ? `${v2EditorUrl()}sandbox/`
       : editorUrl();
 
