@@ -542,7 +542,7 @@ export class DevTools extends React.PureComponent<Props, State> {
               disableLogging={disableLogging}
               isOnEmbedPage={this.props.isOnEmbedPage}
               // @ts-ignore
-              isOnPrem={window._env_.IS_ONPREM === 'true'}
+              isOnPrem={window._env_?.IS_ONPREM === 'true'}
             />
 
             {!primary && (
