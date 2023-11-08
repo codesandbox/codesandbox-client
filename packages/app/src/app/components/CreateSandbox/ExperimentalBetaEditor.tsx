@@ -29,7 +29,7 @@ export const ExperimentalBetaEditor = () => {
               actions.preferences.openPreferencesModal('experiments');
             }}
           >
-            experiments
+            Preferences
           </UnstyledButtonLink>{' '}
           to disable the new sandbox editor
         </Text>
