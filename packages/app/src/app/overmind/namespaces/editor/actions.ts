@@ -305,9 +305,13 @@ export const sandboxChanged = withLoadApp<{
   try {
     const params = state.activeTeam ? { teamId: state.activeTeam } : undefined;
     const sandbox = await effects.api.getSandbox(newId, params);
+    const experimentalV2Enabled = effects.browser.storage.get<boolean>(
+      'CSB/BETA_SANDBOX_EDITOR'
+    );
 
     // Failsafe, in case someone types in the URL to load a v2 sandbox in v1
-    if (sandbox.v2) {
+    // or if they have the experimental v2 editor enabled
+    if (sandbox.v2 || (!sandbox.isSse && experimentalV2Enabled)) {
       const sandboxV2Url = sandboxUrl({
         id: sandbox.id,
         alias: sandbox.alias,
