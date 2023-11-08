@@ -44,7 +44,7 @@ export default new (class RouterEffect {
 
     if (openInNewWindow) {
       window.open(url, '_blank');
-    } else if (v2) {
+    } else if (v2 || (!isSse && hasBetaEditorExperiment)) {
       window.location.href = url;
     } else {
       history.push(url);

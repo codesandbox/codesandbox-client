@@ -42,7 +42,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const { userRole, isTeamAdmin } = useWorkspaceAuthorization();
 
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
-  const linksToV2 = sandbox.isV2 || hasBetaEditorExperiment;
+  const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
