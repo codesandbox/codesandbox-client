@@ -1,4 +1,5 @@
 import { TemplateType } from '@codesandbox/common/lib/templates';
+import { isServer } from '@codesandbox/common/lib/templates/helpers/is-server';
 import { TemplateInfo } from '../types';
 
 interface IExploreTemplate {
@@ -61,6 +62,7 @@ const mapAPIResponseToTemplateInfo = (
         name: 'CodeSandbox',
       },
       isV2: sandbox.v2,
+      isSse: isServer(sandbox.environment),
       git: sandbox.git && {
         id: sandbox.git.id,
         username: sandbox.git.username,

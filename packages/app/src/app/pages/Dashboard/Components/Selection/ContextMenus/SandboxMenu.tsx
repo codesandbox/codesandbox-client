@@ -9,6 +9,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -22,7 +23,13 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 }) => {
   const actions = useActions();
   const { user, activeTeam } = useAppState();
+
   const { isFree, isPro } = useWorkspaceSubscription();
+  const [hasBetaEditorExperiment] = useGlobalPersistedState(
+    'BETA_SANDBOX_EDITOR',
+    false
+  );
+
   const {
     browser: { copyToClipboard },
   } = useEffects();
@@ -34,7 +41,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const location = useLocation();
   const { userRole, isTeamAdmin } = useWorkspaceAuthorization();
 
-  const url = sandboxUrl(sandbox);
+  const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
+  const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
@@ -115,6 +123,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.editor.forkExternalSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
+              hasBetaEditorExperiment,
             });
           }}
         >
@@ -123,7 +132,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       ) : null}
       <MenuItem
         onSelect={() => {
-          if (sandbox.isV2) {
+          if (linksToV2) {
             window.location.href = url;
           } else {
             history.push(url);
@@ -164,6 +173,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.editor.forkExternalSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
+              hasBetaEditorExperiment,
             });
           }}
           disabled={restricted}

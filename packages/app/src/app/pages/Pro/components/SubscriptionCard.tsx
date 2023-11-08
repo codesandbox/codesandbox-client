@@ -138,9 +138,7 @@ export const SubscriptionCard = ({
             >
               {feature.label}
             </Text>
-            {feature.pill ? (
-              <Badge variant="highlight">{feature.pill}</Badge>
-            ) : null}
+            {feature.pill ? <Badge variant="pro">{feature.pill}</Badge> : null}
           </Stack>
         ))}
       </Stack>

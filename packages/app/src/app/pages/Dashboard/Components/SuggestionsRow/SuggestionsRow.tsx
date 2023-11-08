@@ -153,6 +153,7 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
 
             return (
               <SuggestionCard
+                key={`${repo.owner.login}/${repo.name}`}
                 owner={repo.owner.login}
                 name={repo.name}
                 isPrivate={repo.private}

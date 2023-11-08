@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 
 import { SubContainer } from '../elements';
 
-import { ContainerLSP } from './ContainerLSP';
+import { BetaSandboxEditor } from './BetaSandboxEditor';
 
 export const Experiments: FunctionComponent = () => (
   <>
@@ -13,7 +13,7 @@ export const Experiments: FunctionComponent = () => (
 
     <SubContainer>
       <Element paddingTop={2}>
-        <ContainerLSP />
+        <BetaSandboxEditor />
       </Element>
     </SubContainer>
   </>

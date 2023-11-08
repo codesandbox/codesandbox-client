@@ -22,6 +22,7 @@ export const CheckboxElement = styled.input(
 
     '&:checked + label::after': {
       opacity: 1,
+      cursor: 'pointer',
     },
 
     '&:checked + label::before': {
@@ -34,6 +35,7 @@ export const CheckboxElement = styled.input(
 const Label = styled(Text)(
   css({
     display: 'block',
+    cursor: 'pointer',
     paddingLeft: 6,
     '&::before': {
       content: "''",

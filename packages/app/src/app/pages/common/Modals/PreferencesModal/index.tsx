@@ -105,7 +105,8 @@ export const PreferencesModal: FunctionComponent = () => {
   } = useAppState();
   const items = getItems(isLoggedIn, user, environment.isOnPrem);
 
-  const { Content } = items.find(({ id }) => id === itemId);
+  const tabToShow = items.find(({ id }) => id === itemId) || items[0];
+  const { Content } = tabToShow;
 
   return (
     <Stack css={css({ fontFamily: "'Inter', sans-serif" })}>

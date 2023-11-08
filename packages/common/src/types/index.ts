@@ -826,6 +826,7 @@ export type SandboxUrlSourceData = {
   alias?: string | null;
   git?: GitInfo | null;
   isV2?: boolean;
+  isSse?: boolean;
   query?: Record<string, string>;
 };
 

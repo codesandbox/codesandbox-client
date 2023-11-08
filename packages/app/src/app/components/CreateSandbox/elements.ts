@@ -3,7 +3,7 @@ import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 import { Select } from '@codesandbox/components';
 
 export const Container = styled.div`
-  height: 500px;
+  height: 530px;
   overflow: hidden;
   border-radius: 4px;
   background-color: #151515;
@@ -157,4 +157,16 @@ export const StyledSelect = styled(Select)`
   &:focus {
     color: #e5e5e5;
   }
+`;
+
+export const UnstyledButtonLink = styled.button`
+  appearance: none;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  border: none;
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: underline;
+  cursor: pointer;
 `;

@@ -37,6 +37,8 @@ function getPopupDimensions() {
   return `width=${width},height=${height},top=${top},left=${left}`;
 }
 
+const storageSubscribers: Record<string, Set<(value: any) => void>> = {};
+
 export default {
   setTitle(title) {
     document.title = title;
@@ -108,11 +110,34 @@ export default {
         return null;
       }
     },
-    set(key: string, value: any) {
+    set<T = unknown>(key: string, value: T) {
       localStorage.setItem(key, JSON.stringify(value));
+
+      if (storageSubscribers[key]) {
+        storageSubscribers[key].forEach(cb => {
+          cb(value);
+        });
+      }
     },
     remove(key: string) {
       localStorage.removeItem(key);
+
+      if (storageSubscribers[key]) {
+        storageSubscribers[key].forEach(cb => {
+          cb(null);
+        });
+      }
+    },
+    subscribe<T = unknown>(key: string, cb: (value: T | null) => void) {
+      if (!storageSubscribers[key]) {
+        storageSubscribers[key] = new Set();
+      }
+
+      storageSubscribers[key].add(cb);
+
+      return () => {
+        storageSubscribers[key].delete(cb);
+      };
     },
   },
   /**

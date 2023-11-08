@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { connectInfiniteHits } from 'react-instantsearch-dom';
 import { InfiniteHitsProvided } from 'react-instantsearch-core';
 import { AlgoliaSandboxHit } from '@codesandbox/common/lib/types/algolia';
+import { isServer } from '@codesandbox/common/lib/templates/helpers/is-server';
+import type { TemplateType } from '@codesandbox/common/lib/templates';
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateGrid } from '../elements';
 import { TemplateCard } from '../TemplateCard';
@@ -60,6 +62,7 @@ const Results = (props: ResultsProps) => {
         template: hit.template,
       },
       team: hit.team,
+      isSse: isServer(hit.template as TemplateType),
     },
   }));
 

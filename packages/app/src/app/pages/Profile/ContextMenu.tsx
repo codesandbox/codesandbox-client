@@ -120,7 +120,10 @@ export const ContextMenu = () => {
       </Menu.Item>
       <Menu.Item
         onSelect={() => {
-          forkExternalSandbox({ sandboxId, openInNewWindow: true });
+          forkExternalSandbox({
+            sandboxId,
+            openInNewWindow: true,
+          });
         }}
       >
         Fork sandbox
