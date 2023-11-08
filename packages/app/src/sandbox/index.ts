@@ -148,6 +148,20 @@ requirePolyfills().then(() => {
           ),
         };
 
+        try {
+          if (window.localStorage['CSB/BETA_SANDBOX_EDITOR'] === 'true') {
+            const search = window.location.search;
+            const params =
+              search === ''
+                ? '?betaBrowser=true'
+                : search + '&betaBrowser=true';
+
+            window.location.href = `/p/sandbox/${id}` + params;
+          }
+        } catch {
+          //
+        }
+
         compile(data);
       });
   }
