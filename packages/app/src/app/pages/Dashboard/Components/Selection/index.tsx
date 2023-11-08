@@ -341,15 +341,16 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           item => item.sandbox.id === selectedId
         );
         url = sandboxUrl(selectedItem.sandbox, hasBetaEditorExperiment);
-        linksToV2 = selectedItem.sandbox.isV2 || !selectedItem.sandbox.isSse && hasBetaEditorExperiment
+        linksToV2 =
+          selectedItem.sandbox.isV2 ||
+          (!selectedItem.sandbox.isSse && hasBetaEditorExperiment);
       }
-
 
       if (event.ctrlKey || event.metaKey) {
         window.open(url, '_blank');
       } else if (linksToV2) {
         window.location.href = url;
-      }  else {
+      } else {
         history.push(url, { focus: 'FIRST_ITEM' });
       }
     }
