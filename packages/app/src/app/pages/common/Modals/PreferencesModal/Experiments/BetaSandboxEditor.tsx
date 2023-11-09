@@ -80,7 +80,7 @@ export const BetaSandboxEditor = () => {
               effects.http.post(
                 ROWS_REQUEST_URL,
                 {
-                  values: [[user.id, ...Object.values(feedbackOptions)]],
+                  values: [[user?.id, ...Object.values(feedbackOptions)]],
                 },
                 {
                   headers: {

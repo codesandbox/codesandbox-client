@@ -6,7 +6,6 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 import { useDismissible } from 'app/hooks';
@@ -35,8 +34,6 @@ export const RepositoriesPage = () => {
     });
   }, [activeTeam]);
 
-  const { hasMaxPrivateRepositories } = useWorkspaceLimits();
-
   const { restrictsPublicRepos } = useGitHubPermissions();
 
   const pageType: PageTypes = 'repositories';
@@ -57,7 +54,6 @@ export const RepositoriesPage = () => {
         onImportClicked: () => {
           actions.openCreateSandboxModal({ initialTab: 'import' });
         },
-        disabled: hasMaxPrivateRepositories,
       });
     }
 
