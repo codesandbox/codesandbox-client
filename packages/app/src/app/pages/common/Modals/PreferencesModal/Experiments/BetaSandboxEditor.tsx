@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { useAppState, useEffects } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Textarea } from 'app/components/dashboard/Textarea';
 import { PaddedPreference } from '../elements';
 
 const FEEDBACK_OPTIONS_LABEL = {
@@ -21,7 +22,7 @@ const FEEDBACK_OPTIONS_LABEL = {
 };
 
 const ROWS_REQUEST_URL =
-  'https://api.rows.com/v1beta1/spreadsheets/JFBFxxAPvXEYDY7cU9GCA/tables/15558697-182d-43f7-a1f2-6c293a557295/values/A:F:append';
+  'https://api.rows.com/v1beta1/spreadsheets/JFBFxxAPvXEYDY7cU9GCA/tables/15558697-182d-43f7-a1f2-6c293a557295/values/A:G:append';
 
 // @ts-ignore
 const ROWS_API_KEY = '1WcvujvzSSQ1GtbnoYvrGb8liPJFWud915ELpjwnVfV5';
@@ -42,6 +43,7 @@ export const BetaSandboxEditor = () => {
     slowness: false,
     navigability: false,
     other: false,
+    feedback: null,
   });
 
   const atLeastOneFeedbackOptionSelected = Object.values(feedbackOptions).some(
@@ -100,6 +102,7 @@ export const BetaSandboxEditor = () => {
               slowness: false,
               navigability: false,
               other: false,
+              feedback: null,
             });
           }}
           paddingTop={4}
@@ -133,6 +136,21 @@ export const BetaSandboxEditor = () => {
                 }
               />
             ))}
+
+            {feedbackOptions.other === true && (
+              <Textarea
+                id="feedback"
+                name="feedback"
+                placeholder="Something seems wrong..."
+                value={feedbackOptions.feedback}
+                onChange={ev =>
+                  setFeedbackOptions({
+                    ...feedbackOptions,
+                    feedback: ev.target.value,
+                  })
+                }
+              />
+            )}
 
             <Button
               autoWidth
