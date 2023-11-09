@@ -64,7 +64,7 @@ export const WorkspaceSettings: React.FC = () => {
     hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit;
 
   if (!team || !currentUser) {
-    return <Header title="Team Settings" activeTeam={null} />;
+    return <Header title="Workspace settings" activeTeam={null} />;
   }
 
   const showSubscriptionManageCard = !environment.isOnPrem;
@@ -156,7 +156,7 @@ export const WorkspaceSettings: React.FC = () => {
                   }
                 }}
               >
-                Delete team
+                Delete workspace
               </Button>
             )}
           </Stack>
@@ -172,7 +172,7 @@ export const WorkspaceSettings: React.FC = () => {
           })}
           size={4}
         >
-          Team overview
+          Workspace overview
         </Text>
 
         {isBillingManager && (

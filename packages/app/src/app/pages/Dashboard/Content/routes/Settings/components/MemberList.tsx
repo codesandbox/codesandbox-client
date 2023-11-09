@@ -212,7 +212,7 @@ export const MembersList: React.FC<MemberListProps> = ({
       if (member.id === currentUserId) {
         return [
           {
-            name: 'Leave team',
+            name: 'Leave workspace',
             onSelect: leaveTeam,
           },
         ];
@@ -307,7 +307,7 @@ export const MembersList: React.FC<MemberListProps> = ({
       !isPersonalSpace
     ) {
       actions.push({
-        name: 'Leave team',
+        name: 'Leave workspace',
         onSelect: () => {
           track('Leave team', {
             codesandbox: 'V1',

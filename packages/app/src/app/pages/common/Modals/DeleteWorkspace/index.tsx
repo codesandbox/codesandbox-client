@@ -12,14 +12,16 @@ export const DeleteWorkspace: FunctionComponent = () => {
     teamPerson => teamPerson.id !== user.id
   ).length;
   return (
-    <Alert title="Delete team">
+    <Alert title="Delete workspace">
       <Text size={3} block variant="muted">
-        Are you sure you want to delete this team? This action is{' '}
-        <b>irreversible</b> and it will <b>delete all sandboxes</b> in this team
+        Are you sure you want to delete this workspace? This action is{' '}
+        <b>irreversible</b> and it will <b>delete all sandboxes</b> in this
+        workspace
         {otherUsers ? (
           <>
             {' '}
-            and will also <b>delete the team</b> for all other members. <br />
+            and will also <b>delete the workspace</b> for all other members.{' '}
+            <br />
             <br />
             If this is not what you want you can instead{' '}
             <Button
@@ -37,15 +39,15 @@ export const DeleteWorkspace: FunctionComponent = () => {
                 modalClosed();
               }}
             >
-              Leave the Team.
+              Leave the workspace.
             </Button>
           </>
         ) : (
           '.'
         )}
         <Text size={3} block marginBottom={4} marginTop={4} variant="muted">
-          If you are sure please write the team name ({activeTeamInfo.name}) in
-          the input below:
+          If you are sure please write the workspace name ({activeTeamInfo.name}
+          ) in the input below:
         </Text>
         <Input value={teamName} onChange={e => setTeamName(e.target.value)} />
         <Stack gap={2} marginTop={4} align="center" justify="flex-end">
@@ -58,7 +60,7 @@ export const DeleteWorkspace: FunctionComponent = () => {
             disabled={!teamName || teamName !== activeTeamInfo.name}
             onClick={dashboard.deleteWorkspace}
           >
-            Delete team
+            Delete workspace
           </Button>
         </Stack>
       </Text>

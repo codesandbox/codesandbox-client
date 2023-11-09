@@ -26,7 +26,7 @@ export const Settings = () => {
   if (!user || !activeTeamInfo) {
     return (
       <Element css={css({ width: '100%', maxWidth: GRID_MAX_WIDTH })}>
-        <Header title="Team Settings" activeTeam={activeTeam} />
+        <Header title="Workspace settings" activeTeam={activeTeam} />
       </Element>
     );
   }

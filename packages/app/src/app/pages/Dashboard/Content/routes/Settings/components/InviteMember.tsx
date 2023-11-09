@@ -109,7 +109,7 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
 
     if (confirmNewMemberAddition) {
       const confirmed = await actions.modals.alertModal.open({
-        title: 'Invite New Member',
+        title: 'Invite new member',
         customComponent: 'MemberPaymentConfirmation',
       });
       if (!confirmed) return;
@@ -120,7 +120,7 @@ export const InviteMember: React.FC<InviteMemberProps> = ({
       data: { place: 'settings', inviteLink },
     });
     effects.browser.copyToClipboard(inviteLink);
-    effects.notificationToast.success('Copied Team Invite URL!');
+    effects.notificationToast.success('Copied workspace invite URL!');
   };
 
   return (
