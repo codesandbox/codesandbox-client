@@ -22,7 +22,7 @@ export const ExperimentalBetaEditor = () => {
     return (
       <Stack justify="center" padding={2}>
         <Text size={3}>
-          Open{' '}
+          If you wish to disable the new sandbox editor, open{' '}
           <UnstyledButtonLink
             onClick={() => {
               actions.modals.newSandboxModal.close();
@@ -30,8 +30,8 @@ export const ExperimentalBetaEditor = () => {
             }}
           >
             Preferences
-          </UnstyledButtonLink>{' '}
-          to disable the new sandbox editor
+          </UnstyledButtonLink>
+          .
         </Text>
       </Stack>
     );
@@ -45,7 +45,7 @@ export const ExperimentalBetaEditor = () => {
             Beta
           </Badge>
           <Text weight="500">Try the new sandbox editor.</Text>
-          <Text>For a faster and more stable prototyping experience.</Text>
+          <Text>Get a faster and more stable prototyping experience.</Text>
         </Stack>
         <Switch
           onChange={() => {
