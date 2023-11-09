@@ -4,7 +4,7 @@ import { useActions, useAppState } from 'app/overmind';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Header } from '../../../Components/Header';
 import { TeamSettings } from './TeamSettings';
 
@@ -13,7 +13,7 @@ import { UserSettings } from './UserSettings';
 
 export const Settings = () => {
   const { activeTeam, user, activeTeamInfo } = useAppState();
-  const { isPersonalSpace } = useWorkspaceAuthorization();
+  const { isLegacyPersonalPro } = useWorkspaceSubscription();
 
   const {
     dashboard: { dashboardMounted },
@@ -33,7 +33,7 @@ export const Settings = () => {
 
   return (
     <Element css={css({ width: '100%', maxWidth: GRID_MAX_WIDTH })} marginY={7}>
-      {isPersonalSpace ? <UserSettings /> : <TeamSettings />}
+      {isLegacyPersonalPro ? <UserSettings /> : <TeamSettings />}
     </Element>
   );
 };

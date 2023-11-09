@@ -46,6 +46,7 @@ export const WorkspaceSettings: React.FC = () => {
     isBillingManager,
     isTeamAdmin,
     isTeamEditor,
+    isPersonalSpace,
   } = useWorkspaceAuthorization();
 
   const [checkout, createCheckout, canCheckout] = useCreateCheckout();
@@ -142,9 +143,18 @@ export const WorkspaceSettings: React.FC = () => {
                   color: 'errorForeground',
                   padding: 0,
                 })}
-                onClick={() =>
-                  actions.modalOpened({ modal: 'deleteWorkspace' })
-                }
+                onClick={() => {
+                  if (isPersonalSpace) {
+                    actions.addNotification({
+                      message:
+                        'This workspace cannot be removed yet because of an internal limitation. Please contact support if you need further assistance',
+                      type: 'error',
+                      timeAlive: 5,
+                    });
+                  } else {
+                    actions.modalOpened({ modal: 'deleteWorkspace' });
+                  }
+                }}
               >
                 Delete team
               </Button>

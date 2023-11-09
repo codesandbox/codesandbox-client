@@ -95,7 +95,11 @@ export const MembersList: React.FC<MemberListProps> = ({
     },
     modalOpened,
   } = useActions();
-  const { isTeamAdmin, isTeamViewer } = useWorkspaceAuthorization();
+  const {
+    isTeamAdmin,
+    isTeamViewer,
+    isPersonalSpace,
+  } = useWorkspaceAuthorization();
 
   const currentUserId = user?.id;
   const invitees = activeTeamInfo?.invitees;
@@ -201,9 +205,10 @@ export const MembersList: React.FC<MemberListProps> = ({
   };
 
   const buildMemberActions = (member: Member): Action[] => {
-    if (!isTeamAdmin) {
+    if (!isTeamAdmin && !isPersonalSpace) {
       // If the user is not the team admin, the only possible
       // action is to leave the team.
+      // We also test for personal spaces, as you are not able to leave them yet
       if (member.id === currentUserId) {
         return [
           {
@@ -295,7 +300,12 @@ export const MembersList: React.FC<MemberListProps> = ({
     }
 
     // If the user is not the only team admin, they can leave the team.
-    if (member.id === currentUserId && teamAdminsCount > 1) {
+    // We also test for personal spaces, as you are not able to leave them yet
+    if (
+      member.id === currentUserId &&
+      teamAdminsCount > 1 &&
+      !isPersonalSpace
+    ) {
       actions.push({
         name: 'Leave team',
         onSelect: () => {

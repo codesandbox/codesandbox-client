@@ -10,7 +10,6 @@ import React, { FunctionComponent } from 'react';
 
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useCreateCheckout } from 'app/hooks';
 import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
@@ -22,9 +21,8 @@ export const UserMenu: FunctionComponent & {
     files: { gotUploadedFiles },
   } = useActions();
   const { user, activeTeam, environment } = useAppState();
-  const { isAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isAdmin } = useWorkspaceAuthorization();
   const { isPro, isFree } = useWorkspaceSubscription();
-  const [checkout, createCheckout] = useCreateCheckout();
 
   if (!user) {
     return (
@@ -101,19 +99,7 @@ export const UserMenu: FunctionComponent & {
             </Menu.Link>
           )}
 
-          {showBecomePro && isPersonalSpace && (
-            <Menu.Item
-              disabled={checkout.status === 'loading'}
-              onClick={() => createCheckout({ trackingLocation: 'user_menu' })}
-            >
-              <Stack align="center" gap={2}>
-                <Icon name="proBadge" size={16} />
-                <Text>Upgrade to Pro</Text>
-              </Stack>
-            </Menu.Item>
-          )}
-
-          {showBecomePro && !isPersonalSpace && (
+          {showBecomePro && (
             <Menu.Link to="/pro">
               <Stack align="center" gap={2}>
                 <Icon name="proBadge" size={16} />
