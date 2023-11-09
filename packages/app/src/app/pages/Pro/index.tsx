@@ -44,6 +44,4 @@ export const ProPage: React.FC = () => {
   }
 
   return <ProUpgrade />;
-
-  // TODO: Cleanup ProCreate which is not used anymore
 };
