@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { useAppState, useEffects } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Textarea } from 'app/components/dashboard/Textarea';
 import { PaddedPreference } from '../elements';
 
 const FEEDBACK_OPTIONS_LABEL = {
@@ -42,6 +43,7 @@ export const BetaSandboxEditor = () => {
     slowness: false,
     navigability: false,
     other: false,
+    feedback: null,
   });
 
   const atLeastOneFeedbackOptionSelected = Object.values(feedbackOptions).some(
@@ -100,6 +102,7 @@ export const BetaSandboxEditor = () => {
               slowness: false,
               navigability: false,
               other: false,
+              feedback: null,
             });
           }}
           paddingTop={4}
@@ -133,6 +136,21 @@ export const BetaSandboxEditor = () => {
                 }
               />
             ))}
+
+            {feedbackOptions.other === true && (
+              <Textarea
+                id="feedback"
+                name="feedback"
+                placeholder="Something seems wrong..."
+                value={feedbackOptions.feedback}
+                onChange={ev =>
+                  setFeedbackOptions({
+                    ...feedbackOptions,
+                    feedback: ev.target.value,
+                  })
+                }
+              />
+            )}
 
             <Button
               autoWidth
