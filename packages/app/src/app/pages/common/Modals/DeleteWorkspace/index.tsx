@@ -19,8 +19,8 @@ export const DeleteWorkspace: FunctionComponent = () => {
       <Alert title="Cannot delete workspace">
         <Stack direction="vertical" gap={4}>
           <Text size={3} block variant="muted">
-            This is your previous personal workspace and it cannot be removed
-            yet because of an internal limitation.
+            Due to a temporary internal limitation, this workspace cannot be
+            deleted.
             <br />
             Please contact support if you need further assistance. Sorry for the
             inconvenience.
