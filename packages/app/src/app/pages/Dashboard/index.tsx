@@ -131,7 +131,7 @@ export const Dashboard: FunctionComponent = () => {
       actions.modalOpened({ modal: 'personalSpaceAnnouncement' });
       setHasSeenPersonalSpaceAnnouncement(true);
     }
-  }, [isFree, isPersonalSpace, hasSeenPersonalSpaceAnnouncement]);
+  }, [actions, isFree, isPersonalSpace, hasSeenPersonalSpaceAnnouncement]);
 
   useEffect(() => {
     trackVisit();
