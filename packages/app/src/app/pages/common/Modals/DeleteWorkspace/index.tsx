@@ -2,15 +2,38 @@ import React, { FunctionComponent, useState } from 'react';
 import { Input, Text, Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Alert } from '../Common/Alert';
 
 export const DeleteWorkspace: FunctionComponent = () => {
   const { dashboard, modalClosed } = useActions();
   const { activeTeamInfo, user } = useAppState();
+  const { isPersonalSpace } = useWorkspaceAuthorization();
   const [teamName, setTeamName] = useState('');
   const otherUsers = (activeTeamInfo.users || []).filter(
     teamPerson => teamPerson.id !== user.id
   ).length;
+
+  if (isPersonalSpace) {
+    return (
+      <Alert title="Cannot delete workspace">
+        <Stack direction="vertical" gap={4}>
+          <Text size={3} block variant="muted">
+            This is your previous personal workspace and it cannot be removed
+            yet because of an internal limitation.
+            <br />
+            Please contact support if you need further assistance. Sorry for the
+            inconvenience.
+          </Text>
+
+          <Button autoWidth variant="secondary" onClick={modalClosed}>
+            Close
+          </Button>
+        </Stack>
+      </Alert>
+    );
+  }
+
   return (
     <Alert title="Delete workspace">
       <Text size={3} block variant="muted">
