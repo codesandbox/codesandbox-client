@@ -69,7 +69,7 @@ export const SettingsNavigation = ({
         gap={6}
       >
         <NavigationLink url={dashboardUrls.settings(teamId)}>
-          Account
+          Overview
         </NavigationLink>
 
         {!isPersonal && (
