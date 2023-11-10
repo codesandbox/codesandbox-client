@@ -53,7 +53,7 @@ export const PersonalSpaceAnnouncement: React.FC = () => {
           </Stack>
           <Stack direction="vertical" align="center" gap={6}>
             <Icon name="edit" size={64} />
-            <Text size={4}>Customization</Text>
+            <Text size={4}>Customize</Text>
             <Text size={3} variant="muted">
               Does the current name not reflect the work you are doing? Simply
               open your profile and change the name and avatar to your liking.
