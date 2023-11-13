@@ -4,11 +4,11 @@ import { ThemeProvider } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
 import { useParams } from 'react-router-dom';
 import { CreateSandbox } from 'app/components/CreateSandbox';
-import { PreferencesModal } from '../common/Modals/PreferencesModal';
+import { Preferences } from '../common/Modals/PreferencesModal';
 import { NotFound } from '../common/NotFound';
 
 const COMPONENT_MAP = {
-  preferences: PreferencesModal,
+  preferences: Preferences,
   create: CreateSandbox,
 };
 
