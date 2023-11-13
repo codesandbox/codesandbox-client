@@ -96,28 +96,32 @@ const getItems = (
       },
   ].filter(Boolean);
 
-export const Preferences: React.FC<{ tab?: string }> = ({ tab }) => {
+export const Preferences: React.FC<{
+  tab?: string;
+  isStandalone?: boolean;
+}> = ({ tab, isStandalone }) => {
   const {
     isLoggedIn,
     user,
-    preferences: { itemId = 'account' },
+    preferences: { itemId },
     environment,
   } = useAppState();
 
   const isEditorPage = useIsEditorPage();
   const items = getItems(isLoggedIn, user, environment.isOnPrem, isEditorPage);
-  const tabId = tab || itemId;
+
+  const tabId = itemId || tab || 'account';
 
   const tabToShow = items.find(({ id }) => id === tabId) || items[0];
   const { Content } = tabToShow;
 
   return (
     <Stack>
-      <SideNavigation menuItems={items} />
+      <SideNavigation menuItems={items} selectedTab={tabId} />
 
       <Element
         css={{
-          height: '482px',
+          height: isStandalone ? 'auto' : '482px',
           width: '100%',
           padding: '24px',
           marginTop: '52px',

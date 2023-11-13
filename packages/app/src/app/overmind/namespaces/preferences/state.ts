@@ -84,7 +84,7 @@ export const state: State = {
   isLoadingPaymentDetails: true,
   paymentDetailError: null,
   paymentDetails: null,
-  itemId: 'appearance',
+  itemId: null,
   showEditor: true,
   showPreview: true,
   showDevtools: false,

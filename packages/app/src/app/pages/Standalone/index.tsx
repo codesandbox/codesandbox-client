@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { createGlobalStyle, withTheme } from 'styled-components';
-import { ThemeProvider } from '@codesandbox/components';
+import { ThemeProvider, Element } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
 import { useParams } from 'react-router-dom';
 import { CreateSandbox } from 'app/components/CreateSandbox';
@@ -29,13 +29,19 @@ export const StandalonePage = withTheme(({ theme }) => {
   }
 
   const GlobalStyles = createGlobalStyle({
-    body: { overflow: 'hidden', color: '#f5f5f5', background: '#0E0E0E' },
+    body: {
+      overflow: 'hidden',
+      color: '#f5f5f5',
+      background: '#151515 !important',
+    },
   });
 
   return (
     <ThemeProvider theme={theme.vsCode}>
       <GlobalStyles />
-      <Content {...contentProps} />
+      <Element css={{ background: '#151515', width: '100%', height: '100%' }}>
+        <Content isStandalone {...contentProps} />
+      </Element>
     </ThemeProvider>
   );
 });
