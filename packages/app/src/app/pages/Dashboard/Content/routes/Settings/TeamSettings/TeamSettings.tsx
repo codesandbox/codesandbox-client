@@ -28,9 +28,9 @@ export const TeamSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Team settings - CodeSandbox</title>
+        <title>Workspace settings - CodeSandbox</title>
       </Helmet>
-      <Header title="Team settings" activeTeam={activeTeam} />
+      <Header title="Workspace settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',

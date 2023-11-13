@@ -69,7 +69,7 @@ export const EditorSeatsUpgrade: React.FC = () => {
       ) : (
         <Stack direction="vertical" gap={6}>
           <Text as="p" variant="muted" css={{ marginTop: 0 }}>
-            Contact your team admin to upgrade.
+            Contact your workspace admin to upgrade.
           </Text>
           <Stack justify="flex-end">
             <Button

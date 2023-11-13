@@ -6,7 +6,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 
 const NewButton = ({ children, ...props }) => (
   <Button
-    variant="link"
+    variant="secondary"
     css={css({ color: 'sideBar.foreground' })}
     autoWidth
     {...props}
@@ -37,7 +37,7 @@ export const CreateProfile = ({ importFile }) => {
   return (
     <>
       <Element marginBottom={5}>
-        <Text variant="muted">
+        <Text variant="muted" size={3}>
           Share your CodeSandbox and editor preferences across multiple devices.
           Save a snapshot of your current preferences as a profile, which you
           can then apply to re-use them when you’re on another device. More info

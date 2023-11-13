@@ -263,7 +263,8 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'editorSeatsUpgrade';
+  | 'editorSeatsUpgrade'
+  | 'personalSpaceAnnouncement';
 
 export const modalOpened = (
   { state, effects }: Context,

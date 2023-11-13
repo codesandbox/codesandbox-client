@@ -63,7 +63,7 @@ export const WorkspaceSettings: React.FC = () => {
     hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit;
 
   if (!team || !currentUser) {
-    return <Header title="Team Settings" activeTeam={null} />;
+    return <Header title="Workspace settings" activeTeam={null} />;
   }
 
   const showSubscriptionManageCard = !environment.isOnPrem;
@@ -146,7 +146,7 @@ export const WorkspaceSettings: React.FC = () => {
                   actions.modalOpened({ modal: 'deleteWorkspace' })
                 }
               >
-                Delete team
+                Delete workspace
               </Button>
             )}
           </Stack>
@@ -162,7 +162,7 @@ export const WorkspaceSettings: React.FC = () => {
           })}
           size={4}
         >
-          Team overview
+          Seat allocation
         </Text>
 
         {isBillingManager && (
@@ -173,14 +173,9 @@ export const WorkspaceSettings: React.FC = () => {
                 lineHeight: '16px',
                 color: '#999999',
               }}
-              gap={4}
+              gap={2}
             >
-              <Text>
-                {pluralize({
-                  count: membersCount,
-                  word: 'Member',
-                })}
-              </Text>
+              <Text>Total members:</Text>
               <Text>{membersCount}</Text>
             </Stack>
             <Stack
@@ -189,9 +184,9 @@ export const WorkspaceSettings: React.FC = () => {
                 lineHeight: '16px',
                 color: '#999999',
               }}
-              gap={4}
+              gap={2}
             >
-              <Text>Current editors</Text>
+              <Text>Current editors:</Text>
               <Text>
                 {numberOfEditors}/{numberOfSeats}
               </Text>
@@ -203,9 +198,9 @@ export const WorkspaceSettings: React.FC = () => {
                   lineHeight: '16px',
                   color: '#999999',
                 }}
-                gap={4}
+                gap={2}
               >
-                <Text>Available editor seats</Text>
+                <Text>Available editor seats:</Text>
                 <Text color="#B3FBB4">{numberOfUnusedSeats}</Text>
               </Stack>
             )}

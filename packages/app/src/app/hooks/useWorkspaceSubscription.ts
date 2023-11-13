@@ -3,6 +3,7 @@ import {
   CurrentTeamInfoFragmentFragment,
   SubscriptionPaymentProvider,
   SubscriptionStatus,
+  SubscriptionType,
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { isBefore, startOfToday } from 'date-fns';
@@ -16,7 +17,7 @@ export enum SubscriptionDebugStatus {
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { activeTeamInfo, userCanStartTrial, environment } = useAppState();
-  const { isBillingManager, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isBillingManager } = useWorkspaceAuthorization();
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
 
@@ -59,7 +60,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     subscription.status === SubscriptionStatus.Trialing;
   const isFree = !isPro;
 
-  const isLegacyPersonalPro = isPro && isPersonalSpace;
+  const isLegacyPersonalPro =
+    isPro && subscription.type === SubscriptionType.PersonalPro;
 
   const isEligibleForTrial = userCanStartTrial && isBillingManager;
 

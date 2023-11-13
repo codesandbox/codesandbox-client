@@ -201,7 +201,7 @@ export const TeamInfo: React.FC = () => {
               variant="square"
               name="edit"
               size={12}
-              title="Edit team"
+              title="Edit workspace"
               onClick={() => setEditing(true)}
             />
           )}

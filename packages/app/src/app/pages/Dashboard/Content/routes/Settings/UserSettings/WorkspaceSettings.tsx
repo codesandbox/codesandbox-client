@@ -197,7 +197,7 @@ export const WorkspaceSettings = () => {
                     name="edit"
                     variant="square"
                     size={12}
-                    title="Edit team"
+                    title="Edit workspace"
                     onClick={() => setEditing(false)}
                   />
                 </Stack>
@@ -254,7 +254,7 @@ export const WorkspaceSettings = () => {
                   name="edit"
                   variant="square"
                   size={12}
-                  title="Edit team"
+                  title="Edit workspace"
                   onClick={() => setEditing(true)}
                 />
               </Stack>

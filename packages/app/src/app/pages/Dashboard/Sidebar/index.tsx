@@ -90,11 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
   const showRespositories = !state.environment.isOnPrem;
 
-  const {
-    isBillingManager,
-    isPrimarySpace,
-    isPersonalSpace,
-  } = useWorkspaceAuthorization();
+  const { isBillingManager, isPrimarySpace } = useWorkspaceAuthorization();
 
   const {
     subscription,
@@ -302,7 +298,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Element marginTop={3} />
         </List>
 
-        {teamDataLoaded && isFree && isBillingManager && !isPersonalSpace ? (
+        {teamDataLoaded && isFree && isBillingManager ? (
           <Element css={{ margin: 'auto 24px 0' }}>
             {isEligibleForTrial ? (
               <StartTrial activeTeam={activeTeam} />

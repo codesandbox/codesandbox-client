@@ -106,7 +106,7 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
         {smallProTeam && (
           <Stack>
             <Text size={3} block marginTop={4} marginLeft={6}>
-              When the team reaches 4+ editors, I confirm an additional{' '}
+              When the workspace reaches 4+ editors, I confirm an additional{' '}
               <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
                 {largeTeamSeatPrice} (excl. tax)
               </Text>{' '}

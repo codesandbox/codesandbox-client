@@ -1,5 +1,4 @@
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
-import { Badge } from '@codesandbox/common/lib/types';
 import { isEqual } from 'lodash-es';
 import { saveAs } from 'file-saver';
 import { Context } from 'app/overmind';
@@ -25,7 +24,7 @@ export const devtoolsToggled = ({ state }: Context) => {
 
 export const openPreferencesModal = (
   { state }: Context,
-  itemId: string = 'appearance'
+  itemId: string = 'account'
 ) => {
   state.preferences.itemId = itemId;
   state.currentModal = 'preferences';
@@ -77,23 +76,6 @@ export const settingChanged = (
   });
 };
 
-export const setBadgeVisibility = async (
-  { effects, state }: Context,
-  { id, visible }: Pick<Badge, 'id' | 'visible'>
-) => {
-  const user = state.user;
-  if (!user) {
-    return;
-  }
-  user.badges.forEach((badge, index) => {
-    if (badge.id === id) {
-      user.badges[index].visible = visible;
-    }
-  });
-
-  await effects.api.updateBadge(id, visible);
-};
-
 export const paymentDetailsRequested = async ({ state, effects }: Context) => {
   state.preferences.isLoadingPaymentDetails = true;
   try {
@@ -117,73 +99,12 @@ export const paymentDetailsUpdated = async (
   effects.notificationToast.success('Successfully updated payment details');
 };
 
-export const keybindingChanged = (
-  { state, effects }: Context,
-  {
-    name,
-    value,
-  }: {
-    name: string;
-    value: any;
-  }
-) => {
-  const { keybindings } = state.preferences.settings;
-  const currentIndex = keybindings.findIndex(binding => binding.key === name);
-  const newBinding = {
-    key: name,
-    bindings: JSON.parse(JSON.stringify(value)),
-  };
-
-  if (currentIndex === -1) {
-    state.preferences.settings.keybindings.push(newBinding);
-  } else {
-    state.preferences.settings.keybindings.splice(currentIndex, 1, newBinding);
-  }
-
-  const keybindingsValue = keybindings.reduce(
-    (currentValue, binding) => ({
-      ...currentValue,
-      [binding.key]: binding.bindings,
-    }),
-    {}
-  );
-
-  effects.settingsStore.set('keybindings', keybindingsValue);
-};
-
 export const zenModeToggled = ({ state }: Context) => {
   state.preferences.settings.zenMode = !state.preferences.settings.zenMode;
 };
 
 export const codeMirrorForced = ({ state }: Context) => {
   state.preferences.settings.codeMirror = true;
-};
-
-export const toggleContainerLspExperiment = async ({
-  effects,
-  state,
-}: Context) => {
-  if (!state.user) {
-    return;
-  }
-  try {
-    await effects.api.updateExperiments({
-      container_lsp: !state.user.experiments.containerLsp,
-    });
-    state.user.experiments.containerLsp = !state.user.experiments.containerLsp;
-    // Allow the flush to go through and flip button
-    requestAnimationFrame(() => {
-      if (
-        effects.browser.confirm(
-          'We need to refresh for this to take effect, or you can refresh later'
-        )
-      ) {
-        effects.browser.reload();
-      }
-    });
-  } catch (error) {
-    effects.notificationToast.error('Unable to toggl LSP experiment');
-  }
 };
 
 export const getUserLocalSettings = () => {
@@ -413,6 +334,38 @@ export const applyPreferences = async (
   } catch (e) {
     effects.notificationToast.error(
       'There has been a problem applying your preferences'
+    );
+  }
+};
+
+export const updateAccountDetails = async (
+  { state, effects }: Context,
+  {
+    username,
+    name,
+  }: {
+    username: string;
+    name: string;
+  }
+) => {
+  if (!state.user) {
+    // Should not happen
+    return;
+  }
+
+  try {
+    await effects.gql.mutations.updateCurrentUser({
+      username,
+      name,
+      bio: '',
+      socialLinks: [],
+    });
+
+    state.user.name = name;
+    state.user.username = username;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your profile.'
     );
   }
 };

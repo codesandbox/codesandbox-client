@@ -6,19 +6,16 @@ import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
   const { environment } = useAppState();
-  const history = useHistory();
 
-  const { isPro } = useWorkspaceSubscription();
-  const { isPersonalSpace, isTeamViewer } = useWorkspaceAuthorization();
+  const { isLegacyPersonalPro } = useWorkspaceSubscription();
+  const { isTeamViewer } = useWorkspaceAuthorization();
 
   const showRepositoryImport = !environment.isOnPrem;
-  const showProWorkspace = !environment.isOnPrem && !isPro && isPersonalSpace;
 
   return (
     <Stack direction="vertical" gap={9}>
@@ -66,7 +63,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           </ButtonInverseLarge>
         )}
 
-        {!isPersonalSpace && !isTeamViewer ? (
+        {!isLegacyPersonalPro && !isTeamViewer ? (
           <ButtonInverseLarge
             onClick={() => {
               track('Empty State Card - Invite members', {
@@ -81,21 +78,6 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
             }}
           >
             <Icon name="addMember" /> Invite team members
-          </ButtonInverseLarge>
-        ) : null}
-
-        {showProWorkspace ? (
-          <ButtonInverseLarge
-            onClick={() => {
-              track('Empty State Card - Create team', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-                card_type: 'get-started-action',
-              });
-              history.push('/pro');
-            }}
-          >
-            <Icon name="team" /> Create pro workspace
           </ButtonInverseLarge>
         ) : null}
       </EmptyPage.StyledGrid>

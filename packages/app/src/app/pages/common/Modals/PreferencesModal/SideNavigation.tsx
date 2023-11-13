@@ -3,6 +3,7 @@ import css from '@styled-system/css';
 import React, { ComponentType, FunctionComponent } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
+import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
 
 type MenuItem = {
   Icon: ComponentType;
@@ -15,6 +16,7 @@ type Props = {
 export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
   const { itemId = 'appearance' } = useAppState().preferences;
   const { itemIdChanged } = useActions().preferences;
+  const isEditorPage = useIsEditorPage();
 
   return (
     <Element css={css({ width: 244 })} paddingBottom={8}>
@@ -29,7 +31,7 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
           color: 'sideBarSectionHeader.foreground',
         })}
       >
-        Preferences
+        {isEditorPage ? 'Preferences' : 'Settings'}
       </Text>
 
       <Element style={{ position: 'relative' }}>

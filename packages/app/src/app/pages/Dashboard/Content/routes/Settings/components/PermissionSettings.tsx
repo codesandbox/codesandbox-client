@@ -27,11 +27,7 @@ export const PermissionSettings = () => {
 
   const { activeTeam, environment } = useAppState();
   const { isFree, isPro } = useWorkspaceSubscription();
-  const {
-    isBillingManager,
-    isAdmin,
-    isPersonalSpace,
-  } = useWorkspaceAuthorization();
+  const { isBillingManager, isAdmin } = useWorkspaceAuthorization();
 
   return (
     <Stack direction="vertical" gap={6}>
@@ -41,28 +37,16 @@ export const PermissionSettings = () => {
             You need a <Text weight="bold">Pro</Text> subscription to change
             sandbox permissions.
           </span>
-          {isBillingManager || isPersonalSpace ? (
-            <MessageStripe.Action
-              as="a"
-              href={proUrl({
-                ...(isPersonalSpace ? {} : { workspaceId: activeTeam }),
-                source: 'dashboard_permission_settings',
-              })}
-              onClick={proTracking}
-            >
-              Upgrade now
-            </MessageStripe.Action>
-          ) : (
-            <MessageStripe.Action
-              as="a"
-              href="https://codesandbox.io/docs/learn/plans/trials"
-              target="_blank"
-              rel="noreferrer"
-              onClick={proTracking}
-            >
-              Learn more
-            </MessageStripe.Action>
-          )}
+          <MessageStripe.Action
+            as="a"
+            href={proUrl({
+              workspaceId: activeTeam,
+              source: 'dashboard_permission_settings',
+            })}
+            onClick={proTracking}
+          >
+            Upgrade now
+          </MessageStripe.Action>
         </MessageStripe>
       ) : null}
 
