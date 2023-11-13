@@ -348,6 +348,11 @@ export const updateAccountDetails = async (
     name: string;
   }
 ) => {
+  if (!state.user) {
+    // Should not happen
+    return;
+  }
+
   try {
     await effects.gql.mutations.updateCurrentUser({
       username,
