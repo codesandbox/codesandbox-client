@@ -12,6 +12,7 @@ import { Debug } from 'app/components/Debug';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
+import { StandalonePage } from './Standalone';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
@@ -217,6 +218,7 @@ const RoutesComponent: React.FC = () => {
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
             <Route path="/codesadbox" component={CodeSadbox} />
+            <Route path="/standalone/:componentId" component={StandalonePage} />
             <Redirect from="/patron" to="/pro" />
             <Route component={NotFound} />
           </Switch>

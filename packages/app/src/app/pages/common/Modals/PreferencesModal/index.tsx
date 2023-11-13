@@ -1,6 +1,5 @@
-import { Stack } from '@codesandbox/components';
-import css from '@styled-system/css';
-import React, { ComponentProps, ComponentType, FunctionComponent } from 'react';
+import { Stack, Element } from '@codesandbox/components';
+import React, { ComponentProps, ComponentType } from 'react';
 
 import AccountIcon from 'react-icons/lib/fa/user';
 import CodeIcon from 'react-icons/lib/fa/code';
@@ -14,8 +13,6 @@ import IntegrationIcon from 'react-icons/lib/md/device-hub';
 import { useAppState } from 'app/overmind';
 import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
 import { CurrentUser } from '@codesandbox/common/lib/types';
-
-import { Alert } from '../Common/Alert';
 
 import { Account } from './Account';
 import { Appearance } from './Appearance';
@@ -99,7 +96,7 @@ const getItems = (
       },
   ].filter(Boolean);
 
-export const PreferencesModal: FunctionComponent = () => {
+export const Preferences: React.FC<{ tab?: string }> = ({ tab }) => {
   const {
     isLoggedIn,
     user,
@@ -109,25 +106,26 @@ export const PreferencesModal: FunctionComponent = () => {
 
   const isEditorPage = useIsEditorPage();
   const items = getItems(isLoggedIn, user, environment.isOnPrem, isEditorPage);
+  const tabId = tab || itemId;
 
-  const tabToShow = items.find(({ id }) => id === itemId) || items[0];
+  const tabToShow = items.find(({ id }) => id === tabId) || items[0];
   const { Content } = tabToShow;
 
   return (
-    <Stack css={css({ fontFamily: "'Inter', sans-serif" })}>
+    <Stack>
       <SideNavigation menuItems={items} />
 
-      <Alert
-        css={css({
-          height: 482,
+      <Element
+        css={{
+          height: '482px',
           width: '100%',
-          padding: 6,
-          marginTop: 52,
-          '*': { boxSizing: 'border-box' },
-        })}
+          padding: '24px',
+          marginTop: '52px',
+          overflow: 'auto',
+        }}
       >
         <Content />
-      </Alert>
+      </Element>
     </Stack>
   );
 };
