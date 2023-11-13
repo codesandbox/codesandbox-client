@@ -15,7 +15,7 @@ type State = {
   settings: Settings;
   isLoadingPaymentDetails: boolean;
   hideNavigation: boolean;
-  itemId: string;
+  itemId: string | null;
   showEditor: boolean;
   showModal: boolean;
   showPreview: boolean;
