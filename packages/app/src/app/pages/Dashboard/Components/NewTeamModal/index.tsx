@@ -10,12 +10,11 @@ import Modal from 'app/components/Modal';
 import { useActions, useAppState } from 'app/overmind';
 
 import track from '@codesandbox/common/lib/utils/analytics';
-import { TeamName } from './TeamName';
 import { TeamMembers } from './TeamMembers';
 import { TeamImport } from './TeamImport';
 import { TeamCreate } from './TeamCreate';
 
-export type TeamStep = 'name' | 'members' | 'import' | 'create';
+export type TeamStep = 'create' | 'members' | 'import';
 
 type NewTeamProps = {
   step?: TeamStep;
@@ -25,12 +24,11 @@ type NewTeamProps = {
 const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
   const { activeTeamInfo, environment } = useAppState();
   const [currentStep, setCurrentStep] = React.useState<TeamStep>(
-    step ?? 'name'
+    step ?? 'create'
   );
 
   const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
     create: 'members',
-    name: 'members',
     members: environment.isOnPrem ? null : 'import',
     import: null,
   };
@@ -53,9 +51,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
       <Element padding={6}>
         <Stack align="center" justify="space-between">
           <Text color="#999" size={3}>
-            {activeTeamInfo &&
-            currentStep !== 'name' &&
-            currentStep !== 'create'
+            {activeTeamInfo && currentStep !== 'create'
               ? activeTeamInfo.name
               : ''}
           </Text>
@@ -78,7 +74,6 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
         {
           {
             create: <TeamCreate onComplete={handleStepCompletion} />,
-            name: <TeamName onComplete={handleStepCompletion} />,
             members: (
               <TeamMembers
                 hideSkip={!nextStep}
