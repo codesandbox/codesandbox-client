@@ -264,7 +264,11 @@ type ModalName =
   | 'addMemberToWorkspace'
   | 'legacyPayment'
   | 'editorSeatsUpgrade'
-  | 'personalSpaceAnnouncement';
+  | 'personalSpaceAnnouncement'
+  | 'importRepository'
+  | 'createSandbox'
+  | 'createDevbox'
+  | 'genericCreate';
 
 export const modalOpened = (
   { state, effects }: Context,

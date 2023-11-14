@@ -18,11 +18,11 @@ import { useActions, useAppState } from 'app/overmind';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
-import { AccountSelect } from 'app/components/CreateSandbox/Import/AccountSelect';
+import { AccountSelect } from 'app/components/Create/ImportRepository/AccountSelect';
 import { StyledCard } from 'app/pages/Dashboard/Components/shared/StyledCard';
 import { SolidSkeleton } from 'app/pages/Dashboard/Components/Skeleton';
 import { ProjectFragment as Repository } from 'app/graphql/types';
-import { AuthorizeForSuggested } from 'app/components/CreateSandbox/Import/AuthorizeForSuggested';
+import { AuthorizeForSuggested } from 'app/components/Create/ImportRepository/AuthorizeForSuggested';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 

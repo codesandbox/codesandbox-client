@@ -27,7 +27,6 @@ import {
   ModalSidebar,
   ModalBody,
 } from './elements';
-import { Import } from './Import';
 import { TemplateCategoryList } from './TemplateCategoryList';
 import { useEssentialTemplates } from './useEssentialTemplates';
 import { FromTemplate } from './FromTemplate';
@@ -36,10 +35,6 @@ import { useTeamTemplates } from './useTeamTemplates';
 import { CreateSandboxParams } from './types';
 import { SearchBox } from './SearchBox';
 import { SearchResults } from './SearchResults';
-import { GithubRepoToImport } from './Import/types';
-import { ImportInfo } from './Import/ImportInfo';
-import { FromRepo } from './Import/FromRepo';
-import { ImportSandbox } from './ImportSandbox';
 import { ExperimentalBetaEditor } from './ExperimentalBetaEditor';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
@@ -90,11 +85,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn, activeTeamInfo, user, environment } = useAppState();
   const actions = useActions();
-  const isUnderRepositoriesSection =
-    location.pathname.includes('/my-contributions') ||
-    location.pathname.includes('/repositories');
-  const defaultSelectedTab =
-    initialTab || isUnderRepositoriesSection ? 'import' : 'quickstart';
+
   const isUser = user?.username === activeTeamInfo?.name;
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
@@ -153,16 +144,15 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const tabState = useTabState({
     orientation: mobileScreenSize ? 'horizontal' : 'vertical',
-    selectedId: defaultSelectedTab,
+    selectedId: 'quickstart',
   });
 
-  const [viewState, setViewState] = useState<
-    'initial' | 'fromTemplate' | 'fork'
-  >('initial');
+  const [viewState, setViewState] = useState<'initial' | 'fromTemplate'>(
+    'initial'
+  );
   // ❗️ We could combine viewState with selectedTemplate
   // and selectedRepo to limit the amount of states.
   const [selectedTemplate] = useState<TemplateFragment>();
-  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
@@ -227,14 +217,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     window.open(url, '_blank');
   };
 
-  const selectGithubRepo = (repo: GithubRepoToImport) => {
-    setSelectedRepo(repo);
-    setViewState('fork');
-  };
-
   const showSearch = !environment.isOnPrem;
   const showCloudTemplates = !environment.isOnPrem;
-  const showImportRepository = !environment.isOnPrem;
 
   return (
     <ThemeProvider>
@@ -282,7 +266,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   tabState.select(null);
                 } else {
                   // Restore the default tab when search query is removed
-                  tabState.select(defaultSelectedTab);
+                  tabState.select('quickstart');
                 }
 
                 setSearchQuery(query);
@@ -320,36 +304,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     stopId="quickstart"
                   >
                     Quick start
-                  </Tab>
-
-                  {showImportRepository && (
-                    <Tab
-                      {...tabState}
-                      onClick={() => {
-                        track('Create New - Click Tab', {
-                          codesandbox: 'V1',
-                          event_source: 'UI',
-                          tab_name: 'Import from Github',
-                        });
-                      }}
-                      stopId="import"
-                    >
-                      Import repository
-                    </Tab>
-                  )}
-
-                  <Tab
-                    {...tabState}
-                    onClick={() => {
-                      track('Create New - Click Tab', {
-                        codesandbox: 'V1',
-                        event_source: 'UI',
-                        tab_name: 'Import template',
-                      });
-                    }}
-                    stopId="import-template"
-                  >
-                    Import template
                   </Tab>
 
                   <Element css={{ height: '18px' }} />
@@ -440,9 +394,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {viewState === 'fromTemplate' ? (
               <TemplateInfo template={selectedTemplate} />
             ) : null}
-            {viewState === 'fork' ? (
-              <ImportInfo githubRepo={selectedRepo} />
-            ) : null}
           </ModalSidebar>
 
           <ModalContent>
@@ -494,14 +445,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         openTemplate(template);
                       }}
                     />
-                  </Panel>
-
-                  <Panel tab={tabState} id="import">
-                    <Import onRepoSelect={selectGithubRepo} />
-                  </Panel>
-
-                  <Panel tab={tabState} id="import-template">
-                    <ImportSandbox />
                   </Panel>
 
                   {showTeamTemplates ? (
@@ -688,15 +631,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                 }}
                 onSubmit={params => {
                   createFromTemplate(selectedTemplate, params);
-                }}
-              />
-            ) : null}
-
-            {viewState === 'fork' ? (
-              <FromRepo
-                repository={selectedRepo}
-                onCancel={() => {
-                  setViewState('initial');
                 }}
               />
             ) : null}

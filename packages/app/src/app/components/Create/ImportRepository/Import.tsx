@@ -33,7 +33,7 @@ import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndNameFromInput } from './utils';
 import { SuggestedRepositories } from './SuggestedRepositories';
-import { GET_REPOSITORY_TEAMS } from '../queries';
+import { GET_REPOSITORY_TEAMS } from '../utils/queries';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();

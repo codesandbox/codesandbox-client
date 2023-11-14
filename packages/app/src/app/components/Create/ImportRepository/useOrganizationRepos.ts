@@ -3,7 +3,7 @@ import {
   GetGitHubOrganizationReposQuery,
   GetGitHubOrganizationReposQueryVariables,
 } from 'app/graphql/types';
-import { GET_GITHUB_ORGANIZATION_REPOS } from '../queries';
+import { GET_GITHUB_ORGANIZATION_REPOS } from '../utils/queries';
 
 /**
  * The organization property can be undefined because the organization

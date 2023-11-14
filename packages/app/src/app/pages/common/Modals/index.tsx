@@ -10,6 +10,8 @@ import { useAppState, useActions } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
+import { ImportRepository } from 'app/components/Create/ImportRepository';
+import { GenericCreate } from 'app/components/Create/GenericCreate';
 import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
 import { DeletePreset } from './DeletePreset';
@@ -64,6 +66,14 @@ const modals = {
   newSandbox: {
     Component: CreateSandbox,
     width: () => (window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950),
+  },
+  genericCreate: {
+    Component: GenericCreate,
+    width: 950,
+  },
+  importRepository: {
+    Component: ImportRepository,
+    width: 950,
   },
   share: {
     Component: ShareModal,
@@ -279,6 +289,7 @@ const Modals: FunctionComponent = () => {
         {modal
           ? React.createElement(modal.Component, {
               closeModal: () => modalClosed(),
+              isModal: true,
             })
           : null}
       </Modal>
@@ -289,3 +300,8 @@ const Modals: FunctionComponent = () => {
 };
 
 export { Modals };
+
+export interface ModalContentProps {
+  closeModal: () => void;
+  isModal: true;
+}

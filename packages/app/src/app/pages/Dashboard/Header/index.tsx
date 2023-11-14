@@ -36,7 +36,7 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
-    const { openCreateSandboxModal } = useActions();
+    const { modalOpened } = useActions();
     const {
       activeWorkspaceAuthorization,
       hasLogIn,
@@ -114,7 +114,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
             css={css({ width: 'auto' })}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
-              openCreateSandboxModal({});
+              modalOpened({ modal: 'genericCreate' });
             }}
           >
             <Icon
