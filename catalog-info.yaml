@@ -6,7 +6,7 @@ metadata:
   annotations:
     github.com/project-slug: codesandbox/codesandbox-client
     backstage.io/kubernetes-namespace: default
-    backstage.io/kubernetes-label-selector: app=codesandbox,component=client
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/name=codesandbox,component=client
     codesandbox/deploy-image: codesandbox/client
     codesandbox/deploy-gitops-repo: codesandbox/codesandbox-gitops
     codesandbox/deploy-gitops-yaml-key: "client.image.tag"
