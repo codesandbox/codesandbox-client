@@ -28,7 +28,7 @@ import { LiveSessionRestricted } from './LiveSessionRestricted';
 import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
-import { PreferencesModal } from './PreferencesModal';
+import { Preferences } from './PreferencesModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
 import { LegacyPaymentModal } from './LegacyPaymentModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
@@ -56,7 +56,7 @@ import { PersonalSpaceAnnouncement } from './PersonalSpaceAnnouncement';
 
 const modals = {
   preferences: {
-    Component: PreferencesModal,
+    Component: Preferences,
     width: 900,
   },
   legacyPayment: {

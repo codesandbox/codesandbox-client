@@ -2,7 +2,8 @@ import { Element, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React, { ComponentType, FunctionComponent } from 'react';
 
-import { useAppState, useActions } from 'app/overmind';
+import { useActions } from 'app/overmind';
+
 import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
 
 type MenuItem = {
@@ -12,9 +13,12 @@ type MenuItem = {
 };
 type Props = {
   menuItems: MenuItem[];
+  selectedTab: string;
 };
-export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
-  const { itemId = 'appearance' } = useAppState().preferences;
+export const SideNavigation: FunctionComponent<Props> = ({
+  menuItems,
+  selectedTab,
+}) => {
   const { itemIdChanged } = useActions().preferences;
   const isEditorPage = useIsEditorPage();
 
@@ -55,7 +59,7 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
               lineHeight: 1,
               border: '1px solid transparent',
               color:
-                itemId === id
+                selectedTab === id
                   ? 'list.hoverForeground'
                   : 'sideBarSectionHeader.foreground',
               '&:hover': {
