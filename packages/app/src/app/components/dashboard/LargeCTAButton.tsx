@@ -63,14 +63,15 @@ const StyledButton = styled.button`
   font-family: inherit;
   font-weight: 500;
   line-height: 16px;
+  transition: background-color 75ms ease;
 
   &:hover {
-    background-color: #ebebeb;
+    background-color: #ededed;
     cursor: pointer;
-    transition: background-color 75ms ease;
   }
 
   &:focus-visible {
+    background-color: #ededed;
     outline: 2px solid #9581ff;
   }
 `;

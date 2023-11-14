@@ -36,7 +36,7 @@ export const SuggestedRepositories = ({
     activeTeamInfo,
     dashboard: { repositoriesByTeamId },
   } = useAppState();
-  const { modals, dashboard: dashboardActions } = useActions();
+  const { modalClosed, dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHubPermissions();
   const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
   const [importsInProgress, setImportsInProgress] = useState<
@@ -277,7 +277,7 @@ export const SuggestedRepositories = ({
                                   event_source: 'UI',
                                 }
                               );
-                              modals.newSandboxModal.close();
+                              modalClosed();
                             }}
                           >
                             <Text

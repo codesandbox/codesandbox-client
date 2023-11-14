@@ -35,7 +35,6 @@ import { useTeamTemplates } from './useTeamTemplates';
 import { CreateSandboxParams } from './types';
 import { SearchBox } from './SearchBox';
 import { SearchResults } from './SearchResults';
-import { ExperimentalBetaEditor } from './ExperimentalBetaEditor';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -617,9 +616,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         </Panel>
                       ))
                     : null}
-                  {tabState.selectedId === 'quickstart' && (
-                    <ExperimentalBetaEditor />
-                  )}
                 </Stack>
               ))}
 

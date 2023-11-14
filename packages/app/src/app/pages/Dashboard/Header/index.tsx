@@ -120,7 +120,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
             <Icon
               name="plus"
               size={16}
-              title="New"
+              title="Create new"
               css={{ marginRight: '8px' }}
             />
             Create

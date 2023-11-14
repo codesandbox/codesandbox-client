@@ -44,7 +44,7 @@ export const EmptyRepositories: React.FC = () => {
               tab: 'github',
             });
 
-            actions.openCreateSandboxModal({ initialTab: 'import' });
+            actions.modalOpened({ modal: 'importRepository' });
           }}
         />
         <ArticleCard

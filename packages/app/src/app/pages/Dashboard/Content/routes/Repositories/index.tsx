@@ -52,7 +52,7 @@ export const RepositoriesPage = () => {
       repoItems.unshift({
         type: 'import-repository',
         onImportClicked: () => {
-          actions.openCreateSandboxModal({ initialTab: 'import' });
+          actions.modalOpened({ modal: 'importRepository' });
         },
       });
     }

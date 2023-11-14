@@ -60,7 +60,7 @@ export const Header = ({
   readOnly = false,
 }: Props) => {
   const location = useLocation();
-  const { modals, dashboard: dashboardActions } = useActions();
+  const { modalOpened, dashboard: dashboardActions } = useActions();
   const { dashboard } = useAppState();
 
   const repositoriesListPage =
@@ -135,7 +135,7 @@ export const Header = ({
         {repositoriesListPage && dashboard.viewMode === 'list' && (
           <Button
             onClick={() =>
-              !readOnly && modals.newSandboxModal.open({ initialTab: 'import' })
+              !readOnly && modalOpened({ modal: 'importRepository' })
             }
             variant="link"
             css={css({

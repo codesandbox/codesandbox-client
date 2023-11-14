@@ -10,7 +10,7 @@ import { getEventName } from './utils';
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
-  const { modals } = useActions();
+  const { modalClosed } = useActions();
 
   const [, createCheckout, canCheckout] = useCreateCheckout();
 
@@ -38,7 +38,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
         color="#FFFFFF"
         onClick={() => {
           if (ctaURL) {
-            modals.newSandboxModal.close();
+            modalClosed();
           } else {
             createCheckout({
               trackingLocation: 'dashboard_import_limits',
