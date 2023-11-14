@@ -39,7 +39,7 @@ fetch('https://deploy-api.ops.csb.dev/image', {
         },
         body: JSON.stringify({
           key: 'client.image.tag',
-          commitMessage: `Deploy Client V1 to ${
+          commitMessage: `Client V1: deploy to ${
             process.env.ENVIRONMENT
           } with ${process.env.CIRCLE_SHA1.substr(0, 7)}`,
           value: process.env.CIRCLE_SHA1.substr(0, 7),
