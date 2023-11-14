@@ -25,6 +25,9 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       >
         {title}
       </Text>
+      <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
+        Start something new
+      </Text>
       <EmptyPage.StyledGrid
         css={{
           gridAutoRows: 'auto',
