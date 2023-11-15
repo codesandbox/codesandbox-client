@@ -101,7 +101,7 @@ export const TemplateList = ({
           <Text size={3} css={{ width: '300px', textAlign: 'center' }}>
             Browse more than 3 million community-made templates{' '}
             <a
-              href={`https://codesandbox.io/search?query=${searchQuery}`}
+              href={`https://codesandbox.io/search?query=${encodeURIComponent(searchQuery)}`}
               target="_blank"
               rel="noreferrer noopener"
             >
