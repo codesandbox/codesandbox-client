@@ -11,6 +11,7 @@ import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-th
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { ImportRepository } from 'app/components/Create/ImportRepository';
+import { CreateBox } from 'app/components/Create/CreateBox';
 import { GenericCreate } from 'app/components/Create/GenericCreate';
 import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
@@ -66,6 +67,10 @@ const modals = {
   newSandbox: {
     Component: CreateSandbox,
     width: () => (window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950),
+  },
+  createDevbox: {
+    Component: CreateBox,
+    width: 950,
   },
   genericCreate: {
     Component: GenericCreate,

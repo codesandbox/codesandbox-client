@@ -57,7 +57,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
               codesandbox: 'V1',
               event_source: 'UI',
             });
-            actions.openCreateSandboxModal();
+            actions.modalOpened({ modal: 'createDevbox' });
           }}
           variant="primary"
         />

@@ -78,7 +78,7 @@ export const GenericCreate: React.FC<ModalContentProps> = ({
               event_source: 'UI',
             });
             closeModal();
-            actions.openCreateSandboxModal();
+            actions.modalOpened({ modal: 'createDevbox' });
           }}
           variant="primary"
           alignment="vertical"
