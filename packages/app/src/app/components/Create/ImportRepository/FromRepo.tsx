@@ -1,7 +1,6 @@
 import { useActions, useAppState } from 'app/overmind';
 import React, { useEffect } from 'react';
 import {
-  Badge,
   Button,
   Element,
   Icon,
@@ -122,7 +121,6 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
         >
           Create new fork
         </Text>
-        <Badge icon="cloud">Cloud</Badge>
       </Stack>
       <Element
         as="form"

@@ -1,7 +1,6 @@
 import { useAppState } from 'app/overmind';
 import React, { useState } from 'react';
 import {
-  Badge,
   Stack,
   Element,
   Checkbox,
@@ -54,7 +53,6 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
         >
           New from template
         </Text>
-        {isV2 && <Badge icon="cloud">Cloud</Badge>}
       </Stack>
 
       <Element

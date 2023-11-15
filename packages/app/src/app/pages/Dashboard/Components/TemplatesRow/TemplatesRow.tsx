@@ -2,7 +2,7 @@ import React from 'react';
 import { CreateCard, SkeletonText, Stack } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOfficialTemplates } from 'app/components/CreateSandbox/useOfficialTemplates';
-import { TemplateCard } from 'app/components/CreateSandbox/TemplateCard';
+import { TemplateCard } from 'app/components/Create/TemplateCard';
 import { useActions, useAppState } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
