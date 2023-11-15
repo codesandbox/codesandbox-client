@@ -68,7 +68,7 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
           <HeaderInformation>
             {viewState === 'initial' ? (
               <Text size={4} variant="muted">
-                New
+                Connect a repository
               </Text>
             ) : (
               // TODO: add aria-label based on title to IconButton?
@@ -107,7 +107,7 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
           <ModalSidebar>
             {viewState === 'initial' ? (
               <Stack direction="vertical">
-                <Tabs {...tabState} aria-label="Create new">
+                <Tabs {...tabState}>
                   {showImportRepository && (
                     <Tab
                       {...tabState}

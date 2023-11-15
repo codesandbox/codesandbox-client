@@ -178,7 +178,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       },
     });
 
-    actions.modals.newSandboxModal.close();
+    closeModal();
   };
 
   const selectTemplate = (

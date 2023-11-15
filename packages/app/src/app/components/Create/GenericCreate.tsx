@@ -1,5 +1,4 @@
 import React from 'react';
-import { ModalContentProps } from 'app/pages/common/Modals';
 
 import { Stack, Text, IconButton, Element } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -7,16 +6,16 @@ import { useActions } from 'app/overmind';
 import { Container, HeaderInformation } from './elements';
 import { LargeCTAButton } from '../dashboard/LargeCTAButton';
 
-export const GenericCreate: React.FC<ModalContentProps> = ({
-  closeModal,
-  isModal,
-}) => {
+export const GenericCreate: React.FC<{
+  closeModal?: () => void;
+  isModal?: boolean;
+}> = ({ closeModal, isModal }) => {
   const actions = useActions();
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
   return (
-    <Container css={{ height: '260px' }}>
+    <Container css={{ height: mobileScreenSize ? 'auto' : '260px' }}>
       <Stack
         gap={4}
         align="center"
@@ -48,7 +47,7 @@ export const GenericCreate: React.FC<ModalContentProps> = ({
         paddingX={6}
         css={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: `repeat(${mobileScreenSize ? 1 : 3}, 1fr)`,
           gap: '16px',
         }}
       >
@@ -61,7 +60,9 @@ export const GenericCreate: React.FC<ModalContentProps> = ({
               codesandbox: 'V1',
               event_source: 'UI',
             });
-            closeModal();
+            if (closeModal) {
+              closeModal();
+            }
             actions.modalOpened({ modal: 'importRepository' });
           }}
           variant="primary"
@@ -77,7 +78,9 @@ export const GenericCreate: React.FC<ModalContentProps> = ({
               codesandbox: 'V1',
               event_source: 'UI',
             });
-            closeModal();
+            if (closeModal) {
+              closeModal();
+            }
             actions.modalOpened({ modal: 'createDevbox' });
           }}
           variant="primary"
@@ -93,7 +96,9 @@ export const GenericCreate: React.FC<ModalContentProps> = ({
               codesandbox: 'V1',
               event_source: 'UI',
             });
-            closeModal();
+            if (closeModal) {
+              closeModal();
+            }
             actions.modalOpened({ modal: 'createSandbox' });
           }}
           variant="secondary"
