@@ -15,12 +15,16 @@ type EssentialsState =
       error: string;
     };
 
-export const useEssentialTemplates = () => {
+export const useEssentialTemplates = (showEssentialTemplates: boolean) => {
   const [essentialState, setEssentialState] = useState<EssentialsState>({
     state: 'loading',
   });
 
   useEffect(() => {
+    if (!showEssentialTemplates) {
+      return;
+    }
+
     async function getEssentials() {
       try {
         const result = await getTemplateInfosFromAPI(

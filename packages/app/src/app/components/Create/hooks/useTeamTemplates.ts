@@ -18,22 +18,16 @@ type State =
       error: string;
     };
 
-function getUserTemplates(data: ListPersonalTemplatesQuery) {
-  return data.me.templates;
-}
-
 function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
   return data.me.teams.find(team => team.id === teamId)?.templates || [];
 }
 
 type UseTeamTemplatesParams = {
-  isUser: boolean;
-  teamId?: string;
+  teamId: string;
   hasLogIn: boolean;
 };
 
 export const useTeamTemplates = ({
-  isUser,
   teamId,
   hasLogIn,
 }: UseTeamTemplatesParams): State => {
@@ -67,8 +61,7 @@ export const useTeamTemplates = ({
     };
   }
 
-  const teamTemplates =
-    isUser || !teamId ? getUserTemplates(data) : getTeamTemplates(data, teamId);
+  const teamTemplates = getTeamTemplates(data, teamId);
 
   return {
     state: 'ready',

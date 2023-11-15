@@ -117,9 +117,9 @@ export const Dashboard: FunctionComponent = () => {
     if (JSON.parse(searchParams.get('import_repo'))) {
       actions.modalOpened({ modal: 'importRepository' });
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {
-      actions.openCreateSandboxModal(); // will change
+      actions.modalOpened({ modal: 'createSandbox' });
     } else if (JSON.parse(searchParams.get('create_devbox'))) {
-      actions.openCreateSandboxModal(); // will change
+      actions.modalOpened({ modal: 'createDevbox' });
     } else if (searchParams.get('preferences')) {
       const toToOpen = searchParams.get('preferences');
       actions.preferences.openPreferencesModal(toToOpen);

@@ -3,12 +3,11 @@ import {
   Stack,
   Element,
   IconButton,
-  SkeletonText,
   ThemeProvider,
 } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import React, { ReactNode, useState, useEffect } from 'react';
-import { TabStateReturn, useTabState } from 'reakit/Tab';
+import React, { useState, useEffect } from 'react';
+import { useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
@@ -19,8 +18,8 @@ import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import {
   Container,
   Tab,
-  TabContent,
   Tabs,
+  Panel,
   HeaderInformation,
   ModalContent,
   ModalSidebar,
@@ -47,26 +46,6 @@ const FEATURED_IDS = [
   'rjk9n4zj7m', // static v1
 ];
 
-interface PanelProps {
-  tab: TabStateReturn;
-  id: string;
-  children: ReactNode;
-}
-
-/**
- * The Panel component handles the conditional rendering of the actual panel content. This is
- * done with render props as per the Reakit docs.
- */
-const Panel = ({ tab, id, children }: PanelProps) => {
-  return (
-    <TabContent {...tab} stopId={id}>
-      {({ hidden, ...rest }) =>
-        hidden ? null : <div {...rest}>{children}</div>
-      }
-    </TabContent>
-  );
-};
-
 interface CreateBoxProps {
   collectionId?: string;
   isModal?: boolean;
@@ -78,46 +57,45 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   type = 'devbox',
   isModal,
 }) => {
-  const { hasLogIn, activeTeamInfo, user } = useAppState();
+  const { hasLogIn, activeTeam } = useAppState();
   const actions = useActions();
 
-  const isUser = user?.username === activeTeamInfo?.name;
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
-  const essentialState = useEssentialTemplates();
+  const showFeaturedTemplates = type === 'devbox';
+  const showEssentialTemplates = type === 'devbox';
+
+  const noDevboxesWhenListingSandboxes = (t: TemplateFragment) =>
+    type === 'sandbox' ? !t.sandbox.isV2 : true;
+
+  const essentialState = useEssentialTemplates(showEssentialTemplates);
   const officialTemplatesData = useOfficialTemplates();
   const teamTemplatesData = useTeamTemplates({
-    isUser,
-    teamId: activeTeamInfo?.id,
+    teamId: activeTeam,
     hasLogIn,
   });
 
   const officialTemplates =
     officialTemplatesData.state === 'ready'
-      ? officialTemplatesData.templates
+      ? officialTemplatesData.templates.filter(noDevboxesWhenListingSandboxes)
       : [];
 
   /**
-   * Checking for user because user is undefined when landing on /s/, even though
-   * hasLogIn is true. Only show the team/my templates if the list is populated.
+   * Only show the team templates if the list is populated.
    */
   const showTeamTemplates =
     hasLogIn &&
-    user &&
+    activeTeam &&
     teamTemplatesData.state === 'ready' &&
     teamTemplatesData.teamTemplates.length > 0;
 
-  /**
-   * For the quick start we show:
-   *  - 3 most recently used templates (if they exist)
-   *  - 6 to 9 templates selected from the official list, ensuring the total number
-   * of unique templates is 9 (recent + official)
-   */
   const recentlyUsedTemplates =
     teamTemplatesData.state === 'ready'
       ? teamTemplatesData.recentTemplates.slice(0, 3)
       : [];
+
+  const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
 
   const featuredOfficialTemplates =
     officialTemplatesData.state === 'ready'
@@ -131,15 +109,19 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const featuredTemplates = featuredOfficialTemplates.slice(
     0,
-    featuredOfficialTemplates.length > 0 ? 6 : 9
+    hasRecentlyUsedTemplates ? 6 : 9
   );
 
   const teamTemplates =
-    teamTemplatesData.state === 'ready' ? teamTemplatesData.teamTemplates : [];
+    teamTemplatesData.state === 'ready'
+      ? teamTemplatesData.teamTemplates.filter(noDevboxesWhenListingSandboxes)
+      : [];
+
+  const allTemplates = [...officialTemplates, ...teamTemplates];
 
   const tabState = useTabState({
     orientation: mobileScreenSize ? 'horizontal' : 'vertical',
-    selectedId: 'featured',
+    selectedId: type === 'devbox' ? 'featured' : 'all',
   });
 
   const [viewState, setViewState] = useState<'initial' | 'fromTemplate'>(
@@ -285,35 +267,47 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             {viewState === 'initial' ? (
               <Stack direction="vertical">
                 <Tabs {...tabState} aria-label="Create new">
+                  {showFeaturedTemplates && (
+                    <Tab
+                      {...tabState}
+                      onClick={() => trackTabClick('featured')}
+                      stopId="featured"
+                    >
+                      Featured templates
+                    </Tab>
+                  )}
+
                   <Tab
                     {...tabState}
-                    onClick={() => trackTabClick('featured')}
-                    stopId="featured"
+                    onClick={() => trackTabClick('all')}
+                    stopId="all"
                   >
-                    Featured templates
+                    All templates
                   </Tab>
 
-                  <Element css={{ height: '18px' }} />
+                  <Element css={{ height: '16px' }} />
 
                   {showTeamTemplates ? (
                     <Tab
                       {...tabState}
-                      onClick={() => trackTabClick('team-templates')}
-                      stopId="team-templates"
+                      onClick={() => trackTabClick('workspace')}
+                      stopId="workspace"
                     >
-                      {`${isUser ? 'My' : 'Team'} templates`}
+                      Workspace templates
                     </Tab>
                   ) : null}
 
                   <Tab
                     {...tabState}
-                    onClick={() => trackTabClick('official-templates')}
-                    stopId="official-templates"
+                    onClick={() => trackTabClick('official')}
+                    stopId="official"
                   >
                     Official templates
                   </Tab>
 
-                  {essentialState.state === 'success'
+                  <Element css={{ height: '16px' }} />
+
+                  {showEssentialTemplates && essentialState.state === 'success'
                     ? essentialState.essentials.map(essential => (
                         <Tab
                           key={essential.key}
@@ -325,21 +319,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                         </Tab>
                       ))
                     : null}
-
-                  {!mobileScreenSize && essentialState.state === 'loading' ? (
-                    <Stack direction="vertical" css={{ marginTop: 6 }} gap={5}>
-                      <SkeletonText css={{ width: 110 }} />
-                      <SkeletonText css={{ width: 60 }} />
-                      <SkeletonText css={{ width: 50 }} />
-                      <SkeletonText css={{ width: 80 }} />
-                      <SkeletonText css={{ width: 140 }} />
-                      <SkeletonText css={{ width: 70 }} />
-                    </Stack>
-                  ) : null}
-
-                  {essentialState.state === 'error' ? (
-                    <div>{essentialState.error}</div>
-                  ) : null}
                 </Tabs>
               </Stack>
             ) : null}
@@ -353,54 +332,67 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             {viewState === 'initial' && (
               <Stack direction="vertical" gap={2}>
                 <Panel tab={tabState} id="featured">
-                  <TemplateList
-                    title="Recently used"
-                    templates={recentlyUsedTemplates}
-                    onSelectTemplate={template => {
-                      selectTemplate(template, 'Featured templates');
-                    }}
-                    onOpenTemplate={template => {
-                      openTemplate(template, 'Featured templates');
-                    }}
-                  />
+                  {hasRecentlyUsedTemplates && (
+                    <TemplateList
+                      title="Recently used"
+                      templates={recentlyUsedTemplates}
+                      onSelectTemplate={template => {
+                        selectTemplate(template, 'featured');
+                      }}
+                      onOpenTemplate={template => {
+                        openTemplate(template, 'featured');
+                      }}
+                    />
+                  )}
                   <TemplateList
                     title="Popular"
                     templates={featuredTemplates}
                     onSelectTemplate={template => {
-                      selectTemplate(template, 'Featured templates');
+                      selectTemplate(template, 'featured');
                     }}
                     onOpenTemplate={template => {
-                      openTemplate(template, 'Featured templates');
+                      openTemplate(template, 'featured');
+                    }}
+                  />
+                </Panel>
+
+                <Panel tab={tabState} id="all">
+                  <TemplateList
+                    title="All templates"
+                    templates={allTemplates}
+                    onSelectTemplate={template => {
+                      selectTemplate(template, 'all');
+                    }}
+                    onOpenTemplate={template => {
+                      openTemplate(template, 'all');
                     }}
                   />
                 </Panel>
 
                 {showTeamTemplates ? (
-                  <Panel tab={tabState} id="team-templates">
+                  <Panel tab={tabState} id="workspace">
                     <TemplateList
-                      title={`${
-                        isUser ? 'My' : activeTeamInfo?.name || 'Team'
-                      } templates`}
+                      title="Workspace templates"
                       templates={teamTemplates}
                       onSelectTemplate={template => {
-                        selectTemplate(template, 'team-templates');
+                        selectTemplate(template, 'workspace');
                       }}
                       onOpenTemplate={template => {
-                        openTemplate(template, 'team-templates');
+                        openTemplate(template, 'workspace');
                       }}
                     />
                   </Panel>
                 ) : null}
 
-                <Panel tab={tabState} id="official-templates">
+                <Panel tab={tabState} id="official">
                   <TemplateList
                     title="Official templates"
                     templates={officialTemplates}
                     onSelectTemplate={template => {
-                      selectTemplate(template, 'official-templates');
+                      selectTemplate(template, 'official');
                     }}
                     onOpenTemplate={template => {
-                      openTemplate(template, 'official-templates');
+                      openTemplate(template, 'official');
                     }}
                   />
                 </Panel>

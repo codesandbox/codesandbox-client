@@ -71,6 +71,16 @@ const modals = {
   createDevbox: {
     Component: CreateBox,
     width: 950,
+    props: {
+      type: 'devbox',
+    },
+  },
+  createSandbox: {
+    Component: CreateBox,
+    width: 950,
+    props: {
+      type: 'sandbox',
+    },
   },
   genericCreate: {
     Component: GenericCreate,
@@ -293,6 +303,7 @@ const Modals: FunctionComponent = () => {
       >
         {modal
           ? React.createElement(modal.Component, {
+              ...(modal.props || {}),
               closeModal: () => modalClosed(),
               isModal: true,
             })

@@ -81,7 +81,7 @@ export const TemplateList = ({
             />
           ))
         ) : (
-          <div>No templates for this category.</div>
+          <Text size={3}>No templates for this category.</Text>
         )}
       </TemplateGrid>
     </Stack>
