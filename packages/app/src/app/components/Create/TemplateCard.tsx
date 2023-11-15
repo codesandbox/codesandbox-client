@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-  Badge,
-  formatNumber,
-  Icon,
-  Stack,
-  Text,
-} from '@codesandbox/components';
+import { formatNumber, Icon, Stack, Text } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { useAppState } from 'app/overmind';
@@ -21,7 +13,6 @@ interface TemplateCardProps {
   onOpenTemplate: (template: TemplateFragment) => void;
   padding?: number | string;
   forks?: number;
-  isOfficial?: boolean;
 }
 
 export const TemplateCard = ({
@@ -31,7 +22,6 @@ export const TemplateCard = ({
   onOpenTemplate,
   padding,
   forks,
-  isOfficial,
 }: TemplateCardProps) => {
   const { isLoggedIn } = useAppState();
   const { UserIcon } = getTemplateIcon(
@@ -41,12 +31,11 @@ export const TemplateCard = ({
   );
 
   const sandboxTitle = template.sandbox?.title || template.sandbox?.alias;
-  const isV2 = template.sandbox?.isV2;
 
   const teamName =
     template.sandbox?.team?.name ||
     template.sandbox?.author?.username ||
-    'GitHub';
+    'CodeSandbox';
 
   return (
     <TemplateButton
@@ -90,31 +79,6 @@ export const TemplateCard = ({
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
           <UserIcon height="20" width="20" />
-          {isOfficial && (
-            <Badge icon={isV2 ? 'cloud' : undefined}>Official</Badge>
-          )}
-          {!isOfficial && isV2 && (
-            <Tooltip
-              content={
-                <div style={{ fontSize: 13 }}>
-                  This is a cloud sandbox that runs in a microVM, learn more{' '}
-                  <a
-                    href={docsUrl('/learn/sandboxes/overview?tab=cloud')}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    here
-                  </a>
-                  .
-                </div>
-              }
-              interactive
-            >
-              <div>
-                <Badge icon="cloud">Cloud</Badge>
-              </div>
-            </Tooltip>
-          )}
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text
@@ -133,7 +97,7 @@ export const TemplateCard = ({
           <Stack justify="space-between" css={{ color: '#999', width: '100%' }}>
             <Text truncate size={2} css={{ flex: 1 }}>
               <VisuallyHidden>by </VisuallyHidden>
-              {isOfficial ? 'CodeSandbox' : teamName}
+              {teamName}
             </Text>
             {forks ? (
               <Stack gap={1} align="center">

@@ -15,6 +15,8 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { pluralize } from 'app/utils/pluralize';
+import { ModalContentProps } from 'app/pages/common/Modals';
 import {
   Container,
   Tab,
@@ -30,6 +32,7 @@ import { useEssentialTemplates } from './hooks/useEssentialTemplates';
 import { useOfficialTemplates } from './hooks/useOfficialTemplates';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateSandboxParams } from './utils/types';
+import { SearchBox } from './SearchBox';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -46,15 +49,15 @@ const FEATURED_IDS = [
   'rjk9n4zj7m', // static v1
 ];
 
-interface CreateBoxProps {
+type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
-  isModal?: boolean;
   type?: 'devbox' | 'sandbox';
-}
+};
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId,
   type = 'devbox',
+  closeModal,
   isModal,
 }) => {
   const { hasLogIn, activeTeam } = useAppState();
@@ -65,6 +68,17 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const showFeaturedTemplates = type === 'devbox';
   const showEssentialTemplates = type === 'devbox';
+
+  const tabState = useTabState({
+    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
+    selectedId: type === 'devbox' ? 'featured' : 'all',
+  });
+
+  const [viewState, setViewState] = useState<'initial' | 'fromTemplate'>(
+    'initial'
+  );
+  const [selectedTemplate] = useState<TemplateFragment>();
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const noDevboxesWhenListingSandboxes = (t: TemplateFragment) =>
     type === 'sandbox' ? !t.sandbox.isV2 : true;
@@ -117,18 +131,15 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       ? teamTemplatesData.teamTemplates.filter(noDevboxesWhenListingSandboxes)
       : [];
 
-  const allTemplates = [...officialTemplates, ...teamTemplates];
-
-  const tabState = useTabState({
-    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
-    selectedId: type === 'devbox' ? 'featured' : 'all',
-  });
-
-  const [viewState, setViewState] = useState<'initial' | 'fromTemplate'>(
-    'initial'
-  );
-
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const allTemplates = [...officialTemplates, ...teamTemplates]
+    .filter(noDevboxesWhenListingSandboxes)
+    .filter(t =>
+      searchQuery
+        ? (t.sandbox.alias || t.sandbox.alias || '')
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        : true
+    );
 
   useEffect(() => {
     if (searchQuery) {
@@ -141,10 +152,10 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   }, [searchQuery]);
 
   useEffect(() => {
-    if (searchQuery && tabState.selectedId) {
+    if (searchQuery && tabState.selectedId !== 'all') {
       setSearchQuery('');
     }
-  }, [tabState.selectedId]);
+  }, [searchQuery, tabState.selectedId]);
 
   const [hasBetaEditorExperiment] = useGlobalPersistedState(
     'BETA_SANDBOX_EDITOR',
@@ -257,7 +268,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               variant="square"
               size={16}
               title="Close modal"
-              onClick={() => actions.modals.newSandboxModal.close()}
+              onClick={() => closeModal()}
             />
           ) : null}
         </Stack>
@@ -266,6 +277,17 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
           <ModalSidebar>
             {viewState === 'initial' ? (
               <Stack direction="vertical">
+                <SearchBox
+                  value={searchQuery}
+                  onChange={e => {
+                    const query = e.target.value;
+                    tabState.select('all');
+                    setSearchQuery(query);
+                  }}
+                />
+
+                <Element css={{ height: '16px' }} />
+
                 <Tabs {...tabState} aria-label="Create new">
                   {showFeaturedTemplates && (
                     <Tab
@@ -358,8 +380,18 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
                 <Panel tab={tabState} id="all">
                   <TemplateList
-                    title="All templates"
+                    key={searchQuery}
+                    title={
+                      searchQuery
+                        ? `${allTemplates.length} ${pluralize({
+                            word: 'result',
+                            count: allTemplates.length,
+                          })}`
+                        : 'All templates'
+                    }
                     templates={allTemplates}
+                    searchQuery={searchQuery}
+                    showEmptyState
                     onSelectTemplate={template => {
                       selectTemplate(template, 'all');
                     }}

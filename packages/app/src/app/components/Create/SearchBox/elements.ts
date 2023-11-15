@@ -15,9 +15,8 @@ export const SearchElement = styled.input`
   border-radius: 2px;
   padding-top: 4px;
   padding-bottom: 4px;
-  padding-left: 30px;
-  padding-right: 30px;
-  width: 176px;
+  padding-left: 25px;
+  padding-right: 25px;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;

@@ -10,6 +10,8 @@ import { TemplateGrid } from './elements';
 interface TemplateListProps {
   title: string;
   isCloudTemplateList?: boolean;
+  showEmptyState?: boolean;
+  searchQuery?: string;
   templates: TemplateFragment[];
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
@@ -21,6 +23,8 @@ export const TemplateList = ({
   templates,
   onSelectTemplate,
   onOpenTemplate,
+  showEmptyState = false,
+  searchQuery,
 }: TemplateListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
@@ -49,7 +53,7 @@ export const TemplateList = ({
             margin: 0,
           }}
         >
-          {title}
+          {showEmptyState && templates.length === 0 ? 'No results' : title}
         </Text>
       </Stack>
 
@@ -70,20 +74,43 @@ export const TemplateList = ({
           </Button>
         </Stack>
       ) : null}
-      <TemplateGrid>
-        {templates.length > 0 ? (
-          templates.map(template => (
+
+      {templates.length > 0 && (
+        <TemplateGrid>
+          {templates.map(template => (
             <TemplateCard
               key={template.id}
               template={template}
               onSelectTemplate={onSelectTemplate}
               onOpenTemplate={onOpenTemplate}
             />
-          ))
-        ) : (
-          <Text size={3}>No templates for this category.</Text>
-        )}
-      </TemplateGrid>
+          ))}
+        </TemplateGrid>
+      )}
+
+      {showEmptyState && searchQuery && templates.length === 0 && (
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={2}
+          css={{ width: '100%', padding: '24px', background: '#2a2a2a' }}
+        >
+          <Text size={4} weight="600">
+            Not finding what you need?
+          </Text>
+          <Text size={3} css={{ width: '300px', textAlign: 'center' }}>
+            Browse more than 3 million community-made templates{' '}
+            <a
+              href={`https://codesandbox.io/search?query=${searchQuery}`}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              on our Discover
+            </a>{' '}
+            page.
+          </Text>
+        </Stack>
+      )}
     </Stack>
   );
 };

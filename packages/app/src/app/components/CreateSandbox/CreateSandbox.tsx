@@ -33,7 +33,7 @@ import { FromTemplate } from './FromTemplate';
 import { useOfficialTemplates } from './useOfficialTemplates';
 import { useTeamTemplates } from './useTeamTemplates';
 import { CreateSandboxParams } from './types';
-import { SearchBox } from './SearchBox';
+import { SearchBox } from '../Create/SearchBox';
 import { SearchResults } from './SearchResults';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
