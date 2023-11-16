@@ -7,7 +7,6 @@ import { Loadable } from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
-import { CreateSandboxModal } from 'app/components/CreateSandbox/CreateSandboxModal';
 import { Debug } from 'app/components/Debug';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
@@ -225,7 +224,6 @@ const RoutesComponent: React.FC = () => {
         </Content>
         <Modals />
         <SignInModal />
-        <CreateSandboxModal />
         {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
           <MoveSandboxFolderModal />
         )}

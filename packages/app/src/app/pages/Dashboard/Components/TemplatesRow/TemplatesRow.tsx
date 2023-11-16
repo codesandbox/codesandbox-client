@@ -1,7 +1,7 @@
 import React from 'react';
-import { CreateCard, SkeletonText, Stack } from '@codesandbox/components';
+import { SkeletonText, Stack } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useOfficialTemplates } from 'app/components/CreateSandbox/useOfficialTemplates';
+import { useOfficialTemplates } from 'app/components/Create/hooks/useOfficialTemplates';
 import { TemplateCard } from 'app/components/Create/TemplateCard';
 import { useActions, useAppState } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
@@ -100,24 +100,6 @@ export const TemplatesRow: React.FC = () => {
               </Stack>
             ))
           : null}
-
-        {filteredTemplates?.length === 0 ||
-        officialTemplates.state === 'error' ? (
-          <CreateCard
-            icon="plus"
-            title="New from a template"
-            onClick={() => {
-              track('Empty State Card - Open create modal', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-                card_type: 'get-started-action',
-                tab: 'default',
-              });
-
-              actions.openCreateSandboxModal();
-            }}
-          />
-        ) : null}
       </EmptyPage.StyledGrid>
     </EmptyPage.StyledGridWrapper>
   );

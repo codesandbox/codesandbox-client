@@ -1,5 +1,4 @@
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
-import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
 import React from 'react';
 import { useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -23,7 +22,6 @@ export const EmptyRecent: React.FC = () => {
     >
       <RecentHeader title="Let's start building" />
       {!environment.isOnPrem && <InstructionsRow />}
-      <TemplatesRow />
       {!environment.isOnPrem && <DocumentationRow />}
       {!environment.isOnPrem && isPrimarySpace ? <OpenSourceRow /> : null}
     </EmptyPage.StyledWrapper>

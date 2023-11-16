@@ -53,7 +53,7 @@ export const GenericCreate: React.FC<{
       >
         <LargeCTAButton
           icon="boxRepository"
-          title="Connect a repository"
+          title="Import repository"
           subtitle="Run any branch instantly, create and review PRs in our Cloud Development Environment."
           onClick={() => {
             track('Create Modal - Import Repository', {

@@ -68,7 +68,7 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
           <HeaderInformation>
             {viewState === 'initial' ? (
               <Text size={4} variant="muted">
-                Connect a repository
+                Import
               </Text>
             ) : (
               // TODO: add aria-label based on title to IconButton?

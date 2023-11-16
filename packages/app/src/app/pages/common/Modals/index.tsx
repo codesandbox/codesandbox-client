@@ -1,9 +1,5 @@
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { ThemeProvider } from '@codesandbox/components';
-import {
-  COLUMN_MEDIA_THRESHOLD,
-  CreateSandbox,
-} from 'app/components/CreateSandbox';
 import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
 import { useAppState, useActions } from 'app/overmind';
@@ -63,10 +59,6 @@ const modals = {
   legacyPayment: {
     Component: LegacyPaymentModal,
     width: 600,
-  },
-  newSandbox: {
-    Component: CreateSandbox,
-    width: () => (window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950),
   },
   createDevbox: {
     Component: CreateBox,

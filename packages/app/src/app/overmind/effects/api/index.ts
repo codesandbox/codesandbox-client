@@ -25,7 +25,7 @@ import {
   SettingsSync,
   ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
-import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateSandbox/queries';
+import { LIST_PERSONAL_TEMPLATES } from 'app/components/Create/utils/queries';
 import { client } from 'app/graphql/client';
 import { PendingUserType } from 'app/overmind/state';
 

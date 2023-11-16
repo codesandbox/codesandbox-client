@@ -591,16 +591,6 @@ export const getActiveTeamInfo = async ({
   return currentTeam;
 };
 
-export const openCreateSandboxModal = (
-  { actions }: Context,
-  props: {
-    collectionId?: string;
-    initialTab?: 'import';
-  }
-) => {
-  actions.modals.newSandboxModal.open(props);
-};
-
 type OpenCreateTeamModalParams = {
   step: TeamStep;
   hasNextStep?: boolean;
