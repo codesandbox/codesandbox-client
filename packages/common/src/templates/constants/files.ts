@@ -1,1 +1,1 @@
-export const HIDDEN_DIRECTORIES = ['.codesandbox'];
+export const HIDDEN_DIRECTORIES = ['.codesandbox', '.devcontainer'];
