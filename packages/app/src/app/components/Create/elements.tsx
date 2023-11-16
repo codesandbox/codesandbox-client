@@ -184,11 +184,10 @@ export const UnstyledButtonLink = styled.button`
   appearance: none;
   padding: 0;
   background: transparent;
-  color: inherit;
+  color: #e4fc82;
   border: none;
   font-size: inherit;
   font-family: inherit;
-  text-decoration: underline;
   cursor: pointer;
 `;
 
@@ -201,7 +200,7 @@ export const DevboxAlternative = ({
     <>
       Browse more than 3 million community-made templates{' '}
       <a
-        style={{ color: 'inherit' }}
+        style={{ color: '#E4FC82', textDecoration: 'none' }}
         href={
           searchQuery
             ? `https://codesandbox.io/search?query=${searchQuery}`
@@ -210,9 +209,9 @@ export const DevboxAlternative = ({
         target="_blank"
         rel="noreferrer noopener"
       >
-        on our Discover
-      </a>{' '}
-      page.
+        on our Discover page
+      </a>
+      .
     </>
   );
 };
@@ -222,7 +221,6 @@ export const SandboxAlternative = ({ onClick }: { onClick: () => void }) => {
     <>
       Devboxes support many more technologies and frameworks, including
       back-end.
-      <br />
       <UnstyledButtonLink onClick={onClick}>
         Browse Devbox templates
       </UnstyledButtonLink>

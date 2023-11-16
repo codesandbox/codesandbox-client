@@ -358,7 +358,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       ? "There's even more"
                       : 'Do more with Devboxes'}
                   </Text>
-                  <Text size={2} color="#A6A6A6">
+                  <Text size={2} color="#A6A6A6" lineHeight="1.35">
                     {type === 'devbox' ? (
                       <DevboxAlternative />
                     ) : (
