@@ -191,3 +191,41 @@ export const UnstyledButtonLink = styled.button`
   text-decoration: underline;
   cursor: pointer;
 `;
+
+export const DevboxAlternative = ({
+  searchQuery,
+}: {
+  searchQuery?: string;
+}) => {
+  return (
+    <>
+      Browse more than 3 million community-made templates{' '}
+      <a
+        style={{ color: 'inherit' }}
+        href={
+          searchQuery
+            ? `https://codesandbox.io/search?query=${searchQuery}`
+            : 'https://codesandbox.io/search'
+        }
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        on our Discover
+      </a>{' '}
+      page.
+    </>
+  );
+};
+
+export const SandboxAlternative = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <>
+      Devboxes support many more technologies and frameworks, including
+      back-end.
+      <br />
+      <UnstyledButtonLink onClick={onClick}>
+        Browse Devbox templates
+      </UnstyledButtonLink>
+    </>
+  );
+};

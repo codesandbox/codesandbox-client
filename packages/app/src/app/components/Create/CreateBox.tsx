@@ -26,6 +26,8 @@ import {
   ModalContent,
   ModalSidebar,
   ModalBody,
+  DevboxAlternative,
+  SandboxAlternative,
 } from './elements';
 import { TemplateList } from './TemplateList';
 import { useEssentialTemplates } from './hooks/useEssentialTemplates';
@@ -277,72 +279,99 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
         <ModalBody>
           <ModalSidebar>
             {viewState === 'initial' ? (
-              <Stack direction="vertical">
-                <SearchBox
-                  value={searchQuery}
-                  onChange={e => {
-                    const query = e.target.value;
-                    tabState.select('all');
-                    setSearchQuery(query);
-                  }}
-                />
-
-                <Element css={{ height: '16px' }} />
-
-                <Tabs {...tabState} aria-label="Create new">
-                  {showFeaturedTemplates && (
-                    <Tab
-                      {...tabState}
-                      onClick={() => trackTabClick('featured')}
-                      stopId="featured"
-                    >
-                      Featured templates
-                    </Tab>
-                  )}
-
-                  <Tab
-                    {...tabState}
-                    onClick={() => trackTabClick('all')}
-                    stopId="all"
-                  >
-                    All templates
-                  </Tab>
+              <Stack
+                css={{ height: '100%', paddingBottom: '16px' }}
+                direction="vertical"
+                justify="space-between"
+              >
+                <Stack direction="vertical">
+                  <SearchBox
+                    value={searchQuery}
+                    onChange={e => {
+                      const query = e.target.value;
+                      tabState.select('all');
+                      setSearchQuery(query);
+                    }}
+                  />
 
                   <Element css={{ height: '16px' }} />
 
-                  {showTeamTemplates ? (
+                  <Tabs {...tabState} aria-label="Create new">
+                    {showFeaturedTemplates && (
+                      <Tab
+                        {...tabState}
+                        onClick={() => trackTabClick('featured')}
+                        stopId="featured"
+                      >
+                        Featured templates
+                      </Tab>
+                    )}
+
                     <Tab
                       {...tabState}
-                      onClick={() => trackTabClick('workspace')}
-                      stopId="workspace"
+                      onClick={() => trackTabClick('all')}
+                      stopId="all"
                     >
-                      Workspace templates
+                      All templates
                     </Tab>
-                  ) : null}
 
-                  <Tab
-                    {...tabState}
-                    onClick={() => trackTabClick('official')}
-                    stopId="official"
-                  >
-                    Official templates
-                  </Tab>
+                    <Element css={{ height: '16px' }} />
 
-                  <Element css={{ height: '16px' }} />
+                    {showTeamTemplates ? (
+                      <Tab
+                        {...tabState}
+                        onClick={() => trackTabClick('workspace')}
+                        stopId="workspace"
+                      >
+                        Workspace templates
+                      </Tab>
+                    ) : null}
 
-                  {showEssentialTemplates && essentialState.state === 'success'
-                    ? essentialState.essentials.map(essential => (
-                        <Tab
-                          key={essential.key}
-                          {...tabState}
-                          stopId={slugify(essential.title)}
-                          onClick={() => trackTabClick(essential.title)}
-                        >
-                          {essential.title}
-                        </Tab>
-                      ))
-                    : null}
-                </Tabs>
+                    <Tab
+                      {...tabState}
+                      onClick={() => trackTabClick('official')}
+                      stopId="official"
+                    >
+                      Official templates
+                    </Tab>
+
+                    <Element css={{ height: '16px' }} />
+
+                    {showEssentialTemplates &&
+                    essentialState.state === 'success'
+                      ? essentialState.essentials.map(essential => (
+                          <Tab
+                            key={essential.key}
+                            {...tabState}
+                            stopId={slugify(essential.title)}
+                            onClick={() => trackTabClick(essential.title)}
+                          >
+                            {essential.title}
+                          </Tab>
+                        ))
+                      : null}
+                  </Tabs>
+                </Stack>
+                <Stack direction="vertical" gap={2}>
+                  <Text size={3} weight="600">
+                    {type === 'devbox'
+                      ? "There's even more"
+                      : 'Do more with Devboxes'}
+                  </Text>
+                  <Text size={2} color="#A6A6A6">
+                    {type === 'devbox' ? (
+                      <DevboxAlternative />
+                    ) : (
+                      <SandboxAlternative
+                        onClick={() => {
+                          actions.modalOpened({
+                            modal: 'createDevbox',
+                          });
+                        }}
+                      />
+                    )}
+                  </Text>
+                </Stack>
               </Stack>
             ) : null}
 
@@ -359,6 +388,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     <TemplateList
                       title="Recently used"
                       templates={recentlyUsedTemplates}
+                      type={type}
                       onSelectTemplate={template => {
                         selectTemplate(template, 'featured');
                       }}
@@ -370,6 +400,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   <TemplateList
                     title="Popular"
                     templates={featuredTemplates}
+                    type={type}
                     onSelectTemplate={template => {
                       selectTemplate(template, 'featured');
                     }}
@@ -392,6 +423,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     }
                     templates={allTemplates}
                     searchQuery={searchQuery}
+                    type={type}
                     showEmptyState
                     onSelectTemplate={template => {
                       selectTemplate(template, 'all');
@@ -407,6 +439,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     <TemplateList
                       title="Workspace templates"
                       templates={teamTemplates}
+                      type={type}
                       onSelectTemplate={template => {
                         selectTemplate(template, 'workspace');
                       }}
@@ -421,6 +454,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   <TemplateList
                     title="Official templates"
                     templates={officialTemplates}
+                    type={type}
                     onSelectTemplate={template => {
                       selectTemplate(template, 'official');
                     }}
@@ -440,6 +474,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                         <TemplateList
                           title={essential.title}
                           templates={essential.templates}
+                          type={type}
                           onSelectTemplate={template => {
                             selectTemplate(template, essential.title);
                           }}

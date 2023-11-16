@@ -5,13 +5,18 @@ import { css } from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateCard } from './TemplateCard';
-import { TemplateGrid } from './elements';
+import {
+  DevboxAlternative,
+  SandboxAlternative,
+  TemplateGrid,
+} from './elements';
 
 interface TemplateListProps {
   title: string;
   isCloudTemplateList?: boolean;
   showEmptyState?: boolean;
   searchQuery?: string;
+  type: 'sandbox' | 'devbox';
   templates: TemplateFragment[];
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
@@ -25,6 +30,7 @@ export const TemplateList = ({
   onOpenTemplate,
   showEmptyState = false,
   searchQuery,
+  type,
 }: TemplateListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
@@ -99,15 +105,17 @@ export const TemplateList = ({
             Not finding what you need?
           </Text>
           <Text size={3} css={{ width: '300px', textAlign: 'center' }}>
-            Browse more than 3 million community-made templates{' '}
-            <a
-              href={`https://codesandbox.io/search?query=${searchQuery}`}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              on our Discover
-            </a>{' '}
-            page.
+            {type === 'devbox' ? (
+              <DevboxAlternative searchQuery={searchQuery} />
+            ) : (
+              <SandboxAlternative
+                onClick={() => {
+                  actions.modalOpened({
+                    modal: 'createDevbox',
+                  });
+                }}
+              />
+            )}
           </Text>
         </Stack>
       )}
