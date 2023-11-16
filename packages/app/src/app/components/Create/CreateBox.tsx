@@ -178,6 +178,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       body: {
         alias: name,
         collectionId,
+        v2: type === 'devbox',
       },
     });
 
