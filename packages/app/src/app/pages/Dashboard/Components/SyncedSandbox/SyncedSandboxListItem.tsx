@@ -3,7 +3,6 @@ import {
   Element,
   Icon,
   Stack,
-  Badge,
   ListAction,
   Text,
   Grid,
