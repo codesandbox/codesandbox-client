@@ -46,7 +46,7 @@ export const useEssentialTemplates = (showEssentialTemplates: boolean) => {
     if (essentialState.state === 'loading') {
       getEssentials();
     }
-  }, [essentialState.state]);
+  }, [essentialState.state, showEssentialTemplates]);
 
   return essentialState;
 };

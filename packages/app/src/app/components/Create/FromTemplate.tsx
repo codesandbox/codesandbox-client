@@ -10,7 +10,7 @@ import {
 } from '@codesandbox/components';
 
 import { StyledSelect } from './elements';
-import { CreateSandboxParams } from './types';
+import { CreateSandboxParams } from './utils/types';
 import { InputText } from '../dashboard/InputText';
 
 interface FromTemplateProps {
