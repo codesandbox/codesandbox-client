@@ -36,6 +36,7 @@ import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateSandboxParams } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
+import { FromTemplate } from './FromTemplate';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -55,11 +56,13 @@ const FEATURED_IDS = [
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
   type?: 'devbox' | 'sandbox';
+  hasSecondStep?: boolean;
 };
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId,
   type = 'devbox',
+  hasSecondStep = false,
   closeModal,
   isModal,
 }) => {
@@ -80,7 +83,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const [viewState, setViewState] = useState<'initial' | 'fromTemplate'>(
     'initial'
   );
-  const [selectedTemplate] = useState<TemplateFragment>();
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const noDevboxesWhenListingSandboxes = (t: TemplateFragment) =>
@@ -204,11 +207,12 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
         template.sandbox.title || template.sandbox.alias || template.sandbox.id,
     });
 
-    createFromTemplate(template, {});
-
-    // Temporarily disable the second screen until we have more functionality on it
-    // setSelectedTemplate(template);
-    // setViewState('fromTemplate');
+    if (hasSecondStep) {
+      setSelectedTemplate(template);
+      setViewState('fromTemplate');
+    } else {
+      createFromTemplate(template, {});
+    }
   };
 
   const openTemplate = (template: TemplateFragment, trackingSource: string) => {
@@ -398,9 +402,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               </Stack>
             ) : null}
 
-            {/* {viewState === 'fromTemplate' ? (
+            {viewState === 'fromTemplate' ? (
               <TemplateInfo template={selectedTemplate} />
-            ) : null} */}
+            ) : null}
           </ModalSidebar>
 
           <ModalContent>
@@ -517,7 +521,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               </Stack>
             )}
 
-            {/* {viewState === 'fromTemplate' ? (
+            {viewState === 'fromTemplate' ? (
               <FromTemplate
                 isV2={selectedTemplate.sandbox.isV2}
                 onCancel={() => {
@@ -527,7 +531,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   createFromTemplate(selectedTemplate, params);
                 }}
               />
-            ) : null} */}
+            ) : null}
           </ModalContent>
         </ModalBody>
       </Container>

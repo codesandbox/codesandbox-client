@@ -52,7 +52,7 @@ type State = {
   };
   currentModal: string | null;
   currentModalMessage: string | null;
-  currentModalItemId: string | null; // Used for passing collection id for create modals
+  currentModalItemId?: string; // Used for passing collection id for create modals
   uploadedFiles: UploadFile[] | null;
   maxStorage: number;
   usedStorage: number;
@@ -152,7 +152,6 @@ export const state: State = {
   },
   currentModal: null,
   currentModalMessage: null,
-  currentModalItemId: null,
   uploadedFiles: null,
   maxStorage: 0,
   usedStorage: 0,
