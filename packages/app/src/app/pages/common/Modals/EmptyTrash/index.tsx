@@ -11,7 +11,7 @@ export const EmptyTrash: FunctionComponent = () => {
   return (
     <Alert
       title=" Empty Trash"
-      description="Are you sure you want to permanently delete all the sandboxes in the trash?"
+      description="Are you sure you want to permanently delete all the items in the trash?"
       onCancel={modalClosed}
       onPrimaryAction={async () => {
         await permanentlyDeleteSandboxes(trashSandboxIds);

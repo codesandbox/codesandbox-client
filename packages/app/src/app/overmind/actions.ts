@@ -282,6 +282,9 @@ export const modalOpened = (
   state.currentModal = props.modal;
   if (props.modal === 'preferences' && props.itemId) {
     state.preferences.itemId = props.itemId;
+  }
+  if (props.modal === 'createDevbox' || props.modal === 'createSandbox') {
+    state.currentModalItemId = props.itemId;
   } else {
     state.currentModalMessage = props.message || null;
   }

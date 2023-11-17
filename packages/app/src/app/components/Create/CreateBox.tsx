@@ -54,7 +54,6 @@ const FEATURED_IDS = [
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
   type?: 'devbox' | 'sandbox';
-  isModal: boolean;
 };
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
@@ -265,7 +264,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
           </HeaderInformation>
 
           {/* isModal is undefined on /s/ page */}
-          {isModal ? (
+          {isModal && closeModal ? (
             // TODO: IconButton doesn't have aria label or visuallyhidden text (reads floating label too late)
             <IconButton
               name="cross"

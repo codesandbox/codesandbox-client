@@ -64,10 +64,20 @@ export const SandboxesPage = () => {
           ? () => {
               actions.modalOpened({
                 modal: 'createSandbox',
-                collectionId: currentCollection.id,
+                itemId: currentCollection.id,
               });
             }
-          : null
+          : undefined
+      }
+      createNewDevbox={
+        currentCollection
+          ? () => {
+              actions.modalOpened({
+                modal: 'createDevbox',
+                itemId: currentCollection.id,
+              });
+            }
+          : undefined
       }
     >
       <Helmet>

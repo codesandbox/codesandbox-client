@@ -68,11 +68,7 @@ export const SyncedSandboxListItem = ({ name, path, url, ...props }) => {
             </Stack>
           </Column>
           <Column span={[0, 2, 2]} />
-          <Column span={[0, 5, 2]} as={Stack} align="center">
-            <Stack align="center">
-              <Badge>Synced</Badge>
-            </Stack>
-          </Column>
+          <Column span={[0, 5, 2]} as={Stack} align="center" />
           <Column span={[0, 3, 3]} as={Stack} align="center">
             {/* empty column to align with sandbox list items */}
           </Column>

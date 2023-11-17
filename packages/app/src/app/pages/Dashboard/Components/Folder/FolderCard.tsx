@@ -93,7 +93,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
         {!isNewFolder ? (
           <Text size={12} variant="muted">
             {numberOfSandboxes || 0}{' '}
-            {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
+            {numberOfSandboxes === 1 ? 'item' : 'items'}
           </Text>
         ) : null}
       </Stack>

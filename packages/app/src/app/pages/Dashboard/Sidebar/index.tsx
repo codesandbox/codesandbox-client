@@ -267,8 +267,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           ) : null}
 
+          {state.sidebar.hasSyncedSandboxes ? (
+            <RowItem
+              name="Imported templates"
+              page="synced-sandboxes"
+              path={dashboardUrls.syncedSandboxes(activeTeam)}
+              icon="sync"
+            />
+          ) : null}
+
           <NestableRowItem
-            name="All sandboxes"
+            name="All devboxes and sandboxes"
             path={dashboardUrls.sandboxes('/', activeTeam)}
             page="sandboxes"
             folderPath="/"
@@ -279,15 +288,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 : []),
             ]}
           />
-
-          {state.sidebar.hasSyncedSandboxes ? (
-            <RowItem
-              name="Synced"
-              page="synced-sandboxes"
-              path={dashboardUrls.syncedSandboxes(activeTeam)}
-              icon="sync"
-            />
-          ) : null}
 
           <RowItem
             name="Recently deleted"

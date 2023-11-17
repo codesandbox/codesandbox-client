@@ -247,6 +247,7 @@ const Modals: FunctionComponent = () => {
       settings: { customVSCodeTheme },
     },
     currentModal,
+    currentModalItemId,
   } = useAppState();
 
   const [localState, setLocalState] = useState({
@@ -282,6 +283,13 @@ const Modals: FunctionComponent = () => {
   }, [pathname, localState]);
 
   const modal = currentModal && modals[currentModal];
+  if (currentModal === 'createDevbox' || currentModal === 'createSandbox') {
+    modal.props = {
+      ...modal.props,
+      ...(currentModalItemId ? { collectionId: currentModalItemId } : {}),
+    };
+  }
+
   return (
     <ThemeProvider {...themeProps}>
       <Modal
@@ -310,6 +318,6 @@ const Modals: FunctionComponent = () => {
 export { Modals };
 
 export interface ModalContentProps {
-  closeModal: () => void;
-  isModal: true;
+  closeModal?: () => void;
+  isModal: boolean;
 }

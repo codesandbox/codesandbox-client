@@ -112,7 +112,7 @@ class SandboxesItemComponent extends React.Component<
                   url="/"
                   folders={folders}
                   foldersByPath={foldersByPath}
-                  name="All Sandboxes"
+                  name="All devboxes and sandboxes"
                   disabled={disabledMessage}
                   open
                   onSelect={onSelect}

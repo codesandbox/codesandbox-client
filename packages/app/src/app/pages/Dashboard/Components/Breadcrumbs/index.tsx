@@ -24,10 +24,10 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     }[nestedPageType];
   } else if (albumId) link = dashboard.discover(activeTeam);
 
-  let prefix = 'All sandboxes';
+  let prefix = 'All devboxes and sandboxes';
   if (nestedPageType) {
     prefix = {
-      'synced-sandboxes': 'Synced sandboxes',
+      'synced-sandboxes': 'Imported templates',
       'repository-branches': 'All repositories',
     }[nestedPageType];
   } else if (albumId) prefix = 'Discover';

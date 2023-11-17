@@ -38,7 +38,7 @@ export const DeleteWorkspace: FunctionComponent = () => {
     <Alert title="Delete workspace">
       <Text size={3} block variant="muted">
         Are you sure you want to delete this workspace? This action is{' '}
-        <b>irreversible</b> and it will <b>delete all sandboxes</b> in this
+        <b>irreversible</b> and it will <b>delete all the items</b> in this
         workspace
         {otherUsers ? (
           <>
