@@ -62,7 +62,7 @@ type CreateBoxProps = ModalContentProps & {
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId,
   type = 'devbox',
-  hasSecondStep = false,
+  hasSecondStep = true,
   closeModal,
   isModal,
 }) => {

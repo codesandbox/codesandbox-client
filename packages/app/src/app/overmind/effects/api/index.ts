@@ -506,7 +506,7 @@ export default {
   },
   /**
    * Updates a sandbox. Used to update sandbox metadata but also to convert
-   * a sandbox to a cloud sandbox.
+   * a sandbox to a devbox.
    */
   updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
     return api.put(`/sandboxes/${sandboxId}`, {
