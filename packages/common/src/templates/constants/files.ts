@@ -1,2 +1,2 @@
 export const HIDDEN_DIRECTORIES = ['.codesandbox', '.devcontainer'];
-export const HIDDEN_FILES = ['.eslintrc.mjs'];
+export const HIDDEN_FILES = ['.eslintrc.cjs'];
