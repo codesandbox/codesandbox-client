@@ -43,7 +43,7 @@ function getRepoInfoFromURL(
   return { owner, repo, branch, folder };
 }
 
-export const ImportSandbox = () => {
+export const ImportTemplate = () => {
   const [repoUrl, setRepoUrl] = React.useState('');
 
   const info = getRepoInfoFromURL(repoUrl);
@@ -97,7 +97,7 @@ export const ImportSandbox = () => {
               lineHeight: 1.5,
             }}
           >
-            Create a read-only sandbox template that stays in sync with a GitHub
+            Create a read-only devbox template that stays in sync with a GitHub
             repository or folder.
             <br />
             Learn more about synced templates{' '}

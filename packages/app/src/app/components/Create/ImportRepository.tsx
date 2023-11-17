@@ -4,18 +4,11 @@ import {
   IconButton,
   ThemeProvider,
 } from '@codesandbox/components';
-import { useAppState } from 'app/overmind';
 import React, { useState } from 'react';
-import { useTabState } from 'reakit/Tab';
-
-import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ModalContentProps } from 'app/pages/common/Modals';
 import {
   Container,
-  Tab,
-  Panel,
-  Tabs,
   HeaderInformation,
   ModalContent,
   ModalSidebar,
@@ -25,7 +18,6 @@ import { Import } from './ImportRepository/Import';
 import { GithubRepoToImport } from './ImportRepository/types';
 import { ImportInfo } from './ImportRepository/ImportInfo';
 import { FromRepo } from './ImportRepository/FromRepo';
-import { ImportSandbox } from './ImportSandbox';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -33,15 +25,8 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
   isModal,
   closeModal,
 }) => {
-  const { environment } = useAppState();
-
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
-
-  const tabState = useTabState({
-    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
-    selectedId: 'import',
-  });
 
   const [viewState, setViewState] = useState<'initial' | 'fork'>('initial');
 
@@ -51,8 +36,6 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
     setSelectedRepo(repo);
     setViewState('fork');
   };
-
-  const showImportRepository = !environment.isOnPrem;
 
   return (
     <ThemeProvider>
@@ -68,7 +51,7 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
           <HeaderInformation>
             {viewState === 'initial' ? (
               <Text size={4} variant="muted">
-                Import
+                Import repository
               </Text>
             ) : (
               // TODO: add aria-label based on title to IconButton?
@@ -104,70 +87,27 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
         </Stack>
 
         <ModalBody>
-          <ModalSidebar>
-            {viewState === 'initial' ? (
-              <Stack direction="vertical">
-                <Tabs {...tabState}>
-                  {showImportRepository && (
-                    <Tab
-                      {...tabState}
-                      onClick={() => {
-                        track('Create New - Click Tab', {
-                          codesandbox: 'V1',
-                          event_source: 'UI',
-                          tab_name: 'Import from Github',
-                        });
-                      }}
-                      stopId="import"
-                    >
-                      Import repository
-                    </Tab>
-                  )}
+          {viewState === 'initial' ? (
+            <ModalContent>
+              <Import onRepoSelect={selectGithubRepo} />
+            </ModalContent>
+          ) : null}
+          {viewState === 'fork' ? (
+            <>
+              <ModalSidebar>
+                <ImportInfo githubRepo={selectedRepo} />
+              </ModalSidebar>
 
-                  <Tab
-                    {...tabState}
-                    onClick={() => {
-                      track('Create New - Click Tab', {
-                        codesandbox: 'V1',
-                        event_source: 'UI',
-                        tab_name: 'Import template',
-                      });
-                    }}
-                    stopId="import-template"
-                  >
-                    Import template
-                  </Tab>
-                </Tabs>
-              </Stack>
-            ) : null}
-
-            {viewState === 'fork' ? (
-              <ImportInfo githubRepo={selectedRepo} />
-            ) : null}
-          </ModalSidebar>
-
-          <ModalContent>
-            {viewState === 'initial' && (
-              <Stack direction="vertical" gap={2}>
-                <Panel tab={tabState} id="import">
-                  <Import onRepoSelect={selectGithubRepo} />
-                </Panel>
-
-                <Panel tab={tabState} id="import-template">
-                  <ImportSandbox />
-                </Panel>
-              </Stack>
-            )}
-
-            {viewState === 'fork' ? (
-              <FromRepo
-                repository={selectedRepo}
-                onCancel={() => {
-                  setViewState('initial');
-                }}
-              />
-            ) : null}
-          </ModalContent>
+              <ModalContent>
+                <FromRepo
+                  repository={selectedRepo}
+                  onCancel={() => {
+                    setViewState('initial');
+                  }}
+                />
+              </ModalContent>
+            </>
+          ) : null}
         </ModalBody>
       </Container>
     </ThemeProvider>

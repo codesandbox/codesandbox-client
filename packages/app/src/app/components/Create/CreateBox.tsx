@@ -35,6 +35,7 @@ import { useOfficialTemplates } from './hooks/useOfficialTemplates';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateSandboxParams } from './utils/types';
 import { SearchBox } from './SearchBox';
+import { ImportTemplate } from './ImportTemplate';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -105,6 +106,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     activeTeam &&
     teamTemplatesData.state === 'ready' &&
     teamTemplatesData.teamTemplates.length > 0;
+  const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
 
   const recentlyUsedTemplates =
     teamTemplatesData.state === 'ready'
@@ -132,8 +134,13 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     teamTemplatesData.state === 'ready'
       ? teamTemplatesData.teamTemplates.filter(noDevboxesWhenListingSandboxes)
       : [];
+  const officialTemplateIds = officialTemplates.map(t => t.id);
 
-  const allTemplates = [...officialTemplates, ...teamTemplates]
+  // For all templates, ensure official and team templates do not create duplications in the list
+  const allTemplates = [
+    ...officialTemplates,
+    ...teamTemplates.filter(t => !officialTemplateIds.includes(t.id)),
+  ]
     .filter(noDevboxesWhenListingSandboxes)
     .filter(t =>
       searchQuery
@@ -327,6 +334,22 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       </Tab>
                     ) : null}
 
+                    {showImportTemplates ? (
+                      <Tab
+                        {...tabState}
+                        onClick={() => {
+                          track('Create New - Click Tab', {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                            tab_name: 'Import template',
+                          });
+                        }}
+                        stopId="import-template"
+                      >
+                        Import template
+                      </Tab>
+                    ) : null}
+
                     <Tab
                       {...tabState}
                       onClick={() => trackTabClick('official')}
@@ -447,6 +470,12 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                         openTemplate(template, 'workspace');
                       }}
                     />
+                  </Panel>
+                ) : null}
+
+                {showImportTemplates ? (
+                  <Panel tab={tabState} id="import-template">
+                    <ImportTemplate />
                   </Panel>
                 ) : null}
 
