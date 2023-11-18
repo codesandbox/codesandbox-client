@@ -13,7 +13,6 @@ export const EmptyDrafts: React.FC = () => {
         Items in My Drafts are not visible to your collaborators unless moved to
         the {quotes('All devboxes and sandboxes')} section.
       </EmptyPage.StyledDescription>
-      <TemplatesRow />
     </EmptyPage.StyledWrapper>
   );
 };
