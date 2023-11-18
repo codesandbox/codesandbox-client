@@ -7,14 +7,14 @@ interface UseFeaturedTemplatesParams {
 
 const FEATURED_IDS = [
   'new', // react
-  'vanilla', // js
-  'pb6sit', // vue
-  'hsd8ke', // docker
-  'fxis37', // next
+  'xz3njs', // js
+  '5k6v6l', // html/css
   '9qputt', // react (vite + ts)
+  'fxis37', // next
   'prp60l', // remix
+  'pb6sit', // vue
   'angular', // angular
-  'rjk9n4zj7m', // html/css
+  'hsd8ke', // docker
 ];
 
 export const useFeaturedTemplates = ({
