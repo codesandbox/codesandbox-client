@@ -1,5 +1,6 @@
 import { TemplateFragment } from 'app/graphql/types';
-import { useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
+import { useAppState } from 'app/overmind';
 import { getTemplateInfosFromAPI } from '../utils/api';
 
 type State =
@@ -14,7 +15,6 @@ type State =
   | {
       state: 'error';
       templates: TemplateFragment[];
-      error: string;
     };
 
 export const useOfficialTemplates = ({
@@ -22,13 +22,12 @@ export const useOfficialTemplates = ({
 }: {
   type: 'devbox' | 'sandbox';
 }): State => {
-  const [officialTemplates, setOfficialTemplates] = useState<State>({
-    state: 'loading',
-    templates: [],
-  });
+  const { officialTemplates } = useAppState();
 
-  const noDevboxesWhenListingSandboxes = (t: TemplateFragment) =>
-    type === 'sandbox' ? !t.sandbox.isV2 : true;
+  const [officialTemplatesData, setOfficialTemplatesData] = useState<State>({
+    state: officialTemplates.length > 0 ? 'ready' : 'loading',
+    templates: officialTemplates,
+  });
 
   useEffect(() => {
     async function fetchTemplates() {
@@ -37,25 +36,27 @@ export const useOfficialTemplates = ({
           '/api/v1/sandboxes/templates/official'
         );
 
-        setOfficialTemplates({
+        setOfficialTemplatesData({
           state: 'ready',
-          templates: response[0].templates.filter(
-            noDevboxesWhenListingSandboxes
-          ),
+          templates: response[0].templates,
         });
       } catch {
-        setOfficialTemplates({
+        setOfficialTemplatesData({
           state: 'error',
           templates: [],
-          error: 'Something went wrong when fetching more templates, sorry!',
         });
       }
     }
 
-    if (officialTemplates.state === 'loading') {
+    if (officialTemplatesData.state === 'loading') {
       fetchTemplates();
     }
-  }, [officialTemplates.state]);
+  }, [officialTemplatesData.state]);
 
-  return officialTemplates;
+  return {
+    state: officialTemplatesData.state,
+    templates: officialTemplatesData.templates.filter(t =>
+      type === 'sandbox' ? !t.sandbox.isV2 : true
+    ),
+  };
 };

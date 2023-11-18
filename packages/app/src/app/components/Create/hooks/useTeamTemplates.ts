@@ -81,9 +81,9 @@ export const useTeamTemplates = ({
 
   return {
     state: 'ready',
-    recentTemplates: [], // data.me.recentlyUsedTemplates.filter(
-    // noDevboxesWhenListingSandboxes
-    // ),
+    recentTemplates: data.me.recentlyUsedTemplates.filter(
+      noDevboxesWhenListingSandboxes
+    ),
     teamTemplates: data.me.team.templates.filter(
       noDevboxesWhenListingSandboxes
     ),

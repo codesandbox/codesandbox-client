@@ -13,6 +13,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
 import { SubscriptionStatus } from 'app/graphql/types';
+import { getTemplateInfosFromAPI } from 'app/components/Create/utils/api';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
@@ -46,6 +47,19 @@ export const initializeNewUser = async ({
   actions.internal.setStoredSettings();
 
   effects.api.preloadTeamTemplates(state.activeTeam);
+
+  // Preload official templates for the create modal
+  if (state.officialTemplates.length === 0) {
+    try {
+      const result = await getTemplateInfosFromAPI(
+        '/api/v1/sandboxes/templates/official'
+      );
+
+      state.officialTemplates = result[0].templates;
+    } catch (e) {
+      // ignore errors
+    }
+  }
 
   // Fallback scenario when the teams are not initialized
   if (state.dashboard.teams.length === 0) {

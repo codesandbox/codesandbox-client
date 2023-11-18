@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import React, { ReactNode } from 'react';
 import { Tab as BaseTab, TabList, TabPanel, TabStateReturn } from 'reakit/Tab';
 import { Select } from '@codesandbox/components';
@@ -15,6 +15,16 @@ export const Container = styled.div`
 
 export const HeaderInformation = styled.div`
   flex-grow: 1;
+`;
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 `;
 
 export const ModalBody = styled.div`
@@ -42,7 +52,8 @@ export const ModalSidebar = styled.div`
 
 export const ModalContent = styled.div`
   flex-grow: 1;
-  padding: 0 24px;
+  padding: 0 16px 0 24px;
+  scrollbar-gutter: stable;
   overflow: auto;
 
   @media screen and (max-width: 950px) {
@@ -125,7 +136,7 @@ export const TemplateButton = styled.button`
   font-family: inherit;
   border-radius: 2px;
   color: #e5e5e5;
-  transition: background ${props => props.theme.speeds[2]} ease-out;
+  animation: ${fadeIn} 0.15s ease-in;
   outline: none;
 
   &:hover:not(:disabled) {

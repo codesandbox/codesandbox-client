@@ -90,6 +90,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   });
 
   const allTemplates = useAllTemplates({
+    featuredTemplates,
     officialTemplates,
     teamTemplates,
     collections,
@@ -388,7 +389,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
                 <Panel tab={tabState} id="all">
                   <TemplateList
-                    key={searchQuery}
                     title={
                       searchQuery
                         ? `${allTemplates.length} ${pluralize({
