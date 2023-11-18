@@ -30,28 +30,17 @@ import {
   SandboxAlternative,
 } from './elements';
 import { TemplateList } from './TemplateList';
-import { useEssentialTemplates } from './hooks/useEssentialTemplates';
+import { useTemplateCollections } from './hooks/useTemplateCollections';
 import { useOfficialTemplates } from './hooks/useOfficialTemplates';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateSandboxParams } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
 import { FromTemplate } from './FromTemplate';
+import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
+import { useAllTemplates } from './hooks/useAllTemplates';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
-
-const FEATURED_IDS = [
-  'new',
-  'vanilla',
-  'vue',
-  'hsd8ke', // docker starter v2
-  'fxis37', // next v2
-  '9qputt', // vite + react v2
-  'prp60l', // remix v2
-  'angular',
-  'react-ts',
-  'rjk9n4zj7m', // static v1
-];
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -73,7 +62,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const mobileScreenSize = mediaQuery.matches;
 
   const showFeaturedTemplates = type === 'devbox';
-  const showEssentialTemplates = type === 'devbox';
+  const showCollections = type === 'devbox';
 
   const tabState = useTabState({
     orientation: mobileScreenSize ? 'horizontal' : 'vertical',
@@ -86,72 +75,33 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const noDevboxesWhenListingSandboxes = (t: TemplateFragment) =>
-    type === 'sandbox' ? !t.sandbox.isV2 : true;
-
-  const essentialState = useEssentialTemplates(showEssentialTemplates);
-  const officialTemplatesData = useOfficialTemplates();
-  const teamTemplatesData = useTeamTemplates({
+  const { collections } = useTemplateCollections({ type });
+  const { templates: officialTemplates } = useOfficialTemplates({ type });
+  const { teamTemplates, recentTemplates } = useTeamTemplates({
     teamId: activeTeam,
     hasLogIn,
+    type,
   });
 
-  const officialTemplates =
-    officialTemplatesData.state === 'ready'
-      ? officialTemplatesData.templates.filter(noDevboxesWhenListingSandboxes)
-      : [];
+  const recentlyUsedTemplates = recentTemplates.slice(0, 3);
+  const featuredTemplates = useFeaturedTemplates({
+    officialTemplates,
+    recentTemplates,
+  });
+
+  const allTemplates = useAllTemplates({
+    officialTemplates,
+    teamTemplates,
+    collections,
+    searchQuery,
+  });
 
   /**
    * Only show the team templates if the list is populated.
    */
-  const showTeamTemplates =
-    hasLogIn &&
-    activeTeam &&
-    teamTemplatesData.state === 'ready' &&
-    teamTemplatesData.teamTemplates.length > 0;
-  const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
-
-  const recentlyUsedTemplates =
-    teamTemplatesData.state === 'ready'
-      ? teamTemplatesData.recentTemplates.slice(0, 3)
-      : [];
-
   const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
-
-  const featuredOfficialTemplates =
-    officialTemplatesData.state === 'ready'
-      ? FEATURED_IDS.map(
-          id =>
-            // If the template is already in recently used, don't add it twice
-            !recentlyUsedTemplates.find(t => t.sandbox.id === id) &&
-            officialTemplates.find(t => t.sandbox.id === id)
-        ).filter(Boolean)
-      : [];
-
-  const featuredTemplates = featuredOfficialTemplates.slice(
-    0,
-    hasRecentlyUsedTemplates ? 6 : 9
-  );
-
-  const teamTemplates =
-    teamTemplatesData.state === 'ready'
-      ? teamTemplatesData.teamTemplates.filter(noDevboxesWhenListingSandboxes)
-      : [];
-  const officialTemplateIds = officialTemplates.map(t => t.id);
-
-  // For all templates, ensure official and team templates do not create duplications in the list
-  const allTemplates = [
-    ...officialTemplates,
-    ...teamTemplates.filter(t => !officialTemplateIds.includes(t.id)),
-  ]
-    .filter(noDevboxesWhenListingSandboxes)
-    .filter(t =>
-      searchQuery
-        ? (t.sandbox.alias || t.sandbox.alias || '')
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
-        : true
-    );
+  const showTeamTemplates = teamTemplates.length > 0;
+  const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
 
   useEffect(() => {
     if (searchQuery) {
@@ -364,16 +314,15 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
                     <Element css={{ height: '16px' }} />
 
-                    {showEssentialTemplates &&
-                    essentialState.state === 'success'
-                      ? essentialState.essentials.map(essential => (
+                    {showCollections
+                      ? collections.map(collection => (
                           <Tab
-                            key={essential.key}
+                            key={collection.key}
                             {...tabState}
-                            stopId={slugify(essential.title)}
-                            onClick={() => trackTabClick(essential.title)}
+                            stopId={slugify(collection.title)}
+                            onClick={() => trackTabClick(collection.title)}
                           >
-                            {essential.title}
+                            {collection.title}
                           </Tab>
                         ))
                       : null}
@@ -497,27 +446,25 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   />
                 </Panel>
 
-                {essentialState.state === 'success'
-                  ? essentialState.essentials.map(essential => (
-                      <Panel
-                        key={essential.key}
-                        tab={tabState}
-                        id={slugify(essential.title)}
-                      >
-                        <TemplateList
-                          title={essential.title}
-                          templates={essential.templates}
-                          type={type}
-                          onSelectTemplate={template => {
-                            selectTemplate(template, essential.title);
-                          }}
-                          onOpenTemplate={template => {
-                            openTemplate(template, essential.title);
-                          }}
-                        />
-                      </Panel>
-                    ))
-                  : null}
+                {collections.map(collection => (
+                  <Panel
+                    key={collection.key}
+                    tab={tabState}
+                    id={slugify(collection.title)}
+                  >
+                    <TemplateList
+                      title={collection.title}
+                      templates={collection.templates}
+                      type={type}
+                      onSelectTemplate={template => {
+                        selectTemplate(template, collection.title);
+                      }}
+                      onOpenTemplate={template => {
+                        openTemplate(template, collection.title);
+                      }}
+                    />
+                  </Panel>
+                ))}
               </Stack>
             )}
 

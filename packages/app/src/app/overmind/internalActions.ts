@@ -44,7 +44,8 @@ export const initializeNewUser = async ({
   await effects.live.getSocket();
   actions.userNotifications.internal.initialize();
   actions.internal.setStoredSettings();
-  effects.api.preloadTemplates();
+
+  effects.api.preloadTeamTemplates(state.activeTeam);
 
   // Fallback scenario when the teams are not initialized
   if (state.dashboard.teams.length === 0) {

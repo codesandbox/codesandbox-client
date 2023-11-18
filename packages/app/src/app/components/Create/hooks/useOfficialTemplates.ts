@@ -5,6 +5,7 @@ import { getTemplateInfosFromAPI } from '../utils/api';
 type State =
   | {
       state: 'loading';
+      templates: TemplateFragment[];
     }
   | {
       state: 'ready';
@@ -12,13 +13,22 @@ type State =
     }
   | {
       state: 'error';
+      templates: TemplateFragment[];
       error: string;
     };
 
-export const useOfficialTemplates = (): State => {
+export const useOfficialTemplates = ({
+  type,
+}: {
+  type: 'devbox' | 'sandbox';
+}): State => {
   const [officialTemplates, setOfficialTemplates] = useState<State>({
     state: 'loading',
+    templates: [],
   });
+
+  const noDevboxesWhenListingSandboxes = (t: TemplateFragment) =>
+    type === 'sandbox' ? !t.sandbox.isV2 : true;
 
   useEffect(() => {
     async function fetchTemplates() {
@@ -29,11 +39,14 @@ export const useOfficialTemplates = (): State => {
 
         setOfficialTemplates({
           state: 'ready',
-          templates: response[0].templates,
+          templates: response[0].templates.filter(
+            noDevboxesWhenListingSandboxes
+          ),
         });
       } catch {
         setOfficialTemplates({
           state: 'error',
+          templates: [],
           error: 'Something went wrong when fetching more templates, sorry!',
         });
       }

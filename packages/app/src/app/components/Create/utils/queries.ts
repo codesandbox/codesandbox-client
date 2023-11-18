@@ -31,38 +31,14 @@ const TEMPLATE_FRAGMENT = gql`
   }
 `;
 
-export const LIST_PERSONAL_TEMPLATES = gql`
-  query ListPersonalTemplates {
+export const FETCH_TEAM_TEMPLATES = gql`
+  query RecentAndWorkspaceTemplates($teamId: UUID4) {
     me {
-      templates {
-        ...Template
-      }
-
       recentlyUsedTemplates {
         ...Template
-
-        sandbox {
-          git {
-            id
-            username
-            commitSha
-            path
-            repo
-            branch
-          }
-        }
       }
 
-      bookmarkedTemplates {
-        ...Template
-      }
-
-      teams {
-        id
-        name
-        bookmarkedTemplates {
-          ...Template
-        }
+      team(id: $teamId) {
         templates {
           ...Template
         }

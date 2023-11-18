@@ -1,53 +1,69 @@
 import { useQuery } from '@apollo/react-hooks';
 import {
-  ListPersonalTemplatesQuery,
-  ListPersonalTemplatesQueryVariables,
+  RecentAndWorkspaceTemplatesQuery,
+  RecentAndWorkspaceTemplatesQueryVariables,
   TemplateFragment,
 } from 'app/graphql/types';
-import { LIST_PERSONAL_TEMPLATES } from '../utils/queries';
+import { FETCH_TEAM_TEMPLATES } from '../utils/queries';
 
-type State =
-  | { state: 'loading' }
-  | {
-      state: 'ready';
-      recentTemplates: TemplateFragment[];
-      teamTemplates: TemplateFragment[];
-    }
-  | {
-      state: 'error';
-      error: string;
-    };
+type BaseState = {
+  recentTemplates: TemplateFragment[];
+  teamTemplates: TemplateFragment[];
+};
 
-function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
-  return data.me.teams.find(team => team.id === teamId)?.templates || [];
-}
+type State = BaseState &
+  (
+    | { state: 'idle' }
+    | {
+        state: 'loading';
+      }
+    | {
+        state: 'ready';
+      }
+    | {
+        state: 'error';
+        error: string;
+      }
+  );
 
 type UseTeamTemplatesParams = {
   teamId: string;
   hasLogIn: boolean;
+  type: 'devbox' | 'sandbox';
 };
 
 export const useTeamTemplates = ({
   teamId,
   hasLogIn,
+  type,
 }: UseTeamTemplatesParams): State => {
+  const skip = !hasLogIn;
+
+  const noDevboxesWhenListingSandboxes = (t: TemplateFragment) =>
+    type === 'sandbox' ? !t.sandbox.isV2 : true;
+
   const { data, error } = useQuery<
-    ListPersonalTemplatesQuery,
-    ListPersonalTemplatesQueryVariables
-  >(LIST_PERSONAL_TEMPLATES, {
-    /**
-     * With LIST_PERSONAL_TEMPLATES we're also fetching team templates. We're reusing
-     * this query here because it has already been preloaded and cached by overmind. We're
-     * filtering what we need later.
-     */
-    variables: {},
+    RecentAndWorkspaceTemplatesQuery,
+    RecentAndWorkspaceTemplatesQueryVariables
+  >(FETCH_TEAM_TEMPLATES, {
+    variables: { teamId },
     fetchPolicy: 'cache-and-network',
-    skip: !hasLogIn,
+    skip,
   });
+
+  if (skip) {
+    return {
+      state: 'idle',
+      recentTemplates: [],
+      teamTemplates: [],
+    };
+  }
 
   if (error) {
     return {
       state: 'error',
+      recentTemplates: [],
+      teamTemplates: [],
       error: error.message,
     };
   }
@@ -58,14 +74,18 @@ export const useTeamTemplates = ({
   if (typeof data?.me === 'undefined') {
     return {
       state: 'loading',
+      recentTemplates: [],
+      teamTemplates: [],
     };
   }
 
-  const teamTemplates = getTeamTemplates(data, teamId);
-
   return {
     state: 'ready',
-    recentTemplates: data.me.recentlyUsedTemplates,
-    teamTemplates,
+    recentTemplates: [], // data.me.recentlyUsedTemplates.filter(
+    // noDevboxesWhenListingSandboxes
+    // ),
+    teamTemplates: data.me.team.templates.filter(
+      noDevboxesWhenListingSandboxes
+    ),
   };
 };

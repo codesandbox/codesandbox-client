@@ -1,8 +1,8 @@
 import { TemplateType } from '@codesandbox/common/lib/templates';
 import { isServer } from '@codesandbox/common/lib/templates/helpers/is-server';
-import { TemplateInfo } from './types';
+import { TemplateCollection } from './types';
 
-interface IExploreTemplate {
+interface ExploreTemplateAPIResponse {
   title: string;
   sandboxes: {
     id: string;
@@ -36,8 +36,8 @@ interface IExploreTemplate {
 }
 
 const mapAPIResponseToTemplateInfo = (
-  exploreTemplate: IExploreTemplate
-): TemplateInfo => ({
+  exploreTemplate: ExploreTemplateAPIResponse
+): TemplateCollection => ({
   key: exploreTemplate.title,
   title: exploreTemplate.title,
   templates: exploreTemplate.sandboxes.map(sandbox => ({
@@ -75,10 +75,14 @@ const mapAPIResponseToTemplateInfo = (
   })),
 });
 
-export const getTemplateInfosFromAPI = (url: string): Promise<TemplateInfo[]> =>
+export const getTemplateInfosFromAPI = (
+  url: string
+): Promise<TemplateCollection[]> =>
   fetch(url)
     .then(res => res.json())
-    .then((body: IExploreTemplate[]) => body.map(mapAPIResponseToTemplateInfo));
+    .then((body: ExploreTemplateAPIResponse[]) =>
+      body.map(mapAPIResponseToTemplateInfo)
+    );
 
 type ValidateRepositoryDestinationFn = (
   destination: string

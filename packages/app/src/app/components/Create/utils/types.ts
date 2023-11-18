@@ -6,7 +6,7 @@ export type CreateSandboxParams = {
   createRepo?: boolean;
 };
 
-export interface TemplateInfo {
+export interface TemplateCollection {
   title?: string;
   key: string;
   templates: TemplateFragment[];

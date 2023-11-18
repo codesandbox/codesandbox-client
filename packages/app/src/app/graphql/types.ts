@@ -72,6 +72,14 @@ export type RootQueryType = {
    */
   branchByName: Branch;
   curatedAlbums: Array<Album>;
+  /**
+   * Check for an active live session
+   *
+   * Accessible to members of the content's workspace and non-editor guests that have already
+   * joined the session. Prospective guests should use the mutation `joinLiveSession` with the
+   * session's ID instead.
+   */
+  getLiveSession: Maybe<LiveSession>;
   /** Get git repo and related V1 sandboxes */
   git: Maybe<Git>;
   /**
@@ -171,6 +179,10 @@ export type RootQueryTypeBranchByNameArgs = {
   owner: Scalars['String'];
   provider: GitProvider;
   team: InputMaybe<Scalars['ID']>;
+};
+
+export type RootQueryTypeGetLiveSessionArgs = {
+  vmId: Scalars['ID'];
 };
 
 export type RootQueryTypeGitArgs = {
@@ -1171,6 +1183,86 @@ export enum GitProvider {
   Github = 'GITHUB',
 }
 
+/**
+ * Live session started by an editor of a cloud sandbox for the benefit of guest users
+ *
+ * In a live session, there are editors (people who naturally have write access to the content)
+ * and guests (a superset that includes editors and other individuals who join the live session).
+ * Editors always have write permission, while non-editor guests have permissions determined by
+ * the default level-of-access or an individual override for that particular user. See mutations
+ * `setLiveSessionDefaultPermission` and `setLiveSessionGuestPermission` for more information.
+ */
+export type LiveSession = {
+  __typename?: 'LiveSession';
+  /**
+   * Default level of access for non-editor guests
+   *
+   * Editors of the cloud sandbox can change this using the `setLiveSessionDefaultPermission`
+   * mutation.
+   */
+  defaultPermission: LiveSessionPermission;
+  /**
+   * Guests of a live session
+   *
+   * This list includes all non-editor guests, regardless of their level of access. Users who have
+   * natural write access to the content will not appear here.
+   */
+  guests: Array<LiveSessionGuest>;
+  /** User that started the live session */
+  host: Maybe<LiveSessionHost>;
+  /** Session identifier, used for client-side caching */
+  id: Scalars['ID'];
+  /** Timestamp of the time when the live session opened (ISO 8601) */
+  startedAt: Scalars['String'];
+  /**
+   * Timestamp of the time when the live session ended (ISO 8601)
+   *
+   * In practice, this field will only be visible in response to a `stopLiveSession` mutation or
+   * as the final message of a `liveSessionEvents` subscription.
+   */
+  stoppedAt: Maybe<Scalars['String']>;
+  /** ID of the related sandbox VM */
+  vmId: Scalars['ID'];
+};
+
+/** Level of access for a live session */
+export enum LiveSessionPermission {
+  Read = 'READ',
+  Write = 'WRITE',
+}
+
+/**
+ * Guest of a live session
+ *
+ * This record represents a non-editor guest of a live session.
+ */
+export type LiveSessionGuest = {
+  __typename?: 'LiveSessionGuest';
+  /** URL of the user's avatar image */
+  avatarUrl: Scalars['String'];
+  /** Level of access for the guest */
+  permission: LiveSessionPermission;
+  /** CodeSandbox user ID */
+  userId: Scalars['ID'];
+  /** CodeSandbox username */
+  username: Scalars['String'];
+};
+
+/**
+ * Hose of a live session
+ *
+ * This user initially started the live session.
+ */
+export type LiveSessionHost = {
+  __typename?: 'LiveSessionHost';
+  /** URL of the user's avatar image */
+  avatarUrl: Scalars['String'];
+  /** CodeSandbox user ID */
+  userId: Scalars['ID'];
+  /** CodeSandbox username */
+  username: Scalars['String'];
+};
+
 /** Details about a repository as it appears on GitHub (Open API `repository`) */
 export type GithubRepo = {
   __typename?: 'GithubRepo';
@@ -1705,6 +1797,13 @@ export type RootMutationType = {
   inviteToTeam: Team;
   /** Invite someone to a team via email */
   inviteToTeamViaEmail: Scalars['String'];
+  /**
+   * Join an existing live session
+   *
+   * Accessible to non-editor guests for content that has an existing live session. For editors,
+   * this mutation is a no-op. Returns an error if no live session exists.
+   */
+  joinLiveSession: LiveSession;
   /** Leave a team */
   leaveTeam: Scalars['String'];
   /** Make templates from sandboxes */
@@ -1781,6 +1880,31 @@ export type RootMutationType = {
   setBranchProtection: Branch;
   /** Set the default authorization for any new members joining this workspace */
   setDefaultTeamMemberAuthorization: WorkspaceSandboxSettings;
+  /**
+   * Set the default level of access for guests in a live session
+   *
+   * Accessible to editors of the underlying content.
+   *
+   * With a default permission of `READ`, guests join with the ability to read the code and watch
+   * changes taking place without making changes of their own, like a classroom mode. With `WRITE`,
+   * all new guests will be able to make changes immediately.
+   *
+   * Individual guest permissions can be overridden using the `setLiveSessionGuestPermission`
+   * mutation. Changing the default permission does not reset any individual guest permissions
+   * set using the `setLiveSessionGuestPermission` mutation. It also does not affect editors (those
+   * who naturally have access to the content).
+   */
+  setLiveSessionDefaultPermission: LiveSession;
+  /**
+   * Set the level of access for a specific guest in a live session
+   *
+   * Accessible to editors of the underlying content.
+   *
+   * If an individual guest should have a level of access different than the default permission
+   * set using the `setLiveSessionDefaultPermission` mutation, this mutation allows targeted
+   * access. It has no effect on editors (those who naturally have access to the content).
+   */
+  setLiveSessionGuestPermission: LiveSession;
   setPreventSandboxesExport: Array<Sandbox>;
   setPreventSandboxesLeavingWorkspace: Array<Sandbox>;
   /** set sandbox always on status */
@@ -1797,6 +1921,22 @@ export type RootMutationType = {
   setTeamName: Team;
   setWorkspaceSandboxSettings: WorkspaceSandboxSettings;
   softCancelSubscription: ProSubscription;
+  /**
+   * Begin a new live session for a running VM
+   *
+   * Accessible to editors of the underlying content as long as live sessions are allowed by the
+   * content and its workspace.
+   *
+   * The live session will be automatically stopped a few minutes after the VM session ends, or
+   * immediately after calling the `stopLiveSession` mutation.
+   */
+  startLiveSession: LiveSession;
+  /**
+   * Immediately close a live session
+   *
+   * Accessible to editors of the underlying content.
+   */
+  stopLiveSession: LiveSession;
   /** Unbookmark a template */
   unbookmarkTemplate: Maybe<Template>;
   /** Convert templates back to sandboxes */
@@ -2083,6 +2223,10 @@ export type RootMutationTypeInviteToTeamViaEmailArgs = {
   teamId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeJoinLiveSessionArgs = {
+  id: Scalars['ID'];
+};
+
 export type RootMutationTypeLeaveTeamArgs = {
   teamId: Scalars['UUID4'];
 };
@@ -2208,6 +2352,17 @@ export type RootMutationTypeSetDefaultTeamMemberAuthorizationArgs = {
   teamId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeSetLiveSessionDefaultPermissionArgs = {
+  permission: LiveSessionPermission;
+  vmId: Scalars['ID'];
+};
+
+export type RootMutationTypeSetLiveSessionGuestPermissionArgs = {
+  permission: LiveSessionPermission;
+  userId: Scalars['ID'];
+  vmId: Scalars['ID'];
+};
+
 export type RootMutationTypeSetPreventSandboxesExportArgs = {
   preventSandboxExport: Scalars['Boolean'];
   sandboxIds: Array<Scalars['ID']>;
@@ -2266,6 +2421,15 @@ export type RootMutationTypeSetWorkspaceSandboxSettingsArgs = {
 export type RootMutationTypeSoftCancelSubscriptionArgs = {
   subscriptionId: Scalars['UUID4'];
   teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeStartLiveSessionArgs = {
+  defaultPermission: LiveSessionPermission;
+  vmId: Scalars['ID'];
+};
+
+export type RootMutationTypeStopLiveSessionArgs = {
+  vmId: Scalars['ID'];
 };
 
 export type RootMutationTypeUnbookmarkTemplateArgs = {
@@ -2457,6 +2621,13 @@ export type RootSubscriptionType = {
   invitationCreated: Invitation;
   invitationRemoved: Invitation;
   /**
+   * Subscription for changes to the state of a live session
+   *
+   * Clients may subscribe to this channel in order to be notified when live sessions begin (if
+   * they are editors of the underlying content), end, or when permissions are updated.
+   */
+  liveSessionEvents: LiveSessionEvent;
+  /**
    * Receive updates if a new commit is made via the CodeSandbox UI
    *
    * Omit `branchId` to receive updates from all branches in the project.
@@ -2531,6 +2702,10 @@ export type RootSubscriptionTypeInvitationCreatedArgs = {
 
 export type RootSubscriptionTypeInvitationRemovedArgs = {
   sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeLiveSessionEventsArgs = {
+  vmId: Scalars['ID'];
 };
 
 export type RootSubscriptionTypeProjectCommitsArgs = {
@@ -2660,6 +2835,24 @@ export enum InstallationEventAction {
   Created = 'CREATED',
 }
 
+/** Change to a live session emitted by the `liveSessionEvents` subscription */
+export type LiveSessionEvent = {
+  __typename?: 'LiveSessionEvent';
+  /** Action that emitted the event */
+  event: LiveSessionEventAction;
+  /** Current state of the live session */
+  session: LiveSession;
+};
+
+/** Actions that may emit a live session event */
+export enum LiveSessionEventAction {
+  Joined = 'JOINED',
+  SetDefaultPermission = 'SET_DEFAULT_PERMISSION',
+  SetGuestPermission = 'SET_GUEST_PERMISSION',
+  Started = 'STARTED',
+  Stopped = 'STOPPED',
+}
+
 /** Subscription update about a commit made by CodeSandbox for a branch */
 export type BranchLastCommit = {
   __typename?: 'BranchLastCommit';
@@ -2721,35 +2914,14 @@ export type TemplateFragment = {
   } | null;
 };
 
-export type ListPersonalTemplatesQueryVariables = Exact<{
-  [key: string]: never;
+export type RecentAndWorkspaceTemplatesQueryVariables = Exact<{
+  teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type ListPersonalTemplatesQuery = {
+export type RecentAndWorkspaceTemplatesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
-    templates: Array<{
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-      iconUrl: string | null;
-      published: boolean | null;
-      sandbox: {
-        __typename?: 'Sandbox';
-        id: string;
-        alias: string | null;
-        title: string | null;
-        description: string | null;
-        insertedAt: string;
-        updatedAt: string;
-        isV2: boolean;
-        isSse: boolean | null;
-        team: { __typename?: 'TeamPreview'; name: string } | null;
-        author: { __typename?: 'User'; username: string } | null;
-        source: { __typename?: 'Source'; template: string | null };
-      } | null;
-    }>;
     recentlyUsedTemplates: Array<{
       __typename?: 'Template';
       id: any | null;
@@ -2766,66 +2938,13 @@ export type ListPersonalTemplatesQuery = {
         updatedAt: string;
         isV2: boolean;
         isSse: boolean | null;
-        git: {
-          __typename?: 'Git';
-          id: any | null;
-          username: string | null;
-          commitSha: string | null;
-          path: string | null;
-          repo: string | null;
-          branch: string | null;
-        } | null;
         team: { __typename?: 'TeamPreview'; name: string } | null;
         author: { __typename?: 'User'; username: string } | null;
         source: { __typename?: 'Source'; template: string | null };
       } | null;
     }>;
-    bookmarkedTemplates: Array<{
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-      iconUrl: string | null;
-      published: boolean | null;
-      sandbox: {
-        __typename?: 'Sandbox';
-        id: string;
-        alias: string | null;
-        title: string | null;
-        description: string | null;
-        insertedAt: string;
-        updatedAt: string;
-        isV2: boolean;
-        isSse: boolean | null;
-        team: { __typename?: 'TeamPreview'; name: string } | null;
-        author: { __typename?: 'User'; username: string } | null;
-        source: { __typename?: 'Source'; template: string | null };
-      } | null;
-    }>;
-    teams: Array<{
+    team: {
       __typename?: 'Team';
-      id: any;
-      name: string;
-      bookmarkedTemplates: Array<{
-        __typename?: 'Template';
-        id: any | null;
-        color: string | null;
-        iconUrl: string | null;
-        published: boolean | null;
-        sandbox: {
-          __typename?: 'Sandbox';
-          id: string;
-          alias: string | null;
-          title: string | null;
-          description: string | null;
-          insertedAt: string;
-          updatedAt: string;
-          isV2: boolean;
-          isSse: boolean | null;
-          team: { __typename?: 'TeamPreview'; name: string } | null;
-          author: { __typename?: 'User'; username: string } | null;
-          source: { __typename?: 'Source'; template: string | null };
-        } | null;
-      }>;
       templates: Array<{
         __typename?: 'Template';
         id: any | null;
@@ -2847,7 +2966,7 @@ export type ListPersonalTemplatesQuery = {
           source: { __typename?: 'Source'; template: string | null };
         } | null;
       }>;
-    }>;
+    } | null;
   } | null;
 };
 
