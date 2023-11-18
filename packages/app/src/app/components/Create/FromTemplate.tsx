@@ -1,39 +1,28 @@
-import { useAppState } from 'app/overmind';
 import React, { useState } from 'react';
-import {
-  Stack,
-  Element,
-  Checkbox,
-  Icon,
-  Button,
-  Text,
-} from '@codesandbox/components';
+import { Stack, Element, Button, Text, Input } from '@codesandbox/components';
 
+import { CreateParams } from './utils/types';
 import { StyledSelect } from './elements';
-import { CreateSandboxParams } from './utils/types';
-import { InputText } from '../dashboard/InputText';
 
 interface FromTemplateProps {
-  isV2: boolean;
+  type: 'sandbox' | 'devbox';
   onCancel: () => void;
-  onSubmit: (params: CreateSandboxParams) => void;
+  onSubmit: (params: CreateParams) => void;
 }
 
 export const FromTemplate: React.FC<FromTemplateProps> = ({
-  isV2,
+  type,
   onCancel,
   onSubmit,
 }) => {
-  const { hasLogIn, user, dashboard, activeTeam } = useAppState();
+  const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
 
-  // TODO: Set generated name as default value if we can / need
-  // otherwise tell the user if empty we generate a name
-  const [sandboxName, setSandboxName] = useState<string>();
-
-  const createRepo = false;
-  // TODO: Enable when checkbox is active again
-  // const [createRepo, setCreateRepo] = useState<boolean>(false);
-  const [selectedTeam, setSelectedTeam] = useState<string>(activeTeam);
+  const [name, setName] = useState<string>();
+  // TODO: default privacy in workspace
+  const [permission, setPermission] = useState<0 | 1 | 2>(0);
+  const [editor, setEditor] = useState<'web' | 'vscode'>('web');
+  const showVMSpecs = type === 'devbox';
+  const enableEditorChange = type === 'devbox';
 
   return (
     <Stack
@@ -41,20 +30,6 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
       gap={7}
       css={{ width: '100%', height: '100%', paddingBottom: '24px' }}
     >
-      <Stack css={{ justifyContent: 'space-between' }}>
-        <Text
-          as="h2"
-          css={{
-            fontSize: '16px',
-            fontWeight: 500,
-            margin: 0,
-            lineHeight: 1.5,
-          }}
-        >
-          New from template
-        </Text>
-      </Stack>
-
       <Element
         as="form"
         css={{
@@ -67,22 +42,36 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
         onSubmit={e => {
           e.preventDefault();
           onSubmit({
-            name: sandboxName,
-            createRepo,
-            githubOwner: selectedTeam,
+            name,
+            createAs: type,
+            permission,
+            editor,
           });
         }}
       >
         <Stack direction="vertical" gap={6}>
+          <Text
+            as="h2"
+            css={{
+              fontSize: '16px',
+              fontWeight: 500,
+              margin: 0,
+            }}
+          >
+            Create {label}
+          </Text>
           <Stack direction="vertical" gap={2}>
-            <InputText
+            <Text size={3} as="label">
+              Name
+            </Text>
+            <Input
               autoFocus
               id="sb-name"
               name="sb-name"
               type="text"
-              label="Sandbox name"
-              value={sandboxName}
-              onChange={e => setSandboxName(e.target.value)}
+              value={name}
+              placeholder={`Let's give this ${label} a name.`}
+              onChange={e => setName(e.target.value)}
               aria-describedby="name-desc"
             />
             <Element
@@ -94,40 +83,60 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
             </Element>
           </Stack>
 
-          <Checkbox
-            id="sb-repo"
-            disabled
-            checked={createRepo}
-            label={
-              <Text
+          <Stack direction="vertical" gap={2}>
+            <Text size={3} as="label">
+              Visibility
+            </Text>
+            <StyledSelect
+              defaultValue={permission}
+              onChange={e => setPermission(e.target.value)}
+            >
+              <option value={0}>Public</option>
+              <option value={1}>Unlisted</option>
+              <option value={2}>Private</option>
+            </StyledSelect>
+          </Stack>
+
+          <Stack direction="vertical" gap={2}>
+            <Text size={3} as="label">
+              Open in
+            </Text>
+            <StyledSelect
+              defaultValue={permission}
+              disabled={enableEditorChange}
+              onChange={e => setEditor(e.target.value)}
+            >
+              <option value="web">Web editor</option>
+              <option value="vscode">VSCode</option>
+            </StyledSelect>
+          </Stack>
+
+          {showVMSpecs && (
+            <Stack direction="vertical" align="flex-start" gap={2}>
+              <Text size={3} as="label">
+                VM specs
+              </Text>
+              <Stack
+                direction="vertical"
+                gap={2}
                 css={{
-                  fontSize: 13,
-                  display: 'block',
-                  marginTop: 2,
-                  marginLeft: 4,
-                  color: '#999999',
-                  lineHeight: '16px',
+                  padding: '8px',
+                  border: '1px solid #252525',
+                  borderRadius: '4px',
                 }}
               >
-                Create git repository (coming soon)
-              </Text>
-            }
-          />
-
-          {createRepo ? (
-            <StyledSelect
-              icon={() => <Icon css={{ marginLeft: 8 }} name="github" />}
-              onChange={e => {
-                setSelectedTeam(e.target.value);
-              }}
-              value={selectedTeam}
-              disabled={!hasLogIn || !user || !dashboard.teams}
-            >
-              {dashboard.teams.map(team => (
-                <option key={team.id}>{team.name}</option>
-              ))}
-            </StyledSelect>
-          ) : null}
+                <Text size={3} variant="muted">
+                  4 vCPUs
+                </Text>
+                <Text size={3} variant="muted">
+                  8GiB RAM
+                </Text>
+                <Text size={3} variant="muted">
+                  12GB disk
+                </Text>
+              </Stack>
+            </Stack>
+          )}
         </Stack>
 
         <Stack css={{ justifyContent: 'flex-end' }}>
@@ -136,16 +145,12 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
               type="button"
               variant="secondary"
               onClick={onCancel}
-              css={{ width: 'auto' }}
+              autoWidth
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              css={{ width: 'auto', paddingRight: 24, paddingLeft: 24 }}
-            >
-              Create Sandbox
+            <Button type="submit" variant="primary" autoWidth>
+              Create {label}
             </Button>
           </Stack>
         </Stack>

@@ -1,9 +1,10 @@
 import { TemplateFragment } from 'app/graphql/types';
 
-export type CreateSandboxParams = {
+export type CreateParams = {
   name?: string;
-  githubOwner?: string;
-  createRepo?: boolean;
+  createAs: 'devbox' | 'sandbox';
+  permission: 0 | 1 | 2;
+  editor: 'web' | 'vscode';
 };
 
 export interface TemplateCollection {

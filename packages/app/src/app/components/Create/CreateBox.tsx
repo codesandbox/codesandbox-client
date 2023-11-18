@@ -33,7 +33,7 @@ import { TemplateList } from './TemplateList';
 import { useTemplateCollections } from './hooks/useTemplateCollections';
 import { useOfficialTemplates } from './hooks/useOfficialTemplates';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
-import { CreateSandboxParams } from './utils/types';
+import { CreateParams } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
 import { FromTemplate } from './FromTemplate';
@@ -127,7 +127,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const createFromTemplate = (
     template: TemplateFragment,
-    { name }: CreateSandboxParams
+    { name, createAs }: CreateParams
   ) => {
     const { sandbox } = template;
 
@@ -138,7 +138,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       body: {
         alias: name,
         collectionId,
-        v2: type === 'devbox',
+        v2: createAs === 'devbox',
       },
     });
 
@@ -162,7 +162,11 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       setSelectedTemplate(template);
       setViewState('fromTemplate');
     } else {
-      createFromTemplate(template, {});
+      createFromTemplate(template, {
+        v2: type === 'devbox',
+        permission: 0,
+        editor: 'web',
+      });
     }
   };
 
@@ -470,7 +474,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
             {viewState === 'fromTemplate' ? (
               <FromTemplate
-                isV2={selectedTemplate.sandbox.isV2}
+                type={type}
                 onCancel={() => {
                   setViewState('initial');
                 }}
