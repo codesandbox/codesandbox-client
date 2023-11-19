@@ -28,23 +28,6 @@ const DOCS: DocsItem[] = [
     thumbnail: '/static/img/thumbnails/blog_github-app.png',
   },
   {
-    label: 'video_contribution-branches',
-    title: 'Easy open source with Contribution branches',
-    duration: '5:33',
-    durationLabel: '5 minutes, 33 seconds',
-    url: 'https://www.youtube.com/watch?v=HCs49B6VVl8',
-    thumbnail: '/static/img/thumbnails/video_contribution-branches.png',
-  },
-  {
-    label: 'video_command-palette',
-    title: 'Using the Command Palette',
-    duration: '0:48',
-    durationLabel: '48 seconds',
-    url:
-      'https://www.youtube.com/watch?v=OUBYFp0Yz2A&list=PLdX6VQdTP7GbG1Poi8JN3AJsHAsSM2IlW&index=7',
-    thumbnail: '/static/img/thumbnails/video_command-palette.png',
-  },
-  {
     label: 'video_auto-deps-install',
     title: 'Automatic Dependency Management',
     duration: '1:18',
