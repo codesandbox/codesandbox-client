@@ -18,26 +18,12 @@ export const appendOnboardingTracking = (url: string): string => {
 
 const DOCS: DocsItem[] = [
   {
-    label: 'blog_dashboard-overview',
-    title: 'Introducing the new dashboard',
-    url: 'https://codesandbox.io/post/a-unified-codesandbox-experience',
-    thumbnail: '/static/img/thumbnails/blog_dashboard-intro.png',
-  },
-  {
     label: 'docs_getting-started',
     title: 'Getting started with the new CodeSandbox',
     duration: '4:58',
     durationLabel: '4 minutes, 58 seconds',
     url: 'https://www.youtube.com/watch?v=Z_0UwC_bOVY',
     thumbnail: '/static/img/thumbnails/docs_getting-started.png',
-  },
-  {
-    label: 'video_cloud-sandboxes',
-    title: 'Get started with Cloud Sandboxes',
-    duration: '0:48',
-    durationLabel: '48 seconds',
-    url: 'https://www.youtube.com/watch?v=4f1pKKP1NQ0',
-    thumbnail: '/static/img/thumbnails/video_cloud-sandboxes.png',
   },
   {
     label: 'video_vs-code',
