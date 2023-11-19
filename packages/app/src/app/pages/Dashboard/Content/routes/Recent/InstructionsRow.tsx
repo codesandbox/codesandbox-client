@@ -26,9 +26,9 @@ const DOCS: DocsItem[] = [
   {
     label: 'docs_getting-started',
     title: 'Getting started with the new CodeSandbox',
-    duration: '5:58',
-    durationLabel: '5 minutes, 58 seconds',
-    url: 'https://www.youtube.com/watch?v=j8CwqAqdVjc',
+    duration: '4:58',
+    durationLabel: '4 minutes, 58 seconds',
+    url: 'https://www.youtube.com/watch?v=Z_0UwC_bOVY',
     thumbnail: '/static/img/thumbnails/docs_getting-started.png',
   },
   {
