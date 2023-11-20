@@ -9,7 +9,6 @@ import { useActions, useAppState } from 'app/overmind';
 import React, { useState, useEffect } from 'react';
 import { useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -27,7 +26,7 @@ import {
   ModalSidebar,
   ModalBody,
   DevboxAlternative,
-  SandboxAlternative, 
+  SandboxAlternative,
 } from './elements';
 import { TemplateList } from './TemplateList';
 import { useTemplateCollections } from './hooks/useTemplateCollections';
@@ -36,7 +35,8 @@ import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateParams } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
-import { FromTemplate } from './FromTemplate';
+import { CreateBoxForm } from './CreateBox/CreateBoxForm';
+import { TemplateInfo } from './CreateBox/TemplateInfo';
 import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
 import { useAllTemplates } from './hooks/useAllTemplates';
 
@@ -51,7 +51,7 @@ type CreateBoxProps = ModalContentProps & {
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId,
   type = 'devbox',
-  hasSecondStep = true,
+  hasSecondStep = false,
   closeModal,
   isModal,
 }) => {
@@ -220,7 +220,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                 Create {type === 'devbox' ? 'Devbox' : 'Sandbox'}
               </Text>
             ) : (
-              // TODO: add aria-label based on title to IconButton?
               <IconButton
                 name="arrowDown"
                 variant="square"
@@ -241,7 +240,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
           {/* isModal is undefined on /s/ page */}
           {isModal && closeModal ? (
-            // TODO: IconButton doesn't have aria label or visuallyhidden text (reads floating label too late)
             <IconButton
               name="cross"
               variant="square"
@@ -488,7 +486,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             )}
 
             {viewState === 'fromTemplate' ? (
-              <FromTemplate
+              <CreateBoxForm
                 type={type}
                 onCancel={() => {
                   setViewState('initial');
@@ -502,34 +500,5 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
         </ModalBody>
       </Container>
     </ThemeProvider>
-  );
-};
-
-interface TemplateInfoProps {
-  template: TemplateFragment;
-}
-
-const TemplateInfo = ({ template }: TemplateInfoProps) => {
-  const { UserIcon } = getTemplateIcon(
-    template.sandbox.title,
-    template.iconUrl,
-    template.sandbox?.source?.template
-  );
-
-  return (
-    <Stack direction="vertical" gap={6}>
-      <UserIcon />
-      <Stack direction="vertical">
-        <Text size={3} weight="500">
-          {template.sandbox.title}
-        </Text>
-        <Text size={2} css={{ color: '#999', marginTop: '4px' }}>
-          {template.sandbox?.team?.name}
-        </Text>
-      </Stack>
-      <Text size={2} css={{ color: '#999', lineHeight: '1.4' }}>
-        {template.sandbox.description}
-      </Text>
-    </Stack>
   );
 };

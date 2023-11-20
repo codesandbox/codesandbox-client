@@ -26,7 +26,7 @@ export const RadioElement = styled.input(
 
     '&:checked + label::before': {
       borderColor: 'button.background',
-      backgroundColor: 'button.background',
+      backgroundColor: 'input.foregroundReverse',
     },
   })
 );
@@ -34,8 +34,10 @@ export const RadioElement = styled.input(
 const Label = styled(Text)(
   css({
     display: 'block',
+    cursor: 'pointer',
     paddingLeft: 6,
     '&::before': {
+      boxSizing: 'border-box',
       borderRadius: '50%',
       content: "''",
       height: 4,
@@ -43,27 +45,24 @@ const Label = styled(Text)(
       position: 'absolute',
       top: 0,
       width: 4,
-      backgroundColor: 'input.background',
+      backgroundColor: 'input.foregroundReverse',
       borderColor: 'mutedForeground',
       borderStyle: 'solid',
       borderWidth: '1px',
-      transition: 'all ease-in',
-      transitionDuration: theme => theme.speeds[2],
     },
     '&::after': {
+      boxSizing: 'border-box',
       borderRadius: '50%',
       content: "''",
       borderLeft: 0,
       borderTop: 0,
-      height: '6px',
+      height: '8px',
       opacity: 0,
       position: 'absolute',
-      top: '6px',
-      left: '6px',
-      backgroundColor: 'input.foregroundReverse',
-      width: '6px',
-      transition: 'all ease-in',
-      transitionDuration: theme => theme.speeds[2],
+      top: '4px',
+      left: '4px',
+      backgroundColor: 'button.background',
+      width: '8px',
     },
   })
 );
@@ -84,7 +83,12 @@ export const Radio: FunctionComponent<IRadioProps> = ({
         type="radio"
         {...props}
       />
-      <Label as="label" htmlFor={inputId}>
+      <Label
+        as="label"
+        size={3}
+        htmlFor={inputId}
+        variant={checked ? 'body' : 'muted'}
+      >
         {label}
       </Label>
     </Element>

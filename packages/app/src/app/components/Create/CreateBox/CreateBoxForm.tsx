@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
-import { Stack, Element, Button, Text, Input } from '@codesandbox/components';
+import {
+  Stack,
+  Element,
+  Button,
+  Text,
+  Input,
+  Radio,
+  Icon,
+} from '@codesandbox/components';
 
-import { CreateParams } from './utils/types';
-import { StyledSelect } from './elements';
+import { CreateParams } from '../utils/types';
 
-interface FromTemplateProps {
+interface CreateBoxFormProps {
   type: 'sandbox' | 'devbox';
   onCancel: () => void;
   onSubmit: (params: CreateParams) => void;
 }
 
-export const FromTemplate: React.FC<FromTemplateProps> = ({
+export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   type,
   onCancel,
   onSubmit,
@@ -22,7 +29,9 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
   const [permission, setPermission] = useState<0 | 1 | 2>(0);
   const [editor, setEditor] = useState<'web' | 'vscode'>('web');
   const showVMSpecs = type === 'devbox';
-  const enableEditorChange = type === 'devbox';
+  const disableEditorChange = type === 'sandbox';
+
+  const defaultSpecs = '4 vCPUs - 8GiB RAM - 16GB disk';
 
   return (
     <Stack
@@ -60,9 +69,12 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
           >
             Create {label}
           </Text>
-          <Stack direction="vertical" gap={2}>
+          <Stack direction="vertical" gap={1}>
             <Text size={3} as="label">
               Name
+            </Text>
+            <Text size={3} id="name-desc" variant="muted">
+              Leaving this field empty will generate a random name.
             </Text>
             <Input
               autoFocus
@@ -74,65 +86,69 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
               onChange={e => setName(e.target.value)}
               aria-describedby="name-desc"
             />
-            <Element
-              as="span"
-              id="name-desc"
-              css={{ color: '#999999', fontSize: '12px' }}
-            >
-              Leaving this field empty will generate a random name.
-            </Element>
           </Stack>
 
           <Stack direction="vertical" gap={2}>
             <Text size={3} as="label">
               Visibility
             </Text>
-            <StyledSelect
-              defaultValue={permission}
-              onChange={e => setPermission(e.target.value)}
-            >
-              <option value={0}>Public</option>
-              <option value={1}>Unlisted</option>
-              <option value={2}>Private</option>
-            </StyledSelect>
+            <Stack direction="vertical" gap={1}>
+              <Radio
+                checked={permission === 0}
+                onChange={() => setPermission(0)}
+                label="Public"
+              />
+              <Radio
+                checked={permission === 1}
+                onChange={() => setPermission(1)}
+                label="Unlisted"
+              />
+              <Radio
+                checked={permission === 2}
+                onChange={() => setPermission(2)}
+                label="Private"
+              />
+            </Stack>
           </Stack>
 
           <Stack direction="vertical" gap={2}>
             <Text size={3} as="label">
               Open in
             </Text>
-            <StyledSelect
-              defaultValue={permission}
-              disabled={enableEditorChange}
-              onChange={e => setEditor(e.target.value)}
-            >
-              <option value="web">Web editor</option>
-              <option value="vscode">VSCode</option>
-            </StyledSelect>
+            <Stack direction="vertical" gap={1}>
+              <Radio
+                disabled={disableEditorChange}
+                checked={editor === 'web'}
+                onChange={() => setEditor('web')}
+                label="Web editor"
+              />
+              <Radio
+                disabled={disableEditorChange}
+                checked={editor === 'vscode'}
+                onChange={() => setEditor('vscode')}
+                label="VSCode"
+              />
+            </Stack>
+            {disableEditorChange && (
+              <Stack gap={1}>
+                <Icon color="#999" name="circleBang" />
+                <Text size={3} variant="muted">
+                  Sandboxes can only be open in the web editor.
+                </Text>
+              </Stack>
+            )}
           </Stack>
 
           {showVMSpecs && (
             <Stack direction="vertical" align="flex-start" gap={2}>
               <Text size={3} as="label">
-                VM specs
+                Virtual machine specifications
               </Text>
-              <Stack
-                direction="vertical"
-                gap={2}
-                css={{
-                  padding: '8px',
-                  border: '1px solid #252525',
-                  borderRadius: '4px',
-                }}
-              >
+              <Input value={defaultSpecs} disabled />
+              <Stack gap={1}>
+                <Icon color="#999" name="circleBang" />
                 <Text size={3} variant="muted">
-                  4 vCPUs
-                </Text>
-                <Text size={3} variant="muted">
-                  8GiB RAM
-                </Text>
-                <Text size={3} variant="muted">
-                  12GB disk
+                  VM specs are currently tied to your subscription.
                 </Text>
               </Stack>
             </Stack>
