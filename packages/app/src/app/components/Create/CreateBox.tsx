@@ -27,7 +27,7 @@ import {
   ModalSidebar,
   ModalBody,
   DevboxAlternative,
-  SandboxAlternative,
+  SandboxAlternative, 
 } from './elements';
 import { TemplateList } from './TemplateList';
 import { useTemplateCollections } from './hooks/useTemplateCollections';
@@ -345,10 +345,21 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   </Text>
                   <Text size={2} color="#A6A6A6" lineHeight="1.35">
                     {type === 'devbox' ? (
-                      <DevboxAlternative />
+                      <DevboxAlternative
+                        onClick={() => {
+                          track(`Create ${type} - Open Community Search`, {
+                            codesandbox: 'V1',
+                            event_source: 'UI - Sidebar',
+                          });
+                        }}
+                      />
                     ) : (
                       <SandboxAlternative
                         onClick={() => {
+                          track(`Create ${type} - Open Devboxes`, {
+                            codesandbox: 'V1',
+                            event_source: 'UI - Sidebar',
+                          });
                           actions.modalOpened({
                             modal: 'createDevbox',
                           });

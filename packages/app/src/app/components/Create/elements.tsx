@@ -204,13 +204,16 @@ export const UnstyledButtonLink = styled.button`
 
 export const DevboxAlternative = ({
   searchQuery,
+  onClick,
 }: {
   searchQuery?: string;
+  onClick: () => void;
 }) => {
   return (
     <>
       Browse more than 3 million community-made templates{' '}
       <a
+        onClick={onClick}
         style={{ color: '#E4FC82', textDecoration: 'none' }}
         href={
           searchQuery

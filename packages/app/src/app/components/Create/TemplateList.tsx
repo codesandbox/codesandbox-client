@@ -3,6 +3,7 @@ import { Button, Text, Stack } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { TemplateCard } from './TemplateCard';
 import {
   DevboxAlternative,
@@ -101,10 +102,22 @@ export const TemplateList = ({
           </Text>
           <Text size={3} css={{ width: '300px', textAlign: 'center' }}>
             {type === 'devbox' ? (
-              <DevboxAlternative searchQuery={searchQuery} />
+              <DevboxAlternative
+                searchQuery={searchQuery}
+                onClick={() => {
+                  track(`Create ${type} - Open Community Search`, {
+                    codesandbox: 'V1',
+                    event_source: 'UI - Empty Template List',
+                  });
+                }}
+              />
             ) : (
               <SandboxAlternative
                 onClick={() => {
+                  track(`Create ${type} - Open Devboxes`, {
+                    codesandbox: 'V1',
+                    event_source: 'UI - Empty Template List',
+                  });
                   actions.modalOpened({
                     modal: 'createDevbox',
                   });

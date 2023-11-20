@@ -1,5 +1,4 @@
 import React from 'react';
-import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
 import { quotes } from 'app/utils/quotes';
 import { EmptyPage } from '../../../Components/EmptyPage';
 
