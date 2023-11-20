@@ -18,7 +18,7 @@ import {
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
@@ -106,10 +106,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   children,
   interactive = true,
 }) => {
-  const [hasBetaEditorExperiment] = useGlobalPersistedState(
-    'BETA_SANDBOX_EDITOR',
-    false
-  );
+  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const possibleItems = (items || []).filter(
     item =>
       item.type === 'sandbox' ||

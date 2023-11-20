@@ -108,32 +108,23 @@ const sandboxGitUrl = (git: {
 
 export const editorUrl = () => `/s/`;
 
-export const v2EditorUrl = () => `/p/`;
+export const newEditorUrlPrefix = () => `/p/`;
 
 export const sandboxUrl = (
   sandboxDetails: SandboxUrlSourceData,
   hasBetaEditorExperiment?: boolean
 ) => {
-  const baseUrl =
-    sandboxDetails.isV2 || (!sandboxDetails.isSse && hasBetaEditorExperiment)
-      ? `${v2EditorUrl()}sandbox/`
-      : editorUrl();
+  let baseUrl = editorUrl();
 
-  let queryParams = '';
-  const appendBetaBrowserParam =
-    !sandboxDetails.isV2 && !sandboxDetails.isSse && hasBetaEditorExperiment;
-
-  const sandboxQueryParams =
-    sandboxDetails.query || appendBetaBrowserParam
-      ? {
-          ...(sandboxDetails.query ? sandboxDetails.query : {}),
-          ...(appendBetaBrowserParam ? { betaBrowser: 'true' } : {}),
-        }
-      : null;
-
-  if (sandboxQueryParams) {
-    queryParams = `?${new URLSearchParams(sandboxQueryParams).toString()}`;
+  if (sandboxDetails.isV2) {
+    baseUrl = `${newEditorUrlPrefix()}devbox/`;
+  } else if (!sandboxDetails.isSse && hasBetaEditorExperiment) {
+    // TODO: Check userid in list
+    baseUrl = `${newEditorUrlPrefix()}sandbox/`;
   }
+
+  const queryParams = sandboxDetails.query ? `?${new URLSearchParams(sandboxDetails.query).toString()}` : '';
+
 
   if (sandboxDetails.git) {
     const { git } = sandboxDetails;
@@ -362,7 +353,7 @@ const v2EditorBranchUrl = ({
     ...(source ? { utm_source: source } : {}),
   }).toString();
 
-  return `${v2EditorUrl()}github/${owner}/${repoName}${
+  return `${newEditorUrlPrefix()}github/${owner}/${repoName}${
     branchName ? '/' + branchName : ''
   }${queryString ? '?' + queryString : ''}`;
 };

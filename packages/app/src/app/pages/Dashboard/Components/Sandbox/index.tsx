@@ -13,7 +13,7 @@ import track, {
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -69,10 +69,7 @@ function getFolderName(item: GenericSandboxProps['item']): string | undefined {
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const { dashboard, activeWorkspaceAuthorization } = useAppState();
-  const [hasBetaEditorExperiment] = useGlobalPersistedState(
-    'BETA_SANDBOX_EDITOR',
-    false
-  );
+  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const actions = useActions();
   const { isFree } = useWorkspaceSubscription();
 

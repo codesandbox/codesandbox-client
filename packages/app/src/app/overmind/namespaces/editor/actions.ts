@@ -230,186 +230,191 @@ export const npmDependencyRemoved = withOwnedSandbox(
 
 export const sandboxChanged = withLoadApp<{
   id: string;
-}>(async ({ state, actions, effects }: Context, { id }: { id: string }) => {
-  // This happens when we fork. This can be avoided with state first routing
-  if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
-    if (state.editor.currentModule.id) {
-      effects.vscode.openModule(state.editor.currentModule);
-    }
+  hasBetaEditorExperiment: boolean;
+}>(
+  async (
+    { state, actions, effects }: Context,
+    { id, hasBetaEditorExperiment }
+  ) => {
+    // This happens when we fork. This can be avoided with state first routing
+    if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
+      if (state.editor.currentModule.id) {
+        effects.vscode.openModule(state.editor.currentModule);
+      }
 
-    await actions.editor.internal.initializeSandbox(
-      state.editor.currentSandbox
-    );
+      await actions.editor.internal.initializeSandbox(
+        state.editor.currentSandbox
+      );
 
-    actions.git.loadGitSource();
+      actions.git.loadGitSource();
 
-    state.editor.isForkingSandbox = false;
-    return;
-  }
-
-  await effects.vscode.closeAllTabs();
-
-  state.editor.error = null;
-  state.git.sourceSandboxId = null;
-
-  let newId = id;
-
-  newId = actions.editor.internal.ensureSandboxId(newId);
-
-  effects.browser.storage.set('currentSandboxId', newId);
-
-  const hasExistingSandbox = Boolean(state.editor.currentId);
-
-  if (state.live.isLive) {
-    actions.live.internal.disconnect();
-  }
-
-  state.editor.isLoading = !hasExistingSandbox;
-
-  const url = new URL(document.location.href);
-  const invitationToken = url.searchParams.get('ts');
-
-  if (invitationToken) {
-    // This user came here with an invitation token, which can be sent to the email to make
-    // the user a collaborator
-    if (!state.hasLogIn) {
-      // Redirect to sign in URL, which then redirects back to this after
-      history.push(signInPageUrl(document.location.href));
+      state.editor.isForkingSandbox = false;
       return;
     }
 
-    try {
-      await effects.gql.mutations.redeemSandboxInvitation({
-        sandboxId: newId,
-        invitationToken,
-      });
+    await effects.vscode.closeAllTabs();
 
-      // Timeout to prevent that we load the whole sandbox twice at the same time
-      setTimeout(() => {
-        // Remove the invite from the url
-        url.searchParams.delete('ts');
-        history.replace(url.pathname);
-      }, 3000);
-    } catch (error) {
-      if (
-        !error.message.includes('Cannot redeem token, invitation not found')
-      ) {
-        actions.internal.handleError({
-          error,
-          message: 'Something went wrong with redeeming invitation token',
+    state.editor.error = null;
+    state.git.sourceSandboxId = null;
+
+    let newId = id;
+
+    newId = actions.editor.internal.ensureSandboxId(newId);
+
+    effects.browser.storage.set('currentSandboxId', newId);
+
+    const hasExistingSandbox = Boolean(state.editor.currentId);
+
+    if (state.live.isLive) {
+      actions.live.internal.disconnect();
+    }
+
+    state.editor.isLoading = !hasExistingSandbox;
+
+    const url = new URL(document.location.href);
+    const invitationToken = url.searchParams.get('ts');
+
+    if (invitationToken) {
+      // This user came here with an invitation token, which can be sent to the email to make
+      // the user a collaborator
+      if (!state.hasLogIn) {
+        // Redirect to sign in URL, which then redirects back to this after
+        history.push(signInPageUrl(document.location.href));
+        return;
+      }
+
+      try {
+        await effects.gql.mutations.redeemSandboxInvitation({
+          sandboxId: newId,
+          invitationToken,
         });
+
+        // Timeout to prevent that we load the whole sandbox twice at the same time
+        setTimeout(() => {
+          // Remove the invite from the url
+          url.searchParams.delete('ts');
+          history.replace(url.pathname);
+        }, 3000);
+      } catch (error) {
+        if (
+          !error.message.includes('Cannot redeem token, invitation not found')
+        ) {
+          actions.internal.handleError({
+            error,
+            message: 'Something went wrong with redeeming invitation token',
+          });
+        }
       }
     }
-  }
 
-  try {
-    const params = state.activeTeam ? { teamId: state.activeTeam } : undefined;
-    const sandbox = await effects.api.getSandbox(newId, params);
-    const experimentalV2Enabled = effects.browser.storage.get<boolean>(
-      'CSB/BETA_SANDBOX_EDITOR'
-    );
+    try {
+      const params = state.activeTeam
+        ? { teamId: state.activeTeam }
+        : undefined;
+      const sandbox = await effects.api.getSandbox(newId, params);
 
-    // Failsafe, in case someone types in the URL to load a v2 sandbox in v1
-    // or if they have the experimental v2 editor enabled
-    if (sandbox.v2 || (!sandbox.isSse && experimentalV2Enabled)) {
-      const sandboxV2Url = sandboxUrl({
-        id: sandbox.id,
-        alias: sandbox.alias,
-        git: sandbox.git,
-        isV2: true,
-      });
+      // Failsafe, in case someone types in the URL to load a v2 sandbox in v1
+      // or if they have the experimental v2 editor enabled
+      if (sandbox.v2 || (!sandbox.isSse && hasBetaEditorExperiment)) {
+        const sandboxV2Url = sandboxUrl({
+          id: sandbox.id,
+          alias: sandbox.alias,
+          git: sandbox.git,
+          isV2: true,
+        });
 
-      window.location.href = sandboxV2Url;
+        window.location.href = sandboxV2Url;
+      }
+
+      actions.internal.setCurrentSandbox(sandbox);
+    } catch (error) {
+      const data = error.response?.data;
+      const errors = data?.errors;
+      let detail = errors?.detail;
+
+      if (Array.isArray(detail)) {
+        detail = detail[0];
+      } else if (typeof errors === 'object') {
+        detail = errors[Object.keys(errors)[0]];
+      } else if (data?.error) {
+        detail = data?.error;
+      }
+
+      state.editor.error = {
+        message: detail || error.message,
+        status: error.response.status,
+      };
+
+      state.editor.isLoading = false;
+
+      return;
     }
 
-    actions.internal.setCurrentSandbox(sandbox);
-  } catch (error) {
-    const data = error.response?.data;
-    const errors = data?.errors;
-    let detail = errors?.detail;
+    const sandbox = state.editor.currentSandbox!;
 
-    if (Array.isArray(detail)) {
-      detail = detail[0];
-    } else if (typeof errors === 'object') {
-      detail = errors[Object.keys(errors)[0]];
-    } else if (data?.error) {
-      detail = data?.error;
-    }
+    await effects.vscode.changeSandbox(sandbox, fs => {
+      state.editor.modulesByPath = fs;
+    });
 
-    state.editor.error = {
-      message: detail || error.message,
-      status: error.response.status,
-    };
-
-    state.editor.isLoading = false;
-
-    return;
-  }
-
-  const sandbox = state.editor.currentSandbox!;
-
-  await effects.vscode.changeSandbox(sandbox, fs => {
-    state.editor.modulesByPath = fs;
-  });
-
-  if (sandbox.featureFlags?.containerLsp && !sandbox.owned) {
-    effects.vscode.setReadOnly(true);
-    effects.notificationToast.add({
-      message:
-        'This Sandbox is running an experiment. You have to fork it before you can make any changes',
-      title: 'Experimental Sandbox',
-      status: convertTypeToStatus('notice'),
-      sticky: true,
-      actions: {
-        primary: {
-          label: 'Fork',
-          run: () => {
-            actions.editor.forkSandboxClicked({});
+    if (sandbox.featureFlags?.containerLsp && !sandbox.owned) {
+      effects.vscode.setReadOnly(true);
+      effects.notificationToast.add({
+        message:
+          'This Sandbox is running an experiment. You have to fork it before you can make any changes',
+        title: 'Experimental Sandbox',
+        status: convertTypeToStatus('notice'),
+        sticky: true,
+        actions: {
+          primary: {
+            label: 'Fork',
+            run: () => {
+              actions.editor.forkSandboxClicked({});
+            },
           },
         },
-      },
-    });
+      });
+    }
+
+    await actions.editor.internal.initializeSandbox(sandbox);
+
+    // We only recover files at this point if we are not live. When live we recover them
+    // when the module_state is received
+    if (
+      !state.live.isLive &&
+      hasPermission(sandbox.authorization, 'write_code')
+    ) {
+      actions.files.internal.recoverFiles();
+    }
+
+    if (state.editor.currentModule.id) {
+      effects.vscode.openModule(state.editor.currentModule);
+    } else {
+      // This means that there is no current module. Normally we tell that the editor has loaded
+      // when the module has loaded (for the skeleton), but in this case we will never load a module.
+      // So we need to explicitly mark that the module has been loaded instead.
+      state.editor.hasLoadedInitialModule = true;
+    }
+    try {
+      await actions.editor.loadCursorFromUrl();
+    } catch (e) {
+      /**
+       * This is not extremely important logic, if it breaks (which is possible because of user input)
+       * we don't want to crash the whole editor. That's why we try...catch this.
+       */
+    }
+
+    if (
+      sandbox.featureFlags.comments &&
+      hasPermission(sandbox.authorization, 'comment')
+    ) {
+      actions.comments.getSandboxComments(sandbox.id);
+    }
+
+    actions.git.loadGitSource();
+
+    state.editor.isLoading = false;
   }
-
-  await actions.editor.internal.initializeSandbox(sandbox);
-
-  // We only recover files at this point if we are not live. When live we recover them
-  // when the module_state is received
-  if (
-    !state.live.isLive &&
-    hasPermission(sandbox.authorization, 'write_code')
-  ) {
-    actions.files.internal.recoverFiles();
-  }
-
-  if (state.editor.currentModule.id) {
-    effects.vscode.openModule(state.editor.currentModule);
-  } else {
-    // This means that there is no current module. Normally we tell that the editor has loaded
-    // when the module has loaded (for the skeleton), but in this case we will never load a module.
-    // So we need to explicitly mark that the module has been loaded instead.
-    state.editor.hasLoadedInitialModule = true;
-  }
-  try {
-    await actions.editor.loadCursorFromUrl();
-  } catch (e) {
-    /**
-     * This is not extremely important logic, if it breaks (which is possible because of user input)
-     * we don't want to crash the whole editor. That's why we try...catch this.
-     */
-  }
-
-  if (
-    sandbox.featureFlags.comments &&
-    hasPermission(sandbox.authorization, 'comment')
-  ) {
-    actions.comments.getSandboxComments(sandbox.id);
-  }
-
-  actions.git.loadGitSource();
-
-  state.editor.isLoading = false;
-});
+);
 
 export const contentMounted = ({ state, effects }: Context) => {
   effects.browser.onUnload(event => {

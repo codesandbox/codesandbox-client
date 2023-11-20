@@ -56,7 +56,7 @@ export const useOfficialTemplates = ({
   return {
     state: officialTemplatesData.state,
     templates: officialTemplatesData.templates.filter(t =>
-      type === 'sandbox' ? !t.sandbox.isV2 : true
+      type === 'sandbox' && !t.sandbox.isV2 || type === 'devbox' && t.sandbox.isV2
     ),
   };
 };

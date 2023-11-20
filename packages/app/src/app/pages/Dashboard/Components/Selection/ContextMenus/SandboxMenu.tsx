@@ -9,7 +9,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -25,10 +25,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const { user, activeTeam } = useAppState();
 
   const { isFree, isPro } = useWorkspaceSubscription();
-  const [hasBetaEditorExperiment] = useGlobalPersistedState(
-    'BETA_SANDBOX_EDITOR',
-    false
-  );
+  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
 
   const {
     browser: { copyToClipboard },

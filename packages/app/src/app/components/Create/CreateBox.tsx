@@ -13,7 +13,7 @@ import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { pluralize } from 'app/utils/pluralize';
 import { ModalContentProps } from 'app/pages/common/Modals';
 import {
@@ -120,10 +120,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     }
   }, [searchQuery, tabState.selectedId]);
 
-  const [hasBetaEditorExperiment] = useGlobalPersistedState(
-    'BETA_SANDBOX_EDITOR',
-    false
-  );
+  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
 
   const createFromTemplate = (
     template: TemplateFragment,
