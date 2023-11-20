@@ -63,7 +63,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
       return;
     }
 
-    track('Create New - Create fork', {
+    track('Import repository - Create fork', {
       codesandbox: 'V1',
       event_source: 'UI',
     });
@@ -85,7 +85,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
   };
 
   useEffect(() => {
-    track('Create New - View create fork', {
+    track('Import repository - View create fork', {
       codesandbox: 'V1',
       event_source: 'UI',
     });

@@ -37,7 +37,7 @@ export const EmptyRepositories: React.FC = () => {
           icon="github"
           title="Import from GitHub"
           onClick={() => {
-            track('Empty State Card - Open create modal', {
+            track('Empty State Card - Import repository', {
               codesandbox: 'V1',
               event_source: 'UI',
               card_type: 'get-started-action',

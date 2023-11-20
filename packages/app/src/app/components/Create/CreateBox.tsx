@@ -106,7 +106,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   useEffect(() => {
     if (searchQuery) {
-      track('Create New - Search Templates', {
+      track(`Create ${type} - Search Templates`, {
         query: searchQuery,
         codesandbox: 'V1',
         event_source: 'UI',
@@ -131,6 +131,14 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   ) => {
     const { sandbox } = template;
 
+    track(`Create ${type} - Create`, {
+      codesandbox: 'V1',
+      event_source: 'UI',
+      type: 'fork',
+      template_name:
+        template.sandbox.title || template.sandbox.alias || template.sandbox.id,
+    });
+
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
       openInNewWindow: false,
@@ -149,18 +157,20 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     template: TemplateFragment,
     trackingSource: string
   ) => {
-    track('Create New - Select template', {
-      codesandbox: 'V1',
-      event_source: 'UI',
-      type: 'fork',
-      tab_name: trackingSource,
-      template_name:
-        template.sandbox.title || template.sandbox.alias || template.sandbox.id,
-    });
-
     if (hasSecondStep) {
       setSelectedTemplate(template);
       setViewState('fromTemplate');
+
+      track(`Create ${type} - Select template`, {
+        codesandbox: 'V1',
+        event_source: 'UI',
+        type: 'fork',
+        tab_name: trackingSource,
+        template_name:
+          template.sandbox.title ||
+          template.sandbox.alias ||
+          template.sandbox.id,
+      });
     } else {
       createFromTemplate(template, {
         v2: type === 'devbox',
@@ -175,7 +185,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
     window.open(url, '_blank');
 
-    track('Create New - Select template', {
+    track(`Create ${type} - Open template`, {
       codesandbox: 'V1',
       event_source: 'UI',
       type: 'open',
@@ -186,7 +196,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   };
 
   const trackTabClick = (tab: string) => {
-    track('Create New - Click Tab', {
+    track(`Create ${type} - Click Tab`, {
       codesandbox: 'V1',
       event_source: 'UI',
       tab_name: tab,
@@ -296,13 +306,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     {showImportTemplates ? (
                       <Tab
                         {...tabState}
-                        onClick={() => {
-                          track('Create New - Click Tab', {
-                            codesandbox: 'V1',
-                            event_source: 'UI',
-                            tab_name: 'Import template',
-                          });
-                        }}
+                        onClick={() => trackTabClick('import-template')}
                         stopId="import-template"
                       >
                         Import template

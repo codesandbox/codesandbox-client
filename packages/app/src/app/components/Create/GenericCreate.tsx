@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Stack, Text, IconButton, Element } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -13,6 +13,13 @@ export const GenericCreate: React.FC<{
   const actions = useActions();
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
+
+  useEffect(() => {
+    track('Generic Create - Show', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+  }, []);
 
   return (
     <Container css={{ height: mobileScreenSize ? 'auto' : '260px' }}>
@@ -56,7 +63,7 @@ export const GenericCreate: React.FC<{
           title="Import repository"
           subtitle="Run any branch instantly, create and review PRs in our Cloud Development Environment."
           onClick={() => {
-            track('Create Modal - Import Repository', {
+            track('Generic Create - Import Repository', {
               codesandbox: 'V1',
               event_source: 'UI',
             });
@@ -74,7 +81,7 @@ export const GenericCreate: React.FC<{
           title="Create a Devbox"
           subtitle="Build and share standalone projects of any size in our Cloud Development Environment."
           onClick={() => {
-            track('Create Modal - Create Devbox', {
+            track('Generic Create - Create Devbox', {
               codesandbox: 'V1',
               event_source: 'UI',
             });
@@ -92,7 +99,7 @@ export const GenericCreate: React.FC<{
           title="Create a Sandbox"
           subtitle="Create simple front-end prototypes for free, running the code your browser."
           onClick={() => {
-            track('Create Modal - Create Sandbox', {
+            track('Generic Create - Create Sandbox', {
               codesandbox: 'V1',
               event_source: 'UI',
             });

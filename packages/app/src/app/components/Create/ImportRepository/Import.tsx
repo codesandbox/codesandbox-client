@@ -206,7 +206,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       return;
     }
 
-    track('Create New - Import Repo', {
+    track('Import repository - Import', {
       codesandbox: 'V1',
       event_source: 'UI',
     });

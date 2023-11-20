@@ -9,6 +9,7 @@ import { Element } from '@codesandbox/components';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 import { useDismissible } from 'app/hooks';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { EmptyRepositories } from './EmptyRepositories';
 
 export const RepositoriesPage = () => {
@@ -52,6 +53,10 @@ export const RepositoriesPage = () => {
       repoItems.unshift({
         type: 'import-repository',
         onImportClicked: () => {
+          track('Repositories Page - Import Repository', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
           actions.modalOpened({ modal: 'importRepository' });
         },
       });

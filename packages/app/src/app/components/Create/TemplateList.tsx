@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import track from '@codesandbox/common/lib/utils/analytics';
+import React from 'react';
 import { Button, Text, Stack } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
@@ -34,10 +33,6 @@ export const TemplateList = ({
 }: TemplateListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
-
-  useEffect(() => {
-    track('Create Sandbox Tab Open', { tab: title });
-  }, [title]);
 
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={4}>
