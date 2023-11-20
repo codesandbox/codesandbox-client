@@ -31,7 +31,10 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       <EmptyPage.StyledGrid
         css={{
           gridAutoRows: 'auto',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(370px,1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(300px,1fr))',
+          '@media (min-width: 1585px)': {
+            gridTemplateColumns: 'repeat(auto-fill, minmax(370px,1fr))',
+          },
         }}
       >
         <LargeCTAButton

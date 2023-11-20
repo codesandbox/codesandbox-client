@@ -22,12 +22,13 @@ export const LargeCTAButton = ({
     <StyledButton
       onClick={onClick}
       css={{
-        height: alignment === 'horizontal' ? '80px' : 'auto',
+        height: 'auto',
         flexDirection: alignment === 'horizontal' ? 'row' : 'column',
       }}
     >
       <Stack
         justify="center"
+        align="center"
         padding={4}
         css={{
           background: variant === 'primary' ? '#E4FC82' : '#CCCCCC',
@@ -77,6 +78,6 @@ const StyledButton = styled.button`
 `;
 
 const StyledStackContent = styled(Stack)`
-  padding: 0 16px;
+  padding: 8px 16px;
   justify-content: center;
 `;
