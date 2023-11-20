@@ -78,6 +78,6 @@ const StyledButton = styled.button`
 `;
 
 const StyledStackContent = styled(Stack)`
-  padding: 8px 16px;
-  justify-content: center;
+  padding: 12px 16px;
+  min-height: 80px;
 `;
