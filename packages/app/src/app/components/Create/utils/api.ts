@@ -61,7 +61,7 @@ const mapAPIResponseToTemplateInfo = (
       team: {
         name: 'CodeSandbox',
       },
-      isV2: sandbox.v2,
+      isV2: sandbox.v2 || false,
       isSse: isServer(sandbox.environment),
       git: sandbox.git && {
         id: sandbox.git.id,

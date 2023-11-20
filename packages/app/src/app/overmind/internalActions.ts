@@ -46,7 +46,9 @@ export const initializeNewUser = async ({
   actions.userNotifications.internal.initialize();
   actions.internal.setStoredSettings();
 
-  effects.api.preloadTeamTemplates(state.activeTeam);
+  if (state.activeTeam) {
+    effects.api.preloadTeamTemplates(state.activeTeam);
+  }
 
   // Preload official templates for the create modal
   if (state.officialTemplates.length === 0) {
