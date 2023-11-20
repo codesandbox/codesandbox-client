@@ -173,7 +173,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       });
     } else {
       createFromTemplate(template, {
-        v2: type === 'devbox',
+        createAs: type,
         permission: 0,
         editor: 'web',
       });

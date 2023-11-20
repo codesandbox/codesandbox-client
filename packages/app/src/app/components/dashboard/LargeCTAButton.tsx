@@ -35,16 +35,16 @@ export const LargeCTAButton = ({
       >
         <Icon name={icon} size={48} />
       </Stack>
-      <Stack direction="vertical" gap={1} css={{ padding: '16px' }}>
+      <StyledStackContent direction="vertical" gap={2}>
         <Text size={3} color="#121212">
           {title}
         </Text>
         {subtitle && (
-          <Text size={2} weight="400" color="#5C5C5C">
+          <Text size={2} weight="400" lineHeight="16px" color="#5C5C5C">
             {subtitle}
           </Text>
         )}
-      </Stack>
+      </StyledStackContent>
     </StyledButton>
   );
 };
@@ -74,4 +74,9 @@ const StyledButton = styled.button`
     background-color: #ededed;
     outline: 2px solid #9581ff;
   }
+`;
+
+const StyledStackContent = styled(Stack)`
+  padding: 0 16px;
+  justify-content: center;
 `;

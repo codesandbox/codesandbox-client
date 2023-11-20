@@ -217,7 +217,7 @@ export const DevboxAlternative = ({
         style={{ color: '#E4FC82', textDecoration: 'none' }}
         href={
           searchQuery
-            ? `https://codesandbox.io/search?query=${searchQuery}`
+            ? `https://codesandbox.io/search?query=${encodeURIComponent(searchQuery)}`
             : 'https://codesandbox.io/search'
         }
         target="_blank"
