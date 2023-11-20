@@ -56,6 +56,7 @@ export async function initialize(dsn: string) {
         /Cannot reorder children for node/,
 
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
+        "Cannot assign to read only property 'exports' of object '#<Object>'",
       ],
       integrations: [
         new _Sentry.Integrations.TryCatch({
