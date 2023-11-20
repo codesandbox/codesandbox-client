@@ -9,7 +9,7 @@ export const UpgradeSSEToV2Stripe = () => {
     <MessageStripe variant="primary">
       <span>
         This sandbox runs much faster in our new editor. Do you want to{' '}
-        {canConvert ? 'convert' : 'fork'} it to a Cloud Sandbox?
+        {canConvert ? 'convert' : 'fork'} it to a Devbox?
       </span>
       <MessageStripe.Action loading={loading} onClick={perform}>
         {canConvert ? 'Yes, convert' : 'Yes, fork'}

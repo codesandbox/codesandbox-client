@@ -70,7 +70,7 @@ export const useUpgradeFromV1ToV2 = (
       } catch (err) {
         setIsLoading(false);
         effects.notificationToast.error(
-          'Failed to convert to Cloud Sandbox. Please try again.'
+          'Failed to convert to Devbox. Please try again.'
         );
       }
     },

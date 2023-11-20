@@ -523,9 +523,7 @@ export const handleError = (
     error.message.startsWith(
       'You need to be signed in to fork a server template.'
     ) ||
-    error.message.startsWith(
-      'You need to be signed in to fork a cloud sandbox.'
-    )
+    error.message.startsWith('You need to be signed in to fork a devbox.')
   ) {
     notificationActions.primary = {
       label: 'Sign in',

@@ -97,7 +97,7 @@ export const TemplateCard = ({
             <Tooltip
               content={
                 <div style={{ fontSize: 13 }}>
-                  This is a cloud sandbox that runs in a microVM, learn more{' '}
+                  This is a Devbox that runs in a microVM, learn more{' '}
                   <a
                     href={docsUrl('/learn/sandboxes/overview?tab=cloud')}
                     target="_blank"

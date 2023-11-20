@@ -44,7 +44,11 @@ export const PERSONAL_PRO_FEATURES: Feature[] = [
   },
   {
     key: 'limit_sandboxes',
-    label: 'Unlimited private repositories & sandboxes',
+    label: 'Unlimited private devboxes & sandboxes',
+  },
+  {
+    key: 'boxes',
+    label: 'Unlimited private repositories',
   },
   {
     key: 'ai',
@@ -63,8 +67,12 @@ export const TEAM_PRO_FEATURES: Feature[] = [
     label: 'Unlimited editors',
   },
   {
+    key: 'boxes',
+    label: 'Unlimited private devboxes & sandboxes',
+  },
+  {
     key: 'private',
-    label: 'Unlimited private repositories & sandboxes',
+    label: 'Unlimited private repositories',
   },
   {
     key: 'ai',
@@ -84,8 +92,12 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
     label: 'Unlimited editors',
   },
   {
+    key: 'boxes',
+    label: 'Unlimited private sandboxes & devboxes',
+  },
+  {
     key: 'private',
-    label: 'Unlimited private repositories & sandboxes',
+    label: 'Unlimited private repositories',
   },
   {
     key: 'ai',

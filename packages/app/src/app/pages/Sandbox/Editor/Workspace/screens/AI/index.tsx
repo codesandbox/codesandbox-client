@@ -15,12 +15,11 @@ export const AITools = () => {
     <Collapsible title="AI Tools" defaultOpen>
       <Stack direction="vertical" gap={6} padding={2}>
         <Text as="p" variant="muted" margin={0}>
-          To access AI tools, you need to upgrade your Browser Sandbox into a
-          Cloud Sandbox.
+          To access AI tools, you need to upgrade your Sandbox into a Devbox.
         </Text>
         <Text as="p" variant="muted" margin={0}>
-          Cloud Sandboxes are an improved coding experience that runs your code
-          in the cloud. They allow you to run a Chat Devtool you can use to ask
+          Devboxes are an improved coding experience that runs your code in the
+          cloud. They allow you to run a Chat Devtool you can use to ask
           questions and generate code with AI
         </Text>
         <Text as="p" variant="muted" margin={0}>
