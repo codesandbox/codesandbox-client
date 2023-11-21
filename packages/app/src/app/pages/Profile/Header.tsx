@@ -10,7 +10,7 @@ import { Notifications } from 'app/components/Notifications';
 
 export const Header: React.FC = () => {
   const {
-    openCreateSandboxModal,
+    modalOpened,
     profile: { searchQueryChanged },
   } = useActions();
   const {
@@ -39,8 +39,8 @@ export const Header: React.FC = () => {
       <Link href="/?from-app=1">
         <LogoIcon
           style={{
-            marginLeft: -6, 
-            marginTop: 2// Logo positioning tweak
+            marginLeft: -6,
+            marginTop: 2, // Logo positioning tweak
           }}
           height={18}
         />
@@ -84,13 +84,19 @@ export const Header: React.FC = () => {
 
       <Stack align="center" gap={2}>
         <Button
+          variant="secondary"
           css={css({ width: 'auto', paddingX: 3 })}
           onClick={() => {
-            openCreateSandboxModal({});
+            modalOpened({ modal: 'genericCreate' });
           }}
         >
-          <Icon name="plus" size={20} title="Create New" css={css({ paddingRight: 2})}/>
-             New
+          <Icon
+            name="plus"
+            size={20}
+            title="Create New"
+            css={css({ paddingRight: 2 })}
+          />
+          Create
         </Button>
 
         {user && <Notifications />}

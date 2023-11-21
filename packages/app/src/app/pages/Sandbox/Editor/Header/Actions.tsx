@@ -1,5 +1,5 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Avatar, Button, Stack } from '@codesandbox/components';
+import { Avatar, Button, Icon, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
@@ -92,7 +92,6 @@ export const Actions = () => {
   const {
     signInClicked,
     modalOpened,
-    openCreateSandboxModal,
     editor: { likeSandboxToggled, forkSandboxClicked },
     explore: { pickSandboxModal },
   } = useActions();
@@ -239,16 +238,23 @@ export const Actions = () => {
 
       <Button
         variant="secondary"
-        css={css({ paddingX: 4 })}
         onClick={() => {
           if (!user) {
-            signInClicked({ onCancel: () => openCreateSandboxModal({}) });
+            signInClicked({
+              onCancel: () => modalOpened({ modal: 'genericCreate' }),
+            });
           } else {
-            openCreateSandboxModal({});
+            modalOpened({ modal: 'genericCreate' });
           }
         }}
         disabled={activeWorkspaceAuthorization === 'READ'}
       >
+        <Icon
+          name="plus"
+          size={16}
+          title="Create new"
+          css={{ marginRight: '8px' }}
+        />
         Create
       </Button>
 

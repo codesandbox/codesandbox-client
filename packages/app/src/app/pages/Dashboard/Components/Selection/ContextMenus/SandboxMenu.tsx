@@ -9,7 +9,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -25,10 +25,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const { user, activeTeam } = useAppState();
 
   const { isFree, isPro } = useWorkspaceSubscription();
-  const [hasBetaEditorExperiment] = useGlobalPersistedState(
-    'BETA_SANDBOX_EDITOR',
-    false
-  );
+  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
 
   const {
     browser: { copyToClipboard },
@@ -44,8 +41,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
   const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
   const folderUrl = getFolderUrl(item, activeTeam);
+  const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
 
-  const label = isTemplate ? 'template' : 'sandbox';
+  const label = isTemplate ? 'template' : boxType;
   const restricted = isFree && sandbox.privacy !== 0;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
@@ -178,7 +176,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           }}
           disabled={restricted}
         >
-          Fork sandbox
+          Fork {boxType}
         </MenuItem>
       ) : null}
       {isOwner && userRole !== 'READ' ? (
@@ -313,7 +311,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
             disabled={restricted}
           >
-            Convert to sandbox
+            Convert to {boxType}
           </MenuItem>
         ) : (
           <MenuItem
@@ -324,7 +322,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
             disabled={restricted}
           >
-            Make sandbox a template
+            Make {boxType} a template
           </MenuItem>
         ))}
       {hasAccess &&
@@ -405,7 +403,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete sandbox
+              Delete {boxType}
             </MenuItem>
           )}
         </>
@@ -416,7 +414,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.dashboard.unlikeSandbox(sandbox.id);
           }}
         >
-          Unlike sandbox
+          Unlike {boxType}
         </MenuItem>
       )}
     </Menu.ContextMenu>

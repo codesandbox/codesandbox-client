@@ -3,13 +3,18 @@ import { createGlobalStyle, withTheme } from 'styled-components';
 import { ThemeProvider, Element } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
 import { useParams } from 'react-router-dom';
-import { CreateSandbox } from 'app/components/CreateSandbox';
+import { CreateBox } from 'app/components/Create/CreateBox';
+import { ImportRepository } from 'app/components/Create/ImportRepository';
+import { GenericCreate } from 'app/components/Create/GenericCreate';
 import { Preferences } from '../common/Modals/PreferencesModal';
 import { NotFound } from '../common/NotFound';
 
 const COMPONENT_MAP = {
   preferences: Preferences,
-  create: CreateSandbox,
+  create: GenericCreate,
+  createSandbox: () => <CreateBox type="sandbox" isModal={false} />,
+  createDevbox: () => <CreateBox type="devbox" isModal={false} />,
+  import: ImportRepository,
 };
 
 export const StandalonePage = withTheme(({ theme }) => {

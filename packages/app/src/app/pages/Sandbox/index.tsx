@@ -6,6 +6,7 @@ import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { Editor } from './Editor';
 import { GitHubError } from './GitHubError';
 import { OnBoarding } from './OnBoarding';
@@ -23,6 +24,7 @@ export const Sandbox = React.memo<Props>(
   ({ match, showNewSandboxModal }) => {
     const state = useAppState();
     const actions = useActions();
+    const [hasBetaEditorExperiment] = useBetaSandboxEditor();
     const { sandboxPageMounted } = actions;
 
     /**
@@ -62,7 +64,10 @@ export const Sandbox = React.memo<Props>(
 
       actions.live.onNavigateAway();
       if (match?.params) {
-        actions.editor.sandboxChanged({ id: match.params.id });
+        actions.editor.sandboxChanged({
+          id: match.params.id,
+          hasBetaEditorExperiment,
+        });
       }
 
       // eslint-disable-next-line

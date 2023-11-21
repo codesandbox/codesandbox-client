@@ -26,7 +26,7 @@ export const useUpgradeFromV1ToV2 = (
 
       setIsLoading(true);
 
-      track(`Editor - ${trackingLocation} Convert to Cloud Sandbox`, {
+      track(`Editor - ${trackingLocation} Convert to Devbox`, {
         owned: canConvert,
       });
 
@@ -70,7 +70,7 @@ export const useUpgradeFromV1ToV2 = (
       } catch (err) {
         setIsLoading(false);
         effects.notificationToast.error(
-          'Failed to convert to Cloud Sandbox. Please try again.'
+          'Failed to convert. Please try again.'
         );
       }
     },

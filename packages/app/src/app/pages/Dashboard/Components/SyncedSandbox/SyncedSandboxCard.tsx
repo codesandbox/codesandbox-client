@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Stack,
-  Text,
-  Icon,
-  InteractiveOverlay,
-  Badge,
-} from '@codesandbox/components';
+import { Stack, Text, Icon, InteractiveOverlay } from '@codesandbox/components';
 import { Link } from 'react-router-dom';
 import { StyledCard } from '../shared/StyledCard';
 
@@ -39,9 +33,6 @@ export const SyncedSandboxCard = ({ name, path, url, ...props }) => {
                 </Link>
               </InteractiveOverlay.Item>
             </Stack>
-          </Stack>
-          <Stack justify="flex-end">
-            <Badge>Synced</Badge>
           </Stack>
         </Stack>
       </StyledCard>

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import {
-  Badge,
   Stack,
   Text,
   Button,
@@ -31,7 +30,6 @@ type Props = {
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
-  showBetaBadge?: boolean;
   nestedPageType?: BreadcrumbProps['nestedPageType'];
   albumId?: string;
   activeTeam: string;
@@ -52,7 +50,6 @@ export const Header = ({
   showFilters = false,
   showViewOptions = false,
   showSortOptions = false,
-  showBetaBadge = false,
   CustomFilters,
   actions = [],
   selectedRepo,
@@ -60,7 +57,7 @@ export const Header = ({
   readOnly = false,
 }: Props) => {
   const location = useLocation();
-  const { modals, dashboard: dashboardActions } = useActions();
+  const { modalOpened, dashboard: dashboardActions } = useActions();
   const { dashboard } = useAppState();
 
   const repositoriesListPage =
@@ -95,20 +92,15 @@ export const Header = ({
       <Stack align="center" gap={2}>
         {loading ? (
           <SkeletonText css={css({ height: 6 })} />
+        ) : title ? (
+          <Text size={6}>{title}</Text>
         ) : (
-          <>
-            {title ? (
-              <Text size={6}>{title}</Text>
-            ) : (
-              <Breadcrumbs
-                nestedPageType={nestedPageType}
-                activeTeam={activeTeam}
-                path={path}
-                albumId={albumId}
-              />
-            )}
-            {showBetaBadge && <Badge icon="cloud">Cloud</Badge>}
-          </>
+          <Breadcrumbs
+            nestedPageType={nestedPageType}
+            activeTeam={activeTeam}
+            path={path}
+            albumId={albumId}
+          />
         )}
       </Stack>
       <Stack gap={4} align="center">
@@ -135,7 +127,7 @@ export const Header = ({
         {repositoriesListPage && dashboard.viewMode === 'list' && (
           <Button
             onClick={() =>
-              !readOnly && modals.newSandboxModal.open({ initialTab: 'import' })
+              !readOnly && modalOpened({ modal: 'importRepository' })
             }
             variant="link"
             css={css({

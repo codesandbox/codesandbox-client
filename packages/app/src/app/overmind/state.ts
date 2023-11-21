@@ -7,6 +7,7 @@ import {
 import {
   CurrentTeamInfoFragmentFragment as CurrentTeam,
   TeamMemberAuthorization,
+  TemplateFragment,
 } from 'app/graphql/types';
 import { derived } from 'overmind';
 import { hasLogIn } from '@codesandbox/common/lib/utils/user';
@@ -25,6 +26,7 @@ type State = {
   isLoggedIn: boolean;
   hasLogIn: boolean;
   popularSandboxes: Sandbox[] | null;
+  officialTemplates: TemplateFragment[];
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
   authToken: string | null;
@@ -52,6 +54,7 @@ type State = {
   };
   currentModal: string | null;
   currentModalMessage: string | null;
+  currentModalItemId?: string; // Used for passing collection id for create modals
   uploadedFiles: UploadFile[] | null;
   maxStorage: number;
   usedStorage: number;
@@ -117,6 +120,7 @@ export const state: State = {
     ) > -1
   ),
   popularSandboxes: null,
+  officialTemplates: [],
   hasLoadedApp: false,
   isAuthenticating: true,
   authToken: null,

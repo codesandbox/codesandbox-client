@@ -7,6 +7,7 @@ import {
   Avatar,
   Text,
   Link,
+  Icon,
 } from '@codesandbox/components';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import {
@@ -24,7 +25,7 @@ type Props = {
 } & RouteComponentProps;
 
 const NavigationComponent = ({ title, match, showActions = true }: Props) => {
-  const { signInClicked, openCreateSandboxModal } = useActions();
+  const { signInClicked, modalOpened } = useActions();
   const { isLoggedIn, isAuthenticating, user } = useAppState();
   const link = isLoggedIn ? '/dashboard' : '/';
 
@@ -83,13 +84,19 @@ const NavigationComponent = ({ title, match, showActions = true }: Props) => {
               ) : null}
               {showActions && (
                 <Button
-                  variant="primary"
-                  css={css({ width: 'auto', paddingX: 3 })}
+                  variant="ghost"
+                  css={{ width: 'auto' }}
                   onClick={() => {
-                    openCreateSandboxModal({});
+                    modalOpened({ modal: 'genericCreate' });
                   }}
                 >
-                  Create Sandbox
+                  <Icon
+                    name="plus"
+                    size={16}
+                    title="Create new"
+                    css={{ marginRight: '8px' }}
+                  />
+                  Create
                 </Button>
               )}
               {isLoggedIn ? (

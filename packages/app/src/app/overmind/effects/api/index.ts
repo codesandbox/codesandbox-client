@@ -25,7 +25,7 @@ import {
   SettingsSync,
   ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
-import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateSandbox/queries';
+import { FETCH_TEAM_TEMPLATES } from 'app/components/Create/utils/queries';
 import { client } from 'app/graphql/client';
 import { PendingUserType } from 'app/overmind/state';
 
@@ -506,7 +506,7 @@ export default {
   },
   /**
    * Updates a sandbox. Used to update sandbox metadata but also to convert
-   * a sandbox to a cloud sandbox.
+   * a sandbox to a devbox.
    */
   updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
     return api.put(`/sandboxes/${sandboxId}`, {
@@ -561,8 +561,8 @@ export default {
   signoutVercel(): Promise<void> {
     return api.delete(`/users/current_user/integrations/vercel`);
   },
-  preloadTemplates() {
-    client.query({ query: LIST_PERSONAL_TEMPLATES, variables: {} });
+  preloadTeamTemplates(teamId: string) {
+    client.query({ query: FETCH_TEAM_TEMPLATES, variables: { teamId } });
   },
   deleteTemplate(
     sandboxId: string,

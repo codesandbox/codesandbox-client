@@ -23,7 +23,7 @@ type CreateRepoProps = {
 export const CreateRepo: React.FC<CreateRepoProps> = ({ disabled }) => {
   const {
     git: { createRepoClicked, repoTitleChanged },
-    openCreateSandboxModal,
+    modalOpened,
   } = useActions();
   const {
     editor: { isAllModulesSynced, currentSandbox },
@@ -65,7 +65,7 @@ export const CreateRepo: React.FC<CreateRepoProps> = ({ disabled }) => {
           want to rather import an existing repository,{' '}
           <Link
             css={{ color: 'white' }}
-            onClick={() => openCreateSandboxModal({ initialTab: 'import' })}
+            onClick={() => modalOpened({ modal: 'importRepository' })}
           >
             open the GitHub import
           </Link>

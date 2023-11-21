@@ -18,7 +18,7 @@ import {
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
@@ -88,8 +88,9 @@ const Context = React.createContext<SelectionContext>({
 
 interface SelectionProviderProps {
   items: Array<DashboardGridItem>;
-  createNewFolder?: (() => void) | null;
-  createNewSandbox?: (() => void) | null;
+  createNewFolder?: () => void;
+  createNewSandbox?: () => void;
+  createNewDevbox?: () => void;
   activeTeamId: string | null;
   page: PageTypes;
   interactive?: boolean;
@@ -97,17 +98,15 @@ interface SelectionProviderProps {
 
 export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   items = [],
-  createNewFolder = null,
-  createNewSandbox = null,
+  createNewFolder,
+  createNewSandbox,
+  createNewDevbox,
   activeTeamId,
   page,
   children,
   interactive = true,
 }) => {
-  const [hasBetaEditorExperiment] = useGlobalPersistedState(
-    'BETA_SANDBOX_EDITOR',
-    false
-  );
+  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const possibleItems = (items || []).filter(
     item =>
       item.type === 'sandbox' ||
@@ -705,6 +704,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         page={page}
         createNewFolder={createNewFolder}
         createNewSandbox={createNewSandbox}
+        createNewDevbox={createNewDevbox}
       />
     </Context.Provider>
   );

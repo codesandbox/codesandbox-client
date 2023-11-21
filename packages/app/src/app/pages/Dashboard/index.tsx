@@ -22,8 +22,6 @@ import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPayment
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
@@ -47,12 +45,7 @@ export const Dashboard: FunctionComponent = () => {
   } = useAppState();
   const actions = useActions();
   const effects = useEffects();
-  const { subscription, isFree } = useWorkspaceSubscription();
-  const { isPersonalSpace } = useWorkspaceAuthorization();
-  const [
-    hasSeenPersonalSpaceAnnouncement,
-    setHasSeenPersonalSpaceAnnouncement,
-  ] = useGlobalPersistedState('PERSONAL_SPACE_ANNOUNCEMENT', false);
+  const { subscription } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
   const [
     showTrialWithoutPaymentInfoBanner,
@@ -115,9 +108,11 @@ export const Dashboard: FunctionComponent = () => {
     const searchParams = new URLSearchParams(location.search);
 
     if (JSON.parse(searchParams.get('import_repo'))) {
-      actions.openCreateSandboxModal({ initialTab: 'import' });
+      actions.modalOpened({ modal: 'importRepository' });
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {
-      actions.openCreateSandboxModal();
+      actions.modalOpened({ modal: 'createSandbox' });
+    } else if (JSON.parse(searchParams.get('create_devbox'))) {
+      actions.modalOpened({ modal: 'createDevbox' });
     } else if (searchParams.get('preferences')) {
       const toToOpen = searchParams.get('preferences');
       actions.preferences.openPreferencesModal(toToOpen);
@@ -125,13 +120,6 @@ export const Dashboard: FunctionComponent = () => {
 
     history.replace({ search: searchParams.toString() });
   }, [actions, hasLogIn, location.search]);
-
-  useEffect(() => {
-    if (isFree && isPersonalSpace && !hasSeenPersonalSpaceAnnouncement) {
-      actions.modalOpened({ modal: 'personalSpaceAnnouncement' });
-      setHasSeenPersonalSpaceAnnouncement(true);
-    }
-  }, [actions, isFree, isPersonalSpace, hasSeenPersonalSpaceAnnouncement]);
 
   useEffect(() => {
     trackVisit();

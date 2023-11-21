@@ -109,7 +109,7 @@ export const FolderListItem = ({
           {!isNewFolder ? (
             <Text size={3} block variant={selected ? 'body' : 'muted'}>
               {numberOfSandboxes || 0}{' '}
-              {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
+              {numberOfSandboxes === 1 ? 'item' : 'items'}
             </Text>
           ) : null}
         </Column>

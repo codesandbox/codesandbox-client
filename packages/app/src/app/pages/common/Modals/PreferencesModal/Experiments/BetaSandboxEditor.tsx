@@ -7,7 +7,7 @@ import {
 } from '@codesandbox/components';
 import React, { useState } from 'react';
 
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { useAppState, useEffects } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Textarea } from 'app/components/dashboard/Textarea';
@@ -31,10 +31,7 @@ export const BetaSandboxEditor = () => {
   const { user } = useAppState();
   const effects = useEffects();
 
-  const [betaSandboxEditor, setBetaSandboxEditor] = useGlobalPersistedState(
-    'BETA_SANDBOX_EDITOR',
-    false
-  );
+  const [betaSandboxEditor, setBetaSandboxEditor] = useBetaSandboxEditor();
 
   const [feedbackMode, setFeedbackMode] = useState(false);
   const [feedbackOptions, setFeedbackOptions] = useState({

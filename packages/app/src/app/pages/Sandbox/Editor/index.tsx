@@ -7,7 +7,7 @@ import {
   Element,
   Stack,
 } from '@codesandbox/components';
-import { CreateSandbox } from 'app/components/CreateSandbox';
+import { GenericCreate } from 'app/components/Create/GenericCreate';
 import {
   FreeViewOnlyStripe,
   PaymentPending,
@@ -260,31 +260,26 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
                         width: '100vw',
                         height: '100vh',
                         position: 'fixed',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       })}
-                    />
-                    <Element margin={6}>
-                      <Element marginTop={80}>
-                        <Stack align="center" justify="center">
-                          <Element
-                            css={css({
-                              backgroundColor: 'sideBar.background',
-                              maxWidth: '100%',
-                              width: 1200,
-                              position: 'relative',
-                              zIndex: 100,
+                    >
+                      <Element
+                        css={css({
+                          backgroundColor: 'sideBar.background',
+                          maxWidth: '100%',
+                          width: 950,
+                          position: 'relative',
+                          marginTop: '-200px',
 
-                              '@media screen and (max-width: 800px)': {
-                                position: 'absolute',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                margin: 0,
-                              },
-                            })}
-                            marginTop={8}
-                          >
-                            <CreateSandbox />
-                          </Element>
-                        </Stack>
+                          '@media screen and (max-width: 950)': {
+                            width: 'auto',
+                            margin: 0,
+                          },
+                        })}
+                      >
+                        <GenericCreate />
                       </Element>
                     </Element>
                   </Element>

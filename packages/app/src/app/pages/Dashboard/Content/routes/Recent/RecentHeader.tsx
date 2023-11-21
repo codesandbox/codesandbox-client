@@ -1,24 +1,21 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Stack, Text, Icon } from '@codesandbox/components';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useActions, useAppState } from 'app/overmind';
+import { Stack, Text } from '@codesandbox/components';
+import {
+  DEVBOX_BUTTON_DESCRIPTION,
+  IMPORT_BUTTON_DESCRIPTION,
+  SANDBOX_BUTTON_DESCRIPTION,
+} from 'app/components/Create/utils/constants';
+import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
+import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
-import styled from 'styled-components';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
-  const { environment } = useAppState();
-
-  const { isLegacyPersonalPro } = useWorkspaceSubscription();
-  const { isTeamViewer } = useWorkspaceAuthorization();
-
-  const showRepositoryImport = !environment.isOnPrem;
 
   return (
-    <Stack direction="vertical" gap={9}>
+    <Stack direction="vertical" gap={8}>
       <UpgradeBanner />
       <Text
         as="h1"
@@ -33,88 +30,62 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       >
         {title}
       </Text>
-      <EmptyPage.StyledGrid css={{ gridAutoRows: 'auto' }}>
-        <ButtonInverseLarge
-          onClick={() => {
-            track('Empty State Card - Open create modal', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-              card_type: 'get-started-action',
-              tab: 'default',
-            });
-            actions.openCreateSandboxModal();
+      <Stack direction="vertical" gap={4}>
+        <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
+          Start something new
+        </Text>
+        <EmptyPage.StyledGrid
+          css={{
+            gridAutoRows: 'auto',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px,1fr))',
+            '@media (min-width: 1585px)': {
+              gridTemplateColumns: 'repeat(auto-fill, minmax(370px,1fr))',
+            },
           }}
         >
-          <Icon name="sandbox" /> New sandbox
-        </ButtonInverseLarge>
-        {showRepositoryImport && (
-          <ButtonInverseLarge
+          <LargeCTAButton
+            icon="boxRepository"
+            title="Import repository"
+            subtitle={IMPORT_BUTTON_DESCRIPTION}
             onClick={() => {
-              track('Empty State Card - Open create modal', {
+              track('Recent Page - Import Repository', {
                 codesandbox: 'V1',
                 event_source: 'UI',
-                card_type: 'get-started-action',
-                tab: 'github',
               });
-              actions.openCreateSandboxModal({ initialTab: 'import' });
+              actions.modalOpened({ modal: 'importRepository' });
             }}
-          >
-            <Icon name="github" /> Import repository
-          </ButtonInverseLarge>
-        )}
+            variant="primary"
+          />
 
-        {!isLegacyPersonalPro && !isTeamViewer ? (
-          <ButtonInverseLarge
+          <LargeCTAButton
+            icon="boxDevbox"
+            title="Create a Devbox"
+            subtitle={DEVBOX_BUTTON_DESCRIPTION}
             onClick={() => {
-              track('Empty State Card - Invite members', {
+              track('Recent Page - Create Devbox', {
                 codesandbox: 'V1',
                 event_source: 'UI',
-                card_type: 'get-started-action',
               });
-              actions.openCreateTeamModal({
-                step: 'members',
-                hasNextStep: false,
-              });
+              actions.modalOpened({ modal: 'createDevbox' });
             }}
-          >
-            <Icon name="addMember" /> Invite team members
-          </ButtonInverseLarge>
-        ) : null}
-      </EmptyPage.StyledGrid>
+            variant="primary"
+          />
+
+          <LargeCTAButton
+            icon="boxSandbox"
+            title="Create a Sandbox"
+            subtitle={SANDBOX_BUTTON_DESCRIPTION}
+            onClick={() => {
+              track('Recent Page - Create Sandbox', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              actions.modalOpened({ modal: 'createSandbox' });
+            }}
+            variant="secondary"
+          />
+        </EmptyPage.StyledGrid>
+      </Stack>
     </Stack>
   );
 };
-
-type ButtonInverseLargeProps = {
-  children: React.ReactNode;
-} & Pick<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>;
-
-// TODO: Add the Button component variant below to the design system.
-// naming: [component][variant][size]
-const ButtonInverseLarge = ({ children, onClick }: ButtonInverseLargeProps) => {
-  return <StyledButton onClick={onClick}>{children}</StyledButton>;
-};
-
-const StyledButton = styled.button`
-  all: unset;
-  display: flex;
-  align-items: center;
-  gap: 12px; // In case of icons
-  padding: 20px 24px;
-  border-radius: 4px;
-  background-color: #ffffff;
-  color: #0e0e0e;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 16px;
-
-  &:hover {
-    background-color: #ebebeb;
-    cursor: pointer;
-    transition: background-color 75ms ease;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #9581ff;
-  }
-`;

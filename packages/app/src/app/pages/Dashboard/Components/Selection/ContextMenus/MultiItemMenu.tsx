@@ -150,7 +150,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const FROZEN_ITEMS = [
     sandboxes.some(s => !s.sandbox.isFrozen) && {
-      label: 'Freeze sandboxes',
+      label: 'Freeze items',
       fn: () => {
         actions.dashboard.changeSandboxesFrozen({
           sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -159,7 +159,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       },
     },
     sandboxes.some(s => s.sandbox.isFrozen) && {
-      label: 'Unfreeze sandboxes',
+      label: 'Unfreeze items',
       fn: () => {
         actions.dashboard.changeSandboxesFrozen({
           sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -224,7 +224,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const DELETE = { label: 'Delete items', fn: deleteItems };
   const RECOVER = {
-    label: 'Recover Sandboxes',
+    label: 'Recover items',
     fn: () => {
       actions.dashboard.recoverSandboxes(
         [...sandboxes, ...templates].map(s => s.sandbox.id)
@@ -232,7 +232,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     },
   };
   const PERMANENTLY_DELETE = {
-    label: 'Permanently delete sandboxes',
+    label: 'Permanently delete items',
     fn: () => {
       actions.dashboard.permanentlyDeleteSandboxes(
         [...sandboxes, ...templates].map(s => s.sandbox.id)

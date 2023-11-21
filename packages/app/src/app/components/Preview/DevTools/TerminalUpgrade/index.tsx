@@ -38,19 +38,18 @@ export const TerminalUpgradeComponent: React.FC<StyledProps> = ({
           gap={4}
         >
           <Text>
-            To use the terminal, you need to upgrade your Browser Sandbox into a
-            Cloud Sandbox.
+            To use the terminal, you need to upgrade your Sandbox into a Devbox.
           </Text>
           <Text>
-            Cloud Sandboxes are an improved coding experience that runs your code
-            in the cloud. They bring new languages, servers, databases,
-            a built-in AI assistant, and much more. See a preview below.
+            Devboxes are an improved coding experience that runs your code in
+            the cloud. They bring new languages, servers, databases, a built-in
+            AI assistant, and much more. See a preview below.
           </Text>
           <img alt="" src="/static/img/terminal_upgrade_screenshot.png" />
           <Text>
             {canConvert
-              ? `Do you want to convert it into a Cloud Sandbox?`
-              : `Do you want to fork into a Cloud Sandbox?`}
+              ? `Do you want to convert it into a Devbox?`
+              : `Do you want to fork into a Devbox?`}
           </Text>
           <Stack
             direction="horizontal"

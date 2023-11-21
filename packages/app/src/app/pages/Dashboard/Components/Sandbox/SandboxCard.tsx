@@ -139,14 +139,14 @@ type SandboxStatsProps = {
   isFrozen?: boolean;
   prNumber?: number;
   restricted: boolean;
-  showBetaBadge: boolean;
+  showDevboxBadge: boolean;
   originalGit?: RepoFragmentDashboardFragment['originalGit'];
 } & Pick<SandboxItemComponentProps, 'noDrag' | 'lastUpdated' | 'PrivacyIcon'>;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
   ({
     isFrozen,
     restricted,
-    showBetaBadge,
+    showDevboxBadge,
     noDrag,
     lastUpdated,
     PrivacyIcon,
@@ -164,12 +164,24 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         return <Badge variant="trial">Restricted</Badge>;
       }
 
-      if (showBetaBadge) {
-        return <Badge icon="cloud">Cloud</Badge>;
+      if (showDevboxBadge) {
+        return (
+          <Stack align="center" gap={1}>
+            <Icon color="#FFFFFF" name="boxDevbox" />
+            <Text color="#FFFFFF" size={2}>
+              Devbox
+            </Text>
+          </Stack>
+        );
       }
 
-      return null;
-    }, [restricted, showBetaBadge]);
+      return (
+        <Stack align="center" gap={1}>
+          <Icon name="boxSandbox" />
+          <Text size={2}>Sandbox</Text>
+        </Stack>
+      );
+    }, [restricted, showDevboxBadge]);
 
     return (
       <Stack
@@ -177,6 +189,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         align="center"
         css={{
           height: '16px',
+          color: '#A6A6A6',
         }}
         className="sandbox-stats"
       >
@@ -321,7 +334,7 @@ export const SandboxCard = ({
             isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
-            showBetaBadge={sandbox.isV2}
+            showDevboxBadge={sandbox.isV2}
           />
         </CardContent>
       </StyledCard>

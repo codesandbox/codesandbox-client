@@ -7,7 +7,6 @@ import { Branch } from 'app/pages/Dashboard/Components/Branch';
 import { ViewOptions } from 'app/pages/Dashboard/Components/Filters/ViewOptions';
 import { Sandbox } from 'app/pages/Dashboard/Components/Sandbox';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
 import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
 import {
   GRID_MAX_WIDTH,
@@ -33,7 +32,7 @@ const StyledWrapper = styled(Stack)`
   overflow: auto;
   margin: 28px auto 0;
   flex-direction: column;
-  gap: 48px;
+  gap: 32px;
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
@@ -121,7 +120,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
         </SelectionProvider>
       </Stack>
       {showDocsLine && <DocumentationRow />}
-      <TemplatesRow />
       {showRepositoryImport && <SuggestionsRow page="recent" />}
     </StyledWrapper>
   );

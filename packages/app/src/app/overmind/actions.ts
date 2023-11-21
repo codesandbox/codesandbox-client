@@ -264,7 +264,10 @@ type ModalName =
   | 'addMemberToWorkspace'
   | 'legacyPayment'
   | 'editorSeatsUpgrade'
-  | 'personalSpaceAnnouncement';
+  | 'importRepository'
+  | 'createSandbox'
+  | 'createDevbox'
+  | 'genericCreate';
 
 export const modalOpened = (
   { state, effects }: Context,
@@ -278,6 +281,9 @@ export const modalOpened = (
   state.currentModal = props.modal;
   if (props.modal === 'preferences' && props.itemId) {
     state.preferences.itemId = props.itemId;
+  }
+  if (props.modal === 'createDevbox' || props.modal === 'createSandbox') {
+    state.currentModalItemId = props.itemId;
   } else {
     state.currentModalMessage = props.message || null;
   }
@@ -585,16 +591,6 @@ export const getActiveTeamInfo = async ({
   state.activeTeamInfo = currentTeam;
 
   return currentTeam;
-};
-
-export const openCreateSandboxModal = (
-  { actions }: Context,
-  props: {
-    collectionId?: string;
-    initialTab?: 'import';
-  }
-) => {
-  actions.modals.newSandboxModal.open(props);
 };
 
 type OpenCreateTeamModalParams = {
