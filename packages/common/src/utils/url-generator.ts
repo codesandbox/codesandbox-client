@@ -119,7 +119,6 @@ export const sandboxUrl = (
   if (sandboxDetails.isV2) {
     baseUrl = `${newEditorUrlPrefix()}devbox/`;
   } else if (!sandboxDetails.isSse && hasBetaEditorExperiment) {
-    // TODO: Check userid in list
     baseUrl = `${newEditorUrlPrefix()}sandbox/`;
   }
 
