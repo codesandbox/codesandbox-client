@@ -1,4 +1,7 @@
-import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
+import {
+  HIDDEN_DIRECTORIES,
+  HIDDEN_FILES,
+} from '@codesandbox/common/lib/templates/constants/files';
 import { Directory, Module } from '@codesandbox/common/lib/types';
 import { useActions, useAppState } from 'app/overmind';
 import { sortBy } from 'lodash-es';
@@ -79,7 +82,11 @@ export const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
           />
         ))}
       {sortBy(
-        modules.filter(x => x.directoryShortid === parentShortid),
+        modules
+          .filter(x => x.directoryShortid === parentShortid)
+          .filter(
+            x => !(x.directoryShortid == null && HIDDEN_FILES.includes(x.title))
+          ),
         'title'
       ).map(m => (
         <ModuleEntry
