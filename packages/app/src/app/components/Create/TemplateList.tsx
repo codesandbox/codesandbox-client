@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Text, Stack } from '@codesandbox/components';
-import { css } from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -37,15 +36,7 @@ export const TemplateList = ({
 
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={4}>
-      <Stack
-        css={css({
-          alignItems: 'center',
-          '@media screen and (max-width: 950px)': {
-            display: 'none',
-          },
-        })}
-        gap={2}
-      >
+      <Stack align="center" gap={2}>
         <Text
           as="h2"
           size={4}

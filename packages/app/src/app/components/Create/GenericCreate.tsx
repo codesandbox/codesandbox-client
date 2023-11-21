@@ -11,8 +11,6 @@ export const GenericCreate: React.FC<{
   isModal?: boolean;
 }> = ({ closeModal, isModal }) => {
   const actions = useActions();
-  const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
-  const mobileScreenSize = mediaQuery.matches;
 
   useEffect(() => {
     track('Generic Create - Show', {
@@ -22,13 +20,23 @@ export const GenericCreate: React.FC<{
   }, []);
 
   return (
-    <Container css={{ height: mobileScreenSize ? 'auto' : '260px' }}>
+    <Container
+      css={{
+        height: '260px',
+        '@media screen and (max-width: 750px)': {
+          height: 'auto',
+        },
+      }}
+    >
       <Stack
         gap={4}
         align="center"
         css={{
           width: '100%',
-          padding: mobileScreenSize ? '16px' : '24px',
+          padding: '24px',
+          '@media screen and (max-width: 750px)': {
+            padding: '16px',
+          },
         }}
       >
         <HeaderInformation>
@@ -54,8 +62,11 @@ export const GenericCreate: React.FC<{
         paddingX={6}
         css={{
           display: 'grid',
-          gridTemplateColumns: `repeat(${mobileScreenSize ? 1 : 3}, 1fr)`,
+          gridTemplateColumns: '1fr 1fr 1fr',
           gap: '16px',
+          '@media screen and (max-width: 750px)': {
+            gridTemplateColumns: '1fr',
+          },
         }}
       >
         <LargeCTAButton

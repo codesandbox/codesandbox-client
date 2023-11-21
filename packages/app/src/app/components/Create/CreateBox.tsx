@@ -235,6 +235,17 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             )}
           </HeaderInformation>
 
+          {mobileScreenSize && viewState === 'initial' ? (
+            <SearchBox
+              value={searchQuery}
+              onChange={e => {
+                const query = e.target.value;
+                tabState.select('all');
+                setSearchQuery(query);
+              }}
+            />
+          ) : null}
+
           {/* isModal is undefined on /s/ page */}
           {isModal && closeModal ? (
             <IconButton
@@ -251,21 +262,25 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
           <ModalSidebar>
             {viewState === 'initial' ? (
               <Stack
-                css={{ height: '100%', paddingBottom: '16px' }}
+                css={{ height: '100%' }}
                 direction="vertical"
                 justify="space-between"
               >
                 <Stack direction="vertical">
-                  <SearchBox
-                    value={searchQuery}
-                    onChange={e => {
-                      const query = e.target.value;
-                      tabState.select('all');
-                      setSearchQuery(query);
-                    }}
-                  />
+                  {!mobileScreenSize && (
+                    <>
+                      <SearchBox
+                        value={searchQuery}
+                        onChange={e => {
+                          const query = e.target.value;
+                          tabState.select('all');
+                          setSearchQuery(query);
+                        }}
+                      />
 
-                  <Element css={{ height: '16px' }} />
+                      <Element css={{ height: '16px' }} />
+                    </>
+                  )}
 
                   <Tabs {...tabState} aria-label="Create new">
                     {showFeaturedTemplates && (
@@ -332,37 +347,39 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       : null}
                   </Tabs>
                 </Stack>
-                <Stack direction="vertical" gap={2}>
-                  <Text size={3} weight="600">
-                    {type === 'devbox'
-                      ? "There's even more"
-                      : 'Do more with Devboxes'}
-                  </Text>
-                  <Text size={2} color="#A6A6A6" lineHeight="1.35">
-                    {type === 'devbox' ? (
-                      <DevboxAlternative
-                        onClick={() => {
-                          track(`Create ${type} - Open Community Search`, {
-                            codesandbox: 'V1',
-                            event_source: 'UI - Sidebar',
-                          });
-                        }}
-                      />
-                    ) : (
-                      <SandboxAlternative
-                        onClick={() => {
-                          track(`Create ${type} - Open Devboxes`, {
-                            codesandbox: 'V1',
-                            event_source: 'UI - Sidebar',
-                          });
-                          actions.modalOpened({
-                            modal: 'createDevbox',
-                          });
-                        }}
-                      />
-                    )}
-                  </Text>
-                </Stack>
+                {!mobileScreenSize && (
+                  <Stack direction="vertical" css={{paddingBottom: "16px"}} gap={2}>
+                    <Text size={3} weight="600">
+                      {type === 'devbox'
+                        ? "There's even more"
+                        : 'Do more with Devboxes'}
+                    </Text>
+                    <Text size={2} color="#A6A6A6" lineHeight="1.35">
+                      {type === 'devbox' ? (
+                        <DevboxAlternative
+                          onClick={() => {
+                            track(`Create ${type} - Open Community Search`, {
+                              codesandbox: 'V1',
+                              event_source: 'UI - Sidebar',
+                            });
+                          }}
+                        />
+                      ) : (
+                        <SandboxAlternative
+                          onClick={() => {
+                            track(`Create ${type} - Open Devboxes`, {
+                              codesandbox: 'V1',
+                              event_source: 'UI - Sidebar',
+                            });
+                            actions.modalOpened({
+                              modal: 'createDevbox',
+                            });
+                          }}
+                        />
+                      )}
+                    </Text>
+                  </Stack>
+                )}
               </Stack>
             ) : null}
 
