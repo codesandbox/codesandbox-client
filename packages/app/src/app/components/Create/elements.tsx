@@ -139,6 +139,10 @@ export const TemplateButton = styled.button`
   animation: ${fadeIn} 0.15s ease-in;
   outline: none;
 
+  &:disabled {
+    animation: none;
+  }
+
   &:hover:not(:disabled) {
     background: #252525;
   }
@@ -217,7 +221,9 @@ export const DevboxAlternative = ({
         style={{ color: '#E4FC82', textDecoration: 'none' }}
         href={
           searchQuery
-            ? `https://codesandbox.io/search?query=${encodeURIComponent(searchQuery)}`
+            ? `https://codesandbox.io/search?query=${encodeURIComponent(
+                searchQuery
+              )}`
             : 'https://codesandbox.io/search'
         }
         target="_blank"

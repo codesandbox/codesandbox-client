@@ -301,7 +301,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       All templates
                     </Tab>
 
-                    <Element css={{ height: '16px' }} />
+                    {type === 'devbox' && <Element css={{ height: '16px' }} />}
 
                     {showTeamTemplates ? (
                       <Tab
@@ -348,7 +348,11 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   </Tabs>
                 </Stack>
                 {!mobileScreenSize && (
-                  <Stack direction="vertical" css={{paddingBottom: "16px"}} gap={2}>
+                  <Stack
+                    direction="vertical"
+                    css={{ paddingBottom: '16px' }}
+                    gap={2}
+                  >
                     <Text size={3} weight="600">
                       {type === 'devbox'
                         ? "There's even more"

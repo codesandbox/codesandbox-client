@@ -12,7 +12,6 @@ import {
 
 interface TemplateListProps {
   title: string;
-  isCloudTemplateList?: boolean;
   showEmptyState?: boolean;
   searchQuery?: string;
   type: 'sandbox' | 'devbox';
@@ -23,7 +22,6 @@ interface TemplateListProps {
 
 export const TemplateList = ({
   title,
-  isCloudTemplateList,
   templates,
   onSelectTemplate,
   onOpenTemplate,
@@ -33,6 +31,8 @@ export const TemplateList = ({
 }: TemplateListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
+
+  const requireLogin = !hasLogIn && type === 'devbox';
 
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={4}>
@@ -50,10 +50,10 @@ export const TemplateList = ({
         </Text>
       </Stack>
 
-      {!hasLogIn && isCloudTemplateList ? (
+      {requireLogin ? (
         <Stack direction="vertical" gap={4}>
           <Text id="unauthenticated-label" css={{ color: '#999999' }} size={3}>
-            You need to be signed in to fork a cloud template.
+            You need to be signed in to fork a devbox template.
           </Text>
           <Button
             aria-describedby="unauthenticated-label"
@@ -73,6 +73,7 @@ export const TemplateList = ({
           {templates.map(template => (
             <TemplateCard
               key={template.id}
+              disabled={requireLogin}
               template={template}
               onSelectTemplate={onSelectTemplate}
               onOpenTemplate={onOpenTemplate}

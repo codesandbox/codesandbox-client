@@ -34,6 +34,12 @@ export const useTemplateCollections = ({
   });
 
   useEffect(() => {
+    if (collectionsState.state === 'idle' && type === 'devbox') {
+      setCollectionsState({ state: 'loading', collections: [] });
+    }
+  }, [collectionsState.state, type]);
+
+  useEffect(() => {
     async function fetchData() {
       try {
         const result = await getTemplateInfosFromAPI(
