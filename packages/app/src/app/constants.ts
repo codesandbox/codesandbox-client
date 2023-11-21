@@ -30,10 +30,6 @@ export const TEAM_PRO_FEATURES: Feature[] = [
     key: 'boxes',
     label: 'Unlimited private devboxes and sandboxes',
   },
-  {
-    key: 'ai',
-    label: '✨ Full access to AI tools',
-  },
   { key: 'npm', label: 'Private npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },
 
@@ -54,10 +50,6 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
   {
     key: 'boxes',
     label: 'Unlimited private devboxes and sandboxes',
-  },
-  {
-    key: 'ai',
-    label: '✨ Full access to AI tools',
   },
   { key: 'npm', label: 'Private npm packages' },
   { key: 'live_sessions', label: 'Live sessions' },

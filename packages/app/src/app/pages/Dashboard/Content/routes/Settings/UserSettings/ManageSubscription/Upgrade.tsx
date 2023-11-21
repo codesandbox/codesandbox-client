@@ -45,9 +45,6 @@ export const Upgrade: React.FC<{
           <Text as="li" size={3}>
             Higher upload limits
           </Text>
-          <Text as="li" size={3}>
-            Full access to AI tools
-          </Text>
         </List>
 
         <Button

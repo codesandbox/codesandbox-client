@@ -35,7 +35,7 @@ export const PermissionSettings = () => {
         <MessageStripe justify="space-between">
           <span>
             You need a <Text weight="bold">Pro</Text> subscription to change
-            permissions.
+            privacy permissions.
           </span>
           <MessageStripe.Action
             as="a"
@@ -63,7 +63,7 @@ export const PermissionSettings = () => {
           <SandboxSecurity disabled={isFree || !isBillingManager} />
         </Column>
 
-        {isPro && !environment.isOnPrem && (
+        {!environment.isOnPrem && (
           <Column span={[12, 12, 6]}>
             <AIPermission disabled={!isAdmin} />
           </Column>
