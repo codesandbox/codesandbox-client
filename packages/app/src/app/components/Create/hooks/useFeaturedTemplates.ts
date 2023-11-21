@@ -6,15 +6,15 @@ interface UseFeaturedTemplatesParams {
 }
 
 const FEATURED_IDS = [
-  'lhclt2', // react-new-devbox
+  '9qputt', // react (vite + ts)
   'wmhfhw', // javascript-devbox
   'kcd5jq', // html-css-devbox
-  '9qputt', // react (vite + ts)
   'fxis37', // next
   'prp60l', // remix
   'pb6sit', // vue
   'angular', // angular
   'hsd8ke', // docker
+  'in2qez', // python
 ];
 
 export const useFeaturedTemplates = ({
