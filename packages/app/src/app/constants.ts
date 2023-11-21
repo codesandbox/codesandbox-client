@@ -17,54 +17,18 @@ export interface Feature {
   highlighted?: boolean;
 }
 
-export const FREE_FEATURES: Feature[] = [
-  {
-    key: 'editor',
-    label: 'Single editor',
-  },
-  {
-    key: 'public_limit',
-    label: 'Public repositories & devboxes',
-  },
-  {
-    key: 'ai',
-    label: 'No access to AI tools',
-  },
-  { key: 'npm', label: 'Public npm packages' },
-  { key: 'permissions', label: 'Limited permissions' },
-  { key: 'vm_mem', label: '2GiB RAM' },
-  { key: 'vm_cpu', label: '2 vCPUs' },
-  { key: 'vm_disk', label: '6GB Disk' },
-];
-
-export const PERSONAL_PRO_FEATURES: Feature[] = [
-  {
-    key: 'editor',
-    label: 'Single editor',
-  },
-  {
-    key: 'limit_sandboxes',
-    label: 'Unlimited private repositories & devboxes',
-  },
-  {
-    key: 'ai',
-    label: '✨ Full access to AI tools',
-  },
-  { key: 'npm', label: 'Public npm packages' },
-  { key: 'live_sessions', label: 'Live sessions' },
-  { key: 'vm_mem', label: '8GiB RAM' },
-  { key: 'vm_cpu', label: '4 vCPUs' },
-  { key: 'vm_disk', label: '12GB Disk' },
-];
-
 export const TEAM_PRO_FEATURES: Feature[] = [
   {
     key: 'editors',
     label: 'Unlimited editors',
   },
   {
-    key: 'private',
-    label: 'Unlimited private repositories & devboxes',
+    key: 'repos',
+    label: 'Unlimited private repositories',
+  },
+  {
+    key: 'boxes',
+    label: 'Unlimited private devboxes and sandboxes',
   },
   {
     key: 'ai',
@@ -84,8 +48,12 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
     label: 'Unlimited editors',
   },
   {
-    key: 'private',
-    label: 'Unlimited private repositories & devboxes',
+    key: 'repos',
+    label: 'Unlimited private repositories',
+  },
+  {
+    key: 'boxes',
+    label: 'Unlimited private devboxes and sandboxes',
   },
   {
     key: 'ai',

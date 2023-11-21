@@ -32,7 +32,7 @@ const StyledWrapper = styled(Stack)`
   overflow: auto;
   margin: 28px auto 0;
   flex-direction: column;
-  gap: 48px;
+  gap: 32px;
   scrollbar-width: none;
 
   &::-webkit-scrollbar {

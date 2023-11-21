@@ -34,7 +34,7 @@ const TEMPLATE_FRAGMENT = gql`
 export const FETCH_TEAM_TEMPLATES = gql`
   query RecentAndWorkspaceTemplates($teamId: UUID4) {
     me {
-      recentlyUsedTemplates {
+      recentlyUsedTemplates(teamId: $teamId) {
         ...Template
       }
 

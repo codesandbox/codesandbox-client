@@ -6,9 +6,9 @@ interface UseFeaturedTemplatesParams {
 }
 
 const FEATURED_IDS = [
-  'new', // react
-  'xz3njs', // js
-  '5k6v6l', // html/css
+  'lhclt2', // react-new-devbox
+  'wmhfhw', // javascript-devbox
+  'kcd5jq', // html-css-devbox
   '9qputt', // react (vite + ts)
   'fxis37', // next
   'prp60l', // remix

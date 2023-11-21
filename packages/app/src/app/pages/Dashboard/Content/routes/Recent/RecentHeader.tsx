@@ -10,7 +10,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
 
   return (
-    <Stack direction="vertical" gap={9}>
+    <Stack direction="vertical" gap={8}>
       <UpgradeBanner />
       <Text
         as="h1"
@@ -25,60 +25,62 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       >
         {title}
       </Text>
-      <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
-        Start something new
-      </Text>
-      <EmptyPage.StyledGrid
-        css={{
-          gridAutoRows: 'auto',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px,1fr))',
-          '@media (min-width: 1585px)': {
-            gridTemplateColumns: 'repeat(auto-fill, minmax(370px,1fr))',
-          },
-        }}
-      >
-        <LargeCTAButton
-          icon="boxRepository"
-          title="Import repository"
-          subtitle="Run any branch instantly, create and review PRs in our Cloud Development Environment."
-          onClick={() => {
-            track('Recent Page - Import Repository', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-            actions.modalOpened({ modal: 'importRepository' });
+      <Stack direction="vertical" gap={4}>
+        <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
+          Start something new
+        </Text>
+        <EmptyPage.StyledGrid
+          css={{
+            gridAutoRows: 'auto',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px,1fr))',
+            '@media (min-width: 1585px)': {
+              gridTemplateColumns: 'repeat(auto-fill, minmax(370px,1fr))',
+            },
           }}
-          variant="primary"
-        />
+        >
+          <LargeCTAButton
+            icon="boxRepository"
+            title="Import repository"
+            subtitle="Run any branch instantly, create and review PRs in our Cloud Development Environment."
+            onClick={() => {
+              track('Recent Page - Import Repository', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              actions.modalOpened({ modal: 'importRepository' });
+            }}
+            variant="primary"
+          />
 
-        <LargeCTAButton
-          icon="boxDevbox"
-          title="Create a Devbox"
-          subtitle="Build and share standalone projects of any size in our Cloud Development Environment."
-          onClick={() => {
-            track('Recent Page - Create Devbox', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-            actions.modalOpened({ modal: 'createDevbox' });
-          }}
-          variant="primary"
-        />
+          <LargeCTAButton
+            icon="boxDevbox"
+            title="Create a Devbox"
+            subtitle="Build and share standalone projects of any size in our Cloud Development Environment."
+            onClick={() => {
+              track('Recent Page - Create Devbox', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              actions.modalOpened({ modal: 'createDevbox' });
+            }}
+            variant="primary"
+          />
 
-        <LargeCTAButton
-          icon="boxSandbox"
-          title="Create a Sandbox"
-          subtitle="Create simple front-end prototypes for free, running the code your browser."
-          onClick={() => {
-            track('Recent Page - Create Sandbox', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-            actions.modalOpened({ modal: 'createSandbox' });
-          }}
-          variant="secondary"
-        />
-      </EmptyPage.StyledGrid>
+          <LargeCTAButton
+            icon="boxSandbox"
+            title="Create a Sandbox"
+            subtitle="Create simple front-end prototypes for free, running the code your browser."
+            onClick={() => {
+              track('Recent Page - Create Sandbox', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              actions.modalOpened({ modal: 'createSandbox' });
+            }}
+            variant="secondary"
+          />
+        </EmptyPage.StyledGrid>
+      </Stack>
     </Stack>
   );
 };

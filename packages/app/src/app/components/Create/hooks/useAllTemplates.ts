@@ -39,9 +39,9 @@ export const useAllTemplates = ({
 
   return Array.from(allTemplatesMap.values()).filter(t =>
     searchQuery
-      ? (t.sandbox.alias || t.sandbox.alias || '')
+      ? (t.sandbox.title || t.sandbox.alias || '')
           .toLowerCase()
-          .includes(searchQuery.toLowerCase())
+          .includes(searchQuery.trim().toLowerCase())
       : true
   );
 };
