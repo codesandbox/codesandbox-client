@@ -47,10 +47,26 @@ describe('url-generator', () => {
   });
 
   describe('sandboxUrl', () => {
+    test(`devbox link`, () => {
+      expect(sandboxUrl({ id: 'sandbox-id', isV2: true })).toBe(
+        '/p/devbox/sandbox-id'
+      );
+    });
+
+    test(`legacy sandbox link`, () => {
+      expect(sandboxUrl({ id: 'sandbox-id' }, true)).toBe(
+        '/p/sandbox/sandbox-id'
+      );
+    });
+
+    test(`legacy sandbox link`, () => {
+      expect(sandboxUrl({ id: 'sandbox-id' })).toBe('/s/sandbox-id');
+    });
+
     test(`handles query params`, () => {
       expect(
         sandboxUrl({ id: 'sandbox-id', isV2: true, query: { welcome: 'true' } })
-      ).toBe('/p/sandbox/sandbox-id?welcome=true');
+      ).toBe('/p/devbox/sandbox-id?welcome=true');
     });
   });
 });
