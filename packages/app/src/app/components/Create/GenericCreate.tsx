@@ -5,6 +5,11 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions } from 'app/overmind';
 import { Container, HeaderInformation } from './elements';
 import { LargeCTAButton } from '../dashboard/LargeCTAButton';
+import {
+  DEVBOX_BUTTON_DESCRIPTION,
+  IMPORT_BUTTON_DESCRIPTION,
+  SANDBOX_BUTTON_DESCRIPTION,
+} from './utils/constants';
 
 export const GenericCreate: React.FC<{
   closeModal?: () => void;
@@ -72,7 +77,7 @@ export const GenericCreate: React.FC<{
         <LargeCTAButton
           icon="boxRepository"
           title="Import repository"
-          subtitle="Run any branch instantly, create and review PRs in our Cloud Development Environment."
+          subtitle={IMPORT_BUTTON_DESCRIPTION}
           onClick={() => {
             track('Generic Create - Import Repository', {
               codesandbox: 'V1',
@@ -90,7 +95,7 @@ export const GenericCreate: React.FC<{
         <LargeCTAButton
           icon="boxDevbox"
           title="Create a Devbox"
-          subtitle="Build and share standalone projects of any size in our Cloud Development Environment."
+          subtitle={DEVBOX_BUTTON_DESCRIPTION}
           onClick={() => {
             track('Generic Create - Create Devbox', {
               codesandbox: 'V1',
@@ -108,7 +113,7 @@ export const GenericCreate: React.FC<{
         <LargeCTAButton
           icon="boxSandbox"
           title="Create a Sandbox"
-          subtitle="Create simple front-end prototypes for free, running the code your browser."
+          subtitle={SANDBOX_BUTTON_DESCRIPTION}
           onClick={() => {
             track('Generic Create - Create Sandbox', {
               codesandbox: 'V1',

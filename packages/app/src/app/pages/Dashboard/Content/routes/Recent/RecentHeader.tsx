@@ -1,5 +1,10 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Text } from '@codesandbox/components';
+import {
+  DEVBOX_BUTTON_DESCRIPTION,
+  IMPORT_BUTTON_DESCRIPTION,
+  SANDBOX_BUTTON_DESCRIPTION,
+} from 'app/components/Create/utils/constants';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
@@ -41,7 +46,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           <LargeCTAButton
             icon="boxRepository"
             title="Import repository"
-            subtitle="Run any branch instantly, create and review PRs in our Cloud Development Environment."
+            subtitle={IMPORT_BUTTON_DESCRIPTION}
             onClick={() => {
               track('Recent Page - Import Repository', {
                 codesandbox: 'V1',
@@ -55,7 +60,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           <LargeCTAButton
             icon="boxDevbox"
             title="Create a Devbox"
-            subtitle="Build and share standalone projects of any size in our Cloud Development Environment."
+            subtitle={DEVBOX_BUTTON_DESCRIPTION}
             onClick={() => {
               track('Recent Page - Create Devbox', {
                 codesandbox: 'V1',
@@ -69,7 +74,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           <LargeCTAButton
             icon="boxSandbox"
             title="Create a Sandbox"
-            subtitle="Create simple front-end prototypes for free, running the code your browser."
+            subtitle={SANDBOX_BUTTON_DESCRIPTION}
             onClick={() => {
               track('Recent Page - Create Sandbox', {
                 codesandbox: 'V1',
