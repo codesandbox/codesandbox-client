@@ -49,7 +49,6 @@ import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 import { SubscriptionCancellationModal } from './SubscriptionCancellation';
 import { EditorSeatsUpgrade } from './EditorSeatsUpgrade';
-import { PersonalSpaceAnnouncement } from './PersonalSpaceAnnouncement';
 
 const modals = {
   preferences: {
@@ -230,10 +229,6 @@ const modals = {
   editorSeatsUpgrade: {
     Component: EditorSeatsUpgrade,
     width: 400,
-  },
-  personalSpaceAnnouncement: {
-    Component: PersonalSpaceAnnouncement,
-    width: 740,
   },
 };
 

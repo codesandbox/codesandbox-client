@@ -264,7 +264,6 @@ type ModalName =
   | 'addMemberToWorkspace'
   | 'legacyPayment'
   | 'editorSeatsUpgrade'
-  | 'personalSpaceAnnouncement'
   | 'importRepository'
   | 'createSandbox'
   | 'createDevbox'
