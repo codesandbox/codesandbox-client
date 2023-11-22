@@ -75,6 +75,17 @@ export const BetaSandboxEditor = () => {
           as="form"
           onSubmit={ev => {
             ev.preventDefault();
+            setBetaSandboxEditor(false);
+            setFeedbackMode(false);
+            setFeedbackOptions({
+              buggyExperience: false,
+              missingLiveRoom: false,
+              slowness: false,
+              navigability: false,
+              other: false,
+              feedback: null,
+            });
+
             if (isInProd && ROWS_API_KEY) {
               effects.http.post(
                 ROWS_REQUEST_URL,
@@ -90,17 +101,7 @@ export const BetaSandboxEditor = () => {
               );
             }
 
-            setFeedbackMode(false);
-            setBetaSandboxEditor(false);
             track('Disable new sandbox editor - User preferences');
-            setFeedbackOptions({
-              buggyExperience: false,
-              missingLiveRoom: false,
-              slowness: false,
-              navigability: false,
-              other: false,
-              feedback: null,
-            });
           }}
           paddingTop={4}
         >
