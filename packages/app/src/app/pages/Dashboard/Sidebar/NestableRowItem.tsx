@@ -258,7 +258,7 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
           <Stack
             align="center"
-            gap={2}
+            gap={1}
             css={{
               paddingLeft: 0,
               paddingRight: 0,
