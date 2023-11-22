@@ -158,10 +158,6 @@ const FEATURES_LIST: Feature[] = [
     label: 'Live sessions',
   },
   {
-    icon: 'ai',
-    label: 'Full access to AI tools',
-  },
-  {
     icon: 'sandbox',
     label: 'Private sandboxes',
   },
