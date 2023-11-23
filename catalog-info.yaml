@@ -16,6 +16,6 @@ metadata:
     codesandbox/deploy-gitops-file-staging: codesandbox-core/codesandbox/staging/helm-chart-values/values.yaml
     codesandbox/deploy-gitops-version-type: tag
 spec:
-  type: service
+  type: website
   lifecycle: production
-  owner: infra
+  owner: client
