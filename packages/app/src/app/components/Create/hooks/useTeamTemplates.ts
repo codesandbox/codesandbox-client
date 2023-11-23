@@ -82,7 +82,9 @@ export const useTeamTemplates = ({
   return {
     state: 'ready',
     recentTemplates: data.me.recentlyUsedTemplates.filter(
-      noDevboxesWhenListingSandboxes
+      t =>
+        (type === 'sandbox' && !t.sandbox.isV2) ||
+        (type === 'devbox' && t.sandbox.isV2)
     ),
     teamTemplates: data.me.team.templates.filter(
       noDevboxesWhenListingSandboxes
