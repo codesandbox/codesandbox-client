@@ -18,4 +18,4 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: infra
+  owner: client
