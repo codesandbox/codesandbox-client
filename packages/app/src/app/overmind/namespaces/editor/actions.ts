@@ -328,7 +328,7 @@ export const sandboxChanged = withLoadApp<{
             alias: sandbox.alias,
             git: githubInfoForURL,
             isV2: sandbox.v2,
-            isSSe: sandbox.isSse,
+            isSse: sandbox.isSse,
           },
           hasBetaEditorExperiment
         );
