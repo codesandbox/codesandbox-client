@@ -176,7 +176,7 @@ export const RowItem: React.FC<RowItemProps> = ({
         >
           <Stack
             as="span"
-            css={{ width: '40px' }}
+            css={{ width: '36px', paddingLeft: '8px', paddingRight: '4px' }}
             align="center"
             justify="center"
           >
