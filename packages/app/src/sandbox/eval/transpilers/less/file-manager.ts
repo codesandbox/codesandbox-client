@@ -40,6 +40,7 @@ export default function (ctx: ILessLoaderContext) {
       CSBFileManager.prototype.loadFile = async function (
         importName,
         dirname,
+        context,
         ...args
       ) {
         // eslint-disable-next-line no-param-reassign
@@ -59,6 +60,11 @@ export default function (ctx: ILessLoaderContext) {
               throw new Error('Skip resolution, it is a node_module');
             }
 
+            // fix file content may be undefined if `@import` url doesn't have `.less` file extension
+            if (context?.ext && !filepath.endsWith(context.ext)) {
+              filepath += context.ext;
+            }
+
             const resolvedModule = await resolveAsyncModule(filepath, ctx);
             contents = resolvedModule.code;
             ctx.files[filepath] = contents;
@@ -68,6 +74,7 @@ export default function (ctx: ILessLoaderContext) {
               return this.loadFile(
                 `/node_modules/${matches[1]}`,
                 dirname,
+                context,
                 ...args
               );
             }
