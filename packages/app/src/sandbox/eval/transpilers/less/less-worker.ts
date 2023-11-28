@@ -12,6 +12,7 @@ export interface LessLibrary {
 // @ts-ignore
 self.less = {
   env: 'development',
+  javascriptEnabled: true,
 };
 
 // Stub window for less....
