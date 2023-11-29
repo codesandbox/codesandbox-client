@@ -24,7 +24,7 @@ export class TarStore implements FetchProtocol {
   private normalizeTar(tarContents: UntarredFiles) {
     const normalized: { [path: string]: DeserializedFetchedTar } = {};
     tarContents.forEach(tar => {
-      normalized[tar.name.replace(/^package/, '')] = {
+      normalized[tar.name.replace(/^[^/]+/, '')] = {
         // TODO(@CompuIves): store buffers rather than strings for binary files
         content: Buffer.from(tar.buffer).toString(),
       };
