@@ -44,7 +44,7 @@ const usePersistedState = <T>(
         if (updatedValue === undefined) {
           setStoredValue(initialValue);
         } else {
-          setStoredValue(updatedValue);
+          setStoredValue(updatedValue as T);
         }
       }),
     [storedValue]
