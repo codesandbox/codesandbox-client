@@ -3,23 +3,20 @@ import { useGlobalPersistedState } from './usePersistedState';
 
 export const useBetaSandboxEditor = (): [
   boolean,
-  React.Dispatch<React.SetStateAction<boolean>>
+  React.Dispatch<React.SetStateAction<boolean>>,
+  () => void
 ] => {
   const { user, hasLogIn } = useAppState();
 
-  const [betaSandboxEditor, setBetaSandboxEditor] = useGlobalPersistedState<
-    boolean
-  >(
+  return useGlobalPersistedState<boolean>(
     'BETA_SANDBOX_EDITOR',
     hasLogIn && user ? !USER_IDS.includes(user.id) : true
   );
-
-  return [betaSandboxEditor, setBetaSandboxEditor];
 };
 
 // Users that rely on live share
 const USER_IDS = [
-  '5155d272-71f0-4348-9db0-c0a6b62ddead', // alexnm stream
+  // '5155d272-71f0-4348-9db0-c0a6b62ddead', // alexnm stream
   '5b4c6a66-6e01-4fca-bfb7-c6f67925d8f5', // necolineCSB stream
   '9e82a8db-2c9b-4f44-bcb2-72fd91b96255', // alexnm prod
   'a348b75a-d2ed-41f1-bbe2-d824b3221bb7', // necolineCSB

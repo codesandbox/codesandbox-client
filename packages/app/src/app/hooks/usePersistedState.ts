@@ -41,13 +41,13 @@ const usePersistedState = <T>(
   useEffect(
     () =>
       browser.storage.subscribe<T>(key, updatedValue => {
-        if (updatedValue) {
-          setStoredValue(updatedValue);
-        } else {
+        if (updatedValue === undefined) {
           setStoredValue(initialValue);
+        } else {
+          setStoredValue(updatedValue);
         }
       }),
-    []
+    [storedValue]
   );
 
   const setValue: Dispatch<SetStateAction<T>> = value => {
