@@ -113,7 +113,7 @@ export const BetaSandboxEditor = () => {
             gap={3}
           >
             <Text block size={3}>
-              Would you mind telling what you dislike about the new editor?
+              Would you mind telling us what you dislike about the new editor?
             </Text>
             {Object.keys(FEEDBACK_OPTIONS_LABEL).map(key => (
               <Checkbox
