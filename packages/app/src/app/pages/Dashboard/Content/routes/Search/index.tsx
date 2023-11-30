@@ -49,8 +49,7 @@ export const SearchComponent = () => {
         ) : (
           <Stack justify="center" align="center" marginTop={120}>
             <Text variant="muted">
-              There are no sandboxes, branches or repositories that match your
-              query
+              There are no items that match your query
             </Text>
           </Stack>
         )}

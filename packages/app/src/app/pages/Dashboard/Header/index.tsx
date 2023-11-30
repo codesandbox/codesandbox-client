@@ -180,7 +180,7 @@ const SearchInputGroup = () => {
       debouncedSearch(event.target.value);
     }
     if (!event.target.value) {
-      history.push(dashboardUrls.sandboxes('/', activeTeam));
+      history.push(dashboardUrls.recent(activeTeam));
     }
   };
 
