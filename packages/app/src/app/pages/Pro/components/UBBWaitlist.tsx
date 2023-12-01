@@ -15,9 +15,7 @@ export const UBBWaitlist = () => (
     gap={4}
   >
     <Stack direction="vertical" gap={2}>
-      <Text size={6} fontFamily="everett">
-        Pay only for what you use
-      </Text>
+      <Text size={6}>Pay only for what you use</Text>
       <Text>
         We&apos;re transitioning to a usage-based billing model, where you can
         have as many contributors as you want, and only pay for the resources
