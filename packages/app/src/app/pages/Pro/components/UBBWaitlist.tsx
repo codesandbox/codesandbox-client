@@ -40,6 +40,8 @@ export const UBBWaitlist = () => (
         },
       }}
       as="a"
+      target="_blank"
+      rel="noreferrer noopener"
       href="https://codesandbox.typeform.com/to/Y7gfpCiA"
     >
       Sign up for the beta
