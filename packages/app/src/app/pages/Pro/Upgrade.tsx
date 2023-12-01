@@ -39,7 +39,7 @@ export const ProUpgrade = () => {
     isLoggedIn,
   } = useAppState();
   const { isBillingManager } = useWorkspaceAuthorization();
-  const { isFree, isPro, isPaddle } = useWorkspaceSubscription();
+  const { isFree, isPro } = useWorkspaceSubscription();
 
   /**
    * There is currently no way to know if teams have a custom subscription. This means we will
