@@ -17,7 +17,27 @@ export interface Feature {
   highlighted?: boolean;
 }
 
-export const TEAM_PRO_FEATURES: Feature[] = [
+export const FREE_FEATURES: Feature[] = [
+  {
+    key: 'editor',
+    label: 'Up to 5 editors',
+  },
+  {
+    key: 'public_limit',
+    label: 'Public repositories',
+  },
+  {
+    key: 'public_boxes',
+    label: 'Public devboxes and sandboxes',
+  },
+  { key: 'npm', label: 'Public npm packages' },
+  { key: 'permissions', label: 'Limited permissions' },
+  { key: 'vm_mem', label: '2GiB RAM' },
+  { key: 'vm_cpu', label: '2 vCPUs' },
+  { key: 'vm_disk', label: '6GB Disk' },
+];
+
+export const PRO_FEATURES: Feature[] = [
   {
     key: 'editors',
     label: 'Unlimited editors',
@@ -38,7 +58,7 @@ export const TEAM_PRO_FEATURES: Feature[] = [
   { key: 'vm_disk', label: '12GB Disk' },
 ];
 
-export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
+export const PRO_FEATURES_WITH_PILLS: Feature[] = [
   {
     key: 'editors',
     label: 'Unlimited editors',

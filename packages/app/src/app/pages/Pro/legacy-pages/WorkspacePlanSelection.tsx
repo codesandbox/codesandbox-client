@@ -14,13 +14,15 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { formatCurrency } from 'app/utils/currency';
 import {
-  TEAM_PRO_FEATURES,
+  PRO_FEATURES,
   ORG_FEATURES,
   ORGANIZATION_CONTACT_LINK,
+  FREE_FEATURES,
 } from 'app/constants';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { CTA } from '../components/SubscriptionCard';
 import { StyledPricingDetailsText } from '../components/elements';
+import { UBBWaitlist } from '../components/UBBWaitlist';
 
 // TODO: Rename
 export const WorkspacePlanSelection: React.FC = () => {
@@ -133,9 +135,17 @@ export const WorkspacePlanSelection: React.FC = () => {
             },
           }}
         >
+          <SubscriptionCard title="Free" features={FREE_FEATURES}>
+            <Stack gap={1} direction="vertical">
+              <Text size={32} weight="400">
+                $0
+              </Text>
+              <StyledPricingDetailsText>forever</StyledPricingDetailsText>
+            </Stack>
+          </SubscriptionCard>
           <SubscriptionCard
             title="Pro"
-            features={TEAM_PRO_FEATURES}
+            features={PRO_FEATURES}
             cta={teamProCta}
             isHighlighted
           >
@@ -196,6 +206,8 @@ export const WorkspacePlanSelection: React.FC = () => {
             </Stack>
           </SubscriptionCard>
         </Stack>
+
+        <UBBWaitlist />
       </Stack>
     </div>
   );
