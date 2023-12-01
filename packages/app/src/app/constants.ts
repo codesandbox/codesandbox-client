@@ -20,15 +20,15 @@ export interface Feature {
 export const FREE_FEATURES: Feature[] = [
   {
     key: 'editor',
-    label: 'Single editor',
+    label: 'Up to 5 editors',
   },
   {
     key: 'public_limit',
-    label: 'Public repositories & sandboxes',
+    label: 'Public repositories',
   },
   {
-    key: 'ai',
-    label: 'No access to AI tools',
+    key: 'public_boxes',
+    label: 'Public devboxes and sandboxes',
   },
   { key: 'npm', label: 'Public npm packages' },
   { key: 'permissions', label: 'Limited permissions' },
