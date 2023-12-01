@@ -6,7 +6,6 @@ import {
   Stack,
   Element,
   Text,
-  Icon,
   Badge,
   SkeletonText,
 } from '@codesandbox/components';
