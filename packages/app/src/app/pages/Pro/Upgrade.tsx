@@ -14,32 +14,33 @@ import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
+  FREE_FEATURES,
   ORGANIZATION_CONTACT_LINK,
   ORG_FEATURES,
-  TEAM_PRO_FEATURES,
-  TEAM_PRO_FEATURES_WITH_PILLS,
+  PRO_FEATURES,
+  PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { usePriceCalculation } from 'app/hooks/usePriceCalculation';
-import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
 import type { CTA } from './components/SubscriptionCard';
 import { StyledPricingDetailsText } from './components/elements';
-import { NewTeamModal } from '../Dashboard/Components/NewTeamModal';
 import { TeamSubscriptionOptions } from '../Dashboard/Components/TeamSubscriptionOptions/TeamSubscriptionOptions';
+import { PricingTable } from './components/PricingTable';
+import { UBBWaitlist } from './components/UBBWaitlist';
 
 export const ProUpgrade = () => {
   const {
     activeTeam,
     activeTeamInfo,
-    dashboard,
+
     hasLoadedApp,
     isLoggedIn,
   } = useAppState();
   const { isBillingManager } = useWorkspaceAuthorization();
-  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isFree, isPro, isPaddle } = useWorkspaceSubscription();
 
   /**
    * There is currently no way to know if teams have a custom subscription. This means we will
@@ -82,11 +83,6 @@ export const ProUpgrade = () => {
       : null;
 
   if (!hasLoadedApp || !isLoggedIn) return null;
-
-  const hasAnotherPaymentProvider = dashboard.teams.some(
-    team =>
-      team.subscription?.paymentProvider === SubscriptionPaymentProvider.Paddle
-  );
 
   return (
     <ThemeProvider>
@@ -148,11 +144,17 @@ export const ProUpgrade = () => {
               },
             }}
           >
+            <SubscriptionCard title="Free" features={FREE_FEATURES}>
+              <Stack gap={1} direction="vertical">
+                <Text size={32} weight="400">
+                  $0
+                </Text>
+                <StyledPricingDetailsText>forever</StyledPricingDetailsText>
+              </Stack>
+            </SubscriptionCard>
             <SubscriptionCard
               title="Pro"
-              features={
-                isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
-              }
+              features={isPro ? PRO_FEATURES : PRO_FEATURES_WITH_PILLS}
               isHighlighted={!hasCustomSubscription}
               {...(isFree
                 ? {
@@ -238,24 +240,12 @@ export const ProUpgrade = () => {
               </Stack>
             </SubscriptionCard>
           </Stack>
+
+          <UBBWaitlist />
         </Stack>
 
-        {hasAnotherPaymentProvider ? (
-          <Stack
-            gap={2}
-            align="center"
-            justify="center"
-            css={{ color: '#999999', padding: '32px' }}
-          >
-            <Icon name="info" size={16} />
-            <Text size={3} variant="muted">
-              CodeSandbox is migrating to a new payment provider. Previous
-              active subscriptions will not be affected.
-            </Text>
-          </Stack>
-        ) : null}
+        {isFree && <PricingTable />}
       </Element>
-      <NewTeamModal />
     </ThemeProvider>
   );
 };
