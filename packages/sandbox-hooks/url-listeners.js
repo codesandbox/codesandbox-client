@@ -83,12 +83,14 @@ export default function setupHistoryListeners() {
       get() {
         return historyList.length;
       },
+      configurable: true,
     },
 
     state: {
       get() {
         return historyList[historyPosition].state;
       },
+      configurable: true,
     },
   });
 
