@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Stack,
   Element,
   Button,
   Text,
   Input,
-  Radio,
   Icon,
+  Select,
 } from '@codesandbox/components';
 
+import { useEffects } from 'app/overmind';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
@@ -25,13 +27,30 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
 
   const [name, setName] = useState<string>();
+  const effects = useEffects();
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const { isPro } = useWorkspaceSubscription();
+
   // TODO: default privacy in workspace
   const [permission, setPermission] = useState<0 | 1 | 2>(0);
   const [editor, setEditor] = useState<'web' | 'vscode'>('web');
   const showVMSpecs = type === 'devbox';
   const disableEditorChange = type === 'sandbox';
 
-  const defaultSpecs = '4 vCPUs - 8GiB RAM - 16GB disk';
+  // TODO: specs from subscription
+  const defaultSpecs = isPro
+    ? '4 vCPUs - 8GiB RAM - 16GB disk'
+    : '2 vCPUs - 4GiB RAM - 4GB disk';
+
+  useEffect(() => {
+    effects.api.getSandboxTitle().then(({ title }) => {
+      if (nameInputRef.current) {
+        setName(title);
+        nameInputRef.current.focus();
+        nameInputRef.current.select();
+      }
+    });
+  }, []);
 
   return (
     <Stack
@@ -73,9 +92,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             <Text size={3} as="label">
               Name
             </Text>
-            <Text size={3} id="name-desc" variant="muted">
-              Leaving this field empty will generate a random name.
-            </Text>
             <Input
               autoFocus
               id="sb-name"
@@ -85,6 +101,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               placeholder={`Let's give this ${label} a name.`}
               onChange={e => setName(e.target.value)}
               aria-describedby="name-desc"
+              ref={nameInputRef}
             />
           </Stack>
 
@@ -93,21 +110,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               Visibility
             </Text>
             <Stack direction="vertical" gap={1}>
-              <Radio
-                checked={permission === 0}
-                onChange={() => setPermission(0)}
-                label="Public"
-              />
-              <Radio
-                checked={permission === 1}
-                onChange={() => setPermission(1)}
-                label="Unlisted"
-              />
-              <Radio
-                checked={permission === 2}
-                onChange={() => setPermission(2)}
-                label="Private"
-              />
+              <Select
+                icon={PRIVACY_OPTIONS[permission].icon}
+                defaultValue={permission}
+                onChange={({ target: { value } }) => setPermission(value)}
+              >
+                <option value={0}>Public</option>
+                <option value={1}>Unlisted</option>
+                <option value={2}>Private</option>
+              </Select>
             </Stack>
           </Stack>
 
@@ -115,20 +126,16 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             <Text size={3} as="label">
               Open in
             </Text>
-            <Stack direction="vertical" gap={1}>
-              <Radio
-                disabled={disableEditorChange}
-                checked={editor === 'web'}
-                onChange={() => setEditor('web')}
-                label="Web editor"
-              />
-              <Radio
-                disabled={disableEditorChange}
-                checked={editor === 'vscode'}
-                onChange={() => setEditor('vscode')}
-                label="VSCode"
-              />
-            </Stack>
+            <Select
+              icon={EDITOR_OPTIONS[editor].icon}
+              defaultValue={editor}
+              onChange={({ target: { value } }) => setEditor(value)}
+            >
+              <option value="web">CodeSandbox web editor</option>
+              <option value="vscode">
+                VSCode desktop (Using the CodeSandbox extension)
+              </option>
+            </Select>
             {disableEditorChange && (
               <Stack gap={1}>
                 <Icon color="#999" name="circleBang" />
@@ -173,4 +180,31 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
       </Element>
     </Stack>
   );
+};
+
+const PRIVACY_OPTIONS = {
+  0: {
+    description: 'All your devboxes and sandboxes are public by default.',
+    icon: () => <Icon size={12} name="globe" />,
+  },
+  1: {
+    description:
+      'Only people that get the link are able to see your devboxes and sandboxes.',
+    icon: () => <Icon size={12} name="link" />,
+  },
+  2: {
+    description: 'Only people with access can see your devboxes and sandboxes.',
+    icon: () => <Icon size={12} name="lock" />,
+  },
+};
+
+const EDITOR_OPTIONS = {
+  web: {
+    description: '',
+    icon: () => <Icon size={12} name="boxDevbox" />,
+  },
+  vscode: {
+    description: '',
+    icon: () => <Icon size={12} name="boxSandbox" />,
+  },
 };
