@@ -3,18 +3,15 @@ import { useGlobalPersistedState } from './usePersistedState';
 
 export const useBetaSandboxEditor = (): [
   boolean,
-  React.Dispatch<React.SetStateAction<boolean>>
+  React.Dispatch<React.SetStateAction<boolean>>,
+  () => void
 ] => {
   const { user, hasLogIn } = useAppState();
 
-  const [betaSandboxEditor, setBetaSandboxEditor] = useGlobalPersistedState<
-    boolean
-  >(
+  return useGlobalPersistedState<boolean>(
     'BETA_SANDBOX_EDITOR',
     hasLogIn && user ? !USER_IDS.includes(user.id) : true
   );
-
-  return [betaSandboxEditor, setBetaSandboxEditor];
 };
 
 // Users that rely on live share

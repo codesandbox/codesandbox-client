@@ -53,16 +53,18 @@ export const BetaSandboxEditor = () => {
     <>
       <PaddedPreference
         setValue={() => {
-          if (betaSandboxEditor) {
-            setFeedbackMode(true);
-          } else {
-            setBetaSandboxEditor(true);
+          if (!betaSandboxEditor) {
             track('Enable new sandbox editor - User preferences');
+          } else {
+            track('Disable new sandbox editor - User preferences');
+            setFeedbackMode(true);
           }
+
+          setBetaSandboxEditor(!betaSandboxEditor);
         }}
         title="Sandbox beta editor"
         tooltip="Use beta editor"
-        type={feedbackMode ? 'none' : 'boolean'}
+        type="boolean"
         value={betaSandboxEditor}
       />
 
@@ -91,8 +93,6 @@ export const BetaSandboxEditor = () => {
             }
 
             setFeedbackMode(false);
-            setBetaSandboxEditor(false);
-            track('Disable new sandbox editor - User preferences');
             setFeedbackOptions({
               buggyExperience: false,
               missingLiveRoom: false,
@@ -113,8 +113,7 @@ export const BetaSandboxEditor = () => {
             gap={3}
           >
             <Text block size={3}>
-              Before we disable this experiment, we would like to understand the
-              reasons for your dislike:
+              Would you mind telling us what you dislike about the new editor?
             </Text>
             {Object.keys(FEEDBACK_OPTIONS_LABEL).map(key => (
               <Checkbox
@@ -138,6 +137,7 @@ export const BetaSandboxEditor = () => {
               <Textarea
                 id="feedback"
                 name="feedback"
+                css={{ fontSize: '13px' }}
                 placeholder="Something seems wrong..."
                 value={feedbackOptions.feedback}
                 onChange={ev =>
@@ -155,7 +155,7 @@ export const BetaSandboxEditor = () => {
               disabled={!atLeastOneFeedbackOptionSelected}
               type="submit"
             >
-              Disable
+              Send feedback
             </Button>
           </Stack>
         </Element>
