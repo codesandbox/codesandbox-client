@@ -195,7 +195,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             <>
               <Input
                 css={{ opacity: 0.7, cursor: 'not-allowed' }}
-                value="CodeSandbox web editor"
+                value="CodeSandbox Web Editor"
                 disabled
               />
               <Stack gap={1}>
@@ -222,9 +222,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               defaultValue={editor}
               onChange={({ target: { value } }) => setEditor(value)}
             >
-              <option value="csb">CodeSandbox web editor</option>
+              <option value="csb">CodeSandbox Web Editor</option>
               <option value="vscode">
-                VS Code desktop (Using the CodeSandbox extension)
+                VS Code Desktop (Using the CodeSandbox extension)
               </option>
             </Select>
           )}
