@@ -760,6 +760,7 @@ export const forkExternalSandbox = async (
       collectionId: string;
       alias?: string;
       v2?: boolean;
+      title?: string;
       privacy?: 0 | 1 | 2;
     };
   }
