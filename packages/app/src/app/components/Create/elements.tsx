@@ -172,29 +172,6 @@ export const TemplateGrid = styled.div`
   }
 `;
 
-// Select component places the content with a fixed padding if it has an icon
-// !important here will overule that setting since the new select is bigger
-export const StyledSelect = styled(Select)`
-  height: 48px;
-  padding-left: 44px !important;
-  font-family: inherit;
-  height: 32px;
-  padding: 8px 16px;
-  background-color: #2a2a2a;
-  color: #999999;
-  border: none;
-  border-radius: 2px;
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 500;
-  &:hover {
-    color: #e5e5e5;
-  }
-  &:focus {
-    color: #e5e5e5;
-  }
-`;
-
 export const UnstyledButtonLink = styled.button`
   appearance: none;
   padding: 0;
