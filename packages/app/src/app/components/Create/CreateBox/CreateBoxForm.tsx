@@ -106,7 +106,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             name,
             createAs: type,
             permission,
-            editor: type === 'sandbox' ? 'csb' : editor, // ensure 'web' is always passed when creating a sandbox
+            editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
           });
         }}
       >
