@@ -143,7 +143,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       openInVSCode,
       hasBetaEditorExperiment,
       body: {
-        alias: name,
+        title: name,
         collectionId,
         privacy: permission,
         v2: createAs === 'devbox',
