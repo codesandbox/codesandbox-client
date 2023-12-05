@@ -774,12 +774,18 @@ export const forkExternalSandbox = async (
 
   try {
     const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
+    if (openInVSCode) {
+      // TODO: Move to a reusable spot if the functionality is extended.
+      const VSCodeURL = `vscode://CodeSandbox-io.codesandbox-projects/sandbox/${forkedSandbox.id}`;
+      window.open(VSCodeURL);
+    } else {
+      state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
 
-    state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
-    effects.router.updateSandboxUrl(forkedSandbox, {
-      openInNewWindow,
-      hasBetaEditorExperiment,
-    });
+      effects.router.updateSandboxUrl(forkedSandbox, {
+        openInNewWindow,
+        hasBetaEditorExperiment,
+      });
+    }
   } catch (error) {
     actions.internal.handleError({
       message: 'We were unable to fork the sandbox',

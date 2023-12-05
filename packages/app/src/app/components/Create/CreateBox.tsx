@@ -127,6 +127,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     { name, createAs, permission, editor }: CreateParams
   ) => {
     const { sandbox } = template;
+    const openInVSCode = editor === 'vscode';
 
     track(`Create ${type} - Create`, {
       codesandbox: 'V1',
@@ -139,7 +140,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
       openInNewWindow: false,
-      openInVSCode: editor === "vscode",
+      openInVSCode,
       hasBetaEditorExperiment,
       body: {
         alias: name,
@@ -174,7 +175,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       createFromTemplate(template, {
         createAs: type,
         permission: 0,
-        editor: 'web',
+        editor: 'csb',
       });
     }
   };
