@@ -182,7 +182,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               <Stack gap={1}>
                 <Icon color="#999" name="circleBang" />
                 <Text size={3} variant="muted">
-                  Sandboxes can only be open in the web editor.{' '}
+                  Sandboxes can only be opened in the web editor.{' '}
                   <Text
                     as="a"
                     target="_blank"
