@@ -36,8 +36,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isPro } = useWorkspaceSubscription();
-  const miniumPrivacy = (activeTeamInfo?.settings.minimumPrivacy ||
-    0) as PrivacyLevel;
+  const miniumPrivacy = isPro
+    ? ((activeTeamInfo?.settings.minimumPrivacy || 0) as PrivacyLevel)
+    : 0;
 
   const [permission, setPermission] = useState<PrivacyLevel>(miniumPrivacy);
   const [editor, setEditor] = useGlobalPersistedState<'csb' | 'vscode'>(
@@ -60,7 +61,12 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
     ) : isPro ? (
       <>
         VM specs are currently tied to{' '}
-        <Text as="a" variant="muted" href={proUrl()}>
+        <Text
+          as="a"
+          css={{ textDecoration: 'none' }}
+          variant="active"
+          href={proUrl()}
+        >
           your Pro subscription
         </Text>
         .
@@ -68,7 +74,12 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
     ) : (
       <>
         Better specs are available for{' '}
-        <Text as="a" variant="muted" href={proUrl()}>
+        <Text
+          as="a"
+          css={{ textDecoration: 'none' }}
+          variant="active"
+          href={proUrl()}
+        >
           Pro workspaces
         </Text>
         .
@@ -143,15 +154,40 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               Visibility
             </Text>
             <Stack direction="vertical" gap={1}>
-              <Select
-                icon={PRIVACY_OPTIONS[permission].icon}
-                defaultValue={permission}
-                onChange={({ target: { value } }) => setPermission(value)}
-              >
-                <option value={0}>{PRIVACY_OPTIONS[0].description}</option>
-                <option value={1}>{PRIVACY_OPTIONS[1].description}</option>
-                <option value={2}>{PRIVACY_OPTIONS[2].description}</option>
-              </Select>
+              {isPro ? (
+                <Select
+                  icon={PRIVACY_OPTIONS[permission].icon}
+                  defaultValue={permission}
+                  onChange={({ target: { value } }) => setPermission(value)}
+                >
+                  <option value={0}>{PRIVACY_OPTIONS[0].description}</option>
+                  <option value={1}>{PRIVACY_OPTIONS[1].description}</option>
+                  <option value={2}>{PRIVACY_OPTIONS[2].description}</option>
+                </Select>
+              ) : (
+                <>
+                  <Input
+                    css={{ opacity: 0.7, cursor: 'not-allowed' }}
+                    value="Public"
+                    disabled
+                  />
+                  <Stack gap={1}>
+                    <Icon color="#999" name="circleBang" />
+                    <Text size={3} variant="muted">
+                      You need a{' '}
+                      <Text
+                        as="a"
+                        variant="active"
+                        css={{ textDecoration: 'none' }}
+                        href={proUrl()}
+                      >
+                        Pro workspace
+                      </Text>{' '}
+                      to change {type} visibility.
+                    </Text>
+                  </Stack>
+                </>
+              )}
             </Stack>
           </Stack>
 
@@ -160,11 +196,30 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               Open in
             </Text>
             {type === 'sandbox' ? (
-              <Input
-                css={{ opacity: 0.7, cursor: 'not-allowed' }}
-                value="CodeSandbox web editor"
-                disabled
-              />
+              <>
+                <Input
+                  css={{ opacity: 0.7, cursor: 'not-allowed' }}
+                  value="CodeSandbox web editor"
+                  disabled
+                />
+                <Stack gap={1}>
+                  <Icon color="#999" name="circleBang" />
+                  <Text size={3} variant="muted">
+                    Sandboxes can only be opened in the web editor.{' '}
+                    <Text
+                      as="a"
+                      css={{ textDecoration: 'none' }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={docsUrl('/learn/sandboxes/editor-features')}
+                      variant="active"
+                    >
+                      Learn more about sandboxes
+                    </Text>
+                    .
+                  </Text>
+                </Stack>
+              </>
             ) : (
               <Select
                 icon={EDITOR_ICONS[editor]}
@@ -176,24 +231,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   VS Code desktop (Using the CodeSandbox extension)
                 </option>
               </Select>
-            )}
-
-            {type === 'sandbox' && (
-              <Stack gap={1}>
-                <Icon color="#999" name="circleBang" />
-                <Text size={3} variant="muted">
-                  Sandboxes can only be opened in the web editor.{' '}
-                  <Text
-                    as="a"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={docsUrl('/learn/sandboxes/editor-features')}
-                  >
-                    Learn more
-                  </Text>{' '}
-                  about sandboxes.
-                </Text>
-              </Stack>
             )}
           </Stack>
 
