@@ -4,7 +4,7 @@ export type CreateParams = {
   name?: string;
   createAs: 'devbox' | 'sandbox';
   permission: 0 | 1 | 2;
-  editor: 'web' | 'vscode';
+  editor: 'csb' | 'vscode';
 };
 
 export interface TemplateCollection {

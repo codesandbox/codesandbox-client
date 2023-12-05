@@ -17,7 +17,7 @@ import {
 import { Import } from './ImportRepository/Import';
 import { GithubRepoToImport } from './ImportRepository/types';
 import { ImportInfo } from './ImportRepository/ImportInfo';
-import { FromRepo } from './ImportRepository/FromRepo';
+import { ForkRepoForm } from './ImportRepository/ForkRepoForm';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -99,7 +99,7 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
               </ModalSidebar>
 
               <ModalContent>
-                <FromRepo
+                <ForkRepoForm
                   repository={selectedRepo}
                   onCancel={() => {
                     setViewState('initial');

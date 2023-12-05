@@ -51,7 +51,7 @@ type CreateBoxProps = ModalContentProps & {
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId,
   type = 'devbox',
-  hasSecondStep = false,
+  hasSecondStep = true,
   closeModal,
   isModal,
 }) => {
@@ -124,9 +124,10 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const createFromTemplate = (
     template: TemplateFragment,
-    { name, createAs }: CreateParams
+    { name, createAs, permission, editor }: CreateParams
   ) => {
     const { sandbox } = template;
+    const openInVSCode = editor === 'vscode';
 
     track(`Create ${type} - Create`, {
       codesandbox: 'V1',
@@ -139,10 +140,12 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
       openInNewWindow: false,
+      openInVSCode,
       hasBetaEditorExperiment,
       body: {
         alias: name,
         collectionId,
+        privacy: permission,
         v2: createAs === 'devbox',
       },
     });
@@ -172,7 +175,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       createFromTemplate(template, {
         createAs: type,
         permission: 0,
-        editor: 'web',
+        editor: 'csb',
       });
     }
   };

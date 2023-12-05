@@ -75,6 +75,9 @@ export default {
   getCurrentUser(): Promise<CurrentUserFromAPI> {
     return api.get('/users/current');
   },
+  getSandboxTitle(): Promise<{ title: string }> {
+    return api.get('/sandboxes/generate_title');
+  },
   markSurveySeen(): Promise<void> {
     return api.post('/users/survey-seen', {});
   },

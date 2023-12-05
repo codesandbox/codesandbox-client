@@ -1,7 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import React, { ReactNode } from 'react';
 import { Tab as BaseTab, TabList, TabPanel, TabStateReturn } from 'reakit/Tab';
-import { Select } from '@codesandbox/components';
 
 export const Container = styled.div`
   height: 564px;
@@ -169,29 +168,6 @@ export const TemplateGrid = styled.div`
 
   @media screen and (max-width: 485px) {
     grid-template-columns: 1fr;
-  }
-`;
-
-// Select component places the content with a fixed padding if it has an icon
-// !important here will overule that setting since the new select is bigger
-export const StyledSelect = styled(Select)`
-  height: 48px;
-  padding-left: 44px !important;
-  font-family: inherit;
-  height: 32px;
-  padding: 8px 16px;
-  background-color: #2a2a2a;
-  color: #999999;
-  border: none;
-  border-radius: 2px;
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 500;
-  &:hover {
-    color: #e5e5e5;
-  }
-  &:focus {
-    color: #e5e5e5;
   }
 `;
 
