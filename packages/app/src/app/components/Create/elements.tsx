@@ -1,7 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import React, { ReactNode } from 'react';
 import { Tab as BaseTab, TabList, TabPanel, TabStateReturn } from 'reakit/Tab';
-import { Select } from '@codesandbox/components';
 
 export const Container = styled.div`
   height: 564px;
