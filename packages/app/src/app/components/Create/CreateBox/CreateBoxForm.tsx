@@ -8,7 +8,6 @@ import {
   Icon,
   Select,
 } from '@codesandbox/components';
-import { Link } from 'react-router-dom';
 
 import { useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -62,7 +61,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
       <>
         VM specs are currently tied to{' '}
         <Text as="a" variant="muted" href={proUrl()}>
-          your PRO subscription
+          your Pro subscription
         </Text>
         .
       </>
@@ -70,7 +69,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
       <>
         Better specs are available for{' '}
         <Text as="a" variant="muted" href={proUrl()}>
-          PRO workspaces
+          Pro workspaces
         </Text>
         .
       </>
