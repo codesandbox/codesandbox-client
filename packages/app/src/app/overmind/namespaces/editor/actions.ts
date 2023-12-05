@@ -748,13 +748,20 @@ export const forkExternalSandbox = async (
   {
     sandboxId,
     openInNewWindow,
+    openInVSCode,
     hasBetaEditorExperiment,
     body,
   }: {
     sandboxId: string;
     openInNewWindow?: boolean;
+    openInVSCode?: boolean;
     hasBetaEditorExperiment?: boolean;
-    body?: { collectionId: string; alias?: string; v2?: boolean };
+    body?: {
+      collectionId: string;
+      alias?: string;
+      v2?: boolean;
+      privacy?: 0 | 1 | 2;
+    };
   }
 ) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });

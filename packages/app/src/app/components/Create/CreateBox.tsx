@@ -124,7 +124,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const createFromTemplate = (
     template: TemplateFragment,
-    { name, createAs }: CreateParams
+    { name, createAs, permission, editor }: CreateParams
   ) => {
     const { sandbox } = template;
 
@@ -139,10 +139,12 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
       openInNewWindow: false,
+      openInVSCode: editor === "vscode",
       hasBetaEditorExperiment,
       body: {
         alias: name,
         collectionId,
+        privacy: permission,
         v2: createAs === 'devbox',
       },
     });
