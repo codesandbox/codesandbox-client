@@ -173,7 +173,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               >
                 <option value="csb">CodeSandbox web editor</option>
                 <option value="vscode">
-                  VSCode desktop (Using the CodeSandbox extension)
+                  VS Code desktop (Using the CodeSandbox extension)
                 </option>
               </Select>
             )}
