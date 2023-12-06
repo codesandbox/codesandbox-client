@@ -37,7 +37,7 @@ export const TemplateInfo = ({ template }: TemplateInfoProps) => {
       <Text size={3} css={{ color: '#999', lineHeight: '1.4' }}>
         {template.sandbox.description}
       </Text>
-      <Stack gap={3} horizontal css={{ color: '#999' }}>
+      <Stack gap={3} css={{ color: '#999' }}>
         <Stack gap={1}>
           <Icon name="eye" size={14} />
           <Text size={2}>{formatNumber(template.sandbox.viewCount)}</Text>
