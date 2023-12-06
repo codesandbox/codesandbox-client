@@ -151,8 +151,12 @@ export const embedUrl = (sandbox: Sandbox) => {
   return `/embed/${sandbox.id}`;
 };
 
-export const vsCodeUrl = (devboxId: string) => {
+export const vsCodeLauncherUrl = (devboxId: string) => {
   return `${protocolAndHost()}${newEditorUrlPrefix()}vscode?sandboxId=${devboxId}`;
+};
+
+export const vsCodeUrl = (devboxId: string) => {
+  return `vscode://CodeSandbox-io.codesandbox-projects/sandbox/${devboxId}`;
 };
 
 const stagingFrameUrl = (shortid: string, path: string) => {

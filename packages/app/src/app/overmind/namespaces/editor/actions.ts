@@ -23,6 +23,7 @@ import {
   signInPageUrl,
   docsUrl,
   vsCodeUrl,
+  vsCodeLauncherUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
@@ -750,12 +751,14 @@ export const forkExternalSandbox = async (
     sandboxId,
     openInNewWindow,
     openInVSCode,
+    autoLaunchVSCode,
     hasBetaEditorExperiment,
     body,
   }: {
     sandboxId: string;
     openInNewWindow?: boolean;
     openInVSCode?: boolean;
+    autoLaunchVSCode?: boolean;
     hasBetaEditorExperiment?: boolean;
     body?: {
       collectionId: string;
@@ -777,7 +780,11 @@ export const forkExternalSandbox = async (
   try {
     const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
     if (openInVSCode) {
-      window.open(vsCodeUrl(forkedSandbox.id));
+      if (autoLaunchVSCode) {
+        window.open(vsCodeUrl(forkedSandbox.id));
+      } else {
+        window.open(vsCodeLauncherUrl(forkedSandbox.id));
+      }
     } else {
       state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
 
