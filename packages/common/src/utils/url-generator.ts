@@ -122,8 +122,9 @@ export const sandboxUrl = (
     baseUrl = `${newEditorUrlPrefix()}sandbox/`;
   }
 
-  const queryParams = sandboxDetails.query ? `?${new URLSearchParams(sandboxDetails.query).toString()}` : '';
-
+  const queryParams = sandboxDetails.query
+    ? `?${new URLSearchParams(sandboxDetails.query).toString()}`
+    : '';
 
   if (sandboxDetails.git) {
     const { git } = sandboxDetails;
@@ -148,6 +149,10 @@ export const embedUrl = (sandbox: Sandbox) => {
   }
 
   return `/embed/${sandbox.id}`;
+};
+
+export const vsCodeUrl = (devboxId: string) => {
+  return `${protocolAndHost()}${newEditorUrlPrefix()}vscode?sandboxId=${devboxId}`;
 };
 
 const stagingFrameUrl = (shortid: string, path: string) => {

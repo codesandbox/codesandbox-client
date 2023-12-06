@@ -135,6 +135,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       type: 'fork',
       template_name:
         template.sandbox.title || template.sandbox.alias || template.sandbox.id,
+      open_in_editor: editor,
     });
 
     actions.editor.forkExternalSandbox({

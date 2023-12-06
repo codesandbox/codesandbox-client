@@ -22,6 +22,7 @@ import {
   sandboxUrl,
   signInPageUrl,
   docsUrl,
+  vsCodeUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
@@ -776,9 +777,7 @@ export const forkExternalSandbox = async (
   try {
     const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
     if (openInVSCode) {
-      // TODO: Move to a reusable spot if the functionality is extended.
-      const VSCodeURL = `vscode://CodeSandbox-io.codesandbox-projects/sandbox/${forkedSandbox.id}`;
-      window.open(VSCodeURL);
+      window.open(vsCodeUrl(forkedSandbox.id));
     } else {
       state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
 
