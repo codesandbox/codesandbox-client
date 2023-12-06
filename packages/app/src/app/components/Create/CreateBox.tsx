@@ -16,6 +16,7 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { pluralize } from 'app/utils/pluralize';
 import { ModalContentProps } from 'app/pages/common/Modals';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import {
   Container,
   Tab,
@@ -39,7 +40,6 @@ import { CreateBoxForm } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
 import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
 import { useAllTemplates } from './hooks/useAllTemplates';
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -75,7 +75,10 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   );
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [autoLaunchVSCode] = useGlobalPersistedState("AUTO_LAUNCH_VSCODE", false);
+  const [autoLaunchVSCode] = useGlobalPersistedState(
+    'AUTO_LAUNCH_VSCODE',
+    false
+  );
 
   const { collections } = useTemplateCollections({ type });
   const { templates: officialTemplates } = useOfficialTemplates({ type });
