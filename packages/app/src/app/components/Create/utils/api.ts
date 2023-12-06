@@ -14,6 +14,8 @@ interface ExploreTemplateAPIResponse {
     author: { username: string } | null;
     environment: TemplateType;
     v2?: boolean;
+    fork_count: number;
+    view_count: number;
     custom_template: {
       id: string;
       icon_url: string;
@@ -63,6 +65,8 @@ const mapAPIResponseToTemplateInfo = (
       },
       isV2: sandbox.v2 || false,
       isSse: isServer(sandbox.environment),
+      forkCount: sandbox.fork_count,
+      viewCount: sandbox.view_count,
       git: sandbox.git && {
         id: sandbox.git.id,
         username: sandbox.git.username,
