@@ -1907,6 +1907,8 @@ export type RootMutationType = {
   setLiveSessionGuestPermission: LiveSession;
   setPreventSandboxesExport: Array<Sandbox>;
   setPreventSandboxesLeavingWorkspace: Array<Sandbox>;
+  /** Change the primary workspace for the current user */
+  setPrimaryWorkspace: Scalars['String'];
   /** set sandbox always on status */
   setSandboxAlwaysOn: Sandbox;
   setSandboxesFrozen: Array<Sandbox>;
@@ -2371,6 +2373,10 @@ export type RootMutationTypeSetPreventSandboxesExportArgs = {
 export type RootMutationTypeSetPreventSandboxesLeavingWorkspaceArgs = {
   preventSandboxLeaving: Scalars['Boolean'];
   sandboxIds: Array<Scalars['ID']>;
+};
+
+export type RootMutationTypeSetPrimaryWorkspaceArgs = {
+  primaryWorkspaceId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeSetSandboxAlwaysOnArgs = {
@@ -2908,6 +2914,8 @@ export type TemplateFragment = {
     updatedAt: string;
     isV2: boolean;
     isSse: boolean | null;
+    forkCount: number;
+    viewCount: number;
     team: { __typename?: 'TeamPreview'; name: string } | null;
     author: { __typename?: 'User'; username: string } | null;
     source: { __typename?: 'Source'; template: string | null };
@@ -2938,6 +2946,8 @@ export type RecentAndWorkspaceTemplatesQuery = {
         updatedAt: string;
         isV2: boolean;
         isSse: boolean | null;
+        forkCount: number;
+        viewCount: number;
         team: { __typename?: 'TeamPreview'; name: string } | null;
         author: { __typename?: 'User'; username: string } | null;
         source: { __typename?: 'Source'; template: string | null };
@@ -2961,6 +2971,8 @@ export type RecentAndWorkspaceTemplatesQuery = {
           updatedAt: string;
           isV2: boolean;
           isSse: boolean | null;
+          forkCount: number;
+          viewCount: number;
           team: { __typename?: 'TeamPreview'; name: string } | null;
           author: { __typename?: 'User'; username: string } | null;
           source: { __typename?: 'Source'; template: string | null };

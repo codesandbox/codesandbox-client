@@ -15,6 +15,8 @@ const TEMPLATE_FRAGMENT = gql`
       updatedAt
       isV2
       isSse
+      forkCount
+      viewCount
 
       team {
         name

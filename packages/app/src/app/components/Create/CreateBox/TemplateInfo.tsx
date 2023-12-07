@@ -1,5 +1,6 @@
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-import { Stack, Text } from '@codesandbox/components';
+import { Stack, Text, Icon } from '@codesandbox/components';
+import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { TemplateFragment } from 'app/graphql/types';
 import React from 'react';
 
@@ -28,14 +29,24 @@ export const TemplateInfo = ({ template }: TemplateInfoProps) => {
           {title}
         </Text>
         {author && (
-          <Text size={2} css={{ color: '#999' }}>
+          <Text size={3} css={{ color: '#999' }}>
             {author}
           </Text>
         )}
       </Stack>
-      <Text size={2} css={{ color: '#999', lineHeight: '1.4' }}>
+      <Text size={3} css={{ color: '#999', lineHeight: '1.4' }}>
         {template.sandbox.description}
       </Text>
+      <Stack gap={3} css={{ color: '#999' }}>
+        <Stack gap={1}>
+          <Icon name="eye" size={14} />
+          <Text size={2}>{formatNumber(template.sandbox.viewCount)}</Text>
+        </Stack>
+        <Stack gap={1}>
+          <Icon name="fork" size={14} />
+          <Text size={2}>{formatNumber(template.sandbox.forkCount)}</Text>
+        </Stack>
+      </Stack>
     </Stack>
   );
 };
