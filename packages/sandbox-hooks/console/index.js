@@ -58,6 +58,16 @@ const isIFramePreview = window.top !== window.self;
 
 // Only run this script in editor context
 if (isIFramePreview) {
+  // This is a temporary fix for deprecating the V1 editor. We need to load both V1 and V2 preview protocol
+  // and this is the simplest way to achieve that. Later everything will be V2 preview protocol
+  (function LoadV2PreviewProtocol() {
+    const script = document.createElement('script');
+    script.src = 'https://codesandbox.io/p/preview-protocol.js';
+    script.async = true;
+    script.defer = true;
+    (document.head || document.documentElement).prepend(script);
+  })();
+
   // This script is used to enable Chrome DevTools functionality
   (function ChromeDevtools() {
     const script = document.createElement('script');
