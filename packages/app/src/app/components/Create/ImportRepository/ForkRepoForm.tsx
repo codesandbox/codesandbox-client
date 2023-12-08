@@ -99,6 +99,10 @@ export const ForkRepoForm: React.FC<ForkRepoFormProps> = ({
     : [];
 
   useEffect(() => {
+    if (!activeTeamInfo) {
+      return;
+    }
+
     setSelectedOrg(
       'data' in githubAccounts
         ? fuzzyMatchGithubToCsb(activeTeamInfo.name, accountOptions).login
