@@ -41,10 +41,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
     : 0;
 
   const [permission, setPermission] = useState<PrivacyLevel>(miniumPrivacy);
-  const [editor, setEditor] = useGlobalPersistedState<'csb' | 'vscode'>(
+  const [defaultEditor] = useGlobalPersistedState<'csb' | 'vscode'>(
     'DEFAULT_EDITOR',
     'csb'
   );
+  const [editor, setEditor] = useState(defaultEditor);
 
   const defaultSpecs =
     // eslint-disable-next-line no-nested-ternary

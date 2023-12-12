@@ -1,9 +1,10 @@
-import { Text, Element } from '@codesandbox/components';
+import { Text, Stack } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
 import { SubContainer } from '../elements';
 
 import { BetaSandboxEditor } from './BetaSandboxEditor';
+import { OpenDevboxesInVSCode } from './OpenDevboxesInVSCode';
 
 export const Experiments: FunctionComponent = () => (
   <>
@@ -12,9 +13,10 @@ export const Experiments: FunctionComponent = () => (
     </Text>
 
     <SubContainer>
-      <Element paddingTop={2}>
+      <Stack direction="vertical" paddingTop={2} gap={6}>
         <BetaSandboxEditor />
-      </Element>
+        <OpenDevboxesInVSCode />
+      </Stack>
     </SubContainer>
   </>
 );

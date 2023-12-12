@@ -159,6 +159,14 @@ export const vsCodeUrl = (devboxId: string) => {
   return `vscode://CodeSandbox-io.codesandbox-projects/sandbox/${devboxId}`;
 };
 
+export const vsCodeBranchLauncherUrl = (devboxId: string) => {
+  return `${protocolAndHost()}${newEditorUrlPrefix()}vscode?sandboxId=${devboxId}`;
+};
+
+export const vsCodeBranchUrl = (branchId: string) => {
+  return `vscode://CodeSandbox-io.codesandbox-projects/branch/${branchId}`;
+};
+
 const stagingFrameUrl = (shortid: string, path: string) => {
   const stagingHost = (process.env.CODESANDBOX_HOST
     ? process.env.CODESANDBOX_HOST

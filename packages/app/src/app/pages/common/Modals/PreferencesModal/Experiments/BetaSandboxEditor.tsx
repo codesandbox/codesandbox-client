@@ -50,7 +50,7 @@ export const BetaSandboxEditor = () => {
   const isInProd = window.location.host === 'codesandbox.io';
 
   return (
-    <>
+    <Element>
       <PaddedPreference
         setValue={() => {
           if (!betaSandboxEditor) {
@@ -160,6 +160,6 @@ export const BetaSandboxEditor = () => {
           </Stack>
         </Element>
       )}
-    </>
+    </Element>
   );
 };

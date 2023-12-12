@@ -1,9 +1,9 @@
-import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
 import { useAppState } from 'app/overmind';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import React from 'react';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useBranchUrl } from 'app/hooks/useBranchUrl';
 import { DashboardBranch } from '../../types';
 import { useSelection } from '../Selection';
 import { BranchCard } from './BranchCard';
@@ -24,14 +24,9 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
     dashboard: { removingBranch, removingRepository, viewMode },
   } = useAppState();
   const { selectedIds, onRightClick, onMenuEvent } = useSelection();
-  const { name, project } = branch;
+  const { project } = branch;
 
-  const branchUrl = v2BranchUrl({
-    owner: project.repository.owner,
-    repoName: project.repository.name,
-    branchName: name,
-    workspaceId: project.team?.id || null,
-  });
+  const { branchUrl, requiresNewTab } = useBranchUrl(branch);
 
   const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -56,6 +51,7 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   const props = {
     branch,
     branchUrl,
+    target: requiresNewTab ? '_blank' : undefined,
     selected: selectedIds.includes(branch.id),
     isBeingRemoved:
       removingBranch?.id === branch.id || isParentRepositoryBeingRemoved,
