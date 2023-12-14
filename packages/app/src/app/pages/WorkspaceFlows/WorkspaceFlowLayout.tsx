@@ -6,19 +6,16 @@ import {
   ThemeProvider,
 } from '@codesandbox/components';
 
-export type LayoutProps =
-  | {
-      canDismiss: true;
-      onDismiss: () => void;
-    }
-  | {
-      canDismiss?: false;
-      onDismiss?: never;
-    };
+export type LayoutProps = {
+  currentStep: number;
+  onPrevStep: () => void;
+  onDismiss: () => void;
+};
 
 export const WorkspaceFlowLayout: React.FC<LayoutProps> = ({
-  canDismiss,
   onDismiss,
+  currentStep,
+  onPrevStep,
   children,
 }) => {
   return (
@@ -32,10 +29,20 @@ export const WorkspaceFlowLayout: React.FC<LayoutProps> = ({
           position: 'relative',
         }}
       >
-        {canDismiss && (
+        {currentStep > 0 && (
+          <IconButton
+            name="backArrow"
+            size={16}
+            variant="square"
+            css={{ position: 'absolute', top: '16px', left: '16px' }}
+            title="Go back"
+            onClick={onPrevStep}
+          />
+        )}
+        {onDismiss && (
           <IconButton
             name="cross"
-            size={32}
+            size={16}
             variant="square"
             css={{ position: 'absolute', top: '16px', right: '16px' }}
             title="Cancel workspace upgrade"

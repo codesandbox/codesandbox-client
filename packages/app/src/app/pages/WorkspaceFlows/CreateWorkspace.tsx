@@ -1,17 +1,17 @@
 import React from 'react';
 import { WorkspaceSetup } from 'app/components/WorkspaceSetup';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import { WorkspaceFlowLayout } from './WorkspaceFlowLayout';
 
 export const CreateWorkspace = () => {
   return (
-    <WorkspaceFlowLayout>
-      <WorkspaceSetup
-        steps={['create', 'members', 'plans', 'extra', 'payment']}
-        onFinished={() => {
-          window.location.href = dashboardUrls.recent();
-        }}
-      />
-    </WorkspaceFlowLayout>
+    <WorkspaceSetup
+      steps={['create', 'members', 'plans', 'plan-options', 'payment']}
+      onFinished={() => {
+        window.location.href = dashboardUrls.recent();
+      }}
+      onDismiss={() => {
+        window.location.href = dashboardUrls.recent();
+      }}
+    />
   );
 };

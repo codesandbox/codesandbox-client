@@ -8,6 +8,5 @@ export const StyledButton = styled(ButtonComponent)`
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
-  color: #151515;
   cursor: pointer;
 `;

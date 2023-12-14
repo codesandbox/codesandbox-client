@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useActions, useAppState } from 'app/overmind';
 import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { StyledButton } from 'app/components/dashboard/Button';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { useHistory } from 'react-router-dom';
 import { StepProps } from '../types';
 
-export const Create: React.FC<StepProps> = ({ onCompleted }) => {
-  const { dashboard } = useAppState();
+export const Create: React.FC<StepProps> = ({ onNextStep }) => {
+  const { dashboard, activeTeam, activeTeamInfo } = useAppState();
   const actions = useActions();
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [existingTeamError, setExistingTeamError] = useState(false);
+
+  const searchParams = new URLSearchParams(history.location.search);
+  const urlWorkspaceId = searchParams.get('workspace');
+  const teamIsAlreadyCreated = !!urlWorkspaceId;
+
+  useEffect(() => {
+    if (activeTeam !== urlWorkspaceId) {
+      actions.setActiveTeam({ id: urlWorkspaceId });
+    }
+  }, [urlWorkspaceId, activeTeam]);
 
   const onSubmit = async event => {
     event.preventDefault();
@@ -23,19 +35,29 @@ export const Create: React.FC<StepProps> = ({ onCompleted }) => {
 
     setError(null);
     setLoading(true);
-    try {
-      const team = await actions.dashboard.createTeam({
-        teamName,
-      });
 
-      await actions.setActiveTeam({ id: team.id });
+    try {
+      if (teamIsAlreadyCreated) {
+        actions.dashboard.setTeamInfo({
+          name: teamName,
+          description: null,
+          file: null,
+        });
+      } else {
+        const team = await actions.dashboard.createTeam({
+          teamName,
+        });
+
+        history.replace(`${history.location.pathname}?workspace=${team.id}`);
+        await actions.setActiveTeam({ id: team.id });
+      }
     } catch {
-      setError('There was a problem creating your workspace');
+      setError('There was a problem saving your workspace');
     } finally {
       setLoading(false);
     }
 
-    onCompleted();
+    onNextStep();
   };
 
   const handleInput = e => {
@@ -56,6 +78,10 @@ export const Create: React.FC<StepProps> = ({ onCompleted }) => {
       Boolean(dashboard.teams.find(team => team.name === trimmedName))
     );
   };
+
+  if (teamIsAlreadyCreated && !activeTeamInfo) {
+    return null; // TODO: Loader
+  }
 
   return (
     <Stack align="center" direction="vertical" gap={6}>
@@ -90,6 +116,7 @@ export const Create: React.FC<StepProps> = ({ onCompleted }) => {
             required
             autoFocus
             hideLabel
+            defaultValue={teamIsAlreadyCreated ? activeTeamInfo.name : ''}
             onChange={handleInput}
           />
 

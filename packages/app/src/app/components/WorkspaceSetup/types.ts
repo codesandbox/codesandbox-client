@@ -2,10 +2,11 @@ export type WorkspaceSetupStep =
   | 'create'
   | 'members'
   | 'plans'
-  | 'extra'
+  | 'plan-options'
   | 'payment';
 
 export interface StepProps {
-  onCompleted: () => void;
-  onSkipped?: () => void;
+  onNextStep: () => void;
+  onPrevStep: () => void;
+  onEarlyExit: () => void;
 }

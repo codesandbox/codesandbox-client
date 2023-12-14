@@ -7,7 +7,7 @@ import { TeamMemberAuthorization } from 'app/graphql/types';
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { StepProps } from '../types';
 
-export const Members: React.FC<StepProps> = ({ onCompleted }) => {
+export const Members: React.FC<StepProps> = ({ onNextStep }) => {
   const { activeTeamInfo, activeWorkspaceAuthorization } = useAppState();
   const { gql } = useEffects();
   const { copyToClipboard } = useEffects().browser;
@@ -82,7 +82,7 @@ export const Members: React.FC<StepProps> = ({ onCompleted }) => {
         });
         setInviteLoading(false);
 
-        onCompleted();
+        onNextStep();
       } catch (error) {
         // Setting it here instead of finally so the error message
         // does not appear before the loading is removed.
@@ -220,7 +220,7 @@ export const Members: React.FC<StepProps> = ({ onCompleted }) => {
         <Button
           css={{ width: 'auto' }}
           onClick={() => {
-            onCompleted();
+            onNextStep();
           }}
           variant="link"
         >

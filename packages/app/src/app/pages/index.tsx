@@ -12,11 +12,7 @@ import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
 import { StandalonePage } from './Standalone';
-import {
-  CreateWorkspace,
-  UpgradeWorkspace,
-  ChangeWorkspacePlan,
-} from './WorkspaceFlows';
+import { CreateWorkspace, UpgradeWorkspace } from './WorkspaceFlows';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
@@ -225,7 +221,6 @@ const RoutesComponent: React.FC = () => {
             <Route path="/standalone/:componentId" component={StandalonePage} />
             <Route path="/create-workspace" component={CreateWorkspace} />
             <Route path="/upgrade" component={UpgradeWorkspace} />
-            <Route path="/change-plan" component={ChangeWorkspacePlan} />
             <Redirect from="/patron" to="/pro" />
             <Route component={NotFound} />
           </Switch>

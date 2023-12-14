@@ -96,3 +96,111 @@ export const ORG_FEATURES: Feature[] = [
 export const MAX_PRO_EDITORS = 20;
 
 export const MAX_TEAM_FREE_EDITORS = 5;
+
+export type PricingPlan = {
+  id: string;
+  name: string;
+  price: number;
+  credits: number;
+  additionalCreditsCost: number | null;
+  users: number;
+  sandboxes: { base: number; extra50SandboxesCost: number | null };
+  devboxes: number;
+  privateDevboxes: boolean;
+  privateRepositories: boolean;
+  highestVM: VMType;
+  storage: { base: number; extra20GbCost: number };
+  api: string;
+};
+
+export type PlanType = 'free' | 'flex' | 'standard' | 'growth';
+
+export type VMType = 'nano' | 'micro' | 'small' | 'medium';
+
+export const FEATURE_LABELS: Record<
+  keyof Omit<PricingPlan, 'id' | 'name'>,
+  string
+> = {
+  price: 'Monthly subscription cost',
+  credits: 'Monthly credits included in subscription cost',
+  additionalCreditsCost: 'Additional credits',
+  users: 'Users',
+  sandboxes: 'Sandboxes',
+  devboxes: 'Devboxes',
+  privateDevboxes: 'Private Devboxes',
+  privateRepositories: 'Private repositories',
+  highestVM: 'Virtual machines',
+  storage: 'Storage space',
+  api: 'API',
+};
+
+export const UBB_FREE_PLAN: PricingPlan = {
+  id: 'free',
+  name: 'Free',
+  price: 0,
+  credits: 400,
+  additionalCreditsCost: null,
+  users: 5,
+  sandboxes: { base: 20, extra50SandboxesCost: null },
+  devboxes: Number.MAX_SAFE_INTEGER,
+  privateDevboxes: true,
+  privateRepositories: true,
+  highestVM: 'micro',
+  storage: { base: 30, extra20GbCost: null },
+  api: 'Free API',
+};
+
+export const UBB_FLEX_PLAN: PricingPlan = {
+  id: 'flex',
+  name: 'Flex',
+  price: 9,
+  credits: 500,
+  additionalCreditsCost: 0.018,
+  users: 20,
+  sandboxes: { base: 50, extra50SandboxesCost: 9 },
+  devboxes: Number.MAX_SAFE_INTEGER,
+  privateDevboxes: true,
+  privateRepositories: true,
+  highestVM: 'medium',
+  storage: { base: 30, extra20GbCost: 12 },
+  api: 'Devbox API',
+};
+
+export const UBB_PRO_PLAN: PricingPlan = {
+  id: 'pro',
+  name: 'Pro',
+  price: 18,
+  credits: 1500,
+  additionalCreditsCost: 0.018,
+  users: 20,
+  sandboxes: { base: 50, extra50SandboxesCost: 9 },
+  devboxes: Number.MAX_SAFE_INTEGER,
+  privateDevboxes: true,
+  privateRepositories: true,
+  highestVM: 'medium',
+  storage: { base: 50, extra20GbCost: 12 },
+  api: 'Devbox API',
+};
+
+export const UBB_GROWTH_PLAN: PricingPlan = {
+  id: 'growth',
+  name: 'Growth',
+  price: 38,
+  credits: 3000,
+  additionalCreditsCost: 0.018,
+  users: 20,
+  sandboxes: { base: 100, extra50SandboxesCost: 9 },
+  devboxes: Number.MAX_SAFE_INTEGER,
+  privateDevboxes: true,
+  privateRepositories: true,
+  highestVM: 'medium',
+  storage: { base: 50, extra20GbCost: 12 },
+  api: 'Devbox API',
+};
+
+export const PRICING_PLANS = {
+  free: UBB_FREE_PLAN,
+  flex: UBB_FLEX_PLAN,
+  standard: UBB_PRO_PLAN,
+  growth: UBB_GROWTH_PLAN,
+};
