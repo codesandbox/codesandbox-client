@@ -5,10 +5,14 @@ import { InputText } from 'app/components/dashboard/InputText';
 import { useLocation } from 'react-router-dom';
 import { PRICING_PLANS, PlanType } from 'app/constants';
 import { StepProps } from '../types';
+import { StepHeader } from '../StepHeader';
 
 export const PlanOptions: React.FC<StepProps> = ({
   onNextStep,
   onPrevStep,
+  onDismiss,
+  currentStep,
+  numberOfSteps,
 }) => {
   const location = useLocation();
   const selectedPlan = new URLSearchParams(location.search).get(
@@ -33,9 +37,13 @@ export const PlanOptions: React.FC<StepProps> = ({
       gap={6}
       css={{ maxWidth: '450px' }}
     >
-      <Text color="#fff" as="h1" size={32}>
-        Set a spending limit
-      </Text>
+      <StepHeader
+        onPrevStep={onPrevStep}
+        onDismiss={onDismiss}
+        currentStep={currentStep}
+        numberOfSteps={numberOfSteps}
+        title="Set a spending limit"
+      />
       <Text>
         You will have <Text color="#fff">{plan.credits} credits</Text> included
         in your subscription. Above this, you can purchase on-demand credits at

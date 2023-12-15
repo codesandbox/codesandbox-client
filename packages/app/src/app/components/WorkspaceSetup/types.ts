@@ -6,7 +6,10 @@ export type WorkspaceSetupStep =
   | 'payment';
 
 export interface StepProps {
+  currentStep: number;
+  numberOfSteps: number;
   onNextStep: () => void;
   onPrevStep: () => void;
   onEarlyExit: () => void;
+  onDismiss: () => void;
 }

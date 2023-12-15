@@ -5,8 +5,16 @@ import styled from 'styled-components';
 import { StyledButton } from 'app/components/dashboard/Button';
 import { useHistory } from 'react-router-dom';
 import { StepProps } from '../types';
+import { StepHeader } from '../StepHeader';
 
-export const Plans: React.FC<StepProps> = ({ onNextStep, onEarlyExit }) => {
+export const Plans: React.FC<StepProps> = ({
+  onNextStep,
+  onEarlyExit,
+  onPrevStep,
+  onDismiss,
+  currentStep,
+  numberOfSteps,
+}) => {
   const history = useHistory();
 
   const plans = Object.values(PRICING_PLANS);
@@ -19,10 +27,14 @@ export const Plans: React.FC<StepProps> = ({ onNextStep, onEarlyExit }) => {
   };
 
   return (
-    <Stack align="center" direction="vertical" gap={16} css={{ color: '#fff' }}>
-      <Text as="h1" size={9}>
-        Choose a plan
-      </Text>
+    <Stack direction="vertical" gap={6} css={{ color: '#fff' }}>
+      <StepHeader
+        onPrevStep={onPrevStep}
+        onDismiss={onDismiss}
+        currentStep={currentStep}
+        numberOfSteps={numberOfSteps}
+        title="Choose a plan"
+      />
       <StyledGrid>
         <Text />
         {plans.map(p => (

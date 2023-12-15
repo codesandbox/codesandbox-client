@@ -6,10 +6,11 @@ export const CreateWorkspace = () => {
   return (
     <WorkspaceSetup
       steps={['create', 'members', 'plans', 'plan-options', 'payment']}
-      onFinished={() => {
+      onComplete={() => {
         window.location.href = dashboardUrls.recent();
       }}
       onDismiss={() => {
+        // TODO: Cleanup workspace?
         window.location.href = dashboardUrls.recent();
       }}
     />

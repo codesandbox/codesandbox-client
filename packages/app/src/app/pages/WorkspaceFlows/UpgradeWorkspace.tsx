@@ -9,7 +9,7 @@ export const UpgradeWorkspace = () => {
   return (
     <WorkspaceSetup
       steps={['plans', 'plan-options', 'payment']}
-      onFinished={() => {
+      onComplete={() => {
         // When setup is finished do a full reload
         window.location.href = dashboardUrls.recent();
       }}
