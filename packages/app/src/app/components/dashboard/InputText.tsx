@@ -4,7 +4,7 @@ import { Stack } from '@codesandbox/components';
 import { Label } from './Label';
 
 const StyledInput = styled.input<{ isInvalid?: boolean }>`
-  padding: 12px 16px;
+  padding: 8px 16px;
   background-color: #2a2a2a;
   font-family: 'Inter', sans-serif;
   font-size: 16px;

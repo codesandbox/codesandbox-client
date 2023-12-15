@@ -7,6 +7,7 @@ import { TeamMemberAuthorization } from 'app/graphql/types';
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
+import { AnimatedStep } from '../elements';
 
 export const Members: React.FC<StepProps> = ({
   onNextStep,
@@ -110,70 +111,76 @@ export const Members: React.FC<StepProps> = ({
   };
 
   return (
-    <Stack direction="vertical" gap={6} css={{ width: '350px' }}>
-      <StepHeader
-        title="Invite workspace members"
-        onDismiss={onDismiss}
-        onPrevStep={onPrevStep}
-        currentStep={currentStep}
-        numberOfSteps={numberOfSteps}
-      />
-      <Stack as="form" onSubmit={handleSubmit} direction="vertical" gap={2}>
-        <Text>
-          Insert email addresses separated by a comma. Members will be invited
-          as editors
-        </Text>
-
-        <Textarea
-          id="member"
-          name="members"
-          value={addressesString}
-          onChange={e => {
-            setAddressesString(e.target.value);
-          }}
-          resize={false}
-          rows={3}
-          autoFocus
-          required
+    <AnimatedStep>
+      <Stack direction="vertical" gap={6} css={{ width: '350px' }}>
+        <StepHeader
+          title="Invite workspace members"
+          onDismiss={onDismiss}
+          onPrevStep={onPrevStep}
+          currentStep={currentStep}
+          numberOfSteps={numberOfSteps}
         />
-
-        {invalidEmails && invalidEmails.length > 0 ? (
-          <Text size={3} variant="danger">
-            {invalidEmails.length > 1
-              ? 'There seem to be errors in some email addresses, '
-              : 'Email is invalid, '}
-            please review: {formatInvalidEmails(invalidEmails)}
+        <Stack as="form" onSubmit={handleSubmit} direction="vertical" gap={2}>
+          <Text color="#fff">
+            Insert email addresses separated by a comma. Members will be invited
+            as editors.
           </Text>
-        ) : null}
 
-        {inviteError ? (
-          <Text size={3} variant="danger">
-            {inviteError}
-          </Text>
-        ) : null}
+          <Textarea
+            id="member"
+            name="members"
+            value={addressesString}
+            onChange={e => {
+              setAddressesString(e.target.value);
+            }}
+            resize={false}
+            rows={3}
+            autoFocus
+            required
+          />
 
-        <Stack gap={2}>
-          <StyledButton
-            autoWidth
-            loading={inviteLoading}
-            type="submit"
-            variant="secondary"
-          >
-            Send invites
-          </StyledButton>
-          <StyledButton autoWidth onClick={copyTeamInviteLink} variant="ghost">
-            <Icon
-              size={12}
-              style={{ marginRight: 8 }}
-              name={linkCopied ? 'simpleCheck' : 'link'}
-            />
-            {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
-          </StyledButton>
+          {invalidEmails && invalidEmails.length > 0 ? (
+            <Text size={3} variant="danger">
+              {invalidEmails.length > 1
+                ? 'There seem to be errors in some email addresses, '
+                : 'Email is invalid, '}
+              please review: {formatInvalidEmails(invalidEmails)}
+            </Text>
+          ) : null}
+
+          {inviteError ? (
+            <Text size={3} variant="danger">
+              {inviteError}
+            </Text>
+          ) : null}
+
+          <Stack gap={2}>
+            <StyledButton
+              autoWidth
+              loading={inviteLoading}
+              type="submit"
+              variant="secondary"
+            >
+              Send invites
+            </StyledButton>
+            <StyledButton
+              autoWidth
+              onClick={copyTeamInviteLink}
+              variant="ghost"
+            >
+              <Icon
+                size={12}
+                style={{ marginRight: 8 }}
+                name={linkCopied ? 'simpleCheck' : 'link'}
+              />
+              {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
+            </StyledButton>
+          </Stack>
         </Stack>
-      </Stack>
 
-      <StyledButton onClick={onNextStep}>Next</StyledButton>
-    </Stack>
+        <StyledButton onClick={onNextStep}>Next</StyledButton>
+      </Stack>
+    </AnimatedStep>
   );
 };
 

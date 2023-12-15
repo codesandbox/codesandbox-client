@@ -166,7 +166,7 @@ export const UBB_FLEX_PLAN: PricingPlan = {
   api: 'Devbox API',
 };
 
-export const UBB_PRO_PLAN: PricingPlan = {
+export const UBB_STANDARD_PLAN: PricingPlan = {
   id: 'pro',
   name: 'Pro',
   price: 18,
@@ -201,6 +201,6 @@ export const UBB_GROWTH_PLAN: PricingPlan = {
 export const PRICING_PLANS = {
   free: UBB_FREE_PLAN,
   flex: UBB_FLEX_PLAN,
-  standard: UBB_PRO_PLAN,
+  standard: UBB_STANDARD_PLAN,
   growth: UBB_GROWTH_PLAN,
 };
