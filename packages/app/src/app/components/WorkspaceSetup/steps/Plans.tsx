@@ -27,7 +27,7 @@ export const Plans: React.FC<StepProps> = ({
   };
 
   return (
-    <Stack direction="vertical" gap={6} css={{ color: '#fff' }}>
+    <Stack direction="vertical" gap={6}>
       <StepHeader
         onPrevStep={onPrevStep}
         onDismiss={onDismiss}

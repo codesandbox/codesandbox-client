@@ -31,12 +31,7 @@ export const PlanOptions: React.FC<StepProps> = ({
   };
 
   return (
-    <Stack
-      align="flex-start"
-      direction="vertical"
-      gap={6}
-      css={{ maxWidth: '450px' }}
-    >
+    <Stack direction="vertical" gap={6} css={{ width: '450px' }}>
       <StepHeader
         onPrevStep={onPrevStep}
         onDismiss={onDismiss}
@@ -91,7 +86,9 @@ export const PlanOptions: React.FC<StepProps> = ({
           </Text>
         </Element>
       </Stack>
-      <StyledButton onClick={handleSubmit}>Proceed to checkout</StyledButton>
+      <StyledButton autoWidth onClick={handleSubmit}>
+        Proceed to checkout
+      </StyledButton>
     </Stack>
   );
 };

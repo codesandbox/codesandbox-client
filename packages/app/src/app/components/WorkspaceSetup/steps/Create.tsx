@@ -6,14 +6,20 @@ import { StyledButton } from 'app/components/dashboard/Button';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
 import { StepProps } from '../types';
+import { StepHeader } from '../StepHeader';
 
-export const Create: React.FC<StepProps> = ({ onNextStep }) => {
+export const Create: React.FC<StepProps> = ({
+  onNextStep,
+  onPrevStep,
+  onDismiss,
+  currentStep,
+  numberOfSteps,
+}) => {
   const { dashboard, activeTeam, activeTeamInfo } = useAppState();
   const actions = useActions();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [existingTeamError, setExistingTeamError] = useState(false);
 
   const searchParams = new URLSearchParams(history.location.search);
   const urlWorkspaceId = searchParams.get('workspace');
@@ -74,32 +80,24 @@ export const Create: React.FC<StepProps> = ({ onNextStep }) => {
     }
 
     // Check if there's any team with the same name.
-    setExistingTeamError(
-      Boolean(dashboard.teams.find(team => team.name === trimmedName))
-    );
+    if (dashboard.teams.some(team => team.name === trimmedName)) {
+      setError('Name already taken, please choose another one.');
+    }
   };
 
   if (teamIsAlreadyCreated && !activeTeamInfo) {
-    return null; // TODO: Loader
+    return null;
   }
 
   return (
-    <Stack align="center" direction="vertical" gap={6}>
-      <Stack align="center" direction="vertical" gap={2}>
-        <Text
-          as="h2"
-          size={32}
-          weight="500"
-          align="center"
-          css={{
-            color: '#ffffff',
-            fontFamily: 'Everett, sans-serif',
-          }}
-        >
-          Create workspace
-        </Text>
-        <Text color="#999">Let&apos;s give your workspace a name</Text>
-      </Stack>
+    <Stack direction="vertical" gap={6} css={{ width: '350px' }}>
+      <StepHeader
+        onPrevStep={onPrevStep}
+        onDismiss={onDismiss}
+        currentStep={currentStep}
+        numberOfSteps={numberOfSteps}
+        title="Workspace name"
+      />
       <Stack
         as="form"
         onSubmit={onSubmit}
@@ -107,7 +105,8 @@ export const Create: React.FC<StepProps> = ({ onNextStep }) => {
         gap={6}
         css={{ width: '100%' }}
       >
-        <Stack gap={2} direction="vertical">
+        <Text color="#fff">Set a name for your workspace.</Text>
+        <Element css={{ position: 'relative', paddingBottom: '24px' }}>
           <InputText
             label="Workspace name"
             placeholder="My workspace"
@@ -120,45 +119,37 @@ export const Create: React.FC<StepProps> = ({ onNextStep }) => {
             onChange={handleInput}
           />
 
-          {existingTeamError && (
-            <Text size={3} variant="danger">
-              Name already taken, please choose another one.
-            </Text>
-          )}
-
           {error && (
-            <Text size={3} variant="danger">
+            <Text
+              css={{ position: 'absolute', bottom: 0, left: 0 }}
+              size={3}
+              variant="danger"
+            >
               {error}
             </Text>
           )}
-        </Stack>
+        </Element>
 
         <StyledButton
           loading={loading}
-          disabled={loading || existingTeamError}
+          disabled={loading || !!error}
           type="submit"
         >
           Next
         </StyledButton>
       </Stack>
-      <Element paddingTop={10}>
-        <Link
-          href={docsUrl('/learn/plans/workspace')}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <Stack
-            css={{
-              color: '#999999',
-            }}
-            gap={3}
-            justify="center"
-          >
-            <Text size={2}>More about teams and workspaces</Text>
-            <Icon name="external" size={16} />
-          </Stack>
-        </Link>
-      </Element>
+      <Link
+        href={docsUrl('/learn/plans/workspace')}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Stack gap={1} align="center">
+          <Text color="#999" size={4} css={{ textDecoration: 'underline' }}>
+            More about teams and workspaces
+          </Text>
+          <Icon name="external" size={16} />
+        </Stack>
+      </Link>
     </Stack>
   );
 };

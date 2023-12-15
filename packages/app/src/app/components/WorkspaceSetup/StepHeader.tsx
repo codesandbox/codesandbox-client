@@ -36,7 +36,7 @@ export const StepHeader = ({
       STEP {currentStep + 1} OF {numberOfSteps}
     </Text>
 
-    <Text margin={0} as="h1" size={24} color="white">
+    <Text margin={0} as="h1" fontFamily="everett" size={24} color="white">
       {title}
     </Text>
   </Stack>

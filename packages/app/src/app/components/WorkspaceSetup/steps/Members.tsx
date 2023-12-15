@@ -1,13 +1,20 @@
 import React, { FormEvent, useState } from 'react';
-import { Button, Icon, Stack, Text } from '@codesandbox/components';
+import { Icon, Stack, Text } from '@codesandbox/components';
 import { useAppState, useEffects } from 'app/overmind';
 import { StyledButton } from 'app/components/dashboard/Button';
 import { Textarea } from 'app/components/dashboard/Textarea';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { StepProps } from '../types';
+import { StepHeader } from '../StepHeader';
 
-export const Members: React.FC<StepProps> = ({ onNextStep }) => {
+export const Members: React.FC<StepProps> = ({
+  onNextStep,
+  onPrevStep,
+  onDismiss,
+  currentStep,
+  numberOfSteps,
+}) => {
   const { activeTeamInfo, activeWorkspaceAuthorization } = useAppState();
   const { gql } = useEffects();
   const { copyToClipboard } = useEffects().browser;
@@ -103,130 +110,69 @@ export const Members: React.FC<StepProps> = ({ onNextStep }) => {
   };
 
   return (
-    <Stack direction="vertical" gap={6}>
-      <Stack
-        align="center"
-        direction="vertical"
-        gap={6}
-        css={{
-          paddingTop: '60px',
-          paddingBottom: '40px',
-          maxWidth: '370px',
-          width: '100%',
-        }}
-      >
-        <Stack gap={2} direction="vertical">
-          <Text
-            as="h2"
-            size={32}
-            weight="500"
-            align="center"
-            css={{
-              margin: 0,
-              color: '#ffffff',
-              fontFamily: 'Everett, sans-serif',
-              lineHeight: '42px',
-              letterSpacing: '-0.01em',
-            }}
-          >
-            Invite team members
-          </Text>
-          <Text color="#999">Insert email addresses separated by a comma</Text>
-        </Stack>
-        <Stack
-          as="form"
-          onSubmit={handleSubmit}
-          direction="vertical"
-          gap={6}
-          css={{ width: '100%' }}
-        >
-          <Stack gap={4} direction="vertical">
-            <Textarea
-              id="member"
-              name="members"
-              value={addressesString}
-              onChange={e => {
-                setAddressesString(e.target.value);
-              }}
-              resize={false}
-              rows={3}
-              autoFocus
-              required
-            />
+    <Stack direction="vertical" gap={6} css={{ width: '350px' }}>
+      <StepHeader
+        title="Invite workspace members"
+        onDismiss={onDismiss}
+        onPrevStep={onPrevStep}
+        currentStep={currentStep}
+        numberOfSteps={numberOfSteps}
+      />
+      <Stack as="form" onSubmit={handleSubmit} direction="vertical" gap={2}>
+        <Text>
+          Insert email addresses separated by a comma. Members will be invited
+          as editors
+        </Text>
 
-            {invalidEmails && invalidEmails.length > 0 ? (
-              <Text size={3} variant="danger">
-                {invalidEmails.length > 1
-                  ? 'There seem to be errors in some email addresses, '
-                  : 'Email is invalid, '}
-                please review: {formatInvalidEmails(invalidEmails)}
-              </Text>
-            ) : null}
-
-            {inviteError ? (
-              <Text size={3} variant="danger">
-                {inviteError}
-              </Text>
-            ) : null}
-
-            <StyledButton loading={inviteLoading} type="submit">
-              Send invites
-            </StyledButton>
-          </Stack>
-          <Text
-            css={{
-              margin: 0,
-            }}
-            id="invitees-role"
-            align="center"
-            as="p"
-            size={3}
-            variant="muted"
-          >
-            Team members will be invited as{' '}
-            <Text color="#C2C2C2">
-              {
-                // The modal is visible only to admins and editors.
-                {
-                  [TeamMemberAuthorization.Admin]: 'editors',
-                  [TeamMemberAuthorization.Write]: 'viewers',
-                }[activeWorkspaceAuthorization]
-              }
-            </Text>
-            .
-          </Text>
-        </Stack>
-      </Stack>
-      <Stack
-        css={{
-          width: '100%',
-          padding: '48px',
-        }}
-        justify="space-between"
-      >
-        <Button
-          css={{ width: 'auto' }}
-          onClick={copyTeamInviteLink}
-          variant="link"
-        >
-          <Icon
-            size={12}
-            style={{ marginRight: 8 }}
-            name={linkCopied ? 'simpleCheck' : 'link'}
-          />
-          {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
-        </Button>
-
-        <Button
-          css={{ width: 'auto' }}
-          onClick={() => {
-            onNextStep();
+        <Textarea
+          id="member"
+          name="members"
+          value={addressesString}
+          onChange={e => {
+            setAddressesString(e.target.value);
           }}
-          variant="link"
-        >
-          Next
-        </Button>
+          resize={false}
+          rows={3}
+          autoFocus
+          required
+        />
+
+        {invalidEmails && invalidEmails.length > 0 ? (
+          <Text size={3} variant="danger">
+            {invalidEmails.length > 1
+              ? 'There seem to be errors in some email addresses, '
+              : 'Email is invalid, '}
+            please review: {formatInvalidEmails(invalidEmails)}
+          </Text>
+        ) : null}
+
+        {inviteError ? (
+          <Text size={3} variant="danger">
+            {inviteError}
+          </Text>
+        ) : null}
+
+        <Stack gap={2}>
+          <StyledButton
+            autoWidth
+            loading={inviteLoading}
+            type="submit"
+            variant="secondary"
+          >
+            Send invites
+          </StyledButton>
+          <StyledButton autoWidth onClick={copyTeamInviteLink} variant="ghost">
+            <Icon
+              size={12}
+              style={{ marginRight: 8 }}
+              name={linkCopied ? 'simpleCheck' : 'link'}
+            />
+            {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
+          </StyledButton>
+        </Stack>
       </Stack>
+
+      <StyledButton onClick={onNextStep}>Next</StyledButton>
     </Stack>
   );
 };

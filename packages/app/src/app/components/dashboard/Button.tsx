@@ -3,10 +3,8 @@ import { Button as ButtonComponent } from '@codesandbox/components';
 
 export const StyledButton = styled(ButtonComponent)`
   height: auto;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding: 12px 16px;
   font-weight: 500;
   font-size: 16px;
-  line-height: 20px;
   cursor: pointer;
 `;
