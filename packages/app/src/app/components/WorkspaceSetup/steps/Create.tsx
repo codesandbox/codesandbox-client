@@ -167,7 +167,7 @@ export const Create: React.FC<StepProps> = ({
             <Text color="#999" size={3} css={{ textDecoration: 'underline' }}>
               More about teams and workspaces
             </Text>
-            <Icon name="external" size={16} />
+            <Icon name="external" size={12} />
           </Stack>
         </Link>
       </Stack>
