@@ -10,6 +10,8 @@ export const SUBSCRIPTION_DOCS_URLS = {
 export const ORGANIZATION_CONTACT_LINK =
   'https://webforms.pipedrive.com/f/ckvSiEQynHckLBoq0wghZhoy9cQGYZrzaCwP7suEln3tMu5zgFKxY6sSZjTYLRC16X';
 
+export const CSB_FRIENDS_LINK = 'https://codesandbox.typeform.com/friends';
+
 export interface Feature {
   key: string;
   label: string;

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Element, Stack, Text } from '@codesandbox/components';
 import {
+  CSB_FRIENDS_LINK,
   ORGANIZATION_CONTACT_LINK,
   PlanType,
   PricingPlan,
@@ -11,7 +12,8 @@ import {
   UBB_STANDARD_PLAN,
 } from 'app/constants';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
+import { useActions, useAppState } from 'app/overmind';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -24,12 +26,28 @@ export const Plans: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
-  const history = useHistory();
+  const {
+    getQueryParam,
+    setQueryParam,
+    removeQueryParam,
+  } = useURLSearchParams();
+  const { activeTeam } = useAppState();
+  const actions = useActions();
+  const urlWorkspaceId = getQueryParam('workspace');
+
+  useEffect(() => {
+    // Reset selected value in the URL when going on prev step
+    removeQueryParam('plan');
+  }, []);
+
+  useEffect(() => {
+    if (activeTeam !== urlWorkspaceId) {
+      actions.setActiveTeam({ id: urlWorkspaceId });
+    }
+  }, [urlWorkspaceId, activeTeam]);
 
   const handleChoosePlan = (plan: PlanType) => {
-    const searchParams = new URLSearchParams(history.location.search);
-    searchParams.set('plan', plan);
-    history.replace(`${history.location.pathname}?${searchParams.toString()}`);
+    setQueryParam('plan', plan);
     onNextStep();
   };
 
@@ -174,7 +192,16 @@ export const Plans: React.FC<StepProps> = ({
         >
           <Text weight="700">Working with open source?</Text>
           <Text size={3}>
-            Get major discounts through our CodeSandbox Friends program!
+            Get major discounts through our{' '}
+            <Text
+              as="a"
+              href={CSB_FRIENDS_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              CodeSandbox Friends program
+            </Text>
+            !
           </Text>
         </Stack>
       </Stack>

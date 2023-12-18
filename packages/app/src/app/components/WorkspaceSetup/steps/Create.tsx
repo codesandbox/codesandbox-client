@@ -10,7 +10,8 @@ import {
 } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useHistory } from 'react-router-dom';
+import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -24,12 +25,15 @@ export const Create: React.FC<StepProps> = ({
 }) => {
   const { dashboard, activeTeam, activeTeamInfo } = useAppState();
   const actions = useActions();
-  const history = useHistory();
+  const [, setFreshWorkspaceId] = useGlobalPersistedState<string>(
+    'FRESH_WORKSPACE_ID',
+    undefined
+  );
+  const { getQueryParam, setQueryParam } = useURLSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const searchParams = new URLSearchParams(history.location.search);
-  const urlWorkspaceId = searchParams.get('workspace');
+  const urlWorkspaceId = getQueryParam('workspace');
   const teamIsAlreadyCreated = !!urlWorkspaceId;
 
   useEffect(() => {
@@ -61,7 +65,8 @@ export const Create: React.FC<StepProps> = ({
           teamName,
         });
 
-        history.replace(`${history.location.pathname}?workspace=${team.id}`);
+        setQueryParam('workspace', team.id);
+        setFreshWorkspaceId(team.id);
         await actions.setActiveTeam({ id: team.id });
       }
     } catch {
@@ -120,16 +125,14 @@ export const Create: React.FC<StepProps> = ({
           css={{ width: '100%' }}
         >
           <Stack gap={2} direction="vertical">
-            <Text color="#fff">Set a name for your workspace.</Text>
             <Element css={{ position: 'relative', paddingBottom: '24px' }}>
               <InputText
-                label="Workspace name"
+                label="Set a name for your workspace"
                 placeholder="My workspace"
                 id="teamname"
                 name="name"
                 required
                 autoFocus
-                hideLabel
                 defaultValue={teamIsAlreadyCreated ? activeTeamInfo.name : ''}
                 onChange={handleInput}
               />
@@ -161,7 +164,7 @@ export const Create: React.FC<StepProps> = ({
           rel="noreferrer"
         >
           <Stack gap={1} align="center">
-            <Text color="#999" size={4} css={{ textDecoration: 'underline' }}>
+            <Text color="#999" size={3} css={{ textDecoration: 'underline' }}>
               More about teams and workspaces
             </Text>
             <Icon name="external" size={16} />

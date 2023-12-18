@@ -1,8 +1,8 @@
 import React from 'react';
 import { Stack, Element, Button, Text } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
-import { useLocation } from 'react-router-dom';
 import { PRICING_PLANS, PlanType } from 'app/constants';
+import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -14,15 +14,14 @@ export const PlanOptions: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
-  const location = useLocation();
-  const selectedPlan = new URLSearchParams(location.search).get(
-    'plan'
-  ) as PlanType;
+  const { getQueryParam } = useURLSearchParams();
+  const selectedPlan = getQueryParam('plan') as PlanType;
 
   const plan = PRICING_PLANS[selectedPlan];
 
   if (!plan) {
     onPrevStep();
+    return null;
   }
 
   const handleSubmit = () => {

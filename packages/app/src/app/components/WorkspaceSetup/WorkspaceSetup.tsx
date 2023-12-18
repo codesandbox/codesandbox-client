@@ -6,6 +6,7 @@ import { Members } from './steps/Members';
 import { Plans } from './steps/Plans';
 import { PlanOptions } from './steps/PlanOptions';
 import { Payment } from './steps/Payment';
+import { SelectWorkspace } from './steps/SelectWorkspace';
 
 export type WorkspaceSetupProps = {
   steps: WorkspaceSetupStep[];
@@ -53,6 +54,7 @@ export const STEP_COMPONENTS: Record<
 > = {
   create: Create,
   members: Members,
+  'select-workspace': SelectWorkspace,
   plans: Plans,
   'plan-options': PlanOptions,
   payment: Payment,

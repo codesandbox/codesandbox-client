@@ -8,12 +8,7 @@ interface LabelProps {
 }
 
 export const Label = ({ htmlFor, children }: LabelProps) => (
-  <Text
-    as="label"
-    htmlFor={htmlFor}
-    size={12}
-    css={{ color: '#999999', letterSpacing: '0.005em' }}
-  >
+  <Text as="label" htmlFor={htmlFor} color="#999">
     {children}
   </Text>
 );

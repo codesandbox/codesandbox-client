@@ -1,6 +1,7 @@
 export type WorkspaceSetupStep =
   | 'create'
   | 'members'
+  | 'select-workspace'
   | 'plans'
   | 'plan-options'
   | 'payment';

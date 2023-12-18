@@ -179,7 +179,9 @@ export const Members: React.FC<StepProps> = ({
           </Stack>
         </Stack>
 
-        <StyledButton onClick={onNextStep}>Next</StyledButton>
+        <Button onClick={onNextStep} size="large">
+          Next
+        </Button>
       </Stack>
     </AnimatedStep>
   );
