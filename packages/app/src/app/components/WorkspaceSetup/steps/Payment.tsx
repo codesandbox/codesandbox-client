@@ -1,6 +1,5 @@
 import React from 'react';
-import { Stack } from '@codesandbox/components';
-import { StyledButton } from 'app/components/dashboard/Button';
+import { Stack, Button } from '@codesandbox/components';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -22,8 +21,12 @@ export const Payment: React.FC<StepProps> = ({
           numberOfSteps={numberOfSteps}
           title="Redirecting to payment to provider..."
         />
-        <StyledButton onClick={onNextStep}>Finish checkout</StyledButton>
-        <StyledButton onClick={onDismiss}>Cancel checkout</StyledButton>
+        <Button size="large" onClick={onNextStep}>
+          Finish checkout
+        </Button>
+        <Button size="large" onClick={onDismiss}>
+          Cancel checkout
+        </Button>
       </Stack>
     </AnimatedStep>
   );

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Stack, Element, Text } from '@codesandbox/components';
-import { StyledButton } from 'app/components/dashboard/Button';
+import { Stack, Element, Button, Text } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { useLocation } from 'react-router-dom';
 import { PRICING_PLANS, PlanType } from 'app/constants';
@@ -89,9 +88,9 @@ export const PlanOptions: React.FC<StepProps> = ({
             </Text>
           </Element>
         </Stack>
-        <StyledButton autoWidth onClick={handleSubmit}>
+        <Button autoWidth size="large" onClick={handleSubmit}>
           Proceed to checkout
-        </StyledButton>
+        </Button>
       </Stack>
     </AnimatedStep>
   );

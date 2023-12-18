@@ -1,7 +1,6 @@
 import React, { FormEvent, useState } from 'react';
-import { Icon, Stack, Text } from '@codesandbox/components';
+import { Icon, Stack, Text, Button } from '@codesandbox/components';
 import { useAppState, useEffects } from 'app/overmind';
-import { StyledButton } from 'app/components/dashboard/Button';
 import { Textarea } from 'app/components/dashboard/Textarea';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
@@ -155,18 +154,20 @@ export const Members: React.FC<StepProps> = ({
           ) : null}
 
           <Stack gap={2}>
-            <StyledButton
+            <Button
               autoWidth
               loading={inviteLoading}
               type="submit"
               variant="secondary"
+              size="large"
             >
               Send invites
-            </StyledButton>
-            <StyledButton
+            </Button>
+            <Button
               autoWidth
               onClick={copyTeamInviteLink}
               variant="ghost"
+              size="large"
             >
               <Icon
                 size={12}
@@ -174,7 +175,7 @@ export const Members: React.FC<StepProps> = ({
                 name={linkCopied ? 'simpleCheck' : 'link'}
               />
               {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
-            </StyledButton>
+            </Button>
           </Stack>
         </Stack>
 

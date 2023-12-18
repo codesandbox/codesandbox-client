@@ -1,6 +1,7 @@
 import React from 'react';
-import { Element, Stack, Text } from '@codesandbox/components';
+import { Button, Element, Stack, Text } from '@codesandbox/components';
 import {
+  ORGANIZATION_CONTACT_LINK,
   PlanType,
   PricingPlan,
   UBB_ENTERPRISE_PLAN,
@@ -10,7 +11,6 @@ import {
   UBB_STANDARD_PLAN,
 } from 'app/constants';
 import styled from 'styled-components';
-import { StyledButton } from 'app/components/dashboard/Button';
 import { useHistory } from 'react-router-dom';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
@@ -35,7 +35,7 @@ export const Plans: React.FC<StepProps> = ({
 
   return (
     <AnimatedStep>
-      <Stack direction="vertical" gap={6}>
+      <Stack direction="vertical" gap={9}>
         <StepHeader
           onPrevStep={onPrevStep}
           onDismiss={onDismiss}
@@ -44,18 +44,23 @@ export const Plans: React.FC<StepProps> = ({
           title="Choose a plan"
         />
 
-        <Stack gap={4}>
+        <Stack gap={6}>
           <StyledCard
             direction="vertical"
             align="center"
             gap={12}
-            css={{ background: '#e5e5e5', width: 300 }}
+            css={{ background: '#1d1d1d', color: '#e5e5e5', width: 300 }}
           >
             <CardHeading>For learning and experimenting</CardHeading>
             <PlanAndPricing plan={UBB_FREE_PLAN} />
-            <StyledButton autoWidth variant="dark" onClick={onEarlyExit}>
+            <Button
+              autoWidth
+              variant="secondary"
+              size="large"
+              onClick={onEarlyExit}
+            >
               Choose Free
-            </StyledButton>
+            </Button>
             <PlanCredits plan={UBB_FREE_PLAN} />
             <PlanFeatures
               features={[
@@ -83,32 +88,35 @@ export const Plans: React.FC<StepProps> = ({
             >
               <Stack direction="vertical" gap={12} align="center">
                 <PlanAndPricing plan={UBB_FLEX_PLAN} />
-                <StyledButton
+                <Button
                   variant="dark"
+                  size="large"
                   onClick={() => handleChoosePlan('flex')}
                 >
                   Choose Pro Flex
-                </StyledButton>
+                </Button>
                 <PlanCredits plan={UBB_FLEX_PLAN} />
               </Stack>
               <Stack direction="vertical" gap={12} align="center">
                 <PlanAndPricing plan={UBB_STANDARD_PLAN} />
-                <StyledButton
+                <Button
                   variant="dark"
+                  size="large"
                   onClick={() => handleChoosePlan('standard')}
                 >
                   Choose Pro Standard
-                </StyledButton>
+                </Button>
                 <PlanCredits plan={UBB_STANDARD_PLAN} />
               </Stack>
               <Stack direction="vertical" gap={12} align="center">
                 <PlanAndPricing plan={UBB_GROWTH_PLAN} />
-                <StyledButton
+                <Button
                   variant="dark"
+                  size="large"
                   onClick={() => handleChoosePlan('growth')}
                 >
                   Choose Pro Growth
-                </StyledButton>
+                </Button>
                 <PlanCredits plan={UBB_GROWTH_PLAN} />
               </Stack>
             </Element>
@@ -132,9 +140,14 @@ export const Plans: React.FC<StepProps> = ({
               The future of Cloud Development Environments
             </CardHeading>
             <PlanAndPricing plan={UBB_ENTERPRISE_PLAN} />
-            <StyledButton autoWidth variant="dark" onClick={() => {}}>
+            <Button
+              as="a"
+              href={ORGANIZATION_CONTACT_LINK}
+              variant="dark"
+              size="large"
+            >
               Contact us
-            </StyledButton>
+            </Button>
             <Stack direction="vertical" gap={6}>
               <Text size={3}>Everything in Pro, plus:</Text>
 
@@ -153,13 +166,24 @@ export const Plans: React.FC<StepProps> = ({
             <PlanVMs plan={UBB_ENTERPRISE_PLAN} />
           </StyledCard>
         </Stack>
+        <Stack
+          css={{ background: '#1d1d1d', color: '#fff', padding: '32px' }}
+          direction="vertical"
+          align="center"
+          gap={1}
+        >
+          <Text weight="700">Working with open source?</Text>
+          <Text size={3}>
+            Get major discounts through our CodeSandbox Friends program!
+          </Text>
+        </Stack>
       </Stack>
     </AnimatedStep>
   );
 };
 
 const StyledCard = styled(Stack)`
-  border-top: 32px solid #ccc;
+  border-top: 32px solid #252525;
   background: #fff;
   color: #000;
   padding: 40px 32px;

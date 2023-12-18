@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useActions, useAppState } from 'app/overmind';
-import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
+import {
+  Stack,
+  Button,
+  Text,
+  Link,
+  Element,
+  Icon,
+} from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
-import { StyledButton } from 'app/components/dashboard/Button';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
 import { StepProps } from '../types';
@@ -140,13 +146,14 @@ export const Create: React.FC<StepProps> = ({
             </Element>
           </Stack>
 
-          <StyledButton
+          <Button
             loading={loading}
             disabled={loading || !!error}
             type="submit"
+            size="large"
           >
             Next
-          </StyledButton>
+          </Button>
         </Stack>
         <Link
           href={docsUrl('/learn/plans/workspace')}

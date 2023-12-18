@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Element, Text, Stack } from '@codesandbox/components';
+import { Element, Button, Text, Stack } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { InputText } from 'app/components/dashboard/InputText';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
-import { StyledButton } from 'app/components/dashboard/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 const ROLE_OPTIONS = [
@@ -192,12 +191,13 @@ export const Onboarding = () => {
             required
           />
         </Stack>
-        <StyledButton
+        <Button
           type="submit"
+          size="large"
           disabled={loadingUsername || !pendingUser.valid}
         >
           {loadingUsername ? 'Checking username...' : 'Create account'}
-        </StyledButton>
+        </Button>
       </Stack>
     </Stack>
   );
