@@ -50,7 +50,7 @@ export const PlanOptions: React.FC<StepProps> = ({
           can stay within your budget.
         </Text>
         <Text>You can change this limit at any time.</Text>
-        <Stack gap={2} direction="vertical">
+        <Stack gap={3} direction="vertical">
           <Text as="label" htmlFor="spending-limit" color="#fff">
             Monthly spending limit for on-demand credits
           </Text>

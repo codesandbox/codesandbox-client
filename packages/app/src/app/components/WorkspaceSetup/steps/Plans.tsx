@@ -185,7 +185,12 @@ export const Plans: React.FC<StepProps> = ({
           </StyledCard>
         </Stack>
         <Stack
-          css={{ background: '#1d1d1d', color: '#fff', padding: '32px' }}
+          css={{
+            background: '#1d1d1d',
+            color: '#fff',
+            padding: '32px',
+            borderRadius: '2px',
+          }}
           direction="vertical"
           align="center"
           gap={1}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useActions, useAppState } from 'app/overmind';
 import {
   Stack,
@@ -32,6 +32,7 @@ export const Create: React.FC<StepProps> = ({
   const { getQueryParam, setQueryParam } = useURLSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const urlWorkspaceId = getQueryParam('workspace');
   const teamIsAlreadyCreated = !!urlWorkspaceId;
@@ -41,6 +42,12 @@ export const Create: React.FC<StepProps> = ({
       actions.setActiveTeam({ id: urlWorkspaceId });
     }
   }, [urlWorkspaceId, activeTeam]);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.setCustomValidity(error);
+    }
+  }, [error]);
 
   const onSubmit = async event => {
     event.preventDefault();
@@ -87,10 +94,8 @@ export const Create: React.FC<StepProps> = ({
     const trimmedName = value?.trim() ?? '';
 
     // Validate if the name input is filled with whitespaces.
-    if (trimmedName) {
-      e.target.setCustomValidity('');
-    } else {
-      e.target.setCustomValidity('Workspace name is required.');
+    if (!trimmedName) {
+      setError('Workspace name is required.');
     }
 
     // Check if there's any team with the same name.
@@ -99,7 +104,7 @@ export const Create: React.FC<StepProps> = ({
         team => team.name === trimmedName && team.id !== activeTeam
       )
     ) {
-      setError('Name already taken, please choose another one.');
+      setError('You already have a workspace with this name.');
     }
   };
 
@@ -132,9 +137,11 @@ export const Create: React.FC<StepProps> = ({
                 id="teamname"
                 name="name"
                 required
+                autoComplete="off"
                 autoFocus
                 defaultValue={teamIsAlreadyCreated ? activeTeamInfo.name : ''}
                 onChange={handleInput}
+                ref={inputRef}
               />
 
               {error && (

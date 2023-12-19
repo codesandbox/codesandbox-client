@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { WorkspaceSetup } from 'app/components/WorkspaceSetup';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { WorkspaceSetupStep } from 'app/components/WorkspaceSetup/types';
+import { useAppState } from 'app/overmind';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 export const UpgradeWorkspace = () => {
   const history = useHistory();
+  const { hasLogIn } = useAppState();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
 
@@ -24,6 +27,12 @@ export const UpgradeWorkspace = () => {
 
     return initialSteps;
   });
+
+  if (!hasLogIn) {
+    return (
+      <Redirect to={signInPageUrl(`${location.pathname}${location.search}`)} />
+    );
+  }
 
   return (
     <WorkspaceSetup

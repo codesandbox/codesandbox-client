@@ -22,6 +22,10 @@ const StyledInput = styled.input<{ isInvalid?: boolean }>`
   &:focus {
     outline: 1px solid #ac9cff;
   }
+
+  &:user-invalid {
+    outline: 1px solid #eb5e5e;
+  }
 `;
 
 interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {

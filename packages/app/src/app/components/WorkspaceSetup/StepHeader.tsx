@@ -16,7 +16,7 @@ export const StepHeader = ({
   onDismiss,
   onPrevStep,
 }) => (
-  <Stack direction="vertical" gap={4}>
+  <Stack direction="vertical" gap={6}>
     {currentStep === 0 ? (
       <Button autoWidth variant="secondary" onClick={onDismiss}>
         <Stack gap={2}>
@@ -32,12 +32,14 @@ export const StepHeader = ({
         </Stack>
       </Button>
     )}
-    <Text size={4} weight="medium" color="white">
-      STEP {currentStep + 1} OF {numberOfSteps}
-    </Text>
+    <Stack direction="vertical" gap={1}>
+      <Text size={4} weight="medium" color="white">
+        STEP {currentStep + 1} OF {numberOfSteps}
+      </Text>
 
-    <Text margin={0} as="h1" fontFamily="everett" size={24} color="white">
-      {title}
-    </Text>
+      <Text margin={0} as="h1" fontFamily="everett" size={24} color="white">
+        {title}
+      </Text>
+    </Stack>
   </Stack>
 );
