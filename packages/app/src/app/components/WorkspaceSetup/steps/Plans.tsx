@@ -307,7 +307,13 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
       </Text>
       {plan.id === 'free' && <Text weight="medium">forever</Text>}
       {plan.id === 'enterprise' && <Element css={{ height: '20px' }} />}
-      {isPro && <Text weight="medium">per month</Text>}
+      {isPro && (
+        <Text align="center" weight="medium">
+          per month
+          <br />
+          per workspace
+        </Text>
+      )}
     </Stack>
   );
 };
@@ -320,7 +326,7 @@ const PlanCredits: React.FC<{ plan: PricingPlan }> = ({ plan }) => (
         size={3}
         css={{ textWrap: 'balance', textAlign: 'center', maxWidth: '180px' }}
       >
-        Access on-demand credits for ${plan.additionalCreditsCost}/cr
+        Get on-demand credits for ${plan.additionalCreditsCost}/cr
       </Text>
     ) : null}
   </Stack>
@@ -386,9 +392,9 @@ const CodeSandboxFriendsCard = () => (
         Discounts for open source and non-profits
       </Text>
       <Text css={{ textWrap: 'balance' }}>
-        Through our CodeSandbox Friends program, we offer free or low-cost
-        access to CodeSandbox for people working on licensed open-source
-        software, developer community projects or non-profit organizations.{' '}
+        Remove limits and get free or low-cost access to CodeSandbox if you're
+        working on licensed open-source software, developer community projects
+        or for non-profit organizations.{' '}
       </Text>
     </Stack>
     <Button

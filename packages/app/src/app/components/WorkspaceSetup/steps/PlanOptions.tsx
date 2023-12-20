@@ -47,17 +47,13 @@ export const PlanOptions: React.FC<StepProps> = ({
         />
         <Text>
           You will have {plan.credits} credits included in your subscription.
-          Above this, you can purchase on-demand credits at $
+          Above this, we will automatically bill you for on-demand credits at $
           {plan.additionalCreditsCost}/credit (500 credits for $
           {plan.additionalCreditsCost * 500}).
         </Text>
         <Text>
           Set a monthly spending limit for these on-demand credits, so that you
           can stay within your budget. You can change this limit at any time.
-        </Text>
-        <Text>
-          For the first two billing cycles, the maximum limit is $100. If you
-          need a higher limit, contact us.
         </Text>
 
         <InputText
