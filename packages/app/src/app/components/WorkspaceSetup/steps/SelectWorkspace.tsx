@@ -45,7 +45,7 @@ export const SelectWorkspace: React.FC<StepProps> = ({
 
   return (
     <AnimatedStep>
-      <Stack direction="vertical" gap={6} css={{ width: '350px' }}>
+      <Stack direction="vertical" gap={6} css={{ maxWidth: '350px' }}>
         <StepHeader
           onPrevStep={onPrevStep}
           onDismiss={onDismiss}

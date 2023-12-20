@@ -79,136 +79,149 @@ export const Plans: React.FC<StepProps> = ({
             title="Choose a plan"
           />
 
-          <Stack gap={6}>
-            <StyledCard
-              direction="vertical"
-              align="center"
-              gap={12}
-              css={{
-                background: '#1d1d1d',
-                color: '#e5e5e5',
-                width: 300,
-                '& a': { color: '#DCF76E' },
-              }}
-            >
-              <CardHeading>For learning and experimenting</CardHeading>
-              <PlanAndPricing plan={UBB_FREE_PLAN} />
-              <Button
-                autoWidth
-                css={{ background: '#323232' }}
-                variant="secondary"
-                size="large"
-                onClick={onEarlyExit}
-              >
-                Choose Free
-              </Button>
-              <PlanCredits plan={UBB_FREE_PLAN} />
-              <PlanFeatures
-                features={[
-                  '5 members',
-                  '20 Sandboxes',
-                  'Unlimited Devboxes',
-                  'Unlimited repositories',
-                ]}
-              />
-              <PlanVMs plan={UBB_FREE_PLAN} tierMap={tierMap} />
-            </StyledCard>
-            <StyledCard
-              direction="vertical"
-              align="center"
-              gap={12}
-              css={{ borderColor: '#9D8BF9' }}
-            >
-              <CardHeading>
-                Pay as you go with a monthly subscription
-              </CardHeading>
-              <Element
+          <HorizontalScroller>
+            <Stack gap={6}>
+              <StyledCard
+                direction="vertical"
+                align="center"
+                gap={12}
                 css={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr',
-                  gap: '32px',
+                  background: '#1d1d1d',
+                  color: '#e5e5e5',
+                  width: '300px',
+                  '@media (max-width: 1400px)': {
+                    width: '260px',
+                  },
+                  '& a': { color: '#DCF76E' },
                 }}
               >
-                <Stack direction="vertical" gap={12} align="center">
-                  <PlanAndPricing plan={UBB_FLEX_PLAN} />
-                  <Button
-                    variant="dark"
-                    size="large"
-                    onClick={() => handleChoosePlan('flex')}
-                  >
-                    Choose Pro Flex
-                  </Button>
-                  <PlanCredits plan={UBB_FLEX_PLAN} />
-                </Stack>
-                <Stack direction="vertical" gap={12} align="center">
-                  <PlanAndPricing plan={UBB_STANDARD_PLAN} />
-                  <Button
-                    variant="dark"
-                    size="large"
-                    onClick={() => handleChoosePlan('standard')}
-                  >
-                    Choose Pro Standard
-                  </Button>
-                  <PlanCredits plan={UBB_STANDARD_PLAN} />
-                </Stack>
-                <Stack direction="vertical" gap={12} align="center">
-                  <PlanAndPricing plan={UBB_GROWTH_PLAN} />
-                  <Button
-                    variant="dark"
-                    size="large"
-                    onClick={() => handleChoosePlan('growth')}
-                  >
-                    Choose Pro Growth
-                  </Button>
-                  <PlanCredits plan={UBB_GROWTH_PLAN} />
-                </Stack>
-              </Element>
-              <PlanFeatures
-                features={[
-                  '20 members',
-                  '50 Sandboxes',
-                  'Unlimited Devboxes',
-                  'Unlimited repositories',
-                ]}
-              />
-              <PlanVMs plan={UBB_STANDARD_PLAN} tierMap={tierMap} />
-            </StyledCard>
-            <StyledCard
-              direction="vertical"
-              align="center"
-              gap={12}
-              css={{ borderColor: '#DCF76E', width: 300 }}
-            >
-              <CardHeading>
-                The future of Cloud Development Environments
-              </CardHeading>
-              <PlanAndPricing plan={UBB_ENTERPRISE_PLAN} />
-              <Button
-                as="a"
-                href={ORGANIZATION_CONTACT_LINK}
-                variant="dark"
-                size="large"
-              >
-                Contact us
-              </Button>
-              <Stack direction="vertical" gap={6}>
-                <Text>Everything in Pro, plus:</Text>
-
+                <CardHeading>For learning and experimenting</CardHeading>
+                <PlanAndPricing plan={UBB_FREE_PLAN} />
+                <Button
+                  css={{ background: '#323232' }}
+                  variant="secondary"
+                  size="large"
+                  onClick={onEarlyExit}
+                >
+                  Choose Free
+                </Button>
+                <PlanCredits plan={UBB_FREE_PLAN} />
                 <PlanFeatures
                   features={[
-                    'Unlimited members',
-                    'Unlimited API',
-                    'On-premise options',
-                    'Private managed cloud',
-                    'Dedicated support',
-                    'SSO',
+                    '5 members',
+                    '20 Sandboxes',
+                    'Unlimited Devboxes',
+                    'Unlimited repositories',
                   ]}
                 />
-              </Stack>
+                <PlanVMs plan={UBB_FREE_PLAN} tierMap={tierMap} />
+              </StyledCard>
+              <StyledCard
+                direction="vertical"
+                align="center"
+                gap={12}
+                css={{ borderColor: '#9D8BF9' }}
+              >
+                <CardHeading>
+                  Pay as you go with a monthly subscription
+                </CardHeading>
+                <Element
+                  css={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr 1fr',
+                    gap: '32px',
+                    '@media (max-width: 1400px)': {
+                      gap: '24px',
+                    },
+                  }}
+                >
+                  <Stack direction="vertical" gap={12} align="center">
+                    <PlanAndPricing plan={UBB_FLEX_PLAN} />
+                    <Button
+                      variant="dark"
+                      size="large"
+                      onClick={() => handleChoosePlan('flex')}
+                    >
+                      Choose Pro Flex
+                    </Button>
+                    <PlanCredits plan={UBB_FLEX_PLAN} />
+                  </Stack>
+                  <Stack direction="vertical" gap={12} align="center">
+                    <PlanAndPricing plan={UBB_STANDARD_PLAN} />
+                    <Button
+                      variant="dark"
+                      size="large"
+                      onClick={() => handleChoosePlan('standard')}
+                    >
+                      Choose Pro Standard
+                    </Button>
+                    <PlanCredits plan={UBB_STANDARD_PLAN} />
+                  </Stack>
+                  <Stack direction="vertical" gap={12} align="center">
+                    <PlanAndPricing plan={UBB_GROWTH_PLAN} />
+                    <Button
+                      variant="dark"
+                      size="large"
+                      onClick={() => handleChoosePlan('growth')}
+                    >
+                      Choose Pro Growth
+                    </Button>
+                    <PlanCredits plan={UBB_GROWTH_PLAN} />
+                  </Stack>
+                </Element>
+                <PlanFeatures
+                  features={[
+                    '20 members',
+                    '50 Sandboxes',
+                    'Unlimited Devboxes',
+                    'Unlimited repositories',
+                  ]}
+                />
+                <PlanVMs plan={UBB_STANDARD_PLAN} tierMap={tierMap} />
+              </StyledCard>
+              <StyledCard
+                direction="vertical"
+                align="center"
+                gap={12}
+                css={{
+                  borderColor: '#DCF76E',
+                  width: '300px',
+                  '@media (max-width: 1400px)': {
+                    width: '260px',
+                  },
+                }}
+              >
+                <CardHeading>
+                  The future of Cloud Development Environments
+                </CardHeading>
+                <PlanAndPricing plan={UBB_ENTERPRISE_PLAN} />
+                <Button
+                  as="a"
+                  href={ORGANIZATION_CONTACT_LINK}
+                  variant="dark"
+                  size="large"
+                >
+                  Contact us
+                </Button>
+                <Stack direction="vertical" gap={6}>
+                  <Text>Everything in Pro, plus:</Text>
 
-              <PlanVMs plan={UBB_ENTERPRISE_PLAN} tierMap={tierMap} />
-            </StyledCard>
-          </Stack>
+                  <PlanFeatures
+                    features={[
+                      'Unlimited members',
+                      'Unlimited API',
+                      'On-premise options',
+                      'Private managed cloud',
+                      'Dedicated support',
+                      'SSO',
+                    ]}
+                  />
+                </Stack>
+
+                <PlanVMs plan={UBB_ENTERPRISE_PLAN} tierMap={tierMap} />
+              </StyledCard>
+            </Stack>
+          </HorizontalScroller>
           <CodeSandboxFriendsCard />
         </Stack>
         <VMSpecs tiers={tiers} />
@@ -226,6 +239,11 @@ const StyledCard = styled(Stack)`
   color: #000;
   padding: 40px 32px;
   border-radius: 8px;
+  flex-shrink: 0;
+
+  @media (max-width: 1400px) {
+    padding: 40px 20px;
+  }
 `;
 
 const CardHeading = styled(Text)`
@@ -238,9 +256,28 @@ const GridCell = styled(Stack)`
   height: 100px;
   width: 100%;
   max-width: 250px;
+  min-width: 200px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    padding: 16px 8px;
+    min-width: 170px;
+
+    & span[size='5'] {
+      font-size: 16px;
+    }
+  }
+`;
+
+const HorizontalScroller = styled(Element)`
+  overflow-x: scroll;
+  margin-left: auto;
+  margin-right: auto;
+  @media (max-width: 1100px) {
+    width: 100%;
+  }
 `;
 
 const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
@@ -324,10 +361,21 @@ const CodeSandboxFriendsCard = () => (
       color: '#e5e5e5',
       padding: '24px 32px',
       borderRadius: '8px',
-      maxWidth: '1360px',
+      width: '100%',
+      gap: '8px',
+      alignItems: 'center',
+
+      '@media (max-width: 1400px)': {
+        maxWidth: '1240px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
+
+      '@media (max-width: 768px)': {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      },
     }}
-    align="center"
-    gap={2}
   >
     <Stack direction="vertical" gap={2}>
       <Text weight="medium" fontFamily="everett" size={6}>
@@ -358,79 +406,81 @@ const VMSpecs: React.FC<{ tiers: VMTier[] }> = ({ tiers }) => (
     <Text weight="medium" size={7} fontFamily="everett" id="vm-types">
       Virtual machine types
     </Text>
-    <Element
-      css={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(5, 1fr)`,
-        '& > *:not(:nth-child(-n+5))': {
-          borderTop: '1px solid #252525',
-        },
-      }}
-    >
-      <GridCell />
-      <GridCell css={{ justifyContent: 'flex-start' }}>
-        <Text weight="medium" size={5}>
-          Credits per hour
-        </Text>
-      </GridCell>
-      <GridCell css={{ justifyContent: 'flex-start' }}>
-        <Text weight="medium" size={5}>
-          Cost per hour
-        </Text>
-        <Text
-          size={3}
-          color="#999"
-          css={{
-            maxWidth: '180px',
-            textAlign: 'center',
-            textWrap: 'balance',
-          }}
-        >
-          Maximum cost, without subscription savings
-        </Text>
-      </GridCell>
-      <GridCell css={{ justifyContent: 'flex-start' }}>
-        <Text weight="medium" size={5}>
-          CPU
-        </Text>
-      </GridCell>
-      <GridCell css={{ justifyContent: 'flex-start' }}>
-        <Text weight="medium" size={5}>
-          RAM
-        </Text>
-      </GridCell>
-      {tiers.map(tier => (
-        <Fragment key={tier.shortid}>
-          <GridCell direction="vertical" css={{ alignItems: 'flex-start' }}>
-            <Text weight="medium" size={5}>
-              {tier.name}
-            </Text>
-            {(tier.shortid === 'vm-3' || tier.shortid === 'vm-4') && (
-              <Text size={3} color="#999">
-                Available on Pro
+    <HorizontalScroller>
+      <Element
+        css={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(5, 1fr)`,
+          '& > *:not(:nth-child(-n+5))': {
+            borderTop: '1px solid #252525',
+          },
+        }}
+      >
+        <GridCell />
+        <GridCell css={{ justifyContent: 'flex-start' }}>
+          <Text weight="medium" size={5}>
+            Credits per hour
+          </Text>
+        </GridCell>
+        <GridCell css={{ justifyContent: 'flex-start' }}>
+          <Text weight="medium" size={5}>
+            Cost per hour
+          </Text>
+          <Text
+            size={3}
+            color="#999"
+            css={{
+              maxWidth: '180px',
+              textAlign: 'center',
+              textWrap: 'balance',
+            }}
+          >
+            Maximum cost, without subscription savings
+          </Text>
+        </GridCell>
+        <GridCell css={{ justifyContent: 'flex-start' }}>
+          <Text weight="medium" size={5}>
+            CPU
+          </Text>
+        </GridCell>
+        <GridCell css={{ justifyContent: 'flex-start' }}>
+          <Text weight="medium" size={5}>
+            RAM
+          </Text>
+        </GridCell>
+        {tiers.map(tier => (
+          <Fragment key={tier.shortid}>
+            <GridCell direction="vertical" css={{ alignItems: 'flex-start' }}>
+              <Text weight="medium" size={5}>
+                {tier.name}
               </Text>
-            )}
-            {(tier.shortid === 'vm-5' || tier.shortid === 'vm-6') && (
-              <Text size={3} color="#999">
-                Available on Enterprise
-              </Text>
-            )}
-          </GridCell>
-          <GridCell>
-            <Text>{tier.creditBasis} credits</Text>
-          </GridCell>
-          <GridCell>
-            <Text>${tier.creditBasis * 0.018}</Text>
-          </GridCell>
-          <GridCell>
-            <Text>{tier.cpu} cores</Text>
-          </GridCell>
-          <GridCell>
-            <Text>{tier.memory} GB</Text>
-          </GridCell>
-        </Fragment>
-      ))}
-    </Element>
+              {(tier.shortid === 'vm-3' || tier.shortid === 'vm-4') && (
+                <Text size={3} color="#999">
+                  Available on Pro
+                </Text>
+              )}
+              {(tier.shortid === 'vm-5' || tier.shortid === 'vm-6') && (
+                <Text size={3} color="#999">
+                  Available on Enterprise
+                </Text>
+              )}
+            </GridCell>
+            <GridCell>
+              <Text>{tier.creditBasis} credits</Text>
+            </GridCell>
+            <GridCell>
+              <Text>${tier.creditBasis * 0.018}</Text>
+            </GridCell>
+            <GridCell>
+              <Text>{tier.cpu} cores</Text>
+            </GridCell>
+            <GridCell>
+              <Text>{tier.memory} GB</Text>
+            </GridCell>
+          </Fragment>
+        ))}
+      </Element>
+    </HorizontalScroller>
   </Stack>
 );
 
@@ -442,114 +492,109 @@ export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
       Plan details
     </Text>
 
-    <Element
-      css={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(4, 1fr)`,
-        '& > *:not(:nth-child(-n+4))': {
-          borderTop: '1px solid #252525',
-        },
-      }}
-    >
-      <GridCell />
-      <GridCell>
-        <Text weight="medium" size={5}>
-          Free
-        </Text>
-      </GridCell>
-      <GridCell>
-        <Text weight="medium" size={5}>
-          Pro
-        </Text>
-      </GridCell>
-      <GridCell>
-        <Text weight="medium" size={5}>
-          Enterprise
-        </Text>
-      </GridCell>
+    <HorizontalScroller>
+      <Element
+        css={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(4, 1fr)`,
+          '& > *:not(:nth-child(-n+4))': {
+            borderTop: '1px solid #252525',
+          },
+        }}
+      >
+        <GridCell />
+        <GridCell>
+          <Text weight="medium" size={5}>
+            Free
+          </Text>
+        </GridCell>
+        <GridCell>
+          <Text weight="medium" size={5}>
+            Pro
+          </Text>
+        </GridCell>
+        <GridCell>
+          <Text weight="medium" size={5}>
+            Enterprise
+          </Text>
+        </GridCell>
 
-      <FeatureComparisonNumbersRow
-        title="Editors"
-        description="Maximum number of editors in the workspace."
-        plans={plans}
-        property="editors"
-      />
-      <FeatureComparisonNumbersRow
-        title="Sandboxes"
-        description="Maximum number of sandboxes in the workspace."
-        plans={plans}
-        property="sandboxes"
-      />
-      <FeatureComparisonNumbersRow
-        title="Devboxes"
-        description="Maximum number of devboxes in the workspace."
-        plans={plans}
-        property="devboxes"
-      />
-      <FeatureComparisonNumbersRow
-        title="Repositories"
-        description="Maximum number of repositories that can be imported in the workspace."
-        plans={plans}
-        property="repositories"
-      />
-      <FeatureComparisonBooleanRow
-        title="Shareable links"
-        description="Share your devboxes and sandboxes with users outside of your workspace."
-        plans={plans}
-        property="shareableLinks"
-      />
-      <FeatureComparisonBooleanRow
-        title="Live sessions"
-        description="Collaborate with others on your devboxes and repositories."
-        plans={plans}
-        property="liveSessions"
-      />
-      <FeatureComparisonBooleanRow
-        title="Private NPM"
-        description="Use private npm packages from your own custom registry."
-        plans={plans}
-        property="privateNPM"
-      />
-      <FeatureComparisonBooleanRow
-        title="API access"
-        description="Automatically create, share and delete sandboxes and branches."
-        plans={plans}
-        property="apiAccess"
-      />
-      <FeatureComparisonBooleanRow
-        title="Protected previews"
-        description="Protect who can view your dev server preview. (Coming soon)."
-        plans={plans}
-        property="protectedPreviews"
-      />
-      <FeatureComparisonBooleanRow
-        title="SSO"
-        description="SSO support for Okta and more."
-        plans={plans}
-        property="sso"
-      />
+        <FeatureComparisonNumbersRow
+          title="Editors"
+          description="Maximum number of editors in the workspace."
+          plans={plans}
+          property="editors"
+        />
+        <FeatureComparisonNumbersRow
+          title="Sandboxes"
+          description="Maximum number of sandboxes in the workspace."
+          plans={plans}
+          property="sandboxes"
+        />
+        <FeatureComparisonNumbersRow
+          title="Devboxes"
+          description="Maximum number of devboxes in the workspace."
+          plans={plans}
+          property="devboxes"
+        />
+        <FeatureComparisonNumbersRow
+          title="Repositories"
+          description="Maximum number of repositories that can be imported in the workspace."
+          plans={plans}
+          property="repositories"
+        />
+        <FeatureComparisonBooleanRow
+          title="Shareable links"
+          description="Share your devboxes and sandboxes with users outside of your workspace."
+          plans={plans}
+          property="shareableLinks"
+        />
+        <FeatureComparisonBooleanRow
+          title="Live sessions"
+          description="Collaborate with others on your devboxes and repositories."
+          plans={plans}
+          property="liveSessions"
+        />
+        <FeatureComparisonBooleanRow
+          title="Private NPM"
+          description="Use private npm packages from your own custom registry."
+          plans={plans}
+          property="privateNPM"
+        />
+        <FeatureComparisonBooleanRow
+          title="API access"
+          description="Automatically create, share and delete sandboxes and branches."
+          plans={plans}
+          property="apiAccess"
+        />
+        <FeatureComparisonBooleanRow
+          title="Protected previews"
+          description="Protect who can view your dev server preview. (Coming soon)."
+          plans={plans}
+          property="protectedPreviews"
+        />
+        <FeatureComparisonBooleanRow
+          title="SSO"
+          description="SSO support for Okta and more."
+          plans={plans}
+          property="sso"
+        />
 
-      <FeatureComparisonBooleanRow
-        title="Private cloud"
-        description="All static files are served via CDN."
-        plans={plans}
-        property="privateCloud"
-      />
+        <FeatureComparisonBooleanRow
+          title="Private cloud"
+          description="All static files are served via CDN."
+          plans={plans}
+          property="privateCloud"
+        />
 
-      <FeatureComparisonBooleanRow
-        title="On-premise options"
-        description="Run on your own infrastructure and we manage it."
-        plans={plans}
-        property="onPremise"
-      />
-
-      <FeatureComparisonBooleanRow
-        title="Dedicated support"
-        description="SSO support for Okta and more."
-        plans={plans}
-        property="dedicatedSupport"
-      />
-    </Element>
+        <FeatureComparisonBooleanRow
+          title="On-premise options"
+          description="Run on your own infrastructure and we manage it."
+          plans={plans}
+          property="onPremise"
+        />
+      </Element>
+    </HorizontalScroller>
   </Stack>
 );
 
