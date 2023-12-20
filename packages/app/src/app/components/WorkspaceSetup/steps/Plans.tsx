@@ -68,7 +68,7 @@ export const Plans: React.FC<StepProps> = ({
   };
 
   return (
-    <AnimatedStep>
+    <AnimatedStep css={{ width: '100%' }}>
       <Stack direction="vertical" gap={100}>
         <Stack direction="vertical" gap={12}>
           <StepHeader
@@ -275,7 +275,7 @@ const HorizontalScroller = styled(Element)`
   overflow-x: scroll;
   margin-left: auto;
   margin-right: auto;
-  @media (max-width: 1100px) {
+  @media (max-width: 1040px) {
     width: 100%;
   }
 `;
@@ -649,7 +649,7 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
       <GridCell key={p.id}>
         <Icon
           name={p[property] ? 'simpleCheck' : 'cross'}
-          color={p[property] ? '#43BB30' : '#DD5F5F'}
+          color={p[property] ? '#A3EC98' : '#F5A8A8'}
           size={16}
         />
       </GridCell>

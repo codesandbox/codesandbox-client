@@ -9,5 +9,4 @@ export const AnimatedStep = styled.div`
   animation: ${fadeIn} 0.2s ease-out;
   max-width: 1360px;
   margin: auto;
-  width: 100%;
 `;
