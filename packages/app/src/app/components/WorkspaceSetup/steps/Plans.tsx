@@ -649,7 +649,7 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
       <GridCell key={p.id}>
         <Icon
           name={p[property] ? 'simpleCheck' : 'cross'}
-          color={p[property] ? '#A3EC98' : '#F5A8A8'}
+          color={p[property] ? '#43BB30' : '#DD5F5F'}
           size={16}
         />
       </GridCell>

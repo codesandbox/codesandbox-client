@@ -55,27 +55,22 @@ export const PlanOptions: React.FC<StepProps> = ({
           Set a monthly spending limit for these on-demand credits, so that you
           can stay within your budget. You can change this limit at any time.
         </Text>
-        <Element
-          css={{
-            position: 'relative',
-          }}
-        >
-          <InputText
-            label="Monthly spending limit for on-demand credits"
-            description="For the first two billing cycles, the maximum limit is $100. If
+
+        <InputText
+          label="Monthly spending limit for on-demand credits"
+          description="For the first two billing cycles, the maximum limit is $100. If
               you need a higher limit, contact us."
-            placeholder="100"
-            id="spending-limit"
-            name="spending-limit"
-            required
-            max={100}
-            min={1}
-            defaultValue={100}
-            type="number"
-            autoFocus
-            iconLeft={<Text color="#e5e5e5">$</Text>}
-          />
-        </Element>
+          placeholder="100"
+          id="spending-limit"
+          name="spending-limit"
+          required
+          max={100}
+          min={1}
+          defaultValue={100}
+          type="number"
+          autoFocus
+          iconLeft={<Text color="#e5e5e5">$</Text>}
+        />
         <Button autoWidth size="large" type="submit">
           Proceed to checkout
         </Button>

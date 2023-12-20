@@ -31,7 +31,7 @@ export const Create: React.FC<StepProps> = ({
   );
   const { getQueryParam, setQueryParam } = useURLSearchParams();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const urlWorkspaceId = getQueryParam('workspace');
@@ -57,7 +57,7 @@ export const Create: React.FC<StepProps> = ({
       return;
     }
 
-    setError(null);
+    setError('');
     setLoading(true);
 
     try {
@@ -170,9 +170,7 @@ export const Create: React.FC<StepProps> = ({
           rel="noreferrer"
         >
           <Stack gap={1} align="center">
-            <Text color="#999" css={{ textDecoration: 'underline' }}>
-              More about teams and workspaces
-            </Text>
+            <Text color="#999">More about teams and workspaces</Text>
             <Icon name="external" size={16} />
           </Stack>
         </Link>
