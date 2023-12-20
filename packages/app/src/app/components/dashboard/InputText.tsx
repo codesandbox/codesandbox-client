@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes, forwardRef } from 'react';
 import styled from 'styled-components';
-import { Stack } from '@codesandbox/components';
+import { Element, Stack, Text } from '@codesandbox/components';
 import { Label } from './Label';
 
 const StyledInput = styled.input<{ isInvalid?: boolean }>`
@@ -11,7 +11,8 @@ const StyledInput = styled.input<{ isInvalid?: boolean }>`
   color: #e5e5e5;
   line-height: 24px;
   border: none;
-  border-radius: 2px;
+  border-radius: 4px;
+  width: 100%;
 
   ${props => (props.isInvalid ? 'outline: 1px solid #EB5E5E;' : '')}
 
@@ -31,24 +32,57 @@ const StyledInput = styled.input<{ isInvalid?: boolean }>`
 interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
+  description?: string;
   name: string;
   isInvalid?: boolean;
   hideLabel?: boolean;
+  iconLeft?: React.ReactNode;
 }
 
 export const InputText = forwardRef<HTMLInputElement, InputTextProps>(
-  ({ id, label, name, isInvalid, hideLabel, ...restProps }, ref) => (
+  (
+    {
+      id,
+      label,
+      name,
+      isInvalid,
+      hideLabel,
+      description,
+      iconLeft,
+      ...restProps
+    },
+    ref
+  ) => (
     <Stack gap={2} direction="vertical">
-      {!hideLabel && <Label htmlFor={id}>{label}</Label>}
-      <StyledInput
-        id={id}
-        name={name}
-        type="text"
-        aria-label={label}
-        isInvalid={isInvalid}
-        ref={ref}
-        {...restProps}
-      />
+      {!hideLabel && (
+        <Stack gap={1} direction="vertical">
+          <Label htmlFor={id}>{label}</Label>
+          {description && (
+            <Text id={`description-${id}`} color="#999">
+              {description}
+            </Text>
+          )}
+        </Stack>
+      )}
+      <Element css={{ position: 'relative', display: 'flex' }}>
+        <StyledInput
+          id={id}
+          name={name}
+          type="text"
+          aria-label={label}
+          isInvalid={isInvalid}
+          ref={ref}
+          {...(description
+            ? { 'aria-describedby': `description-${id}` }
+            : null)}
+          {...restProps}
+        />
+        {!!iconLeft && (
+          <Element css={{ position: 'absolute', left: 5, top: 10 }}>
+            {iconLeft}
+          </Element>
+        )}
+      </Element>
     </Stack>
   )
 );

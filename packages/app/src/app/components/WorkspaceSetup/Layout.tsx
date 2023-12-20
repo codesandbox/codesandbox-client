@@ -17,7 +17,12 @@ export const WorkspaceFlowLayout: React.FC = ({ children }) => {
           css={{
             width: '100vw',
             height: '100%',
-            padding: '16px',
+            padding: '64px 16px',
+            scrollBehavior: 'smooth',
+
+            '@media (prefers-reduced-motion)': {
+              scrollBehavior: 'auto',
+            },
           }}
           align="center"
           justify="center"

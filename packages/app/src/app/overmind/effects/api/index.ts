@@ -42,6 +42,7 @@ import {
   AvatarAPIResponse,
   FinalizeSignUpOptions,
   MetaFeatures,
+  VMTier,
 } from './types';
 
 let api: Api;
@@ -713,5 +714,8 @@ export default {
     // useRoot = true since this is on /api/meta/features
     // TODO: Refactor api factory to start from /api and apply /v1 as a legacy feature
     return api.get('/meta/features', undefined, undefined, true);
+  },
+  getVMSpecs(): Promise<{ vmTiers: VMTier[] }> {
+    return api.get('/vm_tiers', undefined, undefined, true);
   },
 };

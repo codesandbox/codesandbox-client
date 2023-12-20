@@ -48,3 +48,14 @@ export type MetaFeatures = {
   loginWithGoogle?: boolean;
   loginWithWorkos?: boolean;
 };
+
+export type VMTier = {
+  name: string;
+  shortid: VMType;
+  cpu: number;
+  memory: number;
+  storage: number;
+  creditBasis: number;
+};
+
+export type VMType = 'vm-1' | 'vm-2' | 'vm-3' | 'vm-4' | 'vm-5' | 'vm-6';

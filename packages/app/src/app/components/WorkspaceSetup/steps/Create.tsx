@@ -147,7 +147,6 @@ export const Create: React.FC<StepProps> = ({
               {error && (
                 <Text
                   css={{ position: 'absolute', bottom: 0, left: 0 }}
-                  size={3}
                   variant="danger"
                 >
                   {error}
@@ -171,10 +170,10 @@ export const Create: React.FC<StepProps> = ({
           rel="noreferrer"
         >
           <Stack gap={1} align="center">
-            <Text color="#999" size={3} css={{ textDecoration: 'underline' }}>
+            <Text color="#999" css={{ textDecoration: 'underline' }}>
               More about teams and workspaces
             </Text>
-            <Icon name="external" size={12} />
+            <Icon name="external" size={16} />
           </Stack>
         </Link>
       </Stack>

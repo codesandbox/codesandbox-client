@@ -24,14 +24,20 @@ export const PlanOptions: React.FC<StepProps> = ({
     return null;
   }
 
-  const handleSubmit = () => {
-    // TODO: API Call to save the limit
+  const handleSubmit = e => {
+    e.preventDefault();
     onNextStep();
   };
 
   return (
     <AnimatedStep>
-      <Stack direction="vertical" gap={6} css={{ width: '450px' }}>
+      <Stack
+        direction="vertical"
+        gap={6}
+        css={{ maxWidth: '450px' }}
+        as="form"
+        onSubmit={handleSubmit}
+      >
         <StepHeader
           onPrevStep={onPrevStep}
           onDismiss={onDismiss}
@@ -47,47 +53,30 @@ export const PlanOptions: React.FC<StepProps> = ({
         </Text>
         <Text>
           Set a monthly spending limit for these on-demand credits, so that you
-          can stay within your budget.
+          can stay within your budget. You can change this limit at any time.
         </Text>
-        <Text>You can change this limit at any time.</Text>
-        <Stack gap={3} direction="vertical">
-          <Text as="label" htmlFor="spending-limit" color="#fff">
-            Monthly spending limit for on-demand credits
-          </Text>
-          <Text id="spending-limit-description">
-            For the first two billing cycles, the maximum limit is $100. If you
-            need a higher limit, contact us.
-          </Text>
-          <Element
-            css={{
-              position: 'relative',
-            }}
-          >
-            <InputText
-              label="Spending limit"
-              aria-describedby="spending-limit-description"
-              placeholder="100"
-              id="spending-limit"
-              name="spending-limit"
-              required
-              max={100}
-              defaultValue={100}
-              type="number"
-              autoFocus
-              hideLabel
-              css={{ paddingLeft: '20px' }}
-              onChange={() => {}}
-            />
-            <Text
-              size={4}
-              color="#fff"
-              css={{ position: 'absolute', left: 9, top: 10 }}
-            >
-              $
-            </Text>
-          </Element>
-        </Stack>
-        <Button autoWidth size="large" onClick={handleSubmit}>
+        <Element
+          css={{
+            position: 'relative',
+          }}
+        >
+          <InputText
+            label="Monthly spending limit for on-demand credits"
+            description="For the first two billing cycles, the maximum limit is $100. If
+              you need a higher limit, contact us."
+            placeholder="100"
+            id="spending-limit"
+            name="spending-limit"
+            required
+            max={100}
+            min={1}
+            defaultValue={100}
+            type="number"
+            autoFocus
+            iconLeft={<Text color="#e5e5e5">$</Text>}
+          />
+        </Element>
+        <Button autoWidth size="large" type="submit">
           Proceed to checkout
         </Button>
       </Stack>

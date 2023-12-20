@@ -108,15 +108,26 @@ export type PricingPlan = {
   availableVMs: VMType[];
 };
 
+export type PricingPlanFeatures = {
+  id: string;
+  name: string;
+  editors: number;
+  sandboxes: number;
+  devboxes: number;
+  repositories: number;
+  shareableLinks: boolean;
+  privateNPM: boolean;
+  liveSessions: boolean;
+  apiAccess: boolean;
+  protectedPreviews: boolean;
+  sso: boolean;
+  privateCloud: boolean;
+  onPremise: boolean;
+};
+
 export type PlanType = 'free' | 'flex' | 'standard' | 'growth' | 'enterprise';
 
-export type VMType =
-  | 'nano'
-  | 'micro'
-  | 'small'
-  | 'medium'
-  | 'large'
-  | 'extraLarge';
+export type VMType = 'vm-1' | 'vm-2' | 'vm-3' | 'vm-4' | 'vm-5' | 'vm-6';
 
 export const UBB_FREE_PLAN: PricingPlan = {
   id: 'free',
@@ -124,7 +135,7 @@ export const UBB_FREE_PLAN: PricingPlan = {
   price: 0,
   credits: 400,
   additionalCreditsCost: null,
-  availableVMs: ['nano', 'micro'],
+  availableVMs: ['vm-1', 'vm-2'],
 };
 
 export const UBB_FLEX_PLAN: PricingPlan = {
@@ -133,7 +144,7 @@ export const UBB_FLEX_PLAN: PricingPlan = {
   price: 9,
   credits: 500,
   additionalCreditsCost: 0.018,
-  availableVMs: ['nano', 'micro', 'small', 'medium'],
+  availableVMs: ['vm-1', 'vm-2', 'vm-3', 'vm-4'],
 };
 
 export const UBB_STANDARD_PLAN: PricingPlan = {
@@ -142,7 +153,7 @@ export const UBB_STANDARD_PLAN: PricingPlan = {
   price: 18,
   credits: 1500,
   additionalCreditsCost: 0.018,
-  availableVMs: ['nano', 'micro', 'small', 'medium'],
+  availableVMs: ['vm-1', 'vm-2', 'vm-3', 'vm-4'],
 };
 
 export const UBB_GROWTH_PLAN: PricingPlan = {
@@ -151,7 +162,7 @@ export const UBB_GROWTH_PLAN: PricingPlan = {
   price: 38,
   credits: 3000,
   additionalCreditsCost: 0.018,
-  availableVMs: ['nano', 'micro', 'small', 'medium'],
+  availableVMs: ['vm-1', 'vm-2', 'vm-3', 'vm-4'],
 };
 
 export const UBB_ENTERPRISE_PLAN: PricingPlan = {
@@ -160,7 +171,58 @@ export const UBB_ENTERPRISE_PLAN: PricingPlan = {
   price: 'Custom',
   credits: 0,
   additionalCreditsCost: 0,
-  availableVMs: ['nano', 'micro', 'small', 'medium', 'large', 'extraLarge'],
+  availableVMs: ['vm-1', 'vm-2', 'vm-3', 'vm-4', 'vm-5', 'vm-6'],
+};
+
+export const UBB_FREE_FEATURES: PricingPlanFeatures = {
+  id: 'free',
+  name: 'Free',
+  editors: 5,
+  sandboxes: 20,
+  devboxes: Number.MAX_SAFE_INTEGER,
+  repositories: Number.MAX_SAFE_INTEGER,
+  shareableLinks: true,
+  privateNPM: false,
+  liveSessions: false,
+  apiAccess: false,
+  protectedPreviews: false,
+  sso: false,
+  privateCloud: false,
+  onPremise: false,
+};
+
+export const UBB_PRO_FEATURES: PricingPlanFeatures = {
+  id: 'pro',
+  name: 'Pro',
+  editors: 20,
+  sandboxes: 50,
+  devboxes: Number.MAX_SAFE_INTEGER,
+  repositories: Number.MAX_SAFE_INTEGER,
+  shareableLinks: true,
+  privateNPM: true,
+  liveSessions: true,
+  apiAccess: false,
+  protectedPreviews: false,
+  sso: false,
+  privateCloud: false,
+  onPremise: false,
+};
+
+export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
+  id: 'enterprise',
+  name: 'Enterprise',
+  editors: Number.MAX_SAFE_INTEGER,
+  sandboxes: Number.MAX_SAFE_INTEGER,
+  devboxes: Number.MAX_SAFE_INTEGER,
+  repositories: Number.MAX_SAFE_INTEGER,
+  shareableLinks: true,
+  privateNPM: true,
+  liveSessions: true,
+  apiAccess: true,
+  protectedPreviews: true,
+  sso: true,
+  privateCloud: true,
+  onPremise: true,
 };
 
 export const PRICING_PLANS: Record<PlanType, PricingPlan> = {

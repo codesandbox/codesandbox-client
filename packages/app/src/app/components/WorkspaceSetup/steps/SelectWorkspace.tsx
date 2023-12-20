@@ -51,7 +51,7 @@ export const SelectWorkspace: React.FC<StepProps> = ({
           onDismiss={onDismiss}
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
-          title="Select workspace"
+          title="Choose workspace"
         />
         <Stack
           as="form"
@@ -63,7 +63,7 @@ export const SelectWorkspace: React.FC<StepProps> = ({
           <InputSelect
             id="workspace"
             name="workspace"
-            label="Choose the workspace you wish to upgrade"
+            label="Select the workspace you want to upgrade"
             defaultValue={workspaceId}
             onChange={ev => setWorkspaceId(ev.target.value)}
             options={workspacesEligibleForUpgrade.map(w => ({
