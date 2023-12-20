@@ -1,7 +1,7 @@
 export function injectLinkPrefetch(url: string) {
   // generate link prefetch tag
   const linkTag = document.createElement('link');
-  linkTag.rel = 'prefetch';
+  linkTag.rel = 'preload';
   linkTag.href = url;
   linkTag.as = 'document';
 
