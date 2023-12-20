@@ -16,7 +16,7 @@ export const StepHeader = ({
   onDismiss,
   onPrevStep,
 }) => (
-  <Stack direction="vertical" gap={6}>
+  <Stack direction="vertical" gap={8}>
     {currentStep === 0 ? (
       <Button autoWidth variant="secondary" onClick={onDismiss}>
         <Stack gap={2}>

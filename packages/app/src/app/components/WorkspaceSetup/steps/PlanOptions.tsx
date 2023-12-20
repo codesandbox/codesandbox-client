@@ -34,7 +34,7 @@ export const PlanOptions: React.FC<StepProps> = ({
       <Stack
         direction="vertical"
         gap={6}
-        css={{ maxWidth: '450px' }}
+        css={{ maxWidth: '400px' }}
         as="form"
         onSubmit={handleSubmit}
       >
@@ -46,20 +46,22 @@ export const PlanOptions: React.FC<StepProps> = ({
           title="Set a spending limit"
         />
         <Text>
-          You will have <Text color="#fff">{plan.credits} credits</Text>{' '}
-          included in your subscription. Above this, you can purchase on-demand
-          credits at ${plan.additionalCreditsCost}/credit (500 credits for $
+          You will have {plan.credits} credits included in your subscription.
+          Above this, you can purchase on-demand credits at $
+          {plan.additionalCreditsCost}/credit (500 credits for $
           {plan.additionalCreditsCost * 500}).
         </Text>
         <Text>
           Set a monthly spending limit for these on-demand credits, so that you
           can stay within your budget. You can change this limit at any time.
         </Text>
+        <Text>
+          For the first two billing cycles, the maximum limit is $100. If you
+          need a higher limit, contact us.
+        </Text>
 
         <InputText
           label="Monthly spending limit for on-demand credits"
-          description="For the first two billing cycles, the maximum limit is $100. If
-              you need a higher limit, contact us."
           placeholder="100"
           id="spending-limit"
           name="spending-limit"
@@ -71,7 +73,7 @@ export const PlanOptions: React.FC<StepProps> = ({
           autoFocus
           iconLeft={<Text color="#e5e5e5">$</Text>}
         />
-        <Button autoWidth size="large" type="submit">
+        <Button size="large" type="submit">
           Proceed to checkout
         </Button>
       </Stack>
