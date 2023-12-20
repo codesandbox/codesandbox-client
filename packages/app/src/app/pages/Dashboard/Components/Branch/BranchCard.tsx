@@ -9,6 +9,7 @@ import {
 } from '@codesandbox/components';
 import { BranchProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
+import { injectLinkPrefetch } from '../../utils/injectLinkPrefetch';
 
 export const BranchCard: React.FC<BranchProps> = ({
   branch,
@@ -26,7 +27,12 @@ export const BranchCard: React.FC<BranchProps> = ({
 
   return (
     <InteractiveOverlay>
-      <StyledCard dimmed={isBeingRemoved}>
+      <StyledCard
+        dimmed={isBeingRemoved}
+        onMouseEnter={() => {
+          injectLinkPrefetch(branchUrl);
+        }}
+      >
         <Stack
           css={{ height: '100%' }}
           direction="vertical"

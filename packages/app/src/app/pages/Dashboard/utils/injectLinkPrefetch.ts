@@ -1,0 +1,10 @@
+export function injectLinkPrefetch(url: string) {
+  // generate link prefetch tag
+  const linkTag = document.createElement('link');
+  linkTag.rel = 'prefetch';
+  linkTag.href = url;
+  linkTag.as = 'document';
+
+  // inject tag in the head of the document
+  document.head.appendChild(linkTag);
+}

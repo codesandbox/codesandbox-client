@@ -21,6 +21,7 @@ import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
+import { injectLinkPrefetch } from '../../utils/injectLinkPrefetch';
 
 const MAP_SANDBOX_EVENT_TO_PAGE_TYPE: Partial<Record<PageTypes, string>> = {
   recent: 'Dashboard - Open Sandbox from Recent',
@@ -230,6 +231,9 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     selected,
     onBlur,
     onContextMenu,
+    onMouseEnter: () => {
+      injectLinkPrefetch(url);
+    },
   };
   const interactionProps =
     page === 'recent'

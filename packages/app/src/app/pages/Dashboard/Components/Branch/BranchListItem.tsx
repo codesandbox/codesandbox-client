@@ -13,6 +13,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { BranchProps } from './types';
+import { injectLinkPrefetch } from '../../utils/injectLinkPrefetch';
 
 export const BranchListItem = ({
   branch,
@@ -62,6 +63,9 @@ export const BranchListItem = ({
         }}
         href={isBeingRemoved ? undefined : branchUrl}
         onContextMenu={onContextMenu}
+        onMouseEnter={() => {
+          injectLinkPrefetch(branchUrl);
+        }}
       >
         <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
           <Column
