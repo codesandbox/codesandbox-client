@@ -170,7 +170,7 @@ export const Create: React.FC<StepProps> = ({
           rel="noreferrer"
         >
           <Stack gap={1} align="center">
-            <Text color="#999">More about teams and workspaces</Text>
+            <Text>More about teams and workspaces</Text>
             <Icon name="external" size={16} />
           </Stack>
         </Link>
