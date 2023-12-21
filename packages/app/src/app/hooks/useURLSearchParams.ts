@@ -1,7 +1,7 @@
 import { useLocation, useHistory } from 'react-router-dom';
 
 export type ReturnType = {
-  getQueryParam: (key: string) => string;
+  getQueryParam: (key: string) => string | null;
   removeQueryParam: (key: string) => void;
   setQueryParam: (key: string, value: string) => void;
 };

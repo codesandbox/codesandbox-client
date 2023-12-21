@@ -141,7 +141,6 @@ export const Create: React.FC<StepProps> = ({
                 defaultValue={teamIsAlreadyCreated ? activeTeamInfo.name : ''}
                 onChange={handleInput}
                 ref={inputRef}
-                hideLabel
               />
 
               {error && (

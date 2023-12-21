@@ -16,6 +16,7 @@ export const PlanOptions: React.FC<StepProps> = ({
 }) => {
   const { getQueryParam } = useURLSearchParams();
   const selectedPlan = getQueryParam('plan') as PlanType;
+  const [error, setError] = React.useState<React.ReactNode>('');
 
   const plan = PRICING_PLANS[selectedPlan];
 
@@ -23,6 +24,25 @@ export const PlanOptions: React.FC<StepProps> = ({
     onPrevStep();
     return null;
   }
+
+  const handleChange = e => {
+    setError('');
+    const value = Number(e.target.value);
+    if (Number.isNaN(value) || value < 1) {
+      setError('Please enter a valid amount between 1 and 100');
+    } else if (value > 100) {
+      setError(
+        <>
+          For the first two billing cycles, the maximum limit is $100. If you
+          need a higher limit,{' '}
+          <Text as="a" href="mailto:support@codesandbox.io">
+            contact us
+          </Text>
+          .
+        </>
+      );
+    }
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -56,19 +76,24 @@ export const PlanOptions: React.FC<StepProps> = ({
           can stay within your budget. You can change this limit at any time.
         </Text>
 
-        <InputText
-          label="Monthly spending limit for on-demand credits"
-          placeholder="100"
-          id="spending-limit"
-          name="spending-limit"
-          required
-          max={100}
-          min={1}
-          defaultValue={100}
-          type="number"
-          autoFocus
-          iconLeft={<Text color="#e5e5e5">$</Text>}
-        />
+        <Stack direction="vertical" gap={2}>
+          <InputText
+            label="Monthly spending limit for on-demand credits"
+            placeholder="100"
+            id="spending-limit"
+            name="spending-limit"
+            required
+            max={100}
+            min={1}
+            defaultValue={100}
+            type="number"
+            autoFocus
+            onChange={handleChange}
+            iconLeft={<Text color="#e5e5e5">$</Text>}
+          />
+
+          <Text variant="danger">{error}</Text>
+        </Stack>
         <Button size="large" type="submit">
           Proceed to checkout
         </Button>
