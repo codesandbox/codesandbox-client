@@ -1256,7 +1256,8 @@ export const changeSandboxesFrozen = async (
     );
 
     actions.internal.handleError({
-      message: "We weren't able to update the frozen status of the sandboxes",
+      message:
+        "We weren't able to update the protected status of the sandboxes",
       error,
     });
   }

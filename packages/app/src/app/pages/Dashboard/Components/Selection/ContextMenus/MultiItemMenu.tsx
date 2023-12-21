@@ -150,7 +150,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const FROZEN_ITEMS = [
     sandboxes.some(s => !s.sandbox.isFrozen) && {
-      label: 'Freeze items',
+      label: 'Protect items',
       fn: () => {
         actions.dashboard.changeSandboxesFrozen({
           sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -159,7 +159,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       },
     },
     sandboxes.some(s => s.sandbox.isFrozen) && {
-      label: 'Unfreeze items',
+      label: 'Remove items protection',
       fn: () => {
         actions.dashboard.changeSandboxesFrozen({
           sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),

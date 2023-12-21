@@ -21,6 +21,7 @@ import {
   Text,
   IconButton,
   Button,
+  Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
@@ -196,14 +197,19 @@ export const Summary = () => {
 
       <List>
         {customTemplate && <TemplateConfig />}
-        <ListAction justify="space-between" onClick={updateFrozenState}>
-          <Label htmlFor="frozen">Frozen</Label>
-          <Switch
-            id="frozen"
-            onChange={updateFrozenState}
-            on={customTemplate ? sessionFrozen : isFrozen}
-          />
-        </ListAction>
+
+        <Tooltip label="Protected sandboxes cannot be edited unless they are forked.">
+          <ListAction justify="space-between" onClick={updateFrozenState}>
+            <Label htmlFor="frozen">Protected</Label>
+
+            <Switch
+              id="frozen"
+              onChange={updateFrozenState}
+              on={customTemplate ? sessionFrozen : isFrozen}
+            />
+          </ListAction>
+        </Tooltip>
+
         {isForked ? (
           <ListItem justify="space-between">
             <Text>{forkedTemplateSandbox ? 'Template' : 'Forked From'}</Text>

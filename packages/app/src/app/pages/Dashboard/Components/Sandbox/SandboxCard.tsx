@@ -153,6 +153,8 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
     prNumber,
     originalGit,
   }) => {
+    const boxType = showDevboxBadge ? 'devbox' : 'sandbox';
+
     const lastUpdatedText = (
       <Text key="last-updated" size={12} truncate>
         {shortDistance(lastUpdated)}
@@ -196,8 +198,8 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         <Stack gap={2} align="center">
           <PrivacyIcon />
           {isFrozen && (
-            <Tooltip label="Frozen Sandbox">
-              <Icon size={16} title="Frozen Sandbox" name="frozen" />
+            <Tooltip label={`Protected ${boxType}`}>
+              <Icon size={16} title={`Protected ${boxType}`} name="frozen" />
             </Tooltip>
           )}
           {prNumber ? (
