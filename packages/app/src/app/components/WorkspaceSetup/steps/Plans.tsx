@@ -69,7 +69,7 @@ export const Plans: React.FC<StepProps> = ({
 
   return (
     <AnimatedStep css={{ width: '100%' }}>
-      <Stack direction="vertical" gap={100}>
+      <Stack direction="vertical" gap={64}>
         <Stack direction="vertical" gap={12}>
           <StepHeader
             onPrevStep={onPrevStep}
@@ -252,11 +252,11 @@ const CardHeading = styled(Text)`
 `;
 
 const GridCell = styled(Stack)`
-  padding: 32px 16px;
-  height: 100px;
+  padding: 24px 16px;
+  height: 80px;
   width: 100%;
   max-width: 250px;
-  min-width: 200px;
+  min-width: 160px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -269,6 +269,10 @@ const GridCell = styled(Stack)`
       font-size: 16px;
     }
   }
+`;
+
+const GridCellDetails = styled(GridCell)`
+  height: 100px;
 `;
 
 const HorizontalScroller = styled(Element)`
@@ -303,7 +307,13 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
       </Text>
       {plan.id === 'free' && <Text weight="medium">forever</Text>}
       {plan.id === 'enterprise' && <Element css={{ height: '20px' }} />}
-      {isPro && <Text weight="medium">per month</Text>}
+      {isPro && (
+        <Text align="center" weight="medium">
+          per month
+          <br />
+          per workspace
+        </Text>
+      )}
     </Stack>
   );
 };
@@ -316,7 +326,7 @@ const PlanCredits: React.FC<{ plan: PricingPlan }> = ({ plan }) => (
         size={3}
         css={{ textWrap: 'balance', textAlign: 'center', maxWidth: '180px' }}
       >
-        Access on-demand credits for ${plan.additionalCreditsCost}/cr
+        Get on-demand credits for ${plan.additionalCreditsCost}/cr
       </Text>
     ) : null}
   </Stack>
@@ -382,9 +392,9 @@ const CodeSandboxFriendsCard = () => (
         Discounts for open source and non-profits
       </Text>
       <Text css={{ textWrap: 'balance' }}>
-        Through our CodeSandbox Friends program, we offer free or low-cost
-        access to CodeSandbox for people working on licensed open-source
-        software, developer community projects or non-profit organizations.{' '}
+        Remove limits and get free or low-cost access to CodeSandbox if you're
+        working on licensed open-source software, developer community projects
+        or for non-profit organizations.{' '}
       </Text>
     </Stack>
     <Button
@@ -402,7 +412,12 @@ const CodeSandboxFriendsCard = () => (
 );
 
 const VMSpecs: React.FC<{ tiers: VMTier[] }> = ({ tiers }) => (
-  <Stack direction="vertical" align="center" gap={9} css={{ color: '#e5e5e5' }}>
+  <Stack
+    direction="vertical"
+    align="center"
+    gap={11}
+    css={{ color: '#e5e5e5' }}
+  >
     <Text weight="medium" size={7} fontFamily="everett" id="vm-types">
       Virtual machine types
     </Text>
@@ -414,17 +429,18 @@ const VMSpecs: React.FC<{ tiers: VMTier[] }> = ({ tiers }) => (
           '& > *:not(:nth-child(-n+5))': {
             borderTop: '1px solid #252525',
           },
+          borderBottom: '1px solid #252525',
         }}
       >
         <GridCell />
         <GridCell css={{ justifyContent: 'flex-start' }}>
           <Text weight="medium" size={5}>
-            Credits per hour
+            Credits / hour
           </Text>
         </GridCell>
         <GridCell css={{ justifyContent: 'flex-start' }}>
           <Text weight="medium" size={5}>
-            Cost per hour
+            Cost / hour
           </Text>
           <Text
             size={3}
@@ -435,7 +451,7 @@ const VMSpecs: React.FC<{ tiers: VMTier[] }> = ({ tiers }) => (
               textWrap: 'balance',
             }}
           >
-            Maximum cost, without subscription savings
+            Without&nbsp;subscription savings
           </Text>
         </GridCell>
         <GridCell css={{ justifyContent: 'flex-start' }}>
@@ -456,7 +472,7 @@ const VMSpecs: React.FC<{ tiers: VMTier[] }> = ({ tiers }) => (
               </Text>
               {(tier.shortid === 'vm-3' || tier.shortid === 'vm-4') && (
                 <Text size={3} color="#999">
-                  Available on Pro
+                  Available from Pro
                 </Text>
               )}
               {(tier.shortid === 'vm-5' || tier.shortid === 'vm-6') && (
@@ -487,7 +503,12 @@ const VMSpecs: React.FC<{ tiers: VMTier[] }> = ({ tiers }) => (
 export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
   plans,
 }) => (
-  <Stack direction="vertical" align="center" gap={9} css={{ color: '#e5e5e5' }}>
+  <Stack
+    direction="vertical"
+    align="center"
+    gap={11}
+    css={{ color: '#e5e5e5' }}
+  >
     <Text weight="medium" fontFamily="everett" size={7}>
       Plan details
     </Text>
@@ -500,6 +521,7 @@ export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           '& > *:not(:nth-child(-n+4))': {
             borderTop: '1px solid #252525',
           },
+          borderBottom: '1px solid #252525',
         }}
       >
         <GridCell />
@@ -612,19 +634,19 @@ const FeatureComparisonNumbersRow: React.FC<FeatureComparisonRowProps> = ({
   description,
 }) => (
   <>
-    <GridCell css={{ alignItems: 'flex-start' }}>
+    <GridCellDetails css={{ alignItems: 'flex-start' }}>
       <Text weight="medium" size={5}>
         {title}
       </Text>
       <Text size={3} color="#999">
         {description}
       </Text>
-    </GridCell>
+    </GridCellDetails>
 
     {plans.map(p => (
-      <GridCell key={p.id}>
+      <GridCellDetails key={p.id}>
         {p[property] === Number.MAX_SAFE_INTEGER ? 'Unlimited' : p[property]}
-      </GridCell>
+      </GridCellDetails>
     ))}
   </>
 );
@@ -636,23 +658,23 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
   description,
 }) => (
   <>
-    <GridCell css={{ alignItems: 'flex-start' }}>
+    <GridCellDetails css={{ alignItems: 'flex-start' }}>
       <Text weight="medium" size={5}>
         {title}
       </Text>
       <Text size={3} color="#999">
         {description}
       </Text>
-    </GridCell>
+    </GridCellDetails>
 
     {plans.map(p => (
-      <GridCell key={p.id}>
+      <GridCellDetails key={p.id}>
         <Icon
           name={p[property] ? 'simpleCheck' : 'cross'}
           color={p[property] ? '#43BB30' : '#DD5F5F'}
           size={16}
         />
-      </GridCell>
+      </GridCellDetails>
     ))}
   </>
 );

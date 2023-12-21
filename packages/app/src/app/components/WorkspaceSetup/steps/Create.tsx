@@ -114,13 +114,13 @@ export const Create: React.FC<StepProps> = ({
 
   return (
     <AnimatedStep>
-      <Stack direction="vertical" gap={6} css={{ width: '350px' }}>
+      <Stack direction="vertical" gap={8} css={{ width: '400px' }}>
         <StepHeader
           onPrevStep={onPrevStep}
           onDismiss={onDismiss}
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
-          title="Workspace name"
+          title="Name your workspace"
         />
         <Stack
           as="form"
@@ -132,8 +132,7 @@ export const Create: React.FC<StepProps> = ({
           <Stack gap={2} direction="vertical">
             <Element css={{ position: 'relative', paddingBottom: '24px' }}>
               <InputText
-                label="Set a name for your workspace"
-                placeholder="My workspace"
+                label="Workspace name"
                 id="teamname"
                 name="name"
                 required
