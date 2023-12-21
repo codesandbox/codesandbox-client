@@ -27,20 +27,21 @@ const ModalContent: React.FC = () => {
   useKeyPressEvent('Enter', fork);
   return (
     <Alert
-      title={`Frozen ${customTemplate ? 'Template' : 'Sandbox'}`}
+      title={`Protected ${type}`}
       description={
         <>
           <p>
-            This {type} is frozen, which means you can’t make edits without
-            unfreezing it.
+            This {type} is protected, which means you can’t make edits unless
+            you fork it.
           </p>
           <p>
-            Do you want to unfreeze the {type} for this session or make a fork?
+            Do you want to remove the protection for the {type} for this session
+            or make a fork?
           </p>
         </>
       }
       onCancel={unlock}
-      cancelMessage="Unfreeze"
+      cancelMessage="Remove protection"
       onPrimaryAction={fork}
       confirmMessage={
         <Stack gap={2} align="center">

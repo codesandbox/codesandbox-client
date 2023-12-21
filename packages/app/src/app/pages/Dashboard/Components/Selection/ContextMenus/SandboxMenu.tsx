@@ -285,7 +285,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
             disabled={restricted}
           >
-            Unfreeze {label}
+            Remove {label} protection
           </MenuItem>
         ) : (
           <MenuItem
@@ -297,7 +297,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
             disabled={restricted}
           >
-            Freeze {label}
+            Protect {label}
           </MenuItem>
         ))}
 
