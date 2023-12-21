@@ -2,7 +2,6 @@ import React from 'react';
 import { WorkspaceFlowLayout } from './Layout';
 import { StepProps, WorkspaceSetupStep } from './types';
 import { Create } from './steps/Create';
-import { Members } from './steps/Members';
 import { Plans } from './steps/Plans';
 import { PlanOptions } from './steps/PlanOptions';
 import { Payment } from './steps/Payment';
@@ -53,7 +52,6 @@ export const STEP_COMPONENTS: Record<
   React.FC<StepProps>
 > = {
   create: Create,
-  members: Members,
   'select-workspace': SelectWorkspace,
   plans: Plans,
   'plan-options': PlanOptions,

@@ -79,7 +79,7 @@ export const Plans: React.FC<StepProps> = ({
             title="Choose a plan"
           />
 
-          <HorizontalScroller>
+          <HorizontalScroller css={{ width: '100%' }}>
             <Stack gap={6}>
               <StyledCard
                 direction="vertical"
@@ -305,8 +305,12 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
       <Text size={9} fontFamily="everett" weight="medium">
         {typeof plan.price === 'number' ? `$${plan.price}` : plan.price}
       </Text>
-      {plan.id === 'free' && <Text weight="medium">forever</Text>}
-      {plan.id === 'enterprise' && <Element css={{ height: '20px' }} />}
+      {plan.id === 'free' && (
+        <Text css={{ height: '40px' }} weight="medium">
+          forever
+        </Text>
+      )}
+      {plan.id === 'enterprise' && <Element css={{ height: '40px' }} />}
       {isPro && (
         <Text align="center" weight="medium">
           per month
@@ -344,7 +348,7 @@ const PlanVMs: React.FC<{
   plan: PricingPlan;
   tierMap: Record<VMType, VMTier>;
 }> = ({ plan, tierMap }) => (
-  <Stack direction="vertical" align="center">
+  <Stack direction="vertical" align="center" css={{ height: '60px' }}>
     <Text>Virtual machine options:</Text>
     <Text
       as="a"
@@ -354,6 +358,8 @@ const PlanVMs: React.FC<{
         textAlign: 'center',
         textDecoration: 'none',
         color: '#4E3BB0',
+        opacity: Object.keys(tierMap).length === 0 ? 0 : 1,
+        transition: 'opacity 0.15s ease-out',
       }}
     >
       {plan.availableVMs
@@ -392,9 +398,9 @@ const CodeSandboxFriendsCard = () => (
         Discounts for open source and non-profits
       </Text>
       <Text css={{ textWrap: 'balance' }}>
-        Remove limits and get free or low-cost access to CodeSandbox if you're
-        working on licensed open-source software, developer community projects
-        or for non-profit organizations.{' '}
+        Remove limits and get free or low-cost access to CodeSandbox if
+        you&apos;re working on licensed open-source software, developer
+        community projects or for non-profit organizations.{' '}
       </Text>
     </Stack>
     <Button

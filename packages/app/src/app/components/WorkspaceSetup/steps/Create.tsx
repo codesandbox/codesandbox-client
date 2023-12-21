@@ -95,7 +95,7 @@ export const Create: React.FC<StepProps> = ({
 
     // Validate if the name input is filled with whitespaces.
     if (!trimmedName) {
-      setError('Workspace name is required.');
+      setError('Workspace name cannot be empty.');
     }
 
     // Check if there's any team with the same name.
@@ -141,6 +141,7 @@ export const Create: React.FC<StepProps> = ({
                 defaultValue={teamIsAlreadyCreated ? activeTeamInfo.name : ''}
                 onChange={handleInput}
                 ref={inputRef}
+                hideLabel
               />
 
               {error && (

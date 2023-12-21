@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Element, Button, Text } from '@codesandbox/components';
+import { Stack, Button, Text } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { PRICING_PLANS, PlanType } from 'app/constants';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
