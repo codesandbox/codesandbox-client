@@ -670,7 +670,10 @@ export const deleteSandbox = async (
 
 export const unmakeTemplates = async (
   { effects, actions, state }: Context,
-  { templateIds, isOnRecentPage = false }: { templateIds: string[], isOnRecentPage?: boolean }
+  {
+    templateIds,
+    isOnRecentPage = false,
+  }: { templateIds: string[]; isOnRecentPage?: boolean }
 ) => {
   const oldTemplates = {
     TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
@@ -862,7 +865,7 @@ export const makeTemplates = async (
     }
 
     const hadTemplatesBeforeFetching = state.sidebar.hasTemplates;
-    await actions.sidebar.getSidebarData(state.activeTeam);
+    await actions.sidebar.getSidebarData(state.activeTeam || undefined);
 
     if (!hadTemplatesBeforeFetching) {
       notificationState.addNotification({
