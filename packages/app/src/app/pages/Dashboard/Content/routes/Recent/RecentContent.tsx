@@ -134,23 +134,20 @@ export const RecentContent: React.FC<RecentContentProps> = ({
 // Advanced algorithm for determining the number of items in a perfect grid
 export const computeNumberOfItemsForPerfectGrid = (screenSize: number) => {
   if (screenSize >= 2806) {
-    return 18;
+    return 18; // 9/row
   }
   if (screenSize >= 2530) {
-    return 16;
+    return 16; // 8/row
   }
   if (screenSize >= 2254) {
-    return 14;
+    return 14; // 7/row
   }
   if (screenSize >= 1978) {
-    return 18;
+    return 18; // 6/row
   }
   if (screenSize >= 1702) {
-    return 15;
-  }
-  if (screenSize >= 1426) {
-    return 16;
+    return 15; // 5/row
   }
 
-  return 18;
+  return 12; // 4 or less/row
 };
