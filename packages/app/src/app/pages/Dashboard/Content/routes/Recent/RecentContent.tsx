@@ -15,6 +15,7 @@ import {
   ITEM_HEIGHT_LIST,
   GUTTER,
 } from 'app/pages/Dashboard/Components/VariableGrid/constants';
+import { useScreenSize } from 'app/hooks/useScreenSize';
 import {
   DashboardBranch,
   DashboardSandbox,
@@ -72,6 +73,11 @@ export const RecentContent: React.FC<RecentContentProps> = ({
     dashboard: { viewMode },
   } = useAppState();
   const { restrictsPublicRepos } = useGitHubPermissions();
+  const { width: screenWidth } = useScreenSize();
+
+  const numberOfItems =
+    viewMode === 'grid' ? computeNumberOfItemsForPerfectGrid(screenWidth) : 18;
+
   const page: PageTypes = 'recent';
   const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
   const showDocsLine = !isOnPrem;
@@ -101,7 +107,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
             }}
             viewMode={viewMode}
           >
-            {recentItems.map(item => {
+            {recentItems.slice(0, numberOfItems).map(item => {
               const itemId =
                 item.type === 'branch' ? item.branch.id : item.sandbox.id;
 
@@ -123,4 +129,28 @@ export const RecentContent: React.FC<RecentContentProps> = ({
       {showRepositoryImport && <SuggestionsRow page="recent" />}
     </StyledWrapper>
   );
+};
+
+// Advanced algorithm for determining the number of items in a perfect grid
+export const computeNumberOfItemsForPerfectGrid = (screenSize: number) => {
+  if (screenSize >= 2806) {
+    return 18;
+  }
+  if (screenSize >= 2530) {
+    return 16;
+  }
+  if (screenSize >= 2254) {
+    return 14;
+  }
+  if (screenSize >= 1978) {
+    return 18;
+  }
+  if (screenSize >= 1702) {
+    return 15;
+  }
+  if (screenSize >= 1426) {
+    return 16;
+  }
+
+  return 18;
 };
