@@ -848,6 +848,16 @@ export const makeTemplates = async (
     await effects.gql.mutations.makeSandboxesTemplate({
       sandboxIds: ids,
     });
+    const hadTemplatesBeforeFetching = state.sidebar.hasTemplates;
+    await actions.sidebar.getSidebarData(state.activeTeam);
+
+    if (!hadTemplatesBeforeFetching) {
+      notificationState.addNotification({
+        title: 'Template successfully created',
+        message: 'Check out your new "Templates" collection in the sidebar.',
+        status: NotificationStatus.SUCCESS,
+      });
+    }
   } catch (error) {
     state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem making your template');

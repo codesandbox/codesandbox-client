@@ -30,8 +30,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const {
     browser: { copyToClipboard },
   } = useEffects();
-  const { sandbox, type } = item;
-  const isTemplate = type === 'template';
+  const { sandbox } = item;
+  const isTemplate = !!sandbox.customTemplate;
 
   const { visible, setVisibility, position } = React.useContext(Context);
   const history = useHistory();
@@ -215,23 +215,23 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </Tooltip>
       )}
 
-      {hasAccess && userRole !== 'READ' ? (
-        <>
-          <Menu.Divider />
-          {sandbox.privacy !== 0 && (
-            <MenuItem
-              onSelect={() =>
-                actions.dashboard.changeSandboxesPrivacy({
-                  sandboxIds: [sandbox.id],
-                  privacy: 0,
-                })
-              }
-            >
-              Make {label} public
-            </MenuItem>
-          )}
-        </>
-      ) : null}
+      {hasAccess && userRole !== 'READ'
+        ? sandbox.privacy !== 0 && (
+            <>
+              <Menu.Divider />
+              <MenuItem
+                onSelect={() =>
+                  actions.dashboard.changeSandboxesPrivacy({
+                    sandboxIds: [sandbox.id],
+                    privacy: 0,
+                  })
+                }
+              >
+                Make {label} public
+              </MenuItem>
+            </>
+          )
+        : null}
 
       {hasAccess && userRole !== 'READ' && isPro ? (
         <>
@@ -311,7 +311,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
             disabled={restricted}
           >
-            Convert to {boxType}
+            Convert back to {boxType}
           </MenuItem>
         ) : (
           <MenuItem
@@ -322,7 +322,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
             disabled={restricted}
           >
-            Make {boxType} a template
+            Convert into a template
           </MenuItem>
         ))}
       {hasAccess &&
