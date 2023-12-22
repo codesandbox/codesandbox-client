@@ -1,9 +1,12 @@
 import { useState, useLayoutEffect } from 'react';
 
 export function useScreenSize() {
-  const [size, setSize] = useState({
-    width: null,
-    height: null,
+  const [size, setSize] = useState<{
+    width: number;
+    height: number;
+  }>({
+    width: 0,
+    height: 0,
   });
 
   useLayoutEffect(() => {
