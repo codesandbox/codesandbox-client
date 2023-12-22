@@ -307,6 +307,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             onSelect={() => {
               actions.dashboard.unmakeTemplates({
                 templateIds: [sandbox.id],
+                isOnRecentPage: location.pathname.includes('recent'),
               });
             }}
             disabled={restricted}
@@ -318,6 +319,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             onSelect={() => {
               actions.dashboard.makeTemplates({
                 sandboxIds: [sandbox.id],
+                isOnRecentPage: location.pathname.includes('recent'),
               });
             }}
             disabled={restricted}
