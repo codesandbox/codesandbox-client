@@ -33,21 +33,18 @@ export const Recent = props => {
             type: 'branch' as const,
             branch,
           })),
-        ]
-          .sort((a, b) => {
-            const dateA =
-              a.type === 'branch'
-                ? a.branch.lastAccessedAt
-                : a.sandbox.lastAccessedAt;
-            const dateB =
-              b.type === 'branch'
-                ? b.branch.lastAccessedAt
-                : b.sandbox.lastAccessedAt;
+        ].sort((a, b) => {
+          const dateA =
+            a.type === 'branch'
+              ? a.branch.lastAccessedAt
+              : a.sandbox.lastAccessedAt;
+          const dateB =
+            b.type === 'branch'
+              ? b.branch.lastAccessedAt
+              : b.sandbox.lastAccessedAt;
 
-            return new Date(dateA) < new Date(dateB) ? 1 : -1;
-            // Merge the two data sources and show only the first 18 most recent entries
-          })
-          .slice(0, 18);
+          return new Date(dateA) < new Date(dateB) ? 1 : -1;
+        });
 
   let pageState: 'loading' | 'ready' | 'empty';
   if (!items) {

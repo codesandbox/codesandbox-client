@@ -15,7 +15,6 @@ import {
   ITEM_HEIGHT_LIST,
   GUTTER,
 } from 'app/pages/Dashboard/Components/VariableGrid/constants';
-import { useScreenSize } from 'app/hooks/useScreenSize';
 import {
   DashboardBranch,
   DashboardSandbox,
@@ -44,6 +43,39 @@ const StyledWrapper = styled(Stack)`
 
 const StyledItemsWrapper = styled(Element)<{ viewMode: 'grid' | 'list' }>`
   display: grid;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  @media (width <= 1702px) {
+    & li:not(:nth-child(-n + 12)) {
+      display: none;
+    }
+  }
+
+  @media (1702px < width <= 1978px) {
+    & li:not(:nth-child(-n + 15)) {
+      display: none;
+    }
+  }
+
+  @media (1978px < width <= 2254px) {
+    & li:not(:nth-child(-n + 18)) {
+      display: none;
+    }
+  }
+
+  @media (2254px < width <= 2530px) {
+    & li:not(:nth-child(-n + 14)) {
+      display: none;
+    }
+  }
+
+  @media (2530px < width <= 2806px) {
+    & li:not(:nth-child(-n + 16)) {
+      display: none;
+    }
+  }
 
   ${props =>
     props.viewMode === 'grid' &&
@@ -73,10 +105,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
     dashboard: { viewMode },
   } = useAppState();
   const { restrictsPublicRepos } = useGitHubPermissions();
-  const { width: screenWidth } = useScreenSize();
-
-  const numberOfItems =
-    viewMode === 'grid' ? computeNumberOfItemsForPerfectGrid(screenWidth) : 18;
 
   const page: PageTypes = 'recent';
   const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
@@ -98,16 +126,8 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           page={page}
           items={recentItems}
         >
-          <StyledItemsWrapper
-            as="ul"
-            css={{
-              listStyleType: 'none',
-              margin: 0,
-              padding: 0,
-            }}
-            viewMode={viewMode}
-          >
-            {recentItems.slice(0, numberOfItems).map(item => {
+          <StyledItemsWrapper as="ul" viewMode={viewMode}>
+            {recentItems.map(item => {
               const itemId =
                 item.type === 'branch' ? item.branch.id : item.sandbox.id;
 
@@ -129,25 +149,4 @@ export const RecentContent: React.FC<RecentContentProps> = ({
       {showRepositoryImport && <SuggestionsRow page="recent" />}
     </StyledWrapper>
   );
-};
-
-// Advanced algorithm for determining the number of items in a perfect grid
-export const computeNumberOfItemsForPerfectGrid = (screenSize: number) => {
-  if (screenSize >= 2806) {
-    return 18; // 9/row
-  }
-  if (screenSize >= 2530) {
-    return 16; // 8/row
-  }
-  if (screenSize >= 2254) {
-    return 14; // 7/row
-  }
-  if (screenSize >= 1978) {
-    return 18; // 6/row
-  }
-  if (screenSize >= 1702) {
-    return 15; // 5/row
-  }
-
-  return 12; // 4 or less/row
 };
