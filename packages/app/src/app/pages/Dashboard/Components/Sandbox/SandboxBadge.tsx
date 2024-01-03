@@ -22,7 +22,7 @@ export const SandboxBadge: React.FC<SandboxBadgeProps> = ({
   }
 
   if (isTemplate) {
-    boxTypeLabel = 'Template';
+    boxTypeLabel += ' template';
   }
 
   return (
