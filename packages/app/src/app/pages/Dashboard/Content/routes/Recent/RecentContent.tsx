@@ -43,6 +43,39 @@ const StyledWrapper = styled(Stack)`
 
 const StyledItemsWrapper = styled(Element)<{ viewMode: 'grid' | 'list' }>`
   display: grid;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  @media (width <= 1702px) {
+    & li:not(:nth-child(-n + 12)) {
+      display: none;
+    }
+  }
+
+  @media (1702px < width <= 1978px) {
+    & li:not(:nth-child(-n + 15)) {
+      display: none;
+    }
+  }
+
+  @media (1978px < width <= 2254px) {
+    & li:not(:nth-child(-n + 18)) {
+      display: none;
+    }
+  }
+
+  @media (2254px < width <= 2530px) {
+    & li:not(:nth-child(-n + 14)) {
+      display: none;
+    }
+  }
+
+  @media (2530px < width <= 2806px) {
+    & li:not(:nth-child(-n + 16)) {
+      display: none;
+    }
+  }
 
   ${props =>
     props.viewMode === 'grid' &&
@@ -72,6 +105,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
     dashboard: { viewMode },
   } = useAppState();
   const { restrictsPublicRepos } = useGitHubPermissions();
+
   const page: PageTypes = 'recent';
   const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
   const showDocsLine = !isOnPrem;
@@ -92,15 +126,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           page={page}
           items={recentItems}
         >
-          <StyledItemsWrapper
-            as="ul"
-            css={{
-              listStyleType: 'none',
-              margin: 0,
-              padding: 0,
-            }}
-            viewMode={viewMode}
-          >
+          <StyledItemsWrapper as="ul" viewMode={viewMode}>
             {recentItems.map(item => {
               const itemId =
                 item.type === 'branch' ? item.branch.id : item.sandbox.id;
