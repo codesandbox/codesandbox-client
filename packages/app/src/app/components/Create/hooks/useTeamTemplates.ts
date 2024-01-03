@@ -39,8 +39,9 @@ export const useTeamTemplates = ({
 }: UseTeamTemplatesParams): State => {
   const skip = !hasLogIn;
 
-  const noDevboxesWhenListingSandboxes = (t: TemplateFragment) =>
-    type === 'sandbox' ? !t.sandbox.isV2 : true;
+  const respectBoxType = (t: TemplateFragment) =>
+    (type === 'sandbox' && !t.sandbox.isV2) ||
+    (type === 'devbox' && t.sandbox.isV2);
 
   const { data, error } = useQuery<
     RecentAndWorkspaceTemplatesQuery,
@@ -81,13 +82,7 @@ export const useTeamTemplates = ({
 
   return {
     state: 'ready',
-    recentTemplates: data.me.recentlyUsedTemplates.filter(
-      t =>
-        (type === 'sandbox' && !t.sandbox.isV2) ||
-        (type === 'devbox' && t.sandbox.isV2)
-    ),
-    teamTemplates: data.me.team.templates.filter(
-      noDevboxesWhenListingSandboxes
-    ),
+    recentTemplates: data.me.recentlyUsedTemplates.filter(respectBoxType),
+    teamTemplates: data.me.team.templates.filter(respectBoxType),
   };
 };

@@ -670,17 +670,25 @@ export const deleteSandbox = async (
 
 export const unmakeTemplates = async (
   { effects, actions, state }: Context,
-  { templateIds }: { templateIds: string[] }
+  {
+    templateIds,
+    isOnRecentPage = false,
+  }: { templateIds: string[]; isOnRecentPage?: boolean }
 ) => {
   const oldTemplates = {
     TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
   };
-  actions.dashboard.deleteTemplateFromState(templateIds);
+
   try {
     await effects.gql.mutations.unmakeSandboxesTemplate({
       sandboxIds: templateIds,
     });
+    if (isOnRecentPage) {
+      actions.dashboard.getStartPageSandboxes();
+    } else {
+      actions.dashboard.deleteTemplateFromState(templateIds);
+    }
   } catch (error) {
     state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
       ? [...oldTemplates.TEMPLATES]
@@ -833,8 +841,10 @@ export const makeTemplates = async (
   { effects, state, actions }: Context,
   {
     sandboxIds: ids,
+    isOnRecentPage = false,
   }: {
     sandboxIds: string[];
+    isOnRecentPage?: boolean;
   }
 ) => {
   effects.analytics.track('Dashboard - Make Template', {
@@ -842,12 +852,28 @@ export const makeTemplates = async (
   });
 
   const oldSandboxes = state.dashboard.sandboxes;
-  actions.dashboard.internal.deleteSandboxesFromState({ ids });
 
   try {
     await effects.gql.mutations.makeSandboxesTemplate({
       sandboxIds: ids,
     });
+
+    if (isOnRecentPage) {
+      actions.dashboard.getStartPageSandboxes();
+    } else {
+      actions.dashboard.internal.deleteSandboxesFromState({ ids });
+    }
+
+    const hadTemplatesBeforeFetching = state.sidebar.hasTemplates;
+    await actions.sidebar.getSidebarData(state.activeTeam || undefined);
+
+    if (!hadTemplatesBeforeFetching) {
+      notificationState.addNotification({
+        title: 'Template successfully created',
+        message: 'Check out your new "Templates" collection in the sidebar.',
+        status: NotificationStatus.SUCCESS,
+      });
+    }
   } catch (error) {
     state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem making your template');
