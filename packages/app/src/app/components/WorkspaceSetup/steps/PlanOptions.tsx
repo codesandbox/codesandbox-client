@@ -3,6 +3,7 @@ import { Stack, Button, Text } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { PRICING_PLANS, PlanType } from 'app/constants';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
+import { useEffects } from 'app/overmind';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -14,8 +15,10 @@ export const PlanOptions: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
+  const effects = useEffects();
   const { getQueryParam } = useURLSearchParams();
   const selectedPlan = getQueryParam('plan') as PlanType;
+  const urlWorkspaceId = getQueryParam('workspace');
   const [error, setError] = React.useState<React.ReactNode>('');
 
   const plan = PRICING_PLANS[selectedPlan];
@@ -44,8 +47,20 @@ export const PlanOptions: React.FC<StepProps> = ({
     }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const spendingLimit = formData.get('spending-limit').toString();
+    const spendingLimitNumber = parseInt(spendingLimit, 10);
+
+    if (Number.isNaN(spendingLimitNumber)) {
+      return;
+    }
+
+    await effects.gql.mutations.setTeamLimits({
+      teamId: urlWorkspaceId,
+      onDemandSpendingLimit: parseInt(spendingLimit, 10),
+    });
     onNextStep();
   };
 
@@ -66,14 +81,14 @@ export const PlanOptions: React.FC<StepProps> = ({
           title="Set a spending limit"
         />
         <Text>
-          You will have {plan.credits} credits included in your subscription.
-          Above this, we will automatically bill you for on-demand credits at $
+          Your subscription includes {plan.credits} credits. Over this limit, we
+          will automatically charge you for on-demand credits at{' '}
           {plan.additionalCreditsCost}/credit (500 credits for $
           {plan.additionalCreditsCost * 500}).
         </Text>
         <Text>
-          Set a monthly spending limit for these on-demand credits, so that you
-          can stay within your budget. You can change this limit at any time.
+          You can set a monthly spending limit for these on-demand credits to
+          control your spend. You can change it anytime.
         </Text>
 
         <Stack direction="vertical" gap={2}>

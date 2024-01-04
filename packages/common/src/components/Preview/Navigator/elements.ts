@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -63,19 +63,4 @@ export const AddressBarContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
   margin: 0 0.25rem;
-`;
-
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-export const SpinnerWrapper = styled.span`
-  display: inline-block;
-  animation: ${rotate} 2s linear infinite;
 `;

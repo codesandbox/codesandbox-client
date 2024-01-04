@@ -2,7 +2,6 @@ import React, { FunctionComponent, useEffect } from 'react';
 import css from '@styled-system/css';
 import { Text, Stack, Icon, Element } from '@codesandbox/components';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { SpinnerWrapper } from '@codesandbox/common/lib/components/Preview/Navigator/elements';
 import track from '@codesandbox/common/lib/utils/analytics';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
@@ -98,11 +97,7 @@ export const PreferencesSync: FunctionComponent = () => {
             height: 382,
           })}
         >
-          <SpinnerWrapper
-            style={{ transformOrigin: '50% 50%', width: 14, height: 14 }}
-          >
-            <Icon name="spinner" />
-          </SpinnerWrapper>
+          <Icon name="spinner" />
         </Stack>
       ) : (
         <SubContainer>

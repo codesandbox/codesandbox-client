@@ -17,7 +17,6 @@ import {
   Icon,
   AddressBarContainer,
   IconWithBackground,
-  SpinnerWrapper,
 } from './elements';
 import { Sandbox } from '../../../types';
 
@@ -94,9 +93,7 @@ function Navigator({
             content="Add Preview Comment (CTRL/CMD + SHIFT + S)"
           >
             {isScreenshotLoading ? (
-              <SpinnerWrapper>
-                <ComponentsIcon name="spinner" />
-              </SpinnerWrapper>
+              <ComponentsIcon name="spinner" />
             ) : (
               <ComponentsIcon
                 name="comment"
