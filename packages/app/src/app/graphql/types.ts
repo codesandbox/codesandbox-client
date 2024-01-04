@@ -4712,6 +4712,7 @@ export type TeamLimitsFragment = {
   maxPrivateSandboxes: number | null;
   maxPublicProjects: number | null;
   maxPublicSandboxes: number | null;
+  onDemandSpendingLimit: number | null;
 };
 
 export type _CreateTeamMutationVariables = Exact<{
@@ -7510,6 +7511,7 @@ export type LimitsQuery = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
+      onDemandSpendingLimit: number | null;
     };
     personalPro: {
       __typename?: 'TeamLimits';
@@ -7518,6 +7520,7 @@ export type LimitsQuery = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
+      onDemandSpendingLimit: number | null;
     };
     teamFree: {
       __typename?: 'TeamLimits';
@@ -7526,6 +7529,7 @@ export type LimitsQuery = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
+      onDemandSpendingLimit: number | null;
     };
     teamPro: {
       __typename?: 'TeamLimits';
@@ -7534,6 +7538,7 @@ export type LimitsQuery = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
+      onDemandSpendingLimit: number | null;
     };
   };
 };
