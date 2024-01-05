@@ -29,7 +29,7 @@ export type Params = {
 
 type Options = {
   shouldCamelize?: boolean;
-  version?: string;
+  version?: string | null;
 };
 
 export type Api = {
@@ -49,7 +49,7 @@ export type ApiConfig = {
 export default (config: ApiConfig) => {
   const createHeaders = (
     provideJwt: () => string | null,
-    version?: string
+    version?: string | null
   ) => ({
     'x-codesandbox-client': 'legacy-web',
     ...(version ? { 'X-CSB-API-Version': version } : {}),
