@@ -614,7 +614,8 @@ export const initializeActiveWorkspace = async ({
     if (teams?.me) {
       state.dashboard.teams = teams.me.workspaces;
       state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
-      state.userFeatureFlags = teams.me.eligibleForTrial;
+      state.userCanStartTrial = teams.me.eligibleForTrial;
+      state.userFeatureFlags = teams.me.featureFlags;
     }
 
     // TODO: Treat here future scenario when no workspaces are available
