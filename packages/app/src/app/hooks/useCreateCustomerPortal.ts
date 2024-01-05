@@ -23,7 +23,7 @@ export const useCreateCustomerPortal = ({
       setLoading(true);
       const payload = await api.stripeCustomerPortal(
         team_id,
-        return_path ?? dashboard.settings(team_id)
+        return_path ?? dashboard.portalOverview(team_id)
       );
 
       if (payload.stripeCustomerPortalUrl) {

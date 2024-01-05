@@ -14,7 +14,6 @@ import {
   Switch as RouterSwitch,
   useLocation,
 } from 'react-router-dom';
-import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { SettingsNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
@@ -54,15 +53,15 @@ export const TeamSettings = () => {
               <RouterSwitch location={location}>
                 <Route
                   component={RegistrySettings}
-                  path={dashboardUrls.registrySettings()}
+                  path="/dashboard/settings/npm-registry"
                 />
                 <Route
                   component={PermissionSettings}
-                  path={dashboardUrls.permissionSettings()}
+                  path="/dashboard/settings/permissions"
                 />
                 <Route
                   component={WorkspaceSettings}
-                  path={dashboardUrls.settings()}
+                  path="/dashboard/settings"
                 />
               </RouterSwitch>
             </BrowserRouter>

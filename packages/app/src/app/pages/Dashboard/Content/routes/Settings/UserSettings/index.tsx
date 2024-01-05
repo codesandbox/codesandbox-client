@@ -4,7 +4,6 @@ import { useAppState } from 'app/overmind';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
-import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Header } from '../../../../Components/Header';
@@ -51,11 +50,11 @@ export const UserSettings = () => {
               <Switch location={location}>
                 <Route
                   component={PermissionSettings}
-                  path={dashboardUrls.permissionSettings()}
+                  path="/dashboard/settings/permissions"
                 />
                 <Route
                   component={WorkspaceSettings}
-                  path={dashboardUrls.settings()}
+                  path="/dashboard/settings"
                 />
               </Switch>
             </BrowserRouter>
