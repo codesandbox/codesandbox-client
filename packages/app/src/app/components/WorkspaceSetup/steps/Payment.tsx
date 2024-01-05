@@ -30,7 +30,7 @@ export const Payment: React.FC<StepProps> = ({
 
   async function createCheckout() {
     setCheckout({ status: 'loading' });
-    const successPath = dashboardURLs.settings(workspaceId);
+    const successPath = dashboardURLs.portalOverview(workspaceId);
     const cancelPath = dashboardURLs.recent(workspaceId);
 
     if (!workspaceId || !plan) {

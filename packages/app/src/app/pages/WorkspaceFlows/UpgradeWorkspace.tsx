@@ -39,10 +39,10 @@ export const UpgradeWorkspace = () => {
       steps={steps}
       onComplete={() => {
         // When setup is finished do a full reload
-        window.location.href = dashboardUrls.settings();
+        window.location.href = dashboardUrls.portalOverview(workspaceId);
       }}
       onDismiss={() => {
-        history.push(dashboardUrls.settings());
+        history.push(dashboardUrls.portalOverview(workspaceId));
       }}
     />
   );
