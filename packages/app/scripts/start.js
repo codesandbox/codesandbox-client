@@ -250,10 +250,6 @@ function addMiddleware(devServer, index) {
       })
     );
     devServer.use(
-      '/t',
-      createProxyMiddleware({ target: PROXY_DOMAIN, changeOrigin: true })
-    );
-    devServer.use(
       '/auth/workos',
       createProxyMiddleware({
         target: PROXY_DOMAIN,
