@@ -3,6 +3,7 @@ import {
   profileUrl,
   docsUrl,
   csbSite,
+  dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
@@ -113,7 +114,7 @@ export const UserMenu: FunctionComponent & {
           <Menu.Divider />
 
           {showManageSubscription && (
-            <Menu.Link to={`/dashboard/settings?workspace=${activeTeam}`}>
+            <Menu.Link href={dashboardUrls.portalOverview(activeTeam)}>
               <Stack align="center" gap={2}>
                 <Icon name="proBadge" size={16} />
                 <Text>Subscription</Text>

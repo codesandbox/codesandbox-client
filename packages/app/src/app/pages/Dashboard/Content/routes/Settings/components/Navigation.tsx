@@ -2,7 +2,6 @@ import { Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
-import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 type NavigationLinkProps = {
   url?: string;
@@ -68,17 +67,15 @@ export const SettingsNavigation = ({
         })}
         gap={6}
       >
-        <NavigationLink url={dashboardUrls.settings(teamId)}>
-          Overview
-        </NavigationLink>
+        <NavigationLink url="/dashboard/settings">Overview</NavigationLink>
 
         {!isPersonal && (
-          <NavigationLink url={dashboardUrls.registrySettings(teamId)}>
+          <NavigationLink url="/dashboard/settings/npm-registry">
             NPM Registry
           </NavigationLink>
         )}
 
-        <NavigationLink url={dashboardUrls.permissionSettings(teamId)}>
+        <NavigationLink url="/dashboard/settings/permissions">
           Permissions
         </NavigationLink>
       </Stack>
