@@ -153,6 +153,10 @@ export const teamFragmentDashboard = gql`
       status
       paymentProvider
     }
+
+    featureFlags {
+      ubbBeta
+    }
   }
 `;
 
@@ -230,6 +234,10 @@ export const currentTeamInfoFragment = gql`
       privateSandboxesQuantity
       publicProjectsQuantity
       publicSandboxesQuantity
+    }
+
+    featureFlags {
+      ubbBeta
     }
   }
 `;

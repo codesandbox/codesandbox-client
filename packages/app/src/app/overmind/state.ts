@@ -8,6 +8,7 @@ import {
   CurrentTeamInfoFragmentFragment as CurrentTeam,
   TeamMemberAuthorization,
   TemplateFragment,
+  UserFeatureFlags,
 } from 'app/graphql/types';
 import { derived } from 'overmind';
 import { hasLogIn } from '@codesandbox/common/lib/utils/user';
@@ -39,6 +40,7 @@ type State = {
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
   userCanStartTrial: boolean;
+  userFeatureFlags: UserFeatureFlags;
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
@@ -141,6 +143,7 @@ export const state: State = {
   activeTeamInfo: null,
   primaryWorkspaceId: null,
   userCanStartTrial: false,
+  userFeatureFlags: { ubbBeta: false },
   connected: true,
   notifications: [],
   contributors: [],

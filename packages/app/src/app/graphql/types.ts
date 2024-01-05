@@ -4543,6 +4543,7 @@ export type TeamFragmentDashboardFragment = {
     status: SubscriptionStatus;
     paymentProvider: SubscriptionPaymentProvider | null;
   } | null;
+  featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
 };
 
 export type CurrentTeamInfoFragmentFragment = {
@@ -4622,6 +4623,7 @@ export type CurrentTeamInfoFragmentFragment = {
     publicProjectsQuantity: number;
     publicSandboxesQuantity: number;
   };
+  featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
 };
 
 export type NpmRegistryFragment = {
@@ -4761,6 +4763,7 @@ export type _CreateTeamMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
+    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
 };
 
@@ -5121,6 +5124,7 @@ export type _RemoveFromTeamMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
+    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
 };
 
@@ -5209,6 +5213,7 @@ export type _InviteToTeamMutation = {
       publicProjectsQuantity: number;
       publicSandboxesQuantity: number;
     };
+    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
 };
 
@@ -5307,6 +5312,7 @@ export type _RevokeTeamInvitationMutation = {
       publicProjectsQuantity: number;
       publicSandboxesQuantity: number;
     };
+    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
 };
 
@@ -5356,6 +5362,7 @@ export type _AcceptTeamInvitationMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
+    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
 };
 
@@ -5415,6 +5422,7 @@ export type _SetTeamDescriptionMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
+    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
 };
 
@@ -5483,6 +5491,7 @@ export type _SetTeamNameMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
+    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
 };
 
@@ -6361,6 +6370,7 @@ export type AllTeamsQuery = {
     __typename?: 'CurrentUser';
     primaryWorkspaceId: any | null;
     eligibleForTrial: boolean;
+    featureFlags: { __typename?: 'UserFeatureFlags'; ubbBeta: boolean };
     workspaces: Array<{
       __typename?: 'Team';
       id: any;
@@ -6401,6 +6411,7 @@ export type AllTeamsQuery = {
         status: SubscriptionStatus;
         paymentProvider: SubscriptionPaymentProvider | null;
       } | null;
+      featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
     }>;
   } | null;
 };
@@ -7195,6 +7206,7 @@ export type GetTeamQuery = {
         publicProjectsQuantity: number;
         publicSandboxesQuantity: number;
       };
+      featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
     } | null;
   } | null;
 };

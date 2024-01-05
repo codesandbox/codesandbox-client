@@ -13,6 +13,7 @@ import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useHistory } from 'react-router-dom';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -24,7 +25,8 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
     const actions = useActions();
-    const { dashboard } = state;
+    const history = useHistory();
+    const { dashboard, userFeatureFlags } = state;
     const { isPro } = useWorkspaceSubscription();
 
     if (dashboard.teams.length === 0) return null;
@@ -160,7 +162,11 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   textAlign: 'left',
                 }}
                 onSelect={() => {
-                  actions.openCreateTeamModal({ step: 'create' });
+                  if (userFeatureFlags.ubbBeta) {
+                    history.push('/create-workspace');
+                  } else {
+                    actions.openCreateTeamModal({ step: 'create' });
+                  }
                 }}
               >
                 <Stack
