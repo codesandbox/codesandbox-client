@@ -97,7 +97,7 @@ export const useCreateCheckout = (): [
       }
 
       const teamId = activeTeam;
-      const successPath = dashboardURLs.portalOverview(teamId);
+      const successPath = dashboardURLs.portalRelativePath(teamId);
 
       const payload = await api.stripeCreateCheckout({
         success_path: addStripeSuccessParam(successPath, trackingLocation),
