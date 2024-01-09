@@ -77,7 +77,7 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
-  const { activeTeam, hasLogIn } = useAppState();
+  const { activeTeam, hasLogIn, activeTeamInfo } = useAppState();
   const {
     restrictsPublicRepos,
     restrictsPrivateRepos,
@@ -87,6 +87,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   } = useActions();
 
   const { isFree } = useWorkspaceSubscription();
+  const isUbbBeta = activeTeamInfo?.featureFlags.ubbBeta;
 
   // Use a variable instead of `loading` from `useLazyQuery` because
   // we want the UI to look like it's loading before the debounced fn
@@ -145,7 +146,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     onCompleted: async repo => {
       setShouldFetch(false);
 
-      if (repo.private && isFree) {
+      if (repo.private && isFree && !isUbbBeta) {
         setPrivateRepoFreeAccountError(url.raw);
         return;
       }
@@ -165,7 +166,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
   const isLoading = githubRepo.state === 'loading' || isImporting;
   const limitImportBasedOnSubscription =
-    privateRepoFreeAccountError === url.raw;
+    privateRepoFreeAccountError === url.raw && !isUbbBeta;
   const hasExistingImports =
     existingRepositoryTeams && existingRepositoryTeams.length >= 1;
 

@@ -3,6 +3,7 @@ import { useAppState } from 'app/overmind';
 import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { DashboardRepository } from '../../types';
 import { RepositoryCard } from './RepositoryCard';
 import { RepositoryListItem } from './RepositoryListItem';
@@ -35,9 +36,10 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
   };
 
   const { isFree } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   const isPrivate = providerRepository?.private;
-  const restricted = isFree && isPrivate;
+  const restricted = !ubbBeta && isFree && isPrivate;
 
   const props: RepositoryProps = {
     repository: {

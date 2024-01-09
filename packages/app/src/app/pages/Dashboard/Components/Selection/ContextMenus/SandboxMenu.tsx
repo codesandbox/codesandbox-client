@@ -10,6 +10,7 @@ import {
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -37,6 +38,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const history = useHistory();
   const location = useLocation();
   const { userRole, isTeamAdmin } = useWorkspaceAuthorization();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
   const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
@@ -44,7 +46,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
 
   const label = isTemplate ? 'template' : boxType;
-  const restricted = isFree && sandbox.privacy !== 0;
+  const restricted = !ubbBeta && isFree && sandbox.privacy !== 0;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.

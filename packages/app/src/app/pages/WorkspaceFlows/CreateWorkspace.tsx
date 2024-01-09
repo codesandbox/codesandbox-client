@@ -12,12 +12,16 @@ export const CreateWorkspace = () => {
     string
   >('FRESH_WORKSPACE_ID', undefined);
 
-  const { hasLogIn } = useAppState();
+  const { hasLogIn, userFeatureFlags } = useAppState();
 
   if (!hasLogIn) {
     return (
       <Redirect to={signInPageUrl(`${location.pathname}${location.search}`)} />
     );
+  }
+
+  if (!userFeatureFlags.ubbBeta) {
+    return <Redirect to={dashboardUrls.recent()} />;
   }
 
   return (

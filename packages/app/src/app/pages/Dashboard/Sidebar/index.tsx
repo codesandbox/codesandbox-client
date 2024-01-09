@@ -10,6 +10,7 @@ import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { getDaysUntil } from 'app/utils/dateTime';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -92,7 +93,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     hasPaymentMethod,
     isEligibleForTrial,
   } = useWorkspaceSubscription();
-  const isUbbBeta = teamDataLoaded && activeTeamInfo.featureFlags.ubbBeta;
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   // Compute number of days left for TeamPro trial
   const trialDaysLeft = hasActiveTeamTrial
@@ -294,13 +295,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && isFree && isBillingManager ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isEligibleForTrial && !isUbbBeta ? (
+            {isEligibleForTrial && !ubbBeta ? (
               <StartTrial activeTeam={activeTeam} />
             ) : (
-              <UpgradeFreeTeamToPro
-                activeTeam={activeTeam}
-                ubbBeta={isUbbBeta}
-              />
+              <UpgradeFreeTeamToPro activeTeam={activeTeam} ubbBeta={ubbBeta} />
             )}
           </Element>
         ) : null}

@@ -14,6 +14,7 @@ import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -72,6 +73,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const actions = useActions();
   const { isFree } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   const { sandbox } = item;
 
@@ -151,7 +153,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const selected = selectedIds.includes(sandbox.id);
   const isDragging = isAnythingDragging && selected;
-  const restricted = isFree && sandbox.privacy !== 0;
+  const restricted = !ubbBeta && isFree && sandbox.privacy !== 0;
 
   const onClick = event => {
     onSelectionClick(event, sandbox.id);

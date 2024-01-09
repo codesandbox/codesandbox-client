@@ -13,6 +13,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
 import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
@@ -23,9 +24,10 @@ export const UserMenu: FunctionComponent & {
     signOutClicked,
     files: { gotUploadedFiles },
   } = useActions();
-  const { user, activeTeam, activeTeamInfo, environment } = useAppState();
+  const { user, activeTeam, environment } = useAppState();
   const { isAdmin } = useWorkspaceAuthorization();
   const { isPro, isFree } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
   const isEditorPage = useIsEditorPage();
 
   if (!user) {
@@ -58,7 +60,6 @@ export const UserMenu: FunctionComponent & {
   const showBecomePro = isFree;
   const showManageSubscription = isPro && isAdmin && !environment.isOnPrem;
   const showStorage = !environment.isOnPrem;
-  const ubbBeta = activeTeamInfo?.featureFlags.ubbBeta;
 
   return (
     <Element>

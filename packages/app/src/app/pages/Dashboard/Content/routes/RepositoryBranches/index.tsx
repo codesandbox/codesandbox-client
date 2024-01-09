@@ -15,6 +15,7 @@ import {
 } from 'app/overmind/namespaces/dashboard/utils';
 import { BranchFragment } from 'app/graphql/types';
 import { InstallGHAppStripe } from 'app/pages/Dashboard/Components/shared/InstallGHAppStripe';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
 type MappedBranches = {
   defaultBranch: BranchFragment | null;
@@ -49,8 +50,9 @@ export const RepositoryBranchesPage = () => {
   }, [activeTeam]);
 
   const { isFree } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
   const isPrivate = repositoryProject?.repository.private;
-  const restricted = isFree && isPrivate;
+  const restricted = !ubbBeta && isFree && isPrivate;
 
   const pageType: PageTypes = 'repository-branches';
 
@@ -99,7 +101,7 @@ export const RepositoryBranchesPage = () => {
         type: 'new-branch',
         workspaceId: repositoryProject?.team?.id,
         repo: { owner, name },
-        disabled: isFree && repositoryProject.repository.private,
+        disabled: restricted,
         onClick: () => {
           actions.dashboard.createDraftBranch({
             owner,
