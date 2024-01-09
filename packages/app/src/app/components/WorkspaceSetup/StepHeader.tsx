@@ -41,9 +41,11 @@ export const StepHeader = ({
       </Button>
     )}
     <Stack direction="vertical" gap={1}>
-      <Text size={4} weight="medium" color="#fff">
-        STEP {currentStep + 1} OF {numberOfSteps}
-      </Text>
+      {numberOfSteps.length > 1 && (
+        <Text size={4} weight="medium" color="#fff">
+          STEP {currentStep + 1} OF {numberOfSteps}
+        </Text>
+      )}
 
       <Text
         margin={0}

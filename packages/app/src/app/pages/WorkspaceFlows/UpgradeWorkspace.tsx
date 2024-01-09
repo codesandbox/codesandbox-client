@@ -7,20 +7,20 @@ import { WorkspaceSetupStep } from 'app/components/WorkspaceSetup/types';
 import { useAppState } from 'app/overmind';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
 export const UpgradeWorkspace = () => {
   const { hasLogIn } = useAppState();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
   const { ubbBeta } = useWorkspaceFeatureFlags();
+  const { isAdmin } = useWorkspaceAuthorization();
 
   const [steps] = useState(() => {
     // Ensure this is run only once
-    const initialSteps: WorkspaceSetupStep[] = [
-      'plans',
-      'plan-options',
-      'payment',
-    ];
+    const initialSteps: WorkspaceSetupStep[] = isAdmin
+      ? ['plans', 'plan-options', 'payment']
+      : ['plans'];
 
     if (!workspaceId) {
       initialSteps.unshift('select-workspace');
