@@ -147,9 +147,10 @@ export const discoverSearch = (query: string, teamId?: string | null) => {
 type ProPathParams = {
   workspaceId?: string;
   source?: string;
+  ubbBeta?: boolean;
 };
 
-export const proUrl = ({ workspaceId, source }: ProPathParams = {}): string => {
+export const proUrl = ({ workspaceId, source, ubbBeta }: ProPathParams = {}): string => {
   const searchQuery = new URLSearchParams({});
   if (workspaceId) {
     searchQuery.set('workspace', workspaceId);
@@ -160,5 +161,6 @@ export const proUrl = ({ workspaceId, source }: ProPathParams = {}): string => {
   }
 
   const queryString = searchQuery.toString();
-  return queryString ? `/pro?${queryString}` : '/pro';
+  const path = ubbBeta ? '/upgrade' : '/pro';
+  return queryString ? `${path}?${queryString}` : path;
 };

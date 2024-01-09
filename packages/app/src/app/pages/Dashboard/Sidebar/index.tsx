@@ -92,6 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     hasPaymentMethod,
     isEligibleForTrial,
   } = useWorkspaceSubscription();
+  const isUbbBeta = teamDataLoaded && activeTeamInfo.featureFlags.ubbBeta;
 
   // Compute number of days left for TeamPro trial
   const trialDaysLeft = hasActiveTeamTrial
@@ -293,10 +294,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && isFree && isBillingManager ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isEligibleForTrial ? (
+            {isEligibleForTrial && !isUbbBeta ? (
               <StartTrial activeTeam={activeTeam} />
             ) : (
-              <UpgradeFreeTeamToPro activeTeam={activeTeam} />
+              <UpgradeFreeTeamToPro
+                activeTeam={activeTeam}
+                ubbBeta={isUbbBeta}
+              />
             )}
           </Element>
         ) : null}

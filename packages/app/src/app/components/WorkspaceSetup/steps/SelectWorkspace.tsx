@@ -26,7 +26,7 @@ export const SelectWorkspace: React.FC<StepProps> = ({
       !(
         t.subscription?.status === SubscriptionStatus.Active ||
         t.subscription?.status === SubscriptionStatus.Trialing
-      )
+      ) && t.featureFlags.ubbBeta
   );
 
   const [workspaceId, setWorkspaceId] = useState<string>(activeTeam);
@@ -41,6 +41,13 @@ export const SelectWorkspace: React.FC<StepProps> = ({
   if (workspacesEligibleForUpgrade.length === 0) {
     // No eligible workspace to upgrade
     history.replace('/create-workspace');
+  }
+
+  if (workspacesEligibleForUpgrade.length === 1) {
+    // Skip selection if a single workspace can be upgraded
+    setActiveTeam({ id: workspaceId });
+    setQueryParam('workspace', workspaceId);
+    onNextStep();
   }
 
   return (
