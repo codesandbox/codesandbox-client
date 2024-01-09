@@ -20,7 +20,7 @@ export const CreateWorkspace = () => {
     );
   }
 
-  if (!userFeatureFlags.ubbBeta) {
+  if (userFeatureFlags.ubbBeta === false) {
     return <Redirect to={dashboardUrls.recent()} />;
   }
 
