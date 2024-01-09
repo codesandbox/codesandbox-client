@@ -84,20 +84,23 @@ export const shared = (teamId?: string | null) =>
 export const liked = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/liked`, teamId);
 
-export const settings = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings`, teamId);
+const portalBaseUrl = () => {
+  const origin = process.env.ENDPOINT || window.location.origin;
+  return `${origin}/t`;
+};
 
-export const registrySettings = (teamId?: string | null) =>
-  appendTeamIdQueryParam(
-    `${DASHBOARD_URL_PREFIX}/settings/npm-registry`,
-    teamId
-  );
+export const portalOverview = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${portalBaseUrl()}/overview`, teamId);
 
-export const permissionSettings = (teamId?: string | null) =>
-  appendTeamIdQueryParam(
-    `${DASHBOARD_URL_PREFIX}/settings/permissions`,
-    teamId
-  );
+export const portalRegistry = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${portalBaseUrl()}/registry`, teamId);
+
+export const portalPermissions = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${portalBaseUrl()}/permissions`, teamId);
+
+// This is used separately for checkout endpoints where the success/cancel paths need to be relative
+export const portalRelativePath = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${portalBaseUrl()}/overview`, teamId);
 
 export const search = (query: string, teamId?: string | null) => {
   let searchUrl = appendTeamIdQueryParam(

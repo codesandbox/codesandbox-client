@@ -1,17 +1,10 @@
 import React from 'react';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
-import {
-  Element,
-  List,
-  Link,
-  Text,
-  Stack,
-  Icon,
-} from '@codesandbox/components';
+import { Element, List, Text, Stack, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { getDaysUntil } from 'app/utils/dateTime';
@@ -154,7 +147,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               />
             </Stack>
           )}
-          <Link
+          <Element
+            as="a"
             css={{
               height: '36px',
               width: '36px',
@@ -169,12 +163,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 color: '#fff',
               },
             }}
-            as={RouterLink}
-            to={dashboardUrls.settings(state.activeTeam)}
+            href={dashboardUrls.portalOverview(state.activeTeam)}
             title="Settings"
           >
             <Icon name="gear" size={16} />
-          </Link>
+          </Element>
         </Stack>
 
         <List
