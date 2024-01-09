@@ -65,7 +65,7 @@ export const ShowcaseSandbox = () => {
             })}
             scrolling="no"
             allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-            sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+            sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-downloads allow-pointer-lock"
           />
           {/* This code is a bit lol because we
               inject the "Open Sandbox" watermark on the server
