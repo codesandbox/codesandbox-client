@@ -1,14 +1,12 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { RepoFragmentDashboardFragment } from 'app/graphql/types';
 import {
-  Badge,
   Stack,
   Text,
   Input,
   Icon,
   IconButton,
   Link,
-  Tooltip,
   InteractiveOverlay,
   Element,
 } from '@codesandbox/components';
@@ -18,6 +16,7 @@ import { SandboxItemComponentProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
 import { useSandboxThumbnail } from './useSandboxThumbnail';
 import { Brightness } from './useImageBrightness';
+import { SandboxBadge } from './SandboxBadge';
 
 type SandboxTitleProps = {
   brightness?: Brightness;
@@ -137,51 +136,31 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = {
   isFrozen?: boolean;
+  isTemplate?: boolean;
   prNumber?: number;
   restricted: boolean;
-  showDevboxBadge: boolean;
+  isDevbox: boolean;
   originalGit?: RepoFragmentDashboardFragment['originalGit'];
 } & Pick<SandboxItemComponentProps, 'noDrag' | 'lastUpdated' | 'PrivacyIcon'>;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
   ({
     isFrozen,
+    isTemplate,
     restricted,
-    showDevboxBadge,
+    isDevbox,
     noDrag,
     lastUpdated,
     PrivacyIcon,
     prNumber,
     originalGit,
   }) => {
+    const boxType = isDevbox ? 'devbox' : 'sandbox';
+
     const lastUpdatedText = (
       <Text key="last-updated" size={12} truncate>
         {shortDistance(lastUpdated)}
       </Text>
     );
-
-    const badge = useMemo<JSX.Element>(() => {
-      if (restricted) {
-        return <Badge variant="trial">Restricted</Badge>;
-      }
-
-      if (showDevboxBadge) {
-        return (
-          <Stack align="center" gap={1}>
-            <Icon color="#FFFFFF" name="boxDevbox" />
-            <Text color="#FFFFFF" size={2}>
-              Devbox
-            </Text>
-          </Stack>
-        );
-      }
-
-      return (
-        <Stack align="center" gap={1}>
-          <Icon name="boxSandbox" />
-          <Text size={2}>Sandbox</Text>
-        </Stack>
-      );
-    }, [restricted, showDevboxBadge]);
 
     return (
       <Stack
@@ -196,9 +175,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         <Stack gap={2} align="center">
           <PrivacyIcon />
           {isFrozen && (
-            <Tooltip label="Frozen Sandbox">
-              <Icon size={16} title="Frozen Sandbox" name="frozen" />
-            </Tooltip>
+            <Icon size={16} title={`Protected ${boxType}`} name="frozen" />
           )}
           {prNumber ? (
             <Link
@@ -212,7 +189,11 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           ) : null}
           {noDrag ? null : lastUpdatedText}
         </Stack>
-        {badge}
+        <SandboxBadge
+          restricted={restricted}
+          isTemplate={isTemplate}
+          isDevbox={isDevbox}
+        />
       </Stack>
     );
   }
@@ -331,10 +312,11 @@ export const SandboxCard = ({
             originalGit={sandbox.originalGit}
             prNumber={sandbox.prNumber}
             lastUpdated={lastUpdated}
+            isTemplate={!!sandbox.customTemplate}
             isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
-            showDevboxBadge={sandbox.isV2}
+            isDevbox={sandbox.isV2}
           />
         </CardContent>
       </StyledCard>

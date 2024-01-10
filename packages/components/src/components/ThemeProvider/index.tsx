@@ -70,7 +70,7 @@ const GlobalStyles = createGlobalStyle`
     scroll-behavior: auto;
   }
 }
-`
+`;
 
 export const ThemeProvider = ({
   theme = codesandboxBlack,

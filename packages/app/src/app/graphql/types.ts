@@ -367,6 +367,14 @@ export type Team = {
   drafts: Array<Sandbox>;
   /** Workspace-based feature flags and whether or not they are active for the current workspace */
   featureFlags: TeamFeatureFlags;
+  /**
+   * Whether the team has reached their limit for on-demand credit purchase
+   *
+   * This indicator is generally updated at most every 30 minutes, and therefore may be delayed
+   * from the moment a team exceeds their usage. Clients are encouraged to warn users about usage
+   * approaching their limit using information from the usage, limits, and subscription fields.
+   */
+  frozen: Scalars['Boolean'];
   id: Scalars['UUID4'];
   invitees: Array<User>;
   inviteToken: Scalars['String'];
@@ -474,6 +482,7 @@ export type TeamLimits = {
   maxPrivateSandboxes: Maybe<Scalars['Int']>;
   maxPublicProjects: Maybe<Scalars['Int']>;
   maxPublicSandboxes: Maybe<Scalars['Int']>;
+  onDemandCreditLimit: Maybe<Scalars['Int']>;
   onDemandSpendingLimit: Maybe<Scalars['Int']>;
 };
 
@@ -1070,6 +1079,7 @@ export enum TeamType {
 
 export type TeamUsage = {
   __typename?: 'TeamUsage';
+  credits: Scalars['Int'];
   editorsQuantity: Scalars['Int'];
   privateProjectsQuantity: Scalars['Int'];
   privateSandboxesQuantity: Scalars['Int'];

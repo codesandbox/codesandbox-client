@@ -45,9 +45,9 @@ export const Recent = props => {
                 : b.sandbox.lastAccessedAt;
 
             return new Date(dateA) < new Date(dateB) ? 1 : -1;
-            // Merge the two data sources and show only the first 12 most recent entries
+            // Merge the two data sources and show only the first 18 most recent entries
           })
-          .slice(0, 12);
+          .slice(0, 18);
 
   let pageState: 'loading' | 'ready' | 'empty';
   if (!items) {

@@ -5,7 +5,6 @@ import {
   Column,
   Stack,
   Element,
-  Badge,
   Text,
   Input,
   ListAction,
@@ -14,6 +13,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxItemComponentProps } from './types';
+import { SandboxBadge } from './SandboxBadge';
 
 export const SandboxListItem = ({
   sandbox,
@@ -147,11 +147,13 @@ export const SandboxListItem = ({
         </Column>
         {/* Column span 0 on mobile because the Grid is bugged */}
         <Column span={[0, 2, 2]}>
-          {restricted ? (
-            <Stack align="center">
-              <Badge variant="trial">Restricted</Badge>
-            </Stack>
-          ) : null}
+          <Stack align="center">
+            <SandboxBadge
+              isDevbox={sandbox.isV2}
+              isTemplate={!!sandbox.customTemplate}
+              restricted={restricted}
+            />
+          </Stack>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">
           {sandbox.removedAt ? (

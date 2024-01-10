@@ -32,8 +32,6 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
 
   const isTeamAdmin = isAdmin;
 
-  console.log('isAdmin', isAdmin);
-
   const isTeamEditor = authorization === TeamMemberAuthorization.Write;
 
   const isTeamViewer = authorization === TeamMemberAuthorization.Read;

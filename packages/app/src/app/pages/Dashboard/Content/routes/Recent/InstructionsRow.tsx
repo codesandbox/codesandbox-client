@@ -19,26 +19,27 @@ export const appendOnboardingTracking = (url: string): string => {
 const DOCS: DocsItem[] = [
   {
     label: 'docs_getting-started',
-    title: 'Getting started with the new CodeSandbox',
-    duration: '4:58',
-    durationLabel: '4 minutes, 58 seconds',
-    url: 'https://www.youtube.com/watch?v=Z_0UwC_bOVY',
+    title: 'Getting started with CodeSandbox',
+    duration: '5:00',
+    durationLabel: '5 minutes, 00 seconds',
+    url: 'https://www.youtube.com/watch?v=aSDSpRxkTnY',
     thumbnail: '/static/img/thumbnails/docs_getting-started.png',
   },
   {
     label: 'video_vs-code',
-    title: 'Working locally with the VSCode Extension',
+    title: 'Working locally with the VS Code Extension',
     duration: '3:02',
     durationLabel: '3 minutes, 2 seconds',
     url: 'https://www.youtube.com/watch?v=ZJ1sNiTZw5M',
     thumbnail: '/static/img/thumbnails/docs_vscode-extension.png',
   },
   {
-    label: 'blog-iOS',
-    title: 'Code with our native iOS App',
-    url:
-      'https://codesandbox.io/post/how-to-code-your-app-using-the-codesandbox-ipad-ide',
-    thumbnail: '/static/img/thumbnails/docs_ipad.png',
+    label: 'video_code-reviews',
+    title: 'Review PRs in CodeSandbox',
+    duration: '3:56',
+    durationLabel: '3 minutes, 56 seconds',
+    url: 'https://www.youtube.com/watch?v=dRkpuUMHCNQ',
+    thumbnail: '/static/img/thumbnails/video_code-reviews.png',
   },
 ];
 

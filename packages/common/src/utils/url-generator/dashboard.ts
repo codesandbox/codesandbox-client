@@ -150,7 +150,11 @@ type ProPathParams = {
   ubbBeta?: boolean;
 };
 
-export const proUrl = ({ workspaceId, source, ubbBeta }: ProPathParams = {}): string => {
+export const proUrl = ({
+  workspaceId,
+  source,
+  ubbBeta,
+}: ProPathParams = {}): string => {
   const searchQuery = new URLSearchParams({});
   if (workspaceId) {
     searchQuery.set('workspace', workspaceId);
