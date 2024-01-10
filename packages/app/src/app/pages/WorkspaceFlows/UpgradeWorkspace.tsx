@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { WorkspaceSetup } from 'app/components/WorkspaceSetup';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { Redirect } from 'react-router-dom';
