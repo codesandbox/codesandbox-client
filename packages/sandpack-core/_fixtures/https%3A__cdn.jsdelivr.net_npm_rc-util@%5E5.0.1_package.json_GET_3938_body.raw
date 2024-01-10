@@ -1,0 +1,52 @@
+{
+  "name": "rc-util",
+  "version": "5.3.2",
+  "description": "Common Utils For React Component",
+  "keywords": [
+    "react",
+    "util"
+  ],
+  "files": [
+    "lib",
+    "es"
+  ],
+  "homepage": "http://github.com/react-component/util",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/util.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/util/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "lint": "eslint src/ --ext .tsx,.ts & eslint tests/ --ext .js",
+    "compile": "father build",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish",
+    "test": "father test",
+    "coverage": "father test --coverage && cat ./coverage/lcov.info | coveralls"
+  },
+  "devDependencies": {
+    "@types/enzyme": "^3.10.5",
+    "@types/jest": "^25.2.3",
+    "@types/react": "^16.9.3",
+    "@types/react-dom": "^16.9.1",
+    "@types/warning": "^3.0.0",
+    "@umijs/fabric": "^2.0.8",
+    "coveralls": "^3.1.0",
+    "create-react-class": "^15.6.3",
+    "cross-env": "^7.0.2",
+    "enzyme": "^3.10.0",
+    "eslint": "^6.6.0",
+    "father": "^2.14.0",
+    "np": "^6.2.3",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "react-is": "^16.12.0",
+    "shallowequal": "^1.1.0"
+  }
+}

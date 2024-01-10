@@ -22,6 +22,7 @@ export function GlobalActions({
   openPreview,
   smallTouchScreen,
   previewVisible,
+  initialPath,
 }) {
   const smallTouchScreenButton = previewVisible ? (
     <Button onClick={openEditor}>View Source</Button>
@@ -70,7 +71,13 @@ export function GlobalActions({
           as="a"
           target="_blank"
           rel="noopener noreferrer"
-          href={`${sandboxUrl(sandbox)}?from-embed`}
+          href={
+            initialPath
+              ? `${sandboxUrl(
+                  sandbox
+                )}?from-embed&initialpath=${encodeURIComponent(initialPath)}`
+              : `${sandboxUrl(sandbox)}?from-embed`
+          }
         >
           Open Sandbox
         </Button>

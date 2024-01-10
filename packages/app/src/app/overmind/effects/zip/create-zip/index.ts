@@ -6,13 +6,13 @@ import {
   preact,
   react,
   reactTs,
-  svelte,
   vue,
 } from '@codesandbox/common/lib/templates/index';
 import { Directory, Module, Sandbox } from '@codesandbox/common/lib/types';
 import { saveAs } from 'file-saver';
 import ignore from 'ignore';
 import JSZip from 'jszip';
+import { injectExternalResources } from 'app/utils/inject-resources-for-export';
 
 export const BLOB_ID = 'blob-url://';
 
@@ -79,8 +79,8 @@ function slugify(text) {
 
 export function createPackageJSON(
   sandbox: Sandbox,
-  dependencies: Object,
-  devDependencies: Object,
+  dependencies: Record<string, string>,
+  devDependencies: Record<string, string>,
   scripts: Object,
   extra?: Object
 ) {
@@ -101,9 +101,12 @@ export function createPackageJSON(
           name,
           description: packageJSON.description || sandbox.description,
           version,
-          dependencies: { ...dependencies, ...packageJSON.dependencies },
+          dependencies: {
+            ...getDependenciesToAdd(dependencies, packageJSON),
+            ...packageJSON.dependencies,
+          },
           devDependencies: {
-            ...devDependencies,
+            ...getDependenciesToAdd(devDependencies, packageJSON),
             ...packageJSON.devDependencies,
           },
           scripts: {
@@ -138,6 +141,33 @@ export function createPackageJSON(
     null,
     '  '
   );
+}
+
+/**
+ * Makes sure that we only add dependencies that are not already
+ * in the package.json
+ */
+function getDependenciesToAdd(
+  dependencies: Record<string, string>,
+  packageJson: {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  }
+): Record<string, string> {
+  const dependenciesToAdd: Record<string, string> = {};
+
+  const totalPackageJsonDependencies = Object.keys({
+    ...(packageJson.dependencies || {}),
+    ...(packageJson.devDependencies || {}),
+  });
+
+  for (const dependency of Object.keys(dependencies)) {
+    if (!totalPackageJsonDependencies.includes(dependency)) {
+      dependenciesToAdd[dependency] = dependencies[dependency];
+    }
+  }
+
+  return dependenciesToAdd;
 }
 
 export async function createFile(
@@ -181,6 +211,10 @@ export async function createDirectoryWithFiles(
 ) {
   const newZip = zip.folder(directory.title);
 
+  if (!newZip) {
+    return;
+  }
+
   await Promise.all(
     modules
       .filter(x => x.directoryShortid === directory.shortid)
@@ -215,7 +249,16 @@ export async function createZip(
     ignorer.add(gitIgnore ? gitIgnore.code : '');
   }
 
-  const filteredModules = modules.filter(module => {
+  let modifiedModules = modules;
+
+  if (sandbox.externalResources?.length > 0) {
+    modifiedModules = injectExternalResources(
+      modules,
+      sandbox.externalResources
+    );
+  }
+
+  const filteredModules = modifiedModules.filter(module => {
     // Relative path
     const path = getModulePath(modules, directories, module.id).substring(1);
     return !ignorer.ignores(path);
@@ -282,12 +325,6 @@ export async function createZip(
   } else if (sandbox.template === preact.name) {
     promise = import(
       /* webpackChunkName: 'preact-zip' */ './preact-cli'
-    ).then(generator =>
-      generator.default(zip, sandbox, filteredModules, directories)
-    );
-  } else if (sandbox.template === svelte.name) {
-    promise = import(
-      /* webpackChunkName: 'svelte-zip' */ './svelte'
     ).then(generator =>
       generator.default(zip, sandbox, filteredModules, directories)
     );

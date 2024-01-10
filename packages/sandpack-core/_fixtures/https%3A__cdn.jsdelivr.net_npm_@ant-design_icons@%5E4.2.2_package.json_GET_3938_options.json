@@ -1,0 +1,37 @@
+{
+  "url": "https://cdn.jsdelivr.net/npm/@ant-design/icons@%5E4.2.2/package.json",
+  "status": 200,
+  "statusText": "OK",
+  "ok": true,
+  "headers": {
+    "date": ["Mon, 17 May 2021 13:14:27 GMT"],
+    "content-type": ["application/json; charset=utf-8"],
+    "content-length": ["965"],
+    "connection": ["close"],
+    "access-control-allow-origin": ["*"],
+    "access-control-expose-headers": ["*"],
+    "timing-allow-origin": ["*"],
+    "cache-control": ["public, max-age=604800, s-maxage=43200"],
+    "cross-origin-resource-policy": ["cross-origin"],
+    "x-content-type-options": ["nosniff"],
+    "strict-transport-security": [
+      "max-age=31536000; includeSubDomains; preload"
+    ],
+    "etag": ["W/\"97c-syzq/rId1XwagF9XOYGHkX3+5rg\""],
+    "content-encoding": ["gzip"],
+    "x-served-by": ["cache-fra19135-FRA, cache-ams21032-AMS"],
+    "x-cache": ["HIT, MISS"],
+    "vary": ["Accept-Encoding"],
+    "cf-cache-status": ["MISS"],
+    "accept-ranges": ["bytes"],
+    "cf-request-id": ["0a1c0fc0ad0000f955ae8fa000000001"],
+    "expect-ct": [
+      "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\""
+    ],
+    "server": ["cloudflare"],
+    "cf-ray": ["650d1be11d64f955-BRU"],
+    "alt-svc": [
+      "h3-27=\":443\"; ma=86400, h3-28=\":443\"; ma=86400, h3-29=\":443\"; ma=86400"
+    ]
+  }
+}

@@ -23,6 +23,8 @@
     "react/state-in-constructor": 0,
     "react/jsx-props-no-spreading": 0,
     "react/static-property-placement": 0,
+    "react/jsx-no-useless-fragment": "error",
+    "react/jsx-curly-brace-presence": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-cycle": "warn",
     "react/prop-types": 0,
@@ -61,8 +63,9 @@
     ],
     "jsx-a11y/label-has-for": "off",
     "no-bitwise": "off",
-    "arrow-body-style": ["error", "as-needed"],
+    "arrow-body-style": "off",
     "no-restricted-globals": "off",
+    "no-restricted-syntax": "off",
     "lines-between-class-members": [
       "error",
       "always",
@@ -86,7 +89,6 @@
       "rules": {
         "default-case": "off",
         "no-dupe-class-members": "off",
-        "@typescript-eslint/no-angle-bracket-type-assertion": "warn",
         "no-array-constructor": "off",
         "@typescript-eslint/no-array-constructor": "warn",
         "@typescript-eslint/no-namespace": "error",
@@ -101,6 +103,7 @@
           }
         ],
         "no-unused-vars": "off",
+        "no-undef": "off",
         "@typescript-eslint/no-unused-vars": [
           "error",
           { "args": "none", "ignoreRestSiblings": true }
@@ -108,7 +111,10 @@
         "no-useless-constructor": "off",
         "@typescript-eslint/no-useless-constructor": "warn",
         "import/extensions": 0,
-        "import/no-unresolved": 0
+        "import/no-unresolved": 0,
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": ["error"],
+        "spaced-comment": "warn"
       }
     }
   ]

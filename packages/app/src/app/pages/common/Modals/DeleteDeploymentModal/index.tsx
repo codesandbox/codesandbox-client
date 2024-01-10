@@ -1,14 +1,12 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 export const DeleteDeploymentModal: FunctionComponent = () => {
   const {
-    actions: {
-      deployment: { deleteDeployment },
-      modalClosed,
-    },
-  } = useOvermind();
+    deployment: { deleteDeployment },
+    modalClosed,
+  } = useActions();
 
   return (
     <Alert

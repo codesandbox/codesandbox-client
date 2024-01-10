@@ -68,6 +68,7 @@ export const TabDir = styled.div`
 
 export const StyledCloseIcon = styled(CloseIcon)<{ show?: boolean | string }>`
   transition: 0.1s ease opacity;
+  width: 0.75em;
 
   float: right;
   opacity: 1;

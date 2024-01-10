@@ -1,0 +1,52 @@
+{
+  "name": "mini-store",
+  "version": "3.0.6",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "cjs/index.d.ts",
+  "license": "MIT",
+  "homepage": "https://github.com/yesmeck/mini-store",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yesmeck/mini-store.git"
+  },
+  "scripts": {
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --declaration",
+    "build:cjs": "tsc  --declaration --module commonjs --outDir cjs",
+    "prepack": "npm run build",
+    "release": "standard-version",
+    "commitmsg": "commitlint -E GIT_PARAMS",
+    "test": "jest src --coverage"
+  },
+  "files": [
+    "cjs",
+    "esm"
+  ],
+  "dependencies": {
+    "hoist-non-react-statics": "^3.3.2",
+    "shallowequal": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/hoist-non-react-statics": "^3.3.1",
+    "@types/shallowequal": "^1.1.1",
+    "@commitlint/cli": "^7.0.0",
+    "@commitlint/config-conventional": "^7.0.1",
+    "@types/enzyme": "^3.10.5",
+    "@types/jest": "^25.1.4",
+    "@types/react": "^16.9.26",
+    "enzyme": "^3.1.0",
+    "enzyme-adapter-react-16": "^1.0.2",
+    "husky": "^0.14.3",
+    "jest": "^25.2.2",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "standard-version": "^8.0.1",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  }
+}

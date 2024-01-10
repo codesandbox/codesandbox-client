@@ -1,25 +1,24 @@
 import React, { useEffect, useCallback } from 'react';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { ThemeProvider, Stack } from '@codesandbox/components';
-import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import OutsideClickHandler from 'react-outside-click-handler';
-import { SignInModalElement } from 'app/pages/SignIn/Modal';
-import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
+import { css } from '@styled-system/css';
+
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { ThemeProvider, Stack, Element } from '@codesandbox/components';
+import { SignIn } from 'app/pages/SignIn/SignIn';
+import { useAppState, useActions } from 'app/overmind';
 
 export const SignInModal = () => {
-  const {
-    actions: { toggleSignInModal },
-    state: { redirectOnLogin },
-  } = useOvermind();
+  const { toggleSignInModal } = useActions();
+  const { redirectOnLogin, signInModalOpen, user } = useAppState();
 
   const closeModal = useCallback(
     event => {
-      if (event.keyCode === ESC && open) {
+      if (event.keyCode === ESC && signInModalOpen) {
         toggleSignInModal();
       }
     },
-    [toggleSignInModal]
+    [toggleSignInModal, signInModalOpen]
   );
 
   useEffect(() => {
@@ -27,8 +26,12 @@ export const SignInModal = () => {
     return () => document.removeEventListener('keydown', closeModal, false);
   }, [closeModal]);
 
+  if (!signInModalOpen || user) {
+    return null;
+  }
+
   return (
-    <ThemeProvider theme={codeSandboxBlack}>
+    <ThemeProvider>
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, zIndex: 9999 }}
@@ -46,10 +49,32 @@ export const SignInModal = () => {
               bottom: 0,
               zIndex: 9999,
               background: 'rgba(0, 0, 0, 0.75)',
+
+              // OutsideClickHandler styles
+              // can't use styled(OutsideClickHandler)
+              '> div': {
+                flexGrow: 1,
+                maxWidth: '720px',
+              },
             }}
           >
             <OutsideClickHandler onOutsideClick={toggleSignInModal}>
-              <SignInModalElement redirectTo={redirectOnLogin} />
+              <Element
+                css={css({
+                  boxSizing: 'border-box',
+                  backgroundColor: '#1D1D1D',
+                  borderRadius: '4px',
+                  overflow: 'hidden',
+                  margin: 'auto',
+                  padding: '24px',
+                  width: '100%',
+
+                  // With tokens
+                  boxShadow: '2',
+                })}
+              >
+                <SignIn redirectTo={redirectOnLogin} />
+              </Element>
             </OutsideClickHandler>
           </Stack>
         </motion.div>

@@ -3,17 +3,19 @@ import css from '@styled-system/css';
 import { motion } from 'framer-motion';
 import { Stack, Button } from '@codesandbox/components';
 import CheckIcon from 'react-icons/lib/md/check';
-import { useOvermind } from 'app/overmind';
+import { useEffects, useActions } from 'app/overmind';
 
 export const ButtonActions = () => {
   const [linkCopied, setLinkCopied] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
-  const { actions, effects } = useOvermind();
+  const { modalOpened, track } = useActions();
+  const { copyToClipboard } = useEffects().browser;
   const timeout = React.useRef(null);
   const copyLink = () => {
     setLinkCopied(true);
+    track({ name: "Share - 'Copy Sandbox URL' Clicked", data: {} });
 
-    effects.browser.copyToClipboard(document.location.href);
+    copyToClipboard(document.location.href);
 
     if (timeout.current) {
       clearTimeout(timeout.current);
@@ -42,12 +44,16 @@ export const ButtonActions = () => {
         css={css({ width: 'initial' })}
         variant="secondary"
         onClick={() => {
-          actions.modalOpened({ modal: 'share' });
+          modalOpened({ modal: 'share' });
         }}
       >
         Embed
       </Button>
-      <Button css={css({ width: 128 })} variant="secondary" onClick={copyLink}>
+      <Button
+        css={css({ width: 'initial' })}
+        variant="secondary"
+        onClick={copyLink}
+      >
         {linkCopied ? (
           <motion.div
             key="copied"
@@ -74,7 +80,7 @@ export const ButtonActions = () => {
             initial={mounted ? { scale: 0.8, opacity: 0.7 } : false}
             animate={{ scale: 1, opacity: 1 }}
           >
-            Copy Sandbox Link
+            Copy link
           </motion.div>
         )}
       </Button>

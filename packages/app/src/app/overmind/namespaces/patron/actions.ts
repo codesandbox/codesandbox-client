@@ -1,91 +1,11 @@
-import { AsyncAction, Action } from 'app/overmind';
-import { withLoadApp } from 'app/overmind/factories';
-import { StripeErrorCode } from '@codesandbox/common/lib/types';
+import { Context } from 'app/overmind';
+import { NotificationStatus } from '@codesandbox/notifications';
+import { renameZeitToVercel } from 'app/overmind/utils/vercel';
 
-export const patronMounted: AsyncAction = withLoadApp();
-
-export const priceChanged: Action<{ price: number }> = (
-  { state },
-  { price }
-) => {
-  state.patron.price = price;
-};
-
-export const createSubscriptionClicked: AsyncAction<{
-  token: string;
-  coupon: string;
-  duration: 'yearly' | 'monthly';
-}> = async ({ state, effects, actions }, { token, coupon, duration }) => {
-  effects.analytics.track('Create Patron Subscription', { duration });
-  state.patron.error = null;
-  state.patron.isUpdatingSubscription = true;
-  try {
-    state.user = await effects.api.createPatronSubscription(
-      token,
-      state.patron.price,
-      duration,
-      coupon
-    );
-    effects.notificationToast.success('Thank you very much for your support!');
-  } catch (error) {
-    if (
-      error.error_code &&
-      error.error_code === StripeErrorCode.REQUIRES_ACTION
-    ) {
-      try {
-        await effects.stripe.handleCardPayment(error.data.client_secret);
-        state.user = await effects.api.getCurrentUser();
-        state.patron.error = null;
-      } catch (e) {
-        actions.internal.handleError({
-          message: 'Could not create subscription',
-          error: e,
-        });
-
-        state.patron.error = e.message;
-
-        effects.analytics.track('Create Subscription Error', {
-          error: e.message,
-        });
-      }
-    } else {
-      actions.internal.handleError({
-        message: 'Could not create subscription',
-        error,
-      });
-
-      state.patron.error = error.message;
-
-      effects.analytics.track('Create Subscription Error', {
-        error: error.message,
-      });
-    }
-  }
-  state.patron.isUpdatingSubscription = false;
-};
-
-export const updateSubscriptionClicked: AsyncAction<{
-  coupon: string;
-}> = async ({ state, effects }, { coupon }) => {
-  effects.analytics.track('Update Patron Subscription');
-  state.patron.error = null;
-  state.patron.isUpdatingSubscription = true;
-  try {
-    state.user = await effects.api.updatePatronSubscription(
-      state.patron.price,
-      coupon
-    );
-    effects.notificationToast.success('Subscription updated!');
-  } catch (error) {
-    state.patron.error = error.message;
-  }
-  state.patron.isUpdatingSubscription = false;
-};
-
-export const cancelSubscriptionClicked: AsyncAction = async ({
+export const cancelSubscriptionClicked = async ({
   state,
   effects,
-}) => {
+}: Context) => {
   effects.analytics.track('Cancel Subscription');
   if (
     effects.browser.confirm(
@@ -96,10 +16,27 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
     state.patron.isUpdatingSubscription = true;
 
     try {
-      state.user = await effects.api.cancelPatronSubscription();
-      effects.notificationToast.success(
-        'Sorry to see you go, but thanks for using CodeSandbox!'
-      );
+      const currentUser = await effects.api.cancelPatronSubscription();
+      state.user = renameZeitToVercel(currentUser);
+
+      effects.notificationToast.add({
+        status: NotificationStatus.SUCCESS,
+        title: 'Successfully Cancelled',
+        message:
+          'Sorry to see you go, but thanks for using CodeSandbox! It would help us tremendously if you could answer this one quick question.',
+        actions: {
+          primary: {
+            label: 'Open Question',
+            run: () => {
+              effects.browser.openPopup(
+                'https://codesandbox.typeform.com/to/SsMUYr6y#email=' +
+                  state.user!.email,
+                'cancel survey'
+              );
+            },
+          },
+        },
+      });
     } catch (error) {
       /* ignore */
     }
@@ -108,6 +45,6 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
   }
 };
 
-export const tryAgainClicked: Action = ({ state }) => {
+export const tryAgainClicked = ({ state }: Context) => {
   state.patron.error = null;
 };

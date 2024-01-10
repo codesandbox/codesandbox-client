@@ -1,5 +1,6 @@
 {
-  "lerna": "2.4.0",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "packages": ["packages/*", "standalone-packages/*"],
-  "version": "independent"
+  "version": "independent",
+  "useNx": false
 }

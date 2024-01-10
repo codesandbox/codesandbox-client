@@ -33,8 +33,8 @@ export const SkeletonTextBlock = styled.div(props => {
 
   const hsl = Color(color).hsl();
 
-  const background = Color({ ...hsl, l: backgroundLuminosity }).hslString();
-  const highlight = Color({ ...hsl, l: highlightLuminosity }).hslString();
+  const background = hsl.lightness(backgroundLuminosity).hsl().string();
+  const highlight = hsl.lightness(highlightLuminosity).hsl().string();
 
   return css`
     height: 16px;

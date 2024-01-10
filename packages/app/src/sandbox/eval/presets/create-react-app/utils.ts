@@ -1,6 +1,6 @@
 import semver from 'semver';
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
-import Manager from 'sandbox/eval/manager';
+import { Dependencies } from '@codesandbox/common/lib/templates/template';
 
 function isMinimalSemverVersion(version: string, minimalVersion: string) {
   try {
@@ -11,18 +11,33 @@ function isMinimalSemverVersion(version: string, minimalVersion: string) {
   }
 }
 
+export async function isMinimalReactDomVersion(
+  version: string,
+  minimalVersion: string
+): Promise<boolean> {
+  return isMinimalAbsoluteVersion('react-dom', version, minimalVersion);
+}
+
 export async function isMinimalReactVersion(
+  version: string,
+  minimalVersion: string
+): Promise<boolean> {
+  return isMinimalAbsoluteVersion('react', version, minimalVersion);
+}
+
+export async function isMinimalAbsoluteVersion(
+  name: string,
   version: string,
   minimalVersion: string
 ): Promise<boolean> {
   if (version) {
     const absoluteDependencies = await getAbsoluteDependencies({
-      'react-dom': version,
+      [name]: version,
     });
 
     return (
-      absoluteDependencies['react-dom'].startsWith('0.0.0') ||
-      isMinimalSemverVersion(absoluteDependencies['react-dom'], minimalVersion)
+      absoluteDependencies[name].startsWith('0.0.0') ||
+      isMinimalSemverVersion(absoluteDependencies[name], minimalVersion)
     );
   }
 
@@ -40,43 +55,22 @@ export async function hasRefresh(
     const reactDom = dependencies.find(dep => dep.name === 'react-dom');
 
     if (reactDom) {
-      return isMinimalReactVersion(reactDom.version, '16.9.0');
+      return isMinimalReactDomVersion(reactDom.version, '16.9.0');
     }
   }
 
   return false;
 }
 
-/**
- * We unmount the component tree to ensure that `componentWillUnmount` et all are called
- */
-export function cleanUsingUnmount(manager: Manager) {
-  try {
-    const { children } = document.body;
-    // Do unmounting for react
-    if (
-      manager.manifest &&
-      manager.manifest.dependencies.find(n => n.name === 'react-dom')
-    ) {
-      const reactDOMModule = manager.resolveModule('react-dom', '');
-      const reactDOM = manager.evaluateModule(reactDOMModule);
-
-      reactDOM.unmountComponentAtNode(document.body);
-
-      for (let i = 0; i < children.length; i += 1) {
-        if (children[i].tagName === 'DIV') {
-          reactDOM.unmountComponentAtNode(children[i]);
-        }
-      }
-    }
-  } catch (e) {
-    /* don't do anything with this error */
-
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Problem while cleaning up');
-      console.error(e);
-    }
+export async function supportsNewReactTransform(
+  dependencies: Dependencies = {},
+  devDependencies: Dependencies = {}
+): Promise<boolean> {
+  const react = dependencies.react || devDependencies.react;
+  if (react) {
+    return isMinimalReactVersion(react, '17.0.0');
   }
+  return false;
 }
 
 export const aliases = {

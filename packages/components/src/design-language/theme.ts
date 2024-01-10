@@ -1,11 +1,11 @@
-import { colors } from './colors';
+import { colors, colorsV2 } from './colors';
 import { fontSizes, fontWeights } from './typography';
 
 const theme = {
   colors,
+  colorsV2,
   fontSizes,
   fontWeights,
-
   // we use a 4 point grid
   // 0 - 0
   // 1 - 4
@@ -19,8 +19,8 @@ const theme = {
   // 9 - 36
   // 10 - 40
   // 11 - 44
-  space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60],
-  sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60],
+  space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
+  sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
 
   // transition speeds in ms
   speeds: [0, '75ms', '100ms', '150ms', '200ms', '300ms', '500ms'],

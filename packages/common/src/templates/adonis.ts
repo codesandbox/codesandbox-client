@@ -10,6 +10,6 @@ export default new Template(
   {
     mainFile: ['/start/routes.js'],
     showOnHomePage: true,
-    netlify: false,
+    staticDeployment: false,
   }
 );

@@ -1,131 +1,135 @@
-import React, { useMemo } from 'react';
-import { useOvermind } from 'app/overmind';
-import css from '@styled-system/css';
-import { Stack } from '@codesandbox/components';
+import { Stack, Element } from '@codesandbox/components';
+import React, { ComponentProps, ComponentType } from 'react';
 
-import AppearanceIcon from 'react-icons/lib/md/color-lens';
+import AccountIcon from 'react-icons/lib/fa/user';
 import CodeIcon from 'react-icons/lib/fa/code';
-import CreditCardIcon from 'react-icons/lib/md/credit-card';
-import BrowserIcon from 'react-icons/lib/go/browser';
-import StarIcon from 'react-icons/lib/go/star';
-import FlaskIcon from 'react-icons/lib/fa/flask';
 import CodeFormatIcon from 'react-icons/lib/fa/dedent';
+import FlaskIcon from 'react-icons/lib/fa/flask';
+import MailIcon from 'react-icons/lib/go/mail';
+import BrowserIcon from 'react-icons/lib/go/browser';
+import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
-import KeyboardIcon from 'react-icons/lib/go/keyboard';
+
+import { useAppState } from 'app/overmind';
+import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
+import { CurrentUser } from '@codesandbox/common/lib/types';
+
+import { Account } from './Account';
+import { Appearance } from './Appearance';
+import { CodeFormatting } from './CodeFormatting';
+import { Editor } from './Editor';
+import { Preview } from './Preview';
+import { Experiments } from './Experiments';
+import { PreferencesSync } from './PreferencesSync';
+import { Integrations } from './Integrations';
+import { MailPreferences } from './MailPreferences';
 
 import { SideNavigation } from './SideNavigation';
+import { ProfileIcon } from './PreferencesSync/Icons';
 
-import { Appearance } from './Appearance';
-import { EditorSettings } from './EditorPageSettings/EditorSettings';
-import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
-import { CodeFormatting } from './CodeFormatting';
-import { PaymentInfo } from './PaymentInfo';
-import { Integrations } from './Integrations';
-import { Badges } from './Badges';
-import { Experiments } from './Experiments';
-import { KeyMapping } from './KeyMapping';
-import { Alert } from '../Common/Alert';
+type MenuItem = ComponentProps<typeof SideNavigation>['menuItems'][0] & {
+  Content: ComponentType;
+};
 
-const PreferencesModal: React.FC = () => {
+const getItems = (
+  isLoggedIn: boolean,
+  user: CurrentUser,
+  isOnPrem: boolean,
+  isEditorPage: boolean
+): MenuItem[] =>
+  [
+    user && {
+      Content: Account,
+      Icon: AccountIcon,
+      id: 'account',
+      title: 'Account',
+    },
+    isLoggedIn &&
+      !isOnPrem && {
+        Content: Integrations,
+        Icon: IntegrationIcon,
+        id: 'integrations',
+        title: 'Integrations',
+      },
+    user && {
+      Content: MailPreferences,
+      Icon: MailIcon,
+      id: 'notifications',
+      title: 'Notifications',
+    },
+    !isOnPrem && {
+      Content: Experiments,
+      Icon: FlaskIcon,
+      id: 'experiments',
+      title: 'Experiments',
+    },
+    isEditorPage && {
+      Content: Appearance,
+      Icon: AppearanceIcon,
+      id: 'appearance',
+      title: 'Appearance',
+    },
+    isEditorPage && {
+      Content: Editor,
+      Icon: CodeIcon,
+      id: 'editor',
+      title: 'Editor',
+    },
+    isEditorPage && {
+      Content: CodeFormatting,
+      Icon: CodeFormatIcon,
+      id: 'prettierSettings',
+      title: 'Prettier Settings',
+    },
+    isEditorPage && {
+      Content: Preview,
+      Icon: BrowserIcon,
+      id: 'preview',
+      title: 'Preview',
+    },
+    isEditorPage &&
+      user && {
+        Content: PreferencesSync,
+        Icon: ProfileIcon,
+        id: 'preferencesSync',
+        title: 'Profiles',
+      },
+  ].filter(Boolean);
+
+export const Preferences: React.FC<{
+  tab?: string;
+  isStandalone?: boolean;
+}> = ({ tab, isStandalone }) => {
   const {
-    state: {
-      isPatron,
-      isLoggedIn,
-      preferences: { itemId = 'appearance' },
-    },
-    actions: {
-      preferences: { itemIdChanged },
-    },
-  } = useOvermind();
+    isLoggedIn,
+    user,
+    preferences: { itemId },
+    environment,
+  } = useAppState();
 
-  const items = useMemo(
-    () =>
-      [
-        {
-          id: 'appearance',
-          title: 'Appearance',
-          icon: <AppearanceIcon />,
-          content: <Appearance />,
-        },
-        {
-          id: 'editor',
-          title: 'Editor',
-          icon: <CodeIcon />,
-          content: <EditorSettings />,
-        },
-        {
-          id: 'prettierSettings',
-          title: 'Prettier Settings',
-          icon: <CodeFormatIcon />,
-          content: <CodeFormatting />,
-        },
-        {
-          id: 'preview',
-          title: 'Preview',
-          icon: <BrowserIcon />,
-          content: <PreviewSettings />,
-        },
-        {
-          id: 'keybindings',
-          title: 'Key Bindings',
-          icon: <KeyboardIcon />,
-          content: <KeyMapping />,
-        },
-        isLoggedIn && {
-          id: 'integrations',
-          title: 'Integrations',
-          icon: <IntegrationIcon />,
-          content: <Integrations />,
-        },
-        isPatron && {
-          id: 'paymentInfo',
-          title: 'Payment Info',
-          icon: <CreditCardIcon />,
-          content: <PaymentInfo />,
-        },
-        isPatron && {
-          id: 'badges',
-          title: 'Badges',
-          icon: <StarIcon />,
-          content: <Badges />,
-        },
-        {
-          id: 'experiments',
-          title: 'Experiments',
-          icon: <FlaskIcon />,
-          content: <Experiments />,
-        },
-      ].filter(Boolean),
-    [isLoggedIn, isPatron]
-  );
+  const isEditorPage = useIsEditorPage();
+  const items = getItems(isLoggedIn, user, environment.isOnPrem, isEditorPage);
 
-  const item = items.find(currentItem => currentItem.id === itemId);
+  const tabId = itemId || tab || 'account';
+
+  const tabToShow = items.find(({ id }) => id === tabId) || items[0];
+  const { Content } = tabToShow;
 
   return (
-    <Stack
-      css={css({
-        fontFamily: "'Inter', sans-serif",
-      })}
-    >
-      <SideNavigation
-        itemId={itemId}
-        menuItems={items}
-        setItem={itemIdChanged}
-      />
-      <Alert
-        css={css({
-          height: 482,
+    <Stack>
+      <SideNavigation menuItems={items} selectedTab={tabId} />
+
+      <Element
+        css={{
+          height: isStandalone ? 'auto' : '482px',
           width: '100%',
-          padding: 6,
-          '*': {
-            boxSizing: 'border-box',
-          },
-        })}
+          padding: '24px',
+          marginTop: '52px',
+          overflow: 'auto',
+        }}
       >
-        {item.content}
-      </Alert>
+        <Content />
+      </Element>
     </Stack>
   );
 };
-
-export default PreferencesModal;

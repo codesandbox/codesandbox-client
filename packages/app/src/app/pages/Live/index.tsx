@@ -1,150 +1,88 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import Padding from '@codesandbox/common/lib/components/spacing/Padding';
+import CodeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { SubTitle } from 'app/components/SubTitle';
-import { Title } from 'app/components/Title';
-import { useOvermind } from 'app/overmind';
-import { Navigation } from 'app/pages/common/Navigation';
-import React, { useEffect } from 'react';
+import { Element, Stack, ThemeProvider } from '@codesandbox/components';
+import css from '@styled-system/css';
+import React, { FunctionComponent, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import GithubIcon from 'react-icons/lib/go/mark-github';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import Editor from '../Sandbox/Editor';
+import { useAppState, useActions } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
 
-interface Props {
-  match: {
-    params: {
-      id: string;
-    };
-  };
-}
+import { Editor } from '../Sandbox/Editor';
 
-export const LivePage: React.FC<Props> = ({ match }) => {
-  const { state, actions } = useOvermind();
+import { Error } from './Error';
+import { NotAuthenticated } from './NotAuthenticated';
+
+export const Live: FunctionComponent = () => {
+  const { onNavigateAway, roomJoined } = useActions().live;
+  const {
+    editor: { currentSandbox },
+    isAuthenticating,
+    live: { error },
+    user,
+  } = useAppState();
+  const { roomId } = useParams<{ roomId: string }>();
 
   useEffect(() => {
-    actions.live.roomJoined({ roomId: match.params.id });
-  }, [actions.live, match.params.id]);
+    roomJoined(roomId);
+  }, [roomJoined, roomId]);
 
-  useEffect(
-    () => () => {
-      actions.live.onNavigateAway();
-    },
-    [actions.live]
-  );
+  useEffect(() => () => onNavigateAway(), [onNavigateAway]);
 
-  function getContent() {
-    if (!state.isAuthenticating && !state.user) {
-      return (
-        <>
-          <div
-            style={{
-              fontWeight: 300,
-              color: 'rgba(255, 255, 255, 0.5)',
-              marginBottom: '1rem',
-              fontSize: '1.5rem',
-            }}
-          >
-            Sign in required
-          </div>
-          <Title style={{ fontSize: '1.25rem' }}>
-            You need to sign in to join this session
-          </Title>
-          <br />
-          <div>
-            <Button
-              onClick={() =>
-                actions.live.signInToRoom({ roomId: match.params.id })
-              }
-              small
-            >
-              <Row>
-                <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with
-                GitHub
-              </Row>
-            </Button>
-          </div>
-        </>
-      );
+  const getContent = () => {
+    if (!isAuthenticating && !user) {
+      return <NotAuthenticated />;
     }
 
-    if (state.live.error) {
-      if (state.live.error === 'room not found') {
-        return (
-          <>
-            <div
-              style={{
-                fontWeight: 300,
-                color: 'rgba(255, 255, 255, 0.5)',
-                marginBottom: '1rem',
-                fontSize: '1.5rem',
-              }}
-            >
-              Something went wrong
-            </div>
-            <Title style={{ fontSize: '1.25rem' }}>
-              It seems like this session doesn
-              {"'"}t exist or has been closed
-            </Title>
-            <br />
-            <Link to="/s">Create Sandbox</Link>
-          </>
-        );
-      }
-
-      return (
-        <>
-          <Title>An error occured while connecting to the live session:</Title>
-          <SubTitle>{state.live.error}</SubTitle>
-          <br />
-          <br />
-          <Link to="/s">Create Sandbox</Link>
-        </>
-      );
+    if (error) {
+      return <Error />;
     }
 
     return null;
-  }
+  };
 
   const content = getContent();
-
   if (content) {
     return (
-      <Fullscreen>
-        <Padding
-          style={{
+      <ThemeProvider theme={CodeSandboxBlack}>
+        <Element
+          css={css({
             display: 'flex',
-            flexDirection: 'column',
-            width: '100vw',
-            height: '100vh',
-          }}
+            flex: 'auto',
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'sideBar.background',
+            fontFamily: 'Inter',
+          })}
         >
-          <Navigation title="Live Session" />
-          <Centered
-            style={{ flex: 1, width: '100%', height: '100%' }}
-            horizontal
-            vertical
+          <Element
+            css={css({ width: '100%', height: '100vh', overflow: 'hidden' })}
           >
-            {content}
-          </Centered>
-        </Padding>
-      </Fullscreen>
+            <Navigation title="Live Session" />
+
+            <Stack
+              align="center"
+              css={css({ width: '100%', height: '100%' })}
+              direction="vertical"
+              justify="center"
+            >
+              {content}
+            </Stack>
+          </Element>
+        </Element>
+      </ThemeProvider>
     );
   }
 
-  const sandbox = state.editor.currentSandbox;
-
   return (
     <>
-      {sandbox && (
+      {currentSandbox ? (
         <Helmet>
-          <title>{getSandboxName(sandbox)} - CodeSandbox</title>
+          <title>{getSandboxName(currentSandbox)} - CodeSandbox</title>
         </Helmet>
-      )}
+      ) : null}
+
       <Editor />
     </>
   );

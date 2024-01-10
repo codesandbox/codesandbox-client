@@ -129,7 +129,7 @@ export const Basic = () => (
         <Element css={{ paddingX: 2 }}>
           <SidebarRow>Configuration your Sandbox</SidebarRow>
           <Text variant="muted">
-            Codesandbox supports several config giles per template, you van see
+            CodeSandbox supports several config files per template, you can see
             and edit all supported files for the current sandbox here.
           </Text>
         </Element>
@@ -198,7 +198,7 @@ export const Basic = () => (
         <Element>
           <Stack gap={2} marginBottom={2}>
             <VercelIcon />
-            <Text size={2}>now.json</Text>
+            <Text size={2}>vercel.json</Text>
           </Stack>
           <Stack gap={4} align="flex-end" justify="space-between">
             <Text size={2} variant="muted">

@@ -9,3 +9,4 @@ export const ARROW_DOWN = 40;
 export const DOT = 190;
 export const BACKTICK = 192;
 export const ALT = 18;
+export const SPACE = 32;

@@ -1,1 +1,0 @@
-{"version":3,"file":"selectTypeScriptVersion.js","sourceRoot":"../../src","sources":["commands/selectTypeScriptVersion.ts"],"names":[],"mappings":";AAAA;;;gGAGgG;;AAMhG,MAAa,8BAA8B;IAG1C,YACkB,cAAiD;QAAjD,mBAAc,GAAd,cAAc,CAAmC;QAHnD,OAAE,GAAG,oCAAoC,CAAC;IAItD,CAAC;IAEE,OAAO;QACb,IAAI,CAAC,cAAc,CAAC,KAAK,CAAC,aAAa,CAAC,sBAAsB,EAAE,CAAC;IAClE,CAAC;CACD;AAVD,wEAUC"}

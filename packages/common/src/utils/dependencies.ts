@@ -1,6 +1,8 @@
-async function fetchWithRetries(url: string) {
+import { valid, maxSatisfying } from 'semver';
+
+async function fetchWithRetries<T = any>(url: string): Promise<T> {
   let err: Error;
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 2; i++) {
     try {
       // eslint-disable-next-line
       return await fetch(url).then(x => {
@@ -18,27 +20,71 @@ async function fetchWithRetries(url: string) {
   throw err;
 }
 
-export async function fetchPackageJSON(dep: string, version: string) {
+interface JsDelivrApiResult {
+  tags: {
+    [semver: string]: string;
+  };
+  versions: string[];
+}
+
+async function fetchAllVersions(dep: string): Promise<JsDelivrApiResult> {
+  return fetchWithRetries<JsDelivrApiResult>(
+    `https://data.jsdelivr.com/v1/package/npm/${dep}`
+  );
+}
+
+/** Resolves version range from unpkg, use this as a fallback when jsdelivr fails */
+const resolveVersionFromUnpkg = (
+  dep: string,
+  version: string
+): Promise<string> => {
+  return fetchWithRetries(
+    `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
+  ).then(x => x.version);
+};
+
+async function getLatestVersion(dep: string, version: string): Promise<string> {
+  // No need to resolve absolute versions...
+  if (isAbsoluteVersion(version)) {
+    return version;
+  }
+
   try {
-    return fetchWithRetries(
-      `https://cdn.jsdelivr.net/npm/${dep}@${encodeURIComponent(
-        version
-      )}/package.json`
+    // If it is not an absolute version (e.g. a tag like `next`), we don't want to fetch
+    // using JSDelivr, because JSDelivr caches the response for a long time. Because of this,
+    // when a tag updates to a new version, people won't see that update for a long time.
+    // Instead, we download all possible versions from JSDelivr, and we check those versions
+    // to see what's the maximum satisfying version. The API call is cached for only 10s.
+    const allVersions = await fetchAllVersions(dep);
+    return (
+      allVersions.tags[version] || maxSatisfying(allVersions.versions, version)
     );
   } catch (e) {
-    return fetchWithRetries(
-      `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
-    );
+    return resolveVersionFromUnpkg(dep, version);
   }
 }
 
 export function isAbsoluteVersion(version: string) {
-  const isAbsolute = /^\d+\.\d+\.\d+$/.test(version);
-
-  return isAbsolute || /\//.test(version);
+  return /(^\d+\.\d+\.\d+(-.*)?$)|(.+\/.+)/.test(version);
 }
 
-export async function getAbsoluteDependencies(dependencies: Object) {
+export function isValidSemver(version: string) {
+  return Boolean(valid(version));
+}
+
+export async function getAbsoluteDependency(
+  depName: string,
+  depVersion: string
+): Promise<{ name: string; version: string }> {
+  return {
+    name: depName,
+    version: await getLatestVersion(depName, depVersion),
+  };
+}
+
+export async function getAbsoluteDependencies(dependencies: {
+  [dep: string]: string;
+}) {
   const nonAbsoluteDependencies = Object.keys(dependencies).filter(
     dep => !isAbsoluteVersion(dependencies[dep])
   );
@@ -48,9 +94,12 @@ export async function getAbsoluteDependencies(dependencies: Object) {
   await Promise.all(
     nonAbsoluteDependencies.map(async dep => {
       try {
-        const data = await fetchPackageJSON(dep, dependencies[dep]);
+        const { version } = await getAbsoluteDependency(
+          dep,
+          newDependencies[dep]
+        );
 
-        newDependencies[dep] = data.version;
+        newDependencies[dep] = version;
       } catch (e) {
         /* ignore */
       }

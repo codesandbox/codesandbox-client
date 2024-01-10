@@ -10,7 +10,7 @@ export default () => {
   }
 
   if (process.env.NODE_ENV === 'development') {
-    return 'https://codesandbox.test';
+    return `https://${process.env.DEV_DOMAIN || 'codesandbox.test'}`;
   }
 
   if ('STAGING_BRANCH' in process.env) {

@@ -19,8 +19,8 @@ export const FileContainer = styled.div(props =>
 export const IconContainer = styled.span(
   css({
     display: 'inline-flex',
-    width: 16,
-    height: 16,
+    width: '16px',
+    height: '16px',
     justifyContent: 'center',
     alignItems: 'center',
 

@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  height: 100%;
+  min-height: 100vh;
   width: 100%;
-  margin: 1rem;
-  margin-top: 10%;
+  padding-top: 3vh;
+  text-align: left;
+  box-sizing: border-box;
+  max-width: 670px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue';
 `;

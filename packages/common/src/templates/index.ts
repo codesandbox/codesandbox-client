@@ -27,6 +27,10 @@ import svelte from './svelte';
 import unibit from './unibit';
 import vue from './vue';
 import vuepress from './vuepress';
+import docusaurus from './docusaurus';
+import esmReact from './esmodule-react';
+import remix from './remix';
+import solid from './solid';
 
 export {
   adonis,
@@ -38,6 +42,7 @@ export {
   next,
   nuxt,
   node,
+  esmReact,
   babel,
   cxjs,
   dojo,
@@ -55,9 +60,12 @@ export {
   styleguidist,
   gridsome,
   vuepress,
+  docusaurus,
   mdxDeck,
   quasar,
   unibit,
+  remix,
+  solid,
 };
 
 export type TemplateType =
@@ -84,12 +92,16 @@ export type TemplateType =
   | 'gridsome'
   | 'vuepress'
   | 'mdx-deck'
-  | 'quasar-framework'
+  | 'quasar'
   | 'unibit'
   | 'node'
   | 'ember'
   | 'custom'
-  | 'babel-repl';
+  | 'docusaurus'
+  | 'babel-repl'
+  | 'esm-react'
+  | 'remix-starter'
+  | 'solid';
 
 export default function getDefinition(theme?: TemplateType | null) {
   switch (theme) {
@@ -147,10 +159,18 @@ export default function getDefinition(theme?: TemplateType | null) {
       return ember;
     case vuepress.name:
       return vuepress;
+    case docusaurus.name:
+      return docusaurus;
     case quasar.name:
       return quasar;
     case unibit.name:
       return unibit;
+    case esmReact.name:
+      return esmReact;
+    case remix.name:
+      return remix;
+    case solid.name:
+      return solid;
     default:
       return react;
   }

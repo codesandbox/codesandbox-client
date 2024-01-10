@@ -1,0 +1,21 @@
+{
+  "name": "vue3-browser-compiler",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "type": "lib/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && rollup -c && node patch && terser lib/index.js > lib/index.min.js",
+    "build:dev": "yarn build"
+  },
+  "devDependencies": {
+    "@rollup/plugin-alias": "^3.1.1",
+    "@rollup/plugin-typescript": "^6.0.0",
+    "rollup": "^2.28.1",
+    "terser": "^4.8.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@vue/compiler-sfc": "^3.2.45"
+  }
+}

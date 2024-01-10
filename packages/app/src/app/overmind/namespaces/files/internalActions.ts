@@ -1,9 +1,22 @@
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 import { chunk } from 'lodash-es';
+import { Directory, Sandbox } from '@codesandbox/common/lib/types';
+import { getDirectoryPath } from '@codesandbox/common/lib/sandbox/modules';
 
-export const recoverFiles: Action = ({ effects, actions, state }) => {
+function b64DecodeUnicode(file: string) {
+  // Adding this fixes uploading JSON files with non UTF8-characters
+  // https://stackoverflow.com/a/30106551
+  return decodeURIComponent(
+    atob(file)
+      .split('')
+      .map(char => '%' + ('00' + char.charCodeAt(0).toString(16)).slice(-2))
+      .join('')
+  );
+}
+
+export const recoverFiles = ({ effects, state }: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -34,16 +47,16 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
   }
 };
 
-export const uploadFiles: AsyncAction<
+export const uploadFiles = async (
+  { effects }: Context,
   {
+    files,
+    directoryShortid,
+  }: {
     files: { [k: string]: { dataURI: string; type: string } };
     directoryShortid: string;
-  },
-  {
-    modules: any;
-    directories: any;
   }
-> = async ({ effects }, { files, directoryShortid }) => {
+) => {
   const parsedFiles: {
     [key: string]: { isBinary: boolean; content: string };
   } = {};
@@ -73,7 +86,9 @@ export const uploadFiles: AsyncAction<
           dataURI.length < MAX_FILE_SIZE
         ) {
           const text =
-            dataURI !== 'data:' ? atob(dataURI.replace(/^.*base64,/, '')) : '';
+            dataURI !== 'data:'
+              ? b64DecodeUnicode(dataURI.replace(/^.*base64,/, ''))
+              : '';
           parsedFiles[filePath] = {
             content: text,
             isBinary: false,
@@ -128,4 +143,45 @@ export const uploadFiles: AsyncAction<
     modules: relativeModules,
     directories: relativeDirectories,
   };
+};
+
+export const renameDirectoryInState = (
+  { state, effects }: Context,
+  {
+    title,
+    directory,
+    sandbox,
+  }: {
+    title: string;
+    directory: Directory;
+    sandbox: Sandbox;
+  }
+) => {
+  const oldPath = directory.path;
+  directory.title = title;
+  const newPath = getDirectoryPath(
+    sandbox.modules,
+    sandbox.directories,
+    directory.id
+  );
+  directory.path = newPath;
+
+  effects.vscode.sandboxFsSync.rename(
+    state.editor.modulesByPath,
+    oldPath!,
+    directory.path
+  );
+
+  if (oldPath) {
+    sandbox.modules.forEach(m => {
+      if (m.path && m.path.startsWith(oldPath + '/')) {
+        m.path = m.path.replace(oldPath, newPath);
+      }
+    });
+    sandbox.directories.forEach(d => {
+      if (d.path && d.path.startsWith(oldPath + '/')) {
+        d.path = d.path.replace(oldPath, newPath);
+      }
+    });
+  }
 };

@@ -1,6 +1,5 @@
 import { dispatch } from 'codesandbox-api';
-import Transpiler from '..';
-import { LoaderContext } from '../../transpiled-module';
+import { Transpiler, LoaderContext } from 'sandpack-core';
 
 import insertCss from './utils/insert-css';
 import toDefinition from './utils/to-definition';

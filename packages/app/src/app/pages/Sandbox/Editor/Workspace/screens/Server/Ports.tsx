@@ -1,73 +1,62 @@
-import React from 'react';
 import {
   Collapsible,
   List,
   ListAction,
-  Text,
   Stack,
+  Text,
 } from '@codesandbox/components';
-import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
-import { ServerPort } from '@codesandbox/common/lib/types';
+import React, { FunctionComponent } from 'react';
 import BrowserIcon from 'react-icons/lib/go/browser';
+import css from '@styled-system/css';
 
-export const Ports = () => {
+import { useAppState, useActions } from 'app/overmind';
+
+export const Ports: FunctionComponent = () => {
+  const { onBrowserTabOpened, onBrowserFromPortOpened } = useActions().server;
   const {
-    actions: {
-      server: { onBrowserTabOpened, onBrowserFromPortOpened },
+    editor: {
+      currentSandbox: { template },
     },
-    state: {
-      server: { ports },
-      editor: { currentSandbox: sandbox },
-    },
-  } = useOvermind();
+    server: { ports },
+  } = useAppState();
 
-  const openPort = (port: ServerPort) => {
-    onBrowserFromPortOpened({ port });
-  };
-
-  const openGraphiQLPort = () => {
-    const url = sandbox.template === 'gridsome' ? '/___explore' : '/___graphql';
+  const openGraphiQLPort = () =>
     onBrowserTabOpened({
       closeable: true,
       options: {
-        url,
+        url: template === 'gridsome' ? '/___explore' : '/___graphql',
         title: 'GraphiQL',
       },
     });
-  };
 
   return (
     <Collapsible title="Open Ports" defaultOpen>
       <List>
-        {ports.length ? (
-          ports.map((port: ServerPort) => (
-            <ListAction onClick={() => openPort(port)}>
-              <Stack
-                justify="space-between"
-                css={css({
-                  width: '100%',
-                })}
-              >
+        {ports.length > 0 ? (
+          ports.map(port => (
+            <ListAction onClick={() => onBrowserFromPortOpened(port)}>
+              <Stack css={css({ width: '100%' })} justify="space-between">
                 <Stack align="center">
                   <BrowserIcon />
+
                   <Text marginLeft={2}>{port.name || port.port}</Text>
                 </Stack>
-                {port.main && <Text weight="medium">main</Text>}
+
+                {port.main ? <Text weight="medium">main</Text> : null}
               </Stack>
             </ListAction>
           ))
         ) : (
           <Text block variant="muted" paddingX={2}>
-            No ports are open. Maybe the server is still starting or it doesn
-            {"'"}t open any ports.
+            {`No ports are open. Maybe the server is still starting or it doesn't open any ports.`}
           </Text>
         )}
 
-        {['gatsby', 'gridsome'].includes(sandbox.template) && ports.length ? (
+        {['gatsby', 'gridsome'].includes(template) && ports.length > 0 ? (
           <ListAction onClick={openGraphiQLPort}>
             <Stack align="center">
               <BrowserIcon />
+
               <Text marginLeft={2}>GraphiQL</Text>
             </Stack>
           </ListAction>

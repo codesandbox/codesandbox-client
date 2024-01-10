@@ -69,4 +69,16 @@ describe('simple-get-require-statements', () => {
       { type: 'direct', path: './_iter-detect' },
     ]);
   });
+
+  it('handles quotes in a require statement', () => {
+    const code = `var $csb__Textareavue = require("!babel-loader!vue-template-loader!vue-loader?vue&type=template&id=d8507872&bindings={"modelValue":"props","autoResize":"props","resize":"options","onInput":"options","filled":"options"}!./Textarea.vue");`;
+
+    expect(getRequireStatements(code)).toStrictEqual([
+      {
+        type: 'direct',
+        path:
+          '!babel-loader!vue-template-loader!vue-loader?vue&type=template&id=d8507872&bindings={"modelValue":"props","autoResize":"props","resize":"options","onInput":"options","filled":"options"}!./Textarea.vue',
+      },
+    ]);
+  });
 });

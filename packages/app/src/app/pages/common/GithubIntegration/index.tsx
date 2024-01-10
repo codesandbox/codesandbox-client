@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import GitHubLogo from 'react-icons/lib/go/mark-github';
 
 import { Integration } from 'app/components/Integration';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 type Props = {
   small?: boolean;
@@ -10,19 +10,18 @@ type Props = {
 export const GithubIntegration: FunctionComponent<Props> = ({
   small = false,
 }) => {
-  const {
-    actions: { signInGithubClicked, signOutGithubIntegration },
-    state: {
-      isLoadingGithub,
-      user: {
-        integrations: { github },
-      },
-    },
-  } = useOvermind();
+  const { signInGithubClicked, signOutGithubIntegration } = useActions();
+  const { isLoadingGithub, user } = useAppState();
+  const userInfo =
+    user?.githubProfile.data && user?.integrations.github
+      ? {
+          ...user.githubProfile.data,
+          email: user.integrations.github.email,
+        }
+      : undefined;
 
   return (
     <Integration
-      bgColor="#0971f1"
       description={small ? 'Commits & PRs' : 'Committing & Pull Requests'}
       Icon={GitHubLogo}
       loading={isLoadingGithub}
@@ -30,7 +29,7 @@ export const GithubIntegration: FunctionComponent<Props> = ({
       onSignIn={() => signInGithubClicked()}
       onSignOut={() => signOutGithubIntegration()}
       small={small}
-      userInfo={github}
+      userInfo={userInfo}
     />
   );
 };

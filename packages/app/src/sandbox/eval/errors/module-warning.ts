@@ -1,4 +1,4 @@
-import TranspiledModule from '../transpiled-module';
+import { TranspiledModule } from 'sandpack-core';
 import { WarningStructure } from '../transpilers/utils/worker-warning-handler';
 
 export default class ModuleWarning extends Error {

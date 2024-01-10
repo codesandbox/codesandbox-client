@@ -3,7 +3,7 @@ function getExternalResourcesConcatenation(resources: Array<string>) {
 }
 /* eslint-disable no-cond-assign */
 function clearExternalResources() {
-  let el = null;
+  let el: HTMLElement | null = null;
   // eslint-disable-next-line no-cond-assign
   while ((el = document.getElementById('external-css'))) {
     el.remove();
@@ -16,36 +16,53 @@ function clearExternalResources() {
 }
 /* eslint-enable */
 
-function addCSS(resource: string) {
-  const head = document.getElementsByTagName('head')[0];
+export function createExternalCSSLink(resource: string): HTMLLinkElement {
   const link = document.createElement('link');
+
   link.id = 'external-css';
   link.rel = 'stylesheet';
   link.type = 'text/css';
   link.href = resource;
   link.media = 'all';
+
+  return link;
+}
+
+function addCSS(resource: string) {
+  const head = document.getElementsByTagName('head')[0];
+  const link = createExternalCSSLink(resource);
+
   head.appendChild(link);
 
   return link;
 }
 
-function addJS(resource: string) {
+export function createExternalJSLink(resource): HTMLScriptElement {
   const script = document.createElement('script');
+
   script.setAttribute('src', resource);
   script.async = false;
   script.setAttribute('id', 'external-js');
+
+  return script;
+}
+
+function addJS(resource: string) {
+  const script = createExternalJSLink(resource);
+
   document.head.appendChild(script);
 
   return script;
 }
 
-function addResource(resource: string) {
+export function resourceIsCss(resource: string): boolean {
   const match = resource.match(/\.([^.]*)$/);
 
-  const el =
-    (match && match[1] === 'css') || resource.includes('fonts.googleapis')
-      ? addCSS(resource)
-      : addJS(resource);
+  return (match && match[1] === 'css') || resource.includes('fonts.googleapis');
+}
+
+function addResource(resource: string) {
+  const el = resourceIsCss(resource) ? addCSS(resource) : addJS(resource);
 
   return new Promise(r => {
     el.onload = r;
@@ -58,7 +75,7 @@ function waitForLoaded() {
     if (document.readyState !== 'complete') {
       window.addEventListener('load', resolve);
     } else {
-      resolve();
+      resolve(null);
     }
   });
 }

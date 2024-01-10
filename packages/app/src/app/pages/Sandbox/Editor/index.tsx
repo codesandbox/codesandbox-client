@@ -1,21 +1,31 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import VERSION from '@codesandbox/common/lib/version';
 import {
   ThemeProvider as ComponentsThemeProvider,
-  Stack,
   Element,
+  Stack,
 } from '@codesandbox/components';
+import { GenericCreate } from 'app/components/Create/GenericCreate';
+import {
+  FreeViewOnlyStripe,
+  PaymentPending,
+  TrialWithoutPaymentInfo,
+} from 'app/components/StripeMessages';
+import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
-import VERSION from '@codesandbox/common/lib/version';
-import VisuallyHidden from '@reach/visually-hidden';
 
-import Content from './Content';
+import { SubscriptionStatus } from 'app/graphql/types';
+import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
+import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
@@ -24,6 +34,9 @@ import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
+import { FixedSignInBanner } from './FixedSignInBanner';
+
+type EditorTypes = { showNewSandboxModal?: boolean };
 
 const STATUS_BAR_SIZE = 22;
 
@@ -33,8 +46,11 @@ const StatusBar = styled.div`
   }
 `;
 
-const Editor = () => {
-  const { state, actions, effects, reaction } = useOvermind();
+export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
+  const state = useAppState();
+  const actions = useActions();
+  const effects = useEffects();
+  const reaction = useReaction();
   const statusbarEl = useRef(null);
   const [showSkeleton, setShowSkeleton] = useState(
     !state.editor.hasLoadedInitialModule
@@ -46,6 +62,11 @@ const Editor = () => {
     },
     customVSCodeTheme: null,
   });
+  const { subscription } = useWorkspaceSubscription();
+  const [
+    showTrialWithoutPaymentInfoBanner,
+    dismissTrialWithoutPaymentInfoBanner,
+  ] = useShowBanner();
 
   useEffect(() => {
     let timeout;
@@ -93,8 +114,34 @@ const Editor = () => {
   const { statusBar } = state.editor;
 
   const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+  const showCloudSandboxConvert =
+    !state.environment.isOnPrem && state.hasLogIn && sandbox?.isSse;
 
-  const topOffset = state.preferences.settings.zenMode ? 0 : 3 * 16;
+  const getTopOffset = () => {
+    if (state.preferences.settings.zenMode) {
+      return 0;
+    }
+
+    if (!state.hasLogIn && state.sandboxesLimits) {
+      // Header + Signin banner + border
+      return 5.5 * 16 + 2;
+    }
+
+    // Has MessageStripe
+    if (
+      subscription?.status === SubscriptionStatus.Unpaid ||
+      showTrialWithoutPaymentInfoBanner ||
+      sandbox?.freePlanEditingRestricted ||
+      showCloudSandboxConvert
+    ) {
+      // Header height + MessageStripe
+      return 3 * 16 + 44;
+    }
+
+    // Header height
+    return 3 * 16;
+  };
+
   const bottomOffset = STATUS_BAR_SIZE;
 
   return (
@@ -111,6 +158,20 @@ const Editor = () => {
       >
         {state.preferences.settings.zenMode ? null : (
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
+            {!state.hasLogIn && <FixedSignInBanner />}
+
+            {subscription?.status === SubscriptionStatus.Unpaid && (
+              <PaymentPending />
+            )}
+
+            {showTrialWithoutPaymentInfoBanner && (
+              <TrialWithoutPaymentInfo
+                onDismiss={dismissTrialWithoutPaymentInfoBanner}
+              />
+            )}
+
+            {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
+            {showCloudSandboxConvert ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>
         )}
@@ -118,15 +179,19 @@ const Editor = () => {
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation && (
             <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
-              <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
+              <Navigation
+                topOffset={getTopOffset()}
+                bottomOffset={bottomOffset}
+              />
             </ComponentsThemeProvider>
           )}
 
           <div
+            key={getTopOffset()} // Force re-render when topOffset changes to avoid weird positioning.
             style={{
               position: 'fixed',
               left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',
-              top: topOffset,
+              top: getTopOffset(),
               right: 0,
               bottom: bottomOffset,
               height: statusBar ? 'auto' : 'calc(100% - 3.5rem)',
@@ -162,13 +227,13 @@ const Editor = () => {
               }}
             >
               {state.workspace.workspaceHidden ? <div /> : <Workspace />}
-              {<Content theme={localState.theme} />}
+              <Content theme={localState.theme} />
             </SplitPane>
-            {showSkeleton ? (
+            {showSkeleton || showNewSandboxModal ? (
               <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
                 <ContentSkeleton
                   style={
-                    state.editor.hasLoadedInitialModule
+                    state.editor.hasLoadedInitialModule && !showNewSandboxModal
                       ? {
                           opacity: 0,
                         }
@@ -177,6 +242,48 @@ const Editor = () => {
                         }
                   }
                 />
+                {showNewSandboxModal ? (
+                  <Element
+                    css={css({
+                      width: '100vw',
+                      height: '100vh',
+                      overflow: 'hidden',
+                      position: 'fixed',
+                      zIndex: 10,
+                      top: 0,
+                      left: 0,
+                    })}
+                  >
+                    <Element
+                      css={css({
+                        background: 'rgba(0,0,0,0.4)',
+                        width: '100vw',
+                        height: '100vh',
+                        position: 'fixed',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      })}
+                    >
+                      <Element
+                        css={css({
+                          backgroundColor: 'sideBar.background',
+                          maxWidth: '100%',
+                          width: 950,
+                          position: 'relative',
+                          marginTop: '-200px',
+
+                          '@media screen and (max-width: 950)': {
+                            width: 'auto',
+                            margin: 0,
+                          },
+                        })}
+                      >
+                        <GenericCreate />
+                      </Element>
+                    </Element>
+                  </Element>
+                ) : null}
               </ComponentsThemeProvider>
             ) : null}
           </div>
@@ -216,8 +323,6 @@ const Editor = () => {
     </ThemeProvider>
   );
 };
-
-export default Editor;
 
 /** To use the same styles + behavior of the vscode status bar,
  *  we recreate the html structure outside of the status bar

@@ -1,6 +1,6 @@
-import { AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 
-export const fetchGitChanges: AsyncAction = async ({ state, effects }) => {
+export const fetchGitChanges = async ({ state, effects }: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -8,6 +8,6 @@ export const fetchGitChanges: AsyncAction = async ({ state, effects }) => {
   const { id } = state.editor.currentSandbox;
 
   state.git.isFetching = true;
-  state.git.originalGitChanges = await effects.api.getGitChanges(id);
+  state.git.gitChanges = await effects.api.getGitChanges(id);
   state.git.isFetching = false;
 };

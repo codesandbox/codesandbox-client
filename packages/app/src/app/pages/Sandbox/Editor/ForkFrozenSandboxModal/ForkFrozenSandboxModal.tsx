@@ -2,20 +2,16 @@ import Modal from 'app/components/Modal';
 import { withTheme } from 'styled-components';
 import { ThemeProvider, Stack, Text } from '@codesandbox/components';
 import { Alert } from 'app/pages/common/Modals/Common/Alert';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import useKeyPressEvent from 'react-use/lib/useKeyPressEvent';
 import ReturnIcon from 'react-icons/lib/md/keyboard-return';
 
 const ModalContent: React.FC = () => {
   const {
-    state: {
-      editor: {
-        currentSandbox: { customTemplate },
-      },
-    },
-    actions: { modals: modalsActions },
-  } = useOvermind();
+    currentSandbox: { customTemplate },
+  } = useAppState().editor;
+  const { modals: modalsActions } = useActions();
   const type = customTemplate ? 'template' : 'sandbox';
 
   const unlock = () => {
@@ -31,20 +27,21 @@ const ModalContent: React.FC = () => {
   useKeyPressEvent('Enter', fork);
   return (
     <Alert
-      title={`Frozen ${customTemplate ? 'Template' : 'Sandbox'}`}
+      title={`Protected ${type}`}
       description={
         <>
           <p>
-            This {type} is frozen, which means you can’t make edits without
-            unfreezing it.
+            This {type} is protected, which means you can’t make edits unless
+            you fork it.
           </p>
           <p>
-            Do you want to unfreeze the {type} for this session or make a fork?
+            Do you want to remove the protection for the {type} for this session
+            or make a fork?
           </p>
         </>
       }
       onCancel={unlock}
-      cancelMessage="Unfreeze"
+      cancelMessage="Remove protection"
       onPrimaryAction={fork}
       confirmMessage={
         <Stack gap={2} align="center">
@@ -59,17 +56,15 @@ const ModalContent: React.FC = () => {
 const ForkFrozenSandboxModalComponent: FunctionComponent<{ theme: any }> = ({
   theme,
 }) => {
-  const {
-    state: { modals },
-    actions: { modals: modalsActions },
-  } = useOvermind();
+  const { modals } = useAppState();
+  const { forkFrozenModal } = useActions().modals;
 
   return (
     <ThemeProvider theme={theme.vscodeTheme}>
       <Modal
         isOpen={modals.forkFrozenModal.isCurrent}
         width={450}
-        onClose={() => modalsActions.forkFrozenModal.close('cancel')}
+        onClose={() => forkFrozenModal.close('cancel')}
       >
         <ModalContent />
       </Modal>

@@ -67,7 +67,7 @@ export async function initializeBrowserFS({
     };
   } = {};
 
-  return new Promise(resolve => {
+  return new Promise<void>(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
     let currentSandboxFs = {};
 
@@ -85,6 +85,14 @@ export async function initializeBrowserFS({
               moveModule(module: IModule, newPath) {},
               updateModule(module: IModule) {},
             },
+          },
+        };
+
+        config.options['/extensions/node_modules/typescript'] = {
+          fs: 'JSDelivrRequest',
+          options: {
+            dependency: 'typescript',
+            version: '5.2.2',
           },
         };
       }

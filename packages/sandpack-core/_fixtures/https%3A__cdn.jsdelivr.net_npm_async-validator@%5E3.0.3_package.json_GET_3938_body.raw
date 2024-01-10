@@ -1,0 +1,45 @@
+{
+  "name": "async-validator",
+  "description": "validate form asynchronous",
+  "version": "3.4.0",
+  "license": "MIT",
+  "files": [
+    "dist-*/",
+    "bin/"
+  ],
+  "pika": true,
+  "sideEffects": false,
+  "keywords": [
+    "validator",
+    "validate",
+    "async"
+  ],
+  "homepage": "https://github.com/yiminghe/async-validator",
+  "bugs": {
+    "url": "https://github.com/yiminghe/async-validator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:yiminghe/async-validator.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/preset-env": "^7.8.7",
+    "@pika/pack": "^0.5.0",
+    "@pika/plugin-build-types": "^0.6.0",
+    "@pika/plugin-standard-pkg": "^0.6.0",
+    "@pika/types": "^0.6.0",
+    "babel-jest": "^24.8.0",
+    "coveralls": "^2.13.1",
+    "jest": "^24.8.0",
+    "lint-staged": "^7.2.0",
+    "np": "^5.0.3",
+    "pika-plugin-build-web-babel": "^0.8.0",
+    "pika-plugin-clean-dist-src": "^0.1.1",
+    "pre-commit": "^1.2.2",
+    "prettier": "^1.11.1"
+  },
+  "main": "dist-node/index.js",
+  "module": "dist-web/index.js",
+  "types": "dist-types/index.d.ts"
+}

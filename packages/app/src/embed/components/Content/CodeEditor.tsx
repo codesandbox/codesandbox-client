@@ -12,7 +12,7 @@ import { Icon, Icons } from 'app/components/CodeEditor/elements';
 import { Props } from 'app/components/CodeEditor/types'; // eslint-disable-line
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
-import Loadable from 'app/utils/Loadable';
+import { Loadable } from 'app/utils/Loadable';
 import React from 'react';
 import UIIcon from 'react-icons/lib/md/dvr';
 import { ThemeProvider } from '@codesandbox/components';
@@ -20,14 +20,15 @@ import { ThemeProvider } from '@codesandbox/components';
 import { ImageViewer } from './ImageViewer';
 import MonacoDiff from './MonacoDiff';
 
-const CodeMirror = Loadable(() =>
-  import(
-    /* webpackChunkName: 'codemirror-editor' */ 'app/components/CodeEditor/CodeMirror'
-  )
+const CodeMirror = Loadable(
+  () =>
+    import(
+      /* webpackChunkName: 'codemirror-editor' */ 'app/components/CodeEditor/CodeMirror'
+    )
 );
 
-const Monaco = Loadable(() =>
-  import(/* webpackChunkName: 'monaco-editor' */ './Monaco')
+const Monaco = Loadable(
+  () => import(/* webpackChunkName: 'monaco-editor' */ './Monaco')
 );
 
 const getDependencies = (sandbox: Sandbox): { [key: string]: string } => {
@@ -64,7 +65,7 @@ type State = {
   showConfigUI: boolean;
 };
 
-export class CodeEditorComponent extends React.PureComponent<
+class CodeEditorComponent extends React.PureComponent<
   Props & {
     editor?: 'vscode' | 'monaco' | 'codemirror';
     style?: React.CSSProperties;

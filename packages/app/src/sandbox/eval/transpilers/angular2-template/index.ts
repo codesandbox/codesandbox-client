@@ -1,6 +1,5 @@
 /* eslint-disable */
-import Transpiler from '../';
-import { LoaderContext } from '../../transpiled-module';
+import { Transpiler, LoaderContext } from 'sandpack-core';
 
 // using: regex, capture groups, and capture group variables.
 const templateUrlRegex = /templateUrl\s*:(\s*['"`](.*?)['"`]\s*([,}]))/gm;
@@ -8,7 +7,8 @@ const stylesRegex = /styleUrls *:(\s*\[[^\]]*?\])/g;
 const stringRegex = /(['`"])((?:[^\\]\\\1|.)*?)\1/g;
 
 function replaceStringsWithRequires(string, extensionConfig, addDependency) {
-  return string.replace(stringRegex, (match, quote, url) => {
+  let depPromises = [];
+  let result = string.replace(stringRegex, (match, quote, url) => {
     if (url.charAt(0) !== '.') {
       // eslint-disable-next-line
       url = './' + url;
@@ -22,9 +22,12 @@ function replaceStringsWithRequires(string, extensionConfig, addDependency) {
       .map(t => t.transpiler.name)
       .join('!')}!${url}`;
 
-    addDependency(finalUrl, { isAbsolute: false });
+    depPromises.push(addDependency(finalUrl, { isAbsolute: false }));
+
     return "require('" + finalUrl + "')";
   });
+
+  return { result, depPromises };
 }
 
 /**
@@ -39,46 +42,44 @@ class Angular2Transpiler extends Transpiler {
     super('binary-loader');
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  async doTranspilation(code: string, loaderContext: LoaderContext) {
     const styleProperty = 'styles';
     const templateProperty = 'template';
 
+    let promises: Array<Promise<any>> = [];
     const newSource = code
       .replace(templateUrlRegex, (match, url) => {
         // replace: templateUrl: './path/to/template.html'
         // with: template: require('./path/to/template.html')
         // or: templateUrl: require('./path/to/template.html')
         // if `keepUrl` query parameter is set to true.
-
-        return (
-          templateProperty +
-          ':' +
-          replaceStringsWithRequires(
-            url,
-            loaderContext.options.preTranspilers,
-            loaderContext.addDependency
-          )
+        let { result, depPromises } = replaceStringsWithRequires(
+          url,
+          loaderContext.options.preTranspilers,
+          loaderContext.addDependency
         );
+        promises.push(...depPromises);
+        return templateProperty + ':' + result;
       })
       .replace(stylesRegex, (match, urls) => {
         // replace: stylesUrl: ['./foo.css', "./baz.css", "./index.component.css"]
         // with: styles: [require('./foo.css'), require("./baz.css"), require("./index.component.css")]
         // or: styleUrls: [require('./foo.css'), require("./baz.css"), require("./index.component.css")]
         // if `keepUrl` query parameter is set to true.
-        return (
-          styleProperty +
-          ':' +
-          replaceStringsWithRequires(
-            urls,
-            loaderContext.options.preTranspilers,
-            loaderContext.addDependency
-          )
+        let { result, depPromises } = replaceStringsWithRequires(
+          urls,
+          loaderContext.options.preTranspilers,
+          loaderContext.addDependency
         );
+        promises.push(...depPromises);
+        return styleProperty + ':' + result;
       });
 
-    return Promise.resolve({
+    await Promise.all(promises);
+
+    return {
       transpiledCode: newSource,
-    });
+    };
   }
 }
 

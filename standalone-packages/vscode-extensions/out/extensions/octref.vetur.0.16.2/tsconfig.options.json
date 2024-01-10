@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "strict": true,
-    "noUnusedLocals": true,
-    "sourceMap": true
-  }
-}

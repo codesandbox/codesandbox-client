@@ -9,6 +9,7 @@ function getSentry(): Promise<typeof import('@sentry/browser')> {
   return import(/* webpackChunkName: 'sentry' */ '@sentry/browser');
 }
 
+let sentryInitialized = false;
 let latestVersionPromise: Promise<string>;
 const versionTimeout = 1 * 60 * 1000;
 function getLatestVersion() {
@@ -35,6 +36,8 @@ export async function initialize(dsn: string) {
       return Promise.resolve();
     }
 
+    sentryInitialized = true;
+
     return _Sentry.init({
       dsn,
       release: VERSION,
@@ -42,10 +45,6 @@ export async function initialize(dsn: string) {
         'Custom Object', // Called for errors coming from sandbox (https://sentry.io/organizations/codesandbox/issues/965255074/?project=155188&query=is%3Aunresolved&statsPeriod=14d)
         'TypeScript Server Error', // Called from the TSC server
         /^Canceled$/, // Used by VSCode to stop currently running actions
-
-        // Chrome extensions
-        /extensions\//i,
-        /^chrome:\/\//i,
 
         // react devtools Outside of our scope for now, but we definitely want to check this out.
         // TODO: check what's happening here: https://sentry.io/organizations/codesandbox/issues/1239466583/?project=155188&query=is%3Aunresolved+release%3APROD-1573653062-4134efc0a
@@ -57,22 +56,35 @@ export async function initialize(dsn: string) {
         /Cannot reorder children for node/,
 
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
+        "Cannot assign to read only property 'exports' of object '#<Object>'", // eslint error in the v1 editor
       ],
-      whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
+      integrations: [
+        new _Sentry.Integrations.TryCatch({
+          setTimeout: false,
+          setInterval: false,
+          requestAnimationFrame: false,
+        }),
+      ],
+      allowUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
       maxBreadcrumbs: 100,
       /**
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app
        */
-      blacklistUrls: [
-        'codesandbox.editor.main.js',
-        /.*\.codesandbox\.io/,
-        /.*\.csb\.app/,
-      ],
+      denyUrls: ['codesandbox.editor.main.js', /.*\.csb\.app/],
       beforeSend: (event, hint) => {
         const exception = event?.exception?.values?.[0];
         const exceptionFrame = exception?.stacktrace?.frames?.[0];
         const filename = exceptionFrame?.filename;
+
+        if (
+          !(hint.originalException instanceof Error) &&
+          typeof hint.originalException === 'object' &&
+          hint.originalException &&
+          'error' in hint.originalException
+        ) {
+          return null;
+        }
 
         let errorMessage =
           typeof hint.originalException === 'string'
@@ -134,25 +146,26 @@ export async function initialize(dsn: string) {
 }
 
 export const logBreadcrumb = (breadcrumb: Breadcrumb) => {
-  if (_Sentry) {
+  if (_Sentry && sentryInitialized) {
     _Sentry.addBreadcrumb(breadcrumb);
   }
 };
 
-export const captureException = err => {
-  if (_Sentry) {
-    _Sentry.captureException(err);
+export const captureException = (err: Error) => {
+  if (_Sentry && sentryInitialized) {
+    return _Sentry.captureException(err);
   }
+  return null;
 };
 
 export const configureScope = cb => {
-  if (_Sentry) {
+  if (_Sentry && sentryInitialized) {
     _Sentry.configureScope(cb);
   }
 };
 
 export const setUserId = userId => {
-  if (_Sentry) {
+  if (_Sentry && sentryInitialized) {
     _Sentry.configureScope(scope => {
       scope.setUser({ id: userId });
     });
@@ -160,7 +173,7 @@ export const setUserId = userId => {
 };
 
 export const resetUserId = () => {
-  if (_Sentry) {
+  if (_Sentry && sentryInitialized) {
     _Sentry.configureScope(scope => {
       scope.setUser({ id: undefined });
     });

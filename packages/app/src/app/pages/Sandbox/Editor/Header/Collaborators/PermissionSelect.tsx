@@ -3,11 +3,11 @@ import { Menu, Icon } from '@codesandbox/components';
 import { Authorization } from 'app/graphql/types';
 
 const authToName = {
-  [Authorization.WriteCode]: 'Can Edit',
-  [Authorization.Comment]: 'Can Comment',
-  [Authorization.None]: 'No Access',
-  [Authorization.Read]: 'Can View',
-  [Authorization.WriteProject]: 'Edit Sandbox Info',
+  [Authorization.WriteCode]: 'Can edit',
+  [Authorization.Comment]: 'Can comment',
+  [Authorization.None]: 'No access',
+  [Authorization.Read]: 'Can view',
+  [Authorization.WriteProject]: 'Edit sandbox info',
 };
 
 // Based on the longest option in the mnu

@@ -18,9 +18,17 @@ const GlobalStyles = createGlobalStyle`
   transition-property: opacity, transform;
   opacity: 0;
   transform: scale(0.9) translateY(5px);
-
-  h2 {
-    margin-top: 14px;
+  overflow-y: hidden;
+  width: 950px; 
+  
+  @media screen and (max-width: 950px) {
+    width: 95%;
+  }
+  
+  @media screen and (max-width: 756px) {
+    width: 100%;
+    border: 0;
+    border-radius: 0;
   }
 }
 
@@ -35,6 +43,7 @@ const GlobalStyles = createGlobalStyle`
   transition: all ${CLOSE_TIMEOUT_MS}ms ease;
   z-index: 10;
   opacity: 1;
+  max-height: 100vh;
 }
 
 .ReactModal__Html--open {
@@ -57,23 +66,22 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 class ModalComponent extends React.Component {
-  getStyles = (width = 400, top = 20) => ({
+  getStyles = (width = 400, top = 20, fullWidth = false) => ({
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.75)',
       overflowY: 'auto',
-      zIndex: 30,
+      zIndex: 10,
       transform: 'translate3d(0, 0, 0)',
     },
     content: {
       position: 'relative',
-      overflow: 'hidden',
       padding: 0,
       maxWidth: width,
-      top: `${top}vh`,
-      bottom: 40,
+      top: fullWidth ? 0 : `${top}vh`,
+      bottom: fullWidth ? 0 : 40,
       left: 0,
       right: 0,
-      margin: `0 auto ${top}vh`,
+      margin: `0 auto`,
       fontFamily: "'Inter', sans-serif",
       outline: 'none',
     },
@@ -87,6 +95,7 @@ class ModalComponent extends React.Component {
       onClose,
       children,
       title,
+      fullWidth,
       ...props
     } = this.props;
 
@@ -106,13 +115,13 @@ class ModalComponent extends React.Component {
           css={css({
             border: '1px solid',
             borderColor: 'sideBar.border',
-            borderRadius: 'medium',
+            borderRadius: fullWidth ? 0 : '8px',
             backgroundColor: 'sideBar.background',
             boxShadow: 2,
             color: 'sideBar.foreground',
             lineHeight: 1.2,
           })}
-          style={this.getStyles(width, top)}
+          style={this.getStyles(width, top, fullWidth)}
           closeTimeoutMS={CLOSE_TIMEOUT_MS}
           htmlOpenClassName="ReactModal__Html--open"
           {...props}

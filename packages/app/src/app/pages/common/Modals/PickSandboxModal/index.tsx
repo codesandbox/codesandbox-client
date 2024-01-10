@@ -10,22 +10,18 @@ import {
   Input,
   Textarea,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import { Alert } from '../Common/Alert';
 
 export const PickSandboxModal: FunctionComponent = () => {
   const {
-    actions: {
-      explore: { pickSandbox },
-      modalClosed,
-    },
-    state: {
-      explore: {
-        pickedSandboxDetails: { id, ...details },
-      },
-    },
-  } = useOvermind();
+    explore: { pickSandbox },
+    modalClosed,
+  } = useActions();
+  const {
+    pickedSandboxDetails: { id, ...details },
+  } = useAppState().explore;
   const [description, setDescription] = useState(details.description);
   const [title, setTitle] = useState(details.title);
 

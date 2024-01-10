@@ -1,5 +1,3 @@
-// @flow
-
 const DEFAULT_BABEL_CONFIG = {
   presets: ['env', 'react'],
   plugins: [],

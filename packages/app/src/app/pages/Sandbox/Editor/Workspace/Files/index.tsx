@@ -1,19 +1,17 @@
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React from 'react';
 
-import EditIcons from './DirectoryEntry/Entry/EditIcons';
-import DirectoryEntry from './DirectoryEntry/index';
+import { EditIcons } from './DirectoryEntry/Entry/EditIcons';
+import { DirectoryEntry } from './DirectoryEntry/index';
 
 interface IFilesProps {
   setEditActions: React.Dispatch<any>;
 }
 
 export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
-  const {
-    state: { editor: editorState, isLoggedIn },
-    actions: { editor, files },
-  } = useOvermind();
+  const { editor: editorState, isLoggedIn } = useAppState();
+  const { editor, files } = useActions();
 
   const { currentSandbox: sandbox } = editorState;
 
@@ -46,11 +44,7 @@ export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
               onCreateFile={onCreateModuleClick}
               onCreateDirectory={onCreateDirectoryClick}
               onDownload={editor.createZipClicked}
-              onUploadFile={
-                isLoggedIn && sandbox.privacy === 0
-                  ? onUploadFileClick
-                  : undefined
-              }
+              onUploadFile={isLoggedIn ? onUploadFileClick : undefined}
             />
           );
         }

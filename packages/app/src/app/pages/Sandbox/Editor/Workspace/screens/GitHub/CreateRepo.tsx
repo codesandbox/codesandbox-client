@@ -1,29 +1,34 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import React, { ChangeEvent } from 'react';
 import {
-  Collapsible,
-  Input,
-  Element,
-  Stack,
   Button,
-  Text,
+  Collapsible,
+  Element,
   FormField,
+  Input,
+  Link,
+  Stack,
+  Text,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
+import React, { ChangeEvent } from 'react';
 
-export const CreateRepo = () => {
+type CreateRepoProps = {
+  /**
+   * The prop overrides internals and disabled the whole section.
+   * Useful when there are no GitHub permissions but we still
+   * want to show the UI.
+   */
+  disabled?: boolean;
+};
+export const CreateRepo: React.FC<CreateRepoProps> = ({ disabled }) => {
   const {
-    actions: {
-      git: { createRepoClicked, repoTitleChanged },
-    },
-    state: {
-      editor: {
-        isAllModulesSynced,
-        currentSandbox: { originalGit },
-      },
-      git: { error, repoTitle },
-    },
-  } = useOvermind();
+    git: { createRepoClicked, repoTitleChanged },
+    modalOpened,
+  } = useActions();
+  const {
+    editor: { isAllModulesSynced, currentSandbox },
+    git: { error, repoTitle },
+  } = useAppState();
 
   const updateRepoTitle = ({
     target: { value: title },
@@ -31,21 +36,51 @@ export const CreateRepo = () => {
 
   const createRepo = e => {
     e.preventDefault();
+
+    if (disabled) {
+      return;
+    }
+
     track('Export to GitHub Clicked');
     createRepoClicked();
   };
 
-  const disabled = Boolean(error) || !repoTitle || !isAllModulesSynced;
+  const disableImport =
+    Boolean(error) || !repoTitle || !isAllModulesSynced || disabled;
 
   return (
     <Collapsible
-      title={originalGit ? 'Export to GitHub' : 'GitHub'}
-      defaultOpen={!originalGit}
+      title="Copy Sandbox as a Repository"
+      defaultOpen={!currentSandbox.originalGit && !disabled}
     >
-      <Element paddingX={2}>
+      <Element
+        css={{
+          opacity: disabled ? 0.6 : 1,
+        }}
+        paddingX={2}
+      >
+        <Text variant="muted" marginBottom={2} block>
+          Export the content of this sandbox to a new GitHub repository,
+          allowing you to commit changes made on CodeSandbox to GitHub. If you
+          want to rather import an existing repository,{' '}
+          <Link
+            css={{ color: 'white' }}
+            onClick={() => modalOpened({ modal: 'importRepository' })}
+          >
+            open the GitHub import
+          </Link>
+          .
+        </Text>
         <Text variant="muted" marginBottom={4} block>
-          Create a GitHub repository to host your sandbox code and keep it in
-          sync with CodeSandbox.
+          This will open the GitHub repo in the new{' '}
+          <a
+            href="https://projects.codesandbox.io?utm_source=editor"
+            rel="noreferrer"
+            target="_blank"
+          >
+            CodeSandbox (Projects) editor
+          </a>{' '}
+          which is built for GitHub repos.
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
@@ -71,12 +106,12 @@ export const CreateRepo = () => {
               type="text"
               onChange={updateRepoTitle}
               value={repoTitle}
-              placeholder="Enter repository name"
+              placeholder="Repository name..."
             />
           </FormField>
           <Element paddingX={2}>
-            <Button type="submit" disabled={disabled} variant="secondary">
-              Create Repository
+            <Button type="submit" disabled={disableImport} variant="secondary">
+              Create repository
             </Button>
           </Element>
         </Stack>

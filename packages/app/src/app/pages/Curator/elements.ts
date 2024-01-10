@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 
 import { DelayedAnimation as DelayedAnimationBase } from 'app/components/DelayedAnimation';
-import { Title } from 'app/components/Title';
-
-export const Heading = styled(Title)`
-  margin-top: 3rem;
-`;
 
 export const Container = styled.div`
   height: 100%;

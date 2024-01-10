@@ -58,7 +58,7 @@ function buildErrorMessage(e: TModuleError) {
 
 const wrappedResolveModule = (manager, path) => {
   try {
-    return manager && manager.resolveTranspiledModule(path, '/');
+    return manager && manager.resolveTranspiledModuleSync(path, '/');
   } catch (e) {
     return null;
   }
@@ -81,7 +81,7 @@ function buildDynamicError(ref: ErrorRecord) {
   if (relevantFrame && manager) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;
     if (fileName) {
-      const tModule = manager.resolveTranspiledModule(
+      const tModule = manager.resolveTranspiledModuleSync(
         fileName.replace(location.origin, '').replace('file://', ''),
         '/'
       );
@@ -96,7 +96,9 @@ function buildDynamicError(ref: ErrorRecord) {
           message: ref.error.message,
           line: relevantFrame._originalLineNumber,
           column: relevantFrame._originalColumnNumber,
-          payload: {},
+          payload: {
+            frames: ref.enhancedFrames,
+          },
           severity: 'error',
         };
       }
@@ -127,10 +129,32 @@ function buildDynamicError(ref: ErrorRecord) {
   return null;
 }
 
+const MAX_ERRORS_PER_SECOND = 10;
+const WARNING_INTERVAL_SECONDS = 10;
+let errorsSentLastSecond = 0;
+let lastWarningSent = 0;
+
+setInterval(() => {
+  // Reset errors sent
+  errorsSentLastSecond = 0;
+}, 1000);
+
 /* eslint-disable no-underscore-dangle */
 export default function showError(ref: ErrorRecord) {
-  const errorToSend = buildDynamicError(ref);
+  // We don't want to flood the editor with errors, because of this
+  // we make sure to only send a max of MAX_ERRORS_PER_SECOND per second.
+  if (++errorsSentLastSecond > MAX_ERRORS_PER_SECOND) {
+    if (Date.now() - lastWarningSent > WARNING_INTERVAL_SECONDS * 1000) {
+      console.warn(
+        'Received too many errors in quick succession, not showing all errors in editor...'
+      );
+      lastWarningSent = Date.now();
+    }
 
+    return;
+  }
+
+  const errorToSend = buildDynamicError(ref);
   if (errorToSend) {
     dispatch(
       actions.error.show(errorToSend.title, errorToSend.message, {
@@ -142,11 +166,13 @@ export default function showError(ref: ErrorRecord) {
     );
   } else {
     // Show based on error
-    actions.error.show(ref.error.name, ref.error.message, {
-      line: ref.error.lineNumber,
-      column: ref.error.columnNumber,
-      path: ref.error.fileName,
-      payload: {},
-    });
+    dispatch(
+      actions.error.show(ref.error.name, ref.error.message, {
+        line: ref.error.lineNumber,
+        column: ref.error.columnNumber,
+        path: ref.error.fileName,
+        payload: {},
+      })
+    );
   }
 }

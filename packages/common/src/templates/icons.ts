@@ -21,11 +21,14 @@ import {
   MDXDeckIcon,
   GridsomeIcon,
   QuasarIcon,
+  RemixIcon,
   SapperIcon,
   JavaScriptIcon,
   VuePressIcon,
   UnibitIcon,
-} from 'template-icons';
+  DocusaurusIcon,
+  SolidIcon,
+} from '@codesandbox/template-icons';
 
 import {
   adonis,
@@ -55,7 +58,10 @@ import {
   mdxDeck,
   quasar,
   unibit,
+  docusaurus,
   TemplateType,
+  remix,
+  solid,
 } from '.';
 
 export default function getIcon(theme: TemplateType) {
@@ -108,12 +114,19 @@ export default function getIcon(theme: TemplateType) {
       return GridsomeIcon;
     case vuepress.name:
       return VuePressIcon;
+    case docusaurus.name:
+      return DocusaurusIcon;
     case mdxDeck.name:
       return MDXDeckIcon;
     case quasar.name:
       return QuasarIcon;
     case unibit.name:
       return UnibitIcon;
+    case remix.name:
+      return RemixIcon;
+    case solid.name:
+      return SolidIcon;
+
     default:
       return ReactIcon;
   }

@@ -1,30 +1,44 @@
+/* eslint-disable */
 import Linter from 'eslint/lib/linter';
+import semver from 'semver';
 
 import monkeypatch from './monkeypatch-babel-eslint';
 
+function isMinimalSemverVersion(versionOrRange, minimalVersion) {
+  try {
+    return !semver.gtr(minimalVersion, versionOrRange);
+  } catch (e) {
+    // Semver couldn't be parsed, we assume that we're on the bleeding edge now, so true.
+    return true;
+  }
+}
+
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST}/static/browserfs10/browserfs.min.js`
+  `${process.env.CODESANDBOX_HOST}/static/browserfs12/browserfs.min.js`
 );
+
+// To make the parser of typescript work
+process.versions.node = '10.10.0';
 
 /* eslint-disable global-require */
 const allRules = {
   'import/first': require('eslint-plugin-import/lib/rules/first'),
   'import/no-amd': require('eslint-plugin-import/lib/rules/no-amd'),
   'import/no-webpack-loader-syntax': require('eslint-plugin-import/lib/rules/no-webpack-loader-syntax'),
-  'react/jsx-no-comment-textnodes': require('eslint-plugin-react/lib/rules/jsx-no-comment-textnodes'),
-  'react/jsx-no-duplicate-props': require('eslint-plugin-react/lib/rules/jsx-no-duplicate-props'),
-  'react/jsx-no-target-blank': require('eslint-plugin-react/lib/rules/jsx-no-target-blank'),
-  'react/jsx-no-undef': require('eslint-plugin-react/lib/rules/jsx-no-undef'),
-  'react/jsx-pascal-case': require('eslint-plugin-react/lib/rules/jsx-pascal-case'),
-  'react/jsx-uses-react': require('eslint-plugin-react/lib/rules/jsx-uses-react'),
-  'react/jsx-uses-vars': require('eslint-plugin-react/lib/rules/jsx-uses-vars'),
-  'react/no-danger-with-children': require('eslint-plugin-react/lib/rules/no-danger-with-children'),
-  'react/no-deprecated': require('eslint-plugin-react/lib/rules/no-deprecated'),
-  'react/no-direct-mutation-state': require('eslint-plugin-react/lib/rules/no-direct-mutation-state'),
-  'react/no-is-mounted': require('eslint-plugin-react/lib/rules/no-is-mounted'),
-  'react/react-in-jsx-scope': require('eslint-plugin-react/lib/rules/react-in-jsx-scope'),
-  'react/require-render-return': require('eslint-plugin-react/lib/rules/require-render-return'),
-  'react/style-prop-object': require('eslint-plugin-react/lib/rules/style-prop-object'),
+  'react/jsx-no-comment-textnodes': require('eslint-plugin-react_editor/lib/rules/jsx-no-comment-textnodes'),
+  'react/jsx-no-duplicate-props': require('eslint-plugin-react_editor/lib/rules/jsx-no-duplicate-props'),
+  'react/jsx-no-target-blank': require('eslint-plugin-react_editor/lib/rules/jsx-no-target-blank'),
+  'react/jsx-no-undef': require('eslint-plugin-react_editor/lib/rules/jsx-no-undef'),
+  'react/jsx-pascal-case': require('eslint-plugin-react_editor/lib/rules/jsx-pascal-case'),
+  'react/jsx-uses-react': require('eslint-plugin-react_editor/lib/rules/jsx-uses-react'),
+  'react/jsx-uses-vars': require('eslint-plugin-react_editor/lib/rules/jsx-uses-vars'),
+  'react/no-danger-with-children': require('eslint-plugin-react_editor/lib/rules/no-danger-with-children'),
+  'react/no-deprecated': require('eslint-plugin-react_editor/lib/rules/no-deprecated'),
+  'react/no-direct-mutation-state': require('eslint-plugin-react_editor/lib/rules/no-direct-mutation-state'),
+  'react/no-is-mounted': require('eslint-plugin-react_editor/lib/rules/no-is-mounted'),
+  'react/react-in-jsx-scope': require('eslint-plugin-react_editor/lib/rules/react-in-jsx-scope'),
+  'react/require-render-return': require('eslint-plugin-react_editor/lib/rules/require-render-return'),
+  'react/style-prop-object': require('eslint-plugin-react_editor/lib/rules/style-prop-object'),
   'jsx-a11y/accessible-emoji': require('eslint-plugin-jsx-a11y/lib/rules/accessible-emoji'),
   'jsx-a11y/alt-text': require('eslint-plugin-jsx-a11y/lib/rules/alt-text'),
   'jsx-a11y/anchor-has-content': require('eslint-plugin-jsx-a11y/lib/rules/anchor-has-content'),
@@ -50,8 +64,6 @@ const allRules = {
     'exhaustive-deps'
   ],
 
-  '@typescript-eslint/no-angle-bracket-type-assertion': require('@typescript-eslint/eslint-plugin/dist/rules/no-angle-bracket-type-assertion')
-    .default,
   '@typescript-eslint/no-array-constructor': require('@typescript-eslint/eslint-plugin/dist/rules/no-array-constructor')
     .default,
   '@typescript-eslint/no-namespace': require('@typescript-eslint/eslint-plugin/dist/rules/no-namespace')
@@ -59,6 +71,10 @@ const allRules = {
   '@typescript-eslint/no-unused-vars': require('@typescript-eslint/eslint-plugin/dist/rules/no-unused-vars')
     .default,
   '@typescript-eslint/no-useless-constructor': require('@typescript-eslint/eslint-plugin/dist/rules/no-useless-constructor')
+    .default,
+  '@typescript-eslint/no-unused-expressions': require('@typescript-eslint/eslint-plugin/dist/rules/no-unused-expressions')
+    .default,
+  '@typescript-eslint/no-use-before-define': require('@typescript-eslint/eslint-plugin/dist/rules/no-use-before-define')
     .default,
 };
 /* eslint-enable global-require */
@@ -156,7 +172,6 @@ const DEFAULT_RULES = {
   'no-label-var': 'warn',
   'no-labels': ['warn', { allowLoop: true, allowSwitch: false }],
   'no-lone-blocks': 'warn',
-  'no-loop-func': 'warn',
   'no-mixed-operators': [
     'warn',
     {
@@ -262,7 +277,7 @@ const DEFAULT_RULES = {
   'import/no-amd': 'error',
   'import/no-webpack-loader-syntax': 'warn',
 
-  // https://github.com/yannickcr/eslint-plugin-react/tree/master/docs/rules
+  // https://github.com/yannickcr/eslint-plugin-react_editor/tree/master/docs/rules
   'react/jsx-no-comment-textnodes': 'warn',
   'react/jsx-no-duplicate-props': ['warn', { ignoreCase: true }],
   'react/jsx-no-target-blank': 'warn',
@@ -271,6 +286,7 @@ const DEFAULT_RULES = {
     'warn',
     {
       allowAllCaps: true,
+      allowNamespace: true,
       ignore: [],
     },
   ],
@@ -343,8 +359,6 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     // 'tsc' already handles this (https://github.com/typescript-eslint/typescript-eslint/issues/291)
     'no-dupe-class-members': 'off',
 
-    // Add TypeScript specific rules (and turn off ESLint equivalents)
-    '@typescript-eslint/no-angle-bracket-type-assertion': 'warn',
     'no-array-constructor': 'off',
     '@typescript-eslint/no-array-constructor': 'warn',
     '@typescript-eslint/no-namespace': 'error',
@@ -358,6 +372,17 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     ],
     'no-useless-constructor': 'off',
     '@typescript-eslint/no-useless-constructor': 'warn',
+    // Fixes optional chaining
+    'no-unused-expressions': 'off',
+    '@typescript-eslint/no-unused-expressions': 'warn',
+    // note you must disable the base rule as it can report incorrect errors
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': 'error',
+    /**
+     * Off because this gives false positive errors when using global namespace types like `JSX.*`
+     * @link https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/FAQ.md#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
+     */
+    'no-undef': 'off',
   },
 };
 
@@ -381,6 +406,25 @@ const defaultConfig = {
 monkeypatch({}, defaultConfig.parserOptions);
 
 const linter = new Linter();
+
+/**
+ * Some code in eslint (specifically vue parser) still uses require(loaderOptions.parser) to get the parser,
+ * we now rewrite that code to globalRequire(loaderOptions.parser), and make sure to return it here if the parser
+ * has been defined already.
+ */
+
+const definedParsers = new Map();
+const oldDefine = linter.defineParser;
+linter.defineParser = (parserName, parser) => {
+  definedParsers.set(parserName, parser);
+  oldDefine.apply(linter, [parserName, parser]);
+};
+self.globalRequire = path => {
+  if (definedParsers.get(path)) {
+    return definedParsers.get(path);
+  }
+  throw new Error('Module ' + path + ' not found in global require.');
+};
 
 linter.defineParser(
   'babel-eslint',
@@ -413,7 +457,7 @@ function getSeverity(error) {
 
 // Respond to message from parent thread
 self.addEventListener('message', async event => {
-  const { code, version, title: filename, template } = event.data;
+  const { code, version, title: filename, template, dependencies } = event.data;
 
   let config =
     filename.endsWith('.ts') || filename.endsWith('.tsx')
@@ -427,7 +471,10 @@ self.addEventListener('message', async event => {
       getVerifyOptions: getVueVerifyOptions,
     } = await import('./vue');
 
-    config = await getVueConfig(linter);
+    config = await getVueConfig(
+      linter,
+      !isMinimalSemverVersion(dependencies.vue || '2.0.0', '3.0.0')
+    );
     config.rules = {
       ...defaultConfig.rules,
       ...config.rules,

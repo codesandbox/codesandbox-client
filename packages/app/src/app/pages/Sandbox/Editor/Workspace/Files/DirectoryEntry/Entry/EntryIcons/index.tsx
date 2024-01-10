@@ -11,7 +11,7 @@ type Props = {
   width?: number;
 };
 
-const EntryIcon: FunctionComponent<Props> = ({
+export const EntryIcons: FunctionComponent<Props> = ({
   error,
   height = 16,
   type,
@@ -44,5 +44,3 @@ const EntryIcon: FunctionComponent<Props> = ({
     </Container>
   );
 };
-
-export default EntryIcon;

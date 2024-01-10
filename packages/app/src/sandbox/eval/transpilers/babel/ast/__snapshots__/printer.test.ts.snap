@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`printer issues can convert + + 1`] = `
+""use strict";
+c = (10.0, + + 15);
+"
+`;

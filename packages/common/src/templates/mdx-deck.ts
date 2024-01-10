@@ -11,5 +11,6 @@ export default new Template(
     distDir: 'dist',
     mainFile: ['deck.mdx'],
     showOnHomePage: true,
+    githubPagesDeploy: false,
   }
 );

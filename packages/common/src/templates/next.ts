@@ -13,7 +13,7 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     distDir: 'out',
-    netlify: false,
+    staticDeployment: false,
     mainFile: ['/pages/index.js'],
     backgroundColor: decorateSelector(() => '#000000'),
     showOnHomePage: true,

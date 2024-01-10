@@ -1,40 +1,59 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="overscroll-behavior-x: none;">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta property="og:type" content="website">
-	<meta property="og:author" content='https://ivesvh.com'>
-	<meta property="og:title" content="CodeSandbox">
-	<meta property="og:site_name" content="CodeSandbox">
-	<meta property="og:description" content="CodeSandbox is an online editor tailored for web applications.">
-	<meta property="og:image" content="https://codesandbox.io/static/img/banner.png">
-	<meta property="og:image:width" content="1200">
-	<meta property="og:image:height" content="630">
-	<meta property="twitter:card" content="summary_large_image">
-	<meta property="twitter:site" content="@codesandbox">
-	<meta property="twitter:title" content="CodeSandbox">
-	<meta property="twitter:description" content="An online editor tailored for web application development.">
-	<meta property="twitter:image:src" content="https://codesandbox.io/static/img/banner.png">
-	<meta property="twitter:image:width" content="1200">
-	<meta property="twitter:image:height" content="630">
-	<meta name="description" content="CodeSandbox is an online editor tailored for web applications.">
-  <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="mask-icon" href="/csb-ios.svg" color="#fff">
-	<link rel="manifest" href="/manifest.json">
-	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-	<script>
-		WebFont.load({
-        google: {
-          families: ['Source Code Pro:500', 'Roboto:300,400,500,700', 'Poppins:300,400,500,600,700']
-        }
-      });
-	</script>
-	<!-- Injected by server: -->
-	<!-- {{OEMBED TAG}} -->
-	<title>CodeSandbox</title>
-	<link href="/static/fonts/dmvendor.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:type" content="website">
+  <meta property="og:author" content='https://ivesvh.com'>
+  <meta property="og:title" content="CodeSandbox">
+  <meta property="og:site_name" content="CodeSandbox">
+  <meta property="og:description" content="CodeSandbox is an online editor tailored for web applications.">
+  <meta property="og:image" content="https://codesandbox.io/static/img/banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:site" content="@codesandbox">
+  <meta property="twitter:title" content="CodeSandbox">
+  <meta property="twitter:description" content="An online editor tailored for web application development.">
+  <meta property="twitter:image:src" content="https://codesandbox.io/static/img/banner.png">
+  <meta property="twitter:image:width" content="1200">
+  <meta property="twitter:image:height" content="630">
+  <meta name="description" content="CodeSandbox is an online editor tailored for web applications.">
+  <link
+  href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+<style>
+svg {
+background: transparent;
+}
+path {
+fill: black;
+}
+@media (prefers-color-scheme: dark)  {
+path {
+fill: white;
+}
+}
+</style>
+<path fill-rule='evenodd' clip-rule='evenodd' d='M81.8182 18.1818V81.8182H18.1818V18.1818H81.8182ZM10 90V10H90V90H10Z'/>
+</svg>"
+  rel="icon"
+/>
+  <link rel="mask-icon" href="/csb-ios.svg" color="#000">
+  <link rel="manifest" href="/manifest.json">
+  <script src="/static/js/env-config.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Source Code Pro:500', 'Roboto:300,400,500,700', 'Poppins:300,400,500,600,700']
+      }
+    });
+  </script>
+  <!-- Injected by server: -->
+  <!-- {{OEMBED TAG}} -->
+  <title>CodeSandbox</title>
+  <link href="/static/fonts/monolisa.css" rel="stylesheet">
   </link>
   <link crossOrigin="anonymous" rel="preload" href="/static/fonts/inter/Inter-Regular.woff2" as="font">
   </link>
@@ -43,54 +62,46 @@
   <link crossOrigin="anonymous" rel="preload" href="/static/fonts/inter/Inter-Bold.woff2" as="font">
   </link>
   <link href="/static/fonts/inter/inter.css" rel="stylesheet">
+
+  <link crossOrigin="anonymous" rel="preload" href="/static/fonts/everett/TWKEverett-Light-web.woff2" as="font">
   </link>
-	<!-- Google Tag Manager -->
-	<script>
-		(function (w, d, s, l, i) {
-        w[l] = w[l] || []; w[l].push({
-          'gtm.start':
-            new Date().getTime(), event: 'gtm.js'
-        }); var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-            'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', 'GTM-T3L6RFK');
-	</script>
-	<!-- End Google Tag Manager -->
-	<!-- <script async src="//cdn.headwayapp.co/widget.js"></script> -->
-	<script src="<%= webpackConfig.output.publicPath %>static/browserfs10/browserfs<%=process.env.NODE_ENV
-      === 'development' ? '' : '.min'%>.js"
-	 type="text/javascript"></script>
+  <link crossOrigin="anonymous" rel="preload" href="/static/fonts/everett/TWKEverett-Regular-web.woff2" as="font">
+  </link>
+  <link crossOrigin="anonymous" rel="preload" href="/static/fonts/everett/TWKEverett-Medium-web.woff2" as="font">
+  </link>
+  <link href="/static/fonts/everett/everett.css" rel="stylesheet">
 
-	<script>
-		if (BrowserFS) {
-        window.process = {
-          env: {
-            VSCODE_DEV: false
-          },
-          nextTick: function(cb) {
-            return requestAnimationFrame(cb);
-          },
-          once: BrowserFS.BFSRequire('process').once,
-          removeListener: function () {}
-        };
-        window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
-      }
-	</script>
+  </link>
+  <script src="<%= webpackConfig.output.publicPath %>static/browserfs12/browserfs<%=process.env.NODE_ENV
+      === 'development' ? '' : '.min'%>.js" type="text/javascript"></script>
 
-	<link data-name="/public/vscode28/vs/editor/editor.main" rel="preload" as="style" href="/public/vscode28/vs/editor/codesandbox.editor.main.css">
-	</link>
-	<link rel="preload" as="script" href="/public/vscode28/vs/editor/codesandbox.editor.main.js">
-	</link>
+  <script>
+    if (BrowserFS) {
+      window.process = {
+        env: {
+          VSCODE_DEV: false
+        },
+        nextTick: function (cb) {
+          return requestAnimationFrame(cb);
+        },
+        once: BrowserFS.BFSRequire('process').once,
+        removeListener: function () { }
+      };
+      window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+    }
+  </script>
+
+  <link data-name="/public/vscode33/vs/editor/editor.main" rel="preload" as="style"
+    href="/public/vscode33/vs/editor/codesandbox.editor.main.css">
+  </link>
+  <link rel="preload" as="script" href="/public/vscode33/vs/editor/codesandbox.editor.main.js">
+  </link>
+  </link>
 </head>
 
-<body style="margin: 0; padding: 0; overscroll-behavior-x: none;">
-	<!-- Google Tag Manager (noscript) -->
-	<noscript>
-		<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T3L6RFK" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-	</noscript>
-	<!-- End Google Tag Manager (noscript) -->
-	<div id="root">
-	</div>
+<body style="margin: 0; padding: 0;">
+  <div id="root">
+  </div>
 </body>
 
 </html>

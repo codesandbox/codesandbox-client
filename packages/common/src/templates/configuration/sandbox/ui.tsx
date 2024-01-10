@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import sortBy from 'lodash/sortBy';
 import * as templates from '../../../templates';
 import Template from '../../../templates/template';
@@ -12,41 +12,54 @@ import {
 import { ConfigurationUIProps } from '../types';
 
 export const ConfigWizard = (props: ConfigurationUIProps) => {
-  const bindValue = (
-    file: Object,
-    property: string,
-    defaultValue?: any
-  ): {
-    value: any;
-    setValue: (p: any) => void;
-  } => ({
-    value: file[property] || defaultValue,
-    setValue: (value: any) => {
-      let code = JSON.stringify(
-        {
-          ...file,
-          [property]: value,
-        },
-        null,
-        2
-      );
-      if (property.includes('.')) {
-        const children = property.split('.');
-        code = JSON.stringify(
+  const getValue = (file: Object, property: string, defaultValue: string) => {
+    if (property.includes('.')) {
+      const [parent, key] = property.split('.');
+      if (!file[parent]) return defaultValue;
+      const value = file[parent][key];
+      return value ? value.toString() : defaultValue;
+    }
+
+    return file[property] || defaultValue;
+  };
+  const bindValue = useCallback(
+    (
+      file: Object,
+      property: string,
+      defaultValue?: any
+    ): {
+      value: any;
+      setValue: (p: any) => void;
+    } => ({
+      value: getValue(file, property, defaultValue),
+      setValue: (value: any) => {
+        let code = JSON.stringify(
           {
             ...file,
-            [children[0]]: {
-              [children[1]]: value,
-            },
+            [property]: value,
           },
           null,
           2
         );
-      }
-
-      return props.updateFile(code);
-    },
-  });
+        if (property.includes('.')) {
+          const [parent, key] = property.split('.');
+          code = JSON.stringify(
+            {
+              ...file,
+              [parent]: {
+                ...file[parent],
+                [key]: value,
+              },
+            },
+            null,
+            2
+          );
+        }
+        return props.updateFile(code);
+      },
+    }),
+    [props.file]
+  );
 
   const { file, sandbox } = props;
 
@@ -144,17 +157,50 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
           Which template to use for this sandbox.
         </ConfigDescription>
       </PaddedConfig>
-      {currentTemplate.isServer ? (
+      {!currentTemplate.isServer ? (
         <PaddedConfig>
-          <PaddedPreference
-            title="Port"
-            type="number"
-            {...bindValue(parsedFile, 'container.port')}
-          />
+          <ConfigItem>
+            <PaddedPreference
+              title="Disable Console"
+              type="boolean"
+              {...bindValue(parsedFile, 'disableLogging')}
+            />
+          </ConfigItem>
           <ConfigDescription>
-            What is the main port of your application. Values from 1024 to 65535
+            Disable the in-browser console to prevent slowing down of the page
+            when there are many logs to the console.
           </ConfigDescription>
         </PaddedConfig>
+      ) : null}
+      {currentTemplate.isServer ? (
+        <>
+          <PaddedConfig>
+            <PaddedPreference
+              title="Port"
+              type="number"
+              innerStyle={{ width: '5rem' }}
+              min={1024}
+              max={65535}
+              {...bindValue(parsedFile, 'container.port')}
+            />
+            <ConfigDescription>
+              What is the main port of your application. Values from 1024 to
+              65535
+            </ConfigDescription>
+          </PaddedConfig>
+          <PaddedConfig>
+            <PaddedPreference
+              title="Node Version"
+              type="dropdown"
+              options={['10', '12', '14', '16']}
+              {...bindValue(parsedFile, 'container.node')}
+            />
+            <ConfigDescription>
+              Which node version to use for this sandbox. Please restart the
+              server after changing.
+            </ConfigDescription>
+          </PaddedConfig>
+        </>
       ) : null}
     </div>
   );

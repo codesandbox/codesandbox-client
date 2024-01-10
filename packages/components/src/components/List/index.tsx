@@ -31,7 +31,7 @@ export const ListItem = styled(Stack).attrs({
 export const ListAction = styled(ListItem)<ListActionProps>(({ disabled }) =>
   css({
     ':hover, &[aria-selected="true"]': {
-      cursor: !disabled ? 'pointer' : 'disabled',
+      cursor: !disabled ? 'pointer' : 'not-allowed',
       color: !disabled ? 'list.hoverForeground' : 'inherit',
       backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
     },
@@ -40,4 +40,32 @@ export const ListAction = styled(ListItem)<ListActionProps>(({ disabled }) =>
       backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
     },
   })
+);
+
+export const SidebarListItem = styled(Stack).attrs({
+  as: 'li',
+  align: 'center',
+})(
+  css({
+    minHeight: 8,
+    marginLeft: 2,
+    color: 'list.foreground',
+    borderRadius: 2,
+    fontSize: 14,
+  })
+);
+
+export const SidebarListAction = styled(SidebarListItem)<ListActionProps>(
+  ({ disabled }) =>
+    css({
+      ':hover, &[aria-selected="true"]': {
+        cursor: !disabled ? 'pointer' : 'not-allowed',
+        color: !disabled ? 'list.hoverForeground' : 'inherit',
+        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
+      },
+      ':focus-within': {
+        color: !disabled ? 'list.hoverForeground' : 'inherit',
+        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
+      },
+    })
 );

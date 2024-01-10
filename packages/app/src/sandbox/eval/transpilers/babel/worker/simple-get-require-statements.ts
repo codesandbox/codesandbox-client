@@ -1,6 +1,6 @@
-const lineRegex = /require\s*\(['|"|`]([^"|'|`]*)['|"|`]\)|require\s*\((.*)\)/g;
-const partRegex = /require\s*\(['|"|`]([^"|'|`]*)['|"|`]\)|require\s*\((.*)\)/;
-const commentRegex = /^(\s*\/?\*)|(\/\/)/;
+const REQUIRE_LINE_RE = /require\s*\(\s*['|"|`]([^\s]*)['|"|`]\s*\)/g;
+const REQUIRE_RE = /require\s*\(\s*['|"|`]([^\s]*)['|"|`]\s*\)/;
+const COMMENT_RE = /^(\s*\/?\*)|(\/\/)/;
 
 /**
  * This is the regex version of getting all require statements, it makes the assumption
@@ -10,7 +10,7 @@ export default function getRequireStatements(code: string) {
   const results = [];
   code.split('\n').forEach(line => {
     const commentMatch =
-      line.indexOf('/*#__PURE__*/') === -1 && commentRegex.exec(line);
+      line.indexOf('/*#__PURE__*/') === -1 && COMMENT_RE.exec(line);
 
     if (commentMatch && commentMatch.index === 0) {
       return;
@@ -20,11 +20,11 @@ export default function getRequireStatements(code: string) {
       throw new Error('Glob require is part of statement');
     }
 
-    const matches = line.match(lineRegex);
+    const matches = line.match(REQUIRE_LINE_RE);
 
     if (matches) {
       matches.forEach(codePart => {
-        const match = codePart.match(partRegex);
+        const match = codePart.match(REQUIRE_RE);
 
         if (match) {
           if (commentMatch && line.indexOf(codePart) > commentMatch.index) {

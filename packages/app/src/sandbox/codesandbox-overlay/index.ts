@@ -14,7 +14,7 @@ export default function createOverlay(modules) {
 
   const parameters = getParameters({ files: normalized });
 
-  return new Promise(resolve => {
+  return new Promise<void>(resolve => {
     const iframe = document.createElement('iframe');
 
     iframe.setAttribute(

@@ -17,17 +17,18 @@ import VERSION from '@codesandbox/common/lib/version';
 import { camelizeKeys } from 'humps';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 
+import { AxiosError } from 'axios';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
-import { CodesandboxOTClientsManager } from './clients';
+import { CodesandboxOTClientsManager, SendOperationResponse } from './clients';
 
 type Options = {
   onApplyOperation(args: {
     moduleShortid: string;
     operation: TextOperation;
   }): void;
-  provideJwtToken(): string;
+  provideJwtToken(): Promise<string>;
   onOperationError(payload: {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
@@ -54,15 +55,16 @@ declare global {
 }
 
 class Live {
+  public socket: Socket;
+
   private identifier = uuid.v4();
   private pendingMessages = new Map();
   private debug = _debug('cs:socket');
   private channel: Channel | null;
   private messageIndex = 0;
   private clientsManager: CodesandboxOTClientsManager;
-  private socket: Socket;
   private presence: Presence;
-  private provideJwtToken: () => string;
+  private provideJwtToken: () => Promise<string>;
   private onApplyOperation: (moduleShortid: string, operation: any) => void;
   private onOperationError: (payload: {
     moduleShortid: string;
@@ -70,20 +72,6 @@ class Live {
   }) => void;
 
   private liveInitialized = blocker();
-
-  private operationToElixir(ot: (number | string)[]) {
-    return ot.map((op: number | string) => {
-      if (typeof op === 'number') {
-        if (op < 0) {
-          return { d: -op };
-        }
-
-        return op;
-      }
-
-      return { i: op };
-    });
-  }
 
   private connectionsCount = 0;
 
@@ -101,11 +89,15 @@ class Live {
       })}`,
     });
 
-    return this.send('operation', {
-      moduleShortid,
-      operation: this.operationToElixir(operation.toJSON()),
-      revision,
-    }).catch(error => {
+    return this.send<SendOperationResponse>(
+      'operation',
+      {
+        moduleShortid,
+        operation: operation.toJSON(),
+        revision,
+      },
+      45000
+    ).catch(error => {
       logBreadcrumb({
         category: 'ot',
         message: `ERROR ${JSON.stringify({
@@ -144,17 +136,97 @@ class Live {
   }
 
   getSocket() {
-    return this.socket || this.connect();
+    if (!this.connectionPromise) {
+      this.connectionPromise = this.connect();
+    }
+
+    return this.connectionPromise;
   }
 
-  connect(): Socket {
+  private jwtPromise: Promise<string> | undefined;
+  /**
+   * Will return a promise for new jwt token, but if there's already a request
+   * underway it will return the existing promise. This is to prevent spamming
+   * the server with thousands of requests.
+   */
+  private provideJwtCached() {
+    if (!this.jwtPromise) {
+      this.jwtPromise = this.provideJwtToken()
+        .catch(e => {
+          this.jwtPromise = undefined;
+          return Promise.reject(e);
+        })
+        .then(jwt => {
+          // Token expires after 10 minutes, we cache the token for 8 minutes.
+          const timeout = 1000 * 60 * 8;
+          setTimeout(() => {
+            this.jwtPromise = undefined;
+          }, timeout);
+
+          return jwt;
+        });
+    }
+
+    return this.jwtPromise;
+  }
+
+  private connectionPromise: Promise<Socket>;
+  private async connect(): Promise<Socket> {
     if (!this.socket) {
-      const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
+      const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+
+      let jwt = await this.provideJwtCached();
+      const params = () => ({
+        guardian_token: jwt,
+        client_version: VERSION,
+      });
+
+      // An offset between 1 and 1.7;
+      const defaultReconnectOffset = 1 + Math.random() * 0.7;
+      let isServerDown = false;
+      const reconnectAfterMs = (tries: number) => {
+        if (isServerDown) {
+          return Math.floor(3000 + Math.random() * 2000);
+        }
+
+        // Based on the times tried we slowly increase the reconnect timeout, so first time
+        // we try to reconnect in 10ms, second time in 50ms, third time in 100ms, fourth time in 150ms,
+        // etc...
+        return Math.floor(
+          [10, 50, 100, 150, 200, 250, 500, 1000, 2000][tries - 1] *
+            defaultReconnectOffset
+        );
+      };
+
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
-        params: {
-          guardian_token: this.provideJwtToken(),
-          client_version: VERSION,
-        },
+        params,
+        reconnectAfterMs,
+      });
+
+      let tries = 0;
+      this.socket.onError(async () => {
+        // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
+        // to try multiple times in case there's a connection issue.
+        try {
+          const newJwt = await this.provideJwtCached();
+          jwt = newJwt;
+          tries = 0;
+        } catch (e) {
+          const error = e as AxiosError;
+          if (error.response?.status === 401 && tries++ > 4) {
+            // If we can't get a jwt because we're unauthorized, disconnect...
+            this.socket.disconnect();
+            tries = 0;
+          }
+
+          // We have a 503 Bad Gateway, which means that the server is struggling. We need to increase
+          // the timeout...
+          if (error.response?.status === 503) {
+            isServerDown = true;
+          } else {
+            isServerDown = false;
+          }
+        }
       });
 
       this.socket.connect();
@@ -191,12 +263,14 @@ class Live {
     });
   }
 
-  joinChannel(
+  async joinChannel(
     roomId: string,
     onError: (reason: string) => void
   ): Promise<JoinChannelResponse> {
+    const socket = await this.getSocket();
     return new Promise((resolve, reject) => {
-      this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
+      this.channel = socket.channel(`live:${roomId}`, { version: 2 });
+
       this.channel
         .join()
         .receive('ok', resp => {
@@ -268,7 +342,7 @@ class Live {
     };
   }
 
-  private send<T>(event, payload: any = {}): Promise<T> {
+  private send<T>(event, payload: any = {}, timeout = 10000): Promise<T> {
     const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
@@ -277,13 +351,20 @@ class Live {
     return new Promise((resolve, reject) => {
       if (this.channel) {
         this.channel
-          .push(event, payload)
+          .push(event, payload, timeout)
           .receive('ok', resolve)
-          .receive('error', reject);
+          .receive('error', reject)
+          .receive('timeout', () => {
+            const error = new Error();
+            error.name = 'live-timeout';
+            error.message = `Live timeout on '${event}'`;
+            reject(error);
+          });
       } else {
         // we might try to send messages even when not on live, just
         // ignore it
-        resolve();
+        // @ts-ignore this is probably not safe but whatever
+        resolve(undefined);
       }
     });
   }
@@ -387,7 +468,7 @@ class Live {
     });
   }
 
-  sendLiveMode(mode: string) {
+  sendLiveMode(mode: RoomInfo['mode']) {
     return this.send('live:mode', {
       mode,
     });

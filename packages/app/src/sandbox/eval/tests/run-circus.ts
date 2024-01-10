@@ -17,7 +17,7 @@ import {
   makeTestResults,
 } from 'jest-circus/build/utils';
 import { SnapshotState } from 'jest-snapshot';
-import expect from 'jest-matchers';
+import expect from 'expect';
 
 import {
   TestEntry,

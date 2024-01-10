@@ -1,24 +1,23 @@
-import React, { MouseEvent } from 'react';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { useOvermind } from 'app/overmind';
 import { Button, Element } from '@codesandbox/components';
+import React, { FunctionComponent, MouseEvent } from 'react';
 
-export const Config = () => {
+import { useAppState, useActions } from 'app/overmind';
+
+export const Config: FunctionComponent = () => {
   const {
-    actions: {
-      modalOpened,
-      workspace: { addedTemplate },
+    modalOpened,
+    workspace: { addedTemplate },
+  } = useActions();
+  const {
+    editor: {
+      currentSandbox: { customTemplate, template },
     },
-    state: {
-      user,
-      editor: {
-        currentSandbox: { customTemplate, template },
-      },
-      workspace: {
-        project: { description, title },
-      },
+    user,
+    workspace: {
+      project: { description, title },
     },
-  } = useOvermind();
+  } = useAppState();
 
   const onCreateTemplate = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -36,19 +35,15 @@ export const Config = () => {
     });
   };
 
-  return (
-    <>
-      {!customTemplate && (
-        <Element marginX={2} marginY={4}>
-          <Button
-            // @ts-ignore
-            onClick={onCreateTemplate}
-            variant="secondary"
-          >
-            Save as template
-          </Button>
-        </Element>
-      )}
-    </>
-  );
+  return !customTemplate ? (
+    <Element marginX={2} marginY={4}>
+      <Button
+        // @ts-ignore
+        onClick={onCreateTemplate}
+        variant="secondary"
+      >
+        Save as template
+      </Button>
+    </Element>
+  ) : null;
 };

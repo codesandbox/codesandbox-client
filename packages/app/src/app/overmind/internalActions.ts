@@ -6,43 +6,100 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
+import history from 'app/utils/history';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
+import { SubscriptionStatus } from 'app/graphql/types';
+import { getTemplateInfosFromAPI } from 'app/components/Create/utils/api';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
-import { Action, AsyncAction } from '.';
+import { Context } from '.';
+import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
+import { AuthOptions, GH_BASE_SCOPE, MAP_GH_SCOPE_OPTIONS } from './utils/auth';
+import { renameZeitToVercel } from './utils/vercel';
 
-export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
-  { state, effects, actions },
-  options
-) => {
-  effects.analytics.track('Sign In', {});
+/**
+ * After getting the current user we need to hydrate the app with new data from that user.
+ * Everything with fetching for the user happens here.
+ */
+export const initializeNewUser = async ({
+  state,
+  effects,
+  actions,
+}: Context) => {
+  effects.analytics.identify('signed_in', true);
+  effects.analytics.setUserId(state.user!.id, state.user!.email);
+
   try {
-    const jwt = await actions.internal.signInGithub(options);
-    actions.internal.setJwt(jwt);
-    state.user = await effects.api.getCurrentUser();
-    actions.internal.setPatronPrice();
-    actions.internal.setSignedInCookie();
-    effects.analytics.identify('signed_in', true);
-    effects.analytics.setUserId(state.user.id, state.user.email);
-    actions.internal.setStoredSettings();
-    effects.live.connect();
-    actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
+    actions.internal.trackCurrentTeams().catch(e => {});
+    actions.internal.identifyCurrentUser().catch(e => {});
+  } catch (e) {
+    // Not majorly important
+  }
+
+  actions.internal.showUserSurveyIfNeeded();
+  await effects.live.getSocket();
+  actions.userNotifications.internal.initialize();
+  actions.internal.setStoredSettings();
+
+  if (state.activeTeam) {
+    effects.api.preloadTeamTemplates(state.activeTeam);
+  }
+
+  // Preload official templates for the create modal
+  if (state.officialTemplates.length === 0) {
+    try {
+      const result = await getTemplateInfosFromAPI(
+        '/api/v1/sandboxes/templates/official'
+      );
+
+      state.officialTemplates = result[0].templates;
+    } catch (e) {
+      // ignore errors
+    }
+  }
+
+  // Fallback scenario when the teams are not initialized
+  if (state.dashboard.teams.length === 0) {
+    await actions.dashboard.getTeams();
+  }
+};
+
+export const signIn = async (
+  { state, effects, actions }: Context,
+  options: AuthOptions
+) => {
+  effects.analytics.track('Sign In', {
+    provider: options.provider,
+  });
+  try {
+    await actions.internal.runProviderAuth(options);
+
+    state.signInModalOpen = false;
+    state.cancelOnLogin = null;
+    state.pendingUser = null;
+
+    const currentUser = await effects.api.getCurrentUser();
+    state.user = renameZeitToVercel(currentUser);
+
+    await actions.internal.initializeNewUser();
     actions.refetchSandboxInfo();
+    state.hasLogIn = true;
     state.isAuthenticating = false;
+    actions.getActiveTeamInfo();
   } catch (error) {
     actions.internal.handleError({
-      message: 'Could not authenticate with Github',
+      message: 'Could not authenticate',
       error,
     });
   }
 };
 
-export const setStoredSettings: Action = ({ state, effects }) => {
+export const setStoredSettings = ({ state, effects }: Context) => {
   const settings = effects.settingsStore.getAll();
 
   if (settings.keybindings) {
@@ -59,21 +116,11 @@ export const setStoredSettings: Action = ({ state, effects }) => {
   Object.assign(state.preferences.settings, settings);
 };
 
-export const setPatronPrice: Action = ({ state }) => {
-  if (!state.user) {
-    return;
-  }
-
-  state.patron.price = state.user.subscription
-    ? Number(state.user.subscription.amount)
-    : 10;
-};
-
-export const setSignedInCookie: Action = ({ state }) => {
-  document.cookie = 'signedIn=true; Path=/;';
-};
-
-export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
+export const showUserSurveyIfNeeded = ({
+  state,
+  effects,
+  actions,
+}: Context) => {
   if (state.user?.sendSurvey) {
     // Let the server know that we've seen the survey
     effects.api.markSurveySeen();
@@ -98,12 +145,23 @@ export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
   }
 };
 
-export const addNotification: Action<{
-  title: string;
-  type: 'notice' | 'success' | 'warning' | 'error';
-  timeAlive?: number;
-  buttons?: Array<NotificationButton>;
-}> = ({ state }, { title, type, timeAlive, buttons }) => {
+/**
+ * @deprecated
+ */
+export const addNotification = (
+  { state }: Context,
+  {
+    title,
+    type,
+    timeAlive,
+    buttons,
+  }: {
+    title: string;
+    type: 'notice' | 'success' | 'warning' | 'error';
+    timeAlive?: number;
+    buttons?: Array<NotificationButton>;
+  }
+) => {
   const now = Date.now();
   const timeAliveDefault = type === 'error' ? 6 : 3;
 
@@ -116,46 +174,100 @@ export const addNotification: Action<{
   });
 };
 
-export const authorize: AsyncAction = async ({ state, effects }) => {
+export const authorize = async ({ state, effects }: Context) => {
   try {
+    state.isLoadingAuthToken = true;
     state.authToken = await effects.api.getAuthToken();
   } catch (error) {
     state.editor.error = error.message;
+  } finally {
+    state.isLoadingAuthToken = false;
   }
 };
+export const runProviderAuth = (
+  { effects, state }: Context,
+  options: AuthOptions
+) => {
+  const { provider } = options;
 
-export const signInGithub: Action<
-  { useExtraScopes?: boolean },
-  Promise<string>
-> = ({ effects }, options) => {
-  const authPath =
-    process.env.LOCAL_SERVER || process.env.STAGING
-      ? '/auth/dev'
-      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+  // When in development, check if there's authentication.
+  const isInitialDevelopmentAuth =
+    process.env.NODE_ENV === 'development' && !state.hasLogIn;
+  // Use dev auth if local server or staging and there's no
+  // authentication or the provider isn't GitHub. This is
+  // needed to allow us to go to GitHub to authorize extra
+  // scopes during development.
+  const useDevAuth =
+    (process.env.LOCAL_SERVER || process.env.STAGING) &&
+    (isInitialDevelopmentAuth || provider !== 'github');
+  // Base path
+  const baseUrl = useDevAuth
+    ? location.origin
+    : process.env.ENDPOINT || 'https://codesandbox.io';
 
-  const popup = effects.browser.openPopup(authPath, 'sign in');
+  let authPath = new URL(
+    baseUrl + (useDevAuth ? '/auth/dev' : `/auth/${provider}`)
+  );
 
-  return effects.browser
-    .waitForMessage<{ jwt: string }>('signin')
-    .then(data => {
-      const { jwt } = data;
+  authPath.searchParams.set('version', '2');
 
-      popup.close();
+  if (provider === 'github') {
+    let scope = GH_BASE_SCOPE;
+    if (
+      'includedScopes' in options &&
+      typeof options.includedScopes !== 'undefined'
+    ) {
+      scope =
+        GH_BASE_SCOPE + ',' + MAP_GH_SCOPE_OPTIONS[options.includedScopes];
+    }
+    authPath.searchParams.set('scope', scope);
+  }
 
-      if (jwt) {
-        return jwt;
+  if (provider === 'sso') {
+    authPath = new URL(baseUrl + options.ssoURL);
+  }
+
+  const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
+
+  const signInPromise = effects.browser
+    .waitForMessage('signin')
+    .then((data: any) => {
+      if (useDevAuth) {
+        localStorage.setItem('devJwt', data.jwt);
+
+        // Today + 30 days
+        const DAY = 1000 * 60 * 60 * 24;
+        const expiryDate = new Date(Date.now() + DAY * 30);
+
+        document.cookie = `signedInDev=true; expires=${expiryDate.toUTCString()}; path=/`;
+      } else if (data?.jwt) {
+        effects.api.revokeToken(data.jwt);
       }
-
-      throw new Error('Could not get sign in token');
+      popup.close();
     });
+
+  effects.browser.waitForMessage('duplicate').then((data: any) => {
+    state.duplicateAccountStatus = {
+      duplicate: true,
+      provider: data.provider,
+    };
+    popup.close();
+  });
+
+  effects.browser.waitForMessage('signup').then((data: any) => {
+    state.pendingUserId = data.id;
+
+    // Temporarily hide the editor onboarding for new users
+    // since its UI and contents are outdated.
+    effects.browser.storage.set('should-onboard-user', false);
+
+    popup.close();
+  });
+
+  return signInPromise;
 };
 
-export const setJwt: Action<string> = ({ state, effects }, jwt) => {
-  effects.jwt.set(jwt);
-  state.jwt = jwt;
-};
-
-export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
+export const closeModals = ({ state }: Context, isKeyDown: boolean) => {
   if (
     state.currentModal === 'preferences' &&
     state.preferences.itemId === 'keybindings' &&
@@ -167,9 +279,29 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   state.currentModal = null;
 };
 
-export const setCurrentSandbox: AsyncAction<Sandbox> = async (
-  { state, effects, actions },
-  sandbox
+export const switchCurrentWorkspaceBySandbox = (
+  { state, actions }: Context,
+  { sandbox }: { sandbox: Sandbox }
+) => {
+  if (
+    hasPermission(sandbox.authorization, 'owner') &&
+    state.user &&
+    sandbox.team
+  ) {
+    actions.setActiveTeam({ id: sandbox.team.id });
+  }
+};
+
+export const currentSandboxChanged = ({ state, actions }: Context) => {
+  const sandbox = state.editor.currentSandbox!;
+  actions.internal.switchCurrentWorkspaceBySandbox({
+    sandbox,
+  });
+};
+
+export const setCurrentSandbox = async (
+  { state, effects, actions }: Context,
+  sandbox: Sandbox
 ) => {
   state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
@@ -178,7 +310,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   const parsedConfigs = parseConfigurations(sandbox);
   const main = mainModule(sandbox, parsedConfigs);
 
-  state.editor.mainModuleShortid = main.shortid;
+  state.editor.mainModuleShortid = main?.shortid;
 
   // Only change the module shortid if it doesn't exist in the new sandbox
   // This can happen when a sandbox is opened that's different from the current
@@ -188,7 +320,9 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   ) {
     const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
 
-    currentModuleShortid = defaultModule.shortid;
+    if (defaultModule) {
+      currentModuleShortid = defaultModule.shortid;
+    }
   }
 
   const sandboxOptions = effects.router.getSandboxOptions();
@@ -198,10 +332,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
       const resolvedModule = effects.utils.resolveModule(
         sandboxOptions.currentModule,
         sandbox.modules,
-        sandbox.directories,
-        // currentModule is a string... something wrong here?
-        // @ts-ignore
-        sandboxOptions.currentModule.directoryShortid
+        sandbox.directories
       );
       currentModuleShortid = resolvedModule
         ? resolvedModule.shortid
@@ -264,10 +395,16 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.workspace.project.description = sandbox.description || '';
   state.workspace.project.alias = sandbox.alias || '';
 
+  // Do this before startContainer, because startContainer flushes in overmind and causes
+  // the components to rerender. Because of this sometimes the GitHub component will get a
+  // sandbox without a git
+  actions.workspace.openDefaultItem();
   actions.server.startContainer(sandbox);
+
+  actions.internal.currentSandboxChanged();
 };
 
-export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
+export const closeTabByIndex = ({ state }: Context, tabIndex: number) => {
   const { currentModule } = state.editor;
   const tabs = state.editor.tabs as ModuleTab[];
   const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid;
@@ -283,9 +420,9 @@ export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
   state.editor.tabs.splice(tabIndex, 1);
 };
 
-export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
-  context,
-  { error }
+export const getErrorMessage = (
+  context: Context,
+  { error }: { error: ApiError | Error }
 ) => {
   const isGenericError =
     !('response' in error) ||
@@ -309,6 +446,7 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
     if ('errors' in result) {
       const errors = values(result.errors)[0];
       const fields = Object.keys(result.errors);
+
       if (Array.isArray(errors)) {
         if (errors[0]) {
           if (fields[0] === 'detail') {
@@ -333,14 +471,21 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
   return error.message;
 };
 
-export const handleError: Action<{
-  /*
-    The message that will show as title of the notification
-  */
-  message: string;
-  error: ApiError | Error;
-  hideErrorMessage?: boolean;
-}> = ({ actions, effects }, { message, error, hideErrorMessage = false }) => {
+export const handleError = (
+  { actions, effects, state }: Context,
+  {
+    message,
+    error,
+    hideErrorMessage = false,
+  }: {
+    /*
+      The message that will show as title of the notification
+    */
+    message: string;
+    error: ApiError | Error;
+    hideErrorMessage?: boolean;
+  }
+) => {
   if (hideErrorMessage) {
     effects.analytics.logError(error);
     effects.notificationToast.add({
@@ -367,28 +512,6 @@ export const handleError: Action<{
     return;
   }
 
-  const { response } = error as ApiError;
-
-  if (response?.status === 401) {
-    // Reset existing sign in info
-    effects.jwt.reset();
-    effects.analytics.setAnonymousId();
-
-    // Allow user to sign in again in notification
-    effects.notificationToast.add({
-      message: 'Your session seems to be expired, please log in again...',
-      status: NotificationStatus.ERROR,
-      actions: {
-        primary: {
-          label: 'Sign in',
-          run: () => actions.signInClicked(),
-        },
-      },
-    });
-
-    return;
-  }
-
   error.message = actions.internal.getErrorMessage({ error });
 
   const notificationActions: NotificationMessage['actions'] = {};
@@ -402,43 +525,31 @@ export const handleError: Action<{
     notificationActions.primary = {
       label: 'Sign in',
       run: () => {
-        actions.internal.signIn({});
-      },
-    };
-  } else if (error.message.startsWith('You reached the maximum of')) {
-    effects.analytics.track('Non-Patron Sandbox Limit Reached', {
-      errorMessage: error.message,
-    });
-
-    notificationActions.primary = {
-      label: 'Open Patron Page',
-      run: () => {
-        window.open(patronUrl(), '_blank');
+        state.signInModalOpen = true;
       },
     };
   } else if (
     error.message.startsWith(
-      'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
-    )
-  ) {
-    effects.analytics.track('Non-Patron Server Sandbox Limit Reached', {
-      errorMessage: error.message,
-    });
-
-    notificationActions.primary = {
-      label: 'Open Patron Page',
-      run: () => {
-        window.open(patronUrl(), '_blank');
-      },
-    };
-  } else if (
-    error.message.startsWith(
-      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact support@codesandbox.io for more server sandboxes.'
     )
   ) {
     effects.analytics.track('Patron Server Sandbox Limit Reached', {
       errorMessage: error.message,
     });
+  } else if (
+    error.message.startsWith(
+      'You need to be signed in to fork a server template.'
+    ) ||
+    error.message.startsWith(
+      'You need to be signed in to fork a cloud sandbox.'
+    )
+  ) {
+    notificationActions.primary = {
+      label: 'Sign in',
+      run: () => {
+        state.signInModalOpen = true;
+      },
+    };
   }
 
   effects.notificationToast.add({
@@ -449,24 +560,29 @@ export const handleError: Action<{
   });
 };
 
-export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
-  const { me } = await effects.gql.queries.teams({});
-  if (me) {
-    effects.analytics.setGroup(
-      'teamName',
-      me.teams.map(m => m.name)
-    );
-    effects.analytics.setGroup(
-      'teamId',
-      me.teams.map(m => m.id)
-    );
+export const trackCurrentTeams = async ({ effects, state }: Context) => {
+  const user = state.user;
+  if (!user) {
+    return;
+  }
+
+  if (state.activeTeamInfo) {
+    effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
+    effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
+  } else {
+    effects.analytics.setGroup('teamName', []);
+    effects.analytics.setGroup('teamId', []);
   }
 };
 
-export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
+export const identifyCurrentUser = async ({ state, effects }: Context) => {
   const user = state.user;
   if (user) {
-    effects.analytics.identify('pilot', user.experiments.inPilot);
+    Object.entries(user.metadata).forEach(([key, value]) => {
+      if (value) {
+        effects.analytics.identify(key, value);
+      }
+    });
 
     const profileData = await effects.api.getProfile(user.username);
     effects.analytics.identify('sandboxCount', profileData.sandboxCount);
@@ -475,38 +591,120 @@ export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
-export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
-  if (effects.browser.storage.get(seenTermsKey)) {
+const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
+export const setViewModeForDashboard = ({ effects, state }: Context) => {
+  const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
+  if (localStorageViewMode === 'grid' || localStorageViewMode === 'list') {
+    state.dashboard.viewMode = localStorageViewMode;
+  }
+};
+
+export const initializeActiveWorkspace = async ({
+  actions,
+  state,
+  effects,
+}: Context) => {
+  const persistedWorkspaceId = actions.internal.getTeamIdFromUrlOrStore();
+
+  const hasWorkspaces =
+    state.dashboard?.teams && state.dashboard.teams.length > 0;
+  if (!hasWorkspaces) {
+    const teams = await effects.gql.queries.getTeams({});
+
+    if (teams?.me) {
+      state.dashboard.teams = teams.me.workspaces;
+      state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
+      state.userCanStartTrial = teams.me.eligibleForTrial;
+    }
+
+    // TODO: Treat here future scenario when no workspaces are available
+  }
+
+  const isPersistedWorkspaceValid = state.dashboard.teams.some(
+    team => team.id === persistedWorkspaceId
+  );
+
+  if (isPersistedWorkspaceValid && persistedWorkspaceId) {
+    // Set active team from url or storage.
+    actions.setActiveTeam({ id: persistedWorkspaceId });
+  } else {
+    actions.internal.setFallbackWorkspace();
+  }
+};
+
+export const setFallbackWorkspace = ({ actions, state }: Context) => {
+  if (state.primaryWorkspaceId) {
+    actions.setActiveTeam({ id: state.primaryWorkspaceId });
+  } else {
+    const firstWorkspace =
+      state.dashboard.teams.length > 0 ? state.dashboard.teams[0] : null;
+    const firstProWorkspace = state.dashboard.teams.find(
+      team =>
+        team.subscription?.status === SubscriptionStatus.Active ||
+        team.subscription?.status === SubscriptionStatus.Trialing
+    );
+
+    if (firstProWorkspace) {
+      actions.setActiveTeam({ id: firstProWorkspace.id });
+    } else if (firstWorkspace) {
+      actions.setActiveTeam({ id: firstWorkspace.id });
+    } else {
+      // TODO: Redirect to workspace setup
+      // https://linear.app/codesandbox/issue/PC-1341/handle-empty-state-for-primary-workspaces
+    }
+  }
+};
+
+export const getTeamIdFromUrlOrStore = ({
+  actions,
+}: Context): string | null => {
+  return (
+    actions.internal.getTeamIdFromUrl() ||
+    actions.internal.getTeamIdFromLocalStorage()
+  );
+};
+
+export const getTeamIdFromUrl = (): string | null => {
+  const url = typeof document === 'undefined' ? null : document.location.href;
+
+  if (url) {
+    return new URL(url).searchParams.get('workspace');
+  }
+
+  return null;
+};
+
+export const getTeamIdFromLocalStorage = ({ effects }): string | null => {
+  const localStorageTeamId = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
+  const isValidStorageItem = typeof localStorageTeamId === 'string';
+
+  if (isValidStorageItem) {
+    return localStorageTeamId;
+  }
+
+  return null;
+};
+
+export const replaceWorkspaceParameterInUrl = ({ state }: Context) => {
+  const id = state.activeTeam;
+  const currentUrl =
+    typeof document === 'undefined' ? null : document.location.href;
+
+  if (!currentUrl) {
     return;
   }
 
-  if (!state.isFirstVisit) {
-    effects.analytics.track('Saw Privacy Policy Notification');
-    effects.notificationToast.add({
-      message:
-        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
-      title: 'Updated Privacy',
-      status: NotificationStatus.NOTICE,
-      sticky: true,
-      actions: {
-        primary: {
-          label: 'Open Privacy Policy',
-          run: () => {
-            window.open('https://codesandbox.io/legal/privacy', '_blank');
-          },
-        },
-      },
-    });
+  const urlInfo = new URL(currentUrl);
+  const params = urlInfo.searchParams;
+  if (!params.get('workspace')) {
+    return;
   }
 
-  effects.browser.storage.set(seenTermsKey, true);
-};
-
-const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
-export const setViewModeForDashboard: Action = ({ effects, state }) => {
-  const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
-  if (localStorageViewMode) {
-    state.dashboard.viewMode = localStorageViewMode;
+  if (id) {
+    urlInfo.searchParams.set('workspace', id);
+  } else {
+    urlInfo.searchParams.delete('workspace');
   }
+
+  history.replace(urlInfo.toString().replace(urlInfo.origin, ''));
 };

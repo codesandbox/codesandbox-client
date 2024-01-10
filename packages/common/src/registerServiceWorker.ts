@@ -20,7 +20,12 @@ const isLocalhost = Boolean(
 
 const isHttp = Boolean(window.location.protocol === 'http:');
 
-export default function register(swUrl, { onUpdated, onInstalled }) {
+interface SWOptions {
+  onUpdated?: () => void;
+  onInstalled?: () => void;
+}
+
+export default function register(swUrl, opts: SWOptions = {}) {
   if ('serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     // @ts-ignore
@@ -35,21 +40,17 @@ export default function register(swUrl, { onUpdated, onInstalled }) {
     // window.addEventListener('load', () => {
     if (!isLocalhost && !isHttp) {
       // It's neither localhost nor http. Just register service worker
-      registerValidSW(swUrl, { onUpdated, onInstalled });
+      registerValidSW(swUrl, opts);
     } else if (isLocalhost) {
       // This is running on localhost. Lets check if a service worker still exists or not.
-      checkValidServiceWorker(swUrl, { onUpdated, onInstalled });
+      checkValidServiceWorker(swUrl, opts);
     }
-    // });
   }
 }
 
 function registerValidSW(
   swUrl: string,
-  {
-    onUpdated,
-    onInstalled,
-  }: { onUpdated?: () => void; onInstalled?: () => void } = {}
+  { onUpdated, onInstalled }: SWOptions = {}
 ) {
   navigator.serviceWorker
     .register(swUrl)
@@ -111,7 +112,7 @@ function registerValidSW(
     });
 }
 
-function checkValidServiceWorker(swUrl, { onUpdated, onInstalled }) {
+function checkValidServiceWorker(swUrl, { onUpdated, onInstalled }: SWOptions) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
     .then(response => {

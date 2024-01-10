@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Downshift, { DownshiftProps } from 'downshift';
 import css from '@styled-system/css';
 import { Input, List, ListAction } from '@codesandbox/components';
+import { useAppState } from 'app/overmind';
 
 type User = {
   id: string;
@@ -11,6 +12,7 @@ type User = {
 
 interface IUserAutoComplete {
   inputValue: string;
+  allowSelf?: boolean;
   children: (answer: {
     users: User[];
     loading: boolean;
@@ -18,10 +20,16 @@ interface IUserAutoComplete {
   }) => JSX.Element;
 }
 
-const UserAutoComplete = ({ inputValue, children }: IUserAutoComplete) => {
+const UserAutoComplete = ({
+  inputValue,
+  children,
+  allowSelf = false,
+}: IUserAutoComplete) => {
   const [users, setUsers] = React.useState<User[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<Error | null>(null);
+  const { user } = useAppState();
+
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -34,7 +42,10 @@ const UserAutoComplete = ({ inputValue, children }: IUserAutoComplete) => {
         fetch(`/api/v1/users/search?username=${inputValue}`)
           .then(x => x.json())
           .then(x => {
-            setUsers(x);
+            const fetchedUsers = allowSelf
+              ? x
+              : x.filter(member => member.username !== user?.username);
+            setUsers(fetchedUsers);
             setLoading(false);
           })
           .catch(e => {
@@ -50,7 +61,7 @@ const UserAutoComplete = ({ inputValue, children }: IUserAutoComplete) => {
         clearTimeout(timeoutId);
       }
     };
-  }, [inputValue]);
+  }, [allowSelf, inputValue, user]);
 
   return children({ users, loading, error });
 };
@@ -58,6 +69,7 @@ const UserAutoComplete = ({ inputValue, children }: IUserAutoComplete) => {
 interface IUserSearchInputProps {
   onInputValueChange: DownshiftProps<string>['onInputValueChange'];
   inputValue: string;
+  allowSelf?: boolean;
   [key: string]: any;
 }
 
@@ -67,6 +79,7 @@ const InputWithoutTypes = Input as any;
 export const UserSearchInput = ({
   onInputValueChange,
   inputValue,
+  allowSelf = false,
   ...props
 }: IUserSearchInputProps) => (
   <Downshift
@@ -94,11 +107,12 @@ export const UserSearchInput = ({
               placeholder: 'Enter username or email',
             })}
             autoFocus
+            autoComplete="off"
             spellcheck="false"
           />
         </div>
 
-        <UserAutoComplete inputValue={currentInputValue}>
+        <UserAutoComplete allowSelf={allowSelf} inputValue={currentInputValue}>
           {({ users, error }) =>
             users.length > 0 && !error && isOpen ? (
               <List
@@ -112,6 +126,7 @@ export const UserSearchInput = ({
                   backgroundColor: 'dialog.background',
                   border: '1px solid',
                   borderColor: 'dialog.border',
+                  zIndex: 20,
                 })}
                 {...getMenuProps({})}
               >

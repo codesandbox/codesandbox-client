@@ -1,10 +1,12 @@
-import plugin from 'eslint-plugin-vue';
-import * as parser from 'vue-eslint-parser';
-import config from './default-config';
+/* eslint-disable */
+import plugin from 'browser-eslint-rules/lib/eslint-plugin-vue';
+import parser from 'browser-eslint-rules/lib/vue-eslint-parser';
+import vue2Config from './default-vue-2-config';
+import vue3Config from './default-vue-3-config';
 
 let pluginsInitialized = false;
 
-export async function getConfig(linter) {
+export async function getConfig(linter, isVue2 = true) {
   if (!pluginsInitialized) {
     pluginsInitialized = true;
 
@@ -14,7 +16,7 @@ export async function getConfig(linter) {
     });
   }
 
-  return config;
+  return isVue2 ? vue2Config : vue3Config;
 }
 
 export function getVerifyOptions(filename: string) {

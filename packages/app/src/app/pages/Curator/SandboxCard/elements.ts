@@ -1,18 +1,13 @@
 // @ts-check
 import styled from 'styled-components';
 import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
-import { Button } from '@codesandbox/common/lib/components/Button';
-
-export const PADDING = 32;
 
 export const Container = styled.div`
   ${fadeIn(0)};
-  background-color: ${props => props.theme.background};
+  background-color: ${props => props.theme.colors.sideBar.background};
   overflow: hidden;
   border-radius: 2px;
   user-select: none;
-
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 `;
 
 export const SandboxImageContainer = styled.div`
@@ -21,12 +16,10 @@ export const SandboxImageContainer = styled.div`
   justify-content: center;
   align-items: stretch;
   height: 160px;
-
-  background-color: rgba(255, 255, 255, 0.1);
 `;
 
 export const SandboxImage = styled.div`
-  background-size: contain;
+  background-size: cover;
   background-position: 50%;
   background-repeat: no-repeat;
   width: 100%;
@@ -59,7 +52,6 @@ export const ImageMessage = styled.div`
   z-index: 0;
 
   font-size: 1.125rem;
-  color: rgba(255, 255, 255, 0.6);
 `;
 
 export const Avatar = styled.img`
@@ -73,15 +65,10 @@ export const Details = styled.footer`
   align-items: center;
   justify-content: space-between;
   font-size: 0.875em;
-  color: rgba(255, 255, 255, 0.5);
   margin-top: 1rem;
 `;
 
 export const FlexCenter = styled.section`
   display: flex;
   align-items: center;
-`;
-
-export const Pick = styled(Button)`
-  width: 100%;
 `;

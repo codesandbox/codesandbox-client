@@ -1,9 +1,0 @@
-.DS_Store
-.buildpath
-.classpath
-.idea
-.project
-.settings
-/node_modules
-/npm-debug.log
-/sauce_connect.log*

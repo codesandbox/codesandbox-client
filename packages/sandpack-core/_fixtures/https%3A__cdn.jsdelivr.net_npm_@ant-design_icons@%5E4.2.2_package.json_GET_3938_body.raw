@@ -1,0 +1,76 @@
+{
+  "name": "@ant-design/icons",
+  "version": "4.6.2",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "unpkg": "./dist/index.umd.js",
+  "sideEffects": false,
+  "repository": "https://github.com/ant-design/ant-design-icons/tree/master/packages/icons-react",
+  "contributors": [
+    "HeskeyBaozi<hezhiyu233@foxmail.com>",
+    "vagusX<vagusxl@gmail.com>"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=8"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "clean": "./scripts/cleanup.sh",
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "lint": "eslint src/ --ext .tsx,.ts",
+    "compile": "father build",
+    "test": "father test",
+    "ci": "NODE_ENV=ci npm run prepublishOnly",
+    "test:local": "npm run generate && npm run compile && npm run test",
+    "prepublishOnly": "npm run generate && npm run compile && npm run lint && npm run test",
+    "generate": "rimraf src/icons && TS_NODE_PROJECT=scripts/tsconfig.json node -r ts-node/register scripts/generate.ts --target=icon",
+    "postcompile": "npm run clean && TS_NODE_PROJECT=scripts/tsconfig.json node -r ts-node/register scripts/generate.ts --target=entry"
+  },
+  "peerDependencies": {
+    "react": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/enzyme": "^3.10.3",
+    "@types/jest": "^24.9.1",
+    "@types/lodash": "^4.14.136",
+    "@types/node": "^13.9.3",
+    "@types/react": "^16.9.23",
+    "@types/react-dom": "^16.9.5",
+    "@umijs/fabric": "^2.2.2",
+    "antd": "^4.8.2",
+    "cross-env": "^5.2.0",
+    "enzyme": "^3.10.0",
+    "enzyme-to-json": "^3.3.5",
+    "eslint": "^7.1.0",
+    "father": "^2.29.11",
+    "lodash": "^4.17.15",
+    "mobx": "^5.1.0",
+    "mobx-react": "^6.1.3",
+    "prettier": "^2.2.1",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "rimraf": "^3.0.0",
+    "styled-components": "^3.3.3",
+    "ts-node": "^8.0.0",
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "@ant-design/colors": "^6.0.0",
+    "@ant-design/icons-svg": "^4.0.0",
+    "@babel/runtime": "^7.11.2",
+    "classnames": "^2.2.6",
+    "rc-util": "^5.9.4"
+  },
+  "resolutions": {
+    "@types/react": "^16.9.23",
+    "@types/react-dom": "^16.9.5",
+    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@typescript-eslint/parser": "^4.10.0"
+  },
+  "gitHead": "225d4d2189720ee3b7e4a4d7a6d80e076fa15cbc"
+}

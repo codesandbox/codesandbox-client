@@ -11,6 +11,7 @@ import AttrPlugin from 'gsap/AttrPlugin';
 import { Power3 } from 'gsap/EasePack';
 import TweenLite from 'gsap/TweenLite';
 import TimelineLite from 'gsap/TimelineLite';
+import axios from 'axios';
 
 import { isStandalone } from 'codesandbox-api'
 import getTemplate from '@codesandbox/common/lib/templates';
@@ -36,10 +37,11 @@ if (process.env.NODE_ENV === 'development') {
   hostParts = window.location.hostname.split('.');
 }
 const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
-const domain = `sse.${rootDomain}`;
-// parses sandboxid[-port]
-const sandbox = hostParts[0].replace(/-\d+/, '');
+const sseLbHost = `sse-lb.${rootDomain}`;
+// parses sandboxId[-port]
+const sandboxId = hostParts[0].replace(/-\d+/, '');
 const port = hostParts[0].replace(/^\w+-?/, '');
+// console.log('sandboxId:', sandboxId, 'port:', port);
 const lastLoadedAt = parseInt(localStorage.getItem('last_loaded_at'), 10);
 const now = Date.now();
 let isLoop = false;
@@ -236,18 +238,18 @@ async function start() {
 
   term.fit();
 
-  const socket = io(`https://${domain}`, {
+  const res = await axios.get(`https://${sseLbHost}/api/cluster/${sandboxId}`);
+  const sseHost = res.data.hostname;
+
+  const socket = io(`https://${sseHost}`, {
     autoConnect: false,
     transports: ['websocket'],
     reconnectionAttempts: 5,
     reconnectionDelayMax: 32000,
-    query: {
-      sandboxid: sandbox,
-    },
   });
 
   socket.on('connect', () => {
-    socket.emit('sandbox', { id: sandbox });
+    socket.emit('sandbox', { id: sandboxId });
     socket.emit('sandbox:start');
   });
 
@@ -258,7 +260,7 @@ async function start() {
     }
     reloadTimeout = setTimeout(() => {
       window.location.reload(true);
-    }, 10 * SECOND);
+    }, 15 * SECOND);
   });
 
   socket.on('sandbox:error', ({ message, unrecoverable }) => {
@@ -341,11 +343,11 @@ if (isLoop) {
   localStorage.setItem('last_loaded_at', now);
 
   if (process.env.NODE_ENV === 'production') {
-    fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
+    fetch(`https://${rootDomain}/api/v1/sandboxes/${sandboxId}/slim`)
       .then(res => {
         if (res.status === 404) {
           if (isStandalone) {
-            show404(sandbox);
+            show404(sandboxId);
           }
 
           return {};
@@ -355,7 +357,7 @@ if (isLoop) {
       })
       .then(json => {
         if (Object.keys(json) > 0 && !json.is_sse) {
-          window.location.replace(`https://${sandbox}.${rootDomain}/`);
+          window.location.replace(`https://${sandboxId}.${rootDomain}/`);
         }
         if (json.template) {
           const templateDef = getTemplate(json.template);

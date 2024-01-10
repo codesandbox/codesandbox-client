@@ -8,12 +8,14 @@ export default new (class RouterEffect {
     id,
     alias,
     git,
+    isV2,
   }: {
     id?: string | null;
     alias?: string | null;
     git?: GitInfo | null;
+    isV2?: boolean;
   }) {
-    window.history.replaceState({}, '', sandboxUrl({ id, alias, git }));
+    window.history.replaceState({}, '', sandboxUrl({ id, alias, git, isV2 }));
   }
 
   updateSandboxUrl(
@@ -21,21 +23,29 @@ export default new (class RouterEffect {
       id,
       alias,
       git,
+      v2,
+      isSse,
     }: {
       id?: string | null;
       alias?: string | null;
       git?: GitInfo | null;
+      v2?: boolean;
+      isSse?: boolean;
     },
-    { openInNewWindow = false }: { openInNewWindow?: boolean } = {}
+    {
+      openInNewWindow = false,
+      hasBetaEditorExperiment = false,
+    }: { openInNewWindow?: boolean; hasBetaEditorExperiment?: boolean } = {}
   ) {
-    const url = sandboxUrl({
-      id,
-      alias,
-      git,
-    });
+    const url = sandboxUrl(
+      { id, alias, isV2: v2, isSse },
+      hasBetaEditorExperiment
+    );
 
     if (openInNewWindow) {
       window.open(url, '_blank');
+    } else if (v2 || (!isSse && hasBetaEditorExperiment)) {
+      window.location.href = url;
     } else {
       history.push(url);
     }
@@ -47,6 +57,10 @@ export default new (class RouterEffect {
 
   redirectToSandboxWizard() {
     history.replace('/s/');
+  }
+
+  redirectToDashboard() {
+    history.replace('/dashboard/home');
   }
 
   getSandboxOptions() {
@@ -69,5 +83,11 @@ export default new (class RouterEffect {
   getParameter(key: string): string | null {
     const currentUrl = new URL(location.href);
     return currentUrl.searchParams.get(key);
+  }
+
+  clearWorkspaceId(): void {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.delete('workspace');
+    history.replace({ search: searchParams.toString() });
   }
 })();

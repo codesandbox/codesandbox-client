@@ -3,15 +3,22 @@ import {
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
-import { TextOperation } from 'ot';
+import { TextOperation, SerializedTextOperation } from 'ot';
 
 import { OTClient, synchronized_ } from './ot/client';
+
+export type SendOperationResponse =
+  | {
+      composed_operation: SerializedTextOperation;
+      revision: number;
+    }
+  | {};
 
 export type SendOperation = (
   moduleShortid: string,
   revision: number,
   operation: TextOperation
-) => Promise<unknown>;
+) => Promise<SendOperationResponse>;
 
 export type ApplyOperation = (
   moduleShortid: string,
@@ -29,7 +36,7 @@ export class CodeSandboxOTClient extends OTClient {
   onSendOperation: (
     revision: number,
     operation: TextOperation
-  ) => Promise<unknown>;
+  ) => Promise<SendOperationResponse>;
 
   onApplyOperation: (operation: TextOperation) => void;
 
@@ -39,7 +46,7 @@ export class CodeSandboxOTClient extends OTClient {
     onSendOperation: (
       revision: number,
       operation: TextOperation
-    ) => Promise<unknown>,
+    ) => Promise<SendOperationResponse>,
     onApplyOperation: (operation: TextOperation) => void
   ) {
     super(revision);
@@ -59,7 +66,7 @@ export class CodeSandboxOTClient extends OTClient {
     }
 
     return this.onSendOperation(revision, operation)
-      .then(() => {
+      .then(result => {
         logBreadcrumb({
           category: 'ot',
           message: `Acknowledging ${JSON.stringify({
@@ -68,6 +75,17 @@ export class CodeSandboxOTClient extends OTClient {
             operation,
           })}`,
         });
+
+        if (
+          'revision' in result &&
+          this.revision !== result.revision &&
+          result.composed_operation.length
+        ) {
+          this.resync(
+            TextOperation.fromJSON(result.composed_operation),
+            result.revision
+          );
+        }
 
         try {
           this.safeServerAck(revision);
@@ -149,6 +167,11 @@ export class CodeSandboxOTClient extends OTClient {
 
   serverReconnect() {
     super.serverReconnect();
+  }
+
+  resync(operation: TextOperation, newRevision: number) {
+    this.applyServer(operation);
+    this.revision = newRevision;
   }
 }
 

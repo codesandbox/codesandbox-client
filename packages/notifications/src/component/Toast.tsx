@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack, Element, Text } from '@codesandbox/components';
+import { Stack, Element, Text, ButtonProps } from '@codesandbox/components';
 
 import { NotificationToast } from './Toasts';
 import { NotificationStatus } from '../state';
@@ -10,7 +10,6 @@ import { InfoIcon } from './icons/InfoIcon';
 import {
   StyledCrossIcon,
   Container,
-  ColorLine,
   InnerWrapper,
   TertiaryButton,
 } from './elements';
@@ -40,11 +39,9 @@ export interface IColors {
   [NotificationStatus.NOTICE]: string;
 }
 
-export type IButtonType = React.ComponentType<{
-  style?: React.CSSProperties;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  variant: 'primary' | 'secondary' | 'link' | 'danger';
-}>;
+export type IButtonType = React.ComponentType<
+  Pick<ButtonProps, 'style' | 'onClick' | 'variant'>
+>;
 
 export type Props = {
   toast: NotificationToast;
@@ -63,7 +60,11 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
 
   const action = (type: 'primary' | 'secondary') => {
     if (actions) {
-      return Array.isArray(actions) ? actions[0][type] : actions[type];
+      if (Array.isArray(actions[type])) {
+        return actions[type][0];
+      }
+
+      return actions[type];
     }
 
     return null;
@@ -75,10 +76,9 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
       ref={getRef}
       marginBottom={2}
     >
-      <ColorLine bg={getColor(colors, status)} />
-      <InnerWrapper paddingX={3} paddingY={4}>
+      <InnerWrapper padding={4}>
         <Element style={fullWidth}>
-          <Stack style={fullWidth}>
+          <Stack style={fullWidth} align="center">
             <Element style={fullWidth}>
               <Stack
                 marginBottom={title && message ? 3 : 0}
@@ -88,19 +88,19 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
                 <Stack style={{ color: getColor(colors, status) }}>
                   <Icon />
                 </Stack>
+
                 <Text
-                  style={{
-                    fontWeight: 500,
-                  }}
-                >
-                  {title || message}
-                </Text>
+                  style={{ fontWeight: 500 }}
+                  dangerouslySetInnerHTML={{ __html: title || message }}
+                />
               </Stack>
 
               {title && (
-                <Text size={3} block>
-                  {message}
-                </Text>
+                <Text
+                  size={3}
+                  block
+                  dangerouslySetInnerHTML={{ __html: message }}
+                />
               )}
             </Element>
 

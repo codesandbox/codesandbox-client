@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-continue */
 const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
 
 function splitPath(filename: string) {
@@ -134,7 +136,7 @@ function assertPath(path) {
   }
 }
 
-export function extname(path) {
+export function extname(path: string): string {
   assertPath(path);
   let startDot = -1;
   let startPart = 0;
@@ -183,4 +185,77 @@ export function extname(path) {
     return '';
   }
   return path.slice(startDot, end);
+}
+
+export function resolve(...args) {
+  let resolvedPath = '';
+  let resolvedAbsolute = false;
+
+  for (let i = args.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    const path = i >= 0 ? args[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path[0] === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(
+    resolvedPath.split('/'),
+    !resolvedAbsolute
+  ).join('/');
+
+  return (resolvedAbsolute ? '/' : '') + resolvedPath || '.';
+}
+
+function trimArray(arr) {
+  const lastIndex = arr.length - 1;
+  let start = 0;
+  for (; start <= lastIndex; start++) {
+    if (arr[start]) break;
+  }
+
+  let end = lastIndex;
+  for (; end >= 0; end--) {
+    if (arr[end]) break;
+  }
+
+  if (start === 0 && end === lastIndex) return arr;
+  if (start > end) return [];
+  return arr.slice(start, end + 1);
+}
+
+export function relative(from: string, to: string) {
+  from = resolve(from).substr(1);
+  to = resolve(to).substr(1);
+
+  const fromParts = trimArray(from.split('/'));
+  const toParts = trimArray(to.split('/'));
+
+  const length = Math.min(fromParts.length, toParts.length);
+  let samePartsLength = length;
+  for (let i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  let outputParts = [];
+  for (let i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
 }

@@ -1,3 +1,21 @@
+import UAParser from 'ua-parser-js';
+
+export type UserAgentDetails = {
+  browser: {
+    name: string;
+    version: string;
+  };
+  device: {
+    model: string;
+    type: string;
+    vendor: string;
+  };
+  os: {
+    name: string;
+    version: string;
+  };
+};
+
 function getPopupOffset({ width, height }) {
   const wLeft = window.screenLeft ? window.screenLeft : window.screenX;
   const wTop = window.screenTop ? window.screenTop : window.screenY;
@@ -18,6 +36,8 @@ function getPopupDimensions() {
 
   return `width=${width},height=${height},top=${top},left=${left}`;
 }
+
+const storageSubscribers: Record<string, Set<(value: any) => void>> = {};
 
 export default {
   setTitle(title) {
@@ -73,20 +93,51 @@ export default {
     });
   },
   reload() {
-    location.reload(true);
+    location.reload();
   },
   storage: {
-    get(key: string) {
-      const value = localStorage.getItem(key);
+    get<T = unknown>(key: string): T | null {
+      try {
+        const value = localStorage.getItem(key);
 
-      if (value) {
-        return JSON.parse(value);
+        if (value) {
+          return JSON.parse(value) as T;
+        }
+
+        return null;
+      } catch (err) {
+        console.error(err);
+        return null;
+      }
+    },
+    set<T = unknown>(key: string, value: T) {
+      localStorage.setItem(key, JSON.stringify(value));
+
+      if (storageSubscribers[key]) {
+        storageSubscribers[key].forEach(cb => {
+          cb(value);
+        });
+      }
+    },
+    remove(key: string) {
+      localStorage.removeItem(key);
+
+      if (storageSubscribers[key]) {
+        storageSubscribers[key].forEach(cb => {
+          cb(null);
+        });
+      }
+    },
+    subscribe<T = unknown>(key: string, cb: (value: T | null) => void) {
+      if (!storageSubscribers[key]) {
+        storageSubscribers[key] = new Set();
       }
 
-      return null;
-    },
-    set(key: string, value: any) {
-      localStorage.setItem(key, JSON.stringify(value));
+      storageSubscribers[key].add(cb);
+
+      return () => {
+        storageSubscribers[key].delete(cb);
+      };
     },
   },
   /**
@@ -111,5 +162,51 @@ export default {
         })
         .catch(reject);
     });
+  },
+  getUserAgent() {
+    return navigator.userAgent;
+  },
+  getElementBoundingRect(elementId: string): DOMRect | null {
+    const el = document.querySelector(elementId);
+
+    if (!el) {
+      return null;
+    }
+
+    return el.getBoundingClientRect();
+  },
+  onWindowMessage(cb: (event: MessageEvent) => void) {
+    window.addEventListener('message', cb);
+  },
+  isChromium(ua: string): boolean {
+    try {
+      const parser = new UAParser(ua);
+      const name = parser.getBrowser().name;
+
+      // by default brave returns chrome
+      return name === 'Chrome' || name === 'Opera' || name === 'Edge';
+    } catch {
+      return false;
+    }
+  },
+  parseUserAgent(ua: string): UserAgentDetails | null {
+    try {
+      const parser = new UAParser(ua);
+      return {
+        // @ts-ignore
+        // Only way to detect brave
+        // https://www.ctrl.blog/entry/brave-user-agent-detection.html
+        browser: navigator.brave
+          ? {
+              version: '',
+              name: 'Brave',
+            }
+          : parser.getBrowser(),
+        device: parser.getDevice(),
+        os: parser.getOS(),
+      };
+    } catch {
+      return null;
+    }
   },
 };

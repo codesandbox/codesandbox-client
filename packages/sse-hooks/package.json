@@ -13,7 +13,7 @@
     "build:dev": "rollup -c rollup.config.js"
   },
   "dependencies": {
-    "codesandbox-api": "0.0.24",
+    "codesandbox-api": "0.0.32",
     "sandbox-hooks": "0.1.0"
   },
   "devDependencies": {

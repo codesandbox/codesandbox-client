@@ -4,6 +4,7 @@ export interface ISVGIconProps extends React.HTMLAttributes<SVGElement> {
   scale?: number;
   width?: number;
   height?: number;
+  viewBox?: string;
 }
 
 export const SVGIcon: React.FC<ISVGIconProps> = ({

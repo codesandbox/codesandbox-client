@@ -1,28 +1,30 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
-// @flow
+/* @flow */
 import StackFrame from './stack-frame';
 
 const regexExtractLocation = /\(?(.+?)(?::(\d+))?(?::(\d+))?\)?$/;
 
+// $FlowFixMe
 function extractLocation(token: string): [string, number, number] {
-  return regexExtractLocation
-    .exec(token)
-    .slice(1)
-    .map(v => {
-      const p = Number(v);
-      if (!isNaN(p)) {
-        return p;
-      }
-      return v;
-    });
+  return (
+    regexExtractLocation
+      .exec(token)
+      // $FlowFixMe
+      .slice(1)
+      .map(v => {
+        const p = Number(v);
+        if (!isNaN(p)) {
+          return p;
+        }
+        return v;
+      })
+  );
 }
 
 const regexValidFrame_Chrome = /^\s*(at|in)\s.+(:\d+)/;
@@ -58,10 +60,7 @@ function parseStack(stack: string[]): StackFrame[] {
         if (e.indexOf('(at ') !== -1) {
           e = e.replace(/\(at /, '(');
         }
-        const data = e
-          .trim()
-          .split(/\s+/g)
-          .slice(1);
+        const data = e.trim().split(/\s+/g).slice(1);
         const last = data.pop();
         return new StackFrame(data.join(' ') || null, ...extractLocation(last));
       }

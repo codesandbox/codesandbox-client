@@ -12,21 +12,19 @@ import {
   Checkbox,
 } from '@codesandbox/components';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { AddFileToSandboxButton } from './AddFileToSandboxButton';
 import { DeleteFileButton } from './DeleteFileButton';
 
 export const FilesList: FunctionComponent = () => {
   const {
-    actions: {
-      files: { deletedUploadedFile, addedFileToSandbox },
-    },
-    state: {
-      editor: { currentSandbox },
-      uploadedFiles,
-    },
-  } = useOvermind();
+    files: { deletedUploadedFile, addedFileToSandbox },
+  } = useActions();
+  const {
+    editor: { currentSandbox },
+    uploadedFiles,
+  } = useAppState();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const getSelection = () =>
@@ -41,7 +39,7 @@ export const FilesList: FunctionComponent = () => {
     <Element marginTop={4}>
       <Stack gap={2} marginBottom={6} justify="space-between">
         <Button
-          style={{ width: 'auto' }}
+          autoWidth
           disabled={selectedItems.length === 0 || !currentSandbox}
           onClick={() => getSelection().map(addedFileToSandbox)}
         >
@@ -50,7 +48,7 @@ export const FilesList: FunctionComponent = () => {
 
         <Button
           variant="danger"
-          style={{ width: 'auto' }}
+          autoWidth
           disabled={selectedItems.length === 0}
           onClick={() => selectedItems.map(deletedUploadedFile)}
         >

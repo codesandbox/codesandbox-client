@@ -1,16 +1,19 @@
-import React from 'react';
 import { Text, Element } from '@codesandbox/components';
-import { SubContainer } from '../elements';
-import { ContainerLSP } from './ContainerLSP';
+import React, { FunctionComponent } from 'react';
 
-export const Experiments: React.FunctionComponent = () => (
+import { SubContainer } from '../elements';
+
+import { BetaSandboxEditor } from './BetaSandboxEditor';
+
+export const Experiments: FunctionComponent = () => (
   <>
-    <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+    <Text block marginBottom={6} size={4} weight="regular">
       Experiments
     </Text>
+
     <SubContainer>
       <Element paddingTop={2}>
-        <ContainerLSP />
+        <BetaSandboxEditor />
       </Element>
     </SubContainer>
   </>

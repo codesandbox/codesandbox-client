@@ -3,7 +3,7 @@ import postcssImportPlugin from 'postcss-import';
 import { join } from 'path';
 import { isDependencyPath } from 'sandbox/eval/utils/is-dependency-path';
 
-import TranspiledModule, { LoaderContext } from '../../transpiled-module';
+import { LoaderContext, TranspiledModule } from 'sandpack-core';
 
 async function resolveCSSFile(
   loaderContext: LoaderContext,
@@ -36,61 +36,57 @@ async function resolveCSSFile(
   return loaderContext.resolveTranspiledModuleAsync(fullPath);
 }
 
-export default function(
+export default async function (
   code: string,
   loaderContext: LoaderContext
 ): Promise<{ transpiledCode: string; sourceMap: any }> {
-  return new Promise((resolve, reject) => {
-    const plugins = [
-      postcssImportPlugin({
-        resolve: async (id: string, root: string) => {
-          try {
-            const result = await resolveCSSFile(loaderContext, id, root);
+  const plugins = [
+    postcssImportPlugin({
+      resolve: async (id: string, root: string) => {
+        try {
+          const result = await resolveCSSFile(loaderContext, id, root);
 
-            return result.module.path;
-          } catch (e) {
-            return null;
-          }
-        },
-        load: async (filename: string) => {
-          const tModule = await loaderContext.resolveTranspiledModuleAsync(
-            filename
-          );
-
-          return tModule.module.code;
-        },
-      }),
-    ];
-
-    const options: ProcessOptions = {
-      to: loaderContext.path,
-      from: loaderContext.path,
-      map: {
-        inline: true,
-        annotation: true,
+          return result.module.path;
+        } catch (e) {
+          return null;
+        }
       },
-    };
+      load: async (filename: string) => {
+        const tModule = await loaderContext.resolveTranspiledModuleAsync(
+          filename
+        );
 
-    return (
-      postcss(plugins)
-        // Explcitly give undefined if code is null, otherwise postcss crashses
-        .process(code === null ? undefined : code, options)
-        .then(result => {
-          if (result.messages) {
-            const messages = result.messages as any[];
-            messages.forEach(m => {
-              if (m.type === 'dependency') {
-                loaderContext.addDependency(m.file);
-              }
-            });
-          }
+        return tModule.module.code;
+      },
+    }),
+  ];
 
-          const map = result.map && result.map.toJSON();
-          resolve({ transpiledCode: result.css, sourceMap: map });
+  const options: ProcessOptions = {
+    to: loaderContext.path,
+    from: loaderContext.path,
+    map: {
+      inline: true,
+      annotation: true,
+    },
+  };
 
-          return null; // silence bluebird warning
-        })
-        .catch(err => reject(err))
+  // Explicitly give undefined if code is null, otherwise postcss crashes
+  const result = await postcss(plugins).process(
+    code === null ? undefined : code,
+    options
+  );
+  if (result.messages) {
+    const messages = result.messages as any[];
+    await Promise.all(
+      messages.map(async m => {
+        if (m.type === 'dependency') {
+          await loaderContext.addDependency(m.file);
+        }
+      })
     );
-  });
+  }
+
+  const map = result.map && result.map.toJSON();
+
+  return { transpiledCode: result.css, sourceMap: map };
 }

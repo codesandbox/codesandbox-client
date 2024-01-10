@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<ContributorsBadge /> rendering Default 1`] = `ReactWrapper {}`;
-
-exports[`<ContributorsBadge /> rendering No Description 1`] = `ReactWrapper {}`;
-
-exports[`<ContributorsBadge /> rendering No Tags 1`] = `ReactWrapper {}`;
-
-exports[`<ContributorsBadge /> rendering No Title 1`] = `ReactWrapper {}`;

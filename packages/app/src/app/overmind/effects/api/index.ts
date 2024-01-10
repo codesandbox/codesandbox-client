@@ -1,15 +1,18 @@
 import { TemplateType } from '@codesandbox/common/lib/templates';
 import {
-  CurrentUser,
+  CurrentUserFromAPI,
   CustomTemplate,
   Dependency,
   Directory,
   EnvironmentVariable,
   GitChanges,
   GitCommit,
+  GitFileCompare,
   GitInfo,
+  GitPathChanges,
   GitPr,
   Module,
+  NpmManifest,
   PaymentDetails,
   PickedSandboxes,
   PopularSandboxes,
@@ -17,21 +20,28 @@ import {
   Sandbox,
   SandboxPick,
   UploadedFilesInfo,
+  UserQuery,
   UserSandbox,
+  SettingsSync,
+  ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
-import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+import { FETCH_TEAM_TEMPLATES } from 'app/components/Create/utils/queries';
 import { client } from 'app/graphql/client';
+import { PendingUserType } from 'app/overmind/state';
 
 import {
   transformDirectory,
   transformModule,
   transformSandbox,
 } from '../utils/sandbox';
-import apiFactory, { Api, ApiConfig } from './apiFactory';
+import apiFactory, { Api, ApiConfig, Params } from './apiFactory';
 import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
+  AvatarAPIResponse,
+  FinalizeSignUpOptions,
+  MetaFeatures,
 } from './types';
 
 let api: Api;
@@ -45,48 +55,53 @@ export default {
 
     return response.token;
   },
-  createPatronSubscription(
-    token: string,
-    amount: number,
-    duration: 'monthly' | 'yearly',
-    coupon: string
-  ) {
-    return api.post<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-        token,
-        duration,
-      },
-    });
+  async getJWTToken(): Promise<string> {
+    const response = await api.get<{ jwt: string }>('/auth/jwt');
+
+    return response.jwt;
   },
-  updatePatronSubscription(amount: number, coupon: string) {
-    return api.patch<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-      },
-    });
+  async getSandpackTokenFromTeam(teamId: string): Promise<string> {
+    const response = await api.post<{ token: string }>(
+      `/sandpack/token/${teamId}`,
+      {}
+    );
+
+    return response.token;
   },
+  // We only use this function related to current_user/subscription
   cancelPatronSubscription() {
-    return api.delete<CurrentUser>('/users/current_user/subscription');
+    return api.delete<CurrentUserFromAPI>('/users/current_user/subscription');
   },
-  getCurrentUser(): Promise<CurrentUser> {
+  getCurrentUser(): Promise<CurrentUserFromAPI> {
     return api.get('/users/current');
+  },
+  getSandboxTitle(): Promise<{ title: string }> {
+    return api.get('/sandboxes/generate_title');
   },
   markSurveySeen(): Promise<void> {
     return api.post('/users/survey-seen', {});
   },
-  getDependency(name: string): Promise<Dependency> {
-    return api.get(`/dependencies/${name}@latest`);
+  revokeToken(token: string): Promise<void> {
+    return api.delete(`/auth/revoke/${token}`);
   },
-  async getSandbox(id: string): Promise<Sandbox> {
-    const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
+  getDependency(name: string, tag: string): Promise<Dependency> {
+    return api.get(`/dependencies/${name}@${tag}`);
+  },
+  getDependencyManifest(sandboxId: string, name: string): Promise<NpmManifest> {
+    return api.get(
+      `/sandboxes/${sandboxId}/npm_registry/${name.replace('/', '%2f')}`
+    );
+  },
+  async getSandbox(id: string, params?: Params): Promise<Sandbox> {
+    const sandbox = await api.get<SandboxAPIResponse>(
+      `/sandboxes/${id}`,
+      params
+    );
 
     // We need to add client side properties for tracking
     return transformSandbox(sandbox);
   },
-  async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
+  async forkSandbox(id: string, body?: ForkSandboxBody): Promise<Sandbox> {
     const url = id.includes('/')
       ? `/sandboxes/fork/${id}`
       : `/sandboxes/${id}/fork`;
@@ -126,6 +141,24 @@ export default {
       )
       .then(transformModule);
   },
+  saveModulePrivateUpload(
+    sandboxId: string,
+    moduleShortid: string,
+    data: {
+      code: string;
+      uploadId: string;
+      sha: string;
+    }
+  ): Promise<Module> {
+    return api
+      .put<IModuleAPIResponse>(
+        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+        {
+          module: data,
+        }
+      )
+      .then(transformModule);
+  },
   saveModules(sandboxId: string, modules: Module[]): Promise<Module[]> {
     return api
       .put<IModuleAPIResponse[]>(`/sandboxes/${sandboxId}/modules/mupdate`, {
@@ -133,8 +166,16 @@ export default {
       })
       .then(modulesResult => modulesResult.map(transformModule));
   },
-  getGitChanges(sandboxId: string): Promise<GitChanges> {
+  getGitChanges(sandboxId: string): Promise<GitPathChanges> {
     return api.get(`/sandboxes/${sandboxId}/git/diff`);
+  },
+  saveGitOriginalCommitSha(
+    sandboxId: string,
+    commitSha: string
+  ): Promise<void> {
+    return api.patch(`/sandboxes/${sandboxId}/original_git_commit_sha`, {
+      original_git_commit_sha: commitSha,
+    });
   },
   saveTemplate(sandboxId: string, template: TemplateType): Promise<void> {
     return api.put(`/sandboxes/${sandboxId}/`, {
@@ -323,16 +364,61 @@ export default {
   ): Promise<GitInfo> {
     return api.post(`/sandboxes/${sandboxId}/git/repo/${repoTitle}`, data);
   },
-  createGitCommit(sandboxId: string, message: string): Promise<GitCommit> {
+  createGitCommit(
+    sandboxId: string,
+    message: string,
+    changes: GitChanges,
+    parentCommitShas: string[]
+  ): Promise<GitCommit> {
     return api.post(`/sandboxes/${sandboxId}/git/commit`, {
       id: sandboxId,
       message,
+      changes,
+      parentCommitShas,
     });
   },
-  createGitPr(sandboxId: string, message: string): Promise<GitPr> {
+  async compareGit(
+    sandboxId: string,
+    baseRef: string,
+    headRef: string,
+    includeContents = false
+  ): Promise<{
+    baseCommitSha: string;
+    headCommitSha: string;
+    files: GitFileCompare[];
+  }> {
+    const response: any = await api.post(
+      `/sandboxes/${sandboxId}/git/compare`,
+      {
+        baseRef,
+        headRef,
+        includeContents,
+      }
+    );
+
+    return response;
+  },
+  getGitPr(sandboxId: string, prNumber: number): Promise<GitPr> {
+    return api.get(`/sandboxes/${sandboxId}/git/prs/${prNumber}`);
+  },
+  async getGitRights(sandboxId: string) {
+    const response = await api.get<{ permission: 'admin' | 'write' | 'read' }>(
+      `/sandboxes/${sandboxId}/git/rights`
+    );
+
+    return response.permission;
+  },
+  createGitPr(
+    sandboxId: string,
+    title: string,
+    description: string,
+    changes: GitChanges
+  ): Promise<GitPr> {
     return api.post(`/sandboxes/${sandboxId}/git/pr`, {
-      id: sandboxId,
-      message,
+      sandboxId,
+      title,
+      description,
+      changes,
     });
   },
   async createLiveRoom(sandboxId: string): Promise<string> {
@@ -366,11 +452,16 @@ export default {
   },
   getUserSandboxes(
     username: string,
-    page: number
+    page: number | 'all' = 1,
+    sortBy: string = 'view_count',
+    direction: string = 'desc'
   ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes`, {
-      page: String(page),
-    });
+    return api.get(
+      `/users/${username}/sandboxes?sort_by=${sortBy}&direction=${direction}`,
+      {
+        page: String(page),
+      }
+    );
   },
   getUserLikedSandboxes(
     username: string,
@@ -382,6 +473,15 @@ export default {
   },
   getSandboxes(): Promise<UserSandbox[]> {
     return api.get('/sandboxes');
+  },
+  getPendingUser(id: string): Promise<PendingUserType> {
+    return api.get('/users/pending/' + id);
+  },
+  validateUsername(username: string): Promise<{ available: boolean }> {
+    return api.get('/users/available/' + username);
+  },
+  finalizeSignUp(options: FinalizeSignUpOptions): Promise<void> {
+    return api.post('/users/finalize', options);
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
     return api.patch(`/users/${username}`, {
@@ -407,6 +507,10 @@ export default {
   deleteTag(sandboxId: string, tagName: string): Promise<string[]> {
     return api.delete(`/sandboxes/${sandboxId}/tags/${tagName}`);
   },
+  /**
+   * Updates a sandbox. Used to update sandbox metadata but also to convert
+   * a sandbox to a devbox.
+   */
   updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
     return api.put(`/sandboxes/${sandboxId}`, {
       sandbox: data,
@@ -436,8 +540,18 @@ export default {
       },
     });
   },
-  createVercelIntegration(code: string): Promise<CurrentUser> {
-    return api.post(`/users/current_user/integrations/zeit`, {
+  updateTeamAvatar(
+    name: string,
+    avatar: string,
+    teamId: string
+  ): Promise<AvatarAPIResponse> {
+    return api.post(`/teams/${teamId}/avatar`, {
+      name,
+      avatar,
+    });
+  },
+  createVercelIntegration(code: string): Promise<CurrentUserFromAPI> {
+    return api.post(`/users/current_user/integrations/vercel`, {
       code,
     });
   },
@@ -448,10 +562,10 @@ export default {
     return api.delete(`/users/current_user/integrations/github`);
   },
   signoutVercel(): Promise<void> {
-    return api.delete(`/users/current_user/integrations/zeit`);
+    return api.delete(`/users/current_user/integrations/vercel`);
   },
-  preloadTemplates() {
-    client.query({ query: LIST_PERSONAL_TEMPLATES, variables: {} });
+  preloadTeamTemplates(teamId: string) {
+    client.query({ query: FETCH_TEAM_TEMPLATES, variables: { teamId } });
   },
   deleteTemplate(
     sandboxId: string,
@@ -486,5 +600,118 @@ export default {
     return api.post(`/users/experiments`, {
       experiments,
     });
+  },
+  queryUsers(query: string): Promise<UserQuery[]> {
+    return api.get(`/users/search?username=${query}`);
+  },
+  makeGitSandbox(sandboxId: string): Promise<Sandbox> {
+    return api.post<Sandbox>(`/sandboxes/${sandboxId}/make_git_sandbox`, null);
+  },
+  updateUserFeaturedSandboxes(
+    username: string,
+    featuredSandboxIds: string[]
+  ): Promise<Profile> {
+    return api.patch(`/users/${username}`, {
+      user: {
+        featuredSandboxes: featuredSandboxIds,
+      },
+    });
+  },
+  createUserSettings({
+    name,
+    settings,
+  }: {
+    name: string;
+    settings: string;
+  }): Promise<SettingsSync> {
+    return api.post(`/users/current_user/editor_settings`, {
+      name,
+      settings,
+    });
+  },
+  getUserSettings(): Promise<SettingsSync[]> {
+    return api.get(`/users/current_user/editor_settings`);
+  },
+  editUserSettings(body: any, id: string): Promise<SettingsSync> {
+    return api.patch(`/users/current_user/editor_settings/${id}`, body);
+  },
+  removeUserSetting(id: string): Promise<SettingsSync> {
+    return api.delete(`/users/current_user/editor_settings`);
+  },
+  sandboxesLimits() {
+    return api.get<{
+      sandboxCount: number;
+      sandboxLimit: number;
+    }>(`/sandboxes/limits`);
+  },
+  getPrices() {
+    return api.get(`/prices`, undefined, { version: '2023-08-15' }, true);
+  },
+  stripeCreateCheckout({
+    success_path,
+    cancel_path,
+    team_id,
+    recurring_interval,
+  }: {
+    success_path: string;
+    cancel_path: string;
+    team_id: string;
+    recurring_interval: string;
+  }) {
+    return api.post<{ stripeCheckoutUrl: string }>(`/checkout`, {
+      success_path,
+      cancel_path,
+      team_id,
+      recurring_interval,
+    });
+  },
+  stripeCustomerPortal(teamId: string, return_path: string) {
+    return api.get<{ stripeCustomerPortalUrl: string }>(
+      `/teams/${teamId}/customer_portal?return_path=${return_path}`
+    );
+  },
+  removeBranchFromRepository(
+    workspaceId: string,
+    owner: string,
+    repo: string,
+    branch: string
+  ) {
+    return api.delete(`/beta/sandboxes/github/${owner}/${repo}/${branch}`, {
+      workspace_id: workspaceId,
+    });
+  },
+  removeLinkedProjectFromTeam(owner: string, repo: string, teamId: string) {
+    return api.delete(`/beta/repos/link/github/${owner}/${repo}/${teamId}`);
+  },
+  forkRepository(
+    source: { owner: string; name: string },
+    destination: {
+      name: string;
+      teamId: string;
+      organization?: string;
+    }
+  ) {
+    let body: Record<string, string | boolean> = {
+      name: destination.name,
+      team_id: destination.teamId,
+    };
+    if (destination.organization) {
+      body = { ...body, organization: destination.organization };
+    }
+
+    return api.post<{ owner: string; repo: string; branch: string }>(
+      `/beta/fork/github/${source.owner}/${source.name}`,
+      body
+    );
+  },
+  initializeSSO(email: string) {
+    return api.get<{ redirectUrl: string }>('/auth/workos/initialize', {
+      email,
+    });
+  },
+  getFeatures(): Promise<MetaFeatures> {
+    // useRoot = true since this is on /api/meta/features
+    // TODO: Refactor api factory to start from /api and apply /v1 as a legacy feature
+    return api.get('/meta/features', undefined, undefined, true);
   },
 };

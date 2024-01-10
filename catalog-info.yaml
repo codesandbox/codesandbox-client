@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: codesandbox-editor-v1
+  description: Codesandbox V1 Editor Frontend
+  annotations:
+    github.com/project-slug: codesandbox/codesandbox-client
+    backstage.io/kubernetes-namespace: default
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/name=codesandbox,component=client
+    codesandbox/deploy-image: codesandbox/client
+    codesandbox/deploy-gitops-repo: codesandbox/codesandbox-gitops
+    codesandbox/deploy-gitops-yaml-key: "client.image.tag"
+    codesandbox/deploy-image-tag-regex-production: ".*"
+    codesandbox/deploy-gitops-file-production: codesandbox-core/codesandbox/production/helm-chart-values/values.yaml
+    codesandbox/deploy-image-tag-regex-staging: ".*"
+    codesandbox/deploy-gitops-file-staging: codesandbox-core/codesandbox/staging/helm-chart-values/values.yaml
+    codesandbox/deploy-gitops-version-type: tag
+spec:
+  type: website
+  lifecycle: production
+  owner: client

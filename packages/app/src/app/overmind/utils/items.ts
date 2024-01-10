@@ -1,5 +1,7 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { config } from 'app/overmind';
+import { Overmind } from 'overmind';
 
 export interface INavigationItem {
   id: string;
@@ -27,6 +29,11 @@ export const PROJECT_SUMMARY: INavigationItem = {
   id: 'project-summary',
   name: 'Sandbox Info',
   hasCustomHeader: true,
+};
+
+export const SEARCH: INavigationItem = {
+  id: 'search',
+  name: 'Search',
 };
 
 export const FILES: INavigationItem = {
@@ -69,11 +76,39 @@ export const COMMENTS: INavigationItem = {
   name: 'Comments',
 };
 
+export const DOCKER: INavigationItem = {
+  id: 'docker',
+  name: 'Docker',
+};
+
+export const VSCODE: INavigationItem = {
+  id: 'vscode',
+  name: 'VS Code',
+};
+
+export const AITOOLS: INavigationItem = {
+  id: 'ai',
+  name: 'AI Tools',
+};
+
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
   if (!currentSandbox) {
-    return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
+    return [
+      PROJECT_SUMMARY,
+      FILES,
+      SEARCH,
+      CONFIGURATION,
+      GITHUB,
+      COMMENTS,
+      DEPLOYMENT,
+      LIVE,
+    ];
+  }
+
+  if (currentSandbox.git) {
+    return [CONFIGURATION, DEPLOYMENT, LIVE];
   }
 
   if (!currentSandbox.owned || !store.isLoggedIn) {
@@ -87,10 +122,13 @@ export function getDisabledItems(store: any): INavigationItem[] {
   return [];
 }
 
-export default function getItems(store: any): INavigationItem[] {
+export default function getItems(
+  store: Overmind<typeof config>['state']
+): INavigationItem[] {
   if (!store.editor.currentSandbox) {
     return [];
   }
+
   if (
     store.live.isLive &&
     !(
@@ -107,25 +145,46 @@ export default function getItems(store: any): INavigationItem[] {
 
   const { currentSandbox } = store.editor;
 
+  const isServer =
+    store.isLoggedIn &&
+    currentSandbox &&
+    getTemplate(currentSandbox.template).isServer;
+
+  if (currentSandbox.git) {
+    const gitItems = [PROJECT_SUMMARY];
+
+    if (
+      isServer &&
+      hasPermission(currentSandbox.authorization, 'write_project')
+    ) {
+      gitItems.push(SERVER);
+    }
+
+    return gitItems;
+  }
+
   if (!currentSandbox || !currentSandbox.owned) {
-    return [PROJECT_SUMMARY, CONFIGURATION];
+    return [PROJECT_SUMMARY, SEARCH, CONFIGURATION];
   }
 
   const isCustomTemplate = !!currentSandbox.customTemplate;
   const items = [
     isCustomTemplate ? PROJECT_TEMPLATE : PROJECT,
     FILES,
+    SEARCH,
     CONFIGURATION,
   ];
 
-  if (store.isLoggedIn && currentSandbox) {
-    const templateDef = getTemplate(currentSandbox.template);
-    if (templateDef.isServer) {
-      items.push(SERVER);
-    }
+  if (isServer) {
+    items.push(SERVER);
   }
 
-  if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
+  if (
+    store.isLoggedIn &&
+    !store.environment.isOnPrem &&
+    currentSandbox &&
+    !currentSandbox.git
+  ) {
     if (
       currentSandbox.featureFlags.comments &&
       hasPermission(currentSandbox.authorization, 'comment')
@@ -136,7 +195,7 @@ export default function getItems(store: any): INavigationItem[] {
     }
   }
 
-  if (store.isLoggedIn) {
+  if (store.isLoggedIn && !store.environment.isOnPrem) {
     items.push(DEPLOYMENT);
   }
 
@@ -148,5 +207,10 @@ export default function getItems(store: any): INavigationItem[] {
     items.push(LIVE);
   }
 
-  return items;
+  if (store.environment.isOnPrem) {
+    return items;
+  }
+
+  // Add docker, vs code and AI tools as conversion to v2 screens
+  return [...items, DOCKER, VSCODE, AITOOLS];
 }

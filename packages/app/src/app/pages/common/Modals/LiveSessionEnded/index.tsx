@@ -1,21 +1,19 @@
 import React, { FunctionComponent } from 'react';
 
 import { Button, Link, Stack } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import { Alert } from '../Common/Alert';
 
 export const LiveSessionEnded: FunctionComponent = () => {
   const {
-    actions: {
-      editor: { forkSandboxClicked },
-      modalClosed,
-    },
-    state: {
-      currentModalMessage,
-      editor: { currentSandbox },
-    },
-  } = useOvermind();
+    currentModalMessage,
+    editor: { currentSandbox },
+  } = useAppState();
+  const {
+    editor: { forkSandboxClicked },
+    modalClosed,
+  } = useActions();
   if (!currentSandbox) {
     return null;
   }
@@ -27,9 +25,10 @@ export const LiveSessionEnded: FunctionComponent = () => {
 
   return (
     <Alert
-      title="  The live session has ended"
-      description={`${currentModalMessage ||
-        'The session has ended due to inactivity'}, ${suggestion}`}
+      title="The live session has ended"
+      description={`${
+        currentModalMessage || 'The session has ended due to inactivity'
+      }, ${suggestion}`}
     >
       <Stack gap={2} align="center" justify="flex-end">
         {owned ? (
@@ -48,7 +47,7 @@ export const LiveSessionEnded: FunctionComponent = () => {
               width: 'auto',
             })}
             onClick={() => {
-              forkSandboxClicked();
+              forkSandboxClicked({});
               modalClosed();
             }}
             variant="link"

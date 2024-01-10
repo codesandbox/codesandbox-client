@@ -1,28 +1,26 @@
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 export const ForkServerModal: FunctionComponent = () => {
   const {
-    actions: {
-      editor: { forkSandboxClicked },
-      modalClosed,
-      signInClicked,
+    editor: { forkSandboxClicked },
+    modalClosed,
+    toggleSignInModal,
+  } = useActions();
+  const {
+    editor: {
+      currentSandbox: { template },
     },
-    state: {
-      editor: {
-        currentSandbox: { template },
-      },
-      isLoggedIn,
-    },
-  } = useOvermind();
+    isLoggedIn,
+  } = useAppState();
 
   useEffect(() => {
     // Which means that the user signed in in the meantime with the intention to fork
     if (isLoggedIn) {
-      forkSandboxClicked();
+      forkSandboxClicked({});
 
       modalClosed();
     }
@@ -34,8 +32,8 @@ export const ForkServerModal: FunctionComponent = () => {
     <Alert
       title={`Fork ${niceName} Sandbox`}
       description={`We execute ${niceName} sandboxes in a server container. This is still in beta, so we require you to sign in before you can fork a ${niceName}${' '} sandbox.`}
-      onPrimaryAction={() => signInClicked()}
-      confirmMessage="Sign in with GitHub"
+      onPrimaryAction={() => toggleSignInModal()}
+      confirmMessage="Sign in"
     />
   );
 };

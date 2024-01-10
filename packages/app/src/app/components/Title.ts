@@ -8,8 +8,10 @@ export const Title = styled.h1<{ delay?: number | null }>`
     background-color: transparent;
     color: white;
     font-size: 2.5rem;
-    font-weight: 300;
-    text-align: center;
+    font-weight: 800;
+    text-align: left;
+    line-height: 110%;
+    margin-bottom: 0.5rem;
     outline: none;
     ${delay !== null && delayEffect(delay)};
   `}

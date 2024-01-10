@@ -1,70 +1,87 @@
 {
   "name": "@codesandbox/components",
-  "version": "0.0.2",
+  "version": "0.0.7",
+  "main": "lib/index",
+  "source": true,
+  "contributors": [
+    "Sara Vieira <sara@codesandbox.io> (https://iamsaravieira.com)",
+    "Siddharth Kshetrapal <sid@codesandbox.io> (https://sid.st)"
+  ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/components"
   },
+  "bugs": {
+    "url": "https://github.com/codesandbox/codesandbox-client/issues"
+  },
+  "homepage": "https://github.com/codesandbox/codesandbox-client#readme",
   "files": [
     "lib"
   ],
-  "main": "lib/index",
-  "source": true,
   "scripts": {
     "build": "yarn build:lib",
     "build:dev": "yarn build",
     "build:lib": "yarn clean && yarn tsc",
     "build:storybook": "build-storybook -c .storybook -o public",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react && yarn rimraf node_modules/@types/react-native",
-    "lint": "eslint --ext .js,.ts,.tsx src",
-    "start": "yarn tsc --watch",
-    "start:storybook": "start-storybook",
-    "typecheck": "tsc --noEmit --pretty",
     "chromatic": "(if-env CIRCLE_BRANCH=master && yarn chromatic:master) || yarn chromatic:branch",
     "chromatic:base": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --project-token=nffds42ndde",
-    "chromatic:master": "yarn chromatic:base --auto-accept-changes",
     "chromatic:branch": "(!(git diff master...HEAD --quiet ./src) && yarn chromatic:base) || echo 'Not running Chromatic...'",
-    "prepublish": "yarn build"
+    "chromatic:master": "yarn chromatic:base --auto-accept-changes",
+    "lint": "eslint --ext .js,.ts,.tsx src",
+    "prepublish": "yarn build",
+    "start": "yarn tsc --watch",
+    "start:storybook": "start-storybook",
+    "typecheck": "tsc --noEmit --pretty"
   },
   "dependencies": {
-    "@reach/auto-id": "^0.7.1",
-    "@reach/menu-button": "^0.8.5",
-    "@reach/tooltip": "^0.8.6",
-    "@reach/visually-hidden": "^0.7.0",
+    "@reach/auto-id": "0.10.3",
+    "@reach/menu-button": "0.10.3",
+    "@reach/skip-nav": "^0.10.4",
+    "@reach/tooltip": "0.12.1",
+    "@reach/visually-hidden": "0.10.2",
     "@styled-system/css": "^5.1.4",
-    "chromatic": "^4.0.2",
-    "codesandbox-api": "0.0.24",
-    "color": "3.1.2",
+    "codesandbox-api": "0.0.32",
+    "color": "^3.2.0",
     "date-fns": "^2.8.1",
     "deepmerge": "^4.2.2",
     "dot-object": "^2.1.3",
-    "react-router-dom": "^5.1.2",
+    "react-router-dom": "^5.2.0",
     "react-tagsinput": "^3.19.0",
-    "styled-components": "^5.1.0",
+    "styled-components": "^5.2.0",
     "typeface-inter": "^3.11.2"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^5.3.18",
-    "@storybook/addon-actions": "^5.3.18",
-    "@storybook/addon-knobs": "^5.3.18",
-    "@storybook/addon-storysource": "^5.3.18",
-    "@storybook/addon-viewport": "^5.3.18",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "@typescript-eslint/typescript-estree": "^6.9.0",
+    "@storybook/addon-a11y": "^7.5.1",
+    "@storybook/addon-actions": "^7.5.1",
+    "@storybook/addon-knobs": "^7.0.2",
+    "@storybook/addon-storysource": "^7.5.1",
+    "@storybook/addon-viewport": "^7.5.1",
+    "@storybook/react": "^7.5.1",
     "@storybook/csf": "^0.0.1",
-    "@storybook/react": "^5.3.18",
     "@types/color": "3.0.1",
-    "@types/lodash": "^4.14.149",
-    "@types/styled-components": "^5.1.0",
+    "@types/lodash": "^4.14.200",
+    "@types/styled-components": "^5.1.7",
     "babel-preset-react-app": "^9.1.2",
+    "chromatic": "^7.5.4",
     "cpx": "^1.5.0",
     "if-env": "^1.0.4",
-    "np": "^5.2.1",
+    "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.0",
-    "storybook-addon-styled-component-theme": "^1.3.0",
-    "typescript": "3.7.4"
+    "simple-git": "^2.17.0",
+    "storybook-addon-styled-component-theme": "^2.0.0",
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
+  },
+  "engines": {
+    "node": "^16.0.0"
   }
 }

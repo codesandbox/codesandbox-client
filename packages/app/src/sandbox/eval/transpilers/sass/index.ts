@@ -1,53 +1,50 @@
 // @ts-ignore
 import SassWorker from 'worker-loader?publicPath=/&name=sass-transpiler.[hash:8].worker.js!./worker';
 
-import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
+import WorkerTranspiler from '../worker-transpiler/transpiler';
 
 class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('sass-loader', SassWorker, 1, { hasFS: true });
+    super('sass-loader', SassWorker, { maxWorkerCount: 1, hasFS: true });
 
     this.cacheable = false;
   }
 
-  doTranspilation(
+  async doTranspilation(
     code: string,
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
+    if (!code) {
+      return { transpiledCode: '' };
+    }
+
     const indentedSyntax =
       loaderContext.options.indentedSyntax == null
         ? loaderContext.path.endsWith('.sass')
         : true;
 
-    return new Promise((resolve, reject) => {
-      if (code === '' || code == null) {
-        resolve({ transpiledCode: '' });
-        return;
-      }
+    const {
+      transpiledCode,
+      transpilationDependencies,
+    } = await this.queueCompileFn(
+      {
+        code,
+        path: loaderContext.path,
+        indentedSyntax,
+      },
+      loaderContext
+    );
 
-      this.queueTask(
-        {
-          code,
-          path: loaderContext.path,
-          indentedSyntax,
-        },
-        loaderContext._module.getId(),
-        loaderContext,
-        (err, data) => {
-          if (err) {
-            loaderContext.emitError(err);
+    await Promise.all(
+      transpilationDependencies.map(dep =>
+        loaderContext.addTranspilationDependency(dep.path, dep.options || {})
+      )
+    );
 
-            return reject(err);
-          }
-
-          return resolve(data);
-        }
-      );
-    });
+    return { transpiledCode };
   }
 }
 

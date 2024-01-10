@@ -1,31 +1,34 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
+import { css } from '@styled-system/css';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Element, Stack, ThemeProvider } from '@codesandbox/components';
-import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import { css } from '@styled-system/css';
-import { Navigation } from '../common/Navigation';
-import { SignInModalElement } from './Modal';
 
-const SignIn = () => {
-  const {
-    state,
-    actions: { genericPageMounted },
-  } = useOvermind();
+import { SignIn } from './SignIn';
+
+export const SignInPage = () => {
+  const state = useAppState();
+  const { genericPageMounted } = useActions();
   const redirectTo = new URL(location.href).searchParams.get('continue');
 
   useEffect(() => {
     genericPageMounted();
   }, [genericPageMounted]);
 
-  if (state.hasLogIn && !redirectTo) {
+  /**
+   * 🚧 Utility to debug Trial Onboarding Questions
+   */
+  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
+
+  // 🚧 Remove && !TOQ_DEBUG
+  if (state.hasLogIn && !redirectTo && !TOQ_DEBUG) {
     return <Redirect to={dashboardUrl()} />;
   }
 
   return (
-    <ThemeProvider theme={codeSandboxBlack}>
+    <ThemeProvider>
       <Element
         css={css({
           backgroundColor: 'sideBar.background',
@@ -34,21 +37,19 @@ const SignIn = () => {
           overflow: 'hidden',
         })}
       >
-        <Navigation title="Sign In" />
         <Stack
           css={css({
             width: '100vw',
             height: '100%',
             marginBottom: 100,
+            padding: '16px',
           })}
           align="center"
           justify="center"
         >
-          <SignInModalElement redirectTo={redirectTo} />
+          <SignIn redirectTo={redirectTo} />
         </Stack>
       </Element>
     </ThemeProvider>
   );
 };
-
-export default SignIn;

@@ -25,11 +25,6 @@ function pathWithHash(location) {
   return `${location.pathname}${location.hash}`;
 }
 
-function isInsideVue(el) {
-  if (el === document.body) return false
-  return el.__vue__ || el._vnode || isInsideVue(el.parentElement)
-}
-
 export default function setupHistoryListeners() {
   function handleMessage(data, source) {
     if (source) {
@@ -52,9 +47,8 @@ export default function setupHistoryListeners() {
         origHistoryProto.replaceState.call(window.history, state, '', url);
         const newURL = document.location.href;
         sendUrlChange(newURL);
-        if (newURL.indexOf('#') === -1) {
-          window.dispatchEvent(new PopStateEvent('popstate', { state }));
-        } else {
+        window.dispatchEvent(new PopStateEvent('popstate', { state }));
+        if (newURL.indexOf('#') !== -1) {
           disableNextHashChange = true;
           window.dispatchEvent(
             new HashChangeEvent('hashchange', { oldURL, newURL })
@@ -89,12 +83,14 @@ export default function setupHistoryListeners() {
       get() {
         return historyList.length;
       },
+      configurable: true,
     },
 
     state: {
       get() {
         return historyList[historyPosition].state;
       },
+      configurable: true,
     },
   });
 
@@ -107,35 +103,6 @@ export default function setupHistoryListeners() {
       disableNextHashChange = false;
     }
   });
-
-  document.addEventListener(
-    'click',
-    ev => {
-      const el = ev.target;
-      if (
-        el.nodeName === 'A' &&
-        !isInsideVue(el) && // workaround for vue-router <router-link>
-        el.href.indexOf('#') !== -1 &&
-        el.href.substr(-1) !== '#'
-      ) {
-        const url = el.href;
-        const oldURL = document.location.href;
-        origHistoryProto.replaceState.call(window.history, null, '', url);
-        const newURL = document.location.href;
-        if (oldURL !== newURL) {
-          disableNextHashChange = true;
-          window.dispatchEvent(
-            new HashChangeEvent('hashchange', { oldURL, newURL })
-          );
-          pushHistory(pathWithHash(document.location), null);
-          sendUrlChange(document.location.href);
-        }
-        ev.preventDefault();
-        ev.stopPropagation();
-      }
-    },
-    true
-  );
 
   pushHistory(pathWithHash(document.location), null);
 

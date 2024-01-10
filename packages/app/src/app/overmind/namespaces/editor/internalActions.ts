@@ -1,6 +1,7 @@
 import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import {
   Module,
   ModuleTab,
@@ -8,18 +9,19 @@ import {
   ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
   editorUrl,
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
 
-export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
+export const ensureSandboxId = ({ state }: Context, id: string) => {
   if (state.editor.sandboxes[id]) {
     return id;
   }
@@ -33,20 +35,22 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   return matchingSandboxId || id;
 };
 
-export const initializeSandbox: AsyncAction<Sandbox> = async (
-  { actions, effects },
-  sandbox
+export const initializeSandbox = async (
+  { actions }: Context,
+  sandbox: Sandbox
 ) => {
   await Promise.all([
     actions.editor.internal.initializeLiveSandbox(sandbox),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
+    actions.internal.switchCurrentWorkspaceBySandbox({ sandbox }),
+    actions.getSandboxesLimits(),
   ]);
 };
 
-export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
-  { state, actions },
-  sandbox
+export const initializeLiveSandbox = async (
+  { state, actions }: Context,
+  sandbox: Sandbox
 ) => {
   state.live.isTeam = Boolean(sandbox.team);
 
@@ -75,9 +79,9 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
   }
 };
 
-export const updateSelectionsOfModule: AsyncAction<{ module: Module }> = async (
-  { actions, effects },
-  { module }
+export const updateSelectionsOfModule = async (
+  { actions, effects }: Context,
+  { module }: { module: Module }
 ) => {
   effects.vscode.updateUserSelections(
     module,
@@ -85,10 +89,16 @@ export const updateSelectionsOfModule: AsyncAction<{ module: Module }> = async (
   );
 };
 
-export const setModuleSavedCode: Action<{
-  moduleShortid: string;
-  savedCode: string | null;
-}> = ({ state }, { moduleShortid, savedCode }) => {
+export const setModuleSavedCode = (
+  { state }: Context,
+  {
+    moduleShortid,
+    savedCode,
+  }: {
+    moduleShortid: string;
+    savedCode: string | null;
+  }
+) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -100,17 +110,24 @@ export const setModuleSavedCode: Action<{
   );
 
   if (moduleIndex > -1) {
-    const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
+    const module = sandbox.modules[moduleIndex];
 
     module.savedCode = module.code === savedCode ? null : savedCode;
   }
 };
 
-export const saveCode: AsyncAction<{
-  code: string;
-  moduleShortid: string;
-  cbID?: string | null;
-}> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
+export const saveCode = async (
+  { state, effects, actions }: Context,
+  {
+    code,
+    moduleShortid,
+    cbID,
+  }: {
+    code: string;
+    moduleShortid: string;
+    cbID?: string | null;
+  }
+) => {
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
@@ -124,6 +141,8 @@ export const saveCode: AsyncAction<{
   if (!module) {
     return;
   }
+
+  effects.preview.executeCodeImmediately();
 
   try {
     let updatedModule: {
@@ -191,17 +210,6 @@ export const saveCode: AsyncAction<{
       effects.vscode.callCallback(cbID);
     }
 
-    if (
-      sandbox.originalGit &&
-      state.workspace.openedWorkspaceItem === 'github'
-    ) {
-      state.git.isFetching = true;
-      state.git.originalGitChanges = await effects.api.getGitChanges(
-        sandbox.id
-      );
-      state.git.isFetching = false;
-    }
-
     // If the executor is a server we only should send updates if the sandbox has been
     // started already
     if (
@@ -209,6 +217,10 @@ export const saveCode: AsyncAction<{
       state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
     ) {
       effects.executor.updateFiles(sandbox);
+    }
+
+    if (sandbox.template === 'static') {
+      effects.preview.refresh();
     }
 
     await actions.editor.internal.updateCurrentTemplate();
@@ -219,6 +231,7 @@ export const saveCode: AsyncAction<{
       message: 'There was a problem with saving the code, please try again',
       error,
     });
+    captureException(error);
 
     if (cbID) {
       effects.vscode.callCallbackError(cbID, error.message);
@@ -226,10 +239,7 @@ export const saveCode: AsyncAction<{
   }
 };
 
-export const updateCurrentTemplate: AsyncAction = async ({
-  effects,
-  state,
-}) => {
+export const updateCurrentTemplate = async ({ effects, state }: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -280,9 +290,9 @@ export const updateCurrentTemplate: AsyncAction = async ({
   }
 };
 
-export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
-  { state, actions, effects },
-  name
+export const removeNpmDependencyFromPackageJson = async (
+  { state, actions }: Context,
+  name: string
 ) => {
   if (
     !state.editor.currentSandbox ||
@@ -315,11 +325,18 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
   });
 };
 
-export const addNpmDependencyToPackageJson: AsyncAction<{
-  name: string;
-  version?: string;
-  isDev: boolean;
-}> = async ({ state, actions, effects }, { name, isDev, version }) => {
+export const addNpmDependencyToPackageJson = async (
+  { state, actions }: Context,
+  {
+    name,
+    isDev,
+    version,
+  }: {
+    name: string;
+    version?: string;
+    isDev: boolean;
+  }
+) => {
   if (
     !state.editor.currentSandbox ||
     !state.editor.currentPackageJSONCode ||
@@ -356,10 +373,16 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const updateModuleCode: Action<{
-  module: Module;
-  code: string;
-}> = ({ state, effects }, { module, code }) => {
+export const updateModuleCode = (
+  { state, effects }: Context,
+  {
+    module,
+    code,
+  }: {
+    module: Module;
+    code: string;
+  }
+) => {
   const { currentSandbox } = state.editor;
 
   if (!currentSandbox) {
@@ -380,18 +403,25 @@ export const updateModuleCode: Action<{
   }
 
   module.code = code;
-
   // Save the code to localStorage so we can recover in case of a crash
   effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
-export const forkSandbox: AsyncAction<{
-  sandboxId: string;
-  body?: { collectionId: string | undefined };
-  openInNewWindow?: boolean;
-}> = async (
-  { state, effects, actions },
-  { sandboxId: id, body, openInNewWindow = false }
+// TODO: We can make this function simpler or we can also make a different convertSandbox
+// action for when we don't fork it, but change it to a v2 sandbox.
+export const forkSandbox = async (
+  { state, effects, actions }: Context,
+  {
+    sandboxId: id,
+    teamId,
+    body,
+    openInNewWindow = false,
+  }: {
+    sandboxId: string;
+    teamId?: string | null;
+    body?: { collectionId: string | undefined };
+    openInNewWindow?: boolean;
+  }
 ) => {
   const sandbox = state.editor.currentSandbox;
   const currentSandboxId = state.editor.currentId;
@@ -404,19 +434,43 @@ export const forkSandbox: AsyncAction<{
     sandbox ? sandbox.template : null
   );
 
+  // If the user is not signed in and the sandbox is exectued in a server container
+  // we can't fork.
   if (!state.isLoggedIn && templateDefinition.isServer) {
+    // So we track this happens
     effects.analytics.track('Show Server Fork Sign In Modal');
+    // And open a modal (alert) to show a sign in button
     actions.modalOpened({ modal: 'forkServerModal' });
 
-    return;
+    // Throwing an error here ensures that it get's caught in the "withOwnedSandbox" function
+    // when it tries to execute forkSandbox. When we just return instead of throwing the error
+    // is not caught and "withOwnedSandbox" will run its "continueAction" which, in case of the
+    // "codeSaved" function will continue to save code, with all kinds of actions and api calls.
+    throw new Error('ERR_ANON_SSE_FORK');
   }
 
-  effects.analytics.track('Fork Sandbox');
+  effects.analytics.track('Fork Sandbox', {
+    template: sandbox.customTemplate?.title,
+    sandboxId: sandbox.id,
+  });
 
   try {
     state.editor.isForkingSandbox = true;
 
-    const forkedSandbox = await effects.api.forkSandbox(id, body);
+    const usedBody: {
+      collectionId?: string;
+      teamId?: string;
+    } = body || {};
+
+    if (state.user) {
+      if (teamId === undefined && state.activeTeam) {
+        usedBody.teamId = state.activeTeam;
+      } else if (teamId !== null) {
+        usedBody.teamId = teamId;
+      }
+    }
+
+    const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
 
     // Copy over any unsaved code
     Object.assign(forkedSandbox, {
@@ -465,6 +519,13 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+
+    if (sandbox.originalGit) {
+      actions.git.loadGitSource();
+    }
+
+    actions.internal.currentSandboxChanged();
+    await actions.getSandboxesLimits();
   } catch (error) {
     console.error(error);
     actions.internal.handleError({
@@ -477,9 +538,9 @@ export const forkSandbox: AsyncAction<{
   }
 };
 
-export const setCurrentModule: AsyncAction<Module> = async (
-  { state, effects },
-  module
+export const setCurrentModule = async (
+  { state, effects }: Context,
+  module: Module
 ) => {
   state.editor.currentTabId = null;
 
@@ -507,11 +568,7 @@ export const setCurrentModule: AsyncAction<Module> = async (
   effects.vscode.setCorrections(state.editor.corrections);
 };
 
-export const updateSandboxPackageJson: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const updateSandboxPackageJson = async ({ state, actions }: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (
@@ -550,43 +607,20 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   });
 };
 
-export const updateDevtools: AsyncAction<{
-  code: string;
-}> = async ({ state, actions }, { code }) => {
+export const updateDevtools = async (
+  { state, actions }: Context,
+  viewConfig: ViewConfig[]
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
-  if (state.editor.currentSandbox.owned) {
-    const devtoolsModule =
-      state.editor.modulesByPath['/.codesandbox/workspace.json'];
-
-    if (devtoolsModule) {
-      actions.editor.codeChanged({
-        moduleShortid: devtoolsModule.shortid,
-        code,
-      });
-      await actions.editor.codeSaved({
-        code,
-        moduleShortid: devtoolsModule.shortid,
-        cbID: null,
-      });
-    } else {
-      await actions.files.createModulesByPath({
-        files: {
-          '/.codesandbox/workspace.json': {
-            content: code,
-            isBinary: false,
-          },
-        },
-      });
-    }
-  } else {
-    state.editor.workspaceConfigCode = code;
-  }
+  await actions.files.updateWorkspaceConfig({
+    preview: viewConfig,
+  });
 };
 
-export const updatePreviewCode: Action = ({ state, effects }) => {
+export const updatePreviewCode = ({ state, effects }: Context) => {
   if (state.preferences.settings.instantPreviewEnabled) {
     effects.preview.executeCodeImmediately();
   } else {

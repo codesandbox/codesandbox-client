@@ -10,7 +10,6 @@ export const Container = styled.div`
     color: ${theme['sideBar.foreground'] || 'inherit'};
     height: 100%;
     width: 100%;
-    overflow-y: overlay;
     overflow-x: auto;
 
     * {
@@ -66,7 +65,7 @@ export const EntryContainer = styled.div<{
         : 'calc(1rem - 2px)'};
       padding-right: 3rem;
       color: ${theme['sideBar.foreground'] ||
-        (theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)')};
+      (theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)')};
       text-decoration: none;
       font-weight: 400;
       min-width: 100px;
@@ -75,40 +74,40 @@ export const EntryContainer = styled.div<{
       user-select: none;
       &:hover {
         ${!(active || editing) &&
-          css`
-            background-color: ${theme['list.hoverBackground'] ||
-              color.clearer(0.9)()};
-            color: ${theme['list.hoverForeground'] ||
-              (theme.light ? '#6c6c6c' : theme.background.lighten(5)())};
-            border-color: ${color.darken(0.4)()};
-          `}
+        css`
+          background-color: ${theme['list.hoverBackground'] ||
+          color.clearer(0.9)()};
+          color: ${theme['list.hoverForeground'] ||
+          (theme.light ? '#6c6c6c' : theme.background.lighten(5)())};
+          border-color: ${color.darken(0.4)()};
+        `}
         > div {
           opacity: 1 !important;
         }
       }
       ${active &&
-        css`
-          color: ${getSelectedColor(
-            theme['list.activeSelectionForeground']
-          )} !important;
-          border-color: ${color()} !important;
-          background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
-        `};
+      css`
+        color: ${getSelectedColor(
+          theme['list.activeSelectionForeground']
+        )} !important;
+        border-color: ${color()} !important;
+        background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
+      `};
       ${editing &&
+      css`
+        color: ${theme.white()};
+        background-color: ${color.clearer(0.9)()};
+        ${nameValidationError &&
         css`
-          color: ${theme.white()};
-          background-color: ${color.clearer(0.9)()};
-          ${nameValidationError &&
-            css`
-              border-color: ${theme.red()} !important;
-              background-color: ${theme['list.invalidItemForeground'] ||
-                theme.redBackground.clearer(0.4)()} !important;
-            `};
+          border-color: ${theme.red()} !important;
+          background-color: ${theme['list.invalidItemForeground'] ||
+          theme.redBackground.clearer(0.4)()} !important;
         `};
+      `};
       ${rightColors &&
-        css`
-          border-right: 2px solid ${rightColors[0]};
-        `};
+      css`
+        border-right: 2px solid ${rightColors[0]};
+      `};
     `;
   }};
 `;

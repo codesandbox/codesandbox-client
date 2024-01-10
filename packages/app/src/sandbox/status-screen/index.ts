@@ -67,7 +67,7 @@ export default function setScreen(screen: Screen) {
       );
     }
   } else if (currentScreen) {
-    changeText(currentScreen.text);
+    changeText(screen.text);
   }
 
   currentScreen = screen;

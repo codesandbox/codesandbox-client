@@ -1,14 +1,18 @@
-import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
+import {
+  HIDDEN_DIRECTORIES,
+  HIDDEN_FILES,
+} from '@codesandbox/common/lib/templates/constants/files';
 import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';
 
-import ModuleEntry from './ModuleEntry';
-import DirectoryEntry from '..';
+import { ModuleEntry } from './ModuleEntry';
+import { DirectoryEntry } from '..';
 
 interface IDirectoryChildrenProps {
   depth?: number;
+  readonly?: boolean;
   renameModule?: (title: string, moduleShortid: string) => void;
   setCurrentModule?: (id: string) => void;
   parentShortid?: string;
@@ -24,8 +28,9 @@ interface IDirectoryChildrenProps {
   renameValidator?: (id: string, title: string) => string | false | null;
 }
 
-const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
+export const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   depth = 0,
+  readonly,
   renameModule,
   setCurrentModule,
   parentShortid,
@@ -36,10 +41,8 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   getModulePath,
   renameValidator,
 }) => {
-  const {
-    state: { isLoggedIn, editor: editorState },
-    actions: { files, editor },
-  } = useOvermind();
+  const { isLoggedIn, editor: editorState } = useAppState();
+  const { files, editor } = useActions();
   const { currentSandbox, mainModule, currentModuleShortid } = editorState;
 
   const {
@@ -70,7 +73,7 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
             title={dir.title}
             sandboxId={sandboxId}
             sandboxTemplate={sandboxTemplate}
-            mainModuleId={mainModule.id}
+            mainModuleId={mainModule?.id}
             modules={modules}
             directories={directories}
             isInProjectView={isInProjectView}
@@ -79,11 +82,16 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
           />
         ))}
       {sortBy(
-        modules.filter(x => x.directoryShortid === parentShortid),
+        modules
+          .filter(x => x.directoryShortid === parentShortid)
+          .filter(
+            x => !(x.directoryShortid == null && HIDDEN_FILES.includes(x.title))
+          ),
         'title'
       ).map(m => (
         <ModuleEntry
           key={m.id}
+          readonly={readonly}
           module={m}
           depth={depth}
           setCurrentModule={setCurrentModule}
@@ -99,5 +107,3 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
     </div>
   );
 };
-
-export default DirectoryChildren;

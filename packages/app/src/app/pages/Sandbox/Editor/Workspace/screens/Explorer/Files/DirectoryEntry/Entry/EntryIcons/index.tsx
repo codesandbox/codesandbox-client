@@ -14,16 +14,25 @@ type Props = {
 class GetIcon extends Component<Props> {
   state = { icon: null };
 
+  mounted = true;
+
   getIcon = async type => {
     const icon = await getIconURL(type);
-
-    this.setState({
-      icon,
-    });
+    if (this.mounted) {
+      this.setState({
+        icon,
+      });
+    }
   };
 
   async componentDidMount() {
+    this.mounted = true;
+
     this.getIcon(this.props.type);
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   async componentDidUpdate(prevProps) {
@@ -47,7 +56,7 @@ class GetIcon extends Component<Props> {
   }
 }
 
-const EntryIcon: React.FC<Props> = ({
+export const EntryIcons: React.FC<Props> = ({
   type,
   width = 16,
   height = 16,
@@ -57,5 +66,3 @@ const EntryIcon: React.FC<Props> = ({
     <GetIcon type={type} error={error} width={width} height={height} />
   </div>
 );
-
-export default EntryIcon;

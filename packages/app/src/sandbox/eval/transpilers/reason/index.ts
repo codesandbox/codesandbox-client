@@ -1,9 +1,8 @@
 import { basename, dirname, join } from 'path';
 import stripANSI from 'strip-ansi';
 
-import Transpiler from '..';
-import { LoaderContext } from '../../transpiled-module';
-import { Module } from '../../types/module';
+import { LoaderContext, Transpiler } from 'sandpack-core';
+import { Module } from 'sandpack-core/lib/types/module';
 
 type ReasonModule = Module & {
   moduleName: string;
@@ -16,7 +15,7 @@ function addScript(src) {
     document.body.appendChild(s);
 
     s.onload = () => {
-      resolve();
+      resolve(undefined);
     };
   });
 }
@@ -76,8 +75,6 @@ function getDependencyList(
 }
 
 class ReasonTranspiler extends Transpiler {
-  worker: Worker;
-
   constructor() {
     super('reason-loader');
   }
@@ -114,13 +111,17 @@ class ReasonTranspiler extends Transpiler {
     const modulesToAdd: Set<ReasonModule> = new Set();
     getDependencyList(reasonModules, modulesToAdd, mainReasonModule);
 
-    modulesToAdd.forEach(m => {
-      if (m.path !== loaderContext._module.module.path) {
-        loaderContext.addTranspilationDependency(m.path, {});
-      }
-    });
+    const modulesToAddArr = Array.from(modulesToAdd);
 
-    const newCode = Array.from(modulesToAdd)
+    await Promise.all(
+      modulesToAddArr.map(async m => {
+        if (m.path !== loaderContext._module.module.path) {
+          await loaderContext.addTranspilationDependency(m.path, {});
+        }
+      })
+    );
+
+    const newCode = modulesToAddArr
       .map(x => {
         const usedCode = x.path.endsWith('.re')
           ? x.code
@@ -171,12 +172,13 @@ ${usedCode}
       error.lineNumber = row + 1;
       // @ts-ignore
       error.columnNumber = column;
-      return Promise.reject(error);
+
+      throw error;
     }
 
-    return Promise.resolve({
+    return {
       transpiledCode: js_code,
-    });
+    };
   }
 }
 

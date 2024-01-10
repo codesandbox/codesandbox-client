@@ -1,8 +1,9 @@
-import { TemplateType } from '..';
+import type { TemplateType } from '..';
 
 const SERVER_TEMPLATE_NAMES = [
   'adonis',
   'apollo',
+  'docusaurus',
   'ember',
   'gatsby',
   'gridsome',
@@ -12,7 +13,8 @@ const SERVER_TEMPLATE_NAMES = [
   'next',
   'node',
   'nuxt',
-  'quasar-framework',
+  'quasar',
+  'remix',
   'sapper',
   'styleguidist',
   'unibit',

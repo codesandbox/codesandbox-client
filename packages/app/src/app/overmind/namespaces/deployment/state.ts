@@ -1,29 +1,43 @@
 import { NetlifySite, VercelDeployment } from '@codesandbox/common/lib/types';
 
 type State = {
-  hasAlias: boolean;
-  building: boolean;
-  netlifyClaimUrl: string | null;
-  netlifyLogs: string | null;
-  netlifySite: NetlifySite | null;
-  deploysBeingDeleted: string[];
-  deployToDelete: string | null;
   deploying: boolean;
-  url: string | null;
-  gettingDeploys: boolean;
-  sandboxDeploys: VercelDeployment[];
+  building: boolean;
+  vercel: {
+    gettingDeploys: boolean;
+    deploys: VercelDeployment[];
+    deploysBeingDeleted: string[];
+    deployToDelete: string | null;
+    url: string | null;
+  };
+  netlify: {
+    claimUrl: string | null;
+    site: NetlifySite | null;
+  };
+  githubSite: {
+    ghLogin: string;
+    ghPages: boolean;
+    name: string;
+  };
 };
 
 export const state: State = {
-  hasAlias: false,
-  deploysBeingDeleted: [],
-  deployToDelete: null,
   deploying: false,
   building: false,
-  url: null,
-  gettingDeploys: true,
-  sandboxDeploys: [],
-  netlifyLogs: null,
-  netlifyClaimUrl: null,
-  netlifySite: null,
+  vercel: {
+    deploys: [],
+    deploysBeingDeleted: [],
+    deployToDelete: null,
+    url: null,
+    gettingDeploys: true,
+  },
+  netlify: {
+    claimUrl: null,
+    site: null,
+  },
+  githubSite: {
+    name: '',
+    ghLogin: '',
+    ghPages: false,
+  },
 };

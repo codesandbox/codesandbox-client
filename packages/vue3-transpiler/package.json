@@ -1,0 +1,23 @@
+{
+  "name": "vue3-transpiler",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typing": "lib/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc --watch",
+    "build": "tsc -b",
+    "build:dev": "yarn build"
+  },
+  "devDependencies": {
+    "@types/hash-sum": "^1.0.0",
+    "@types/node": "^16.18.14",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "hash-sum": "^2.0.0",
+    "querystring": "0.1.0",
+    "sandpack-core": "1.0.0",
+    "vue3-browser-compiler": "1.0.0"
+  }
+}

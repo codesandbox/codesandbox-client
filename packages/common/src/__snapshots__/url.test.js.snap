@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`url parameters can autoresize 1`] = `
-Object {
+{
   "autoResize": true,
   "editorSize": 50,
   "enableEslint": false,
@@ -21,7 +21,7 @@ Object {
 `;
 
 exports[`url parameters can handle multiple options 1`] = `
-Object {
+{
   "autoResize": true,
   "currentModule": "test",
   "editorSize": 50,
@@ -42,7 +42,7 @@ Object {
 `;
 
 exports[`url parameters can hide navigation 1`] = `
-Object {
+{
   "autoResize": false,
   "editorSize": 50,
   "enableEslint": false,
@@ -62,7 +62,7 @@ Object {
 `;
 
 exports[`url parameters doesn't set unknown fields 1`] = `
-Object {
+{
   "autoResize": false,
   "editorSize": 50,
   "enableEslint": false,
@@ -82,7 +82,7 @@ Object {
 `;
 
 exports[`url parameters keeps everything false on normal urls 1`] = `
-Object {
+{
   "autoResize": false,
   "editorSize": 50,
   "enableEslint": false,
@@ -102,7 +102,7 @@ Object {
 `;
 
 exports[`url parameters sets current module if there is one 1`] = `
-Object {
+{
   "autoResize": false,
   "currentModule": "test",
   "editorSize": 50,
@@ -123,7 +123,7 @@ Object {
 `;
 
 exports[`url parameters sets editor view 1`] = `
-Object {
+{
   "autoResize": false,
   "editorSize": 50,
   "enableEslint": false,
@@ -143,7 +143,7 @@ Object {
 `;
 
 exports[`url parameters sets preview view 1`] = `
-Object {
+{
   "autoResize": false,
   "editorSize": 50,
   "enableEslint": false,

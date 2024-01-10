@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Button, ThemeProvider, Stack } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { Toasts, NotificationState, NotificationStatus } from '../lib';
 
 const state = new NotificationState();
@@ -51,7 +50,7 @@ state.addNotification({
 
 function App() {
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <Stack
         gap={4}
         className="App"
@@ -62,8 +61,9 @@ function App() {
         padding={10}
       >
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -74,8 +74,9 @@ function App() {
           Add Success Notification
         </Button>
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -86,8 +87,9 @@ function App() {
           Add Error Notification
         </Button>
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -98,8 +100,9 @@ function App() {
           Add Notice Notification
         </Button>
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -111,7 +114,8 @@ function App() {
         </Button>
         <Button
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          autoWidth
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               title: 'Changes synced from Master',
@@ -125,7 +129,8 @@ function App() {
         </Button>
         <Button
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          autoWidth
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -142,8 +147,9 @@ function App() {
           Add Notification with one button
         </Button>
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',

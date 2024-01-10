@@ -1,24 +1,24 @@
 // This file imports the necessary files that allow for the comments to be used in the outside world as a plug API
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { CommentsGlobalStyles } from './components/GlobalStyles';
 import { MultiComment } from './components/MultiComment';
 import { CommentDialog } from './Dialog';
 
 export const CommentsAPI = () => {
   const {
-    state: { comments },
-  } = useOvermind();
+    currentComment,
+    currentCommentId,
+    multiCommentsSelector,
+  } = useAppState().comments;
 
   return (
     <>
       <CommentsGlobalStyles />
-      {comments.currentCommentId && comments.currentComment ? (
-        <CommentDialog />
+      {currentCommentId && currentComment ? (
+        <CommentDialog comment={currentComment} />
       ) : null}
-      {comments.multiCommentsSelector && (
-        <MultiComment {...comments.multiCommentsSelector} />
-      )}
+      {multiCommentsSelector && <MultiComment {...multiCommentsSelector} />}
     </>
   );
 };

@@ -15,15 +15,11 @@ export const Container = styled.div`
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 `;
 
-export const Navigation = styled.div`
+export const TestContainer = styled.div`
   flex: 2;
-
   box-sizing: border-box;
   overflow-y: auto;
   min-width: 450px;
-`;
-
-export const TestContainer = styled(Navigation)`
   background-color: ${props => props.theme['sideBar.background']};
   height: 100%;
 `;
@@ -40,22 +36,22 @@ const iconStyles = css`
   flex: 0 0 1.125em;
 `;
 
-export const Loading = styled(LoadingBubbles)`
+const Loading = styled(LoadingBubbles)`
   ${iconStyles};
   color: ${props => props.theme.secondary};
 `;
 
-export const Success = styled(Check)`
+const Success = styled(Check)`
   ${iconStyles};
   color: ${props => props.theme.green};
 `;
 
-export const Fail = styled(Cross)`
+const Fail = styled(Cross)`
   ${iconStyles};
   color: ${props => props.theme.red};
 `;
 
-export const Dot = styled(DotIcon)`
+const Dot = styled(DotIcon)`
   ${iconStyles};
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'};

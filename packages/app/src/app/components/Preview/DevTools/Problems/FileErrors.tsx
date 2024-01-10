@@ -9,7 +9,7 @@ import { MessageType } from '.';
 import { File, Path, FileName, Actions, AnimatedChevron } from './elements';
 import { ProblemMessage } from './Message';
 
-export interface Props {
+interface Props {
   file: string;
   corrections: MessageType[];
 }

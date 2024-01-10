@@ -105,6 +105,20 @@ function renderErrorByIndex(index: number) {
   }
 }
 
+const SHORTCUT_ESCAPE = 1;
+const SHORTCUT_LEFT = 2;
+const SHORTCUT_RIGHT = 3;
+
+function keyEventHandler(cb, event) {
+  if (event.key === 'Escape' || event.key === 'Esc') {
+    cb(SHORTCUT_ESCAPE);
+  } else if (event.key === 'Left' || event.key === 'ArrowLeft') {
+    cb(SHORTCUT_LEFT);
+  } else if (event.key === 'Right' || event.key === 'ArrowRight') {
+    cb(SHORTCUT_RIGHT);
+  }
+}
+
 function switchError(offset) {
   if (errorReferences.length === 0) {
     return;
@@ -165,7 +179,7 @@ function transformErrors() {
         try {
           return (
             manager &&
-            !!manager.resolveTranspiledModule(
+            !!manager.resolveTranspiledModuleSync(
               (r._originalFileName || r.fileName || '').replace(
                 location.origin,
                 ''
@@ -184,7 +198,7 @@ function transformErrors() {
       if (!tModule && relevantFrame) {
         const fileName =
           relevantFrame._originalFileName || relevantFrame.fileName || '';
-        tModule = manager.resolveTranspiledModule(
+        tModule = manager.resolveTranspiledModuleSync(
           fileName.replace(location.origin, ''),
           '/'
         );
@@ -217,7 +231,11 @@ function transformErrors() {
   }
 }
 
-function crash(error: Error, unhandledRejection = false) {
+function crash(
+  error: Error,
+  unhandledRejection = false,
+  renderErrorOverlay = true
+) {
   if (module.hot && typeof module.hot.decline === 'function') {
     module.hot.decline();
   }
@@ -232,21 +250,23 @@ function crash(error: Error, unhandledRejection = false) {
 
       sendErrorsToEditor();
       transformErrors();
-      if (iframeReference !== null && additionalReference !== null) {
-        updateAdditional(
-          iframeReference.contentDocument,
-          additionalReference,
-          currReferenceIndex + 1,
-          errorReferences.length,
-          offset => {
-            switchError(offset);
+      if (renderErrorOverlay) {
+        if (iframeReference !== null && additionalReference !== null) {
+          updateAdditional(
+            iframeReference.contentDocument,
+            additionalReference,
+            currReferenceIndex + 1,
+            errorReferences.length,
+            offset => {
+              switchError(offset);
+            }
+          );
+        } else {
+          if (errorReferences.length !== 1) {
+            throw new Error('Something is *really* wrong.');
           }
-        );
-      } else {
-        if (errorReferences.length !== 1) {
-          throw new Error('Something is *really* wrong.');
+          renderErrorByIndex((currReferenceIndex = 0));
         }
-        renderErrorByIndex((currReferenceIndex = 0));
       }
     })
     .catch(e => {
@@ -277,17 +297,25 @@ function shortcutHandler(type: string) {
 
 let listenToRuntimeErrorsUnmounter;
 
-function inject() {
-  listenToRuntimeErrorsUnmounter = listenToRuntimeErrors(error => {
-    crash(error.error);
-  });
-}
-
-function uninject() {
+function unregisterErrorHandlers() {
   if (listenToRuntimeErrorsUnmounter) {
     listenToRuntimeErrorsUnmounter();
+    listenToRuntimeErrorsUnmounter = null;
   }
-  unmount();
+}
+
+function uninject(force) {
+  unregisterErrorHandlers();
+  unmount(force);
+}
+
+function inject(renderErrorOverlay = true) {
+  // Remove existing listeners if there are any
+  unregisterErrorHandlers();
+
+  listenToRuntimeErrorsUnmounter = listenToRuntimeErrors(error => {
+    crash(error.error, false, renderErrorOverlay);
+  });
 }
 
 export { inject, uninject, unmount };

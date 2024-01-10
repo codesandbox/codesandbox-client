@@ -1,6 +1,6 @@
 {
-  "name": "template-icons",
-  "version": "1.0.0",
+  "name": "@codesandbox/template-icons",
+  "version": "2.0.2",
   "description": "Collection of SVG icons as React Components for usage with CodeSandbox Templates.",
   "license": "MIT",
   "author": "Drake Costa <drake@codesandbox.io> (https://github.com/Saeris)",
@@ -15,16 +15,17 @@
   "files": [
     "lib"
   ],
+  "types": "lib/index.d.ts",
   "main": "lib/index",
   "scripts": {
     "dev": "nodemon --watch src --watch example --exec run-s build",
-    "watch": "babel --watch src --out-dir lib --extensions '.ts,.tsx'",
-    "build": "babel src --out-dir lib --extensions '.ts,.tsx'",
+    "watch": "babel --watch src --out-dir lib --extensions .ts,.tsx",
+    "build": "babel src --out-dir lib --extensions .ts,.tsx",
     "build:dev": "npm run build",
     "lint": "eslint ./src",
-    "test": "yarn lint && yarn typecheck && jest -c ./jest.config.js",
-    "test:watch": "jest -c ./jest.config.js --watch",
-    "test:coverage": "jest -c ./jest.config.js && codecov",
+    "test": "yarn lint && yarn typecheck && jest --env=jsdom -c ./jest.config.js",
+    "test:watch": "jest --env=jsdom -c ./jest.config.js --watch",
+    "test:coverage": "jest --env=jsdom -c ./jest.config.js && codecov",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {},
@@ -39,11 +40,11 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.7.1",
+    "babel-preset-minify": "^0.5.2",
     "codecov": "^3.3.0",
     "core-js": "3.6.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^1.19.1",
-    "typescript": "^3.8.3"
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "react": "^16.x.x"

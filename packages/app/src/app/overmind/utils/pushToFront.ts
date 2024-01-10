@@ -8,7 +8,7 @@ export default ({
 }: {
   [key: string]: string;
 }) =>
-  fetch('https://s2973.sse.codesandbox.io/inbound-message', {
+  fetch('https://s2973-8080.csb.app/inbound-message', {
     method: 'POST',
     body: JSON.stringify({
       name: username,

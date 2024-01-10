@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import Modal from 'react-modal';
 import { Text, Element, Button, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const Image = props => {
-  const { state } = useOvermind();
+export const Image: React.FC<{
+  src: string;
+  alt: string;
+  ignorePrivateSandboxRestriction?: boolean;
+}> = props => {
+  const state = useAppState();
   const [modalOpen, setModalOpen] = useState(false);
   const privateSandbox =
     state.editor.currentSandbox.privacy === 1 ||
     state.editor.currentSandbox.privacy === 2;
-  return privateSandbox ? (
+  return props.ignorePrivateSandboxRestriction || privateSandbox ? (
     <>
       <Button
         padding={0}
@@ -20,15 +24,17 @@ export const Image = props => {
         onClick={() => setModalOpen(true)}
         css={css({
           maxWidth: '100%',
+          maxHeight: '100%',
           border: 'none',
+          height: 'auto',
         })}
       >
         <img
-          {...props}
+          src={props.src}
           alt={props.alt}
           css={css({
             maxWidth: '100%',
-            borderRadius: 'small',
+            borderRadius: 'medium',
           })}
         />
       </Button>
@@ -61,9 +67,10 @@ export const Image = props => {
           onClick={() => setModalOpen(false)}
           css={{
             position: 'absolute',
-            right: 4,
-            top: 4,
+            right: 8,
+            top: 8,
             color: 'white',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
           }}
         />
         <img
@@ -71,8 +78,9 @@ export const Image = props => {
           alt={props.alt}
           css={css({
             maxWidth: '100%',
-            borderRadius: 'small',
+            borderRadius: 'large',
             maxHeight: '80vh',
+            border: '1px solid #262626',
           })}
         />
       </Modal>

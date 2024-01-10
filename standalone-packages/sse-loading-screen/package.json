@@ -4,10 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@codesandbox/common": "^1.0.8",
+    "@codesandbox/common": "^1.0.12",
+    "axios": ">=1.6.0",
     "babel-plugin-emotion": "^9.2.10",
     "emotion": "^9.2.10",
-    "gsap": "^2.0.2",
+    "gsap": "^3.6.0",
     "preact": "^8.3.1",
     "preact-emotion": "^9.2.10",
     "socket.io-client": "^2.3.0",
@@ -24,12 +25,11 @@
     "babel-preset-react": "^6.24.1",
     "babel-runtime": "^6.26.0",
     "cssnano": "^4.0.5",
-    "parcel-bundler": "^1.9.7",
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "start": "parcel src/index.html",
-    "build": "rimraf dist && parcel build src/index.html --no-source-maps",
+    "start": "npx parcel-bundler@1.12.5 src/index.html",
+    "build": "rimraf dist && npx parcel-bundler@1.12.5 build src/index.html --no-source-maps",
     "install-dependencies": "yarn install"
   }
 }

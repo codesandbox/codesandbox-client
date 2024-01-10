@@ -1,25 +1,30 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-import { Files } from './Files';
+import React, { FunctionComponent } from 'react';
+
+import { useAppState } from 'app/overmind';
+
 import { Dependencies } from './Dependencies';
 import { ExternalResources } from './ExternalResources';
+import { Files } from './Files';
 
-export const Explorer = () => {
+type Props = {
+  readonly?: boolean;
+};
+
+export const Explorer: FunctionComponent<Props> = ({ readonly = false }) => {
   const {
-    state: { editor },
-  } = useOvermind();
-
-  const template = editor.currentSandbox.template;
+    currentSandbox: { template },
+  } = useAppState().editor;
 
   return (
     <>
-      <Files />
-      {template !== 'static' && (
+      <Files readonly={readonly} />
+
+      {template !== 'static' ? (
         <>
-          <Dependencies />
-          <ExternalResources />
+          <Dependencies readonly={readonly} />
+          <ExternalResources readonly={readonly} />
         </>
-      )}
+      ) : null}
     </>
   );
 };

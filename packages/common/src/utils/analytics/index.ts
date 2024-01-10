@@ -1,6 +1,5 @@
 import VERSION from '../../version';
 import * as amplitude from './amplitude';
-import * as google from './google';
 import * as sentry from './sentry';
 import {
   ANONYMOUS_UID_KEY,
@@ -8,17 +7,8 @@ import {
   getHashedUserId,
   isAllowedEvent,
 } from './utils';
-import * as vero from './vero';
-
-if (process.env.NODE_ENV === 'production') {
-  setTimeout(() => {
-    identify('[Amplitude] Version', VERSION);
-  }, 5000);
-}
 
 export { getHashedUserId };
-
-export const initializeSentry = sentry.initialize;
 
 export const DNT = DO_NOT_TRACK_ENABLED;
 
@@ -26,6 +16,11 @@ export async function logError(err: Error) {
   sentry.captureException(err);
 
   if (window.console && console.error) console.error(err);
+}
+
+export async function initializeAnalytics({ sentryDSN, amplitudeApiKey }) {
+  sentry.initialize(sentryDSN);
+  amplitude.init(amplitudeApiKey);
 }
 
 // Used to configure stuff?
@@ -39,21 +34,24 @@ export async function identify(key: string, value: any) {
   }
 }
 
+/**
+ * An identify that only sets the value if it hasn't been set before
+ */
+export async function identifyOnce(key: string, value: any) {
+  if (!DO_NOT_TRACK_ENABLED) {
+    amplitude.identifyOnce(key, value);
+  }
+}
+
 export async function setAnonymousId() {
   if (!DO_NOT_TRACK_ENABLED && typeof localStorage !== 'undefined') {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
     if (!anonymousUid) {
-      anonymousUid = String(
-        Math.random()
-          .toString(36)
-          .substring(2)
-      );
+      anonymousUid = String(Math.random().toString(36).substring(2));
 
       localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
     }
-
-    vero.setAnonymousUserId(anonymousUid);
   }
 }
 
@@ -63,7 +61,6 @@ export async function setUserId(userId: string, email: string) {
 
     amplitude.setUserId(hashedId);
     sentry.setUserId(hashedId);
-    vero.setUserId(hashedId, email);
   }
 }
 
@@ -82,8 +79,6 @@ export function trackPageview() {
     };
 
     amplitude.track('pageview', data);
-    vero.trackPageview();
-    google.trackPageView();
   }
 }
 
@@ -96,7 +91,35 @@ export function setGroup(name: string, value: string | string[]) {
   }
 }
 
-export default function track(eventName, secondArg: Object = {}) {
+const trackedEventsByTime: Record<string, number> = {};
+export function trackWithCooldown(
+  event: string,
+  cooldown: number,
+  data: any = {}
+) {
+  const now = Date.now();
+  if (trackedEventsByTime[event]) {
+    if (now - trackedEventsByTime[event] <= cooldown) {
+      return;
+    }
+  }
+
+  trackedEventsByTime[event] = now;
+  track(event, data);
+}
+
+export function trackImprovedDashboardEvent(
+  eventName: string,
+  extraInfo: Object = {}
+) {
+  track(eventName, {
+    ...extraInfo,
+    codesandbox: 'V1',
+    event_source: 'UI',
+  });
+}
+
+export default function track(eventName: string, secondArg: Object = {}) {
   if (!DO_NOT_TRACK_ENABLED && isAllowedEvent(eventName, secondArg)) {
     const data = {
       ...secondArg,
@@ -104,8 +127,6 @@ export default function track(eventName, secondArg: Object = {}) {
       path: location.pathname + location.search,
     };
     amplitude.track(eventName, data);
-    google.track(eventName, data);
-    vero.track(eventName, data);
     sentry.logBreadcrumb({
       type: 'analytics',
       message: eventName,

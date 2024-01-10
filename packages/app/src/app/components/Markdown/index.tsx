@@ -36,14 +36,14 @@ export const Markdown = ({ source }) => (
     })}
   >
     <ReactMarkdown
-      source={source.replace(/\n/gi, '&nbsp;\n\n')}
+      transformLinkUri={null}
       renderers={{
         text: ({ children }) => (
           <Text
             variant="muted"
             size={3}
             css={css({
-              wordBreak: 'break-all',
+              wordBreak: 'break-word',
             })}
           >
             {children}
@@ -51,6 +51,22 @@ export const Markdown = ({ source }) => (
         ),
         heading: ({ children }) => (
           <Text block variant="muted" size={3}>
+            {children}
+          </Text>
+        ),
+        blockquote: ({ children }) => (
+          <Text
+            block
+            variant="muted"
+            size={3}
+            css={css({
+              p: {
+                display: 'inline',
+              },
+              ':before': { content: 'open-quote' },
+              ':after': { content: 'close-quote' },
+            })}
+          >
             {children}
           </Text>
         ),
@@ -62,6 +78,8 @@ export const Markdown = ({ source }) => (
         thematicBreak: () => null,
         inlineCode: InlineCode,
       }}
-    />
+    >
+      {source ? source.replace(/\n/gi, '&nbsp;\n\n') : source}
+    </ReactMarkdown>
   </Element>
 );

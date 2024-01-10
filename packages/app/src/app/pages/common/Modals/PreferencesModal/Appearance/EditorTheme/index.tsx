@@ -1,20 +1,14 @@
-import React, { FunctionComponent } from 'react';
-
-import { useOvermind } from 'app/overmind';
 import { Text } from '@codesandbox/components';
+import React, { FunctionComponent } from 'react';
+import { useAppState, useActions } from 'app/overmind';
 
 import { Rule } from '../../elements';
+
 import { PreferenceText } from './elements';
 
 export const EditorTheme: FunctionComponent = () => {
-  const {
-    actions: {
-      preferences: { settingChanged },
-    },
-    state: {
-      preferences: { settings },
-    },
-  } = useOvermind();
+  const { settings } = useAppState().preferences;
+  const { settingChanged } = useActions().preferences;
 
   const bindValue = (name: string, setUndefined?: boolean) => ({
     setValue: value => settingChanged({ name, value }),
@@ -23,32 +17,27 @@ export const EditorTheme: FunctionComponent = () => {
 
   return (
     <div>
-      <Text block size={3} marginTop={8} marginBottom={2}>
+      <Text block marginBottom={2} marginTop={8} size={3}>
         Editor Theme
       </Text>
 
-      <Text variant="muted" size={3} block>
+      <Text block size={3} variant="muted">
         You can select your editor theme by selecting File {'->'} Preferences{' '}
         {'->'} Color Theme in the menu bar.
       </Text>
 
       <Rule />
 
-      <Text size={3} marginBottom={2} block>
+      <Text block marginBottom={2} size={3}>
         Custom VSCode Theme
       </Text>
 
-      <Text variant="muted" size={3} marginBottom={4} block>
-        After changing this setting you
-        {"'"}
-        ll have to reload the browser and select {'"'}
-        Custom
-        {'"'} as your color theme.
+      <Text block marginBottom={4} size={3} variant="muted">
+        {`After changing this setting you'll have to reload the browser and select 'Custom' as your color theme.`}
       </Text>
 
       <PreferenceText
         block
-        style={{ minHeight: 130 }}
         isTextArea
         placeholder={`You can use your own theme from VSCode directly:
 1. Open VSCode
@@ -56,6 +45,7 @@ export const EditorTheme: FunctionComponent = () => {
 3. Enter: '> Developer: Generate Color Scheme From Current Settings'
 4. Copy the contents and paste them here!`}
         rows={7}
+        style={{ minHeight: 130 }}
         {...bindValue('manualCustomVSCodeTheme', true)}
       />
     </div>

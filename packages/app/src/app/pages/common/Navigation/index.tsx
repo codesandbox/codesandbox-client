@@ -1,4 +1,4 @@
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React from 'react';
 import {
   Stack,
@@ -7,31 +7,30 @@ import {
   Avatar,
   Text,
   Link,
+  Icon,
 } from '@codesandbox/components';
+import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import {
   Link as LinkBase,
   withRouter,
   RouteComponentProps,
 } from 'react-router-dom';
-import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import css from '@styled-system/css';
 
 import { UserMenu } from '../UserMenu';
-import { Logo } from './Icons';
 
 type Props = {
   title?: string;
+  showActions?: boolean;
 } & RouteComponentProps;
 
-export const NavigationComponent = ({ title, match }: Props) => {
-  const {
-    actions: { modalOpened, signInClicked },
-    state: { isLoggedIn, isAuthenticating, user },
-  } = useOvermind();
+const NavigationComponent = ({ title, match, showActions = true }: Props) => {
+  const { signInClicked, modalOpened } = useActions();
+  const { isLoggedIn, isAuthenticating, user } = useAppState();
   const link = isLoggedIn ? '/dashboard' : '/';
 
   return (
-    <ThemeProvider theme={codeSandboxBlack}>
+    <ThemeProvider>
       <Stack
         as="header"
         paddingX={4}
@@ -46,13 +45,19 @@ export const NavigationComponent = ({ title, match }: Props) => {
         })}
       >
         <Stack
-          css={css({ maxWidth: '80%', width: 1080, marginX: 'auto' })}
+          css={css({
+            '@media screen and (min-width: 768px)': {
+              maxWidth: '80%',
+            },
+            width: 1080,
+            marginX: 'auto',
+          })}
           justify="space-between"
           align="center"
         >
           <Stack gap={4} align="center">
             <Link css={css({ display: 'flex' })} to={link} as={LinkBase}>
-              <Logo />
+              <LogoFull />
             </Link>
             <Text
               size={3}
@@ -63,35 +68,48 @@ export const NavigationComponent = ({ title, match }: Props) => {
                 },
               })}
             >
-              CodeSandbox - {title}
+              {title}
             </Text>
           </Stack>
           {!isAuthenticating ? (
             <Stack align="center" gap={6}>
               {!isLoggedIn && match.path !== '/signin' ? (
                 <Button
-                  css={{ width: 'auto' }}
+                  autoWidth
                   variant="link"
                   onClick={() => signInClicked()}
                 >
                   Sign In
                 </Button>
               ) : null}
-              <Button
-                variant="primary"
-                css={css({ width: 'auto', paddingX: 3 })}
-                onClick={() => modalOpened({ modal: 'newSandbox' })}
-              >
-                Create Sandbox
-              </Button>
+              {showActions && (
+                <Button
+                  variant="ghost"
+                  css={{ width: 'auto' }}
+                  onClick={() => {
+                    modalOpened({ modal: 'genericCreate' });
+                  }}
+                >
+                  <Icon
+                    name="plus"
+                    size={16}
+                    title="Create new"
+                    css={{ marginRight: '8px' }}
+                  />
+                  Create
+                </Button>
+              )}
               {isLoggedIn ? (
                 <UserMenu>
                   <Button
+                    as={UserMenu.Button}
                     variant="secondary"
                     css={css({
                       padding: 0,
                       height: 'auto',
                       border: 'none',
+                      borderRadius: '100%',
+                      marginTop: 1,
                     })}
                   >
                     <Avatar

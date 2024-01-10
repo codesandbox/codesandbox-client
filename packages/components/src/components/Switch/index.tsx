@@ -7,9 +7,8 @@ const SwitchBackground = styled.div(
   css({
     width: 7,
     height: 4,
+    cursor: 'pointer',
     backgroundColor: 'switch.backgroundOff',
-    border: '1px solid',
-    borderColor: 'sideBar.background',
     borderRadius: 'large',
     position: 'relative',
     transition: 'background-color ease',
@@ -24,10 +23,11 @@ const SwitchToggle = styled.span(
     backgroundColor: 'switch.toggle',
     borderRadius: '50%',
     position: 'absolute',
-    margin: '1px',
+    margin: '2px',
     left: 0,
-    transition: 'left ease',
+    transition: 'left ease, background-color ease',
     transitionDuration: theme => theme.speeds[3],
+    boxSizing: 'border-box',
   })
 );
 
@@ -47,6 +47,14 @@ const SwitchContainer = styled(Element)(
     },
     'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
       left: theme => theme.space[4] - 4 + 'px',
+      backgroundColor: 'button.foreground',
+    },
+    '*': {
+      boxSizing: 'border-box',
+    },
+    '&[data-disabled] > [data-component=SwitchBackground]': {
+      opacity: 0.4,
+      cursor: 'not-allowed',
     },
   })
 );
@@ -55,15 +63,22 @@ interface ISwitchProps {
   id?: string;
   on?: boolean;
   defaultOn?: boolean;
+  disabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (
-  <SwitchContainer as="label">
+export const Switch: React.FC<ISwitchProps> = ({
+  on,
+  defaultOn,
+  disabled,
+  ...props
+}) => (
+  <SwitchContainer as="label" data-disabled={disabled ? true : null}>
     <SwitchInput
       type="checkbox"
       checked={on}
       defaultChecked={defaultOn}
+      disabled={disabled}
       {...props}
     />
     <SwitchBackground data-component="SwitchBackground">

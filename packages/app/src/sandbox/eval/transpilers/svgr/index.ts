@@ -1,26 +1,19 @@
-import Transpiler from '..';
-import { LoaderContext } from '../../transpiled-module';
+import { LoaderContext, Transpiler } from 'sandpack-core';
 
 class SVGRTranspiler extends Transpiler {
+  constructor() {
+    super('svgr-loader');
+  }
+
   async doTranspilation(code: string, loaderContext: LoaderContext) {
     const { svgrTransform } = await import('./transpiler');
+
     // We follow CRA behaviour, so the code with the component is not the default
     // export, this forces that.
 
     const codeIsHttp = loaderContext._module.module.code.startsWith('http');
-    const state = {
-      webpack: {
-        previousExport: `"${
-          codeIsHttp
-            ? loaderContext._module.module.code
-            : loaderContext._module.module.path
-        }"`,
-      },
-    };
-
     let downloadedCode = code;
-
-    if (code.startsWith('http')) {
+    if (codeIsHttp) {
       await fetch(code)
         .then(res => res.text())
         .then(r => {
@@ -28,15 +21,14 @@ class SVGRTranspiler extends Transpiler {
         });
     }
 
-    const result = await svgrTransform(downloadedCode, state);
-
+    const result = await svgrTransform(loaderContext.path, downloadedCode);
     return {
       transpiledCode: result,
     };
   }
 }
 
-const transpiler = new SVGRTranspiler('svgr-loader');
+const transpiler = new SVGRTranspiler();
 
 export { SVGRTranspiler };
 

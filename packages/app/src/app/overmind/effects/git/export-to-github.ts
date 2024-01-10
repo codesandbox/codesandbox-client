@@ -1,8 +1,9 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
 import JSZip from 'jszip';
 import { createZip, BLOB_ID } from '../zip/create-zip';
+import http from '../http';
 
-interface IAPIModule {
+export interface IAPIModule {
   content: string;
   isBinary: boolean;
   path: string;
@@ -39,6 +40,7 @@ export default async function deploy(sandbox: Sandbox) {
       if (content.startsWith(BLOB_ID)) {
         isBinary = true;
         content = content.replace(BLOB_ID, '');
+        content = await http.blobToBase64(content); // eslint-disable-line no-await-in-loop
       }
 
       apiData.sandbox.push({

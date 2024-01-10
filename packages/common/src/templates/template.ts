@@ -11,7 +11,8 @@ import { PackageJSON } from '../types';
 export type Options = {
   showOnHomePage?: boolean;
   distDir?: string;
-  netlify?: boolean;
+  staticDeployment?: boolean;
+  githubPagesDeploy?: boolean;
   popular?: boolean;
   extraConfigurations?: {
     [path: string]: ConfigurationFile;
@@ -40,7 +41,7 @@ const defaultConfigurations = {
   '/package.json': configurations.packageJSON,
   '/.prettierrc': configurations.prettierRC,
   '/sandbox.config.json': configurations.sandboxConfig,
-  '/now.json': configurations.nowConfig,
+  '/vercel.json': configurations.nowConfig,
   '/netlify.toml': configurations.netlifyConfig,
 };
 
@@ -48,6 +49,8 @@ export interface ViewTab {
   id: string;
   closeable?: boolean;
   options?: any;
+  hideOnEmbedPage?: boolean;
+  hideOnPrem?: boolean;
 }
 
 export type ViewConfig = {
@@ -57,7 +60,15 @@ export type ViewConfig = {
 
 const CLIENT_VIEWS: ViewConfig[] = [
   {
-    views: [{ id: 'codesandbox.browser' }, { id: 'codesandbox.tests' }],
+    views: [
+      { id: 'codesandbox.browser' },
+      { id: 'codesandbox.tests' },
+      {
+        id: 'codesandbox.terminalUpgrade',
+        hideOnEmbedPage: true,
+        hideOnPrem: true,
+      },
+    ],
   },
   {
     views: [{ id: 'codesandbox.console' }, { id: 'codesandbox.problems' }],
@@ -90,7 +101,8 @@ export default class Template {
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
-  netlify: boolean;
+  staticDeployment: boolean;
+  githubPagesDeploy: boolean;
   configurationFiles: ConfigurationFiles;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
@@ -129,7 +141,8 @@ export default class Template {
         : true;
 
     this.mainFile = options.mainFile;
-    this.netlify = options.netlify;
+    this.staticDeployment = options.staticDeployment;
+    this.githubPagesDeploy = options.githubPagesDeploy;
     this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;

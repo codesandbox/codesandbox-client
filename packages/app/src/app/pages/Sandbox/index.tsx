@@ -1,22 +1,19 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import Padding from '@codesandbox/common/lib/components/spacing/Padding';
+import css from '@styled-system/css';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { Title } from 'app/components/Title';
-import { useOvermind } from 'app/overmind';
-import { ThemeProvider } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import { GithubIntegration } from 'app/pages/common/GithubIntegration';
+import { useAppState, useActions } from 'app/overmind';
+import { ThemeProvider, Element, Stack } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 
-import Editor from './Editor';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
+import { Editor } from './Editor';
+import { GitHubError } from './GitHubError';
+import { OnBoarding } from './OnBoarding';
 
 interface Props {
-  match: {
+  showNewSandboxModal?: boolean;
+  match?: {
     params: {
       id: string;
     };
@@ -24,26 +21,64 @@ interface Props {
 }
 
 export const Sandbox = React.memo<Props>(
-  ({ match }) => {
-    const { state, actions } = useOvermind();
+  ({ match, showNewSandboxModal }) => {
+    const state = useAppState();
+    const actions = useActions();
+    const [hasBetaEditorExperiment] = useBetaSandboxEditor();
+    const { sandboxPageMounted } = actions;
+
+    /**
+     * !important Hard bug fix
+     *
+     * This address temporarily many unexpected
+     * behaviors that occurs when  navigating away
+     * from the editor and go back to it
+     * Eg: Editor -> Dashboard -> Editor
+     *
+     * @link https://www.notion.so/Unexpected-behaviors-when-navigating-away-from-the-editor-and-go-back-to-it-b5fcc670c3fb46afa8a57dd05f701bcb
+     */
+    useEffect(() => {
+      if (window.CSEditor) {
+        window.location.reload();
+      }
+    }, []);
 
     useEffect(() => {
-      if (window.screen.availWidth < 800) {
-        if (!document.location.search.includes('from-embed')) {
-          const addedSign = document.location.search ? '&' : '?';
-          document.location.href =
-            document.location.href.replace('/s/', '/embed/') +
-            addedSign +
-            'codemirror=1';
-        } else {
-          actions.preferences.codeMirrorForced();
+      sandboxPageMounted();
+    }, [sandboxPageMounted]);
+
+    useEffect(() => {
+      if (!showNewSandboxModal) {
+        if (window.screen.availWidth < 800) {
+          if (!document.location.search.includes('from-embed')) {
+            const addedSign = document.location.search ? '&' : '?';
+            document.location.href =
+              document.location.href.replace('/s/', '/embed/') +
+              addedSign +
+              'codemirror=1';
+          } else {
+            actions.preferences.codeMirrorForced();
+          }
         }
       }
 
       actions.live.onNavigateAway();
+      if (match?.params) {
+        actions.editor.sandboxChanged({
+          id: match.params.id,
+          hasBetaEditorExperiment,
+        });
+      }
 
-      actions.editor.sandboxChanged({ id: match.params.id });
-    }, [actions.live, actions.editor, actions.preferences, match.params.id]);
+      // eslint-disable-next-line
+    }, [
+      actions.live,
+      actions.editor,
+      actions.preferences,
+      showNewSandboxModal,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      match?.params,
+    ]);
 
     useEffect(
       () => () => {
@@ -54,81 +89,20 @@ export const Sandbox = React.memo<Props>(
 
     function getContent() {
       const {
-        hasLogIn,
         isLoggedIn,
         editor: { error },
       } = state;
 
       if (error) {
-        const isGithub = match.params.id.includes('github');
+        const isGithub = match?.params?.id.includes('github');
 
         return (
-          <>
-            <div
-              style={{
-                fontWeight: 300,
-                color: 'rgba(255, 255, 255, 0.5)',
-                marginBottom: '1rem',
-                fontSize: '1.5rem',
-              }}
-            >
-              Something went wrong
-            </div>
-            <Title style={{ fontSize: '1.25rem', marginBottom: 0 }}>
-              {error.message}
-            </Title>
-            <br />
-            <div style={{ display: 'flex', maxWidth: 400, width: '100%' }}>
-              <Button block small style={{ margin: '.5rem' }} href="/s">
-                Create Sandbox
-              </Button>
-              <Button block small style={{ margin: '.5rem' }} href="/">
-                {hasLogIn ? 'Dashboard' : 'Homepage'}
-              </Button>
-            </div>
-            {isLoggedIn && isGithub && error.status !== 422 && (
-              <div
-                style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
-              >
-                <div
-                  style={{
-                    fontWeight: 300,
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    marginBottom: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'center',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Did you try to open a private GitHub repository and are you a{' '}
-                  <Link to="/pro">pro</Link>? Then you might need to get private
-                  access:
-                </div>
-                <GithubIntegration small />
-                <div
-                  style={{
-                    fontWeight: 300,
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    marginTop: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'center',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  If you{"'"}re importing a sandbox from an organization, make
-                  sure to enable organization access{' '}
-                  <a
-                    href="https://github.com/settings/connections/applications/c07a89833b557afc7be2"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    here
-                  </a>
-                  .
-                </div>
-              </div>
-            )}
-          </>
+          <GitHubError
+            signIn={() => actions.signInClicked()}
+            isGithub={isGithub}
+            error={error}
+            isLoggedIn={isLoggedIn}
+          />
         );
       }
 
@@ -139,11 +113,19 @@ export const Sandbox = React.memo<Props>(
 
     if (content) {
       return (
-        <ThemeProvider theme={codesandboxBlack}>
-          <Fullscreen>
-            <Padding
+        <ThemeProvider>
+          <Element
+            css={css({
+              display: 'flex',
+              flex: 'auto',
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'sideBar.background',
+              fontFamily: 'Inter',
+            })}
+          >
+            <Stack
               style={{
-                display: 'flex',
                 flexDirection: 'column',
                 width: '100vw',
                 height: '100vh',
@@ -151,29 +133,44 @@ export const Sandbox = React.memo<Props>(
               margin={1}
             >
               <Navigation title="Sandbox Editor" />
-              <Centered
-                style={{ flex: 1, width: '100%', height: '100%' }}
-                horizontal
-                vertical
+              <Stack
+                align="center"
+                justify="center"
+                style={{
+                  flexDirection: 'column',
+                  width: '100%',
+                  height: '100%',
+                }}
               >
                 {content}
-              </Centered>
-            </Padding>
-          </Fullscreen>
+              </Stack>
+            </Stack>
+          </Element>
         </ThemeProvider>
       );
     }
 
     const sandbox = state.editor.currentSandbox;
 
+    const getTitle = () => {
+      if (showNewSandboxModal) {
+        return 'Create a new Sandbox';
+      }
+
+      if (sandbox) {
+        return getSandboxName(sandbox);
+      }
+
+      return 'Loading...';
+    };
+
     return (
       <>
         <Helmet>
-          <title>
-            {sandbox ? getSandboxName(sandbox) : 'Loading...'} - CodeSandbox
-          </title>
+          <title>{getTitle()} - CodeSandbox</title>
         </Helmet>
-        <Editor />
+        <OnBoarding />
+        <Editor showNewSandboxModal={showNewSandboxModal} />
       </>
     );
   },

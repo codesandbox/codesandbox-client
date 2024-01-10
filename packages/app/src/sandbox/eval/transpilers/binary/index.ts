@@ -1,5 +1,4 @@
-import Transpiler, { TranspilerResult } from '..';
-import { LoaderContext } from '../../transpiled-module';
+import { LoaderContext, Transpiler, TranspilerResult } from 'sandpack-core';
 
 /**
  * Just fetches a file from the interwebs and converts it to a blob

@@ -508,7 +508,7 @@ export class ModelsHandler {
           userSelect: 'none',
           pointerEvents: 'none',
           width: 'max-content',
-          fontFamily: 'dm, Menlo, monospace',
+          fontFamily: 'MonoLisa, Menlo, monospace',
         };
         if (!this.userClassesGenerated[cursorClassName]) {
           this.userClassesGenerated[cursorClassName] = `${css({

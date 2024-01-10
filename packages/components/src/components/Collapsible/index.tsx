@@ -92,7 +92,7 @@ export const Collapsible: React.FC<ICollapsibleProps> = ({
         <ToggleIcon open={open} />
         <Text weight="medium">{title}</Text>
         <VisuallyHidden>
-          <input type="checkbox" checked={open} />
+          <input type="checkbox" checked={open} readOnly />
         </VisuallyHidden>
       </Header>
 

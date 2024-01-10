@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import CrossIcon from 'react-icons/lib/md/clear';
 
 import { Stack } from '../Stack';
 import { Button } from '../Button';
 import { Text } from '../Text';
+import { Icon } from '../Icon';
 
 const TagElement = styled(Stack).attrs({
   inline: true,
@@ -33,11 +33,11 @@ export function Tag({ tag, onRemove }: TagProps) {
       {onRemove && (
         <Button
           variant="link"
-          css={{ width: 'auto' }}
+          autoWidth
           onClick={() => onRemove(tag)}
           marginLeft={1}
         >
-          <CrossIcon />
+          <Icon size={7} name="cross" />
         </Button>
       )}
     </TagElement>

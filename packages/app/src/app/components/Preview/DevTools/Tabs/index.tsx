@@ -2,14 +2,14 @@ import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { ViewTab } from '@codesandbox/common/lib/templates/template';
 import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
 import { DraggableTab, PaneTab, TabProps } from './Tab';
 import { TabDropZone, TabDropZoneProps } from './TabDropZone';
-// import { AddTab } from './AddTab';
 
-export interface Props {
+interface Props {
   hidden: boolean;
   currentPaneIndex: number;
   owned: boolean;
@@ -21,6 +21,9 @@ export interface Props {
 
   panes: ViewTab[];
   views: IViews;
+  disableLogging: boolean;
+  isOnEmbedPage: boolean;
+  isOnPrem: boolean;
 }
 
 export const DevToolTabs = ({
@@ -33,7 +36,10 @@ export const DevToolTabs = ({
   setPane,
   moveTab,
   closeTab,
+  disableLogging,
   status,
+  isOnEmbedPage,
+  isOnPrem,
 }: Props) => {
   const currentPane = views[panes[currentPaneIndex].id];
   const actions =
@@ -48,46 +54,55 @@ export const DevToolTabs = ({
   return (
     <Container>
       <Tabs>
-        {panes.map((pane, i) => {
-          const active = !hidden && i === currentPaneIndex;
-          const view = views[pane.id];
+        {panes
+          .filter(pane => (isOnEmbedPage ? !pane.hideOnEmbedPage : true))
+          .filter(pane => (isOnPrem ? !pane.hideOnEmbedPage : true))
+          .map((pane, i) => {
+            const active = !hidden && i === currentPaneIndex;
+            const view = views[pane.id];
 
-          const TypedTab = (moveTab
-            ? DraggableTab
-            : (PaneTab as unknown)) as React.SFC<TabProps>;
+            const TypedTab = (moveTab
+              ? DraggableTab
+              : (PaneTab as unknown)) as React.SFC<TabProps>;
 
-          /* eslint-disable react/no-array-index-key */
-          return (
-            <TypedTab
-              canDrag={panes.length !== 1}
-              pane={view}
-              options={pane.options || {}}
-              active={active}
-              onMouseDown={e => {
-                e.stopPropagation();
-              }}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                setPane(i);
-              }}
-              devToolIndex={devToolIndex}
-              moveTab={moveTab}
-              closeTab={
-                pane.closeable && panes.length !== 1 ? closeTab : undefined
-              }
-              index={i}
-              key={i}
-              status={
-                status
-                  ? status[pane.id] || { unread: 0, type: 'info' }
-                  : undefined
-              }
-            />
-          );
-        })}
-
-        {/* <AddTab /> */}
+            /* eslint-disable react/no-array-index-key */
+            return (
+              <TypedTab
+                disableLogging={disableLogging}
+                canDrag={panes.length !== 1}
+                pane={view}
+                options={pane.options || {}}
+                active={active}
+                onMouseDown={e => {
+                  e.stopPropagation();
+                }}
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setPane(i);
+                }}
+                devToolIndex={devToolIndex}
+                moveTab={(prevPos, newPos) => {
+                  if (moveTab) {
+                    track('DevTools - Move Pane', {
+                      pane: view.id,
+                    });
+                    moveTab(prevPos, newPos);
+                  }
+                }}
+                closeTab={
+                  pane.closeable && panes.length !== 1 ? closeTab : undefined
+                }
+                index={i}
+                key={i}
+                status={
+                  status
+                    ? status[pane.id] || { unread: 0, type: 'info' }
+                    : undefined
+                }
+              />
+            );
+          })}
 
         {moveTab && (
           <TypedTabDropZone

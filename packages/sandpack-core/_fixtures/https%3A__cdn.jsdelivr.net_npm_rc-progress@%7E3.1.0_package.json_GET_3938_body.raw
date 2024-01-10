@@ -1,0 +1,63 @@
+{
+  "name": "rc-progress",
+  "version": "3.1.0",
+  "description": "progress ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-progress",
+    "progress"
+  ],
+  "homepage": "http://github.com/react-component/progress",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/progress.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/progress/issues"
+  },
+  "license": "MIT",
+  "main": "./lib/index",
+  "module": "./es/index",
+  "files": [
+    "lib",
+    "es"
+  ],
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build",
+    "gh-pages": "npm run build && father doc deploy",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish",
+    "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "test": "father test",
+    "coverage": "father test --coverage"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "^2.2.6"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/jest": "^26.0.0",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "@umijs/fabric": "^2.0.0",
+    "cross-env": "^7.0.0",
+    "enzyme": "^3.1.1",
+    "enzyme-adapter-react-16": "^1.0.1",
+    "enzyme-to-json": "^3.1.2",
+    "eslint": "^7.6.0",
+    "father": "^2.29.6",
+    "np": "^6.5.0",
+    "prettier": "^2.1.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "typescript": "^4.0.2"
+  }
+}

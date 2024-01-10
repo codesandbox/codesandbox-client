@@ -22,7 +22,7 @@ import {
   SearchBox,
 } from 'react-instantsearch/dom';
 
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
 import 'instantsearch.css/themes/reset.css';
@@ -41,9 +41,7 @@ const searchStateToUrl = (location, searchState) =>
 
 type Props = RouteComponentProps;
 export const Search: FunctionComponent<Props> = ({ history, location }) => {
-  const {
-    actions: { searchMounted },
-  } = useOvermind();
+  const { searchMounted } = useActions();
   const [searchState, setSearchState] = useState(
     qs.parse(location.search.slice(1))
   );
@@ -109,6 +107,7 @@ export const Search: FunctionComponent<Props> = ({ history, location }) => {
 
                   <SearchBox
                     autoFocus
+                    searchAsYouType={false}
                     translations={{ placeholder: 'Search Sandboxes...' }}
                   />
 

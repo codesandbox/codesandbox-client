@@ -2,7 +2,6 @@ import Select from '@codesandbox/common/lib/components/Select';
 import theme from '@codesandbox/common/lib/theme';
 import { listen, dispatch } from 'codesandbox-api';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
-import update from 'immutability-helper';
 import { debounce } from 'lodash-es';
 import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';
@@ -13,13 +12,7 @@ import { DevToolProps } from '..';
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
 import { ConsoleInput } from './Input';
 
-export type IMessage = {
-  type: 'message' | 'command' | 'return';
-  logType: 'log' | 'warn' | 'info' | 'error';
-  arguments: any[];
-};
-
-export type StyledProps = DevToolProps & {
+type StyledProps = DevToolProps & {
   theme: typeof theme & { light: boolean };
 };
 
@@ -27,17 +20,27 @@ const StyledClearIcon = styled(ClearIcon)`
   font-size: 0.8em;
 `;
 
-class ConsoleComponent extends React.Component<StyledProps> {
+type State = {
+  messages: any[];
+  filter: Array<'info' | 'log' | 'warn'>;
+  searchKeywords: string;
+};
+
+/**
+ * Max amount of messages that we show in the console
+ */
+const MAX_MESSAGE_COUNT = 500;
+
+class ConsoleComponent extends React.PureComponent<StyledProps, State> {
   state = {
     messages: [],
-    initialClear: true,
     filter: [],
     searchKeywords: '',
   };
 
   listener;
 
-  constructor(props) {
+  constructor(props: StyledProps) {
     super(props);
 
     this.scrollToBottom = debounce(this.scrollToBottom, 1 / 60);
@@ -75,13 +78,8 @@ class ConsoleComponent extends React.Component<StyledProps> {
         break;
       }
       case 'clear-console': {
-        if (this.state.initialClear) {
-          this.setState({
-            initialClear: false,
-          });
-        } else {
-          this.clearConsole();
-        }
+        this.clearConsole();
+
         break;
       }
       case 'eval-result': {
@@ -99,7 +97,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
       case 'test-result': {
         const { result, error } = data;
 
-        const aggregatedResults = Decode(result);
+        const aggregatedResults = Decode(result) as any;
         if (!error) {
           if (aggregatedResults) {
             const { summaryMessage, failedMessages } = aggregatedResults;
@@ -146,23 +144,18 @@ class ConsoleComponent extends React.Component<StyledProps> {
       this.props.updateStatus(this.getType(method));
     }
 
-    this.setState(state =>
-      update(state, {
-        messages: {
-          $push: [
-            {
-              method,
-              data,
-            },
-          ],
-        },
-      })
-    );
+    this.setState(state => {
+      const message = { method, data };
+      const messages = [...state.messages];
+      messages.push(message);
+      messages.slice(Math.max(0, messages.length - MAX_MESSAGE_COUNT));
+      return { messages };
+    });
   }
 
-  list;
+  list: HTMLDivElement | undefined;
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: StyledProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.clearConsole(true);
     }
@@ -231,20 +224,38 @@ class ConsoleComponent extends React.Component<StyledProps> {
 
     return (
       <Container>
-        <Messages
-          ref={el => {
-            this.list = el;
-          }}
-        >
-          <ConsoleFeed
-            logs={messages}
-            variant={this.props.theme.light ? 'light' : 'dark'}
-            styles={inspectorTheme(this.props.theme)}
-            filter={filter}
-            searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
-          />
-        </Messages>
-        <ConsoleInput evaluateConsole={this.evaluateConsole} />
+        {this.props.disableLogging ? (
+          <span
+            style={{
+              fontFamily: 'Inter',
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              height: 22,
+              textAlign: 'center',
+              paddingTop: 60,
+            }}
+          >
+            In browser logging is disabled, you can enable it in
+            sandbox.config.json.
+          </span>
+        ) : (
+          <>
+            <Messages
+              ref={el => {
+                this.list = el;
+              }}
+            >
+              <ConsoleFeed
+                logs={messages}
+                variant={this.props.theme.light ? 'light' : 'dark'}
+                styles={inspectorTheme(this.props.theme)}
+                filter={filter}
+                searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
+              />
+            </Messages>
+            <ConsoleInput evaluateConsole={this.evaluateConsole} />
+          </>
+        )}
       </Container>
     );
   }
@@ -273,7 +284,7 @@ const ConsoleFilterSelect = props => {
   return (
     <Select
       style={{
-        fontFamily: 'Roboto',
+        fontFamily: 'Inter',
         fontWeight: 600,
         fontSize: '0.875rem',
         height: 22,

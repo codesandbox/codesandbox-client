@@ -2,7 +2,7 @@ import { dispatch, actions, listen } from 'codesandbox-api';
 import { react, reactTs } from '@codesandbox/common/lib/templates';
 import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 
-import expect from 'jest-matchers';
+import expect from 'expect';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
 
@@ -24,11 +24,11 @@ import {
 } from 'jest-circus/build/state';
 import { parse } from 'sandbox-hooks/react-error-overlay/utils/parser';
 import { map } from 'sandbox-hooks/react-error-overlay/utils/mapper';
+import { Manager } from 'sandpack-core';
+import { Module } from 'sandpack-core/lib/types/module';
 
 import run from './run-circus';
 
-import Manager from '../manager';
-import { Module } from '../types/module';
 import { Event, TestEntry, DescribeBlock, TestName, TestFn } from './types';
 
 export { messages };
@@ -40,7 +40,7 @@ expect.extend({
 expect.addSnapshotSerializer = addSerializer;
 
 function addScript(src: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const s = document.createElement('script');
     s.setAttribute('src', src);
     document.body.appendChild(s);
@@ -58,12 +58,12 @@ let jsdomPromise = null;
  * Load JSDOM while the sandbox loads. Before we run a test we make sure that this has been loaded.
  */
 const getJSDOM = () => {
-  let jsdomPath = '/static/js/jsdom-4.0.0.min.js';
+  let jsdomPath = '/static/js/jsdom-16.3.0.min.js';
   if (
     navigator.userAgent.indexOf('jsdom') !== -1 &&
     process.env.NODE_ENV === 'test'
   ) {
-    jsdomPath = 'file://' + path.resolve('./static/js/jsdom-4.0.0.min.js');
+    jsdomPath = 'file://' + path.resolve('./static/js/jsdom-16.3.0.min.js');
   }
 
   jsdomPromise = jsdomPromise || addScript(jsdomPath);
@@ -114,7 +114,7 @@ export default class TestRunner {
     this.sendMessage(messages.INITIALIZE);
   }
 
-  testGlobals(module: Module) {
+  public getRuntimeGlobals(module: Module) {
     const test = (testName: TestName, fn?: TestFn) =>
       dispatchJest({
         fn,
@@ -144,6 +144,48 @@ export default class TestRunner {
     test.skip = skip;
 
     const it = test;
+    return {
+      ...jestTestHooks,
+      test,
+      jest: jestMock,
+      it,
+      expect,
+    };
+  }
+
+  /**
+   * In this function we actually set some globals on the global window. This is because there are modules out
+   * there that try to overwrite some globals that we try to set. For example, this code won't work:
+   *
+   * ```js
+   * const test = 5;
+   * ```
+   *
+   * if we add test to the scope in the function:
+   *
+   * ```ts
+   * function evaluate(test) {
+   *   const test = 5; // <- Error!
+   * }
+   * ```
+   *
+   * Because of this, we have to put these globals on the global window. The big disadvantage of this is that
+   * we cannot run these tests in parallel. If we would want to do that we could introduce the globals in separate
+   * scope (separate function) that wraps the inner function, like this:
+   *
+   * ```ts
+   * (function jestGlobals(test) {
+   *   (function evaluate() {
+   *     const test = 5; // <- No Error!
+   *   })()
+   * })
+   * ```
+   *
+   * Right now we're making sure to clean the globals up in teardown
+   *
+   * Related issue: https://github.com/codesandbox/codesandbox-client/issues/4922
+   */
+  setTestGlobals(module: Module) {
     const jsdomWindow = this.dom.window.document.defaultView;
     const { document: jsdomDocument } = jsdomWindow;
 
@@ -151,16 +193,22 @@ export default class TestRunner {
     jsdomWindow.Date = Date;
     jsdomWindow.fetch = fetch;
 
-    return {
-      ...jestTestHooks,
-      expect,
-      jest: jestMock,
-      test,
-      it,
+    const jestRuntimeGlobals = this.getRuntimeGlobals(module);
+
+    const globals = {
       document: jsdomDocument,
       window: jsdomWindow,
       global: jsdomWindow,
+
+      // When calling `Event` we don't want the native `Event` but the JSDOM version
+      Event: jsdomWindow.Event,
     };
+
+    Object.keys(jestRuntimeGlobals).forEach(globalKey => {
+      window[globalKey] = jestRuntimeGlobals[globalKey];
+    });
+
+    return globals;
   }
 
   static isTest(testPath: string) {
@@ -168,9 +216,11 @@ export default class TestRunner {
       '.test.js',
       '.test.ts',
       '.test.tsx',
+      '.test.jsx',
       '.spec.js',
       '.spec.ts',
       '.spec.tsx',
+      '.spec.jsx',
     ];
 
     if (
@@ -244,6 +294,7 @@ export default class TestRunner {
     });
   }
 
+  oldWindow = {};
   async initJSDOM() {
     await getJSDOM();
     const { JSDOM } = (window as any).JSDOM;
@@ -255,6 +306,15 @@ export default class TestRunner {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       url,
+    });
+
+    // If there's code accessing globals (e.g. `getComputedStyle`), it will
+    // use the global window instead. We can't change a global, but we can override
+    // values over it.
+    const GLOBAL_OVERRIDE_KEYS = ['getComputedStyle'];
+    GLOBAL_OVERRIDE_KEYS.forEach(key => {
+      this.oldWindow[key] = window[key];
+      window[key] = this.dom.window[key];
     });
   }
 
@@ -270,6 +330,18 @@ export default class TestRunner {
     Object.defineProperty(global, 'document', { value: null });
     this.dom = null;
     this.manager.envVariables = this.oldEnvVars;
+
+    // Put back the old globals of the window after tests have run
+    Object.keys(this.oldWindow).forEach(key => {
+      window[key] = this.oldWindow[key];
+    });
+    this.oldWindow = {};
+
+    // @ts-expect-error We don't have the module, but the module is only used in a lazy context
+    const jestRuntimeGlobals = this.getRuntimeGlobals();
+    Object.keys(jestRuntimeGlobals).forEach(globalKey => {
+      delete window[globalKey];
+    });
   }
 
   /* istanbul ignore next */
@@ -288,21 +360,33 @@ export default class TestRunner {
       if (this.manager.preset.name === react.name) {
         try {
           testModules = [
-            this.manager.resolveModule('./src/setupTests.js', '/'),
+            await this.manager.resolveModuleAsync({
+              path: './src/setupTests.js',
+            }),
           ];
         } catch (e) {
           testModules = [
-            this.manager.resolveModule('./src/setupTests.ts', '/'),
+            await this.manager.resolveModuleAsync({
+              path: './src/setupTests.ts',
+            }),
           ];
         }
       } else if (this.manager.preset.name === reactTs.name) {
-        testModules = [this.manager.resolveModule('./src/setupTests.ts', '/')];
+        testModules = [
+          await this.manager.resolveModuleAsync({
+            path: './src/setupTests.ts',
+          }),
+        ];
       } else if (this.manager.configurations.package) {
         const { parsed } = this.manager.configurations.package;
 
         if (parsed && parsed.jest && parsed.jest.setupFilesAfterEnv) {
-          testModules = parsed.jest.setupFilesAfterEnv.map(
-            (setupPath: string) => this.manager.resolveModule(setupPath, '/')
+          testModules = await Promise.all(
+            parsed.jest.setupFilesAfterEnv.map((setupPath: string) =>
+              this.manager.resolveModuleAsync({
+                path: setupPath,
+              })
+            )
           );
         }
       }
@@ -338,14 +422,14 @@ export default class TestRunner {
             testModules.forEach(module => {
               this.manager.evaluateModule(module, {
                 force: true,
-                globals: this.testGlobals(module),
+                globals: this.setTestGlobals(module),
               });
             });
           }
 
           this.manager.evaluateModule(t, {
             force: true,
-            globals: this.testGlobals(t),
+            globals: this.setTestGlobals(t),
           });
           this.ranTests.add(t.path);
         } catch (e) {
@@ -477,6 +561,7 @@ export default class TestRunner {
         return this.sendMessage(messages.ADD_TEST, {
           testName,
           path: testPath,
+          mode: message.mode,
         });
       }
       default: {

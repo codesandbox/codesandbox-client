@@ -4,16 +4,16 @@ import {
   inDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
 import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useReaction } from 'app/overmind';
 import React from 'react';
 import { DropTarget, DropTargetMonitor } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
 
-import DirectoryChildren from './DirectoryChildren';
-import DirectoryEntryModal from './DirectoryEntryModal';
+import { DirectoryChildren } from './DirectoryChildren';
+import { DirectoryEntryModal } from './DirectoryEntryModal';
 import { EntryContainer, Opener, Overlay } from './elements';
-import Entry from './Entry';
-import validateTitle from './validateTitle';
+import { Entry } from './Entry';
+import { validateTitle } from './validateTitle';
 
 const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
   new Promise(resolve => {
@@ -79,7 +79,7 @@ interface Props {
   ) => string;
 }
 
-const DirectoryEntry: React.FunctionComponent<Props> = ({
+const DirectoryEntryElement: React.FunctionComponent<Props> = ({
   id,
   root,
   initializeProperties,
@@ -91,27 +91,25 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   canDrop,
 }) => {
   const {
-    state: {
-      isLoggedIn,
-      editor: {
-        currentSandbox: { modules, directories, privacy },
-        shouldDirectoryBeOpen,
-      },
+    isLoggedIn,
+    editor: {
+      currentSandbox: { modules, directories, privacy },
+      shouldDirectoryBeOpen,
     },
-    actions: {
-      files: {
-        moduleCreated,
-        moduleRenamed,
-        directoryCreated,
-        directoryRenamed,
-        directoryDeleted,
-        moduleDeleted,
-        filesUploaded,
-      },
-      editor: { moduleSelected, moduleDoubleClicked, discardModuleChanges },
+  } = useAppState();
+  const {
+    files: {
+      moduleCreated,
+      moduleRenamed,
+      directoryCreated,
+      directoryRenamed,
+      directoryDeleted,
+      moduleDeleted,
+      filesUploaded,
     },
-    reaction,
-  } = useOvermind();
+    editor: { moduleSelected, moduleDoubleClicked, discardModuleChanges },
+  } = useActions();
+  const reaction = useReaction();
 
   const [creating, setCreating] = React.useState<ItemTypes>(null);
   const [open, setOpen] = React.useState(
@@ -446,8 +444,8 @@ function collectTarget(connectMonitor, monitor: DropTargetMonitor) {
 }
 
 // eslint-disable-next-line import/no-default-export
-export default DropTarget(
+export const DirectoryEntry = DropTarget(
   ['ENTRY', NativeTypes.FILE],
   entryTarget,
   collectTarget
-)(React.memo(DirectoryEntry));
+)(React.memo(DirectoryEntryElement));

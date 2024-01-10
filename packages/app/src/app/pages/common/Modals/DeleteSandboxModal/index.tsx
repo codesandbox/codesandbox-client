@@ -1,18 +1,16 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
-const DeleteSandboxModal: FunctionComponent = () => {
+export const DeleteSandboxModal: FunctionComponent = () => {
   const {
-    actions: {
-      modalClosed,
-      workspace: { sandboxDeleted },
-    },
-  } = useOvermind();
+    modalClosed,
+    workspace: { sandboxDeleted },
+  } = useActions();
 
   return (
     <Alert
-      title="Delete Sandbox"
+      title="Delete sandbox"
       description="Are you sure you want to delete this sandbox?"
       onCancel={modalClosed}
       onPrimaryAction={sandboxDeleted}
@@ -21,5 +19,3 @@ const DeleteSandboxModal: FunctionComponent = () => {
     />
   );
 };
-
-export default DeleteSandboxModal;

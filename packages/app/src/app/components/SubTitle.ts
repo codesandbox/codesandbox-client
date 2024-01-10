@@ -9,10 +9,9 @@ export const SubTitle = styled.h2<{ delay?: number | null }>`
     color: ${theme.light
       ? css`rgba(0, 0, 0, 0.7)`
       : css`rgba(255, 255, 255, 0.7)`};
-    font-size: 1.75rem;
-    font-weight: 300;
+    font-size: 1.5rem;
+    font-weight: 400;
     line-height: 1.4;
-    text-align: center;
     ${delay !== null && delayEffect(delay)};
   `}
 `;

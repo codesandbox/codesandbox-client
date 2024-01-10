@@ -1,0 +1,62 @@
+{
+  "name": "rc-align",
+  "version": "4.0.8",
+  "description": "align ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-align",
+    "align"
+  ],
+  "files": [
+    "lib",
+    "es"
+  ],
+  "homepage": "http://github.com/react-component/align",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/align.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/align/issues"
+  },
+  "license": "MIT",
+  "main": "./lib/index",
+  "module": "./es/index",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish",
+    "lint": "eslint src/ examples/ --ext .tsx,.ts,.jsx,.js",
+    "test": "father test",
+    "coverage": "father test --coverage",
+    "now-build": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "2.x",
+    "dom-align": "^1.7.0",
+    "rc-util": "^5.3.0",
+    "resize-observer-polyfill": "^1.5.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/react": "^16.8.19",
+    "@types/react-dom": "^16.8.4",
+    "@types/warning": "^3.0.0",
+    "cross-env": "^6.0.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.4.0",
+    "eslint": "^7.1.0",
+    "father": "^2.13.2",
+    "np": "^5.0.3",
+    "typescript": "^4.0.3"
+  }
+}

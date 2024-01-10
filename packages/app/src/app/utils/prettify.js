@@ -9,7 +9,7 @@ import {
 
 function getMode(title: string) {
   if (/\.jsx?$/.test(title)) {
-    return 'babylon';
+    return 'babel';
   }
 
   if (/\.tsx?$/.test(title)) {
@@ -149,7 +149,7 @@ export default function prettify(
 ) {
   const mode = getMode(title);
 
-  worker = worker || new Worker('/static/js/prettier/worker-1.16.4.js');
+  worker = worker || new Worker('/static/js/prettier/worker-2.0.5.js');
 
   return new Promise((resolve, reject) => {
     if (cancellationToken && cancellationToken.isCancellationRequested) {

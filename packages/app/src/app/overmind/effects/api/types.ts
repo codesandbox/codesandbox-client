@@ -22,7 +22,29 @@ export interface IDirectoryAPIResponse {
   updatedAt: string;
 }
 
+export interface AvatarAPIResponse {
+  data: {
+    id: string;
+    url: string;
+  };
+}
+
 export type SandboxAPIResponse = Omit<Sandbox, 'environmentVariables'> & {
   modules: IModuleAPIResponse[];
   directories: IDirectoryAPIResponse[];
+};
+
+export type FinalizeSignUpOptions = {
+  id: string;
+  name: string;
+  username: string;
+  role: string;
+  usage: string;
+};
+
+export type MetaFeatures = {
+  loginWithApple?: boolean;
+  loginWithGithub?: boolean;
+  loginWithGoogle?: boolean;
+  loginWithWorkos?: boolean;
 };

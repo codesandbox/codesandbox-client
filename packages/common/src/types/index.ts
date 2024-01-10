@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import React from 'react';
+import type React from 'react';
 
-import { TemplateType } from '../templates';
+import type { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
   | 'initializing'
@@ -65,6 +65,8 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string;
+  uploadId?: string;
+  sha?: string;
   type: 'file';
 };
 
@@ -96,7 +98,7 @@ export type Template = {
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
-  netlify: boolean;
+  staticDeployment: boolean;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
   showCube: boolean;
@@ -110,13 +112,14 @@ export type Badge = {
   visible: boolean;
 };
 
+// This is the CurrentUser that is used everywhere, the CurrentUser coming from
+// the GraphQL type is never used, except in GraphQL context.
 export type CurrentUser = {
   id: string;
   email: string;
   name: string | null;
   username: string;
   avatarUrl: string;
-  jwt: string | null;
   subscription: {
     since: string;
     amount: number;
@@ -127,10 +130,15 @@ export type CurrentUser = {
   experiments: {
     [key: string]: boolean;
   };
+  metadata: {
+    [key: string]: string;
+  };
   curatorAt: string;
   badges: Badge[];
+  betaAccess: boolean;
+  provider: 'github' | 'google' | 'apple';
   integrations: {
-    zeit: {
+    vercel: {
       token: string;
       email?: string;
     } | null;
@@ -139,6 +147,33 @@ export type CurrentUser = {
     } | null;
   };
   sendSurvey: boolean;
+  deletionRequested: boolean;
+  insertedAt: string;
+  githubProfile:
+    | {
+        data: null;
+        error: { code: string; message: string };
+      }
+    | {
+        data: {
+          avatarUrl: string;
+          id: string;
+          login: string;
+          name?: string;
+          scopes: string[];
+        };
+        error: null;
+      };
+};
+
+// The zeit property comes from the API, but we want to rename it to vercel in the
+// frontend. In the future we want to rename zeit coming from the API too.
+export type CurrentUserFromAPI = Omit<CurrentUser, 'integrations'> & {
+  // Omitting the vercel key from CurrentUser
+  integrations: Omit<CurrentUser['integrations'], 'vercel'> & {
+    // And replacing it with a zeit key with the same type
+    zeit: CurrentUser['integrations']['vercel'];
+  };
 };
 
 export type CustomTemplate = {
@@ -148,6 +183,7 @@ export type CustomTemplate = {
   published?: boolean;
   title: string;
   url: string | null;
+  v2: boolean | null;
 };
 
 export type GitInfo = {
@@ -278,11 +314,48 @@ export type GitCommit = {
 };
 
 export type GitPr = {
-  git: GitInfo;
-  newBranch: string;
-  sha: string;
-  url: string;
-  prURL: string;
+  number: number;
+  repo: string;
+  username: string;
+  branch: string;
+  merged: boolean;
+  state: string;
+  mergeable: boolean;
+  mergeableState: string;
+  commitSha: string;
+  baseCommitSha: string;
+  rebaseable: boolean;
+  commits: number;
+  additions: number;
+  deletions: number;
+  changed_files: number;
+};
+
+export type GitFileCompare = {
+  additions: number;
+  changes: number;
+  deletions: number;
+  filename: string;
+  status: 'added' | 'modified' | 'removed';
+  isBinary: boolean;
+  content?: string;
+};
+
+export enum SandboxGitState {
+  SYNCED = 'synced',
+  CONFLICT_SOURCE = 'conflict in source',
+  CONFLICT_PR_BASE = 'conflict in pr base',
+  OUT_OF_SYNC_SOURCE = 'out of sync with source',
+  OUT_OF_SYNC_PR_BASE = 'out of sync with pr base',
+  SYNCING = 'syncing',
+  RESOLVED_SOURCE = 'resolved source',
+  RESOLVED_PR_BASE = 'resolved pr base',
+}
+
+export type UserQuery = {
+  id: string;
+  avatarUrl: string;
+  username: string;
 };
 
 export type PopularSandboxes = {
@@ -309,6 +382,16 @@ export type SandboxAuthor = {
   avatarUrl: string;
   badges: Badge[];
   subscriptionSince: string | null;
+  subscriptionPlan: 'pro' | 'patron';
+};
+
+export type NpmRegistry = {
+  enabledScopes: string[];
+  limitToScopes: boolean;
+  registryUrl: string;
+  proxyEnabled?: boolean;
+  registryAuthToken?: string;
+  registryAuthType?: string;
 };
 
 export enum CommentsFilterOption {
@@ -317,17 +400,60 @@ export enum CommentsFilterOption {
   RESOLVED = 'Resolved',
 }
 
+type PackageVersionInfo = {
+  name: string;
+  description: string;
+  version: string;
+  author: string;
+  bugs: unknown | null;
+  dependencies: unknown | null;
+  devDependencies: unknown | null;
+  peerDependencies: unknown | null;
+  main: string;
+  scripts: {
+    [script: string]: string;
+  };
+  dist: {
+    integrity: string;
+    shasum: string;
+    tarball: string;
+  };
+};
+
+export type NpmManifest = {
+  name: string;
+  description: string;
+  'dist-tags'?: {
+    [tag: string]: string;
+  };
+  versions: {
+    [version: string]: PackageVersionInfo;
+  };
+};
+
+// NOTE: These types are inferred from usage and might not reflect the actual
+// types one on one. Used for the api.forkSandbox method.
+export type ForkSandboxBody = {
+  v2?: boolean;
+  teamId?: string | null;
+  privacy?: 0 | 1 | 2;
+  collectionId?: string;
+  alias?: string;
+};
+
 export type Sandbox = {
   id: string;
   alias: string | null;
   title: string | null;
   description: string;
+  v2: boolean;
   viewCount: number;
   likeCount: number;
   forkCount: number;
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  npmRegistries: NpmRegistry[];
   featureFlags: {
     [key: string]: boolean;
   };
@@ -352,6 +478,7 @@ export type Sandbox = {
   team: {
     id: string;
     name: string;
+    avatarUrl: string | undefined;
   } | null;
   roomId: string | null;
   privacy: 0 | 1 | 2;
@@ -361,6 +488,7 @@ export type Sandbox = {
   tags: string[];
   isFrozen: boolean;
   isSse?: boolean;
+  alwaysOn: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;
@@ -376,7 +504,10 @@ export type Sandbox = {
   template: TemplateType;
   entry: string;
   originalGit: GitInfo | null;
+  baseGit: GitInfo | null;
+  prNumber: number | null;
   originalGitCommitSha: string | null;
+  baseGitCommitSha: string | null;
   originalGitChanges: {
     added: string[];
     modified: string[];
@@ -386,6 +517,19 @@ export type Sandbox = {
   version: number;
   screenshotUrl: string | null;
   previewSecret: string | null;
+  permissions: {
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  };
+  // New restrictions object. Remove the optional from the properties
+  // when resrcitions are deployed to production.
+  restrictions?: {
+    freePlanEditingRestricted?: boolean;
+    liveSessionsRestricted?: boolean;
+  };
+  // Legacy freePlanEditingRestricted. We can remove this when the
+  // restrictions above have been implemented.
+  freePlanEditingRestricted: boolean;
 };
 
 export type PrettierConfig = {
@@ -455,6 +599,7 @@ export type PackageJSON = {
   name: string;
   version: string;
   description?: string;
+  alias?: { [key: string]: string };
   keywords?: string[];
   main?: string;
   module?: string;
@@ -505,17 +650,28 @@ export enum WindowOrientation {
 
 export type Profile = {
   viewCount: number;
+  githubUsername: string | null;
   username: string;
   subscriptionSince: string;
   showcasedSandboxShortid: string;
   sandboxCount: number;
+  templateCount: number;
   receivedLikeCount: number;
-  name: string;
+  name: string | null;
   id: string;
   givenLikeCount: number;
   forkedCount: number;
   badges: Badge[];
   avatarUrl: string;
+  bio?: string | null;
+  socialLinks?: string[] | null;
+  featuredSandboxes: Sandbox[];
+  personalWorkspaceId: string;
+  teams: Array<{
+    id: string;
+    name: string;
+    avatarUrl?: string;
+  }>;
 };
 
 export type UserSandbox = {
@@ -547,44 +703,26 @@ export type ServerPort = {
   name?: string;
 };
 
+/**
+ * The VercelUser type is a selection of what we use and what is or can be returned from
+ * the user endpoint. The whole list of types can be found in the Vercel docs: https://vercel.com/docs/rest-api/interfaces#authuser
+ */
 export type VercelUser = {
-  uid: string;
   email: string;
-  name: string;
-  username: string;
-  avatar: string;
-  platformVersion: number;
-  billing: {
-    plan: string;
-    period: string;
-    trial: string;
-    cancelation: string;
-    addons: string;
-  };
-  bio: string;
-  website: string;
-  profiles: Array<{
-    service: string;
-    link: string;
-  }>;
 };
 
+/**
+ * The VercelCreator type is a selection of what we use and what is or can be returned for
+ * the creator property on the deployments endpoint.
+ */
 export type VercelCreator = {
   uid: string;
 };
 
-export type VercelScale = {
-  current: number;
-  min: number;
-  max: number;
-};
-
-export type VercelAlias = {
-  alias: string;
-  created: string;
-  uid: string;
-};
-
+/**
+ * Can't find where these types are documented on the Vercel side, but we're using these states
+ * to show active deployment status to the user.
+ */
 export enum VercelDeploymentState {
   DEPLOYING = 'DEPLOYING',
   INITIALIZING = 'INITIALIZING',
@@ -597,29 +735,25 @@ export enum VercelDeploymentState {
   ERROR = 'ERROR',
 }
 
-export enum VercelDeploymentType {
-  'NPM',
-  'DOCKER',
-  'STATIC',
-  'LAMBDAS',
-}
-
+/**
+ * The VercelDeployment type is a selection of what we use and what is or can be returned from
+ * the deployments endpoint.
+ */
 export type VercelDeployment = {
   uid: string;
   name: string;
   url: string;
   created: number;
   state: VercelDeploymentState;
-  instanceCount: number;
-  alias: VercelAlias[];
-  scale: VercelScale;
-  createor: VercelCreator;
-  type: VercelDeploymentType;
 };
 
+/**
+ * The VercelConfig type is a selection of (now legacy) properties we use from the vercel configuration
+ * file. More info can be found in the Vercel docs: https://vercel.com/docs/concepts/projects/project-configuration#legacy
+ */
 export type VercelConfig = {
   name?: string;
-  alias?: string;
+  env?: string;
 };
 
 export type NetlifySite = {
@@ -660,11 +794,20 @@ export type DiffTab = {
 
 export type Tabs = Array<ModuleTab | DiffTab>;
 
-export type GitChanges = {
+export type GitPathChanges = {
   added: string[];
   deleted: string[];
   modified: string[];
-  rights: string;
+};
+
+export type GitChanges = {
+  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'base64' }>;
+  deleted: string[];
+  modified: Array<{
+    path: string;
+    content: string;
+    encoding: 'utf-8' | 'base64';
+  }>;
 };
 
 export type EnvironmentVariable = {
@@ -682,6 +825,9 @@ export type SandboxUrlSourceData = {
   id?: string | null;
   alias?: string | null;
   git?: GitInfo | null;
+  isV2?: boolean;
+  isSse?: boolean;
+  query?: Record<string, string>;
 };
 
 export type DevToolsTabPosition = {
@@ -755,3 +901,12 @@ export interface IModuleStateModule {
 export interface IModuleState {
   [moduleId: string]: IModuleStateModule;
 }
+
+export type SettingsSync = {
+  id: string;
+  insertedAt: string;
+  name: string;
+  settings: string;
+  updatedAt: string;
+  userId: string;
+};

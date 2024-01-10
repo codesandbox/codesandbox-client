@@ -1,7 +1,7 @@
 import { Channel, Socket } from 'phoenix';
 
 type Options = {
-  provideSocket: () => Socket;
+  provideSocket: () => Promise<Socket>;
 };
 
 let channel: Channel | null = null;
@@ -33,11 +33,11 @@ export default {
         .receive('error', resp => reject(resp));
     });
   },
-  joinChannel(userId: string): Promise<{ unread: number }> {
+  async joinChannel(userId: string): Promise<{ unread: number }> {
     if (!_options) {
       return Promise.reject();
     }
-    const socket = _options.provideSocket();
+    const socket = await _options.provideSocket();
 
     channel = socket.channel(`notification:${userId}`, {});
 

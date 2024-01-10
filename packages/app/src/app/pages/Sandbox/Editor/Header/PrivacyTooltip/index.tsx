@@ -1,25 +1,23 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import track from '@codesandbox/common/lib/utils/analytics';
 import theme from '@codesandbox/components/lib/design-language/theme';
-import { useOvermind } from 'app/overmind';
-import React, { FunctionComponent } from 'react';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useAppState, useActions } from 'app/overmind';
+import React, { ChangeEvent, FunctionComponent, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import { Container, Link, Select, Text } from './elements';
+import { Container, Link, Select, Text, Button } from './elements';
 import { Private, Public, Unlisted } from './icons';
 
 export const PrivacyTooltip: FunctionComponent = () => {
+  const { sandboxPrivacyChanged } = useActions().workspace;
   const {
-    actions: {
-      workspace: { sandboxPrivacyChanged },
+    editor: {
+      currentSandbox: { owned, privacy },
     },
-    state: {
-      editor: {
-        currentSandbox: { owned, privacy },
-      },
-      user,
-    },
-  } = useOvermind();
+  } = useAppState();
+  const { isPro, isFree } = useWorkspaceSubscription();
+  const [privacyValue, setPrivacyValue] = useState<0 | 1 | 2>(privacy);
 
   const config = {
     0: {
@@ -37,14 +35,43 @@ export const PrivacyTooltip: FunctionComponent = () => {
     },
   };
 
-  const onChange = event => {
-    const value = event.target.value;
-    sandboxPrivacyChanged({
-      privacy: Number(value) as 0 | 1 | 2,
-      source: 'tooltip',
-    });
+  const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = Number(event.target.value) as 0 | 1 | 2;
+
+    if (isPro) {
+      sandboxPrivacyChanged({ privacy: value, source: 'tooltip' });
+    }
+
+    setPrivacyValue(value);
   };
+
+  const setPrivacyToPublic = () => {
+    sandboxPrivacyChanged({ privacy: 0, source: 'tooltip' });
+  };
+
   const { description, Icon } = config[privacy];
+
+  const Owned = () => {
+    if (isPro) {
+      return <Text color="grays.300">Adjust privacy settings.</Text>;
+    }
+
+    if (privacy !== 0) {
+      return (
+        <Text color="grays.300">
+          This sandbox is currently restricted.{' '}
+          <Link href="/pro">Upgrade to Pro</Link> or make it public to edit.
+        </Text>
+      );
+    }
+
+    return (
+      <Text color="grays.300">
+        This sandbox is public. <Link href="/pro">Upgrade to Pro</Link> to
+        update the privacy.
+      </Text>
+    );
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -52,38 +79,48 @@ export const PrivacyTooltip: FunctionComponent = () => {
         <Tooltip
           content={
             <>
-              <Text size="3" marginBottom={4}>
-                {owned ? (
-                  <>
-                    {user?.subscription ? (
-                      'Adjust privacy settings.'
-                    ) : (
-                      <>
-                        You can change privacy of a sandbox as a Pro.
-                        <br />
-                        <Link href="/pricing">Upgrade to Pro</Link>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  'The author has set privacy to'
-                )}
+              <Text size="3" marginBottom={3}>
+                {owned ? <Owned /> : `The author has set privacy to ${privacy}`}
+              </Text>
+
+              {isFree && privacy !== 0 ? (
+                <Button type="button" onClick={setPrivacyToPublic}>
+                  Make sandbox public
+                </Button>
+              ) : null}
+
+              <Text
+                as="label"
+                htmlFor="privacy-select"
+                size="3"
+                color="grays.300"
+                css={{
+                  display: 'block',
+                  marginBottom: '4px',
+                  marginTop: '24px',
+                }}
+              >
+                Privacy
               </Text>
 
               <Select
-                disabled={!user?.subscription || !owned}
-                marginBottom={2}
+                id="privacy-select"
+                disabled={!owned || !isPro}
                 onChange={onChange}
-                value={privacy}
+                value={privacyValue}
               >
                 <option value={0}>Public</option>
 
-                <option value={1}>Unlisted</option>
+                <option value={1} disabled={isFree}>
+                  Unlisted
+                </option>
 
-                <option value={2}>Private</option>
+                <option value={2} disabled={isFree}>
+                  Private
+                </option>
               </Select>
 
-              <Text size="2" color="grays.300">
+              <Text css={{ paddingTop: '8px' }} size="2" color="grays.300">
                 {description}
               </Text>
             </>

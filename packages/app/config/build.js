@@ -3,11 +3,11 @@ const { SANDBOX_ONLY } = process.env;
 const staticAssets = [
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-editor/release/min/vs',
-    to: 'public/vscode28/vs',
+    to: 'public/vscode33/vs',
   },
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-extensions/out',
-    to: 'public/vscode-extensions/v13',
+    to: 'public/vscode-extensions/v21',
   },
   !SANDBOX_ONLY && {
     from: 'node_modules/vscode-oniguruma/release/onig.wasm',
@@ -38,40 +38,34 @@ const staticAssets = [
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs12',
+  },
+  // For caching purposes
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs11',
+  },
+  // For caching purposes
+  !SANDBOX_ONLY && {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs10',
   },
-  {
+  // For caching purposes
+  !SANDBOX_ONLY && {
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs9',
   },
-  {
+  !SANDBOX_ONLY && {
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs8',
-  },
-  // For caching purposes
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs7',
-  },
-  // For caching purposes
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs6',
-  },
-  // For Monaco
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs3',
   },
 ].filter(Boolean);
 

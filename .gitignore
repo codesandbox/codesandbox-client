@@ -14,6 +14,8 @@ coverage
 build
 www
 .deliver
+lib/
+dist/
 
 # misc
 .DS_Store
@@ -29,3 +31,5 @@ standalone-packages/monaco-editor-core
 
 .next
 .cache-loader
+
+packages/app/static/js/env-config.js

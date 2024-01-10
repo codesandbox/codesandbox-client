@@ -14,7 +14,7 @@ import {
 } from './elements';
 import { MessageType } from '.';
 
-export interface Props {
+interface Props {
   message: MessageType;
 }
 

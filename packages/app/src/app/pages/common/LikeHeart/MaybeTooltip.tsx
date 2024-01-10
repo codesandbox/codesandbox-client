@@ -17,5 +17,5 @@ export const MaybeTooltip: FunctionComponent<Props> = ({
       {children}
     </Tooltip>
   ) : (
-    <>{children}</>
+    <span>{children}</span>
   );

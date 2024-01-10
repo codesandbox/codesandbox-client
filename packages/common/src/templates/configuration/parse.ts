@@ -20,6 +20,13 @@ type PossibleModule = {
     }
 );
 
+function stripJSONComments(jsonString: string) {
+  return jsonString.replace(
+    /\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g,
+    (m, g) => (g ? '' : m)
+  );
+}
+
 function getCode(
   template: TemplateType,
   module: PossibleModule,
@@ -93,6 +100,8 @@ export default function parseConfigurations(
         if (module && titleIncludes(module, 'toml')) {
           // never throws
           parsed = toml(code);
+        } else if (module && titleIncludes(module, 'tsconfig.json')) {
+          parsed = parse(stripJSONComments(code));
         } else {
           parsed = parse(code);
         }

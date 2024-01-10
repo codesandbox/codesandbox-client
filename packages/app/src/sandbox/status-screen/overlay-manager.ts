@@ -8,8 +8,15 @@ export function resetOverlay() {
     // the user, which is a bad perceivement.
     const delay = Date.now() - iframeRenderedAt > 1000 ? 0 : 1000;
 
+    /**
+     * To make sure no iframe rendered between now and the clear we do
+     * after a timeout, we keep track of the last rendered at and compare
+     * it before clearing the iframe
+     */
+    const lastIframeRenderedAt = iframeRenderedAt;
+
     setTimeout(() => {
-      if (iframeReference) {
+      if (iframeReference && lastIframeRenderedAt === iframeRenderedAt) {
         iframeReference.style.opacity = '0';
         setTimeout(() => {
           if (iframeReference.parentNode) {

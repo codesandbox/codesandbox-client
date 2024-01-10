@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 /* @flow */
 import React from 'react';
 import CodeMirror from 'codemirror';
@@ -129,9 +130,7 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
           <ChevronRight />
         </IconContainer>
         <InputWrapper>
-          <CodeMirrorContainer>
-            <div ref={this.mountCodeMirror} />
-          </CodeMirrorContainer>
+          <CodeMirrorContainer ref={this.mountCodeMirror} />
         </InputWrapper>
       </Container>
     );

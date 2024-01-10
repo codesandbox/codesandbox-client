@@ -6,8 +6,8 @@
     "lib": ["dom", "esnext"],
     "importHelpers": true,
     "declaration": true,
-    "sourceMap": true,
-    "rootDir": "./",
+    "sourceMap": false,
+    "rootDir": "./src",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -20,11 +20,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {
-      "*": ["src/*", "node_modules/*"]
-    },
     "jsx": "react",
-    "esModuleInterop": true
+    "esModuleInterop": true,
   }
 }

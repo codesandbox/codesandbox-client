@@ -67,7 +67,7 @@ const makeContent = () => {
     );
   }
 
-  return <>{contents}</>;
+  return contents;
 };
 
 const CenteredBordered = makeBorderedContainer('Centered', Centered, 'yellow');
@@ -147,7 +147,7 @@ const repeat = (name: string, fn: any) => () => {
     content.push(fn() as JSX.Element);
   }
 
-  return <>{content}</>;
+  return content;
 };
 
 storiesOf('components/flex', module)

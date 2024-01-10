@@ -1,5 +1,5 @@
 {
   "rootDir": "../",
-  "setupTestFrameworkScriptFile": "<rootDir>/integration-tests/setup.js",
+  "setupFilesAfterEnv": ["<rootDir>/integration-tests/setup.js"],
   "roots": ["integration-tests"]
 }

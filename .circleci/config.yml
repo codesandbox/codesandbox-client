@@ -20,19 +20,25 @@ aliases:
       - packages/notifications/lib
       - packages/template-icons/lib
       - packages/sse-hooks/dist
+      - packages/sandpack-core/lib
+      - packages/browser-eslint-rules/lib
+      - packages/browser-dart-sass/lib
+      - packages/vue3-browser-compiler/lib
+      - packages/vue3-transpiler/lib
       - standalone-packages/codesandbox-browserfs/dist
       - standalone-packages/codesandbox-browserfs/build
       - standalone-packages/vscode-textmate/out
       - standalone-packages/vscode-textmate/node_modules
+      - standalone-packages/vscode-extensions/out/extensions
 
   - &restore_deps_cache
     keys:
-      - v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v37-dependency-cache-{{ .Branch }}
-      - v37-dependency-cache
+      - v38-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v38-dependency-cache-{{ .Branch }}
+      - v38-dependency-cache
 
   - &save_deps_cache
-    key: v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v38-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -41,63 +47,56 @@ aliases:
       - packages/components/node_modules
       - packages/template-icons/node_modules
       - packages/common/node_modules
-      - packages/dynamic-pages/node_modules
       - packages/deps/node_modules
       - packages/executors/node_modules
-      - packages/homepage/node_modules
       - packages/node-services/node_modules
       - packages/notifications/node_modules
       - packages/react-embed/node_modules
       - packages/sandbox-hooks/node_modules
       - packages/sse-hooks/node_modules
+      - packages/sandpack-core/node_modules
+      - packages/browser-eslint-rules/node_modules
+      - packages/browser-dart-sass/node_modules
+      - packages/vue3-browser-compiler/node_modules
+      - packages/vue3-transpiler/node_modules
+      - packages/app/src/app/overmind/effects/vscode/LinterWorker/node_modules
 
   - &restore_standalone_deps_cache
     keys:
-      - v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      - v38-standalone-dependency-cache-{{ .Branch }}-{{ checksum
         "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v37-standalone-dependency-cache-{{ .Branch }}
-      - v37-standalone-dependency-cache
+      - v38-standalone-dependency-cache-{{ .Branch }}
+      - v38-standalone-dependency-cache
 
   - &save_standalone_deps_cache
     key:
-      v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      v38-standalone-dependency-cache-{{ .Branch }}-{{ checksum
       "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
-  - &restore_prod_homepage_cache
-    key: v37-prod-homepage-build-cache-master
-
   - &restore_prod_result
     key:
-      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH
+      v38-prod-build-result-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
 
   - &save_prod_build_cache
     key:
-      v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
     paths:
       - packages/app/node_modules/.cache
 
   - &restore_prod_build_cache
     keys:
-      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      - v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
         }}-{{.Environment.CIRCLE_SHA1 }}
-      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
-      - v37-prod-build-cache-master-
-
-  # To persist the images built by sharp
-  - &save_prod_homepage_cache
-    key:
-      v37-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
-      .Environment.CIRCLE_SHA1 }}
-    paths:
-      - ./packages/homepage/public
+      - v38-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
+      - v38-prod-build-cache-master-
 
   - &save_prod_result
     key:
-      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v38-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
@@ -118,19 +117,16 @@ aliases:
 executors:
   node:
     docker:
-      - image: circleci/node:10
+      - image: node:16.14.2-bullseye
     working_directory: ~/codesandbox-client
   node-xlarge:
     docker:
-      - image: circleci/node:10
+      - image: node:16.14.2-bullseye
     resource_class: xlarge
     working_directory: ~/codesandbox-client
-  node-with-puppeteer:
-    docker:
-      - image: codesandbox/node-puppeteer
-    working_directory: ~/codesandbox-client
   docker_machine:
-    machine: true
+    docker:
+      - image: docker:20.10.23-git
     working_directory: ~/codesandbox-client
 
 ################################
@@ -143,14 +139,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v37-source-cache-{{ .Branch }}-{{ .Revision }}
-            - v37-source-cache-{{ .Branch }}-
-            - v37-source-cache-
+            - v38-source-cache-{{ .Branch }}-{{ .Revision }}
+            - v38-source-cache-{{ .Branch }}-
+            - v38-source-cache-
 
       - checkout
 
       - save_cache:
-          key: v37-source-cache-{{ .Branch }}-{{ .Revision }}
+          key: v38-source-cache-{{ .Branch }}-{{ .Revision }}
           paths:
             - '.git'
   build_deps:
@@ -158,6 +154,12 @@ commands:
     steps:
       - restore_cache: *restore_deps_cache
       - restore_cache: *restore_standalone_deps_cache
+      - run:
+          name: Install sudo
+          command: apt update -y && apt install -y sudo
+      - run:
+          name: Install ZSTD
+          command: sudo apt update -y && sudo apt install -y zstd
       # Add extra items to yarnclean so the cache doesn't grow too big
       - run:
           name: Configure .yarnclean
@@ -176,26 +178,34 @@ commands:
     steps:
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
-      - restore_cache: *restore_prod_homepage_cache
       - restore_cache: *restore_prod_build_cache
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache: *save_prod_build_cache
       - save_cache: *save_prod_result
-      - run:
-          name: Remove non-images from public
-          command: |
-            find packages/homepage/public -name "*.js" -type f -delete
-            find packages/homepage/public -name "*.json" -type f -delete
-            find packages/homepage/public -name "*.js.map" -type f -delete
-      - save_cache: *save_prod_homepage_cache
   test_integrations:
     description:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
+      - run:
+          name: Install sudo
+          command: apt update -y && apt install -y sudo
+      - run:
+          name: Install binaries
+          command:
+            sudo apt-get update && 
+            sudo apt-get install -yq gconf-service libasound2 libatk1.0-0 libc6 
+            libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 
+            libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 
+            libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 
+            libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release 
+            xdg-utils wget libgbm-dev
+      - run:
+          name: Install puppeteer
+          command: cd ~/ && yarn add puppeteer@18.1.0 -DW
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -259,6 +269,9 @@ commands:
         type: string
         default: '$DOCKER_PWD'
     steps:
+      - setup_remote_docker:
+          version: 20.10.23
+          docker_layer_caching: true
       - restore_cache: *restore_prod_result
       - run:
           name: Docker Sign In
@@ -295,8 +308,8 @@ jobs:
       - checkout_with_cache
       - build_prod
   test-integrations:
-    executor: node-with-puppeteer
-    parallelism: 2
+    executor: node-xlarge
+    parallelism: 3
     steps:
       - checkout_with_cache
       - test_integrations
@@ -306,7 +319,7 @@ jobs:
       - checkout_with_cache
       - test_visual_regressions
   test-jest:
-    executor: node
+    executor: node-xlarge
     steps:
       - checkout_with_cache
       - test_jest
@@ -327,7 +340,7 @@ jobs:
   deploy-to-production:
     executor: node
     environment:
-      ENVIRONMENT: prod
+      ENVIRONMENT: production
     steps:
       - checkout_with_cache
       - restore_cache: *restore_deps_cache
@@ -388,7 +401,7 @@ workflows:
             - create-docker-image
             - lint
             - typecheck
-            - test-integrations
+            # - test-integrations
             - test-jest
             - test-visual-regressions
           filters:

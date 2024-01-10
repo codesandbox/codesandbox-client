@@ -14,6 +14,10 @@ import {
 import designLanguage from '../../design-language/theme';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
+import codesandboxBlack from '../../themes/codesandbox-black';
+import { TooltipStyles } from '../Tooltip';
+import { MenuStyles } from '../Menu';
+import { SkipNavStyles } from '../SkipNav';
 
 export const getThemes = () => {
   const results = VSCodeThemes.map(theme => ({
@@ -55,13 +59,25 @@ export const makeTheme = (vsCodeTheme = {}, name?: string) => {
   return theme;
 };
 
-export const ThemeProvider = ({ theme, children }) => {
-  const usableTheme = makeTheme(theme);
+export const ThemeProvider = ({
+  theme = codesandboxBlack,
+  children,
+}: {
+  theme?: any;
+  children: any;
+}) => {
+  const usableTheme = React.useMemo(() => makeTheme(theme), [theme]);
 
   // the resizer lives outside the sidebar
   // to apply the right color to the resizer
   // we create a global style to be applied to it
   const ExternalStyles = createGlobalStyle`
+    :root {
+      --reach-menu-button: 1;
+      --reach-tooltip: 1;
+      --reach-skip-nav: 1;
+    }
+
     .Resizer {
       background-color: ${usableTheme.colors.sideBar.border} !important;
     }
@@ -76,7 +92,12 @@ export const ThemeProvider = ({ theme, children }) => {
   return (
     <>
       <ExternalStyles />
-      <BaseThemeProvider theme={usableTheme}>{children}</BaseThemeProvider>
+      <BaseThemeProvider theme={usableTheme}>
+        <TooltipStyles />
+        <MenuStyles />
+        <SkipNavStyles />
+        {children}
+      </BaseThemeProvider>
     </>
   );
 };

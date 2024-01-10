@@ -1,10 +1,17 @@
-<link href="/static/fonts/inter/inter.css" rel="stylesheet" />
 <style>
   body {
     color: #fff;
-    font-family: 'Inter UI', sans-serif;
+    font-family: 'Inter', sans-serif;
     background: #151515;
     cursor: pointer;
+    -webkit-font-smoothing: auto;
+    -moz-font-smoothing: auto;
+    -moz-osx-font-smoothing: grayscale;
+    font-smoothing: auto;
+    text-rendering: optimizeLegibility;
+    font-smooth: always;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
 
   .container {
@@ -17,9 +24,10 @@
   .text {
     margin-top: 24rem;
     font-size: 1rem;
+    line-height: 1.4;
     width: 100%;
-    max-width: 400px;
-    font-weight: 200;
+    max-width: 600px;
+    font-weight: 400;
     text-align: center;
   }
 
@@ -115,11 +123,12 @@
   <div class="play"></div>
   <div class="text">
     <h1>Aw, Snap?</h1>
-    <div>
+    <p style="color:rgba(255,255,255,0.9)">
       We noticed that the sandbox didn't complete its last run. This could be
       because of some code that crashed the browser. We paused execution so you
       can check the code.
-    </div>
-    <div>Click to continue execution</div>
+    </p>
+    <p style="color:rgba(255,255,255,0.9)">Click to continue execution</p>
   </div>
 </div>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400&display=swap" rel="stylesheet">

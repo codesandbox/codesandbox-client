@@ -1,0 +1,85 @@
+{
+  "name": "rc-textarea",
+  "version": "0.3.0",
+  "description": "Pretty Textarea react component used in used in ant.design",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-textarea",
+    "textarea",
+    "antd",
+    "ant-design"
+  ],
+  "main": "./lib/index",
+  "module": "./es/index",
+  "files": [
+    "assets/*.css",
+    "assets/*.less",
+    "es",
+    "lib",
+    "dist"
+  ],
+  "homepage": "https://react-component.github.io/textarea",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/textarea.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/textarea/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build && lessc assets/index.less assets/index.css",
+    "gh-pages": "npm run build && father doc deploy",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish && npm run gh-pages",
+    "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "pretty-quick": "pretty-quick",
+    "test": "father test",
+    "coverage": "father test --coverage"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "^2.2.1",
+    "omit.js": "^2.0.0",
+    "rc-resize-observer": "^0.2.3"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "@umijs/fabric": "^2.0.8",
+    "coveralls": "^3.0.6",
+    "cross-env": "^7.0.2",
+    "enzyme": "^3.0.0",
+    "enzyme-adapter-react-16": "^1.0.1",
+    "enzyme-to-json": "^3.4.0",
+    "eslint": "^7.0.0",
+    "father": "^2.13.4",
+    "husky": "^4.2.5",
+    "less": "^3.10.3",
+    "np": "^5.1.0",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-test-renderer": "^16.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "cnpm": {
+    "mode": "npm"
+  },
+  "tnpm": {
+    "mode": "npm"
+  }
+}

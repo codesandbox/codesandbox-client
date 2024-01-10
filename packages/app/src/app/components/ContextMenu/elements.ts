@@ -41,6 +41,7 @@ export const Item = styled.button`
   svg {
     margin-right: 0.75rem;
     font-size: 0.75rem;
+    width: 1rem;
   }
 
   &:last-child {
@@ -72,4 +73,19 @@ export const ItemContainer = styled.div`
     padding-bottom: 0;
     margin-bottom: 0;
   }
+`;
+
+export const Badge = styled.p`
+  margin: 0 0 0 4px;
+  border-radius: 2px;
+  background-color: ${opts => opts.theme.colors.blues[700]};
+  color: ${opts => opts.theme.colors.white};
+  width: ${opts => opts.theme.sizes[7]}px;
+  height: ${opts => opts.theme.sizes[3]}px;
+  text-align: center;
+  line-height: 1.4;
+  font-size: ${opts => opts.theme.fontSizes[1]}px;
+  font-weight: ${opts => opts.theme.fontWeights.medium};
+  position: relative;
+  top: -1px;
 `;

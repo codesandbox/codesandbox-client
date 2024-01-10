@@ -1,29 +1,30 @@
 import React, { FunctionComponent } from 'react';
 import { Element, Button, Text, Stack, Link } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { VercelIntegration } from 'app/pages/common/VercelIntegration';
 import { Alert } from '../Common/Alert';
-import { VercelIcon } from './VercelLogo';
 
 export const DeploymentModal: FunctionComponent = () => {
   const {
-    state: {
-      user,
-      deployment: { deploying, url },
+    user,
+    deployment: {
+      deploying,
+      vercel: { url },
     },
-    actions: {
-      deployment: { deployClicked },
-      signInVercelClicked,
-    },
-  } = useOvermind();
+  } = useAppState();
+  const {
+    deployPreviewClicked,
+    deployProductionClicked,
+  } = useActions().deployment;
 
   if (!user) {
     return null;
   }
 
   const {
-    integrations: { zeit: vercel },
+    integrations: { vercel },
   } = user;
   const vercelSignedIn = Boolean(vercel);
 
@@ -34,21 +35,35 @@ export const DeploymentModal: FunctionComponent = () => {
     >
       {url ? (
         <Element marginBottom={4}>
-          <Text weight="bold" block size={4} align="center" paddingBottom={4}>
+          <Text
+            weight="regular"
+            block
+            size={4}
+            align="center"
+            paddingBottom={4}
+          >
             Deployed!
           </Text>
-          <Link variant="muted" block size={3} align="center" href={url}>
+          <Link
+            variant="muted"
+            block
+            size={3}
+            align="center"
+            href={url}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             {url}
           </Link>
           <Text paddingTop={4} block size={3} align="center">
-            You can manage your deployments{' '}
+            You can{' '}
             <Link
               variant="muted"
               href="https://vercel.com/dashboard"
               target="_blank"
               rel="noreferrer noopener"
             >
-              here
+              manage your deployments here
             </Link>
             .
           </Text>
@@ -63,38 +78,37 @@ export const DeploymentModal: FunctionComponent = () => {
             borderRadius: 'medium',
           })}
         >
-          <VercelIcon />
-          <Element paddingLeft={4}>
-            {vercelSignedIn ? (
-              <>
-                <Text size={3} block paddingBottom={1} variant="muted">
-                  Signed in with
-                </Text>
-                <Text size={3}>{vercel.email || 'Loading...'}</Text>
-              </>
-            ) : (
-              <>
-                <Text size={3} block paddingBottom={1}>
-                  Please sign in
-                </Text>
-                <Button onClick={signInVercelClicked}>Sign In</Button>
-              </>
-            )}
-          </Element>
+          <VercelIntegration />
         </Stack>
       )}
-      <Stack justify="flex-end">
-        <Button
-          css={css({ width: 'auto' })}
-          onClick={() => {
-            track('Deploy Clicked', { provider: 'vercel' });
-            deployClicked();
-          }}
-          disabled={!vercelSignedIn || deploying}
-        >
-          {deploying ? 'Deploying' : 'Deploy Sandbox'}
-        </Button>
-      </Stack>
+      {!vercelSignedIn || deploying ? (
+        <Stack justify="flex-end">
+          <Button css={css({ width: 'auto' })} disabled>
+            Deploying
+          </Button>
+        </Stack>
+      ) : (
+        <Stack gap={4} justify="flex-end">
+          <Button
+            css={css({ width: 'auto' })}
+            onClick={() => {
+              track('Production Deploy Clicked', { provider: 'vercel' });
+              deployProductionClicked();
+            }}
+          >
+            Deploy Sandbox to Production
+          </Button>
+          <Button
+            css={css({ width: 'auto' })}
+            onClick={() => {
+              track('Preview Deploy Clicked', { provider: 'vercel' });
+              deployPreviewClicked();
+            }}
+          >
+            Deploy Sandbox to Preview
+          </Button>
+        </Stack>
+      )}
     </Alert>
   );
 };

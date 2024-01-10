@@ -1,15 +1,15 @@
-export default (id, title, siblings = []) => {
+export const validateTitle = (id, title, siblings = []) => {
   if (title.length === 0) return 'Title cannot be empty';
   if (title.includes(' ')) {
     // It has whitespaces
     return 'Title cannot have whitespaces';
   }
-  if (/[!@#$%^&*(),?":{}|<>]/g.test(title)) {
+  if (/[<>^:;,?"*|]/g.test(title)) {
     return 'Title cannot have special characters';
   }
 
-  if (title.length > 32) {
-    return "The title can't be more than 32 characters long";
+  if (title.length > 192) {
+    return "The title can't be more than 192 characters long";
   }
 
   if (title.includes('/') || title.includes('\\')) {

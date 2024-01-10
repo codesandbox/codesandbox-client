@@ -3,7 +3,6 @@
 // const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -40,33 +39,7 @@ module.exports = merge(commonConfig, {
     minimizer: [
       new TerserJSPlugin({
         terserOptions: {
-          parse: {
-            // We want terser to parse ecma 8 code. However, we don't want it
-            // to apply any minification steps that turns valid ecma 5 code
-            // into invalid ecma 5 code. This is why the 'compress' and 'output'
-            // sections only apply transformations that are ecma 5 safe
-            // https://github.com/facebook/create-react-app/pull/4234
-            ecma: 8,
-          },
-          compress: {
-            ecma: 5,
-            warnings: false,
-            // Disabled because of an issue with Uglify breaking seemingly valid code:
-            // https://github.com/facebook/create-react-app/issues/2376
-            // Pending further investigation:
-            // https://github.com/mishoo/UglifyJS2/issues/2011
-            comparisons: false,
-            // Disabled because of an issue with Terser breaking valid code:
-            // https://github.com/facebook/create-react-app/issues/5250
-            // Pending further investigation:
-            // https://github.com/terser-js/terser/issues/120
-            inline: 2,
-          },
-          mangle: {
-            safari10: true,
-          },
           output: {
-            ecma: 5,
             comments: false,
             // Turned on because emoji and regex is not minified properly using default
             // https://github.com/facebook/create-react-app/issues/2488
@@ -83,6 +56,7 @@ module.exports = merge(commonConfig, {
       }),
     ],
     concatenateModules: true, // ModuleConcatenationPlugin
+    chunkIds: 'named',
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
 
@@ -183,7 +157,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /\/vscode28/,
+          urlPattern: /\/vscode33/,
           handler: 'cacheFirst',
           options: {
             cache: {
@@ -241,21 +215,24 @@ module.exports = merge(commonConfig, {
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
       runtimeCaching: [
-        {
-          urlPattern: /api\/v1\/sandboxes/,
-          handler: 'networkFirst',
-          options: {
-            cache: {
-              maxEntries: 50,
-              name: 'sandboxes-cache',
-            },
-          },
-        },
+        // Don't do this, because it will cache API responses to the server. Even if no-cache headers
+        // are set.
+        // {
+        //   urlPattern: /api\/v1\//,
+        //   handler: 'networkFirst',
+        //   options: {
+        //     cache: {
+        //       maxEntries: 50,
+        //       name: 'sandboxes-cache',
+        //     },
+        //   },
+        // },
         {
           urlPattern: /api\/v1\/dependencies/,
-          handler: 'fastest',
+          handler: 'cacheFirst',
           options: {
             cache: {
+              // A day
               maxAgeSeconds: 60 * 60 * 24,
               name: 'dependency-version-cache',
             },
@@ -265,7 +242,7 @@ module.exports = merge(commonConfig, {
           // These should be dynamic, since it's not loaded from this domain
           // But from the root domain
           urlPattern: /codesandbox\.io\/static\/js\//,
-          handler: 'fastest',
+          handler: 'cacheFirst',
           options: {
             cache: {
               // A day
@@ -276,7 +253,7 @@ module.exports = merge(commonConfig, {
         },
         {
           urlPattern: /\.amazonaws\.com\/prod\/package/,
-          handler: 'fastest',
+          handler: 'cacheFirst',
           options: {
             cache: {
               // a week
@@ -287,11 +264,24 @@ module.exports = merge(commonConfig, {
         },
         {
           urlPattern: /prod-packager-packages\.codesandbox\.io/,
-          handler: 'fastest',
+          handler: 'cacheFirst',
           options: {
             cache: {
+              // a week
               maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-files-cache',
+            },
+          },
+        },
+        // We resolve `package.json` to resolve versions (e.g. next -> 15.0.5). We need to have a much shorter cache on this
+        {
+          urlPattern: /^https:\/\/unpkg\.com\/.*\/package.json/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'unpkg-dep-pkg-cache',
+              maxAgeSeconds: 60 * 5, // 5 minutes
             },
           },
         },
@@ -350,17 +340,23 @@ module.exports = merge(commonConfig, {
     new ManifestPlugin({
       fileName: 'file-manifest.json',
       publicPath: commonConfig.output.publicPath,
+
+      map: fileDescriptor => {
+        const { name } = fileDescriptor;
+
+        // Removes the ".[contenthash]" part from name
+        return merge(fileDescriptor, {
+          name: name.replace(/(\.[a-f0-9]+)(\.[a-z]{2,})$/, '$2'),
+        });
+      },
     }),
-    new CopyWebpackPlugin([
-      {
-        from: '../sse-hooks/dist',
-        to: 'public/sse-hooks',
-      },
-    ]),
-    new ImageminPlugin({
-      pngquant: {
-        quality: '95-100',
-      },
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: '../sse-hooks/dist/sse-hooks.js',
+          to: 'public/sse-hooks/[name].[contenthash].[ext]',
+        },
+      ],
     }),
     // isMaster &&
     //   new SentryWebpackPlugin({

@@ -6,7 +6,8 @@ import {
 import getDefinition from '@codesandbox/common/lib/templates';
 import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { Action, AsyncAction } from 'app/overmind';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { Context } from 'app/overmind';
 import { RecoverData } from 'app/overmind/effects/moduleRecover';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
@@ -21,10 +22,13 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-export const applyRecover: Action<Array<{
-  module: Module;
-  recoverData: RecoverData;
-}>> = ({ state, effects, actions }, recoveredList) => {
+export const applyRecover = (
+  { state, effects, actions }: Context,
+  recoveredList: Array<{
+    module: Module;
+    recoverData: RecoverData;
+  }>
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -43,10 +47,13 @@ export const applyRecover: Action<Array<{
   });
 };
 
-export const createRecoverDiffs: Action<Array<{
-  module: Module;
-  recoverData: RecoverData;
-}>> = ({ state, effects, actions }, recoveredList) => {
+export const createRecoverDiffs = (
+  { state, effects, actions }: Context,
+  recoveredList: Array<{
+    module: Module;
+    recoverData: RecoverData;
+  }>
+) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;
@@ -66,18 +73,24 @@ export const createRecoverDiffs: Action<Array<{
   });
 };
 
-export const discardRecover: Action = ({ effects, state }) => {
+export const discardRecover = ({ effects, state }: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
   effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
 };
 
-export const moduleRenamed: AsyncAction<{
-  title: string;
-  moduleShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, actions, effects }, { title, moduleShortid }) => {
+export const moduleRenamed = withOwnedSandbox(
+  async (
+    { state, actions, effects }: Context,
+    {
+      title,
+      moduleShortid,
+    }: {
+      title: string;
+      moduleShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -137,11 +150,17 @@ export const moduleRenamed: AsyncAction<{
   'write_code'
 );
 
-export const directoryCreated: AsyncAction<{
-  title: string;
-  directoryShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, effects, actions }, { title, directoryShortid }) => {
+export const directoryCreated = withOwnedSandbox(
+  async (
+    { state, effects, actions }: Context,
+    {
+      title,
+      directoryShortid,
+    }: {
+      title: string;
+      directoryShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -211,11 +230,17 @@ export const directoryCreated: AsyncAction<{
   'write_code'
 );
 
-export const moduleMovedToDirectory: AsyncAction<{
-  moduleShortid: string;
-  directoryShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, actions, effects }, { moduleShortid, directoryShortid }) => {
+export const moduleMovedToDirectory = withOwnedSandbox(
+  async (
+    { state, actions, effects }: Context,
+    {
+      moduleShortid,
+      directoryShortid,
+    }: {
+      moduleShortid: string;
+      directoryShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -262,16 +287,26 @@ export const moduleMovedToDirectory: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
 );
 
-export const directoryMovedToDirectory: AsyncAction<{
-  shortid: string;
-  directoryShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, actions, effects }, { shortid, directoryShortid }) => {
+export const directoryMovedToDirectory = withOwnedSandbox(
+  async (
+    { state, actions, effects }: Context,
+    {
+      shortid,
+      directoryShortid,
+    }: {
+      shortid: string;
+      directoryShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -314,15 +349,24 @@ export const directoryMovedToDirectory: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
 );
 
-export const directoryDeleted: AsyncAction<{
-  directoryShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, actions, effects }, { directoryShortid }) => {
+export const directoryDeleted = withOwnedSandbox(
+  async (
+    { state, actions, effects }: Context,
+    {
+      directoryShortid,
+    }: {
+      directoryShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -388,16 +432,26 @@ export const directoryDeleted: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
 );
 
-export const directoryRenamed: AsyncAction<{
-  title: string;
-  directoryShortid: string;
-}> = withOwnedSandbox(
-  async ({ effects, actions, state }, { title, directoryShortid }) => {
+export const directoryRenamed = withOwnedSandbox(
+  async (
+    { effects, actions, state }: Context,
+    {
+      title,
+      directoryShortid,
+    }: {
+      title: string;
+      directoryShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -411,20 +465,13 @@ export const directoryRenamed: AsyncAction<{
     }
 
     const oldTitle = directory.title;
-    const oldPath = directory.path;
 
-    directory.title = title;
-    directory.path = getDirectoryPath(
-      sandbox.modules,
-      sandbox.directories,
-      directory.id
-    );
+    actions.files.internal.renameDirectoryInState({
+      directory,
+      sandbox,
+      title,
+    });
 
-    effects.vscode.sandboxFsSync.rename(
-      state.editor.modulesByPath,
-      oldPath!,
-      directory.path
-    );
     actions.editor.internal.updatePreviewCode();
     try {
       await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title);
@@ -435,8 +482,11 @@ export const directoryRenamed: AsyncAction<{
 
       effects.executor.updateFiles(sandbox);
     } catch (error) {
-      directory.title = oldTitle;
-      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+      actions.files.internal.renameDirectoryInState({
+        directory,
+        sandbox,
+        title: oldTitle,
+      });
       actions.internal.handleError({
         message: 'Could not rename directory',
         error,
@@ -447,9 +497,9 @@ export const directoryRenamed: AsyncAction<{
   'write_code'
 );
 
-export const gotUploadedFiles: AsyncAction<string> = async (
-  { state, actions, effects },
-  message
+export const gotUploadedFiles = async (
+  { state, actions, effects }: Context,
+  message: string
 ) => {
   const modal = 'storageManagement';
   effects.analytics.track('Open Modal', { modal });
@@ -470,11 +520,11 @@ export const gotUploadedFiles: AsyncAction<string> = async (
   }
 };
 
-export const addedFileToSandbox: AsyncAction<Pick<
-  UploadFile,
-  'name' | 'url'
->> = withOwnedSandbox(
-  async ({ actions, effects, state }, { name, url }) => {
+export const addedFileToSandbox = withOwnedSandbox(
+  async (
+    { actions, effects, state }: Context,
+    { name, url }: Pick<UploadFile, 'name' | 'url'>
+  ) => {
     if (!state.editor.currentSandbox) {
       return;
     }
@@ -487,14 +537,18 @@ export const addedFileToSandbox: AsyncAction<Pick<
     });
 
     effects.executor.updateFiles(state.editor.currentSandbox);
+
+    if (state.editor.currentSandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
 );
 
-export const deletedUploadedFile: AsyncAction<string> = async (
-  { actions, effects, state },
-  id
+export const deletedUploadedFile = async (
+  { actions, effects, state }: Context,
+  id: string
 ) => {
   if (!state.uploadedFiles) {
     return;
@@ -513,15 +567,22 @@ export const deletedUploadedFile: AsyncAction<string> = async (
   }
 };
 
-export const filesUploaded: AsyncAction<{
-  files: { [k: string]: { dataURI: string; type: string } };
-  directoryShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, effects, actions }, { files, directoryShortid }) => {
+export const filesUploaded = withOwnedSandbox(
+  async (
+    { state, effects, actions }: Context,
+    {
+      files,
+      directoryShortid,
+    }: {
+      files: { [k: string]: { dataURI: string; type: string } };
+      directoryShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
     }
+
     const modal = 'uploading';
     effects.analytics.track('Open Modal', { modal });
     // What message?
@@ -543,10 +604,11 @@ export const filesUploaded: AsyncAction<{
       });
 
       effects.executor.updateFiles(sandbox);
+      actions.git.updateGitChanges();
     } catch (error) {
       if (error.message.indexOf('413') !== -1) {
         actions.internal.handleError({
-          message: `The uploaded file is bigger than 7MB, contact hello@codesandbox.io if you want to raise this limit`,
+          message: `The uploaded file is bigger than 7MB, please upgrade to PRO for 30MB limits.`,
           error,
           hideErrorMessage: true,
         });
@@ -564,15 +626,90 @@ export const filesUploaded: AsyncAction<{
   'write_code'
 );
 
-export const massCreateModules: AsyncAction<{
-  modules: any;
-  directories: any;
-  directoryShortid: string | null;
-  cbID?: string;
-}> = withOwnedSandbox(
+type File = { [k: string]: { dataURI: string; type: string } };
+export const thumbnailToBeCropped = withOwnedSandbox(
+  async ({ state, actions }: Context, { file }: { file: File }) => {
+    const sandbox = state.editor.currentSandbox;
+    if (!sandbox) {
+      return;
+    }
+
+    const fileName = Object.keys(file)[0];
+
+    // if it's a gif we can't crop it, just upload it
+    if (fileName.split('.').pop() === 'gif') {
+      await actions.files.thumbnailUploaded({ file });
+
+      return;
+    }
+    state.workspace.activeThumb = file;
+    state.currentModal = 'cropThumbnail';
+  },
+  async () => {},
+  'write_code'
+);
+
+export const thumbnailUploaded = async (
+  { state, effects, actions }: Context,
+  { file }: { file: File }
+) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  const thumb = sandbox.modules.find(m => m.path.includes('/thumbnail.'));
+  state.workspace.uploadingThumb = true;
+  if (thumb) {
+    await actions.files.moduleDeleted({ moduleShortid: thumb.shortid });
+  }
+  state.currentModal = 'uploading';
+  try {
+    const { modules, directories } = await actions.files.internal.uploadFiles({
+      files: file,
+      directoryShortid: '',
+    });
+
+    actions.files.massCreateModules({
+      modules,
+      directories,
+      directoryShortid: null,
+    });
+
+    effects.executor.updateFiles(sandbox);
+    actions.git.updateGitChanges();
+    effects.notificationToast.success('Thumbnail image updated');
+  } catch (error) {
+    if (error.message.indexOf('413') !== -1) {
+      actions.internal.handleError({
+        message: `The uploaded file is bigger than 7MB, please upgrade to PRO for 30MB limits.`,
+        error,
+        hideErrorMessage: true,
+      });
+    } else {
+      actions.internal.handleError({
+        message: 'Unable to upload files',
+        error,
+      });
+    }
+  }
+  state.workspace.uploadingThumb = false;
+  actions.internal.closeModals(false);
+};
+
+export const massCreateModules = withOwnedSandbox(
   async (
-    { state, actions, effects },
-    { modules, directories, directoryShortid, cbID }
+    { state, actions, effects }: Context,
+    {
+      modules,
+      directories,
+      directoryShortid,
+      cbID,
+    }: {
+      modules: any;
+      directories: any;
+      directoryShortid: string | null;
+      cbID?: string;
+    }
   ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
@@ -627,15 +764,20 @@ export const massCreateModules: AsyncAction<{
   'write_code'
 );
 
-export const moduleCreated: AsyncAction<{
-  title: string;
-  directoryShortid: string | null;
-  code?: string;
-  isBinary?: boolean;
-}> = withOwnedSandbox(
+export const moduleCreated = withOwnedSandbox(
   async (
-    { state, actions, effects },
-    { title, directoryShortid, code, isBinary }
+    { state, actions, effects }: Context,
+    {
+      title,
+      directoryShortid,
+      code,
+      isBinary,
+    }: {
+      title: string;
+      directoryShortid: string | null;
+      code?: string;
+      isBinary?: boolean;
+    }
   ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
@@ -724,15 +866,24 @@ export const moduleCreated: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
 );
 
-export const moduleDeleted: AsyncAction<{
-  moduleShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, effects, actions }, { moduleShortid }) => {
+export const moduleDeleted = withOwnedSandbox(
+  async (
+    { state, effects, actions }: Context,
+    {
+      moduleShortid,
+    }: {
+      moduleShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -767,15 +918,25 @@ export const moduleDeleted: AsyncAction<{
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({ message: 'Could not delete file', error });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
 );
 
-export const createModulesByPath: AsyncAction<{
-  cbID?: string;
-  files: INormalizedModules;
-}> = async ({ state, effects, actions }, { files, cbID }) => {
+export const createModulesByPath = async (
+  { state, effects, actions }: Context,
+  {
+    files,
+    cbID,
+  }: {
+    cbID?: string;
+    files: INormalizedModules;
+  }
+) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;
@@ -792,9 +953,9 @@ export const createModulesByPath: AsyncAction<{
   effects.executor.updateFiles(sandbox);
 };
 
-export const syncSandbox: AsyncAction<any[]> = async (
-  { state, actions, effects },
-  updates
+export const syncSandbox = async (
+  { state, actions, effects }: Context,
+  updates: any[]
 ) => {
   const oldSandbox = state.editor.currentSandbox;
   if (!oldSandbox) {
@@ -869,4 +1030,49 @@ export const syncSandbox: AsyncAction<any[]> = async (
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       state.editor.currentSandbox
     );
+};
+
+export const updateWorkspaceConfig = async (
+  { state, actions }: Context,
+  update: {}
+) => {
+  if (hasPermission(state.editor.currentSandbox!.authorization, 'write_code')) {
+    const devtoolsModule = state.editor.modulesByPath[
+      '/.codesandbox/workspace.json'
+    ] as Module;
+
+    if (devtoolsModule) {
+      const updatedCode = JSON.stringify(
+        Object.assign(JSON.parse(devtoolsModule.code), update),
+        null,
+        2
+      );
+      actions.editor.codeChanged({
+        moduleShortid: devtoolsModule.shortid,
+        code: updatedCode,
+      });
+      await actions.editor.codeSaved({
+        code: updatedCode,
+        moduleShortid: devtoolsModule.shortid,
+        cbID: null,
+      });
+    } else {
+      await actions.files.createModulesByPath({
+        files: {
+          '/.codesandbox/workspace.json': {
+            content: JSON.stringify(update, null, 2),
+            isBinary: false,
+          },
+        },
+      });
+    }
+  } else {
+    state.editor.workspaceConfigCode = JSON.stringify(
+      state.editor.workspaceConfigCode
+        ? Object.assign(JSON.parse(state.editor.workspaceConfigCode), update)
+        : update,
+      null,
+      2
+    );
+  }
 };

@@ -1,5 +1,6 @@
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import { IReaction, json } from 'overmind';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
   CurrentUser,
@@ -13,23 +14,23 @@ import {
   UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
-import { CommentFragment } from 'app/graphql/types';
-import { Reaction } from 'app/overmind';
+import { CodeReferenceMetadata } from 'app/graphql/types';
+import { Context } from 'app/overmind';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
-import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
-import { json } from 'overmind';
+
+import FontFaceObserver from 'fontfaceobserver';
 import io from 'socket.io-client';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
@@ -51,6 +52,7 @@ import SandboxFsSync from './SandboxFsSync';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
+import { composeMenuAppTree, MenuAppItems } from './composeMenuAppTree';
 
 export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox | null;
@@ -70,7 +72,7 @@ export type VsCodeOptions = {
       right: number;
     };
   }) => void;
-  reaction: Reaction;
+  reaction: IReaction<Context>;
   // These two should be removed
   getSignal: any;
   getState: any;
@@ -125,9 +127,10 @@ export class VSCodeEffect {
   private elements = {
     editor: document.createElement('div'),
     editorPart: document.createElement('div'),
-    menubar: document.createElement('div'),
     statusbar: document.createElement('div'),
   };
+
+  private menuAppItems: MenuAppItems = [];
 
   private customEditorApi: ICustomEditorApi = {
     getCustomEditor: () => null,
@@ -136,6 +139,20 @@ export class VSCodeEffect {
   onSelectionChangeDebounced: VsCodeOptions['onSelectionChanged'] & {
     cancel(): void;
   };
+
+  /**
+   * Look up the preferred (last defined) keybinding for a command.
+   * @returns {ResolvedKeybinding} The preferred keybinding or null if the command is not bound.
+   */
+  public lookupKeybinding: (
+    commandId: string
+  ) => { getLabel(): string | null } | null;
+
+  /**
+   * Extract `contextMatchesRules` method from ContextKeyService
+   * to match rules and conditionals in the editor
+   */
+  public contextMatchesRules: (rules: any | undefined) => boolean;
 
   public initialize(options: VsCodeOptions) {
     this.options = options;
@@ -165,6 +182,7 @@ export class VSCodeEffect {
     // correctly
     this.sandboxFsSync = new SandboxFsSync({
       getSandboxFs: () => ({}),
+      getCurrentSandbox: () => null,
     });
 
     import(
@@ -196,20 +214,40 @@ export class VSCodeEffect {
         localStorage.getItem('settings.vimmode') === 'true'
       );
 
-      return new FontFaceObserver('dm').load();
+      return new FontFaceObserver('MonoLisa').load();
     });
 
     // Only set the read only state when the editor is initialized.
     this.initialized.then(() => {
-      // ReadOnly mode is derivative, it's based on a couple conditions, of which the
-      // most important one is Live. If you're in a classroom live session as spectator,
-      // you should not be allowed to edit.
+      // ReadOnly mode is derivative, it's based on a couple conditions. The most important
+      // one is the `freePlanEditingRestricted` flag. The second most important one is live.
+      // If you're in a classroom live session as spectator, you should not be allowed to edit.
+
       options.reaction(
-        state =>
-          !state.live.isLive ||
-          state.live.roomInfo?.mode === 'open' ||
-          (state.live.roomInfo?.mode === 'classroom' &&
-            state.live.isCurrentEditor),
+        state => {
+          const freePlanEditingRestricted =
+            state.editor.currentSandbox?.freePlanEditingRestricted;
+
+          if (freePlanEditingRestricted) {
+            // Returns canEdit, false always
+            return false;
+          }
+
+          const hasGitInfo = Boolean(state.editor.currentSandbox?.git);
+          const isNotLive = !state.live.isLive;
+          const isOpenRoom = state.live.roomInfo?.mode === 'open';
+          const isClassroomAndCurrentEditor =
+            state.live.roomInfo?.mode === 'classroom' &&
+            state.live.isCurrentEditor;
+
+          const canEdit =
+            hasGitInfo ||
+            isNotLive ||
+            isOpenRoom ||
+            isClassroomAndCurrentEditor;
+
+          return canEdit;
+        },
         canEdit => {
           this.setReadOnly(!canEdit);
         }
@@ -225,7 +263,7 @@ export class VSCodeEffect {
 
   public async getCodeReferenceBoundary(
     commentId: string,
-    reference: CommentFragment['references'][0]['metadata']
+    reference: CodeReferenceMetadata
   ) {
     this.revealPositionInCenterIfOutsideViewport(reference.anchor, 1);
 
@@ -265,8 +303,8 @@ export class VSCodeEffect {
     return this.elements.editor;
   }
 
-  public getMenubarElement() {
-    return this.elements.menubar;
+  public getMenuAppItems(): MenuAppItems {
+    return this.menuAppItems;
   }
 
   public getStatusbarElement() {
@@ -364,7 +402,6 @@ export class VSCodeEffect {
 
   public setReadOnly(enabled: boolean) {
     this.readOnly = enabled;
-
     this.updateOptions({ readOnly: enabled });
   }
 
@@ -413,6 +450,14 @@ export class VSCodeEffect {
     } catch {
       //
     }
+    try {
+      // After navigation, this mount is already mounted and throws error,
+      // which cause that Phonenix is not reconnected, so the file's content cannot be seen
+      // https://github.com/codesandbox/codesandbox-client/issues/4143
+      this.mountableFilesystem.umount('/home/sandbox/.cache');
+    } catch {
+      //
+    }
 
     if (isServer && this.options.getCurrentUser()?.experiments.containerLsp) {
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
@@ -443,7 +488,7 @@ export class VSCodeEffect {
     if (isFirstLoad) {
       const container = this.elements.editor;
 
-      await new Promise(resolve => {
+      await new Promise<void>(resolve => {
         loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
       }).then(() => this.loadEditor(window.monaco, container));
     }
@@ -465,7 +510,10 @@ export class VSCodeEffect {
     setFs(this.sandboxFsSync.create(sandbox));
 
     if (isFirstLoad) {
-      this.sandboxFsSync.sync(() => {});
+      this.sandboxFsSync.sync(() => {
+        // Once we have synced the fs, reload the TS project, as some new dependencies might have been added
+        this.runCommand('typescript.reloadProjects');
+      });
     } else {
       this.editorApi.extensionService.stopExtensionHost();
       this.sandboxFsSync.sync(() => {
@@ -508,7 +556,7 @@ export class VSCodeEffect {
     // allowing for a paint, like selections in explorer. For this to work we have to ensure
     // that we are actually indeed still trying to open this file, as we might have changed
     // the file
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       requestAnimationFrame(async () => {
         const currentModule = this.options.getCurrentModule();
         if (currentModule && module.id === currentModule.id) {
@@ -553,17 +601,23 @@ export class VSCodeEffect {
           })
           .filter(x => x);
 
-        this.monaco.editor.setModelMarkers(
-          activeEditor.getModel(),
-          'error',
-          errorMarkers
-        );
+        // use raf to make sure that when we spam the editor, we don't clog the ui thread
+        requestAnimationFrame(() => {
+          this.monaco.editor.setModelMarkers(
+            activeEditor.getModel(),
+            'error',
+            errorMarkers
+          );
+        });
       } else {
-        this.monaco.editor.setModelMarkers(
-          activeEditor.getModel(),
-          'error',
-          []
-        );
+        // use raf to make sure that when we spam the editor, we don't clog the ui thread
+        requestAnimationFrame(() => {
+          this.monaco.editor.setModelMarkers(
+            activeEditor.getModel(),
+            'error',
+            []
+          );
+        });
       }
     }
   };
@@ -747,9 +801,7 @@ export class VSCodeEffect {
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
     // TODO: merge host logic with executor-manager
-    const sseHost = process.env.STAGING_API
-      ? 'https://codesandbox.stream'
-      : 'https://codesandbox.io';
+    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
@@ -837,7 +889,7 @@ export class VSCodeEffect {
       recover,
     ] = fileSystems;
 
-    const mfs = await this.createFileSystem('MountableFileSystem', {
+    const mfs = (await this.createFileSystem('MountableFileSystem', {
       '/': root,
       '/sandbox': sandbox,
       '/vscode': vscode,
@@ -845,7 +897,7 @@ export class VSCodeEffect {
       '/extensions': extensions,
       '/extensions/custom-theme': customTheme,
       '/recover': recover,
-    });
+    })) as any;
 
     window.BrowserFS.initialize(mfs);
 
@@ -902,6 +954,9 @@ export class VSCodeEffect {
       { IInstantiationService },
       { IExtensionEnablementService },
       { IContextViewService },
+      { MenuRegistry },
+      { IKeybindingService },
+      { IContextKeyService },
     ] = [
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
@@ -920,6 +975,9 @@ export class VSCodeEffect {
       r('vs/platform/instantiation/common/instantiation'),
       r('vs/platform/extensionManagement/common/extensionManagement'),
       r('vs/platform/contextview/browser/contextView'),
+      r('vs/platform/actions/common/actions'),
+      r('vs/platform/keybinding/common/keybinding'),
+      r('vs/platform/contextkey/common/contextkey'),
     ];
 
     const { serviceCollection } = await new Promise<any>(resolve => {
@@ -937,7 +995,7 @@ export class VSCodeEffect {
       );
     });
 
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       // It has to run the accessor within the callback
       serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
         // Initialize these services
@@ -945,20 +1003,22 @@ export class VSCodeEffect {
         accessor.get(ICodeSandboxEditorConnectorService);
 
         const statusbarPart = accessor.get(IStatusbarService);
-        const menubarPart = accessor.get('menubar');
         const commandService = accessor.get(ICommandService);
         const extensionService = accessor.get(IExtensionService);
         const extensionEnablementService = accessor.get(
           IExtensionEnablementService
         );
+        const keybindingService = accessor.get(IKeybindingService);
+        const contextKeyService = accessor.get(IContextKeyService);
 
+        this.lookupKeybinding = id => keybindingService.lookupKeybinding(id);
+        this.contextMatchesRules = rules =>
+          contextKeyService.contextMatchesRules(rules);
         this.commandService.resolve(commandService);
         this.extensionService.resolve(extensionService);
-
         this.extensionEnablementService.resolve(extensionEnablementService);
 
         const editorPart = accessor.get(IEditorGroupsService);
-
         const codeEditorService = accessor.get(ICodeEditorService);
         const textFileService = accessor.get(ITextFileService);
         const editorService = accessor.get(IEditorService);
@@ -987,15 +1047,13 @@ export class VSCodeEffect {
           monaco,
         };
 
-        if (process.env.NODE_ENV === 'development') {
-          // eslint-disable-next-line
-          console.log(accessor);
-        }
-
         statusbarPart.create(this.elements.statusbar);
-        menubarPart.create(this.elements.menubar);
         editorPart.create(this.elements.editorPart);
         editorPart.layout(container.offsetWidth, container.offsetHeight);
+
+        this.menuAppItems = composeMenuAppTree(id =>
+          MenuRegistry.getMenuItems(id)
+        );
 
         editorPart.parent = container;
 
@@ -1025,15 +1083,34 @@ export class VSCodeEffect {
     });
   }
 
+  private _cachedDependencies = {};
+  private _cachedDependenciesCode: string | undefined = undefined;
+  private getDependencies(sandbox: Sandbox): { [depName: string]: string } {
+    try {
+      const module = resolveModule(
+        '/package.json',
+        sandbox.modules,
+        sandbox.directories
+      );
+      if (this._cachedDependenciesCode !== module.code) {
+        this._cachedDependenciesCode = module.code;
+        const parsedPkg = JSON.parse(module.code);
+        this._cachedDependencies = {
+          ...(parsedPkg.dependencies || {}),
+          ...(parsedPkg.devDependencies || {}),
+        };
+      }
+    } catch (e) {
+      /* ignore */
+    }
+
+    return this._cachedDependencies;
+  }
+
   private prepareElements() {
     this.elements.editor.className = 'monaco-workbench';
     this.elements.editor.style.width = '100%';
     this.elements.editor.style.height = '100%';
-
-    this.elements.menubar.style.alignItems = 'center';
-    this.elements.menubar.style.height = '38px';
-    this.elements.menubar.style.fontSize = '0.8125rem';
-    this.elements.menubar.className = 'menubar';
 
     this.elements.statusbar.className = 'part statusbar';
     this.elements.statusbar.id = 'workbench.parts.statusbar';
@@ -1157,7 +1234,8 @@ export class VSCodeEffect {
           activeEditor.getModel().getValue(),
           modulePath,
           activeEditor.getModel().getVersionId(),
-          sandbox.template
+          sandbox.template,
+          this.getDependencies(sandbox)
         );
       }
 
@@ -1282,11 +1360,13 @@ export class VSCodeEffect {
     if (!sandbox || !this.linter) {
       return;
     }
+
     this.linter.lint(
       model.getValue(),
       title,
       model.getVersionId(),
-      sandbox.template
+      sandbox.template,
+      this.getDependencies(sandbox)
     );
   }
 

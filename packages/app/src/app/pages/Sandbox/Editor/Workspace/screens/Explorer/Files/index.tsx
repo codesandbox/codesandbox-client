@@ -1,86 +1,89 @@
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { Collapsible, SidebarRow } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
-import React from 'react';
+import React, { FunctionComponent, useCallback, useState } from 'react';
+
+import { useAppState, useActions } from 'app/overmind';
 
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
-import DirectoryEntry from './DirectoryEntry/index';
+import { DirectoryEntry } from './DirectoryEntry/index';
 
-export const Files = () => {
+const noop = () => undefined;
+
+type Props = {
+  readonly: boolean;
+};
+export const Files: FunctionComponent<Props> = ({ readonly }) => {
+  const { editor, files } = useActions();
   const {
-    state: { editor: editorState, isLoggedIn },
-    actions: { editor, files },
-  } = useOvermind();
+    editor: editorState,
+    editor: {
+      currentSandbox: { directories, modules, privacy, title },
+    },
+    isLoggedIn,
+  } = useAppState();
+  const [editActions, setEditActions] = useState(null);
 
-  const [editActions, setEditActions] = React.useState(null);
-
-  const { currentSandbox: sandbox } = editorState;
-
-  const _getModulePath = React.useCallback(
+  const _getModulePath = useCallback(
     moduleId => {
       try {
-        return getModulePath(sandbox.modules, sandbox.directories, moduleId);
-      } catch (e) {
+        return getModulePath(modules, directories, moduleId);
+      } catch {
         return '';
       }
     },
-    [sandbox.directories, sandbox.modules]
+    [directories, modules]
   );
 
   return (
-    <>
-      <Collapsible title="Files" defaultOpen css={{ position: 'relative' }}>
-        <SidebarRow
-          justify="flex-end"
-          css={css({
-            // these could have been inside the collapsible as "actions"
-            // but this is the only exception where we have actions in the
-            // collapsible header. Keeping them in the body, also lets us
-            // get the animation effect of open/close state on it's own
-            // If this UI pattern catches on, it would be a good refactor
-            // to add actions API to collapsible
-            position: 'absolute',
-            top: 0,
-            right: 2,
-          })}
-        >
-          {editActions}
-        </SidebarRow>
-        <DirectoryEntry
-          root
-          getModulePath={_getModulePath}
-          title={sandbox.title || 'Project'}
-          signals={{ files, editor }}
-          store={{ editor: editorState, isLoggedIn }}
-          initializeProperties={({
-            onCreateModuleClick,
-            onCreateDirectoryClick,
-            onUploadFileClick,
-          }) => {
-            if (setEditActions) {
-              setEditActions(
-                // @ts-ignore
-                <EditIcons
-                  hovering
-                  forceShow={window.__isTouch}
-                  onCreateFile={onCreateModuleClick}
-                  onCreateDirectory={onCreateDirectoryClick}
-                  onDownload={editor.createZipClicked}
-                  onUploadFile={
-                    isLoggedIn && sandbox.privacy === 0
-                      ? onUploadFileClick
-                      : undefined
-                  }
-                />
-              );
-            }
-          }}
-          depth={-1}
-          id={null}
-          shortid={null}
-        />
-      </Collapsible>
-    </>
+    <Collapsible css={{ position: 'relative' }} defaultOpen title="Files">
+      <SidebarRow
+        css={css({
+          // these could have been inside the collapsible as "actions"
+          // but this is the only exception where we have actions in the
+          // collapsible header. Keeping them in the body, also lets us
+          // get the animation effect of open/close state on it's own
+          // If this UI pattern catches on, it would be a good refactor
+          // to add actions API to collapsible
+          position: 'absolute',
+          top: 0,
+          right: 2,
+        })}
+        justify="flex-end"
+      >
+        {editActions}
+      </SidebarRow>
+
+      <DirectoryEntry
+        depth={-1}
+        getModulePath={_getModulePath}
+        id={null}
+        initializeProperties={({
+          onCreateDirectoryClick,
+          onUploadFileClick,
+          onCreateModuleClick,
+        }) => {
+          setEditActions(
+            // @ts-ignore
+            <EditIcons
+              forceShow={window.__isTouch}
+              hovering
+              onCreateDirectory={onCreateDirectoryClick}
+              onCreateFile={onCreateModuleClick}
+              onDownload={editor.createZipClicked}
+              onUploadFile={
+                isLoggedIn && privacy === 0 ? onUploadFileClick : noop
+              }
+            />
+          );
+        }}
+        readonly={readonly}
+        root
+        shortid={null}
+        signals={{ files, editor }}
+        store={{ editor: editorState, isLoggedIn }}
+        title={title || 'Project'}
+      />
+    </Collapsible>
   );
 };

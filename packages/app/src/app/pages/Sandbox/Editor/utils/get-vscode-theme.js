@@ -1,6 +1,6 @@
 import JSON from 'json5';
 
-import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import codesandbox from '@codesandbox/common/lib/themes/codesandbox-black';
 
 import themes from '@codesandbox/common/lib/themes';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
@@ -17,11 +17,9 @@ import { Title } from 'app/components/Title';
 // This is purely used to auth a sandbox. It should return a postMessage
 // with the previewSecret to the parent
 const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
-  const {
-    state,
-    actions: { genericPageMounted },
-    effects,
-  } = useOvermind();
+  const { hasLogIn } = useAppState();
+  const { api } = useEffects();
+  const { genericPageMounted } = useActions();
 
   const [error, setError] = React.useState<string>();
 
@@ -30,12 +28,12 @@ const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
   }, [genericPageMounted]);
 
   useEffect(() => {
-    if (state.hasLogIn) {
+    if (hasLogIn) {
       setError(null);
       // eslint-disable-next-line
       const [id, port] = props.match.params.id.split('-');
 
-      effects.api
+      api
         .getSandbox(id)
         .then(sandbox => {
           const sandboxUrl = frameUrl(sandbox, '', {
@@ -64,9 +62,9 @@ const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
           setError("We couldn't find the sandbox");
         });
     }
-  }, [effects.api, props.match.params.id, state.hasLogIn]);
+  }, [api, props.match.params.id, hasLogIn]);
 
-  return state.hasLogIn ? (
+  return hasLogIn ? (
     <Fullscreen style={{ height: '100vh' }}>
       <Centered horizontal vertical>
         <Title>{error ? 'Error: ' + error : 'Fetching Sandbox'}</Title>

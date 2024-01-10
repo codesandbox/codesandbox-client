@@ -12,7 +12,7 @@ import {
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { VercelIcon, VisitIcon, TrashIcon } from '../icons';
 
@@ -20,25 +20,26 @@ import { State } from './elements';
 
 export const Vercel: FunctionComponent = () => {
   const {
-    actions: {
-      deployment,
-      deployment: { deploySandboxClicked, setDeploymentToDelete },
-      modalOpened,
-      signInVercelClicked,
+    deployment,
+    deployment: { deploySandboxClicked, setDeploymentToDelete },
+    modalOpened,
+    signInVercelClicked,
+  } = useActions();
+  const {
+    deployment: {
+      deploying,
+      vercel: { deploysBeingDeleted, deploys },
     },
-    state: {
-      deployment: { deploying, deploysBeingDeleted, sandboxDeploys },
-      user: {
-        integrations: { zeit },
-      },
+    user: {
+      integrations: { vercel },
     },
-  } = useOvermind();
+  } = useAppState();
 
   return (
     <Integration icon={VercelIcon} title="Vercel">
-      {zeit ? (
+      {vercel ? (
         <>
-          <Element marginX={2} marginBottom={sandboxDeploys.length ? 6 : 0}>
+          <Element marginX={2} marginBottom={deploys.length ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>
               Deploy your sandbox to{' '}
               <Link href="https://vercel.com/home" target="_blank">
@@ -52,7 +53,7 @@ export const Vercel: FunctionComponent = () => {
           </Element>
 
           <Element>
-            {sandboxDeploys.map(({ created, name, state, uid, url }) => {
+            {deploys.map(({ created, name, state, uid, url }) => {
               const disabled = deploysBeingDeleted
                 ? deploysBeingDeleted.includes(uid)
                 : deployment[`${uid}Deleting`];
@@ -101,23 +102,17 @@ export const Vercel: FunctionComponent = () => {
           </Element>
         </>
       ) : (
-        <>
-          <Stack justify="space-between" marginX={2}>
-            <Stack direction="vertical">
-              <Text variant="muted">Enables</Text>
+        <Stack justify="space-between" marginX={2}>
+          <Stack direction="vertical">
+            <Text variant="muted">Enables</Text>
 
-              <Text>Deployments</Text>
-            </Stack>
-
-            <Button
-              css={{ width: 'auto' }}
-              disabled={deploying}
-              onClick={signInVercelClicked}
-            >
-              Sign in
-            </Button>
+            <Text>Deployments</Text>
           </Stack>
-        </>
+
+          <Button autoWidth disabled={deploying} onClick={signInVercelClicked}>
+            Sign in
+          </Button>
+        </Stack>
       )}
     </Integration>
   );

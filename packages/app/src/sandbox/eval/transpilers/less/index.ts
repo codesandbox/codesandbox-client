@@ -3,57 +3,56 @@
 import LessWorker from 'worker-loader?publicPath=/&name=less-transpiler.[hash:8].worker.js!./less-worker';
 /* eslint-enable import/default */
 
-import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
+import WorkerTranspiler from '../worker-transpiler/transpiler';
 
 class LessTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('less-loader', LessWorker, 1);
+    super('less-loader', LessWorker, {
+      maxWorkerCount: 1,
+    });
 
     this.cacheable = false;
   }
 
-  doTranspilation(
+  async doTranspilation(
     code: string,
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
-    return new Promise((resolve, reject) => {
-      const modules = loaderContext.getModules();
+    const modules = loaderContext.getModules();
+    const lessModules = modules.filter(m => /.*\.(css|less)$/.test(m.path));
+    const files = lessModules.reduce(
+      (interMediateFiles, module) => ({
+        ...interMediateFiles,
+        [module.path]: module.code,
+      }),
+      {}
+    );
 
-      const lessModules = modules.filter(m => /\.[css|less]$/.test(m.path));
-      const files = lessModules.reduce(
-        (interMediateFiles, module) => ({
-          ...interMediateFiles,
-          [module.path]: module.code,
-        }),
-        {}
-      );
+    const { path } = loaderContext;
+    files[path] = code;
 
-      const { path } = loaderContext;
-      files[path] = code;
+    const {
+      css: transpiledCode,
+      transpilationDependencies,
+    } = await this.queueCompileFn(
+      {
+        code,
+        files,
+        path,
+      },
+      loaderContext
+    );
 
-      this.queueTask(
-        {
-          code,
-          files,
-          path,
-        },
-        loaderContext._module.getId(),
-        loaderContext,
-        (err, data) => {
-          if (err) {
-            loaderContext.emitError(err);
+    await Promise.all(
+      transpilationDependencies.map(dep =>
+        loaderContext.addTranspilationDependency(dep.path, dep.options || {})
+      )
+    );
 
-            return reject(err);
-          }
-
-          return resolve(data);
-        }
-      );
-    });
+    return { transpiledCode };
   }
 }
 

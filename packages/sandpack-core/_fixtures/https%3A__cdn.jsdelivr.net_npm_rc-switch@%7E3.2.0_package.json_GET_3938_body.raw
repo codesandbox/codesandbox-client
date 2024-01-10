@@ -1,0 +1,61 @@
+{
+  "name": "rc-switch",
+  "version": "3.2.1",
+  "description": "switch ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-switch",
+    "switch"
+  ],
+  "main": "lib/index",
+  "module": "./es/index",
+  "files": [
+    "assets/*.css",
+    "es",
+    "lib"
+  ],
+  "homepage": "http://github.com/react-component/switch",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/switch.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/switch/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "father doc dev --storybook",
+    "build": "father doc build  --storybook",
+    "compile": "father build && lessc assets/index.less assets/index.css",
+    "gh-pages": "father doc deploy",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish",
+    "lint": "eslint .",
+    "test": "father test",
+    "coverage": "father test --coverage"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.10",
+    "@types/jest": "^26.0.4",
+    "coveralls": "^3.0.6",
+    "enzyme": "^3.0.0",
+    "enzyme-adapter-react-16": "^1.0.1",
+    "enzyme-to-json": "^3.0.0",
+    "eslint": "^7.0.0",
+    "father": "^2.13.4",
+    "less": "^3.11.1",
+    "np": "^6.2.3",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-test-renderer": "^16.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "^2.2.1",
+    "rc-util": "^5.0.1"
+  }
+}

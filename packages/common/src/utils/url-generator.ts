@@ -1,5 +1,6 @@
 import { Sandbox, SandboxUrlSourceData } from '../types';
 import { isServer } from '../templates/helpers/is-server';
+import * as dashboard from './url-generator/dashboard';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
@@ -7,7 +8,29 @@ const dotGit = /(\.git)$/;
 
 const sandboxHost = {
   'https://codesandbox.io': 'https://csb.app',
-  'https://codesandbox.stream': 'https://codesandbox.dev',
+  'https://codesandbox.stream': 'https://csb.dev',
+};
+
+// Second slash comes from joining URL parts
+const STATIC_SITE_PROTOCOL = 'https:/';
+const STATIC_SITE_DOMAIN = 'codesandbox.io';
+
+export const CSBProjectGitHubRepository = ({
+  owner,
+  repo,
+  welcome,
+}: {
+  owner: string;
+  repo: string;
+  welcome: boolean;
+}) => {
+  const origin = process.env.STAGING_API
+    ? 'https://codesandbox.stream'
+    : 'https://codesandbox.io';
+
+  return `${origin}/p/github/${owner}/${repo}?create=true${
+    welcome ? '&welcome=true' : ''
+  }`;
 };
 
 const buildEncodedUri = (
@@ -19,14 +42,42 @@ const buildEncodedUri = (
     .map((value, i) => `${encodeURIComponent(value)}${strings[i + 1]}`)
     .join('');
 
+const REGEX = /(?<id>\w{5,6})-(?<port>\d{1,5})\.(?<hostname>.*)/;
+function getCodeSandboxDevHost(port: number): string | undefined {
+  if (typeof window === 'undefined') {
+    // eslint-disable-next-line global-require
+    const hostname = require('os').hostname();
+
+    return `${hostname}-${port}.preview.csb.app`;
+  }
+
+  const currentUrl = location.host;
+  const currentMatch = currentUrl.match(REGEX);
+
+  if (!currentMatch?.groups) {
+    return undefined;
+  }
+  const { id, hostname } = currentMatch.groups;
+
+  if (!id || !port || !hostname) {
+    return undefined;
+  }
+
+  return `${id}-${port}.${hostname}`;
+}
+
 export const host = () => {
+  if (process.env.CSB && getCodeSandboxDevHost(3000)) {
+    return getCodeSandboxDevHost(3000);
+  }
+
   if (process.env.NODE_ENV === 'production') {
     return process.env.CODESANDBOX_HOST.split('//')[1];
   }
   if (process.env.LOCAL_SERVER) {
     return 'localhost:3000';
   }
-  return 'codesandbox.test';
+  return process.env.DEV_DOMAIN;
 };
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
@@ -57,18 +108,36 @@ const sandboxGitUrl = (git: {
 
 export const editorUrl = () => `/s/`;
 
-export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
+export const newEditorUrlPrefix = () => `/p/`;
+
+export const sandboxUrl = (
+  sandboxDetails: SandboxUrlSourceData,
+  hasBetaEditorExperiment?: boolean
+) => {
+  let baseUrl = editorUrl();
+
+  if (sandboxDetails.isV2) {
+    baseUrl = `${newEditorUrlPrefix()}devbox/`;
+  } else if (!sandboxDetails.isSse && hasBetaEditorExperiment) {
+    baseUrl = `${newEditorUrlPrefix()}sandbox/`;
+  }
+
+  const queryParams = sandboxDetails.query
+    ? `?${new URLSearchParams(sandboxDetails.query).toString()}`
+    : '';
+
   if (sandboxDetails.git) {
     const { git } = sandboxDetails;
-    return `${editorUrl()}${sandboxGitUrl(git)}`;
+    return `${baseUrl}${sandboxGitUrl(git)}${queryParams}`;
   }
 
   if (sandboxDetails.alias) {
-    return `${editorUrl()}${sandboxDetails.alias}`;
+    return `${baseUrl}${sandboxDetails.alias}${queryParams}`;
   }
 
-  return `${editorUrl()}${sandboxDetails.id}`;
+  return `${baseUrl}${sandboxDetails.id}${queryParams}`;
 };
+
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
@@ -80,6 +149,14 @@ export const embedUrl = (sandbox: Sandbox) => {
   }
 
   return `/embed/${sandbox.id}`;
+};
+
+export const vsCodeLauncherUrl = (devboxId: string) => {
+  return `${protocolAndHost()}${newEditorUrlPrefix()}vscode?sandboxId=${devboxId}`;
+};
+
+export const vsCodeUrl = (devboxId: string) => {
+  return `vscode://CodeSandbox-io.codesandbox-projects/sandbox/${devboxId}`;
 };
 
 const stagingFrameUrl = (shortid: string, path: string) => {
@@ -102,11 +179,27 @@ export const frameUrl = (
     port = undefined,
   }: { useFallbackDomain?: boolean; port?: number } = {}
 ) => {
+  // @ts-ignore
+  const usesStaticPreviewURL = window._env_?.USE_STATIC_PREVIEW === 'true';
+  // @ts-ignore
+  const previewDomain = window._env_?.PREVIEW_DOMAIN;
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
+
+  if (usesStaticPreviewURL && previewDomain) {
+    return `${location.protocol}//${previewDomain}/${path}`;
+  }
 
   const templateIsServer = isServer(sandbox.template);
 
   if (process.env.LOCAL_SERVER) {
+    if (templateIsServer) {
+      return `${location.protocol}//${sandbox.id}${port ? `-${port}` : ''}.${
+        templateIsServer ? 'sse.' : ''
+      }${
+        process.env.STAGING_API ? 'codesandbox.stream' : 'codesandbox.io'
+      }/${path}`;
+    }
+
     return `http://localhost:3002/${path}`;
   }
 
@@ -141,13 +234,15 @@ export const signInPageUrl = (redirectTo?: string) => {
 };
 
 export const signInUrl = (extraScopes: boolean = false) =>
-  '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');
+  '/auth/github' +
+  (extraScopes ? '?scope=user:email,public_repo,workflow' : '');
 export const signInVercelUrl = () => '/auth/vercel';
 
 export const profileUrl = (username: string) => `/u/${username}`;
 export const dashboardUrl = () => `/dashboard`;
 export const exploreUrl = () => `/explore`;
-export const teamOverviewUrl = teamId => `/dashboard/teams/${teamId}`;
+export const teamOverviewUrl = (teamId: string) => `/dashboard/teams/${teamId}`;
+export const teamSettingsUrl = () => `/dashboard/settings`;
 export const profileSandboxesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/sandboxes${page ? `/${page}` : ''}`;
 export const profileLikesUrl = (username: string, page?: number) =>
@@ -182,12 +277,16 @@ export const optionsToParameterizedUrl = (options: Object) => {
 export const gitHubToSandboxUrl = (githubUrl: string) =>
   githubUrl.replace(gitHubPrefix, '/s/github').replace(dotGit, '');
 
+export const gitHubToProjectsUrl = (githubUrl: string) =>
+  githubUrl.replace(gitHubPrefix, '/p/github').replace(dotGit, '');
+
 export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;
-export const patronUrl = () => `/patron`;
+export const csbSite = () =>
+  [STATIC_SITE_PROTOCOL, STATIC_SITE_DOMAIN].join('/');
 export const curatorUrl = () => `/curator`;
-export const tosUrl = () => `/legal/terms`;
-export const privacyUrl = () => `/legal/privacy`;
+export const tosUrl = () => `${csbSite()}/legal/terms`;
+export const privacyUrl = () => `${csbSite()}/legal/privacy`;
 
 export function getSandboxId() {
   const csbHost = process.env.CODESANDBOX_HOST;
@@ -219,5 +318,71 @@ export function getSandboxId() {
 
   return result;
 }
+
+export const docsUrl = (path: string = '') => `${csbSite()}/docs${path}`;
+
+export const packageExamplesUrl = (packageName: string) =>
+  `${csbSite()}/examples/package/${packageName}`;
+
+export const blogUrl = (path: string = '') => `${csbSite()}/blog${path}`;
+
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
+
+export const githubAppInstallLink = () => {
+  return `${protocolAndHost()}/auth/github/app-install`;
+};
+
+export { dashboard };
+
+// This function handles all the scenarios of v2 branch editor urls
+// It is not exported from the package to avoid miss-using it
+const v2EditorBranchUrl = ({
+  owner,
+  repoName,
+  branchName,
+  workspaceId,
+  createDraftBranch,
+  importFlag,
+  source,
+}: {
+  owner: string;
+  repoName: string;
+  branchName?: string;
+  workspaceId?: string;
+  createDraftBranch?: boolean;
+  importFlag?: boolean;
+  source?: string;
+}) => {
+  const queryString = new URLSearchParams({
+    ...(workspaceId ? { workspaceId } : {}),
+    ...(createDraftBranch ? { create: 'true' } : {}),
+    ...(importFlag ? { import: 'true' } : {}),
+    ...(source ? { utm_source: source } : {}),
+  }).toString();
+
+  return `${newEditorUrlPrefix()}github/${owner}/${repoName}${
+    branchName ? '/' + branchName : ''
+  }${queryString ? '?' + queryString : ''}`;
+};
+
+export const v2BranchUrl = (params: {
+  owner: string;
+  repoName: string;
+  branchName: string;
+  workspaceId?: string;
+  importFlag?: boolean;
+  source?: string;
+}) => {
+  return v2EditorBranchUrl(params);
+};
+
+export const v2DefaultBranchUrl = (params: {
+  owner: string;
+  repoName: string;
+  workspaceId?: string;
+  importFlag?: boolean;
+  source?: string;
+}) => {
+  return v2EditorBranchUrl(params);
+};

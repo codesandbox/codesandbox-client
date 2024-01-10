@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Rewrite import.meta Can detect and rewrite import.meta to $csb__import_meta 1`] = `
+""use strict";
+var $csb__import_meta = {
+  url: "https://csb.io/index.js"
+};
+const a = $csb__import_meta.url;
+"
+`;
+
+exports[`Rewrite import.meta Should not add a global $csb__import_meta when there is no need for it 1`] = `
+""use strict";
+const a = "hello";
+"
+`;

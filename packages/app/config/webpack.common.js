@@ -1,7 +1,6 @@
 /* eslint-disable global-require */
 const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -21,6 +20,7 @@ const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
 const APP_HOT = Boolean(process.env.APP_HOT);
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
+const __PROFILING__ = Boolean(process.env.PROFILING); // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
 const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
@@ -83,33 +83,6 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
   return loaders;
 };
 
-// Shim for `eslint-plugin-vue/lib/index.js`
-const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
-  rules: {${fs
-    .readdirSync(
-      path.join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'node_modules',
-        'eslint-plugin-vue',
-        'lib',
-        'rules'
-      )
-    )
-    .filter(filename => path.extname(filename) === '.js')
-    .map(filename => {
-      const ruleId = path.basename(filename, '.js');
-      return `        "${ruleId}": require("eslint-plugin-vue/lib/rules/${filename}"),`;
-    })
-    .join('\n')}
-  },
-  processors: {
-      ".vue": require("eslint-plugin-vue/lib/processor")
-  }
-}`;
-
 const sepRe = `\\${path.sep}`; // path separator regex
 
 const threadPoolConfig = {
@@ -125,9 +98,9 @@ module.exports = {
     ? {
         sandbox: [
           require.resolve('./polyfills'),
-          path.join(paths.sandboxSrc, 'index.js'),
+          path.join(paths.sandboxSrc, 'index.ts'),
         ],
-        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.ts'),
       }
     : APP_HOT
     ? {
@@ -143,10 +116,11 @@ module.exports = {
         ],
         sandbox: [
           require.resolve('./polyfills'),
-          path.join(paths.sandboxSrc, 'index.js'),
+          path.join(paths.sandboxSrc, 'index.ts'),
         ],
-        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.ts'),
         'watermark-button': path.join(paths.src, 'watermark-button.js'),
+        banner: path.join(paths.src, 'banner.js'),
         embed: [
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
@@ -201,10 +175,7 @@ module.exports = {
             [
               '@babel/preset-env',
               {
-                targets: {
-                  ie: 11,
-                  esmodules: true,
-                },
+                targets: ['>0.25%', 'not ie 11', 'not op_mini all'],
                 modules: 'umd',
                 useBuiltIns: false,
               },
@@ -230,6 +201,19 @@ module.exports = {
         test: /\.wasm$/,
         loader: 'file-loader',
         type: 'javascript/auto',
+      },
+      {
+        test: /\.worker\.(js|ts)$/i,
+        use: [
+          {
+            loader: 'comlink-loader',
+            options: {
+              singleton: true,
+              multi: true,
+              multiple: true,
+            },
+          },
+        ],
       },
       {
         test: /\.scss$/,
@@ -268,16 +252,13 @@ module.exports = {
         ].filter(Boolean),
       },
 
-      // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
+      // mjs support
       {
-        test: new RegExp(`eslint-plugin-vue${sepRe}lib${sepRe}index\\.js$`),
-        loader: 'string-replace-loader',
-        options: {
-          search: '[\\s\\S]+', // whole file.
-          replace: ESLINT_PLUGIN_VUE_INDEX,
-          flags: 'g',
-        },
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
       },
+
       // `eslint` has some dynamic `require(...)`.
       // Delete those.
       {
@@ -287,17 +268,6 @@ module.exports = {
           search: '(?:\\|\\||(\\())\\s*require\\(.+?\\)',
           replace: '$1',
           flags: 'g',
-        },
-      },
-      // `vue-eslint-parser` has `require(parserOptions.parser || "espree")`.
-      // Modify it by a static importing.
-      {
-        test: /vue-eslint-parser/,
-        loader: 'string-replace-loader',
-        options: {
-          search: 'require(parserOptions.parser || "espree")',
-          replace:
-            '(parserOptions.parser === "babel-eslint" ? require("babel-eslint") : require("espree"))',
         },
       },
       // Patch for `babel-eslint`
@@ -393,6 +363,12 @@ module.exports = {
           name: 'static/media/[name].[hash:8].[ext]',
         },
       },
+      // https://github.com/gaearon/react-hot-loader/issues/1311
+      {
+        test: /\.js$/,
+        include: /node_modules\/react-dom/,
+        use: ['react-hot-loader/webpack'],
+      },
     ],
 
     noParse: [
@@ -420,6 +396,7 @@ module.exports = {
 
     alias: {
       moment: 'moment/moment.js',
+      path: 'path-browserify',
 
       fs: 'codesandbox-browserfs/dist/shims/fs.js',
       buffer: 'codesandbox-browserfs/dist/shims/buffer.js',
@@ -436,6 +413,13 @@ module.exports = {
           __DEV__ ? 'browserfs.js' : 'browserfs.min.js'
         )
       ),
+
+      ...(__PROFILING__
+        ? {
+            'react-dom$': 'react-dom/profiling',
+            'scheduler/tracing': 'scheduler/tracing-profiling',
+          }
+        : {}),
     },
   },
 

@@ -2,15 +2,15 @@ import hash from '@codesandbox/common/lib/utils/hash';
 import * as typeformEmbed from '@typeform/embed';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Alert } from '../Common/Alert';
 
 export const SurveyModal: FunctionComponent = () => {
-  const {
-    actions: { modalClosed },
-    state: { isPatron, user },
-  } = useOvermind();
+  const { modalClosed } = useActions();
+  const { user } = useAppState();
+  const { isPro } = useWorkspaceSubscription();
 
   const initializeTypeform = (el?: HTMLDivElement) => {
     if (el) {
@@ -18,7 +18,7 @@ export const SurveyModal: FunctionComponent = () => {
         el,
         `https://codesandbox.typeform.com/to/LYbjII?userid=${hash(
           user.id
-        )}&ispatron=${isPatron}`,
+        )}&ispro=${isPro}`,
         {
           opacity: 0,
           hideScrollbars: true,

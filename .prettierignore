@@ -3,9 +3,16 @@
 !/standalone-packages/vscode/src/vs/codesandbox/**/*.ts
 !/standalone-packages/vscode/src/vs/codesandbox/**/*.*
 
+dist/
 lib/
+packages/executors/.rts2_cache_cjs
+packages/executors/.rts2_cache_es
+packages/executors/.rts2_cache_umd
+packages/homepage/.cache
+packages/homepage/public
 static/
 /standalone-packages/*
+www/
 
 # Our server side code changes html, we don't want to unintentionally break this by formatting
 *.html

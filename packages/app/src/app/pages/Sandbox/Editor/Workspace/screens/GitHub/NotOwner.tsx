@@ -1,26 +1,19 @@
-import React from 'react';
-
 import {
-  Element,
+  Button,
   Collapsible,
+  Element,
   Stack,
   Text,
-  Button,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
+import React from 'react';
 
 export const NotOwner = () => {
-  const {
-    actions: {
-      editor: { forkSandboxClicked },
-    },
-    state: {
-      editor: { isForkingSandbox },
-    },
-  } = useOvermind();
+  const { isForkingSandbox } = useAppState().editor;
+  const { forkSandboxClicked } = useActions().editor;
 
   return (
-    <Collapsible title="Github" defaultOpen>
+    <Collapsible title="GitHub" defaultOpen>
       <Element paddingX={2}>
         <Stack direction="vertical" gap={2} marginBottom={6}>
           <Text size={2} variant="muted" block>
@@ -34,7 +27,7 @@ export const NotOwner = () => {
         <Button
           variant="primary"
           disabled={isForkingSandbox}
-          onClick={() => forkSandboxClicked()}
+          onClick={() => forkSandboxClicked({})}
         >
           {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
         </Button>

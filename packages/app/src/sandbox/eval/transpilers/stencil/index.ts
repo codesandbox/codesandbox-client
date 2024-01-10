@@ -1,9 +1,8 @@
 // @ts-ignore
 import StencilWorker from 'worker-loader?publicPath=/&name=stencil-transpiler.[hash:8].worker.js!./stencil-worker.ts';
+import { LoaderContext } from 'sandpack-core';
 
-import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
+import WorkerTranspiler from '../worker-transpiler/transpiler';
 
 const DEFAULT_STENCIL_VERSION = '1.2.0-1';
 
@@ -26,35 +25,29 @@ class StencilTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('stencil-loader', StencilWorker, 2);
+    super('stencil-loader', StencilWorker, { maxWorkerCount: 2 });
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
-    return new Promise<TranspilerResult>((resolve, reject) => {
-      const path = loaderContext.path;
-      const packageJSON = loaderContext.options.configurations.package;
+  async doTranspilation(code: string, loaderContext: LoaderContext) {
+    const path = loaderContext.path;
+    const packageJSON = loaderContext.options.configurations.package;
 
-      const stencilVersion = getStencilVersion(packageJSON);
+    const stencilVersion = getStencilVersion(packageJSON);
 
-      this.queueTask(
-        {
-          code,
-          path,
-          stencilVersion,
-        },
-        loaderContext._module.getId(),
-        loaderContext,
-        (err, data) => {
-          if (err) {
-            loaderContext.emitError(err);
+    const { transpiledCode, dependencies } = await this.queueCompileFn(
+      {
+        code,
+        path,
+        stencilVersion,
+      },
+      loaderContext
+    );
 
-            return reject(err);
-          }
+    await Promise.all(
+      dependencies.map(dep => loaderContext.addDependency(dep.path))
+    );
 
-          return resolve(data);
-        }
-      );
-    });
+    return { transpiledCode };
   }
 }
 

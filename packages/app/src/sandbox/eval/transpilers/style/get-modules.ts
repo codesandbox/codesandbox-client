@@ -1,4 +1,4 @@
-import { LoaderContext } from '../../transpiled-module';
+import { LoaderContext } from 'sandpack-core';
 
 let core = null;
 
@@ -11,16 +11,23 @@ export default async (code: string, loaderContext: LoaderContext) => {
     core = new Core();
   }
 
-  return core
-    .load(code, loaderContext.path, (dependencyPath: string) => {
-      loaderContext.addDependency(dependencyPath);
+  const depPromises = [];
+  const { injectableSource, exportTokens } = await core.load(
+    code,
+    loaderContext.path,
+    (dependencyPath: string) => {
+      depPromises.push(loaderContext.addDependency(dependencyPath));
 
       const tModule = loaderContext.resolveTranspiledModule(dependencyPath);
 
       return tModule.source ? tModule.source.compiledCode : tModule.module.code;
-    })
-    .then(({ injectableSource, exportTokens }) => ({
-      css: injectableSource,
-      exportTokens,
-    }));
+    }
+  );
+
+  await Promise.all(depPromises);
+
+  return {
+    css: injectableSource,
+    exportTokens,
+  };
 };

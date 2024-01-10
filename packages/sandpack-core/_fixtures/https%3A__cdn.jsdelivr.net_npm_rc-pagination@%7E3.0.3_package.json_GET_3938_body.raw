@@ -1,0 +1,81 @@
+{
+  "name": "rc-pagination",
+  "version": "3.0.4",
+  "description": "pagination ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-pagination",
+    "pagination",
+    "antd",
+    "pager"
+  ],
+  "main": "./lib/index",
+  "module": "./es/index",
+  "types": "rc-pagination.d.ts",
+  "files": [
+    "assets/*.css",
+    "assets/*.less",
+    "es",
+    "lib",
+    "dist",
+    "rc-pagination.d.ts"
+  ],
+  "homepage": "https://react-component.github.io/pagination",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/pagination.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/pagination/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build && lessc assets/index.less assets/index.css",
+    "gh-pages": "npm run build && father doc deploy",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish && npm run gh-pages",
+    "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "pretty-quick": "pretty-quick",
+    "test": "father test",
+    "coverage": "father test --coverage"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/jest": "^26.0.13",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "@umijs/fabric": "^2.0.3",
+    "coveralls": "^3.0.6",
+    "cross-env": "^7.0.0",
+    "enzyme": "^3.0.0",
+    "enzyme-adapter-react-16": "^1.0.1",
+    "enzyme-to-json": "^3.4.0",
+    "eslint": "^7.0.0",
+    "father": "^2.13.4",
+    "less": "^3.10.3",
+    "np": "^6.2.0",
+    "prettier": "^2.0.1",
+    "pretty-quick": "^3.0.0",
+    "rc-select": "^11.0.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-test-renderer": "^16.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "cnpm": {
+    "mode": "npm"
+  },
+  "tnpm": {
+    "mode": "npm"
+  }
+}

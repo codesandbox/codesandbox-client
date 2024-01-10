@@ -4,7 +4,8 @@
     "./**/*.test.ts",
     "./**/*.test.tsx",
     "./**/*.stories.tsx",
-    "lib/"
+    "lib/",
+    "./**/*.fork.tsx"
   ],
   "compilerOptions": {
     "module": "commonjs",

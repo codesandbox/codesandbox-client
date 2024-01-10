@@ -179,7 +179,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
     const stats = new Stats(
       FileType.FILE,
-      (moduleInfo.module.code || "").length
+      Buffer.byteLength(moduleInfo.module.code || '', 'utf8')
     );
 
     return stats;

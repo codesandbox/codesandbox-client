@@ -23,10 +23,12 @@ function getAngularJSONEntries(parsed) {
   if (parsed) {
     const { defaultProject } = parsed;
     const project = parsed.projects[defaultProject];
-    const { build } = project.architect;
 
-    if (build.options.main) {
-      entries.push(absolute(join(project.root, build.options.main)));
+    if (project && project.architect) {
+      const { build } = project.architect;
+      if (build.options.main) {
+        entries.push(absolute(join(project.root, build.options.main)));
+      }
     }
   }
 
@@ -48,10 +50,17 @@ function getAngularJSONHTMLEntry(parsed) {
   if (parsed) {
     const { defaultProject } = parsed;
     const project = parsed.projects[defaultProject];
-    const { build } = project.architect;
 
-    if (build && project.root != null && build.options && build.options.index) {
-      return [absolute(join(project.root, build.options.index))];
+    if (project && project.architect) {
+      const { build } = project.architect;
+      if (
+        build &&
+        project.root != null &&
+        build.options &&
+        build.options.index
+      ) {
+        return [absolute(join(project.root, build.options.index))];
+      }
     }
   }
 
@@ -65,12 +74,18 @@ class AngularTemplate extends Template {
   getEntries(configurationFiles: ParsedConfigurationFiles): Array<string> {
     let entries = [];
 
-    if (!configurationFiles['angular-config'].generated) {
-      const { parsed } = configurationFiles['angular-config'];
-      entries = entries.concat(getAngularJSONEntries(parsed));
-    } else {
-      const { parsed } = configurationFiles['angular-cli'];
-      entries = entries.concat(getAngularCLIEntries(parsed));
+    try {
+      if (!configurationFiles['angular-config'].generated) {
+        const { parsed } = configurationFiles['angular-config'];
+        entries = entries.concat(getAngularJSONEntries(parsed));
+      } else {
+        const { parsed } = configurationFiles['angular-cli'];
+        entries = entries.concat(getAngularCLIEntries(parsed));
+      }
+    } catch (e) {
+      console.warn(
+        `${configurationFiles['angular-config'].path} is malformed: ${e.message}`
+      );
     }
 
     if (
@@ -114,8 +129,9 @@ export default new AngularTemplate(
     extraConfigurations: {
       '/.angular-cli.json': configurations.angularCli,
       '/angular.json': configurations.angularJSON,
+      '/tsconfig.json': configurations.tsconfig,
     },
-    netlify: false,
+    staticDeployment: false,
     isTypescript: true,
     distDir: 'dist',
     showOnHomePage: true,

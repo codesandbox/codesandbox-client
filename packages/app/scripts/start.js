@@ -20,9 +20,7 @@ const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
-const PROXY_DOMAIN = process.env.STAGING_API
-  ? 'https://codesandbox.stream'
-  : 'https://codesandbox.io';
+const PROXY_DOMAIN = process.env.ENDPOINT || 'https://codesandbox.io';
 var compiler;
 var handleCompile;
 var compileStart;
@@ -82,7 +80,7 @@ function setupCompiler(port, protocol) {
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.invalid.tap('invalid', function(module) {
+  compiler.hooks.invalid.tap('invalid', function (module) {
     clearConsole();
     compileStart = Date.now();
     console.log(`Module ${chalk.yellow(module)} updated, re-compiling...`);
@@ -129,7 +127,14 @@ function setupCompiler(port, protocol) {
     //   in ./packages/app/src/app/components/CodeEditor/CodeMirror/index.js
     const warnings = stats.compilation.warnings
       .concat(...stats.compilation.children.map(child => child.warnings))
-      .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
+      .filter(warning => warning.error.name !== 'CriticalDependencyWarning')
+      // ignore "Error: Can't resolve 'sugarss' in '/client/node_modules/postcss-import/lib'" warning
+      .filter(
+        warning =>
+          !warning.module.resource.endsWith(
+            'node_modules/postcss-import/lib/process-content.js'
+          )
+      );
     const hasWarnings = warnings.length > 0;
     if (hasWarnings) {
       console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
@@ -187,7 +192,7 @@ function openBrowser(port, protocol) {
 }
 
 function addMiddleware(devServer, index) {
-  devServer.use(function(req, res, next) {
+  devServer.use(function (req, res, next) {
     if (req.url === '/') {
       req.url = '/homepage';
     }
@@ -221,12 +226,7 @@ function addMiddleware(devServer, index) {
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       cors({
-        origin: [
-          'http://localhost:3000',
-          'http://localhost:3002',
-          'http://localhost:8000',
-          'http://localhost:8001',
-        ],
+        origin: true,
         credentials: true,
       })
     );
@@ -235,6 +235,7 @@ function addMiddleware(devServer, index) {
       changeOrigin: true,
       ws: true,
       autoRewrite: true,
+      headers: { Connection: 'keep-alive' },
       protocolRewrite: true,
       onProxyReqWs(proxyReq, req, socket, options, head) {
         proxyReq.setHeader('Origin', PROXY_DOMAIN);
@@ -243,6 +244,13 @@ function addMiddleware(devServer, index) {
     devServer.use('/socket', wsProxy);
     devServer.use(
       '/api',
+      createProxyMiddleware({
+        target: PROXY_DOMAIN,
+        changeOrigin: true,
+      })
+    );
+    devServer.use(
+      '/auth/workos',
       createProxyMiddleware({
         target: PROXY_DOMAIN,
         changeOrigin: true,
@@ -266,7 +274,7 @@ function addMiddleware(devServer, index) {
 }
 
 function runDevServer(port, protocol, index) {
-  var devServer = new WebpackDevServer(compiler, {
+  var devServerConfig = {
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
     publicPath: config.output.publicPath,
@@ -281,16 +289,22 @@ function runDevServer(port, protocol, index) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
-    public: 'localhost:3000',
-    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.test',
-    disableHostCheck: !process.env.LOCAL_SERVER,
+    // public: 'localhost:3000',
+    host: process.env.LOCAL_SERVER
+      ? 'localhost'
+      : process.env.DEV_DOMAIN || 'codesandbox.test',
+    disableHostCheck:
+      Boolean(process.env.CSB) ||
+      !(process.env.LOCAL_SERVER || process.env.CODESANDBOX_HOST),
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
     inline: true,
     hot: true,
     liveReload: process.env['DISABLE_REFRESH'] ? false : true,
-  });
+  };
+  // console.log(JSON.stringify(devServerConfig, null, 2));
+  var devServer = new WebpackDevServer(compiler, devServerConfig);
 
   // Our custom middleware proxies requests to /index.html or a remote API.
   const { wsProxy } = addMiddleware(devServer, index);
@@ -319,16 +333,21 @@ function run(port) {
 
   if (process.env.LOCAL_SERVER) {
     // Sandbox server
-    const proxy = httpProxy.createProxyServer({});
+    const proxy = httpProxy.createProxyServer({
+      headers: { Connection: 'keep-alive' },
+    });
+    proxy.on('error', error => {
+      console.error('Got an error', error);
+    });
     http
-      .createServer(function(req, res) {
-        if (req.url.includes('.js')) {
-          proxy.web(req, res, { target: 'http://localhost:3000' });
-        } else {
+      .createServer(function (req, res) {
+        if (req.url === '/' || req.url.endsWith('.html')) {
           proxy.web(req, res, {
             target: 'http://localhost:3000/frame.html',
             ignorePath: true,
           });
+        } else {
+          proxy.web(req, res, { target: 'http://localhost:3000', ws: true });
         }
       })
       .listen(3002);

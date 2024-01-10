@@ -5,9 +5,11 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { Stack, Text, Menu, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Authorization } from 'app/graphql/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { Mail, WarningIcon } from './icons';
 import { PermissionSelect } from './PermissionSelect';
@@ -112,12 +114,10 @@ export const CollaboratorItem = ({
 
 interface ICollaboratorProps {
   authorization: Authorization;
-  userId: string;
   username: string;
   lastSeenAt: string | null;
   avatarUrl: string;
   isViewingNow: boolean;
-
   readOnly?: boolean;
   warning?: string;
 }
@@ -131,7 +131,8 @@ export const Collaborator = ({
   isViewingNow,
   warning,
 }: ICollaboratorProps) => {
-  const { actions, state } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
 
   const updateAuthorization = (value: string) => {
     if (value === 'remove') {
@@ -177,7 +178,8 @@ interface IInvitationProps {
 }
 
 export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
-  const { actions, state } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
 
   const updateAuthorization = (value: string) => {
     // We have to do something here
@@ -229,13 +231,14 @@ interface ILinkPermissionProps {
 }
 
 export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const { privacy } = state.editor.currentSandbox;
-  const isPatron = state.isPatron;
+  const isPro = Boolean(state.activeTeamInfo?.subscription);
 
   const PrivacyIcon = privacyToIcon[privacy];
 
-  const isReadOnly = readOnly || !isPatron;
+  const isReadOnly = readOnly || !isPro;
 
   const onChange = value => {
     actions.workspace.sandboxPrivacyChanged({
@@ -270,10 +273,16 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
         style={{ width: '100%' }}
       />
 
-      {!isPatron && (
+      {!isPro && (
         <Text size={3} variant="muted" align="center">
           Changing sandbox access is available with{' '}
-          <a href="/pricing" target="_blank" rel="noreferrer noopener">
+          <a
+            href={proUrl({ source: 'v1_share' })}
+            target="_blank"
+            rel="noreferrer noopener"
+            onClick={() => track('Editor - Share sandbox Pricing link')}
+            style={{ textDecoration: 'none' }}
+          >
             CodeSandbox Pro
           </a>
         </Text>

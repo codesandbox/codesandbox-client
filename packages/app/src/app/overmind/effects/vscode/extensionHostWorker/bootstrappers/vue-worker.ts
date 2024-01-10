@@ -23,7 +23,7 @@ initializeAll().then(async () => {
         options: {
           index: EXTENSIONS_LOCATION + '/extensions/index.json',
           baseUrl: EXTENSIONS_LOCATION + '/extensions',
-          bundle: EXTENSIONS_LOCATION + '/bundles/vetur.0.16.2.min.json',
+          bundle: EXTENSIONS_LOCATION + '/bundles/vetur.0.28.0.min.json',
           logReads: __DEV__,
         },
       },

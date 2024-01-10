@@ -40,7 +40,7 @@ export default class Module {
 
       try {
         module.exports = JSON.parse(content);
-      } catch (err) {
+      } catch (err: any) {
         err.message = filename + ': ' + err.message;
         throw err;
       }
@@ -130,11 +130,28 @@ export default class Module {
     return result;
   }
 
-  static _resolveFilename(request: string, parent: Module) {
+  static _resolveFilename(request: string, parent: Module): string {
     return resolve.sync(request, {
       basedir: parent.filename ? path.dirname(parent.filename) : undefined,
       extensions: ['.js', '.json'],
     });
+  }
+
+  static createRequire(fromPath: string) {
+    const module = new Module(fromPath);
+    module.filename = fromPath;
+
+    return module._createRequire();
+  }
+
+  _createRequire() {
+    const require = (p: string) => this.require(p);
+
+    require.resolve = (request: string) => {
+      return Module._resolveFilename(request, this);
+    };
+
+    return require;
   }
 
   static _load(request: string, parent: Module, isMain?: boolean) {
@@ -180,6 +197,10 @@ export default class Module {
 
     if (request === 'tty') {
       return { isatty: () => false };
+    }
+
+    if (request === 'stream') {
+      return require('stream-browserify');
     }
 
     if (request === 'http') {

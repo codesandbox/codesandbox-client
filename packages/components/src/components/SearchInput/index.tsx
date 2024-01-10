@@ -4,9 +4,12 @@ import css from '@styled-system/css';
 import { Input } from '../Input';
 import { Element } from '../Element';
 
+interface ISearchInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
+
 const SearchInputComponent = styled(Input)(
   css({
-    paddingLeft: 5,
+    paddingLeft: 7,
 
     '::-ms-clear, ::-ms-reveal': {
       display: 'none',
@@ -35,7 +38,7 @@ export const SearchIcon = styled(SearchIconBase)(
     position: 'absolute',
     top: '50%',
     transform: 'translateY(-50%)',
-    left: 1,
+    left: 2,
 
     path: {
       fill: 'input.placeholderForeground',
@@ -43,11 +46,11 @@ export const SearchIcon = styled(SearchIconBase)(
   })
 );
 
-export const SearchInput = props => (
-  <>
+export const SearchInput = React.forwardRef(
+  (props: ISearchInputProps, ref: any) => (
     <Element css={{ position: 'relative' }}>
       <SearchIcon />
-      <SearchInputComponent type="search" {...props} />
+      <SearchInputComponent type="search" ref={ref} {...props} />
     </Element>
-  </>
+  )
 );

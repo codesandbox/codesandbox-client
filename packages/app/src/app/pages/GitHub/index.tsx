@@ -1,7 +1,8 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
+import css from '@styled-system/css';
+import { withTheme } from 'styled-components';
+import { Link } from 'react-router-dom';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { Element } from '@codesandbox/components';
+import { Element, ThemeProvider, Button } from '@codesandbox/components';
 import {
   gitHubToSandboxUrl,
   gitHubRepoPattern,
@@ -16,7 +17,7 @@ import React, {
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
 import {
@@ -31,10 +32,8 @@ import {
 const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-export const GitHub: FunctionComponent = () => {
-  const {
-    actions: { githubPageMounted },
-  } = useOvermind();
+export const GitHub: FunctionComponent = withTheme(({ theme }) => {
+  const { githubPageMounted } = useActions();
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
@@ -62,60 +61,72 @@ export const GitHub: FunctionComponent = () => {
   };
 
   return (
-    <Element style={{ width: '100vw', height: '100vh' }}>
-      <Navigation title="GitHub Import" />
-      <MaxWidth>
-        <div style={{ minHeight: '100vh' }}>
-          <Margin vertical={1.5} horizontal={1.5}>
-            <Container>
-              <Content horizontal vertical>
-                <Description>
-                  <Title>Import from GitHub</Title>
+    <ThemeProvider theme={theme.vsCode}>
+      <Element
+        css={css({
+          width: '100vw',
+          overflow: 'hidden',
+          backgroundColor: 'sideBar.background',
+        })}
+      >
+        <Navigation title="GitHub Import" />
+        <MaxWidth>
+          <div style={{ minHeight: '100vh' }}>
+            <Element margin={6}>
+              <Container>
+                <Content horizontal vertical>
+                  <Description>
+                    <Title>Import from GitHub</Title>
 
-                  <SubTitle>
-                    Enter the URL to your GitHub repository to generate a URL to
-                    your sandbox. The sandbox will stay in sync with your
-                    repository.
-                    <br />
-                    <a
-                      href="/docs/importing#import-from-github"
-                      rel="noopener norefereer"
-                      target="_blank"
-                    >
-                      See the docs
-                    </a>
-                  </SubTitle>
-                </Description>
+                    <SubTitle>
+                      Enter the URL to your GitHub repository to generate a URL
+                      to your sandbox. The sandbox will stay in sync with your
+                      repository.
+                      <br />
+                      <a
+                        href="/docs/importing#import-from-github"
+                        rel="noopener norefereer"
+                        target="_blank"
+                      >
+                        See the docs
+                      </a>
+                    </SubTitle>
+                  </Description>
 
-                <Label htmlFor="githuburl">
-                  URL to GitHub Repository (supports branches and paths too)
-                </Label>
+                  <Label htmlFor="githuburl">
+                    URL to GitHub Repository (supports branches and paths too)
+                  </Label>
 
-                <Input
-                  name="githuburl"
-                  onChange={updateUrl}
-                  placeholder="Insert GitHub URL..."
-                  value={url}
-                />
+                  <Input
+                    name="githuburl"
+                    onChange={updateUrl}
+                    placeholder="Insert GitHub URL..."
+                    value={url}
+                  />
 
-                {error !== null && <ErrorMessage>{error}</ErrorMessage>}
+                  {error !== null && <ErrorMessage>{error}</ErrorMessage>}
 
-                <Label htmlFor="sandboxurl">Converted Sandbox URL</Label>
+                  <Label htmlFor="sandboxurl">Converted Sandbox URL</Label>
 
-                <Input
-                  name="sandboxurl"
-                  placeholder="The Sandbox URL"
-                  value={transformedUrl}
-                />
+                  <Input
+                    name="sandboxurl"
+                    placeholder="The Sandbox URL"
+                    value={transformedUrl}
+                  />
 
-                <Button disabled={!transformedUrl} to={gitHubToSandboxUrl(url)}>
-                  Open Sandbox
-                </Button>
-              </Content>
-            </Container>
-          </Margin>
-        </div>
-      </MaxWidth>
-    </Element>
+                  <Button
+                    as={Link}
+                    disabled={!transformedUrl}
+                    to={gitHubToSandboxUrl(url)}
+                  >
+                    Open Sandbox
+                  </Button>
+                </Content>
+              </Container>
+            </Element>
+          </div>
+        </MaxWidth>
+      </Element>
+    </ThemeProvider>
   );
-};
+});

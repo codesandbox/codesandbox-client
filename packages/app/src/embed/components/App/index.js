@@ -7,11 +7,21 @@ import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import {
+  SandpackCodeEditor,
+  SandpackFileExplorer,
+  SandpackLayout,
+  SandpackPreview,
+  SandpackProvider,
+} from '@codesandbox/sandpack-react';
+import {
   findCurrentModule,
   findMainModule,
 } from '@codesandbox/common/lib/sandbox/modules';
+import { isIOS, isAndroid } from '@codesandbox/common/lib/utils/platform';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { hasLogIn } from '@codesandbox/common/lib/utils/user';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
 import { Container, Fullscreen, Moving } from './elements';
@@ -106,7 +116,7 @@ export default class App extends React.PureComponent<
       hideDevTools,
       tabs,
       theme,
-      runOnClick,
+      runOnClick: runOnClick === undefined ? isAndroid || isIOS : runOnClick,
       verticalMode,
       highlightedLines: highlightedLines || [],
     };
@@ -153,14 +163,16 @@ export default class App extends React.PureComponent<
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${this.jwt()}`,
+              'x-codesandbox-client': 'legacy-embed',
             },
           }
         )
           .then(res => res.json())
           .then(camelizeKeys);
 
-        document.title = `${response.data.title ||
-          response.data.id} - CodeSandbox`;
+        document.title = `${
+          response.data.title || response.data.id
+        } - CodeSandbox`;
 
         this.setState({ sandbox: response.data });
       } catch (e) {
@@ -240,6 +252,12 @@ export default class App extends React.PureComponent<
     const jwt = this.jwt();
     track('Embed - Toggle Like');
 
+    const sandboxId = this.state.sandbox.id;
+    if (sandboxId.includes('/')) {
+      // The sandbox id comes from a message that's sent to the window,
+      // so we can't trust it. We'll check if there's a / in there.
+      return;
+    }
     if (this.state.sandbox.userLiked && jwt) {
       this.setState(s => ({
         sandbox: {
@@ -248,14 +266,15 @@ export default class App extends React.PureComponent<
           likeCount: s.sandbox.likeCount - 1,
         },
       }));
-      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+      fetch(`/api/v1/sandboxes/${sandboxId}/likes`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${jwt}`,
+          'x-codesandbox-client': 'legacy-embed',
         },
         body: JSON.stringify({
-          id: this.state.sandbox.id,
+          id: sandboxId,
         }),
       })
         .then(x => x.json())
@@ -285,11 +304,12 @@ export default class App extends React.PureComponent<
           likeCount: s.sandbox.likeCount + 1,
         },
       }));
-      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+      fetch(`/api/v1/sandboxes/${sandboxId}/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${jwt}`,
+          'x-codesandbox-client': 'legacy-embed',
         },
       })
         .then(x => x.json())
@@ -312,14 +332,31 @@ export default class App extends React.PureComponent<
 
   content = () => {
     if (this.state.notFound) {
+      const isSignedIn = hasLogIn();
       return (
-        <Centered vertical horizontal>
-          <Title delay={0.1}>Not Found</Title>
-          <SubTitle delay={0.05}>
-            We could not find the sandbox you
-            {"'"}
-            re looking for.
-          </SubTitle>
+        <Centered style={{ height: '100%' }} vertical horizontal>
+          <div style={{ maxWidth: 900, textAlign: 'center' }}>
+            <Title style={{ textAlign: 'center' }} delay={0.1}>
+              Not Found
+            </Title>
+            <SubTitle style={{ marginTop: 16, lineHeight: 1.4 }} delay={0.05}>
+              We could not find the sandbox you{"'"}re looking for.
+              {!isSignedIn && (
+                <p style={{ marginTop: 8 }}>
+                  If the sandbox is private, you might need to{' '}
+                  <a
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    href={signInPageUrl()}
+                  >
+                    sign in
+                  </a>
+                  <br />
+                  and reload the page to see the sandbox.
+                </p>
+              )}
+            </SubTitle>
+          </div>
         </Centered>
       );
     }
@@ -342,6 +379,62 @@ export default class App extends React.PureComponent<
       isInProjectView,
       runOnClick,
     } = this.state;
+
+    /**
+     * Sandpack integration
+     */
+    if (/sandpack=experimental/.test(window.location.search)) {
+      const sandpackFiles = sandbox.modules.reduce((acc, module) => {
+        const folder = sandbox.directories.find(
+          d => d.shortid === module.directoryShortid
+        )?.title;
+
+        if (folder) {
+          acc[`/${folder}/${module.title}`] = {
+            code: module.code,
+            id: module.id,
+            path: `/${folder}/${module.title}`,
+          };
+        } else {
+          acc[`/${module.title}`] = {
+            code: module.code,
+            id: module.id,
+            path: module.title,
+          };
+        }
+
+        return acc;
+      }, {});
+      const currentFile = this.getCurrentModuleFromPath(sandbox);
+      const activeFilePath = Object.values(sandpackFiles).find(
+        file => file.id === currentFile.id
+      );
+
+      return (
+        <SandpackProvider
+          files={sandpackFiles}
+          customSetup={{
+            environment: sandbox.template,
+            entry: sandbox.entry,
+            dependencies: sandpackFiles['/package.json']
+              ? undefined
+              : sandbox.npmDependencies,
+          }}
+          options={{
+            activeFile: activeFilePath.path,
+            visibleFiles: [activeFilePath.path],
+          }}
+        >
+          <SandpackLayout
+            style={{ '--sp-layout-height': `${window.innerHeight - 2}px` }}
+          >
+            <SandpackFileExplorer />
+            <SandpackCodeEditor showLineNumbers showTabs closableTabs />
+            <SandpackPreview showNavigator />
+          </SandpackLayout>
+        </SandpackProvider>
+      );
+    }
 
     return (
       <ThemeProvider
@@ -389,17 +482,27 @@ export default class App extends React.PureComponent<
     const { sandbox } = this.state;
     const theme = getTheme(this.state.theme);
 
+    if (/sandpack=experimental/.test(window.location.search)) {
+      return this.content();
+    }
+
+    if (this.state.notFound) {
+      return (
+        <ThemeProvider theme={theme}>
+          <Fullscreen>{this.content()}</Fullscreen>
+        </ThemeProvider>
+      );
+    }
+
     return (
       <ThemeProvider theme={theme}>
         <Fullscreen sidebarOpen={this.state.sidebarOpen}>
           {sandbox && (
-            <>
-              <Sidebar
-                setCurrentModule={this.setCurrentModule}
-                currentModule={this.getCurrentModuleFromPath(sandbox).id}
-                sandbox={sandbox}
-              />
-            </>
+            <Sidebar
+              setCurrentModule={this.setCurrentModule}
+              currentModule={this.getCurrentModuleFromPath(sandbox).id}
+              sandbox={sandbox}
+            />
           )}
           <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
         </Fullscreen>

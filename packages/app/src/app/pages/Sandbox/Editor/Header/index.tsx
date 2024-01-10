@@ -1,19 +1,15 @@
-import LogoIcon from '@codesandbox/common/lib/components/Logo';
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { Link, Stack } from '@codesandbox/components';
+import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import React from 'react';
 
 import { Actions } from './Actions';
-import { DashboardIcon } from './icons';
-import { MenuBar } from './MenuBar';
+import { AppMenu } from './AppMenu';
 import { SandboxName } from './SandboxName';
+import { WorkspaceName } from './WorkspaceName';
 
 export const Header = () => {
-  const {
-    state: { hasLogIn, editor, isAuthenticating },
-  } = useOvermind();
+  const { editor, isAuthenticating, activeTeamInfo } = useAppState();
 
   return (
     <Stack
@@ -32,20 +28,8 @@ export const Header = () => {
       })}
     >
       <Stack align="center">
-        {hasLogIn ? (
-          <Link
-            variant="muted"
-            href={dashboardUrl()}
-            css={{ lineHeight: 0 /* micro adjustment */ }}
-          >
-            <DashboardIcon />
-          </Link>
-        ) : (
-          <Link href="/" css={{ padding: '2px' /* micro adjustment */ }}>
-            <LogoIcon height={24} />
-          </Link>
-        )}
-        <MenuBar />
+        <AppMenu />
+        {activeTeamInfo && <WorkspaceName name={activeTeamInfo.name} />}
       </Stack>
 
       {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}

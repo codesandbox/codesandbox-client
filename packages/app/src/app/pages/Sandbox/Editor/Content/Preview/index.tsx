@@ -1,14 +1,19 @@
 import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
+import { frameUrl } from '@codesandbox/common/lib/utils/url-generator';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
-import React, { FunctionComponent, useState } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent, useState } from 'react';
+import { useAppState, useActions, useEffects } from 'app/overmind';
+
+import { ResponsiveWrapper } from './ResponsiveWrapper';
+import { InstallExtensionBanner } from './ResponsiveWrapper/InstallExtensionBanner';
 
 type Props = {
   hidden?: boolean;
   options: {
     url?: string;
+    port?: number;
   };
   runOnClick?: boolean;
 };
@@ -18,25 +23,26 @@ export const Preview: FunctionComponent<Props> = ({
   runOnClick,
 }) => {
   const {
-    actions: {
-      editor: { errorsCleared, previewActionReceived, projectViewToggled },
+    preview: previewActions,
+    editor: { errorsCleared, previewActionReceived, projectViewToggled },
+  } = useActions();
+  const {
+    preview,
+    editor: {
+      currentModule,
+      currentSandbox,
+      initialPath,
+      isInProjectView,
+      isResizing,
+      previewWindowVisible,
     },
-    effects: {
-      preview: { initializePreview },
-    },
-    state: {
-      editor: {
-        currentModule,
-        currentSandbox,
-        initialPath,
-        isInProjectView,
-        isResizing,
-        previewWindowVisible,
-      },
-      preferences: { settings },
-      server: { containerStatus, error, hasUnrecoverableError },
-    },
-  } = useOvermind();
+    preferences: { settings },
+    server: { containerStatus, error, hasUnrecoverableError },
+  } = useAppState();
+  const {
+    preview: { initializePreview, canAddComments },
+    browser,
+  } = useEffects();
   const [running, setRunning] = useState(!runOnClick);
 
   /**
@@ -60,26 +66,58 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
-  return running ? (
+  // Only show in chromium browsers
+  const showBanner =
+    preview.showExtensionBanner && browser.isChromium(navigator.userAgent);
+
+  const content = running ? (
     <BasePreview
       currentModule={currentModule}
       hide={hidden}
       initialPath={initialPath}
       isInProjectView={isInProjectView}
       isResizing={isResizing}
-      onAction={action => previewActionReceived(action)}
-      onClearErrors={() => errorsCleared()}
+      onAction={previewActionReceived}
+      onClearErrors={errorsCleared}
       onMount={initializePreview}
       noPreview={!previewWindowVisible}
-      onToggleProjectView={() => projectViewToggled()}
+      onToggleProjectView={projectViewToggled}
+      Wrapper={ResponsiveWrapper}
+      isResponsivePreviewResizing={preview.responsive.isResizing}
+      isResponsiveModeActive={
+        preview.mode === 'responsive' ||
+        preview.mode === 'responsive-add-comment'
+      }
+      isPreviewCommentModeActive={
+        preview.mode === 'add-comment' ||
+        preview.mode === 'responsive-add-comment'
+      }
+      toggleResponsiveMode={previewActions.toggleResponsiveMode}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}
+      customNpmRegistries={currentSandbox.npmRegistries}
       sandbox={currentSandbox}
       settings={settings}
-      url={options.url}
+      isScreenshotLoading={preview.screenshot.isLoading}
+      createPreviewComment={
+        canAddComments(currentSandbox) && previewActions.createPreviewComment
+      }
+      url={
+        options.url ||
+        (options.port
+          ? frameUrl(currentSandbox, undefined, { port: options.port })
+          : undefined)
+      }
     />
   ) : (
     <RunOnClick onClick={() => setRunning(true)} />
+  );
+
+  return (
+    <>
+      {showBanner ? <InstallExtensionBanner /> : null}
+      {content}
+    </>
   );
 };

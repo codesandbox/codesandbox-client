@@ -1,4 +1,5 @@
 import { ConfigurationFile } from '../types';
+import { TemplateType } from '../..';
 
 const JSX_PRAGMA = {
   react: 'React.createElement',
@@ -12,7 +13,7 @@ const config: ConfigurationFile = {
   moreInfoUrl: 'http://www.typescriptlang.org/docs/handbook/tsconfig-json.html',
 
   getDefaultCode: (
-    template: string,
+    template: TemplateType,
     resolveModule: (path: string) => { code: string } | undefined
   ) => {
     if (template === 'create-react-app-typescript') {
@@ -143,6 +144,53 @@ const config: ConfigurationFile = {
           target: 'es5',
         },
       });
+    }
+
+    if (template === 'angular-cli') {
+      return JSON.stringify(
+        {
+          compileOnSave: false,
+          compilerOptions: {
+            baseUrl: './',
+            outDir: './dist/out-tsc',
+            sourceMap: true,
+            declaration: false,
+            downlevelIteration: true,
+            experimentalDecorators: true,
+            moduleResolution: 'node',
+            importHelpers: true,
+            target: 'es2015',
+            module: 'es2020',
+            lib: ['es2018', 'dom'],
+          },
+        },
+        null,
+        2
+      );
+    }
+
+    if (template === 'solid') {
+      return JSON.stringify(
+        {
+          compileOnSave: false,
+          compilerOptions: {
+            strict: false,
+            module: 'ESNext',
+            target: 'ESNext',
+            jsx: 'preserve',
+            esModuleInterop: true,
+            sourceMap: true,
+            allowJs: true,
+            lib: ['es6', 'dom'],
+            rootDir: 'src',
+            moduleResolution: 'node',
+            jsxImportSource: 'solid-js',
+            types: ['solid-js', 'solid-js/web'],
+          },
+        },
+        null,
+        2
+      );
     }
 
     return JSON.stringify(

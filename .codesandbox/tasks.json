@@ -1,0 +1,55 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Installing Dependencies",
+      "command": "yarn install"
+    },
+    {
+      "name": "Building Workspace",
+      "command": "yarn build:deps"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "setup": {
+      "name": "Install Dependencies",
+      "command": "yarn"
+    },
+    "build-workspace": {
+      "name": "Build deps",
+      "command": "yarn build:deps"
+    },
+    "app:fast": {
+      "name": "Application (fast + production)",
+      "command": "yarn start:fast",
+      "runAtStart": false,
+      "preview": {
+        "port": 3000
+      },
+      "restartOn": {
+        "files": ["yarn.lock", "packages/app/scripts/*"]
+      }
+    },
+    "app:fast:stream": {
+      "name": "Application (fast + stream)",
+      "command": "yarn start:fast:stream",
+      "runAtStart": true,
+      "preview": {
+        "port": 3000
+      },
+      "restartOn": {
+        "files": ["yarn.lock", "packages/app/scripts/*"]
+      }
+    },
+    "storybook": {
+      "name": "Run storybook",
+      "command": "cd packages/components && yarn start:storybook"
+    },
+    "typecheck": {
+      "name": "typecheck",
+      "command": "yarn typecheck"
+    }
+  }
+}

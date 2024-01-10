@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import { dispatch } from 'codesandbox-api';
 import _debug from 'debug';
+import axios from 'axios';
 
 import { IExecutor, IFiles, ISetupParams } from './executor';
 
@@ -57,7 +58,7 @@ const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
 };
 
 const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
-const tick = () => new Promise(r => setTimeout(() => r(), 0));
+const tick = () => new Promise<void>(r => setTimeout(() => r(), 0));
 
 export class ServerExecutor implements IExecutor {
   socket?: SocketIOClient.Socket;
@@ -71,20 +72,18 @@ export class ServerExecutor implements IExecutor {
     this.token = this.retrieveSSEToken();
   }
 
-  private initializeSocket() {
+  private async initializeSocket() {
     if (!this.sandboxId) {
       throw new Error('initializeSocket: sandboxId is not defined');
     }
-
     const usedHost = this.host || 'https://codesandbox.io';
-    const sseHost = usedHost.replace('https://', 'https://sse.');
+    const sseLbHost = usedHost.replace('https://', 'https://sse-lb.');
+    const res = await axios.get(`${sseLbHost}/api/cluster/${this.sandboxId}`);
+    const sseHost = res.data.hostname;
 
     this.socket = io(sseHost, {
       autoConnect: false,
       transports: ['websocket', 'polling'],
-      query: {
-        sandboxid: this.sandboxId,
-      },
     });
   }
 
@@ -100,7 +99,7 @@ export class ServerExecutor implements IExecutor {
     await this.dispose();
     await tick();
 
-    this.initializeSocket();
+    await this.initializeSocket();
   }
 
   public async setup() {
@@ -110,8 +109,10 @@ export class ServerExecutor implements IExecutor {
   }
 
   public async dispose() {
-    this.socket?.removeAllListeners();
-    this.socket?.close();
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.close();
+    }
   }
 
   public updateFiles(newFiles: IFiles) {
@@ -131,11 +132,15 @@ export class ServerExecutor implements IExecutor {
   }
 
   public emit(event: string, data?: any) {
-    this.socket?.emit(event, data);
+    if (this.socket) {
+      this.socket.emit(event, data);
+    }
   }
 
   public on(event: string, listener: (data: any) => void) {
-    this.socket?.on(event, listener);
+    if (this.socket) {
+      this.socket.on(event, listener);
+    }
   }
 
   private openSocket() {
@@ -144,7 +149,7 @@ export class ServerExecutor implements IExecutor {
     }
 
     return new Promise<void>((resolve, reject) => {
-      this.socket?.on('connect', async () => {
+      this.socket!.on('connect', async () => {
         try {
           if (this.connectTimeout) {
             clearTimeout(this.connectTimeout);
@@ -160,64 +165,73 @@ export class ServerExecutor implements IExecutor {
         }
       });
 
-      this.socket?.on('sandbox:start', () => {
+      this.socket!.on('sandbox:start', () => {
         sseTerminalMessage(`Sandbox ${this.sandboxId} started`);
       });
 
-      this.socket?.open();
+      if (this.socket) {
+        this.socket.open();
+      }
     });
   }
 
   private async startSandbox() {
     const token = await this.token;
-    this.socket?.emit('sandbox', { id: this.sandboxId, token });
+    if (this.socket) {
+      this.socket.emit('sandbox', { id: this.sandboxId, token });
+    }
 
     debug('Connected to sse manager, sending start signal...');
     sseTerminalMessage(`Starting sandbox ${this.sandboxId}...`);
-    this.socket?.emit('sandbox:start');
+    if (this.socket) {
+      this.socket.emit('sandbox:start');
+    }
   }
 
   private async retrieveSSEToken() {
     debug('Retrieving SSE token...');
-    const jwt = localStorage.getItem('jwt');
 
-    if (jwt) {
-      const parsedJWT = JSON.parse(jwt);
-      const existingKey = localStorage.getItem('sse');
-      const currentTime = new Date().getTime();
+    const existingKey = localStorage.getItem('sse');
+    const currentTime = new Date().getTime();
 
-      if (existingKey) {
-        const parsedKey = JSON.parse(existingKey);
-        if (parsedKey.key && currentTime - parsedKey.timestamp < MAX_SSE_AGE) {
-          debug('Retrieved SSE token from cache');
-          return parsedKey.key as string;
-        }
+    if (existingKey) {
+      const parsedKey = JSON.parse(existingKey);
+      if (parsedKey.key && currentTime - parsedKey.timestamp < MAX_SSE_AGE) {
+        debug('Retrieved SSE token from cache');
+        return parsedKey.key as string;
       }
-
-      return fetch('/api/v1/users/current_user/sse', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${parsedJWT}`,
-        },
-      })
-        .then(x => x.json())
-        .then(result => result.jwt)
-        .then((token: string) => {
-          debug('Retrieved SSE token from API');
-          localStorage.setItem(
-            'sse',
-            JSON.stringify({
-              key: token,
-              timestamp: currentTime,
-            })
-          );
-
-          return token;
-        });
     }
 
-    debug('Not signed in, returning undefined');
-    return undefined;
+    const devJwt = localStorage.getItem('devJwt');
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (devJwt) {
+      headers.Authorization = `Bearer ${devJwt}`;
+    }
+
+    return fetch('/api/v1/users/current_user/sse', {
+      method: 'POST',
+      headers,
+    })
+      .then(x => x.json())
+      .then(result => result.jwt)
+      .then((token: string) => {
+        debug('Retrieved SSE token from API');
+        localStorage.setItem(
+          'sse',
+          JSON.stringify({
+            key: token,
+            timestamp: currentTime,
+          })
+        );
+
+        return token;
+      })
+      .catch(() => {
+        debug('Not signed in, returning undefined');
+        return undefined;
+      });
   }
 }

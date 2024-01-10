@@ -1,7 +1,7 @@
 import { UploadFile } from '@codesandbox/common/lib/types';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Button, Icon } from '@codesandbox/components';
 
 type Props = Pick<UploadFile, 'name' | 'url'>;
@@ -9,14 +9,8 @@ export const AddFileToSandboxButton: FunctionComponent<Props> = ({
   name,
   url,
 }) => {
-  const {
-    actions: {
-      files: { addedFileToSandbox },
-    },
-    state: {
-      editor: { currentSandbox },
-    },
-  } = useOvermind();
+  const { addedFileToSandbox } = useActions().files;
+  const { currentSandbox } = useAppState().editor;
 
   if (!currentSandbox) {
     return null;
@@ -24,7 +18,7 @@ export const AddFileToSandboxButton: FunctionComponent<Props> = ({
 
   return (
     <Button
-      css={{ width: 'auto' }}
+      autoWidth
       variant="secondary"
       disabled={!currentSandbox}
       title="Add file to sandbox"

@@ -1,0 +1,93 @@
+{
+  "name": "rc-table",
+  "version": "7.9.10",
+  "description": "table ui component for react",
+  "engines": {
+    "node": ">=8.x"
+  },
+  "keywords": [
+    "react",
+    "react-table",
+    "table",
+    "component",
+    "ui"
+  ],
+  "files": [
+    "assets/*.css",
+    "dist",
+    "es",
+    "lib"
+  ],
+  "main": "./lib/index",
+  "module": "./es/index",
+  "types": "./lib/index.d.ts",
+  "homepage": "http://github.com/react-component/table",
+  "maintainers": [
+    "yiminghe@gmail.com",
+    "afc163@gmail.com"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/table.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/table/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build && lessc assets/index.less assets/index.css",
+    "gh-pages": "npm run build && father doc deploy",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish",
+    "postpublish": "npm run gh-pages",
+    "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "test": "father test",
+    "coverage": "father test --coverage"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "^2.2.5",
+    "raf": "^3.4.1",
+    "rc-resize-observer": "^0.2.0",
+    "rc-util": "^5.0.4",
+    "shallowequal": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/enzyme": "^3.10.5",
+    "@types/jest": "^26.0.3",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "@umijs/fabric": "^2.0.0",
+    "cross-env": "^7.0.0",
+    "enzyme": "^3.1.0",
+    "enzyme-adapter-react-16": "^1.0.1",
+    "enzyme-to-json": "^3.1.2",
+    "eslint": "^7.1.0",
+    "father": "^2.22.0",
+    "immutability-helper": "^3.0.0",
+    "less": "^3.10.3",
+    "np": "^6.0.0",
+    "prettier": "^2.0.1",
+    "rc-animate": "^3.0.0",
+    "rc-dropdown": "~3.1.0",
+    "rc-menu": "^8.0.2",
+    "rc-tooltip": "^4.0.3",
+    "react": "^16.0.0",
+    "react-dnd": "^2.5.4",
+    "react-dnd-html5-backend": "^2.5.4",
+    "react-dom": "^16.0.0",
+    "react-resizable": "^1.7.5",
+    "react-test-renderer": "^16.0.0",
+    "react-virtualized": "^9.12.0",
+    "react-window": "^1.8.5",
+    "styled-components": "^5.0.1",
+    "typescript": "^3.7.2"
+  }
+}

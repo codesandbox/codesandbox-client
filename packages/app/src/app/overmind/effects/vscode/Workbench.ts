@@ -46,6 +46,7 @@ export enum MenuId {
   TouchBarContext,
   ViewItemContext,
   ViewTitle,
+  Root,
 }
 
 export class Workbench {
@@ -72,6 +73,7 @@ export class Workbench {
         this.controller.getSignal('editor.toggleStatusBar')();
       },
     });
+
     this.addWorkbenchAction({
       id: 'view.preview.flip',
       label: 'Flip Preview Layout',
@@ -94,7 +96,7 @@ export class Workbench {
       label: 'New Sandbox...',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'newSandbox' });
+        this.controller.getSignal('openCreateSandboxModal')({});
       },
     });
 
@@ -103,7 +105,7 @@ export class Workbench {
       label: 'Fork Sandbox',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('editor.forkSandboxClicked')();
+        this.controller.getSignal('editor.forkSandboxClicked')({});
       },
     });
 
@@ -126,6 +128,48 @@ export class Workbench {
     });
 
     this.addWorkbenchAction({
+      id: 'codesandbox.preview.refresh',
+      label: 'Refresh Preview',
+      category: 'View',
+      run: () => {
+        this.controller.getSignal('editor.refreshPreview')();
+      },
+      keybindings: {
+        primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
+      },
+    });
+
+    this.addWorkbenchAction({
+      id: 'codesandbox.dashboard',
+      label: 'Dashboard',
+      category: 'Root',
+      run: () => {
+        // hard link
+        window.location.pathname = '/dashboard/home';
+      },
+      keybindings: {
+        primary: KeyMod.CtrlCmd | KeyCode.Escape,
+        mac: { primary: KeyMod.CtrlCmd | KeyCode.Escape },
+      },
+    });
+
+    this.addWorkbenchAction({
+      id: 'codesandbox.homepage',
+      label: 'Homepage',
+      category: 'Root',
+      run: () => {
+        /**
+         * It creates a fake link, once the history object
+         * is used by the react router and it doesn't route to the proper place
+         */
+        const fakeLink = document.createElement('a');
+        fakeLink.href = `${window.location.origin}/?from-app=1`;
+        document.body.appendChild(fakeLink);
+        fakeLink.click();
+      },
+    });
+
+    this.addWorkbenchAction({
       id: 'view.fullscreen',
       label: 'Toggle Fullscreen',
       category: 'View',
@@ -133,7 +177,13 @@ export class Workbench {
         if (document.fullscreenElement) {
           document.exitFullscreen();
         } else {
-          document.documentElement.requestFullscreen();
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+            // @ts-ignore - safari has this under a webkit flag
+          } else if (document.documentElement.webkitRequestFullscreen) {
+            // @ts-ignore - safari has this under a webkit flag
+            document.documentElement.webkitRequestFullscreen();
+          }
 
           this.addNotification({
             title: 'Fullscreen',
@@ -169,12 +219,28 @@ export class Workbench {
         label: 'Comment on code',
         category: 'Comments',
         run: () => {
-          this.controller.getSignal('comments.createComment')({
-            isLineComment: false,
-          });
+          this.controller.getSignal('comments.createCodeComment')();
         },
       });
     }
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '1_workspace',
+      order: 1,
+      command: {
+        id: 'codesandbox.dashboard',
+        title: 'Dashboard',
+      },
+    });
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '3_open',
+      order: 1,
+      command: {
+        id: 'workbench.action.showCommands',
+        title: '&&Command Palette',
+      },
+    });
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
@@ -182,6 +248,15 @@ export class Workbench {
       command: {
         id: 'codesandbox.sandbox.new',
         title: 'New Sandbox...',
+      },
+    });
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '3_support',
+      order: 1,
+      command: {
+        id: 'codesandbox.homepage',
+        title: 'Go to Homepage',
       },
     });
 
@@ -195,14 +270,21 @@ export class Workbench {
       },
     });
 
-    this.appendMenuItem(MenuId.MenubarFileMenu, {
-      group: '4_zsandbox',
-      order: 2,
-      command: {
-        id: 'codesandbox.sandbox.exportzip',
-        title: 'Export to ZIP',
-      },
-    });
+    if (
+      this.controller.getState().editor?.currentSandbox?.permissions
+        .preventSandboxExport
+    ) {
+      // don't add the option to add export
+    } else {
+      this.appendMenuItem(MenuId.MenubarFileMenu, {
+        group: '4_zsandbox',
+        order: 2,
+        command: {
+          id: 'codesandbox.sandbox.exportzip',
+          title: 'Export to ZIP',
+        },
+      });
+    }
 
     this.appendMenuItem(MenuId.MenubarPreferencesMenu, {
       group: '1_settings',
@@ -262,11 +344,6 @@ export class Workbench {
       'https://codesandbox.io/search'
     );
     addBrowserNavigationCommand(
-      'codesandbox.dashboard',
-      'Dashboard',
-      'https://codesandbox.io/dashboard'
-    );
-    addBrowserNavigationCommand(
       'codesandbox.help.open-issue',
       'Open Issue on GitHub',
       'https://github.com/codesandbox/codesandbox-client/issues'
@@ -280,6 +357,11 @@ export class Workbench {
       'codesandbox.help.twitter',
       'Follow Us on Twitter',
       'https://twitter.com/codesandbox'
+    );
+    addBrowserNavigationCommand(
+      'codesandbox.help.discord',
+      'Join our discord server',
+      'https://discord.gg/C6vfhW3H6e'
     );
 
     this.addWorkbenchAction({
@@ -358,6 +440,15 @@ export class Workbench {
       command: {
         id: 'codesandbox.help.twitter',
         title: 'Follow Us on &&Twitter',
+      },
+    });
+
+    this.appendMenuItem(MenuId.MenubarHelpMenu, {
+      group: '3_social',
+      order: 3,
+      command: {
+        id: 'codesandbox.help.discord',
+        title: 'Get Help on &&Discord',
       },
     });
 

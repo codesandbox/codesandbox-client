@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`get-require-statements can find dynamic imports 1`] = `
+[
+  {
+    "path": "./page/",
+    "type": "glob",
+  },
+]
+`;
+
+exports[`get-require-statements can find plain requires 1`] = `
+[
+  {
+    "path": "react",
+    "type": "direct",
+  },
+  {
+    "path": "react-dom",
+    "type": "direct",
+  },
+]
+`;
+
+exports[`get-require-statements can find reexports 1`] = `
+[
+  {
+    "path": "./Hello",
+    "type": "direct",
+  },
+]
+`;
+
+exports[`get-require-statements can find simple requires 1`] = `
+[
+  {
+    "path": "react",
+    "type": "direct",
+  },
+  {
+    "path": "react-dom",
+    "type": "direct",
+  },
+]
+`;
+
+exports[`get-require-statements can work with real life code 1`] = `
+[
+  {
+    "path": "react",
+    "type": "direct",
+  },
+  {
+    "path": "react-redux",
+    "type": "direct",
+  },
+  {
+    "path": "transition-group",
+    "type": "direct",
+  },
+  {
+    "path": "react-universal-component",
+    "type": "direct",
+  },
+  {
+    "path": "../selectors/isLoading",
+    "type": "direct",
+  },
+  {
+    "path": "../css/Switcher.css",
+    "type": "direct",
+  },
+]
+`;
+
+exports[`get-require-statements does not find import promises 1`] = `[]`;

@@ -2,7 +2,8 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { BACKTICK } from '@codesandbox/common/lib/utils/keycodes';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
 import { DevTools } from 'app/components/Preview/DevTools';
-import { useOvermind } from 'app/overmind';
+import { terminalUpgrade } from 'app/components/Preview/DevTools/TerminalUpgrade';
+import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
 import useKey from 'react-use/lib/useKey';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
@@ -13,7 +14,10 @@ import { Preview } from './Preview';
 import { EditorToast } from './EditorToast';
 
 export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
-  const { state, actions, effects, reaction } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
+  const effects = useEffects();
+  const reaction = useReaction();
   const editorEl = useRef(null);
   const contentEl = useRef(null);
   const [showConsoleDevtool, setShowConsoleDevtool] = useState(false);
@@ -129,7 +133,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
       >
         <SplitPane
           maxSize={-100}
-          onDragFinished={() => {
+          onDragFinished={props => {
             actions.editor.resizingStopped();
           }}
           onDragStarted={() => {
@@ -204,6 +208,9 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                 // show console devtool if showConsoleDevtool is enabled and if it's in the current view(v)
                 const devToolsOpen =
                   showConsoleDevtool && consoleDevtoolIndex === i;
+                const disableLogging =
+                  state.editor.parsedConfigurations?.sandbox?.parsed
+                    ?.disableLogging;
 
                 return (
                   <DevTools
@@ -213,6 +220,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     devToolsOpen={devToolsOpen}
                     addedViews={{
                       'codesandbox.browser': browserConfig,
+                      'codesandbox.terminalUpgrade': terminalUpgrade,
                     }}
                     setDragging={dragging => {
                       if (dragging) {
@@ -223,6 +231,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     }}
                     sandboxId={sandbox.id}
                     template={sandbox.template}
+                    disableLogging={disableLogging}
                     shouldExpandDevTools={state.preferences.showDevtools}
                     zenMode={preferences.settings.zenMode}
                     setDevToolsOpen={open => {
@@ -251,6 +260,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                         position,
                       })
                     }
+                    isOnEmbedPage={false}
                   />
                 );
               })}
@@ -260,5 +270,3 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
     </ThemeProvider>
   );
 };
-
-export default MainWorkspace;

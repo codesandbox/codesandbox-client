@@ -3,11 +3,19 @@ import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 import { isIOS } from '@codesandbox/common/lib/utils/platform';
 import { derived } from 'overmind';
 
+export type SettingSync = {
+  id: string;
+  insertedAt: string;
+  name: string;
+  settings: string;
+  updatedAt: string;
+};
+
 type State = {
   settings: Settings;
   isLoadingPaymentDetails: boolean;
   hideNavigation: boolean;
-  itemId: string;
+  itemId: string | null;
   showEditor: boolean;
   showModal: boolean;
   showPreview: boolean;
@@ -16,6 +24,12 @@ type State = {
   paymentDetails: PaymentDetails | null;
   runOnClick: boolean;
   keybindings: any;
+  settingsSync: {
+    syncing: boolean;
+    applying: boolean;
+    fetching: boolean;
+    settings: SettingSync[] | null;
+  };
 };
 
 export const state: State = {
@@ -70,13 +84,19 @@ export const state: State = {
   isLoadingPaymentDetails: true,
   paymentDetailError: null,
   paymentDetails: null,
-  itemId: 'appearance',
+  itemId: null,
   showEditor: true,
   showPreview: true,
   showDevtools: false,
   runOnClick: false,
+  settingsSync: {
+    syncing: false,
+    applying: false,
+    fetching: false,
+    settings: null,
+  },
   keybindings: derived((currentState: State) => {
-    const userBindings = currentState.settings.keybindings;
+    const userBindings = currentState.settings.keybindings || [];
     const userBindingsMap = userBindings.reduce(
       (bindings, binding) => ({
         ...bindings,

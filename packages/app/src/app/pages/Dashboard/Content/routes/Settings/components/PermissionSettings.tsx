@@ -1,0 +1,392 @@
+import React, { useState } from 'react';
+import { useAppState, useActions } from 'app/overmind';
+import {
+  Button,
+  Grid,
+  Column,
+  Stack,
+  Text,
+  Icon,
+  Select,
+  Switch,
+  MessageStripe,
+} from '@codesandbox/components';
+import css from '@styled-system/css';
+import { TeamMemberAuthorization } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { privacyUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Alert } from './Alert';
+
+export const PermissionSettings = () => {
+  const proTracking = () =>
+    track('Dashboard - Permissions panel - Clicked on Pro upgrade');
+
+  const { activeTeam, environment } = useAppState();
+  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isBillingManager, isAdmin } = useWorkspaceAuthorization();
+
+  return (
+    <Stack direction="vertical" gap={6}>
+      {isFree ? (
+        <MessageStripe justify="space-between">
+          <span>
+            You need a <Text weight="bold">Pro</Text> subscription to change
+            privacy permissions.
+          </span>
+          <MessageStripe.Action
+            as="a"
+            href={proUrl({
+              workspaceId: activeTeam,
+              source: 'dashboard_permission_settings',
+            })}
+            onClick={proTracking}
+          >
+            Upgrade now
+          </MessageStripe.Action>
+        </MessageStripe>
+      ) : null}
+
+      {isPro && !isBillingManager ? (
+        <Alert message="Please contact your admin to change permissions." />
+      ) : null}
+
+      <Grid columnGap={12}>
+        <Column span={[12, 12, 6]}>
+          <MinimumPrivacy disabled={isFree || !isAdmin} />
+        </Column>
+
+        <Column span={[12, 12, 6]}>
+          <SandboxSecurity disabled={isFree || !isBillingManager} />
+        </Column>
+
+        {!environment.isOnPrem && (
+          <Column span={[12, 12, 6]}>
+            <AIPermission disabled={!isAdmin} />
+          </Column>
+        )}
+      </Grid>
+    </Stack>
+  );
+};
+
+const privacyOptions = {
+  0: {
+    description: 'All your devboxes and sandboxes are public by default.',
+    icon: () => <Icon size={10} name="globe" />,
+  },
+  1: {
+    description:
+      'Only people that get the link are able to see your devboxes and sandboxes.',
+    icon: () => <Icon size={10} name="link" />,
+  },
+  2: {
+    description: 'Only people with access can see your devboxes and sandboxes.',
+    icon: () => <Icon size={10} name="lock" />,
+  },
+};
+
+const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
+  const { activeTeamInfo } = useAppState();
+  const { setTeamMinimumPrivacy } = useActions().dashboard;
+
+  const [minimumPrivacy, setMinimumPrivacy] = React.useState(
+    activeTeamInfo.settings.minimumPrivacy
+  );
+
+  const [updateDrafts, setUpdateDrafts] = React.useState(false);
+
+  React.useEffect(
+    function resetOnWorkspaceChange() {
+      setMinimumPrivacy(activeTeamInfo.settings.minimumPrivacy);
+      setUpdateDrafts(false);
+    },
+    [activeTeamInfo.id, activeTeamInfo.settings.minimumPrivacy]
+  );
+
+  return (
+    <Stack
+      direction="vertical"
+      justify="space-between"
+      gap={114}
+      css={css({
+        padding: 6,
+        backgroundColor: 'card.background',
+        border: '1px solid',
+        borderColor: 'transparent',
+        borderRadius: 'medium',
+        opacity: disabled ? 0.4 : 1,
+      })}
+    >
+      <Stack direction="vertical" gap={8}>
+        <Stack direction="vertical" gap={8}>
+          <Text size={4} weight="500">
+            Default Privacy
+          </Text>
+
+          <Stack direction="vertical" gap={3}>
+            <Select
+              disabled={disabled}
+              icon={privacyOptions[minimumPrivacy].icon}
+              value={minimumPrivacy}
+              onChange={({ target: { value } }) =>
+                setMinimumPrivacy(parseInt(value, 10))
+              }
+            >
+              <option value={0}>Public</option>
+              <option value={1}>Unlisted</option>
+              <option value={2}>Private</option>
+            </Select>
+            <Text variant="muted" size={2}>
+              {privacyOptions[minimumPrivacy].description}
+            </Text>
+          </Stack>
+          <Stack justify="space-between" as="label">
+            <Text size={3}>
+              Apply this privacy to all my Drafts - old and new
+            </Text>
+            <Switch
+              on={updateDrafts}
+              disabled={disabled}
+              onChange={() => setUpdateDrafts(!updateDrafts)}
+            />
+          </Stack>
+        </Stack>
+      </Stack>
+      <Stack justify="flex-end">
+        <Button
+          autoWidth
+          disabled={disabled}
+          onClick={async () => {
+            await setTeamMinimumPrivacy({
+              teamId: activeTeamInfo.id,
+              minimumPrivacy,
+              updateDrafts,
+              source: 'Dashboard',
+            });
+          }}
+        >
+          Change Privacy
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
+const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
+  const { settings } = useAppState().activeTeamInfo;
+  const {
+    setWorkspaceSandboxSettings,
+    setDefaultTeamMemberAuthorization,
+  } = useActions().dashboard;
+
+  const [preventSandboxExport, setPreventSandboxExport] = React.useState(
+    settings.preventSandboxExport
+  );
+  const [preventSandboxLeaving, setPreventSandboxLeaving] = React.useState(
+    settings.preventSandboxLeaving
+  );
+
+  const [defaultAuthorization, setDefaultAuthorization] = React.useState(
+    settings.defaultAuthorization
+  );
+
+  React.useEffect(
+    function resetOnWorkspaceChange() {
+      setPreventSandboxLeaving(settings.preventSandboxLeaving);
+      setPreventSandboxExport(settings.preventSandboxExport);
+      setDefaultAuthorization(settings.defaultAuthorization);
+    },
+    [
+      settings.preventSandboxLeaving,
+      settings.preventSandboxExport,
+      settings.defaultAuthorization,
+    ]
+  );
+
+  const onSubmit = () => {
+    setWorkspaceSandboxSettings({
+      preventSandboxLeaving,
+      preventSandboxExport,
+    });
+    setDefaultTeamMemberAuthorization({ defaultAuthorization });
+  };
+
+  return (
+    <Stack
+      direction="vertical"
+      justify="space-between"
+      gap={114}
+      css={css({
+        padding: 6,
+        border: '1px solid',
+        backgroundColor: '#191919' /* change to tokensV2.gray[600] */,
+        borderColor: 'transparent',
+        borderRadius: 'medium',
+        opacity: disabled ? 0.4 : 1,
+      })}
+    >
+      <Stack direction="vertical" gap={8}>
+        <Stack direction="vertical" gap={8}>
+          <Stack justify="space-between">
+            <Text size={4} weight="500">
+              Devbox and sandbox security
+            </Text>
+          </Stack>
+
+          <Stack as="label" justify="space-between" align="center">
+            <Text size={3}>
+              Disable forking and moving items outside of the workspace
+            </Text>
+            <Switch
+              on={preventSandboxLeaving}
+              onChange={() => setPreventSandboxLeaving(!preventSandboxLeaving)}
+              disabled={disabled}
+            />
+          </Stack>
+          <Stack as="label" justify="space-between" align="center">
+            <Text size={3}>Disable exporting items as .zip</Text>
+            <Switch
+              on={preventSandboxExport}
+              onChange={() => setPreventSandboxExport(!preventSandboxExport)}
+              disabled={disabled}
+            />
+          </Stack>
+          <Stack justify="space-between" align="center">
+            <Text size={3}>Default new member role</Text>
+            <Select
+              css={{ width: 120 }}
+              value={defaultAuthorization}
+              onChange={({ target: { value } }) => {
+                setDefaultAuthorization(value as TeamMemberAuthorization);
+              }}
+              disabled={disabled}
+            >
+              <option value={TeamMemberAuthorization.Write}>Editor</option>
+              <option value={TeamMemberAuthorization.Read}>Viewer</option>
+              <option value={TeamMemberAuthorization.Admin}>Admin</option>
+            </Select>
+          </Stack>
+        </Stack>
+      </Stack>
+      <Stack justify="flex-end">
+        <Button autoWidth onClick={onSubmit} disabled={disabled}>
+          Change Settings
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
+const AIPermission = ({ disabled }: { disabled: boolean }) => {
+  const { activeTeamInfo } = useAppState();
+  const [showContinueUrl, setShowContinueUrl] = useState(false);
+
+  const options = [
+    {
+      text: 'Enable AI feature for <strong>private repositories</strong>',
+      key: 'privateRepositories',
+    },
+    {
+      text: 'Enable AI feature for <strong>private devboxes</strong>',
+      key: 'privateSandboxes',
+    },
+    {
+      text: 'Enable AI feature for <strong>public repositories</strong>',
+      key: 'publicRepositories',
+    },
+    {
+      text: 'Enable AI feature for <strong>public devboxes</strong>',
+      key: 'publicSandboxes',
+    },
+  ];
+
+  const [state, setState] = React.useState(activeTeamInfo.settings.aiConsent);
+  const { setTeamAiConsent } = useActions().dashboard;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const continueUrl = urlParams.get('continueUrl');
+
+  return (
+    <Stack
+      direction="vertical"
+      justify="space-between"
+      gap={60}
+      css={css({
+        padding: 6,
+        backgroundColor: 'card.background',
+        border: '1px solid',
+        borderColor: 'button.background',
+        borderRadius: 'medium',
+        opacity: disabled ? 0.4 : 1,
+      })}
+    >
+      <Stack direction="vertical" gap={8}>
+        <Stack direction="vertical" gap={8}>
+          <Text size={4} weight="500">
+            AI Permissions
+          </Text>
+
+          <Text variant="muted" size={2}>
+            Read our{' '}
+            <a href={privacyUrl()} target="_blank" rel="noreferrer">
+              Privacy Policy
+            </a>{' '}
+            to check what data AI will be have access
+          </Text>
+
+          <Stack direction="vertical" gap={6}>
+            {options.map(item => {
+              return (
+                <Stack justify="space-between" as="label">
+                  <Text
+                    size={3}
+                    dangerouslySetInnerHTML={{ __html: item.text }}
+                  />
+                  <Switch
+                    disabled={disabled}
+                    on={state[item.key]}
+                    onChange={() =>
+                      setState(prev => ({
+                        ...prev,
+                        [item.key]: !prev[item.key],
+                      }))
+                    }
+                  />
+                </Stack>
+              );
+            })}
+          </Stack>
+        </Stack>
+
+        <Text variant="active" size={2}>
+          For the changes to take effect, you need to restart the microVM
+          instance
+        </Text>
+      </Stack>
+
+      <Stack justify="flex-end" gap={2}>
+        {showContinueUrl && continueUrl && (
+          <Button autoWidth variant="secondary" as="a" href={continueUrl}>
+            Go back to the project
+          </Button>
+        )}
+
+        <Button
+          autoWidth
+          disabled={disabled}
+          onClick={async () => {
+            track('Dashboard - Permissions panel - Changed AI consent');
+            await setTeamAiConsent(state);
+            setShowContinueUrl(true);
+          }}
+        >
+          Change Settings
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};

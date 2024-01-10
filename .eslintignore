@@ -2,3 +2,7 @@
 **/eslint-lint.js
 **/stories/*.*
 **/lib/*.*
+**/*.d.ts
+packages/app/integration-tests/*
+static/*
+packages/browser-dart-sass

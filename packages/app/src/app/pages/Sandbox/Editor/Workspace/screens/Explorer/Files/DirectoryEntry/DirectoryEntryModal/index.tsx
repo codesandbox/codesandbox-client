@@ -11,7 +11,7 @@ interface DirectoryEntryModalProps {
   primaryMessage?: string;
 }
 
-const DirectoryEntryModal = ({
+export const DirectoryEntryModal = ({
   body,
   isOpen,
   onClose,
@@ -30,5 +30,3 @@ const DirectoryEntryModal = ({
     />
   </Modal>
 );
-
-export default DirectoryEntryModal;

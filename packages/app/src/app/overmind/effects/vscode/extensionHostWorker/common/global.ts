@@ -11,17 +11,12 @@ if (typeof Worker === 'undefined') {
 }
 
 export const initializePolyfills = () => {
-  require('core-js/fn/string/starts-with');
-  require('core-js/fn/string/ends-with');
-  require('core-js/fn/array/find');
-  require('core-js/fn/promise');
-
   return requirePolyfills();
 };
 
 export const loadBrowserFS = () => {
   ctx.importScripts(
-    `${process.env.CODESANDBOX_HOST}/static/browserfs10/browserfs.min.js`
+    `${process.env.CODESANDBOX_HOST}/static/browserfs12/browserfs.min.js`
   );
 };
 
@@ -39,7 +34,8 @@ export const initializeGlobals = () => {
 };
 
 export function initializeAll() {
-  return new Promise(async resolve => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise<void>(async resolve => {
     await initializePolyfills();
     loadBrowserFS();
     initializeGlobals();

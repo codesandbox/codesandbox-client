@@ -1,44 +1,42 @@
-import React from 'react';
 import {
-  Collapsible,
-  Text,
-  Element,
   Button,
+  Collapsible,
+  Element,
   Stack,
+  Text,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+
+import { useAppState, useActions } from 'app/overmind';
+
 import { RestartServerIcon } from './Icons';
 
-export const Control = () => {
-  const {
-    actions: {
-      server: { restartContainer, restartSandbox },
-    },
-    state: {
-      server: { containerStatus, status },
-    },
-  } = useOvermind();
+export const Control: FunctionComponent = () => {
+  const { restartContainer, restartSandbox } = useActions().server;
+  const { containerStatus, status } = useAppState().server;
+
   const disconnected = status !== 'connected';
 
   return (
     <Collapsible defaultOpen title="Control Container">
       <Element paddingX={2}>
         <Button
-          variant="secondary"
           disabled={disconnected || containerStatus !== 'sandbox-started'}
           onClick={restartSandbox}
+          variant="secondary"
         >
-          <Stack gap={2} align="center">
+          <Stack align="center" gap={2}>
             <RestartServerIcon /> <Text>Restart Sandbox</Text>
           </Stack>
         </Button>
+
         <Button
-          marginTop={2}
-          variant="secondary"
           disabled={disconnected || containerStatus === 'initializing'}
+          marginTop={2}
           onClick={restartContainer}
+          variant="secondary"
         >
-          <Stack gap={2} align="center">
+          <Stack align="center" gap={2}>
             <RestartServerIcon /> <Text>Restart Server</Text>
           </Stack>
         </Button>

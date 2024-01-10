@@ -1,25 +1,25 @@
 import { Element, Collapsible, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { Netlify } from './Netlify';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
 import { Vercel } from './Vercel';
+import { GithubPages } from './GithubPages';
+
+const MINIMUM_USER_AGE_FOR_NETLIFY = 14 * 24 * 60 * 60 * 1000;
 
 export const Deployment: FunctionComponent = () => {
   const {
-    actions: {
-      deployment: { getDeploys },
+    editor: {
+      currentSandbox: { owned },
     },
-    state: {
-      editor: {
-        currentSandbox: { owned },
-      },
-      isLoggedIn,
-    },
-  } = useOvermind();
+    isLoggedIn,
+    user,
+  } = useAppState();
+  const { getDeploys } = useActions().deployment;
 
   useEffect(() => {
     if (owned && isLoggedIn) {
@@ -35,18 +35,22 @@ export const Deployment: FunctionComponent = () => {
     return <NotOwner />;
   }
 
+  const userAge =
+    Date.now() - new Date(user.insertedAt || Date.now()).getTime();
+
   return (
     <Collapsible defaultOpen title="Deployment">
       <Element paddingX={2}>
         <Text block marginBottom={6} variant="muted">
           You can deploy a production version of your sandbox using one of our
-          supported providers - Netlify or Vercel.
+          supported providers.
         </Text>
 
         <Stack direction="vertical" gap={5}>
           <Vercel />
 
-          <Netlify />
+          {userAge >= MINIMUM_USER_AGE_FOR_NETLIFY ? <Netlify /> : null}
+          <GithubPages />
         </Stack>
       </Element>
     </Collapsible>

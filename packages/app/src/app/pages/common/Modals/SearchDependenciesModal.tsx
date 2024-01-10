@@ -1,18 +1,16 @@
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
-import SearchDependencies from 'app/pages/Sandbox/SearchDependencies';
+import { useActions } from 'app/overmind';
+import { SearchDependencies } from 'app/pages/Sandbox/SearchDependencies';
 
 export const SearchDependenciesModal: FunctionComponent = () => {
-  const {
-    actions: {
-      editor: { addNpmDependency },
-    },
-  } = useOvermind();
+  const { addNpmDependency } = useActions().editor;
 
   return (
     <SearchDependencies
-      onConfirm={(name, version) => addNpmDependency({ name, version })}
+      onConfirm={(name: string, version: string) =>
+        addNpmDependency({ name, version })
+      }
     />
   );
 };

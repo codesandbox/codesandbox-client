@@ -8,8 +8,8 @@ import compareVersions from 'compare-versions';
 import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
+import { packageExamplesUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
-
 import css from '@styled-system/css';
 import {
   ListAction,
@@ -19,7 +19,10 @@ import {
   Text,
   Link,
   Button,
+  Icon,
 } from '@codesandbox/components';
+import { useAppState } from 'app/overmind';
+import { isPrivateScope } from 'app/utils/private-registry';
 
 import { BundleSizes } from './BundleSizes';
 
@@ -39,11 +42,24 @@ export const Dependency = ({
   onRemove,
   onRefresh,
 }: Props) => {
+  const state = useAppState();
+
   const [version, setVersion] = useState(null);
   const [open, setOpen] = useState(false);
   const [versions, setVersions] = useState([]);
 
+  const isPrivatePackage =
+    state.editor.currentSandbox &&
+    isPrivateScope(state.editor.currentSandbox, dependency);
+
+  const isPrivatePackageInPublicSandbox =
+    isPrivatePackage && state.editor.currentSandbox?.privacy !== 2;
+
   const setVersionsForLatestPkg = (pkg: string) => {
+    if (isPrivatePackage) {
+      return;
+    }
+
     fetch(`/api/v1/dependencies/${pkg}`)
       .then(response => response.json())
       .then(data => setVersion(data.data.version))
@@ -55,6 +71,10 @@ export const Dependency = ({
   };
 
   useEffect(() => {
+    if (isPrivatePackage) {
+      return;
+    }
+
     // @ts-ignore
     index.getObject(dependency, ['versions']).then(({ versions: results }) => {
       const orderedVersions = Object.keys(results).sort((a, b) => {
@@ -77,7 +97,7 @@ export const Dependency = ({
       console.error(e);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isPrivatePackage]);
 
   const handleRemove = e => {
     if (e) {
@@ -99,6 +119,10 @@ export const Dependency = ({
     return null;
   }
 
+  const versionFromDropdown = versions.find(
+    v => v === dependencies[dependency]
+  );
+
   return (
     <>
       <ListAction
@@ -117,7 +141,7 @@ export const Dependency = ({
         })}
       >
         <Link
-          href={`/examples/package/${dependency}`}
+          href={packageExamplesUrl(dependency)}
           target="_blank"
           title={dependency}
           maxWidth="60%"
@@ -141,10 +165,14 @@ export const Dependency = ({
             width: '100%',
           })}
         >
-          <Text variant="muted" maxWidth="30%">
-            {formatVersion(dependencies[dependency])}{' '}
-            {version && <span>({formatVersion(version)})</span>}
-          </Text>
+          {isPrivatePackageInPublicSandbox ? (
+            <Icon width={18} height={18} color="orange" name="warning" />
+          ) : (
+            <Text variant="muted" maxWidth="30%">
+              {formatVersion(dependencies[dependency])}{' '}
+              {version && <span>({formatVersion(version)})</span>}
+            </Text>
+          )}
         </Stack>
 
         <Stack
@@ -159,45 +187,70 @@ export const Dependency = ({
             paddingLeft: 1,
           })}
         >
-          <Select
-            css={{ width: '80px' }}
-            value={versions.find(v => v === dependencies[dependency])}
-            onChange={e => onRefresh(dependency, e.target.value)}
-          >
-            {versions.map(a => (
-              <option key={a}>{a}</option>
-            ))}
-          </Select>
+          {versions.length === 0 ? null : (
+            <Select
+              css={{ width: '80px' }}
+              value={versionFromDropdown || dependencies[dependency]}
+              onChange={e => onRefresh(dependency, e.target.value)}
+            >
+              {versionFromDropdown === undefined && (
+                <option key={dependencies[dependency]}>
+                  {dependencies[dependency]}
+                </option>
+              )}
+              {versions.map(a => (
+                <option key={a}>{a}</option>
+              ))}
+            </Select>
+          )}
 
           <SingletonTooltip>
             {singleton => (
               <>
-                <Tooltip
-                  content={open ? 'Hide sizes' : 'Show sizes'}
-                  style={{ outline: 'none' }}
-                  singleton={singleton}
-                >
-                  <Button
-                    variant="link"
-                    onClick={() => setOpen(!open)}
-                    css={css({ minWidth: 5 })}
+                {!isPrivatePackage && (
+                  <Tooltip
+                    content={open ? 'Hide sizes' : 'Show sizes'}
+                    style={{ outline: 'none' }}
+                    singleton={singleton}
                   >
-                    {open ? <ArrowDropUp /> : <ArrowDropDown />}
-                  </Button>
-                </Tooltip>
-                <Tooltip
-                  content="Update to latest"
-                  style={{ outline: 'none' }}
-                  singleton={singleton}
-                >
-                  <Button
-                    variant="link"
-                    onClick={handleRefresh}
-                    css={css({ minWidth: 5 })}
+                    <Button
+                      variant="link"
+                      onClick={() => setOpen(!open)}
+                      css={css({ minWidth: 5 })}
+                    >
+                      {open ? <ArrowDropUp /> : <ArrowDropDown />}
+                    </Button>
+                  </Tooltip>
+                )}
+
+                {isPrivatePackageInPublicSandbox ? (
+                  <Tooltip
+                    content="Private packages only work in private sandboxes"
+                    style={{ outline: 'none', display: 'flex' }}
+                    singleton={singleton}
                   >
-                    <RefreshIcon />
-                  </Button>
-                </Tooltip>
+                    <Icon
+                      width={18}
+                      height={18}
+                      color="orange"
+                      name="warning"
+                    />
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    content="Update to latest"
+                    style={{ outline: 'none' }}
+                    singleton={singleton}
+                  >
+                    <Button
+                      variant="link"
+                      onClick={handleRefresh}
+                      css={css({ minWidth: 5 })}
+                    >
+                      <RefreshIcon />
+                    </Button>
+                  </Tooltip>
+                )}
                 <Tooltip
                   content="Remove"
                   style={{ outline: 'none' }}
