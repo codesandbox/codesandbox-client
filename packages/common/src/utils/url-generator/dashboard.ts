@@ -100,7 +100,7 @@ export const portalPermissions = (teamId?: string | null) =>
 
 // This is used separately for checkout endpoints where the success/cancel paths need to be relative
 export const portalRelativePath = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${portalBaseUrl()}/overview`, teamId);
+  appendTeamIdQueryParam(`/t/overview`, teamId);
 
 export const search = (query: string, teamId?: string | null) => {
   let searchUrl = appendTeamIdQueryParam(
