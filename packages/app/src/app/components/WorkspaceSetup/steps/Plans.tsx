@@ -19,7 +19,6 @@ import styled from 'styled-components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { VMTier, VMType } from 'app/overmind/effects/api/types';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -38,7 +37,6 @@ export const Plans: React.FC<StepProps> = ({
     removeQueryParam,
   } = useURLSearchParams();
   const { activeTeam } = useAppState();
-  const { isAdmin } = useWorkspaceAuthorization();
   const actions = useActions();
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
@@ -78,9 +76,7 @@ export const Plans: React.FC<StepProps> = ({
             onDismiss={onDismiss}
             currentStep={currentStep}
             numberOfSteps={numberOfSteps}
-            title={
-              isAdmin ? 'Choose a plan' : 'Upgrade (requires admin access)'
-            }
+            title="Choose a plan"
           />
 
           <HorizontalScroller css={{ width: '100%' }}>
@@ -105,7 +101,6 @@ export const Plans: React.FC<StepProps> = ({
                   css={{ background: '#323232' }}
                   variant="secondary"
                   size="large"
-                  disabled={!isAdmin}
                   onClick={onEarlyExit}
                 >
                   Choose Free
@@ -145,7 +140,6 @@ export const Plans: React.FC<StepProps> = ({
                     <Button
                       variant="dark"
                       size="large"
-                      disabled={!isAdmin}
                       onClick={() => handleChoosePlan('flex')}
                     >
                       Choose Pro Flex
@@ -157,7 +151,6 @@ export const Plans: React.FC<StepProps> = ({
                     <Button
                       variant="dark"
                       size="large"
-                      disabled={!isAdmin}
                       onClick={() => handleChoosePlan('standard')}
                     >
                       Choose Pro Standard
@@ -169,7 +162,6 @@ export const Plans: React.FC<StepProps> = ({
                     <Button
                       variant="dark"
                       size="large"
-                      disabled={!isAdmin}
                       onClick={() => handleChoosePlan('growth')}
                     >
                       Choose Pro Growth
@@ -204,8 +196,7 @@ export const Plans: React.FC<StepProps> = ({
                 </CardHeading>
                 <PlanAndPricing plan={UBB_ENTERPRISE_PLAN} />
                 <Button
-                  as={isAdmin ? 'a' : 'button'}
-                  disabled={!isAdmin}
+                  as="a"
                   href={ORGANIZATION_CONTACT_LINK}
                   variant="dark"
                   size="large"

@@ -1,16 +1,27 @@
 import { TeamMemberAuthorization, TeamType } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 
-type WorkspaceAuthorizationReturn = {
-  isAdmin: boolean;
-  isBillingManager: boolean;
-  isPersonalSpace: boolean;
-  isPrimarySpace: boolean;
-  isTeamAdmin: boolean;
-  isTeamEditor: boolean;
-  isTeamViewer: boolean;
-  userRole: TeamMemberAuthorization | null;
-};
+type WorkspaceAuthorizationReturn =
+  | {
+      isAdmin: undefined;
+      isBillingManager: undefined;
+      isPersonalSpace: undefined;
+      isPrimarySpace: undefined;
+      isTeamAdmin: undefined;
+      isTeamEditor: undefined;
+      isTeamViewer: undefined;
+      userRole: undefined;
+    }
+  | {
+      isAdmin: boolean;
+      isBillingManager: boolean;
+      isPersonalSpace: boolean;
+      isPrimarySpace: boolean;
+      isTeamAdmin: boolean;
+      isTeamEditor: boolean;
+      isTeamViewer: boolean;
+      userRole: TeamMemberAuthorization;
+    };
 
 export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
   const {
@@ -23,6 +34,19 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
   const { authorization, teamManager } =
     activeTeamInfo?.userAuthorizations.find(auth => auth.userId === user?.id) ??
     {};
+
+  if (!authorization) {
+    return {
+      isAdmin: undefined,
+      isBillingManager: undefined,
+      isPersonalSpace: undefined,
+      isPrimarySpace: undefined,
+      isTeamAdmin: undefined,
+      isTeamEditor: undefined,
+      isTeamViewer: undefined,
+      userRole: undefined,
+    };
+  }
 
   /**
    * TODO: Drop the team prefix from all these flags and replace all ocurrences
@@ -44,6 +68,6 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
     isTeamAdmin,
     isTeamEditor,
     isTeamViewer,
-    userRole: authorization ?? null,
+    userRole: authorization ?? undefined,
   };
 };
