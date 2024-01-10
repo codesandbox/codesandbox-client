@@ -159,7 +159,7 @@ export const UBB_FLEX_PLAN: PricingPlan = {
 
 export const UBB_STANDARD_PLAN: PricingPlan = {
   id: 'pro',
-  name: 'Standard',
+  name: 'Team',
   price: 45,
   credits: 6400,
   additionalCreditsCost: 0.018,
@@ -169,7 +169,7 @@ export const UBB_STANDARD_PLAN: PricingPlan = {
 
 export const UBB_GROWTH_PLAN: PricingPlan = {
   id: 'growth',
-  name: 'Team',
+  name: 'Growth',
   price: 249,
   credits: 22400,
   additionalCreditsCost: 0.018,
