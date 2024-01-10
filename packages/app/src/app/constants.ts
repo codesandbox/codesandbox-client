@@ -105,13 +105,15 @@ export type PricingPlan = {
   price: number | string;
   credits: number;
   additionalCreditsCost: number | null;
-  availableVMs: VMType[];
+  highestVM: VMType;
+  listedFeatures: string[];
 };
 
 export type PricingPlanFeatures = {
   id: string;
   name: string;
-  editors: number;
+  members: number;
+  storage: string;
   sandboxes: number;
   devboxes: number;
   repositories: number;
@@ -135,34 +137,44 @@ export const UBB_FREE_PLAN: PricingPlan = {
   price: 0,
   credits: 400,
   additionalCreditsCost: null,
-  availableVMs: ['vm-1', 'vm-2'],
+  highestVM: 'vm-2',
+  listedFeatures: [
+    '5 members',
+    '30 GB storage',
+    '20 Sandboxes',
+    'Unlimited Devboxes',
+    'Unlimited Repositories',
+  ],
 };
 
 export const UBB_FLEX_PLAN: PricingPlan = {
   id: 'flex',
   name: 'Flex',
   price: 9,
-  credits: 500,
+  credits: 900,
   additionalCreditsCost: 0.018,
-  availableVMs: ['vm-1', 'vm-2', 'vm-3', 'vm-4'],
+  highestVM: 'vm-4',
+  listedFeatures: ['20 members', '30 GB storage', '50 Sandboxes'],
 };
 
 export const UBB_STANDARD_PLAN: PricingPlan = {
   id: 'pro',
   name: 'Standard',
-  price: 18,
-  credits: 1500,
+  price: 45,
+  credits: 6400,
   additionalCreditsCost: 0.018,
-  availableVMs: ['vm-1', 'vm-2', 'vm-3', 'vm-4'],
+  highestVM: 'vm-4',
+  listedFeatures: ['20 members', '50 GB storage', '100 Sandboxes'],
 };
 
 export const UBB_GROWTH_PLAN: PricingPlan = {
   id: 'growth',
-  name: 'Growth',
-  price: 38,
-  credits: 3000,
+  name: 'Team',
+  price: 249,
+  credits: 22400,
   additionalCreditsCost: 0.018,
-  availableVMs: ['vm-1', 'vm-2', 'vm-3', 'vm-4'],
+  highestVM: 'vm-4',
+  listedFeatures: ['20 members', '50 GB storage', '500 Sandboxes'],
 };
 
 export const UBB_ENTERPRISE_PLAN: PricingPlan = {
@@ -171,13 +183,22 @@ export const UBB_ENTERPRISE_PLAN: PricingPlan = {
   price: 'Custom',
   credits: 0,
   additionalCreditsCost: 0,
-  availableVMs: ['vm-1', 'vm-2', 'vm-3', 'vm-4', 'vm-5', 'vm-6'],
+  highestVM: 'vm-6',
+  listedFeatures: [
+    'Unlimited members',
+    'Unlimited API',
+    'On-premise options',
+    'Private managed cloud',
+    'Dedicated support',
+    'SSO',
+  ],
 };
 
 export const UBB_FREE_FEATURES: PricingPlanFeatures = {
   id: 'free',
   name: 'Free',
-  editors: 5,
+  members: 5,
+  storage: '20 GB',
   sandboxes: 20,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
@@ -194,7 +215,8 @@ export const UBB_FREE_FEATURES: PricingPlanFeatures = {
 export const UBB_PRO_FEATURES: PricingPlanFeatures = {
   id: 'pro',
   name: 'Pro',
-  editors: 20,
+  members: 20,
+  storage: '30 GB',
   sandboxes: 50,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
@@ -211,8 +233,9 @@ export const UBB_PRO_FEATURES: PricingPlanFeatures = {
 export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
   id: 'enterprise',
   name: 'Enterprise',
-  editors: Number.MAX_SAFE_INTEGER,
-  sandboxes: Number.MAX_SAFE_INTEGER,
+  members: Number.MAX_SAFE_INTEGER,
+  storage: '50 GB',
+  sandboxes: 500,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
   shareableLinks: true,

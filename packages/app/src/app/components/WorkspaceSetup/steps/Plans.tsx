@@ -84,7 +84,7 @@ export const Plans: React.FC<StepProps> = ({
               <StyledCard
                 direction="vertical"
                 align="center"
-                gap={12}
+                gap={8}
                 css={{
                   background: '#1d1d1d',
                   color: '#e5e5e5',
@@ -97,6 +97,7 @@ export const Plans: React.FC<StepProps> = ({
               >
                 <CardHeading>For learning and experimenting</CardHeading>
                 <PlanAndPricing plan={UBB_FREE_PLAN} />
+                <PlanCredits plan={UBB_FREE_PLAN} />
                 <Button
                   css={{ background: '#323232' }}
                   variant="secondary"
@@ -105,21 +106,14 @@ export const Plans: React.FC<StepProps> = ({
                 >
                   Choose Free
                 </Button>
-                <PlanCredits plan={UBB_FREE_PLAN} />
-                <PlanFeatures
-                  features={[
-                    '5 members',
-                    '20 Sandboxes',
-                    'Unlimited Devboxes',
-                    'Unlimited repositories',
-                  ]}
-                />
+
+                <PlanFeatures features={UBB_FREE_PLAN.listedFeatures} />
                 <PlanVMs plan={UBB_FREE_PLAN} tierMap={tierMap} />
               </StyledCard>
               <StyledCard
                 direction="vertical"
                 align="center"
-                gap={12}
+                gap={8}
                 css={{ borderColor: '#9D8BF9' }}
               >
                 <CardHeading>
@@ -135,8 +129,9 @@ export const Plans: React.FC<StepProps> = ({
                     },
                   }}
                 >
-                  <Stack direction="vertical" gap={12} align="center">
+                  <Stack direction="vertical" gap={8} align="center">
                     <PlanAndPricing plan={UBB_FLEX_PLAN} />
+                    <PlanCredits plan={UBB_FLEX_PLAN} />
                     <Button
                       variant="dark"
                       size="large"
@@ -144,10 +139,11 @@ export const Plans: React.FC<StepProps> = ({
                     >
                       Choose Pro Flex
                     </Button>
-                    <PlanCredits plan={UBB_FLEX_PLAN} />
+                    <PlanFeatures features={UBB_FLEX_PLAN.listedFeatures} />
                   </Stack>
-                  <Stack direction="vertical" gap={12} align="center">
+                  <Stack direction="vertical" gap={8} align="center">
                     <PlanAndPricing plan={UBB_STANDARD_PLAN} />
+                    <PlanCredits plan={UBB_STANDARD_PLAN} />
                     <Button
                       variant="dark"
                       size="large"
@@ -155,10 +151,11 @@ export const Plans: React.FC<StepProps> = ({
                     >
                       Choose Pro Standard
                     </Button>
-                    <PlanCredits plan={UBB_STANDARD_PLAN} />
+                    <PlanFeatures features={UBB_STANDARD_PLAN.listedFeatures} />
                   </Stack>
-                  <Stack direction="vertical" gap={12} align="center">
+                  <Stack direction="vertical" gap={8} align="center">
                     <PlanAndPricing plan={UBB_GROWTH_PLAN} />
+                    <PlanCredits plan={UBB_GROWTH_PLAN} />
                     <Button
                       variant="dark"
                       size="large"
@@ -166,23 +163,32 @@ export const Plans: React.FC<StepProps> = ({
                     >
                       Choose Pro Growth
                     </Button>
-                    <PlanCredits plan={UBB_GROWTH_PLAN} />
+                    <PlanFeatures features={UBB_GROWTH_PLAN.listedFeatures} />
                   </Stack>
                 </Element>
+
+                <Element
+                  css={{ background: '#DBDBDB', width: '100%', height: '1px' }}
+                />
+
                 <PlanFeatures
                   features={[
-                    '20 members',
-                    '50 Sandboxes',
-                    'Unlimited Devboxes',
-                    'Unlimited repositories',
+                    'Add-ons available:',
+                    '+50 Sandboxes for $9 per month',
+                    '+20 GB storage for $12 per month',
                   ]}
                 />
+
+                <PlanFeatures
+                  features={['Unlimited Devboxes and repositories']}
+                />
+
                 <PlanVMs plan={UBB_STANDARD_PLAN} tierMap={tierMap} />
               </StyledCard>
               <StyledCard
                 direction="vertical"
                 align="center"
-                gap={12}
+                gap={8}
                 css={{
                   borderColor: '#DCF76E',
                   width: '300px',
@@ -195,6 +201,7 @@ export const Plans: React.FC<StepProps> = ({
                   The future of Cloud Development Environments
                 </CardHeading>
                 <PlanAndPricing plan={UBB_ENTERPRISE_PLAN} />
+                <PlanCredits plan={UBB_ENTERPRISE_PLAN} />
                 <Button
                   as="a"
                   href={ORGANIZATION_CONTACT_LINK}
@@ -206,16 +213,7 @@ export const Plans: React.FC<StepProps> = ({
                 <Stack direction="vertical" gap={6}>
                   <Text>Everything in Pro, plus:</Text>
 
-                  <PlanFeatures
-                    features={[
-                      'Unlimited members',
-                      'Unlimited API',
-                      'On-premise options',
-                      'Private managed cloud',
-                      'Dedicated support',
-                      'SSO',
-                    ]}
-                  />
+                  <PlanFeatures features={UBB_ENTERPRISE_PLAN.listedFeatures} />
                 </Stack>
 
                 <PlanVMs plan={UBB_ENTERPRISE_PLAN} tierMap={tierMap} />
@@ -224,10 +222,10 @@ export const Plans: React.FC<StepProps> = ({
           </HorizontalScroller>
           <CodeSandboxFriendsCard />
         </Stack>
-        <VMSpecs tiers={tiers} />
         <FeaturesComparison
           plans={[UBB_FREE_FEATURES, UBB_PRO_FEATURES, UBB_ENTERPRISE_FEATURES]}
         />
+        <VMSpecs tiers={tiers} />
       </Stack>
     </AnimatedStep>
   );
@@ -323,14 +321,11 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
 };
 
 const PlanCredits: React.FC<{ plan: PricingPlan }> = ({ plan }) => (
-  <Stack direction="vertical" align="center">
-    <Text>{plan.credits} credits per month</Text>
+  <Stack direction="vertical" align="center" css={{ height: '35px' }}>
+    {plan.credits > 0 && <Text>{plan.credits} credits included</Text>}
     {plan.additionalCreditsCost ? (
-      <Text
-        size={3}
-        css={{ textWrap: 'balance', textAlign: 'center', maxWidth: '180px' }}
-      >
-        Get on-demand credits for ${plan.additionalCreditsCost}/cr
+      <Text size={2} color="#4E3BB0" css={{ textAlign: 'center' }}>
+        Need more? ${plan.additionalCreditsCost} $/cr
       </Text>
     ) : null}
   </Stack>
@@ -349,23 +344,20 @@ const PlanVMs: React.FC<{
   tierMap: Record<VMType, VMTier>;
 }> = ({ plan, tierMap }) => (
   <Stack direction="vertical" align="center" css={{ height: '60px' }}>
-    <Text>Virtual machine options:</Text>
+    <Text>Virtual machines up to:</Text>
     <Text
-      as="a"
-      href="#vm-types"
       css={{
-        textWrap: 'balance',
         textAlign: 'center',
-        textDecoration: 'none',
-        color: '#4E3BB0',
         opacity: Object.keys(tierMap).length === 0 ? 0 : 1,
         transition: 'opacity 0.15s ease-out',
       }}
     >
-      {plan.availableVMs
-        .map(vmType => tierMap[vmType]?.name)
-        .filter(Boolean)
-        .join(', ')}
+      {Object.keys(tierMap).length > 0 && (
+        <>
+          {tierMap[plan.highestVM].cpu} vCPUs + {tierMap[plan.highestVM].memory}{' '}
+          GB RAM
+        </>
+      )}
     </Text>
   </Stack>
 );
@@ -548,10 +540,16 @@ export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
         </GridCell>
 
         <FeatureComparisonNumbersRow
-          title="Editors"
-          description="Maximum number of editors in the workspace."
+          title="Members"
+          description="The maximum number of members in the workspace."
           plans={plans}
-          property="editors"
+          property="members"
+        />
+        <FeatureComparisonNumbersRow
+          title="Storage"
+          description="The maximum amount of storage space available."
+          plans={plans}
+          property="storage"
         />
         <FeatureComparisonNumbersRow
           title="Sandboxes"
