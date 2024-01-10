@@ -23,7 +23,6 @@ type BranchProps = DashboardBranch & {
 export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   const {
     dashboard: { removingBranch, removingRepository, viewMode },
-    activeTeamInfo,
   } = useAppState();
   const { selectedIds, onRightClick, onMenuEvent } = useSelection();
   const { name, project } = branch;

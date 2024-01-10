@@ -328,5 +328,6 @@ export const teamLimitsFragment = gql`
     maxPublicProjects
     maxPublicSandboxes
     onDemandSpendingLimit
+    onDemandCreditLimit
   }
 `;
