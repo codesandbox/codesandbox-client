@@ -14,6 +14,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
@@ -36,7 +37,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isPro } = useWorkspaceSubscription();
-  const miniumPrivacy = isPro
+  const { ubbBeta } = useWorkspaceFeatureFlags();
+  const canSetPrivacy = isPro || ubbBeta;
+  const miniumPrivacy = canSetPrivacy
     ? ((activeTeamInfo?.settings.minimumPrivacy || 0) as PrivacyLevel)
     : 0;
 
@@ -150,7 +153,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             Visibility
           </Text>
           <Stack direction="vertical" gap={1}>
-            {isPro ? (
+            {canSetPrivacy ? (
               <Select
                 icon={PRIVACY_OPTIONS[permission].icon}
                 defaultValue={permission}

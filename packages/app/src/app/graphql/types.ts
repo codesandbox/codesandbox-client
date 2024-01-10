@@ -4725,6 +4725,7 @@ export type TeamLimitsFragment = {
   maxPublicProjects: number | null;
   maxPublicSandboxes: number | null;
   onDemandSpendingLimit: number | null;
+  onDemandCreditLimit: number | null;
 };
 
 export type _CreateTeamMutationVariables = Exact<{
@@ -7534,6 +7535,7 @@ export type LimitsQuery = {
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
       onDemandSpendingLimit: number | null;
+      onDemandCreditLimit: number | null;
     };
     personalPro: {
       __typename?: 'TeamLimits';
@@ -7543,6 +7545,7 @@ export type LimitsQuery = {
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
       onDemandSpendingLimit: number | null;
+      onDemandCreditLimit: number | null;
     };
     teamFree: {
       __typename?: 'TeamLimits';
@@ -7552,6 +7555,7 @@ export type LimitsQuery = {
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
       onDemandSpendingLimit: number | null;
+      onDemandCreditLimit: number | null;
     };
     teamPro: {
       __typename?: 'TeamLimits';
@@ -7561,6 +7565,7 @@ export type LimitsQuery = {
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
       onDemandSpendingLimit: number | null;
+      onDemandCreditLimit: number | null;
     };
   };
 };

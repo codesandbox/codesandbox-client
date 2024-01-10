@@ -46,6 +46,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
 
   const label = isTemplate ? 'template' : boxType;
+  const canChangePrivacy = ubbBeta || isPro;
   const restricted = !ubbBeta && isFree && sandbox.privacy !== 0;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
@@ -235,7 +236,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )
         : null}
 
-      {hasAccess && userRole !== 'READ' && isPro ? (
+      {hasAccess && userRole !== 'READ' && canChangePrivacy ? (
         <>
           {sandbox.privacy !== 1 && (
             <MenuItem

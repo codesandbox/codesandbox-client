@@ -73,7 +73,7 @@ export const useCreateCheckout = (): [
   const { api } = useEffects();
   const { pathname, search } = useLocation();
 
-  const canCheckout = !!isFree && isBillingManager;
+  const canCheckout = !!isFree && !!isBillingManager;
 
   useEffect(() => {
     if (isProcessingPayment) {
