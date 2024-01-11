@@ -608,7 +608,7 @@ export const initializeActiveWorkspace = async ({
 
   const hasWorkspaces =
     state.dashboard?.teams && state.dashboard.teams.length > 0;
-  if (!hasWorkspaces && state.hasLoadedApp) {
+  if (!hasWorkspaces) {
     const teams = await effects.gql.queries.getTeams({});
 
     if (teams?.me) {

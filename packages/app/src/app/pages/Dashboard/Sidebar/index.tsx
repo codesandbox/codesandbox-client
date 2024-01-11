@@ -48,9 +48,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }, [state.activeTeam]);
 
   React.useEffect(() => {
-    // Used to check for templates and synced sandboxes
-    actions.sidebar.getSidebarData(state.activeTeam);
-  }, [state.activeTeam, actions.sidebar]);
+    if (state.hasLoadedApp && state.activeTeam) {
+      // Used to check for templates and synced sandboxes
+      actions.sidebar.getSidebarData(state.activeTeam);
+    }
+  }, [state.activeTeam, state.hasLoadedApp, actions.sidebar]);
 
   const folders =
     (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
