@@ -7,7 +7,7 @@ import { useScopedPersistedState } from 'app/hooks/usePersistedState';
 
 const SANDBOX_INCREASE_LIMIT_REQUEST_FORM =
   'https://webforms.pipedrive.com/f/cB3DfL4Vg41gVPKuA6MLRpr8YI6L8KCzxiulfpjgnBdFBxa4xkJpqMSE6g8yHTjjtF';
-const SANDBOX_LIMIT_ANNOUNCEMENT = 'https://codesandbox.io';
+const SANDBOX_LIMIT_ANNOUNCEMENT = 'https://www.codesandbox.community/c/api-billing-updates/upcoming-pricing-billing-changes';
 
 export const SandboxLimitation: React.FC = () => {
   const { activeTeam } = useAppState();
