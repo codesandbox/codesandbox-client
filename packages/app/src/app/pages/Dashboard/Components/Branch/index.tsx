@@ -4,6 +4,7 @@ import { useAppState } from 'app/overmind';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import React from 'react';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { DashboardBranch } from '../../types';
 import { useSelection } from '../Selection';
 import { BranchCard } from './BranchCard';
@@ -49,9 +50,10 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
     removingRepository?.name === project.repository.name;
 
   const { isFree } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   const isPrivate = branch?.project?.repository?.private;
-  const restricted = isFree && isPrivate && page === 'recent';
+  const restricted = !ubbBeta && isFree && isPrivate && page === 'recent';
 
   const props = {
     branch,

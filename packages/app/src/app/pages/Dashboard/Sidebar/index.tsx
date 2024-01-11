@@ -10,6 +10,7 @@ import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { getDaysUntil } from 'app/utils/dateTime';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -47,9 +48,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }, [state.activeTeam]);
 
   React.useEffect(() => {
-    // Used to check for templates and synced sandboxes
-    actions.sidebar.getSidebarData(state.activeTeam);
-  }, [state.activeTeam, actions.sidebar]);
+    if (state.hasLoadedApp && state.activeTeam) {
+      // Used to check for templates and synced sandboxes
+      actions.sidebar.getSidebarData(state.activeTeam);
+    }
+  }, [state.activeTeam, state.hasLoadedApp, actions.sidebar]);
 
   const folders =
     (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
@@ -92,6 +95,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     hasPaymentMethod,
     isEligibleForTrial,
   } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   // Compute number of days left for TeamPro trial
   const trialDaysLeft = hasActiveTeamTrial
@@ -293,10 +297,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && isFree && isBillingManager ? (
           <Element css={{ margin: 'auto 24px 0' }}>
-            {isEligibleForTrial ? (
+            {isEligibleForTrial && !ubbBeta ? (
               <StartTrial activeTeam={activeTeam} />
             ) : (
-              <UpgradeFreeTeamToPro activeTeam={activeTeam} />
+              <UpgradeFreeTeamToPro activeTeam={activeTeam} ubbBeta={ubbBeta} />
             )}
           </Element>
         ) : null}

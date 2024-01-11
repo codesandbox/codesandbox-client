@@ -8,7 +8,7 @@ const StyledSelect = styled.select`
   appearance: none;
 
   width: 100%;
-  padding: 12px 40px 12px 16px;
+  padding: 8px 40px 8px 16px;
   background-color: #2a2a2a;
   font-family: 'Inter', sans-serif;
   font-size: 16px;

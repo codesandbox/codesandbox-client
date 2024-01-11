@@ -63,7 +63,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isLegacyPersonalPro =
     isPro && subscription.type === SubscriptionType.PersonalPro;
 
-  const isEligibleForTrial = userCanStartTrial && isBillingManager;
+  const isEligibleForTrial = userCanStartTrial && !!isBillingManager;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
 

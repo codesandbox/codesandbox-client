@@ -736,6 +736,14 @@ export const spinner = props => (
       d="M10 0.673631C9.09074 0.241691 8.0736 0 7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14C10.5265 14 13.4439 11.3923 13.9291 8H12.917C12.441 10.8377 9.973 13 7 13C3.68629 13 1 10.3137 1 7C1 3.68629 3.68629 1 7 1C8.09286 1 9.11748 1.29218 10 1.80269V0.673631Z"
       fill="currentColor"
     />
+    <animateTransform
+      attributeName="transform"
+      dur="1.5s"
+      from="0 0 0"
+      repeatCount="indefinite"
+      to="360 0 0"
+      type="rotate"
+    />
   </Element>
 );
 

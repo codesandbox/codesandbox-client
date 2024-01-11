@@ -6,17 +6,23 @@ import {
   SANDBOX_BUTTON_DESCRIPTION,
 } from 'app/components/Create/utils/constants';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
-import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
+import {
+  UpgradeBanner,
+  UbbUpgradeBanner,
+} from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   return (
     <Stack direction="vertical" gap={8}>
-      <UpgradeBanner />
+      {ubbBeta ? <UbbUpgradeBanner /> : <UpgradeBanner />}
+
       <Text
         as="h1"
         css={{

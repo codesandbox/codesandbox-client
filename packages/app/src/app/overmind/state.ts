@@ -39,6 +39,7 @@ type State = {
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
   userCanStartTrial: boolean;
+  userFeatureFlags: { ubbBeta: boolean | undefined };
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
@@ -141,6 +142,7 @@ export const state: State = {
   activeTeamInfo: null,
   primaryWorkspaceId: null,
   userCanStartTrial: false,
+  userFeatureFlags: { ubbBeta: undefined },
   connected: true,
   notifications: [],
   contributors: [],

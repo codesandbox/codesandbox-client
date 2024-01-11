@@ -91,6 +91,8 @@ import {
   CreateBranchMutationVariables,
   SetTeamAiConsentMutation,
   SetTeamAiConsentMutationVariables,
+  SetTeamLimitsMutation,
+  SetTeamLimitsMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -764,5 +766,17 @@ export const setTeamAiConsent: Query<
       publicSandboxes
       publicRepositories
     }
+  }
+`;
+
+export const setTeamLimits: Query<
+  SetTeamLimitsMutation,
+  SetTeamLimitsMutationVariables
+> = gql`
+  mutation SetTeamLimits($teamId: UUID4!, $onDemandSpendingLimit: Int!) {
+    setTeamLimits(
+      teamId: $teamId
+      onDemandSpendingLimit: $onDemandSpendingLimit
+    )
   }
 `;

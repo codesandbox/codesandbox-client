@@ -59,6 +59,19 @@ export const makeTheme = (vsCodeTheme = {}, name?: string) => {
   return theme;
 };
 
+const GlobalStyles = createGlobalStyle`
+:root {
+  --reach-menu-button: 1;
+  --reach-tooltip: 1;
+  --reach-skip-nav: 1;
+  scroll-behavior: smooth;
+
+  @media(prefers-reduced-motion) {
+    scroll-behavior: auto;
+  }
+}
+`;
+
 export const ThemeProvider = ({
   theme = codesandboxBlack,
   children,
@@ -71,13 +84,7 @@ export const ThemeProvider = ({
   // the resizer lives outside the sidebar
   // to apply the right color to the resizer
   // we create a global style to be applied to it
-  const ExternalStyles = createGlobalStyle`
-    :root {
-      --reach-menu-button: 1;
-      --reach-tooltip: 1;
-      --reach-skip-nav: 1;
-    }
-
+  const ThemedStyles = createGlobalStyle`
     .Resizer {
       background-color: ${usableTheme.colors.sideBar.border} !important;
     }
@@ -86,12 +93,12 @@ export const ThemeProvider = ({
       background-color: ${usableTheme.colors.button.background};
       opacity: 0.2
     }
-
   `;
 
   return (
     <>
-      <ExternalStyles />
+      <GlobalStyles />
+      <ThemedStyles />
       <BaseThemeProvider theme={usableTheme}>
         <TooltipStyles />
         <MenuStyles />

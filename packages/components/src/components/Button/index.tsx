@@ -79,6 +79,25 @@ const variantStyles = {
   },
 };
 
+const sizeStyles = {
+  regular: {
+    paddingY: '4px',
+    paddingX: '8px',
+    height: '28px', // match with inputs
+    fontSize: '13px',
+    fontWeight: 'medium',
+    lineHeight: '16px', // trust the height
+  },
+  large: {
+    height: 'auto',
+    paddingY: '12px',
+    paddingX: '16px',
+    fontWeight: 500,
+    fontSize: '16px',
+    whiteSpace: 'nowrap',
+  },
+};
+
 const commonStyles = {
   display: 'inline-flex',
   justifyContent: 'center',
@@ -86,13 +105,7 @@ const commonStyles = {
   cursor: 'pointer',
   flex: 'none', // as a flex child
   fontFamily: 'Inter, sans-serif',
-  paddingY: '4px',
-  paddingX: '8px',
   width: '100%',
-  height: '28px', // match with inputs
-  fontSize: '13px',
-  fontWeight: 'medium',
-  lineHeight: '16px', // trust the height
   border: 'none',
   borderRadius: '4px',
   transition: 'background .3s, color .3s, box-shadow .3s',
@@ -130,6 +143,7 @@ export interface ButtonProps
     | 'light'
     | 'dark'
     | 'trial';
+  size?: 'regular' | 'large';
   loading?: boolean;
   href?: string;
   rel?: string; // Only use when using href and as="a"
@@ -141,10 +155,23 @@ export interface ButtonProps
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   function Button(
-    { variant = 'primary', loading, css = {}, autoWidth, as: pAs, ...props },
+    {
+      variant = 'primary',
+      size = 'regular',
+      loading,
+      css = {},
+      autoWidth,
+      as: pAs,
+      ...props
+    },
     ref
   ) {
-    const styles = deepmerge.all([variantStyles[variant], commonStyles, css]);
+    const styles = deepmerge.all([
+      variantStyles[variant],
+      sizeStyles[size],
+      commonStyles,
+      css,
+    ]);
     const usedAs = pAs || (props.to ? Link : 'button');
     // default type is button unless props.as was changed
     const type = usedAs === 'button' && 'button';

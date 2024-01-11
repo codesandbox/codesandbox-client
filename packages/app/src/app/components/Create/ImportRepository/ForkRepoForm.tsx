@@ -11,7 +11,6 @@ import {
   SkeletonText,
   Text,
 } from '@codesandbox/components';
-import styled, { keyframes } from 'styled-components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
@@ -22,20 +21,6 @@ const COLORS = {
   INVALID: '#ED6C6C',
   VALID: '#2ECC71',
 };
-
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const StyledSpinner = styled.span`
-  animation: ${rotate} 2s linear infinite;
-  display: flex;
-`;
 
 type ForkRepoFormProps = {
   repository: GithubRepoToImport;
@@ -177,9 +162,7 @@ export const ForkRepoForm: React.FC<ForkRepoFormProps> = ({
                   <Icon size={16} name="warning" />
                 ) : null}
                 {destinationValidation.state === 'validating' ? (
-                  <StyledSpinner>
-                    <Icon size={16} name="spinner" />
-                  </StyledSpinner>
+                  <Icon size={16} name="spinner" />
                 ) : null}
               </Element>
             ) : null}

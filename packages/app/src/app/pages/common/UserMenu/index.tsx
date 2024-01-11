@@ -12,6 +12,8 @@ import React, { FunctionComponent } from 'react';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
+import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
@@ -25,6 +27,7 @@ export const UserMenu: FunctionComponent & {
   const { user, activeTeam, environment } = useAppState();
   const { isAdmin } = useWorkspaceAuthorization();
   const { isPro, isFree } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
   const isEditorPage = useIsEditorPage();
 
   if (!user) {
@@ -54,7 +57,7 @@ export const UserMenu: FunctionComponent & {
 
   const showCurator = user.curatorAt;
 
-  const showBecomePro = isFree;
+  const showBecomePro = isFree && isAdmin && !environment.isOnPrem;
   const showManageSubscription = isPro && isAdmin && !environment.isOnPrem;
   const showStorage = !environment.isOnPrem;
 
@@ -103,7 +106,13 @@ export const UserMenu: FunctionComponent & {
           )}
 
           {showBecomePro && (
-            <Menu.Link to="/pro">
+            <Menu.Link
+              to={proUrl({
+                workspaceId: activeTeam,
+                source: 'main_menu',
+                ubbBeta,
+              })}
+            >
               <Stack align="center" gap={2}>
                 <Icon name="proBadge" size={16} />
                 <Text>Upgrade to Pro</Text>

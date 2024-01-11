@@ -4,7 +4,7 @@ import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
-export const UpgradeFreeTeamToPro = ({ activeTeam }) => (
+export const UpgradeFreeTeamToPro = ({ activeTeam, ubbBeta }) => (
   <Stack align="flex-start" direction="vertical" gap={2}>
     <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
       Upgrade to <Text css={{ color: '#c2c2c2', fontWeight: 500 }}>Pro</Text>{' '}
@@ -12,7 +12,11 @@ export const UpgradeFreeTeamToPro = ({ activeTeam }) => (
     </Text>
     <Link
       as={RouterLink}
-      to={proUrl({ source: 'side_banner_team_pro', workspaceId: activeTeam })}
+      to={proUrl({
+        source: 'side_banner_team_pro',
+        workspaceId: activeTeam,
+        ubbBeta,
+      })}
       title="Upgrade to Pro"
       css={{
         fontSize: '12px',

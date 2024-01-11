@@ -105,7 +105,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
     dashboard: { viewMode },
   } = useAppState();
   const { restrictsPublicRepos } = useGitHubPermissions();
-
   const page: PageTypes = 'recent';
   const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
   const showDocsLine = !isOnPrem;

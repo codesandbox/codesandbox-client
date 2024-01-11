@@ -166,6 +166,7 @@ export const getTeams = async ({ state, effects }: Context) => {
   state.dashboard.teams = teams.me.workspaces;
   state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
   state.userCanStartTrial = teams.me.eligibleForTrial;
+  state.userFeatureFlags = teams.me.featureFlags;
 };
 
 export const removeFromTeam = async (
@@ -679,7 +680,6 @@ export const unmakeTemplates = async (
     TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
   };
-
   try {
     await effects.gql.mutations.unmakeSandboxesTemplate({
       sandboxIds: templateIds,
