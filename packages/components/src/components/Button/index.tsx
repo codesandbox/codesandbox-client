@@ -34,6 +34,7 @@ const variantStyles = {
 
     ':hover:not(:disabled), :focus:not(:disabled)': {
       color: 'foreground',
+      backgroundColor: '#E5E5E51A',
     },
   },
   ghost: {

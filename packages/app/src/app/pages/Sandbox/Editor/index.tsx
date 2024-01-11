@@ -11,6 +11,7 @@ import { GenericCreate } from 'app/components/Create/GenericCreate';
 import {
   FreeViewOnlyStripe,
   PaymentPending,
+  SandboxLimitation,
   TrialWithoutPaymentInfo,
 } from 'app/components/StripeMessages';
 import VisuallyHidden from '@reach/visually-hidden';
@@ -62,7 +63,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     },
     customVSCodeTheme: null,
   });
-  const { subscription } = useWorkspaceSubscription();
+  const { subscription, isFree } = useWorkspaceSubscription();
   const [
     showTrialWithoutPaymentInfoBanner,
     dismissTrialWithoutPaymentInfoBanner,
@@ -163,6 +164,8 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
             {subscription?.status === SubscriptionStatus.Unpaid && (
               <PaymentPending />
             )}
+
+            {isFree && <SandboxLimitation />}
 
             {showTrialWithoutPaymentInfoBanner && (
               <TrialWithoutPaymentInfo

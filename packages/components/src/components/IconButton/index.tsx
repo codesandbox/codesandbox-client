@@ -35,17 +35,9 @@ export const IconButton: React.FC<IconButtonProps> = ({
       variant="link"
       css={deepmerge(
         {
-          width: '26px', // same width as (height of the button)
+          width: '28px', // same width as (height of the button)
           paddingX: 0,
-          borderRadius: variant === 'round' ? '50%' : '2px',
-          cursor: 'pointer',
-          ':hover:not(:disabled)': {
-            backgroundColor: 'secondaryButton.background',
-          },
-          ':focus:not(:disabled)': {
-            outline: 'none',
-            backgroundColor: 'secondaryButton.background',
-          },
+          borderRadius: variant === 'round' ? '50%' : '4px',
         },
         css
       )}

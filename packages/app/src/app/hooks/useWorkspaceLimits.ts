@@ -39,9 +39,8 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       numberOfEditors: undefined,
       hasMaxNumberOfEditors: undefined,
       numberOfEditorsIsOverTheLimit: undefined,
-      hasMaxPublicRepositories: undefined,
-      hasMaxPrivateRepositories: undefined,
-      hasMaxPublicSandboxes: undefined,
+      hasOver20Sandboxes: undefined,
+      hasOver200Sandboxes: undefined,
     };
   }
 
@@ -65,40 +64,17 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       limits.maxEditors !== null &&
       numberOfEditors > limits.maxEditors);
 
-  const publicProjectsQuantity = usage.publicProjectsQuantity;
-  const maxPublicProjects = limits.maxPublicProjects;
-
-  const hasMaxPublicRepositories =
-    debugLimits?.hasMaxPublicRepositories ||
-    (isFree === true &&
-      maxPublicProjects !== null &&
-      publicProjectsQuantity >= maxPublicProjects);
-
-  const privateRepositoriesQuantity = usage.privateProjectsQuantity;
-  const maxPrivateRepositories = limits.maxPrivateProjects;
-
-  const hasMaxPrivateRepositories =
-    debugLimits?.hasMaxPrivateRepositories ||
-    (isFree === true &&
-      maxPrivateRepositories !== null &&
-      privateRepositoriesQuantity > maxPrivateRepositories);
-
   const publicSandboxesQuantity = usage.publicSandboxesQuantity;
-  const maxPublicSandboxes = limits.maxPublicSandboxes;
 
-  const hasMaxPublicSandboxes =
-    debugLimits?.hasMaxPublicSandboxes ||
-    (isFree === true &&
-      maxPublicSandboxes !== null &&
-      publicSandboxesQuantity >= maxPublicSandboxes);
+  const hasOver20Sandboxes = isFree === true && publicSandboxesQuantity > 20;
+  const hasOver200Sandboxes = isFree === true && publicSandboxesQuantity > 200;
 
   return {
     numberOfEditors,
     hasMaxNumberOfEditors,
     numberOfEditorsIsOverTheLimit,
-    hasMaxPublicRepositories,
-    hasMaxPrivateRepositories,
-    hasMaxPublicSandboxes,
+    hasOver20Sandboxes,
+    hasOver200Sandboxes,
   };
 };
 
@@ -107,15 +83,13 @@ export type WorkspaceLimitsReturn =
       numberOfEditors: number | undefined;
       hasMaxNumberOfEditors: undefined;
       numberOfEditorsIsOverTheLimit: undefined;
-      hasMaxPublicRepositories: undefined;
-      hasMaxPrivateRepositories: undefined;
-      hasMaxPublicSandboxes: undefined;
+      hasOver20Sandboxes: undefined;
+      hasOver200Sandboxes: undefined;
     }
   | {
       numberOfEditors: number;
       hasMaxNumberOfEditors: boolean;
       numberOfEditorsIsOverTheLimit: boolean;
-      hasMaxPublicRepositories: boolean;
-      hasMaxPrivateRepositories: boolean;
-      hasMaxPublicSandboxes: boolean;
+      hasOver20Sandboxes: boolean;
+      hasOver200Sandboxes: boolean;
     };
