@@ -16,12 +16,14 @@ import css from '@styled-system/css';
 
 import {
   PaymentPending,
+  SandboxLimitation,
   TrialWithoutPaymentInfo,
 } from 'app/components/StripeMessages';
 import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
+import { useScopedPersistedState } from 'app/hooks/usePersistedState';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
@@ -45,12 +47,19 @@ export const Dashboard: FunctionComponent = () => {
   } = useAppState();
   const actions = useActions();
   const effects = useEffects();
-  const { subscription } = useWorkspaceSubscription();
+  const { subscription, isFree } = useWorkspaceSubscription();
   const { trackVisit } = useDashboardVisit();
   const [
     showTrialWithoutPaymentInfoBanner,
     dismissTrialWithoutPaymentInfoBanner,
   ] = useShowBanner();
+
+  const [sandboxBannerDismissed] = useScopedPersistedState(
+    'SANDBOX_BANNER_DISMISSED',
+    false,
+    activeTeam
+  );
+  const showSandboxLimitationBanner = isFree && !sandboxBannerDismissed;
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -98,7 +107,9 @@ export const Dashboard: FunctionComponent = () => {
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
   const hasTopBarBanner =
-    showTrialWithoutPaymentInfoBanner || hasUnpaidSubscription;
+    showTrialWithoutPaymentInfoBanner ||
+    hasUnpaidSubscription ||
+    showSandboxLimitationBanner;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -149,6 +160,7 @@ export const Dashboard: FunctionComponent = () => {
         >
           <SkipNav.Link />
           {hasUnpaidSubscription && <PaymentPending />}
+          {isFree && <SandboxLimitation />}
           {showTrialWithoutPaymentInfoBanner && (
             <TrialWithoutPaymentInfo
               onDismiss={dismissTrialWithoutPaymentInfoBanner}
