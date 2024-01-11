@@ -233,6 +233,23 @@ export const Plans: React.FC<StepProps> = ({
           plans={[UBB_FREE_FEATURES, UBB_PRO_FEATURES, UBB_ENTERPRISE_FEATURES]}
         />
         <VMSpecs tiers={tiers} />
+
+        {/* <FAQ
+          content={[
+            {
+              question: 'What is the free plan?',
+              answer: 'The free plan is free for 30 days.',
+            },
+            {
+              question: 'What are the benefits of the free plan?',
+              answer: 'The free plan is free for 30 days.',
+            },
+            {
+              question: 'What is the free plan?',
+              answer: 'The free plan is free for 30 days.',
+            },
+          ]}
+        /> */}
       </Stack>
     </AnimatedStep>
   );
@@ -542,7 +559,7 @@ const VMSpecs: React.FC<{ tiers: VMTier[] }> = ({ tiers }) => (
   </Stack>
 );
 
-export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
+const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
   plans,
 }) => (
   <Stack
@@ -771,3 +788,102 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
     ))}
   </>
 );
+
+// const FAQ: React.FC<{
+//   content: Array<{ question: string; answer: string }>;
+// }> = ({ content }) => {
+//   return (
+//     <Stack>
+//       <Element>
+//         <Text as="h2">Frequently asked questions</Text>
+//       </Element>
+
+//       <Element>
+//         {content.map((faq, index) => (
+//           <FaqItem
+//             open={index === 0}
+//             key={index}
+//             question={faq.question}
+//             answer={faq.answer}
+//           />
+//         ))}
+//       </Element>
+//     </Stack>
+//   );
+// };
+
+// const FaqItem = ({ question, answer, open }) => {
+//   const [isOpen, setIsOpen] = useState(open);
+
+//   const toggleOpen = () => {
+//     setIsOpen(!isOpen);
+//   };
+
+//   return (
+//     <FaqContainer open={isOpen}>
+//       <Question size={24} onClick={toggleOpen}>
+//         {question}
+
+//         <svg
+//           width="24"
+//           height="25"
+//           viewBox="0 0 24 25"
+//           fill="none"
+//           xmlns="http://www.w3.org/2000/svg"
+//         >
+//           <path
+//             fillRule="evenodd"
+//             clipRule="evenodd"
+//             d="M5.96967 1.96967C6.26256 1.67678 6.73744 1.67678 7.03033 1.96967L16.5 11.4393C17.0858 12.0251 17.0858 12.9749 16.5 13.5607L7.03033 23.0303C6.73744 23.3232 6.26256 23.3232 5.96967 23.0303C5.67678 22.7375 5.67678 22.2626 5.96967 21.9697L15.4394 12.5L5.96967 3.03033C5.67678 2.73744 5.67678 2.26256 5.96967 1.96967Z"
+//             fill="black"
+//           />
+//         </svg>
+//       </Question>
+
+//       {isOpen && (
+//         <Element css={{ padding: '0 $3 $4 $3' }}>
+//           {answer.split('\n').map((line, index) => {
+//             return (
+//               <Text key={index} as="p" size={18} css={{ color: '$neutral100' }}>
+//                 {line}
+//               </Text>
+//             );
+//           })}
+//         </Element>
+//       )}
+//     </FaqContainer>
+//   );
+// };
+
+// const FaqContainer = styled('div')`
+//   display: flex;
+
+//   border-top: 1px solid $neutral500;
+
+//   svg {
+//     transform: rotate(90deg) translate3D(6px, 0, 0);
+//     transition: transform 150ms ease-in-out;
+//   }
+
+//   .open-true svg {
+//     transform: rotate(-90deg);
+//   }
+
+//   &:last-child {
+//     border-bottom: 1px solid $neutral500;
+//   }
+// `;
+
+// const Question = styled('button')`
+//   text-align: left;
+//   font-size: 24px;
+//   padding: 24px 16px;
+//   background: none;
+//   border: none;
+//   width: 100%;
+//   display: flex;
+//   justify-content: space-between;
+//   cursor: pointer;
+//   transition: background 150ms ease-in-out;
+//   color: inherit;
+// `;
