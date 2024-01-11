@@ -157,7 +157,7 @@ export const UBB_FLEX_PLAN: PricingPlan = {
   name: 'Flex',
   price: 9,
   priceDiscountNote: 'Early access discount',
-  credits: 900,
+  credits: 1000,
   creditsNote:
     'Ideal to get started with cloud development and understand your usage needs.',
   additionalCreditsCost: 0.018,
@@ -170,7 +170,7 @@ export const UBB_STANDARD_PLAN: PricingPlan = {
   name: 'Team',
   price: 45,
   priceDiscountNote: 'Save $39',
-  credits: 6400,
+  credits: 4000,
   creditsNote:
     'Ideal for teams of 5-10 people using Devboxes 2 hours a day, each.',
   additionalCreditsCost: 0.018,
@@ -183,7 +183,7 @@ export const UBB_GROWTH_PLAN: PricingPlan = {
   name: 'Growth',
   price: 249,
   priceDiscountNote: 'Save $304',
-  credits: 22400,
+  credits: 24000,
   creditsNote:
     'Ideal for teams of 11-20 people using Devboxes 2 hours a day, each.',
   additionalCreditsCost: 0.018,
