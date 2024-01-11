@@ -307,14 +307,30 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
           {plan.name}
         </Text>
       </Stack>
-      <Text size={9} fontFamily="everett" weight="medium">
-        {typeof plan.price === 'number' ? `$${plan.price}` : plan.price}
-      </Text>
-      {plan.id === 'free' && (
-        <Text css={{ height: '40px' }} weight="medium">
-          forever
+      <Element css={{ position: 'relative' }}>
+        <Text size={9} fontFamily="everett" weight="medium">
+          {typeof plan.price === 'number' ? `$${plan.price}` : plan.price}
         </Text>
-      )}
+
+        {plan.priceDiscountNote && (
+          <Element css={{ position: 'absolute', top: 6, right: -6, width: 0 }}>
+            <Text
+              size={2}
+              css={{
+                padding: '6px 8px',
+                borderRadius: 4,
+                display: 'block',
+                backgroundColor: plan.id === 'flex' ? '#DCF76E' : '#9D8BF9',
+                color: plan.id === 'flex' ? 'inherit' : '#fff',
+                width: plan.id === 'flex' ? 90 : 47,
+              }}
+            >
+              {plan.priceDiscountNote}
+            </Text>
+          </Element>
+        )}
+      </Element>
+
       {plan.id === 'enterprise' && <Element css={{ height: '40px' }} />}
       {isPro && (
         <Text align="center" weight="medium">
