@@ -355,8 +355,9 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
         )}
       </Element>
 
-      {plan.id === 'enterprise' ||
-        (plan.id === 'free' && <Element css={{ height: '40px' }} />)}
+      {(plan.id === 'free' || plan.id === 'enterprise') && (
+        <Element css={{ height: '40px' }} />
+      )}
       {isPro && (
         <Text align="center" weight="medium">
           per month
