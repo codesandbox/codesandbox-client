@@ -247,7 +247,7 @@ Growth: 500<br/>
   vmType: `16 vCPUs<br />32 GB RAM`,
   privateProject: true,
   shareableLinks: true,
-  privateNPM: true,
+  privateNPM: false,
   liveSessions: true,
   apiAccess: true,
   protectedPreviews: false,
