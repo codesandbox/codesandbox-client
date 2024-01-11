@@ -1,5 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Button, Element, Icon, Stack, Text } from '@codesandbox/components';
+import {
+  Button,
+  Element,
+  Icon,
+  Stack,
+  Text,
+  Tooltip,
+} from '@codesandbox/components';
 import {
   CSB_FRIENDS_LINK,
   ORGANIZATION_CONTACT_LINK,
@@ -322,7 +329,21 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
 
 const PlanCredits: React.FC<{ plan: PricingPlan }> = ({ plan }) => (
   <Stack direction="vertical" align="center" css={{ height: '35px' }}>
-    {plan.credits > 0 && <Text>{plan.credits} credits included</Text>}
+    {plan.credits > 0 &&
+      (plan.creditsNote ? (
+        <Tooltip label={plan.creditsNote}>
+          <Text
+            css={{
+              borderBottom: '1px dotted currentColor',
+              marginBottom: '5px !important',
+            }}
+          >
+            {plan.credits} credits included
+          </Text>
+        </Tooltip>
+      ) : (
+        <Text>{plan.credits} credits included</Text>
+      ))}
     {plan.additionalCreditsCost ? (
       <Text size={2} color="#4E3BB0" css={{ textAlign: 'center' }}>
         Need more? ${plan.additionalCreditsCost} $/cr

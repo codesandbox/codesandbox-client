@@ -104,6 +104,7 @@ export type PricingPlan = {
   name: string;
   price: number | string;
   credits: number;
+  creditsNote?: string;
   additionalCreditsCost: number | null;
   highestVM: VMType;
   listedFeatures: string[];
@@ -136,6 +137,7 @@ export const UBB_FREE_PLAN: PricingPlan = {
   name: 'Free',
   price: 0,
   credits: 400,
+  creditsNote: 'Ideal for hobbyists using Devboxes up to 40 hours a month.',
   additionalCreditsCost: null,
   highestVM: 'vm-2',
   listedFeatures: [
@@ -152,6 +154,8 @@ export const UBB_FLEX_PLAN: PricingPlan = {
   name: 'Flex',
   price: 9,
   credits: 900,
+  creditsNote:
+    'Ideal to get started with cloud development and understand your usage needs.',
   additionalCreditsCost: 0.018,
   highestVM: 'vm-4',
   listedFeatures: ['20 members', '30 GB storage', '50 Sandboxes'],
@@ -162,6 +166,8 @@ export const UBB_STANDARD_PLAN: PricingPlan = {
   name: 'Team',
   price: 45,
   credits: 6400,
+  creditsNote:
+    'Ideal for teams of 5-10 people using Devboxes 2 hours a day, each.',
   additionalCreditsCost: 0.018,
   highestVM: 'vm-4',
   listedFeatures: ['20 members', '50 GB storage', '100 Sandboxes'],
@@ -172,6 +178,8 @@ export const UBB_GROWTH_PLAN: PricingPlan = {
   name: 'Growth',
   price: 249,
   credits: 22400,
+  creditsNote:
+    'Ideal for teams of 11-20 people using Devboxes 2 hours a day, each.',
   additionalCreditsCost: 0.018,
   highestVM: 'vm-4',
   listedFeatures: ['20 members', '50 GB storage', '500 Sandboxes'],
