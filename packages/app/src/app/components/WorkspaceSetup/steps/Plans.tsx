@@ -278,6 +278,13 @@ const GridCell = styled(Stack)`
 
 const GridCellDetails = styled(GridCell)`
   height: 100px;
+  text-align: center;
+  line-height: 1.4;
+  small {
+    font-size: 12px;
+    color: #a6a6a6;
+    padding-top: 4px;
+  }
 `;
 
 const HorizontalScroller = styled(Element)`
@@ -590,13 +597,36 @@ export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
         />
         <FeatureComparisonNumbersRow
           title="Sandboxes"
-          description="Maximum number of sandboxes in the workspace."
+          description={
+            <>
+              The maximum number of Sandboxes in a workspace. <br />
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://codesandbox.io/docs/learn/devboxes/editors?tab=sandbox"
+              >
+                Learn more about Sandboxes.
+              </a>
+            </>
+          }
           plans={plans}
           property="sandboxes"
         />
         <FeatureComparisonNumbersRow
           title="Devboxes"
-          description="Maximum number of devboxes in the workspace."
+          description={
+            <>
+              The maximum number of Devboxes in a workspace.
+              <br />
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://codesandbox.io/docs/learn/devboxes/editors?tab=devbox"
+              >
+                Learn more about Devboxes.
+              </a>
+            </>
+          }
           plans={plans}
           property="devboxes"
         />
@@ -605,6 +635,18 @@ export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           description="Maximum number of repositories that can be imported in the workspace."
           plans={plans}
           property="repositories"
+        />
+        <FeatureComparisonNumbersRow
+          title="Virtual machines"
+          description="Specs for the best virtual machines that can be used."
+          plans={plans}
+          property="vmType"
+        />
+        <FeatureComparisonBooleanRow
+          title="Private projects"
+          description="Restrict access to your Sandboxes, Devboxes or repositories."
+          plans={plans}
+          property="privateProject"
         />
         <FeatureComparisonBooleanRow
           title="Shareable links"
@@ -619,17 +661,18 @@ export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           property="liveSessions"
         />
         <FeatureComparisonBooleanRow
-          title="Private NPM"
-          description="Use private npm packages from your own custom registry."
-          plans={plans}
-          property="privateNPM"
-        />
-        <FeatureComparisonBooleanRow
           title="API access"
           description="Automatically create, share and delete sandboxes and branches."
           plans={plans}
           property="apiAccess"
         />
+        <FeatureComparisonBooleanRow
+          title="Private NPM"
+          description="Use private npm packages from your own custom registry."
+          plans={plans}
+          property="privateNPM"
+        />
+
         <FeatureComparisonBooleanRow
           title="Protected previews"
           description="Protect who can view your dev server preview. (Coming soon)."
@@ -638,7 +681,7 @@ export const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
         />
         <FeatureComparisonBooleanRow
           title="SSO"
-          description="SSO support for Okta and more."
+          description="Single Sign-On support for Okta and more."
           plans={plans}
           property="sso"
         />
@@ -665,7 +708,7 @@ type FeatureComparisonRowProps = {
   plans: PricingPlanFeatures[];
   property: keyof PricingPlanFeatures;
   title: string;
-  description: string;
+  description: React.ReactNode;
 };
 
 const FeatureComparisonNumbersRow: React.FC<FeatureComparisonRowProps> = ({
@@ -679,15 +722,24 @@ const FeatureComparisonNumbersRow: React.FC<FeatureComparisonRowProps> = ({
       <Text weight="medium" size={5}>
         {title}
       </Text>
-      <Text size={3} color="#999">
+      <Text
+        size={3}
+        color="#999"
+        css={{ a: { color: '#DCF76E', textDecoration: 'none' } }}
+      >
         {description}
       </Text>
     </GridCellDetails>
 
     {plans.map(p => (
-      <GridCellDetails key={p.id}>
-        {p[property] === Number.MAX_SAFE_INTEGER ? 'Unlimited' : p[property]}
-      </GridCellDetails>
+      <GridCellDetails
+        key={p.id}
+        dangerouslySetInnerHTML={{
+          // @ts-ignore
+          __html:
+            p[property] === Number.MAX_SAFE_INTEGER ? 'Unlimited' : p[property],
+        }}
+      />
     ))}
   </>
 );

@@ -116,9 +116,11 @@ export type PricingPlanFeatures = {
   name: string;
   members: number;
   storage: string;
-  sandboxes: number;
+  sandboxes: string | number;
   devboxes: number;
   repositories: number;
+  vmType: string;
+  privateProject: boolean;
   shareableLinks: boolean;
   privateNPM: boolean;
   liveSessions: boolean;
@@ -214,10 +216,12 @@ export const UBB_FREE_FEATURES: PricingPlanFeatures = {
   sandboxes: 20,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  vmType: `4 vCPUs<br/>8 GB RAM`,
+  privateProject: true,
   shareableLinks: true,
   privateNPM: false,
-  liveSessions: false,
-  apiAccess: false,
+  liveSessions: true,
+  apiAccess: true,
   protectedPreviews: false,
   sso: false,
   privateCloud: false,
@@ -228,14 +232,24 @@ export const UBB_PRO_FEATURES: PricingPlanFeatures = {
   id: 'pro',
   name: 'Pro',
   members: 20,
-  storage: '30 GB',
-  sandboxes: 50,
+  storage: `Flex: 30 GB<br/>
+Team: 50 GB<br/>
+Growth: 50 GB<br/>
+  
+  <small>+20 GB for $12 per month</small>`,
+  sandboxes: `Flex: 50<br/>
+Team: 100<br/>
+Growth: 500<br/>
+
+<small>+50 more for $9 per month</small>`,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  vmType: `16 vCPUs<br />32 GB RAM`,
+  privateProject: true,
   shareableLinks: true,
   privateNPM: true,
   liveSessions: true,
-  apiAccess: false,
+  apiAccess: true,
   protectedPreviews: false,
   sso: false,
   privateCloud: false,
@@ -246,10 +260,12 @@ export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
   id: 'enterprise',
   name: 'Enterprise',
   members: Number.MAX_SAFE_INTEGER,
-  storage: '50 GB',
-  sandboxes: 500,
+  storage: 'Custom',
+  sandboxes: 'Custom',
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  vmType: `64 vCPUs<br/>128 GB RAM`,
+  privateProject: true,
   shareableLinks: true,
   privateNPM: true,
   liveSessions: true,
