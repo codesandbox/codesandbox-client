@@ -65,9 +65,10 @@ export const SandboxLimitation: React.FC = () => {
 
   return (
     <MessageStripe
-      variant={hasOver20Sandboxes ? 'warning' : 'neutral'}
+      variant={hasOver20Sandboxes ? 'warning' : 'info'}
       corners="straight"
       onDismiss={handleDismiss}
+      justify="center"
     >
       {buildCopy()}
       {buildAction()}

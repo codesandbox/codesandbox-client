@@ -9,14 +9,14 @@ import { IconButton } from '../IconButton';
 
 type ButtonVariant = React.ComponentProps<typeof Button>['variant'];
 
-type Variant = 'trial' | 'warning' | 'primary' | 'neutral';
+type Variant = 'trial' | 'warning' | 'primary' | 'info';
 type Corners = 'rounded' | 'straight';
 
 const mapActionVariant: Record<Variant, ButtonVariant> = {
   trial: 'light',
   warning: 'dark',
   primary: 'dark',
-  neutral: 'ghost',
+  info: 'dark',
 };
 
 interface MessageActionProps
@@ -58,14 +58,14 @@ const backgroundVariants: Record<Variant, string> = {
   trial: '#644ED7',
   warning: '#F7CC66',
   primary: 'button.background',
-  neutral: '#252525',
+  info: '#7DA1F9',
 };
 
 const colorVariants: Record<Variant, string> = {
   trial: 'inherit',
   warning: '#0E0E0E',
   primary: 'button.foreground',
-  neutral: '#f5f5f5',
+  info: '#0E0E0E',
 };
 
 interface MessageStripeProps {
@@ -103,7 +103,7 @@ const MessageStripe = ({
     }
 
     return (
-      <Text size={13} css={{ flexGrow: 1 }} lineHeight="16px">
+      <Text size={13} lineHeight="16px">
         {child}
       </Text>
     );
