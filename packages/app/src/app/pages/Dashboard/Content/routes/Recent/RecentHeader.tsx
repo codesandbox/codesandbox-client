@@ -7,6 +7,7 @@ import {
 } from 'app/components/Create/utils/constants';
 import { UBBBetaBanner } from 'app/components/UBBBetaBanner';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
+import { useDismissible } from 'app/hooks';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
@@ -19,12 +20,19 @@ import React from 'react';
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
   const { ubbBeta } = useWorkspaceFeatureFlags();
+  const [isBannerDismissed] = useDismissible('DASHBOARD_UBB_BETA_WELCOME');
 
   return (
     <Stack direction="vertical" gap={8}>
-      {ubbBeta && <UBBBetaBanner />}
+      {!isBannerDismissed && ubbBeta && <UBBBetaBanner />}
 
-      {ubbBeta ? <UbbUpgradeBanner /> : <UpgradeBanner />}
+      {ubbBeta ? (
+        isBannerDismissed ? (
+          <UbbUpgradeBanner />
+        ) : null
+      ) : (
+        <UpgradeBanner />
+      )}
 
       <Text
         as="h1"
