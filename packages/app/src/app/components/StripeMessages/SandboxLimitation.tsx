@@ -4,12 +4,15 @@ import { MessageStripe } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useScopedPersistedState } from 'app/hooks/usePersistedState';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
 const SANDBOX_INCREASE_LIMIT_REQUEST_FORM =
   'https://webforms.pipedrive.com/f/cB3DfL4Vg41gVPKuA6MLRpr8YI6L8KCzxiulfpjgnBdFBxa4xkJpqMSE6g8yHTjjtF';
-const SANDBOX_LIMIT_ANNOUNCEMENT = 'https://www.codesandbox.community/c/api-billing-updates/upcoming-pricing-billing-changes';
+const SANDBOX_LIMIT_ANNOUNCEMENT =
+  'https://www.codesandbox.community/c/api-billing-updates/upcoming-pricing-billing-changes';
 
 export const SandboxLimitation: React.FC = () => {
+  const { ubbBeta } = useWorkspaceFeatureFlags();
   const { activeTeam } = useAppState();
   const { hasOver20Sandboxes, hasOver200Sandboxes } = useWorkspaceLimits();
   const [
@@ -20,6 +23,10 @@ export const SandboxLimitation: React.FC = () => {
   const handleDismiss = () => {
     setSandboxBannerDismissed(true);
   };
+
+  if (ubbBeta) {
+    return null;
+  }
 
   const buildCopy = () => {
     if (hasOver200Sandboxes) {
