@@ -1,10 +1,12 @@
 import * as React from 'react';
 
+import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import { Banner, Button, Stack, Text, Icon } from '@codesandbox/components';
 
 import { useDismissible } from 'app/hooks';
 import { Link } from 'react-router-dom';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
+import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 
 export const UBBBetaWelcomeBanner: React.FC = () => {
   const [isBannerDismissed, dismissBanner] = useDismissible(
@@ -55,6 +57,9 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
 };
 
 const StyledFeatures: React.FC = () => {
+  const { getQueryParam } = useURLSearchParams();
+  const workspaceId = getQueryParam('workspace');
+
   return (
     <Stack
       gap={6}
@@ -76,7 +81,9 @@ const StyledFeatures: React.FC = () => {
         <Icon css={{ flexShrink: 0, color: '#C2C2C2' }} name="server" />
         <Text css={{ color: '#999' }} size={3}>
           Customize Virtual Machine specs through the new{' '}
-          <Link to="TODO">customer portal.</Link>
+          <Link to={dashboardURLs.portalRelativePath(workspaceId)}>
+            customer portal.
+          </Link>
         </Text>
       </Stack>
 
