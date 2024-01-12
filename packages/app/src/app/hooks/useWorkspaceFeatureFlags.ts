@@ -18,6 +18,6 @@ export const useWorkspaceFeatureFlags = (): FeatureFlags => {
   }
 
   return {
-    ubbBeta: activeTeamInfo.featureFlags.ubbBeta,
+    ubbBeta: !activeTeamInfo.featureFlags.ubbBeta,
   };
 };

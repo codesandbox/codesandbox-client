@@ -5,6 +5,7 @@ import {
   IMPORT_BUTTON_DESCRIPTION,
   SANDBOX_BUTTON_DESCRIPTION,
 } from 'app/components/Create/utils/constants';
+import { UBBBetaBanner } from 'app/components/UBBBetaBanner';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useActions } from 'app/overmind';
@@ -21,6 +22,8 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
 
   return (
     <Stack direction="vertical" gap={8}>
+      {ubbBeta && <UBBBetaBanner />}
+
       {ubbBeta ? <UbbUpgradeBanner /> : <UpgradeBanner />}
 
       <Text
