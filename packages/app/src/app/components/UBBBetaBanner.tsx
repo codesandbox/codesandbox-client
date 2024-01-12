@@ -1,16 +1,10 @@
 import * as React from 'react';
 
-import {
-  Banner,
-  Button,
-  Stack,
-  Text,
-  Icon,
-  IconNames,
-} from '@codesandbox/components';
+import { Banner, Button, Stack, Text, Icon } from '@codesandbox/components';
 
 import { useDismissible } from 'app/hooks';
 import { Link } from 'react-router-dom';
+import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 
 export const UBBBetaBanner: React.FC = () => {
   const [isBannerDismissed, dismissBanner] = useDismissible(
@@ -42,8 +36,17 @@ export const UBBBetaBanner: React.FC = () => {
           marginTop: '24px',
         }}
       >
-        <Button autoWidth>Learn more</Button>
-        <Button autoWidth variant="ghost">
+        <Button
+          target="_blank"
+          autoWidth
+          onClick={() => {
+            window.open(SUBSCRIPTION_DOCS_URLS.teams.non_trial);
+            dismissBanner();
+          }}
+        >
+          Learn more
+        </Button>
+        <Button autoWidth variant="ghost" onClick={dismissBanner}>
           Dismiss
         </Button>
       </Stack>
