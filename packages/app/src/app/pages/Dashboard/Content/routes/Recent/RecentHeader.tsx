@@ -5,7 +5,7 @@ import {
   IMPORT_BUTTON_DESCRIPTION,
   SANDBOX_BUTTON_DESCRIPTION,
 } from 'app/components/Create/utils/constants';
-import { UBBBetaBanner } from 'app/components/UBBBetaBanner';
+import { UBBBetaWelcomeBanner } from 'app/components/UBBBetaWelcomeBanner';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
 import { useDismissible } from 'app/hooks';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
@@ -20,14 +20,14 @@ import React from 'react';
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
   const { ubbBeta } = useWorkspaceFeatureFlags();
-  const [isBannerDismissed] = useDismissible('DASHBOARD_UBB_BETA_WELCOME');
+  const [welcomeBannerDismissed] = useDismissible('DASHBOARD_UBB_BETA_WELCOME');
 
   return (
     <Stack direction="vertical" gap={8}>
-      {!isBannerDismissed && ubbBeta && <UBBBetaBanner />}
+      {!welcomeBannerDismissed && ubbBeta && <UBBBetaWelcomeBanner />}
 
       {ubbBeta ? (
-        isBannerDismissed ? (
+        welcomeBannerDismissed ? (
           <UbbUpgradeBanner />
         ) : null
       ) : (

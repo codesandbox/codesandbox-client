@@ -6,7 +6,7 @@ import { useDismissible } from 'app/hooks';
 import { Link } from 'react-router-dom';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 
-export const UBBBetaBanner: React.FC = () => {
+export const UBBBetaWelcomeBanner: React.FC = () => {
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_UBB_BETA_WELCOME'
   );
@@ -31,7 +31,7 @@ export const UBBBetaBanner: React.FC = () => {
 
       <Stack
         align="center"
-        gap={6}
+        gap={2}
         css={{
           marginTop: '24px',
         }}
