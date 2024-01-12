@@ -19,21 +19,10 @@ import React from 'react';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-  const [welcomeBannerDismissed] = useDismissible('DASHBOARD_UBB_BETA_WELCOME');
 
   return (
     <Stack direction="vertical" gap={8}>
-      {!welcomeBannerDismissed && ubbBeta && <UBBBetaWelcomeBanner />}
-
-      {ubbBeta ? (
-        welcomeBannerDismissed ? (
-          <UbbUpgradeBanner />
-        ) : null
-      ) : (
-        <UpgradeBanner />
-      )}
-
+      <TopBanner />
       <Text
         as="h1"
         css={{
@@ -105,4 +94,19 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       </Stack>
     </Stack>
   );
+};
+
+const TopBanner = () => {
+  const { ubbBeta } = useWorkspaceFeatureFlags();
+  const [welcomeBannerDismissed] = useDismissible('DASHBOARD_UBB_BETA_WELCOME');
+
+  if (ubbBeta) {
+    if (welcomeBannerDismissed) {
+      return <UbbUpgradeBanner />;
+    }
+
+    return <UBBBetaWelcomeBanner />;
+  }
+
+  return <UpgradeBanner />;
 };
