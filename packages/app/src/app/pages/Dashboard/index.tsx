@@ -24,6 +24,8 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { useScopedPersistedState } from 'app/hooks/usePersistedState';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { UsageLimitMessageStripe } from 'app/components/StripeMessages/UsageLimitMessageStripe';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
@@ -48,6 +50,7 @@ export const Dashboard: FunctionComponent = () => {
   const actions = useActions();
   const effects = useEffects();
   const { subscription, isFree } = useWorkspaceSubscription();
+  const { showUsageLimitBanner } = useWorkspaceLimits();
   const { trackVisit } = useDashboardVisit();
   const [
     showTrialWithoutPaymentInfoBanner,
@@ -109,7 +112,8 @@ export const Dashboard: FunctionComponent = () => {
   const hasTopBarBanner =
     showTrialWithoutPaymentInfoBanner ||
     hasUnpaidSubscription ||
-    showSandboxLimitationBanner;
+    showSandboxLimitationBanner ||
+    showUsageLimitBanner;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -160,7 +164,8 @@ export const Dashboard: FunctionComponent = () => {
         >
           <SkipNav.Link />
           {hasUnpaidSubscription && <PaymentPending />}
-          {isFree && <SandboxLimitation />}
+          {showSandboxLimitationBanner && <SandboxLimitation />}
+          {showUsageLimitBanner && <UsageLimitMessageStripe />}
           {showTrialWithoutPaymentInfoBanner && (
             <TrialWithoutPaymentInfo
               onDismiss={dismissTrialWithoutPaymentInfoBanner}

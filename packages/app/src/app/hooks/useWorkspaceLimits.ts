@@ -1,38 +1,10 @@
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
-import { folder, useControls } from 'leva';
-import {
-  SubscriptionDebugStatus,
-  useWorkspaceSubscription,
-} from './useWorkspaceSubscription';
+import { useWorkspaceSubscription } from './useWorkspaceSubscription';
 
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const { activeTeamInfo } = useAppState();
-  const { isFree } = useWorkspaceSubscription();
-  const debugLimits = useControls('Limits', {
-    debugLimits: folder(
-      {
-        restrictEditors: { label: 'Restrict editors', value: false },
-        hasMaxPublicRepositories: {
-          label: 'Restrict public repos',
-          value: false,
-        },
-        hasMaxPrivateRepositories: {
-          label: 'Restrict private repos',
-          value: false,
-        },
-        hasMaxPublicSandboxes: {
-          label: 'Restrict public sandboxes',
-          value: false,
-        },
-      },
-      {
-        render: get =>
-          get('Subscription.debugStatus') ===
-          SubscriptionDebugStatus.NO_SUBSCRIPTION,
-      }
-    ),
-  });
+  const { isFree, isPro } = useWorkspaceSubscription();
 
   if (!activeTeamInfo) {
     return {
@@ -41,10 +13,16 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       numberOfEditorsIsOverTheLimit: undefined,
       hasOver20Sandboxes: undefined,
       hasOver200Sandboxes: undefined,
+      isOutOfCredits: undefined,
+      isCloseToOutOfCredits: undefined,
+      isAtSpendingLimit: undefined,
+      isCloseToSpendingLimit: undefined,
+      showUsageLimitBanner: undefined,
+      isFrozen: undefined,
     };
   }
 
-  const { userAuthorizations, limits, usage } = activeTeamInfo;
+  const { userAuthorizations, limits, usage, frozen } = activeTeamInfo;
 
   const editorOrAdminAuthorizations = userAuthorizations?.filter(
     ({ authorization }) =>
@@ -55,19 +33,23 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const numberOfEditors = editorOrAdminAuthorizations?.length || 1;
 
   const hasMaxNumberOfEditors =
-    debugLimits?.restrictEditors ||
-    (isFree === true && numberOfEditors === limits.maxEditors);
+    isFree === true && numberOfEditors === limits.maxEditors;
 
   const numberOfEditorsIsOverTheLimit =
-    debugLimits?.restrictEditors ||
-    (isFree === true &&
-      limits.maxEditors !== null &&
-      numberOfEditors > limits.maxEditors);
+    isFree === true &&
+    limits.maxEditors !== null &&
+    numberOfEditors > limits.maxEditors;
 
   const publicSandboxesQuantity = usage.publicSandboxesQuantity;
 
   const hasOver20Sandboxes = isFree === true && publicSandboxesQuantity > 20;
   const hasOver200Sandboxes = isFree === true && publicSandboxesQuantity > 200;
+
+  const isOutOfCredits = isFree === true && frozen;
+  const isCloseToOutOfCredits =
+    isFree === true && !frozen && usage.credits > 350; // Random pick for now
+  const isAtSpendingLimit = isPro === true && frozen; // TODO
+  const isCloseToSpendingLimit = false; // TODO
 
   return {
     numberOfEditors,
@@ -75,6 +57,16 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     numberOfEditorsIsOverTheLimit,
     hasOver20Sandboxes,
     hasOver200Sandboxes,
+    isOutOfCredits,
+    isCloseToOutOfCredits,
+    isAtSpendingLimit,
+    isCloseToSpendingLimit,
+    showUsageLimitBanner:
+      isOutOfCredits ||
+      isCloseToOutOfCredits ||
+      isAtSpendingLimit ||
+      isCloseToSpendingLimit,
+    isFrozen: frozen,
   };
 };
 
@@ -85,6 +77,12 @@ export type WorkspaceLimitsReturn =
       numberOfEditorsIsOverTheLimit: undefined;
       hasOver20Sandboxes: undefined;
       hasOver200Sandboxes: undefined;
+      isOutOfCredits: undefined;
+      isCloseToOutOfCredits: undefined;
+      isAtSpendingLimit: undefined;
+      isCloseToSpendingLimit: undefined;
+      showUsageLimitBanner: undefined;
+      isFrozen: undefined;
     }
   | {
       numberOfEditors: number;
@@ -92,4 +90,10 @@ export type WorkspaceLimitsReturn =
       numberOfEditorsIsOverTheLimit: boolean;
       hasOver20Sandboxes: boolean;
       hasOver200Sandboxes: boolean;
+      isOutOfCredits: boolean;
+      isCloseToOutOfCredits: boolean;
+      isAtSpendingLimit: boolean;
+      isCloseToSpendingLimit: boolean;
+      showUsageLimitBanner: boolean;
+      isFrozen: boolean;
     };

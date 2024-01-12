@@ -4522,6 +4522,7 @@ export type TeamFragmentDashboardFragment = {
   creatorId: any | null;
   avatarUrl: string | null;
   legacy: boolean;
+  frozen: boolean;
   settings: {
     __typename?: 'WorkspaceSandboxSettings';
     minimumPrivacy: number;
@@ -4566,6 +4567,7 @@ export type CurrentTeamInfoFragmentFragment = {
   type: TeamType;
   avatarUrl: string | null;
   legacy: boolean;
+  frozen: boolean;
   users: Array<{
     __typename?: 'User';
     id: any;
@@ -4632,6 +4634,7 @@ export type CurrentTeamInfoFragmentFragment = {
     privateSandboxesQuantity: number;
     publicProjectsQuantity: number;
     publicSandboxesQuantity: number;
+    credits: number;
   };
   featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
 };
@@ -4743,6 +4746,7 @@ export type _CreateTeamMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5104,6 +5108,7 @@ export type _RemoveFromTeamMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5157,6 +5162,7 @@ export type _InviteToTeamMutation = {
     type: TeamType;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     users: Array<{
       __typename?: 'User';
       id: any;
@@ -5223,6 +5229,7 @@ export type _InviteToTeamMutation = {
       privateSandboxesQuantity: number;
       publicProjectsQuantity: number;
       publicSandboxesQuantity: number;
+      credits: number;
     };
     featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
@@ -5256,6 +5263,7 @@ export type _RevokeTeamInvitationMutation = {
     type: TeamType;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     users: Array<{
       __typename?: 'User';
       id: any;
@@ -5322,6 +5330,7 @@ export type _RevokeTeamInvitationMutation = {
       privateSandboxesQuantity: number;
       publicProjectsQuantity: number;
       publicSandboxesQuantity: number;
+      credits: number;
     };
     featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
   };
@@ -5342,6 +5351,7 @@ export type _AcceptTeamInvitationMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5402,6 +5412,7 @@ export type _SetTeamDescriptionMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5471,6 +5482,7 @@ export type _SetTeamNameMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -6391,6 +6403,7 @@ export type AllTeamsQuery = {
       creatorId: any | null;
       avatarUrl: string | null;
       legacy: boolean;
+      frozen: boolean;
       settings: {
         __typename?: 'WorkspaceSandboxSettings';
         minimumPrivacy: number;
@@ -7150,6 +7163,7 @@ export type GetTeamQuery = {
       type: TeamType;
       avatarUrl: string | null;
       legacy: boolean;
+      frozen: boolean;
       users: Array<{
         __typename?: 'User';
         id: any;
@@ -7216,6 +7230,7 @@ export type GetTeamQuery = {
         privateSandboxesQuantity: number;
         publicProjectsQuantity: number;
         publicSandboxesQuantity: number;
+        credits: number;
       };
       featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
     } | null;

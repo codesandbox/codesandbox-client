@@ -9,12 +9,13 @@ import { IconButton } from '../IconButton';
 
 type ButtonVariant = React.ComponentProps<typeof Button>['variant'];
 
-type Variant = 'trial' | 'warning' | 'primary' | 'info';
+type Variant = 'trial' | 'warning' | 'error' | 'primary' | 'info';
 type Corners = 'rounded' | 'straight';
 
 const mapActionVariant: Record<Variant, ButtonVariant> = {
   trial: 'light',
   warning: 'dark',
+  error: 'dark',
   primary: 'dark',
   info: 'dark',
 };
@@ -57,6 +58,7 @@ export const MessageMultiActions = ({
 const backgroundVariants: Record<Variant, string> = {
   trial: '#644ED7',
   warning: '#F7CC66',
+  error: '#F9CDCD',
   primary: 'button.background',
   info: '#7DA1F9',
 };
@@ -64,6 +66,7 @@ const backgroundVariants: Record<Variant, string> = {
 const colorVariants: Record<Variant, string> = {
   trial: 'inherit',
   warning: '#0E0E0E',
+  error: '#0E0E0E',
   primary: 'button.foreground',
   info: '#0E0E0E',
 };

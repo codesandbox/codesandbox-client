@@ -123,6 +123,7 @@ export const teamFragmentDashboard = gql`
     creatorId
     avatarUrl
     legacy
+    frozen
     settings {
       minimumPrivacy
     }
@@ -170,6 +171,7 @@ export const currentTeamInfoFragment = gql`
     type
     avatarUrl
     legacy
+    frozen
     users {
       id
       avatarUrl
@@ -234,6 +236,7 @@ export const currentTeamInfoFragment = gql`
       privateSandboxesQuantity
       publicProjectsQuantity
       publicSandboxesQuantity
+      credits
     }
 
     featureFlags {
