@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Element, Stack, Text } from '@codesandbox/components';
-import { useAppState } from 'app/overmind';
-import { Branch } from 'app/pages/Dashboard/Components/Branch';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { useActions, useAppState } from 'app/overmind';
 import { ViewOptions } from 'app/pages/Dashboard/Components/Filters/ViewOptions';
 import { Sandbox } from 'app/pages/Dashboard/Components/Sandbox';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
@@ -22,6 +22,8 @@ import {
 } from 'app/pages/Dashboard/types';
 
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
+import { Branch } from 'app/pages/Dashboard/Components/Branch';
+import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { DocumentationRow } from './DocumentationRow';
 import { RecentHeader } from './RecentHeader';
 
@@ -104,14 +106,78 @@ export const RecentContent: React.FC<RecentContentProps> = ({
     environment: { isOnPrem },
     dashboard: { viewMode },
   } = useAppState();
+  const actions = useActions();
   const { restrictsPublicRepos } = useGitHubPermissions();
   const page: PageTypes = 'recent';
   const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
   const showDocsLine = !isOnPrem;
+  const branches = recentItems.filter(
+    item => item.type === 'branch'
+  ) as DashboardBranch[];
+
+  const uniqueRecentRepos = branches
+    .map(br => ({
+      owner: br.branch.project.repository.owner,
+      name: br.branch.project.repository.name,
+      default: br.branch.project.repository.defaultBranch,
+    }))
+    .reduce((acc, repo) => {
+      if (!acc.some(r => r.owner === repo.owner && r.name === repo.name)) {
+        acc.push(repo);
+      }
+      return acc;
+    }, [] as { owner: string; name: string; default: string }[]);
 
   return (
     <StyledWrapper>
       <RecentHeader title="Recent" />
+      {uniqueRecentRepos.length > 0 && (
+        <Stack direction="vertical" gap={4}>
+          <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
+            Create a new branch
+          </Text>
+
+          <StyledItemsWrapper as="ul" viewMode={viewMode}>
+            {uniqueRecentRepos.map(repo => {
+              return (
+                <Stack
+                  as="li"
+                  css={{ '> *': { width: '100%' } }}
+                  key={`${repo.owner}/${repo.name}`}
+                >
+                  <ActionCard
+                    onClick={evt => {
+                      track('Recent Page - Create new branch', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                      actions.dashboard.createDraftBranch({
+                        owner: repo.owner,
+                        name: repo.name,
+                        teamId: activeTeam,
+                        openInNewTab: evt.ctrlKey || evt.metaKey,
+                      });
+                    }}
+                    icon="branch"
+                  >
+                    <Stack gap={1} direction="vertical">
+                      <Text truncate color="#e5e5e5" weight="500">
+                        {repo.name}
+                      </Text>
+                      <Text>
+                        Create new branch from{' '}
+                        <Text color="#e5e5e5" weight="500">
+                          {repo.default}
+                        </Text>
+                      </Text>
+                    </Stack>
+                  </ActionCard>
+                </Stack>
+              );
+            })}
+          </StyledItemsWrapper>
+        </Stack>
+      )}
       <Stack direction="vertical" gap={4}>
         <Stack justify="space-between">
           <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
