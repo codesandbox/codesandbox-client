@@ -2379,7 +2379,12 @@ export const forkGitHubRepository = async (
 
 export const createDraftBranch = async (
   { state, effects }: Context,
-  { owner, name, teamId }: { owner: string; name: string; teamId: string }
+  {
+    owner,
+    name,
+    teamId,
+    openInNewTab,
+  }: { owner: string; name: string; teamId: string; openInNewTab: string }
 ) => {
   if (state.dashboard.creatingBranch) {
     return;
@@ -2395,13 +2400,18 @@ export const createDraftBranch = async (
     });
 
     const branchName = response.createBranch.name;
-
-    window.location.href = v2BranchUrl({
+    const branchUrl = v2BranchUrl({
       workspaceId: teamId,
       owner,
       repoName: name,
       branchName,
     });
+
+    if (openInNewTab) {
+      window.open(branchUrl);
+    } else {
+      window.location.href = branchUrl;
+    }
   } catch (error) {
     notificationState.addNotification({
       message: JSON.stringify(error),

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Element, Stack, Text } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions, useAppState } from 'app/overmind';
 import { ViewOptions } from 'app/pages/Dashboard/Components/Filters/ViewOptions';
 import { Sandbox } from 'app/pages/Dashboard/Components/Sandbox';
@@ -133,7 +134,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
       {uniqueRecentRepos.length > 0 && (
         <Stack direction="vertical" gap={4}>
           <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
-            Create new branch
+            Create a new branch
           </Text>
 
           <StyledItemsWrapper as="ul" viewMode={viewMode}>
@@ -145,11 +146,16 @@ export const RecentContent: React.FC<RecentContentProps> = ({
                   key={`${repo.owner}/${repo.name}`}
                 >
                   <ActionCard
-                    onClick={() => {
+                    onClick={evt => {
+                      track('Recent Page - Create new branch', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
                       actions.dashboard.createDraftBranch({
                         owner: repo.owner,
                         name: repo.name,
                         teamId: activeTeam,
+                        openInNewTab: evt.ctrlKey || evt.metaKey,
                       });
                     }}
                     icon="branch"

@@ -38,7 +38,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       </Text>
       <Stack direction="vertical" gap={4}>
         <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
-          Start something new
+          Start a new project
         </Text>
         <EmptyPage.StyledGrid
           css={{
