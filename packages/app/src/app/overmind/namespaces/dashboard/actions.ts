@@ -2383,8 +2383,8 @@ export const createDraftBranch = async (
     owner,
     name,
     teamId,
-    openInNewTab,
-  }: { owner: string; name: string; teamId: string; openInNewTab: string }
+    openInNewTab = false,
+  }: { owner: string; name: string; teamId: string; openInNewTab?: boolean }
 ) => {
   if (state.dashboard.creatingBranch) {
     return;
