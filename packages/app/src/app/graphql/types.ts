@@ -1831,6 +1831,13 @@ export type RootMutationType = {
    * this mutation is a no-op. Returns an error if no live session exists.
    */
   joinLiveSession: LiveSession;
+  /**
+   * Join the usage-based billing beta on-demand
+   *
+   * This mutation requires the caller to be an admin of the team. Otherwise, an error will be
+   * returned `"Not an admin"`. The return value will always be `true`.
+   */
+  joinUsageBillingBeta: Scalars['Boolean'];
   /** Leave a team */
   leaveTeam: Scalars['String'];
   /** Make templates from sandboxes */
@@ -2256,6 +2263,10 @@ export type RootMutationTypeInviteToTeamViaEmailArgs = {
 
 export type RootMutationTypeJoinLiveSessionArgs = {
   id: Scalars['ID'];
+};
+
+export type RootMutationTypeJoinUsageBillingBetaArgs = {
+  teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeLeaveTeamArgs = {

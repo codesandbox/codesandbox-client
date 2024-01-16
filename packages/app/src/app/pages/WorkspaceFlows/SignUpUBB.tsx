@@ -9,7 +9,7 @@ import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
-export const UpgradeWorkspace = () => {
+export const SignUpUBB = () => {
   const { hasLogIn } = useAppState();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
@@ -46,7 +46,7 @@ export const UpgradeWorkspace = () => {
     );
   }
 
-  if ((workspaceId && ubbBeta === false) || isAdmin === false) {
+  if ((workspaceId && ubbBeta === true) || isAdmin === false) {
     // Page was accessed with a non-ubb workspace id
     return <Redirect to={dashboardUrls.recent(workspaceId)} />;
   }
@@ -55,9 +55,9 @@ export const UpgradeWorkspace = () => {
     <WorkspaceSetup
       steps={steps}
       onComplete={() => {
-        // If the flow is actually completed with a stripe checkout
-        // the redirect is handled by stripe so this is just for early exit
-        history.push(dashboardUrls.recent(workspaceId));
+        // Since the sign up for ubb can be completed with choosing the free plan,
+        // The app is reloaded to ensure feature flag is updated in the workspace
+        window.location.href = dashboardUrls.recent(workspaceId);
       }}
       onDismiss={() => {
         history.push(dashboardUrls.recent(workspaceId));
