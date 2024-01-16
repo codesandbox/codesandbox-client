@@ -81,9 +81,9 @@ const StyledFeatures: React.FC = () => {
         <Icon css={{ flexShrink: 0, color: '#C2C2C2' }} name="server" />
         <Text css={{ color: '#999' }} size={3}>
           Customize Virtual Machine specs through the new{' '}
-          <Link to={dashboardURLs.portalRelativePath(workspaceId)}>
+          <a href={dashboardURLs.portalOverview(workspaceId)}>
             customer portal.
-          </Link>
+          </a>
         </Text>
       </Stack>
 
