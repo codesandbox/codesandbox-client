@@ -780,3 +780,9 @@ export const setTeamLimits: Query<
     )
   }
 `;
+
+export const joinUsageBillingBeta = gql`
+  mutation JoinUsageBillingBeta($teamId: UUID4!) {
+    joinUsageBillingBeta(teamId: $teamId)
+  }
+`;

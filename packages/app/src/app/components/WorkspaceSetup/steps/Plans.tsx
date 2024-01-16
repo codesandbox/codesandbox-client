@@ -26,6 +26,7 @@ import styled from 'styled-components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { VMTier, VMType } from 'app/overmind/effects/api/types';
+import { useLocation } from 'react-router-dom';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -47,7 +48,9 @@ export const Plans: React.FC<StepProps> = ({
   const actions = useActions();
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
+  const { pathname } = useLocation();
   const [tiers, setTiers] = useState<VMTier[]>([]);
+  const isSigningUpForBeta = pathname.includes('signup-beta');
 
   const tierMap = tiers.reduce((acc: Record<VMType, VMTier>, tier) => {
     acc[tier.shortid] = tier;
@@ -69,8 +72,14 @@ export const Plans: React.FC<StepProps> = ({
     }
   }, [urlWorkspaceId, activeTeam]);
 
-  const handleChoosePlan = (plan: PlanType) => {
+  const handleChoosePlan = async (plan: PlanType) => {
     setQueryParam('plan', plan);
+    if (isSigningUpForBeta) {
+      await effects.gql.mutations.joinUsageBillingBeta({
+        teamId: urlWorkspaceId,
+      });
+    }
+
     onNextStep();
   };
 
@@ -109,7 +118,15 @@ export const Plans: React.FC<StepProps> = ({
                   css={{ background: '#323232' }}
                   variant="secondary"
                   size="large"
-                  onClick={onEarlyExit}
+                  onClick={async () => {
+                    if (isSigningUpForBeta) {
+                      await effects.gql.mutations.joinUsageBillingBeta({
+                        teamId: urlWorkspaceId,
+                      });
+                    }
+
+                    onEarlyExit();
+                  }}
                 >
                   Choose Free
                 </Button>
