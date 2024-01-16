@@ -49,7 +49,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const isCloseToOutOfCredits =
     isFree === true && !frozen && usage.credits > 350; // Random pick for now
   const isAtSpendingLimit = isPro === true && frozen; // TODO
-  const isCloseToSpendingLimit = false; // TODO
+  const isCloseToSpendingLimit = true; // TODO
 
   return {
     numberOfEditors,

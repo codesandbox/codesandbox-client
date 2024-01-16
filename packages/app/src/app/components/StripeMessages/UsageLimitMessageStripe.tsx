@@ -21,7 +21,7 @@ export const UsageLimitMessageStripe: React.FC = () => {
 
   if (isOutOfCredits) {
     return (
-      <MessageStripe variant="error" justify="space-between" corners="straight">
+      <MessageStripe variant="error" corners="straight">
         <Stack direction="horizontal" gap={2}>
           <Icon name="circleBang" />
           <Text>
@@ -52,11 +52,7 @@ export const UsageLimitMessageStripe: React.FC = () => {
 
   if (isCloseToOutOfCredits) {
     return (
-      <MessageStripe
-        variant="warning"
-        justify="space-between"
-        corners="straight"
-      >
+      <MessageStripe variant="warning" corners="straight">
         <Stack direction="horizontal" gap={2}>
           <Icon name="circleBang" />
           <Text>
@@ -82,7 +78,7 @@ export const UsageLimitMessageStripe: React.FC = () => {
 
   if (isAtSpendingLimit) {
     return (
-      <MessageStripe variant="error" justify="space-between" corners="straight">
+      <MessageStripe variant="error" corners="straight">
         <Stack direction="horizontal" gap={2}>
           <Icon name="circleBang" />
           <Text>
@@ -104,16 +100,13 @@ export const UsageLimitMessageStripe: React.FC = () => {
 
   if (isCloseToSpendingLimit) {
     return (
-      <MessageStripe
-        variant="warning"
-        justify="space-between"
-        corners="straight"
-      >
+      <MessageStripe variant="warning" corners="straight">
         <Stack direction="horizontal" gap={2}>
           <Icon name="circleBang" />
           <Text>
-            <Text weight="500">Close to spending limit.</Text> Your workspace is
-            close to hitting its spending limit.{' '}
+            <Text weight="500">
+              Your workspace is close to hitting its spending limit.
+            </Text>{' '}
             {isAdmin
               ? 'To keep using CodeSandbox, increase your spending limit.'
               : 'To keep using CodeSandbox, ask an administrator to increase your spending limit.'}
