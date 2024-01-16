@@ -4,7 +4,6 @@ import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-ge
 import { Banner, Button, Stack, Text, Icon } from '@codesandbox/components';
 
 import { useDismissible } from 'app/hooks';
-import { Link } from 'react-router-dom';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 
