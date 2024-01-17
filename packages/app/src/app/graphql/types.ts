@@ -4637,6 +4637,8 @@ export type CurrentTeamInfoFragmentFragment = {
     maxPrivateSandboxes: number | null;
     maxPublicProjects: number | null;
     maxPublicSandboxes: number | null;
+    onDemandSpendingLimit: number | null;
+    onDemandCreditLimit: number | null;
   };
   usage: {
     __typename?: 'TeamUsage';
@@ -4738,8 +4740,6 @@ export type TeamLimitsFragment = {
   maxPrivateSandboxes: number | null;
   maxPublicProjects: number | null;
   maxPublicSandboxes: number | null;
-  onDemandSpendingLimit: number | null;
-  onDemandCreditLimit: number | null;
 };
 
 export type _CreateTeamMutationVariables = Exact<{
@@ -5232,6 +5232,8 @@ export type _InviteToTeamMutation = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
+      onDemandSpendingLimit: number | null;
+      onDemandCreditLimit: number | null;
     };
     usage: {
       __typename?: 'TeamUsage';
@@ -5333,6 +5335,8 @@ export type _RevokeTeamInvitationMutation = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
+      onDemandSpendingLimit: number | null;
+      onDemandCreditLimit: number | null;
     };
     usage: {
       __typename?: 'TeamUsage';
@@ -5874,6 +5878,15 @@ export type SetTeamLimitsMutationVariables = Exact<{
 export type SetTeamLimitsMutation = {
   __typename?: 'RootMutationType';
   setTeamLimits: string;
+};
+
+export type JoinUsageBillingBetaMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+}>;
+
+export type JoinUsageBillingBetaMutation = {
+  __typename?: 'RootMutationType';
+  joinUsageBillingBeta: boolean;
 };
 
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
@@ -7233,6 +7246,8 @@ export type GetTeamQuery = {
         maxPrivateSandboxes: number | null;
         maxPublicProjects: number | null;
         maxPublicSandboxes: number | null;
+        onDemandSpendingLimit: number | null;
+        onDemandCreditLimit: number | null;
       };
       usage: {
         __typename?: 'TeamUsage';
@@ -7560,8 +7575,6 @@ export type LimitsQuery = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
-      onDemandSpendingLimit: number | null;
-      onDemandCreditLimit: number | null;
     };
     personalPro: {
       __typename?: 'TeamLimits';
@@ -7570,8 +7583,6 @@ export type LimitsQuery = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
-      onDemandSpendingLimit: number | null;
-      onDemandCreditLimit: number | null;
     };
     teamFree: {
       __typename?: 'TeamLimits';
@@ -7580,8 +7591,6 @@ export type LimitsQuery = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
-      onDemandSpendingLimit: number | null;
-      onDemandCreditLimit: number | null;
     };
     teamPro: {
       __typename?: 'TeamLimits';
@@ -7590,8 +7599,6 @@ export type LimitsQuery = {
       maxPrivateSandboxes: number | null;
       maxPublicProjects: number | null;
       maxPublicSandboxes: number | null;
-      onDemandSpendingLimit: number | null;
-      onDemandCreditLimit: number | null;
     };
   };
 };

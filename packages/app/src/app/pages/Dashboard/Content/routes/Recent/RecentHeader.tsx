@@ -9,6 +9,7 @@ import { UBBBetaWelcomeBanner } from 'app/components/UBBBetaWelcomeBanner';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
 import { useDismissible } from 'app/hooks';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import {
@@ -19,6 +20,7 @@ import React from 'react';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
+  const { isFrozen } = useWorkspaceLimits();
 
   return (
     <Stack direction="vertical" gap={8}>
@@ -52,6 +54,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           <LargeCTAButton
             icon="boxRepository"
             title="Import repository"
+            disabled={isFrozen}
             subtitle={IMPORT_BUTTON_DESCRIPTION}
             onClick={() => {
               track('Recent Page - Import Repository', {
@@ -66,6 +69,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
           <LargeCTAButton
             icon="boxDevbox"
             title="Create a Devbox"
+            disabled={isFrozen}
             subtitle={DEVBOX_BUTTON_DESCRIPTION}
             onClick={() => {
               track('Recent Page - Create Devbox', {

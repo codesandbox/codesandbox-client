@@ -9,6 +9,8 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -20,6 +22,7 @@ export const SandboxesPage = () => {
   const cleanParam = currentPath.split(' ').join('{}');
   const items = useFilteredItems(currentPath, cleanParam, level);
   const actions = useActions();
+  const { isFrozen } = useWorkspaceLimits();
   const {
     dashboard: { allCollections, sandboxes },
     activeTeam,
@@ -99,9 +102,9 @@ export const SandboxesPage = () => {
       {isEmpty ? (
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledGrid>
-            <CreateCard
+            <ActionCard
               icon="boxDevbox"
-              title="Create devbox"
+              disabled={isFrozen}
               onClick={() => {
                 track('Empty Folder - Create devbox', {
                   codesandbox: 'V1',
@@ -110,10 +113,11 @@ export const SandboxesPage = () => {
 
                 actions.modalOpened({ modal: 'createDevbox' });
               }}
-            />
-            <CreateCard
+            >
+              Create devbox
+            </ActionCard>
+            <ActionCard
               icon="boxSandbox"
-              title="Create sandbox"
               onClick={() => {
                 track('Empty Folder - Create sandbox', {
                   codesandbox: 'V1',
@@ -124,7 +128,9 @@ export const SandboxesPage = () => {
 
                 actions.modalOpened({ modal: 'createSandbox' });
               }}
-            />
+            >
+              Create sandbox
+            </ActionCard>
           </EmptyPage.StyledGrid>
         </EmptyPage.StyledWrapper>
       ) : (

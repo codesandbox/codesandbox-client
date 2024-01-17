@@ -228,6 +228,8 @@ export const currentTeamInfoFragment = gql`
       maxPrivateSandboxes
       maxPublicProjects
       maxPublicSandboxes
+      onDemandSpendingLimit
+      onDemandCreditLimit
     }
 
     usage {
@@ -330,7 +332,5 @@ export const teamLimitsFragment = gql`
     maxPrivateSandboxes
     maxPublicProjects
     maxPublicSandboxes
-    onDemandSpendingLimit
-    onDemandCreditLimit
   }
 `;

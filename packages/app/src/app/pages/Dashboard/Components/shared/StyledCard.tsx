@@ -8,7 +8,7 @@ interface StyledCardProps {
 
 export const StyledCard = styled(Card)<StyledCardProps>(
   ({ dimmed, selected }) => ({
-    opacity: dimmed ? 0.5 : 1,
+    opacity: dimmed ? 0.6 : 1,
     transition: 'background ease-in-out, opacity ease-in-out',
     transitionDuration: '75ms',
     '&:hover': dimmed

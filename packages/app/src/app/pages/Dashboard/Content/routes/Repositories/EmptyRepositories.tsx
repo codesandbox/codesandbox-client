@@ -10,6 +10,8 @@ import { RestrictedImportDisclaimer } from 'app/pages/Dashboard/Components/share
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
+import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
 const DESCRIPTION =
   'Save hours every week by shortening the review cycle and empowering everyone to contribute.<br />Every branch in Repositories is connected to git and has its own sandbox running in a fast microVM.';
@@ -17,6 +19,7 @@ const DESCRIPTION =
 export const EmptyRepositories: React.FC = () => {
   const actions = useActions();
   const { restrictsPublicRepos } = useGitHubPermissions();
+  const { isFrozen } = useWorkspaceLimits();
 
   return (
     <EmptyPage.StyledWrapper
@@ -33,9 +36,9 @@ export const EmptyRepositories: React.FC = () => {
           marginTop: '16px',
         }}
       >
-        <CreateCard
+        <ActionCard
           icon="github"
-          title="Import from GitHub"
+          disabled={isFrozen}
           onClick={() => {
             track('Empty State Card - Import repository', {
               codesandbox: 'V1',
@@ -46,7 +49,9 @@ export const EmptyRepositories: React.FC = () => {
 
             actions.modalOpened({ modal: 'importRepository' });
           }}
-        />
+        >
+          Import from GitHub
+        </ActionCard>
         <ArticleCard
           title="More about repositories"
           thumbnail="/static/img/thumbnails/page_repositories.png"
@@ -64,7 +69,7 @@ export const EmptyRepositories: React.FC = () => {
       </EmptyPage.StyledGrid>
       <RestrictedImportDisclaimer />
       <Element css={{ minHeight: 32 }} />
-      {restrictsPublicRepos === false && (
+      {restrictsPublicRepos === false && !isFrozen && (
         <SuggestionsRow page="empty repositories" />
       )}
     </EmptyPage.StyledWrapper>

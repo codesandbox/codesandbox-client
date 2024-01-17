@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Stack, Text, IconButton, Element } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions } from 'app/overmind';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Container, HeaderInformation } from './elements';
 import { LargeCTAButton } from '../dashboard/LargeCTAButton';
 import {
@@ -16,6 +17,7 @@ export const GenericCreate: React.FC<{
   isModal?: boolean;
 }> = ({ closeModal, isModal }) => {
   const actions = useActions();
+  const { isFrozen } = useWorkspaceLimits();
 
   useEffect(() => {
     track('Generic Create - Show', {
@@ -76,6 +78,7 @@ export const GenericCreate: React.FC<{
       >
         <LargeCTAButton
           icon="boxRepository"
+          disabled={isFrozen}
           title="Import repository"
           subtitle={IMPORT_BUTTON_DESCRIPTION}
           onClick={() => {
@@ -94,6 +97,7 @@ export const GenericCreate: React.FC<{
 
         <LargeCTAButton
           icon="boxDevbox"
+          disabled={isFrozen}
           title="Create a Devbox"
           subtitle={DEVBOX_BUTTON_DESCRIPTION}
           onClick={() => {

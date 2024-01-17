@@ -5,6 +5,7 @@ import { Icon, IconNames, Stack, Text } from '@codesandbox/components';
 type LargeCTAButtonProps = {
   title: string;
   subtitle?: string;
+  disabled?: boolean;
   icon: IconNames;
   variant?: 'primary' | 'secondary';
   alignment?: 'horizontal' | 'vertical';
@@ -14,6 +15,7 @@ export const LargeCTAButton = ({
   title,
   subtitle,
   icon,
+  disabled,
   onClick,
   variant = 'secondary',
   alignment = 'horizontal',
@@ -21,6 +23,7 @@ export const LargeCTAButton = ({
   return (
     <StyledButton
       onClick={onClick}
+      disabled={disabled}
       css={{
         height: 'auto',
         flexDirection: alignment === 'horizontal' ? 'row' : 'column',
@@ -66,7 +69,12 @@ const StyledButton = styled.button`
   line-height: 16px;
   transition: background-color 75ms ease;
 
-  &:hover {
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &:hover:not(:disabled) {
     background-color: #ededed;
     cursor: pointer;
   }
