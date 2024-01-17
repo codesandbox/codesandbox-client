@@ -324,13 +324,3 @@ export const projectWithBranchesFragment = gql`
   }
   ${branchFragment}
 `;
-
-export const teamLimitsFragment = gql`
-  fragment teamLimits on TeamLimits {
-    maxEditors
-    maxPrivateProjects
-    maxPrivateSandboxes
-    maxPublicProjects
-    maxPublicSandboxes
-  }
-`;

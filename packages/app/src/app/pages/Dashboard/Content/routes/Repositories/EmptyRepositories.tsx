@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ArticleCard, CreateCard, Element } from '@codesandbox/components';
+import { ArticleCard, Element } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 

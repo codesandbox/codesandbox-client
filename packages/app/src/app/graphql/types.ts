@@ -4733,15 +4733,6 @@ export type ProjectWithBranchesFragment = {
   team: { __typename?: 'Team'; id: any } | null;
 };
 
-export type TeamLimitsFragment = {
-  __typename?: 'TeamLimits';
-  maxEditors: number | null;
-  maxPrivateProjects: number | null;
-  maxPrivateSandboxes: number | null;
-  maxPublicProjects: number | null;
-  maxPublicSandboxes: number | null;
-};
-
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -7560,47 +7551,6 @@ export type RepositoryByDetailsQuery = {
     };
     team: { __typename?: 'Team'; id: any } | null;
   } | null;
-};
-
-export type LimitsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type LimitsQuery = {
-  __typename?: 'RootQueryType';
-  limits: {
-    __typename?: 'Limits';
-    personalFree: {
-      __typename?: 'TeamLimits';
-      maxEditors: number | null;
-      maxPrivateProjects: number | null;
-      maxPrivateSandboxes: number | null;
-      maxPublicProjects: number | null;
-      maxPublicSandboxes: number | null;
-    };
-    personalPro: {
-      __typename?: 'TeamLimits';
-      maxEditors: number | null;
-      maxPrivateProjects: number | null;
-      maxPrivateSandboxes: number | null;
-      maxPublicProjects: number | null;
-      maxPublicSandboxes: number | null;
-    };
-    teamFree: {
-      __typename?: 'TeamLimits';
-      maxEditors: number | null;
-      maxPrivateProjects: number | null;
-      maxPrivateSandboxes: number | null;
-      maxPublicProjects: number | null;
-      maxPublicSandboxes: number | null;
-    };
-    teamPro: {
-      __typename?: 'TeamLimits';
-      maxEditors: number | null;
-      maxPrivateProjects: number | null;
-      maxPrivateSandboxes: number | null;
-      maxPublicProjects: number | null;
-      maxPublicSandboxes: number | null;
-    };
-  };
 };
 
 export type TeamEventsSubscriptionVariables = Exact<{

@@ -2,7 +2,6 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { CreateCard } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { Header } from 'app/pages/Dashboard/Components/Header';
