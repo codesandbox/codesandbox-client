@@ -2,7 +2,6 @@ import {
   SandboxFragmentDashboardFragment as Sandbox,
   RepoFragmentDashboardFragment as Repo,
   TemplateFragmentDashboardFragment as Template,
-  NpmRegistryFragment,
   TeamFragmentDashboardFragment,
   BranchFragment as Branch,
   ProjectFragment as Repository,
@@ -45,9 +44,6 @@ export type DashboardSandboxStructure = {
 export type State = {
   sandboxes: DashboardSandboxStructure;
   teams: Array<TeamFragmentDashboardFragment>;
-  workspaceSettings: {
-    npmRegistry: NpmRegistryFragment | null;
-  };
   allCollections: DELETE_ME_COLLECTION[] | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
@@ -125,9 +121,6 @@ export const state: State = {
   viewMode: 'grid',
   allCollections: null,
   teams: [],
-  workspaceSettings: {
-    npmRegistry: null,
-  },
   curatedAlbums: [],
   curatedAlbumsById: null,
   deletedSandboxesByTime: derived(({ sandboxes }: State) => {

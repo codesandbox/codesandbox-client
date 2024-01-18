@@ -27,7 +27,6 @@ import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { Preferences } from './PreferencesModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
-import { LegacyPaymentModal } from './LegacyPaymentModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
@@ -37,7 +36,6 @@ import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import { UploadModal } from './UploadModal';
-import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
 import { AccountDeletionModal } from './AccountDeletion';
@@ -47,17 +45,11 @@ import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/Undo
 import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
-import { SubscriptionCancellationModal } from './SubscriptionCancellation';
-import { EditorSeatsUpgrade } from './EditorSeatsUpgrade';
 
 const modals = {
   preferences: {
     Component: Preferences,
     width: 900,
-  },
-  legacyPayment: {
-    Component: LegacyPaymentModal,
-    width: 600,
   },
   createDevbox: {
     Component: CreateBox,
@@ -88,10 +80,6 @@ const modals = {
   deployment: {
     Component: DeploymentModal,
     width: 600,
-  },
-  deleteWorkspace: {
-    Component: DeleteWorkspace,
-    width: 400,
   },
   recoveredFiles: {
     Component: RecoverFilesModal,
@@ -221,14 +209,6 @@ const modals = {
   notFoundBranchModal: {
     Component: NotFoundBranchModal,
     width: 450,
-  },
-  subscriptionCancellation: {
-    Component: SubscriptionCancellationModal,
-    width: 450,
-  },
-  editorSeatsUpgrade: {
-    Component: EditorSeatsUpgrade,
-    width: 400,
   },
 };
 

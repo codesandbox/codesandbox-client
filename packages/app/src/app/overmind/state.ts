@@ -81,11 +81,6 @@ type State = {
     sandboxCount: number;
     sandboxLimit: number;
   } | null;
-  /**
-   * This flag is set when the user returns form stripe with a success flag
-   * but our data does not year have the workspace subscription information
-   */
-  isProcessingPayment: boolean;
 
   /**
    * Different features might be available based on the backend response
@@ -170,7 +165,6 @@ export const state: State = {
     google: false,
     github: false,
   },
-  isProcessingPayment: false,
   features: {
     // Fallback values for when the features endpoint is not available
     loginWithApple: true,

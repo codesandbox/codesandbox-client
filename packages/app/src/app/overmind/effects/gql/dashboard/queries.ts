@@ -35,8 +35,6 @@ import {
   TeamDraftsQueryVariables,
   GetTeamReposQueryVariables,
   GetTeamReposQuery,
-  GetPrivateNpmRegistryQuery,
-  GetPrivateNpmRegistryQueryVariables,
   _AlwaysOnTeamSandboxesQuery,
   _AlwaysOnTeamSandboxesQueryVariables,
   SharedWithMeSandboxesQuery,
@@ -62,7 +60,6 @@ import {
   templateFragmentDashboard,
   repoFragmentDashboard,
   currentTeamInfoFragment,
-  npmRegistryFragment,
   teamFragmentDashboard,
   branchFragment,
   projectFragment,
@@ -413,22 +410,6 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
     }
   }
   ${currentTeamInfoFragment}
-`;
-
-export const getPrivateNpmRegistry: Query<
-  GetPrivateNpmRegistryQuery,
-  GetPrivateNpmRegistryQueryVariables
-> = gql`
-  query getPrivateNpmRegistry($teamId: UUID4!) {
-    me {
-      team(id: $teamId) {
-        privateRegistry {
-          ...npmRegistry
-        }
-      }
-    }
-  }
-  ${npmRegistryFragment}
 `;
 
 export const alwaysOnTeamSandboxes: Query<

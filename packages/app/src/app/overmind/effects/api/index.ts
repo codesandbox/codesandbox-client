@@ -39,7 +39,6 @@ import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
-  AvatarAPIResponse,
   FinalizeSignUpOptions,
   MetaFeatures,
   VMTier,
@@ -539,16 +538,6 @@ export default {
       sandbox: {
         privacy,
       },
-    });
-  },
-  updateTeamAvatar(
-    name: string,
-    avatar: string,
-    teamId: string
-  ): Promise<AvatarAPIResponse> {
-    return api.post(`/teams/${teamId}/avatar`, {
-      name,
-      avatar,
     });
   },
   createVercelIntegration(code: string): Promise<CurrentUserFromAPI> {

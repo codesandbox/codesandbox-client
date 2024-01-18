@@ -242,21 +242,6 @@ export const currentTeamInfoFragment = gql`
   }
 `;
 
-export const npmRegistryFragment = gql`
-  fragment npmRegistry on PrivateRegistry {
-    id
-    authType
-    enabledScopes
-    limitToScopes
-    proxyEnabled
-    registryAuthKey
-    registryType
-    registryUrl
-    teamId
-    sandpackTrustedDomains
-  }
-`;
-
 export const branchFragment = gql`
   fragment branch on Branch {
     id
