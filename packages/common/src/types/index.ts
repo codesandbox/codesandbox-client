@@ -278,14 +278,6 @@ export type RoomInfo = {
   };
 };
 
-export type PaymentDetails = {
-  brand: string;
-  expMonth: number;
-  expYear: number;
-  last4: string;
-  name: string;
-};
-
 export type SandboxPick = {
   title: string;
   description: string;

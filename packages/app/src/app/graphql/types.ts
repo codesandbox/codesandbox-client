@@ -5331,43 +5331,6 @@ export type CancelDeleteCurrentUserMutation = {
   cancelDeleteCurrentUser: string;
 };
 
-export type UpdateSubscriptionBillingIntervalMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  subscriptionId: Scalars['UUID4'];
-  billingInterval: SubscriptionInterval;
-}>;
-
-export type UpdateSubscriptionBillingIntervalMutation = {
-  __typename?: 'RootMutationType';
-  updateSubscriptionBillingInterval: {
-    __typename?: 'ProSubscription';
-    id: any | null;
-  };
-};
-
-export type PreviewUpdateSubscriptionBillingIntervalMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  subscriptionId: Scalars['UUID4'];
-  billingInterval: SubscriptionInterval;
-}>;
-
-export type PreviewUpdateSubscriptionBillingIntervalMutation = {
-  __typename?: 'RootMutationType';
-  previewUpdateSubscriptionBillingInterval: {
-    __typename?: 'BillingPreview';
-    immediatePayment: {
-      __typename?: 'BillingDetails';
-      amount: number;
-      currency: string;
-    } | null;
-    nextPayment: {
-      __typename?: 'BillingDetails';
-      amount: number;
-      currency: string;
-    } | null;
-  };
-};
-
 export type UpdateCurrentUserMutationVariables = Exact<{
   username: Scalars['String'];
   name: InputMaybe<Scalars['String']>;
@@ -7177,18 +7140,6 @@ export type LimitsQuery = {
       onDemandSpendingLimit: number | null;
       onDemandCreditLimit: number | null;
     };
-  };
-};
-
-export type TeamEventsSubscriptionVariables = Exact<{
-  teamId: Scalars['ID'];
-}>;
-
-export type TeamEventsSubscription = {
-  __typename?: 'RootSubscriptionType';
-  teamEvents: {
-    __typename?: 'TeamSubscriptionEvent';
-    subscription: { __typename?: 'ProSubscription'; active: boolean };
   };
 };
 

@@ -13,7 +13,6 @@ import {
   GitPr,
   Module,
   NpmManifest,
-  PaymentDetails,
   PickedSandboxes,
   PopularSandboxes,
   Profile,
@@ -67,10 +66,6 @@ export default {
     );
 
     return response.token;
-  },
-  // We only use this function related to current_user/subscription
-  cancelPatronSubscription() {
-    return api.delete<CurrentUserFromAPI>('/users/current_user/subscription');
   },
   getCurrentUser(): Promise<CurrentUserFromAPI> {
     return api.get('/users/current');
@@ -430,23 +425,6 @@ export default {
 
     return data.id;
   },
-  updateBadge(badgeId: string, visible: boolean): Promise<void> {
-    return api.patch(`/users/current_user/badges/${badgeId}`, {
-      badge: {
-        visible,
-      },
-    });
-  },
-  getPaymentDetails(): Promise<PaymentDetails> {
-    return api.get(`/users/current_user/payment_details`);
-  },
-  updatePaymentDetails(token: string): Promise<PaymentDetails> {
-    return api.patch('/users/current_user/payment_details', {
-      paymentDetails: {
-        token,
-      },
-    });
-  },
   getProfile(username: string): Promise<Profile> {
     return api.get(`/users/${username}`);
   },
@@ -585,11 +563,6 @@ export default {
         template,
       })
       .then(data => data.template);
-  },
-  updateExperiments(experiments: { [key: string]: boolean }): Promise<void> {
-    return api.post(`/users/experiments`, {
-      experiments,
-    });
   },
   queryUsers(query: string): Promise<UserQuery[]> {
     return api.get(`/users/search?username=${query}`);

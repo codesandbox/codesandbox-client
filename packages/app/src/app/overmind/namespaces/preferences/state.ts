@@ -1,4 +1,4 @@
-import { PaymentDetails, Settings } from '@codesandbox/common/lib/types';
+import { Settings } from '@codesandbox/common/lib/types';
 import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 import { isIOS } from '@codesandbox/common/lib/utils/platform';
 import { derived } from 'overmind';
@@ -13,15 +13,12 @@ export type SettingSync = {
 
 type State = {
   settings: Settings;
-  isLoadingPaymentDetails: boolean;
   hideNavigation: boolean;
   itemId: string | null;
   showEditor: boolean;
   showModal: boolean;
   showPreview: boolean;
   showDevtools: boolean;
-  paymentDetailError: string | null;
-  paymentDetails: PaymentDetails | null;
   runOnClick: boolean;
   keybindings: any;
   settingsSync: {
@@ -81,9 +78,6 @@ export const state: State = {
   },
   hideNavigation: false,
   showModal: false,
-  isLoadingPaymentDetails: true,
-  paymentDetailError: null,
-  paymentDetails: null,
   itemId: null,
   showEditor: true,
   showPreview: true,
