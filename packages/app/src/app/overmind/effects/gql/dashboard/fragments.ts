@@ -17,7 +17,6 @@ export const sandboxFragmentDashboard = gql`
     screenshotOutdated
     viewCount
     likeCount
-    alwaysOn
     isV2
 
     source {

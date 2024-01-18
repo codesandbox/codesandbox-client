@@ -444,7 +444,6 @@ export type Sandbox = {
   tags: string[];
   isFrozen: boolean;
   isSse?: boolean;
-  alwaysOn: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;

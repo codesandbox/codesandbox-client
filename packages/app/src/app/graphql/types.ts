@@ -4377,7 +4377,6 @@ export type SandboxFragmentDashboardFragment = {
   screenshotOutdated: boolean;
   viewCount: number;
   likeCount: number;
-  alwaysOn: boolean | null;
   isV2: boolean;
   authorId: any | null;
   teamId: any | null;
@@ -4419,7 +4418,6 @@ export type RepoFragmentDashboardFragment = {
   screenshotOutdated: boolean;
   viewCount: number;
   likeCount: number;
-  alwaysOn: boolean | null;
   isV2: boolean;
   authorId: any | null;
   teamId: any | null;
@@ -4489,7 +4487,6 @@ export type TemplateFragmentDashboardFragment = {
     screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
-    alwaysOn: boolean | null;
     isV2: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -4848,7 +4845,6 @@ export type AddToFolderMutation = {
     screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
-    alwaysOn: boolean | null;
     isV2: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -4896,7 +4892,6 @@ export type MoveToTrashMutation = {
     screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
-    alwaysOn: boolean | null;
     isV2: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -4945,7 +4940,6 @@ export type ChangePrivacyMutation = {
     screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
-    alwaysOn: boolean | null;
     isV2: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -4994,7 +4988,6 @@ export type ChangeFrozenMutation = {
     screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
-    alwaysOn: boolean | null;
     isV2: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5043,7 +5036,6 @@ export type _RenameSandboxMutation = {
     screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
-    alwaysOn: boolean | null;
     isV2: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5478,7 +5470,6 @@ export type RecentlyDeletedPersonalSandboxesQuery = {
       screenshotOutdated: boolean;
       viewCount: number;
       likeCount: number;
-      alwaysOn: boolean | null;
       isV2: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -5531,7 +5522,6 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
-        alwaysOn: boolean | null;
         isV2: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5594,7 +5584,6 @@ export type SandboxesByPathQuery = {
         screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
-        alwaysOn: boolean | null;
         isV2: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5649,7 +5638,6 @@ export type TeamDraftsQuery = {
         screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
-        alwaysOn: boolean | null;
         isV2: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5717,7 +5705,6 @@ export type GetPersonalReposQuery = {
       screenshotOutdated: boolean;
       viewCount: number;
       likeCount: number;
-      alwaysOn: boolean | null;
       isV2: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -5787,7 +5774,6 @@ export type GetTeamReposQuery = {
         screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
-        alwaysOn: boolean | null;
         isV2: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5865,7 +5851,6 @@ export type TeamTemplatesQuery = {
           screenshotOutdated: boolean;
           viewCount: number;
           likeCount: number;
-          alwaysOn: boolean | null;
           isV2: boolean;
           authorId: any | null;
           teamId: any | null;
@@ -5935,7 +5920,6 @@ export type OwnedTemplatesQuery = {
         screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
-        alwaysOn: boolean | null;
         isV2: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -6052,7 +6036,6 @@ export type _SearchPersonalSandboxesQuery = {
       screenshotOutdated: boolean;
       viewCount: number;
       likeCount: number;
-      alwaysOn: boolean | null;
       isV2: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6105,7 +6088,6 @@ export type _SearchTeamSandboxesQuery = {
         screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
-        alwaysOn: boolean | null;
         isV2: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -6158,7 +6140,6 @@ export type RecentlyAccessedSandboxesQuery = {
       screenshotOutdated: boolean;
       viewCount: number;
       likeCount: number;
-      alwaysOn: boolean | null;
       isV2: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6240,7 +6221,6 @@ export type SharedWithMeSandboxesQuery = {
       screenshotOutdated: boolean;
       viewCount: number;
       likeCount: number;
-      alwaysOn: boolean | null;
       isV2: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6289,7 +6269,6 @@ export type LikedSandboxesQuery = {
       screenshotOutdated: boolean;
       viewCount: number;
       likeCount: number;
-      alwaysOn: boolean | null;
       isV2: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6431,7 +6410,6 @@ export type CuratedAlbumsQuery = {
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
-      alwaysOn: boolean | null;
       isV2: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6490,7 +6468,6 @@ export type CuratedAlbumByIdQuery = {
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
-      alwaysOn: boolean | null;
       isV2: boolean;
       authorId: any | null;
       teamId: any | null;
