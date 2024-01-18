@@ -38,7 +38,6 @@ export type DashboardSandboxStructure = {
       sandboxes: Repo[];
     };
   } | null;
-  ALWAYS_ON: Sandbox[] | null;
 };
 
 export type State = {
@@ -113,7 +112,6 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   TEMPLATE_HOME: null,
   ALL: null,
   REPOS: null,
-  ALWAYS_ON: null,
 };
 
 export const state: State = {

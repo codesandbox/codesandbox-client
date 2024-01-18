@@ -38,6 +38,5 @@ export enum sandboxesTypes {
   ALL = 'ALL',
   SEARCH = 'SEARCH',
   REPOS = 'REPOS',
-  ALWAYS_ON = 'ALWAYS_ON',
   DISCOVER = 'DISCOVER',
 }

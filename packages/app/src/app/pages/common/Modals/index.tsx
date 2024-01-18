@@ -24,7 +24,6 @@ import { LiveSessionEnded } from './LiveSessionEnded';
 import { LiveSessionRestricted } from './LiveSessionRestricted';
 import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
-import { PickSandboxModal } from './PickSandboxModal';
 import { Preferences } from './PreferencesModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
@@ -116,10 +115,6 @@ const modals = {
   deleteSandbox: {
     Component: DeleteSandboxModal,
     width: 400,
-  },
-  pickSandbox: {
-    Component: PickSandboxModal,
-    width: 600,
   },
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,

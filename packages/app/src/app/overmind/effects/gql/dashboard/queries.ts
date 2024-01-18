@@ -35,8 +35,6 @@ import {
   TeamDraftsQueryVariables,
   GetTeamReposQueryVariables,
   GetTeamReposQuery,
-  _AlwaysOnTeamSandboxesQuery,
-  _AlwaysOnTeamSandboxesQueryVariables,
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables,
   CuratedAlbumsQuery,
@@ -265,62 +263,6 @@ export const searchTeamSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
-export const listPersonalTemplates: Query<
-  ListUserTemplatesQuery,
-  ListUserTemplatesQueryVariables
-> = gql`
-  query ListUserTemplates($teamId: UUID4) {
-    me {
-      id
-      templates {
-        ...templateFragmentDashboard
-      }
-
-      recentlyUsedTemplates(teamId: $teamId) {
-        ...templateFragmentDashboard
-      }
-
-      bookmarkedTemplates {
-        ...templateFragmentDashboard
-      }
-
-      teams {
-        id
-        name
-        bookmarkedTemplates {
-          ...templateFragmentDashboard
-        }
-        templates {
-          ...templateFragmentDashboard
-        }
-      }
-    }
-  }
-
-  ${templateFragmentDashboard}
-`;
-
-export const recentPersonalSandboxes: Query<
-  LatestSandboxesQuery,
-  LatestSandboxesQueryVariables
-> = gql`
-  query LatestSandboxes(
-    $limit: Int!
-    $orderField: String!
-    $orderDirection: Direction!
-  ) {
-    me {
-      sandboxes(
-        limit: $limit
-        orderBy: { field: $orderField, direction: $orderDirection }
-      ) {
-        ...sandboxFragmentDashboard
-      }
-    }
-  }
-  ${sandboxFragmentDashboard}
-`;
-
 export const recentlyAccessedSandboxes: Query<
   RecentlyAccessedSandboxesQuery,
   RecentlyAccessedSandboxesQueryVariables
@@ -377,30 +319,6 @@ export const likedSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
-export const recentTeamSandboxes: Query<
-  LatestTeamSandboxesQuery,
-  LatestTeamSandboxesQueryVariables
-> = gql`
-  query LatestTeamSandboxes(
-    $limit: Int!
-    $orderField: String!
-    $orderDirection: Direction!
-    $teamId: UUID4!
-  ) {
-    me {
-      team(id: $teamId) {
-        sandboxes(
-          limit: $limit
-          orderBy: { field: $orderField, direction: $orderDirection }
-        ) {
-          ...sandboxFragmentDashboard
-        }
-      }
-    }
-  }
-  ${sandboxFragmentDashboard}
-`;
-
 export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
   query getTeam($teamId: UUID4!) {
     me {
@@ -410,22 +328,6 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
     }
   }
   ${currentTeamInfoFragment}
-`;
-
-export const alwaysOnTeamSandboxes: Query<
-  _AlwaysOnTeamSandboxesQuery,
-  _AlwaysOnTeamSandboxesQueryVariables
-> = gql`
-  query _AlwaysOnTeamSandboxes($teamId: UUID4!) {
-    me {
-      team(id: $teamId) {
-        sandboxes(alwaysOn: true) {
-          ...sandboxFragmentDashboard
-        }
-      }
-    }
-  }
-  ${sandboxFragmentDashboard}
 `;
 
 export const curatedAlbums: Query<

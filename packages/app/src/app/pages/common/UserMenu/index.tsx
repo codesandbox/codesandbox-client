@@ -1,5 +1,4 @@
 import {
-  curatorUrl,
   profileUrl,
   docsUrl,
   csbSite,
@@ -55,8 +54,6 @@ export const UserMenu: FunctionComponent & {
     );
   }
 
-  const showCurator = true; // user.curatorAt;
-
   const showBecomePro = isFree && isAdmin && !environment.isOnPrem;
   const showManageSubscription = isPro && isAdmin && !environment.isOnPrem;
   const showStorage = !environment.isOnPrem;
@@ -95,15 +92,6 @@ export const UserMenu: FunctionComponent & {
               <Text>Feedback</Text>
             </Stack>
           </Menu.Item>
-
-          {showCurator && (
-            <Menu.Link to={curatorUrl()}>
-              <Stack align="center" gap={2}>
-                <Icon name="curator" size={16} />
-                <Text>Curator Dashboard</Text>
-              </Stack>
-            </Menu.Link>
-          )}
 
           {showBecomePro && (
             <Menu.Link

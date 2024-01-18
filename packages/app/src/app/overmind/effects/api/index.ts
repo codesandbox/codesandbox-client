@@ -13,11 +13,8 @@ import {
   GitPr,
   Module,
   NpmManifest,
-  PickedSandboxes,
-  PopularSandboxes,
   Profile,
   Sandbox,
-  SandboxPick,
   UploadedFilesInfo,
   UserQuery,
   UserSandbox,
@@ -245,22 +242,6 @@ export default {
         module: { title },
       }
     );
-  },
-  getPopularSandboxes(date: string): Promise<PopularSandboxes> {
-    return api.get(`/sandboxes/popular?start_date=${date}`);
-  },
-  saveSandboxPick(
-    sandboxId: string,
-    title: string,
-    description: string
-  ): Promise<SandboxPick> {
-    return api.post(`/sandboxes/${sandboxId}/pick`, {
-      title,
-      description,
-    });
-  },
-  getPickedSandboxes(): Promise<PickedSandboxes> {
-    return api.get(`/sandboxes/picked`);
   },
   createDirectory(
     sandboxId: string,

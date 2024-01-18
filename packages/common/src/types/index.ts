@@ -278,25 +278,6 @@ export type RoomInfo = {
   };
 };
 
-export type SandboxPick = {
-  title: string;
-  description: string;
-  id: string;
-  insertedAt: string;
-};
-
-export type MiniSandbox = {
-  viewCount: number;
-  title: string;
-  template: string;
-  id: string;
-  picks: SandboxPick[];
-  description: string;
-  git: GitInfo;
-  author: User;
-  screenshotUrl: string;
-};
-
 export type GitCommit = {
   git: GitInfo;
   merge: boolean;
@@ -348,23 +329,6 @@ export type UserQuery = {
   id: string;
   avatarUrl: string;
   username: string;
-};
-
-export type PopularSandboxes = {
-  startDate: string;
-  sandboxes: MiniSandbox[];
-  endDate: string;
-};
-
-export type PickedSandboxes = {
-  sandboxes: MiniSandbox[];
-  page: number;
-};
-
-export type PickedSandboxDetails = {
-  description: string;
-  id: string;
-  title: string;
 };
 
 export type SandboxAuthor = {

@@ -284,7 +284,6 @@ export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;
 export const csbSite = () =>
   [STATIC_SITE_PROTOCOL, STATIC_SITE_DOMAIN].join('/');
-export const curatorUrl = () => `/curator`;
 export const tosUrl = () => `${csbSite()}/legal/terms`;
 export const privacyUrl = () => `${csbSite()}/legal/privacy`;
 

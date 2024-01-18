@@ -8,7 +8,6 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
-  TeamMemberAuthorization,
   CuratedAlbumByIdQueryVariables,
   ProjectFragment,
 } from 'app/graphql/types';
@@ -437,23 +436,6 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
 
   try {
-    /**
-     * For now we decided to NOT show the templates on the home page
-     * But I would keep this code as it is referenced in a lot of places and (TEMPLATE_HOME)
-     * and we might bring it back later on.
-
-    const usedTemplates = await effects.gql.queries.listPersonalTemplates({
-      teamId: state.activeTeam,
-    });
-    if (!usedTemplates || !usedTemplates.me) {
-      return;
-    }
-    dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
-      0,
-      5
-    );
-    */
-
     const sandboxesResult = await effects.gql.queries.recentlyAccessedSandboxes(
       {
         limit: 18,
@@ -859,26 +841,6 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
   }
 };
 
-export const getAlwaysOnSandboxes = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
-  try {
-    const activeTeam = state.activeTeam;
-    if (!activeTeam) return;
-
-    const data = await effects.gql.queries.alwaysOnTeamSandboxes({
-      teamId: activeTeam,
-    });
-
-    if (data?.me?.team?.sandboxes == null) return;
-
-    dashboard.sandboxes[sandboxesTypes.ALWAYS_ON] = data.me.team.sandboxes;
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem getting your sandboxes'
-    );
-  }
-};
-
 export const getPage = async (
   { actions, state }: Context,
   page: sandboxesTypes
@@ -905,9 +867,6 @@ export const getPage = async (
           teamId: state.activeTeam,
         });
       }
-      break;
-    case sandboxesTypes.ALWAYS_ON:
-      dashboard.getAlwaysOnSandboxes();
       break;
     case sandboxesTypes.SHARED:
       dashboard.getSharedSandboxes();

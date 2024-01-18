@@ -25,7 +25,6 @@ type State = {
   isFirstVisit: boolean;
   isLoggedIn: boolean;
   hasLogIn: boolean;
-  popularSandboxes: Sandbox[] | null;
   officialTemplates: TemplateFragment[];
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
@@ -115,7 +114,6 @@ export const state: State = {
         contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
     ) > -1
   ),
-  popularSandboxes: null,
   officialTemplates: [],
   hasLoadedApp: false,
   isAuthenticating: true,
