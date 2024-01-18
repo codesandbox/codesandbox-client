@@ -102,15 +102,7 @@ export const Actions = () => {
     live: { isLive },
     editor: { currentSandbox },
   } = useAppState();
-  const {
-    id,
-    author,
-    owned,
-    title,
-    description,
-    likeCount,
-    userLiked,
-  } = currentSandbox;
+  const { id, author, owned, likeCount, userLiked } = currentSandbox;
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {

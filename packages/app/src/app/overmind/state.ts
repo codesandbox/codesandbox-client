@@ -1,7 +1,6 @@
 import {
   CurrentUser,
   Notification,
-  Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
 import {
