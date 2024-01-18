@@ -45,10 +45,6 @@ import {
   DeleteCurrentUserMutationVariables,
   CancelDeleteCurrentUserMutation,
   CancelDeleteCurrentUserMutationVariables,
-  UpdateSubscriptionBillingIntervalMutation,
-  UpdateSubscriptionBillingIntervalMutationVariables,
-  PreviewUpdateSubscriptionBillingIntervalMutation,
-  PreviewUpdateSubscriptionBillingIntervalMutationVariables,
   UpdateCurrentUserMutation,
   UpdateCurrentUserMutationVariables,
   AddSandboxesToAlbumMutation,
@@ -376,51 +372,6 @@ export const undoDeleteAccount: Query<
 > = gql`
   mutation cancelDeleteCurrentUser {
     cancelDeleteCurrentUser
-  }
-`;
-
-export const updateSubscriptionBillingInterval: Query<
-  UpdateSubscriptionBillingIntervalMutation,
-  UpdateSubscriptionBillingIntervalMutationVariables
-> = gql`
-  mutation updateSubscriptionBillingInterval(
-    $teamId: UUID4!
-    $subscriptionId: UUID4!
-    $billingInterval: SubscriptionInterval!
-  ) {
-    updateSubscriptionBillingInterval(
-      teamId: $teamId
-      subscriptionId: $subscriptionId
-      billingInterval: $billingInterval
-    ) {
-      id
-    }
-  }
-`;
-
-export const previewUpdateSubscriptionBillingInterval: Query<
-  PreviewUpdateSubscriptionBillingIntervalMutation,
-  PreviewUpdateSubscriptionBillingIntervalMutationVariables
-> = gql`
-  mutation previewUpdateSubscriptionBillingInterval(
-    $teamId: UUID4!
-    $subscriptionId: UUID4!
-    $billingInterval: SubscriptionInterval!
-  ) {
-    previewUpdateSubscriptionBillingInterval(
-      teamId: $teamId
-      subscriptionId: $subscriptionId
-      billingInterval: $billingInterval
-    ) {
-      immediatePayment {
-        amount
-        currency
-      }
-      nextPayment {
-        amount
-        currency
-      }
-    }
   }
 `;
 

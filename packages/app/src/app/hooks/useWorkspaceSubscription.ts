@@ -82,9 +82,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isPaddle =
     subscription.paymentProvider === SubscriptionPaymentProvider.Paddle;
 
-  const isStripe =
-    subscription.paymentProvider === SubscriptionPaymentProvider.Stripe;
-
   return {
     subscription,
     numberOfSeats,
@@ -96,7 +93,6 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     hasExpiredTeamTrial,
     hasPaymentMethod,
     isPaddle,
-    isStripe,
   };
 };
 
@@ -111,7 +107,6 @@ const NO_WORKSPACE = {
   hasExpiredTeamTrial: undefined,
   hasPaymentMethod: undefined,
   isPaddle: undefined,
-  isStripe: undefined,
 };
 
 const NO_SUBSCRIPTION = {
@@ -123,7 +118,6 @@ const NO_SUBSCRIPTION = {
   hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
   isPaddle: false,
-  isStripe: false,
 };
 
 export type WorkspaceSubscriptionReturn =
@@ -143,5 +137,4 @@ export type WorkspaceSubscriptionReturn =
       hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;
       isPaddle: boolean;
-      isStripe: boolean;
     };

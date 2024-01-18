@@ -55,7 +55,7 @@ export const UserMenu: FunctionComponent & {
     );
   }
 
-  const showCurator = user.curatorAt;
+  const showCurator = true; // user.curatorAt;
 
   const showBecomePro = isFree && isAdmin && !environment.isOnPrem;
   const showManageSubscription = isPro && isAdmin && !environment.isOnPrem;
