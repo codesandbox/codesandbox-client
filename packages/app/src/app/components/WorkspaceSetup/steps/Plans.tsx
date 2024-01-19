@@ -6,6 +6,7 @@ import {
   IconNames,
   Stack,
   Text,
+  Tooltip,
 } from '@codesandbox/components';
 import {
   CSB_FRIENDS_LINK,
@@ -19,6 +20,7 @@ import {
   UBB_PRO_PLAN,
   UBB_FREE_FEATURES,
   UBB_FREE_PLAN,
+  EXPLAINED_FEATURES,
 } from 'app/constants';
 import styled from 'styled-components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
@@ -132,6 +134,7 @@ export const Plans: React.FC<StepProps> = ({
                   heading="Usage"
                   secondaryColor="#a6a6a6"
                   features={UBB_FREE_PLAN.usage}
+                  includeTooltips
                 />
                 <PlanFeatures
                   heading="Features"
@@ -159,7 +162,11 @@ export const Plans: React.FC<StepProps> = ({
                 >
                   Build your Pro plan
                 </Button>
-                <PlanFeatures heading="Usage" features={UBB_PRO_PLAN.usage} />
+                <PlanFeatures
+                  heading="Usage"
+                  features={UBB_PRO_PLAN.usage}
+                  includeTooltips
+                />
                 <PlanFeatures
                   heading="Features"
                   features={UBB_PRO_PLAN.features}
@@ -344,11 +351,13 @@ const PlanFeatures: React.FC<{
   heading?: string;
   secondaryColor?: string;
   itemIcon?: IconNames;
+  includeTooltips?: boolean;
 }> = ({
   features,
   heading,
   secondaryColor = '#5c5c5c',
   itemIcon = 'simpleCheck',
+  includeTooltips = false,
 }) => (
   <Stack
     direction="vertical"
@@ -363,14 +372,38 @@ const PlanFeatures: React.FC<{
     )}
     <Stack as="ul" css={{ padding: 0, margin: 0 }} gap={4} direction="vertical">
       {features.map(feature => (
-        <Stack as="li" gap={2} align="flex-start">
+        <Stack as="li" key={feature.toString()} gap={2} align="flex-start">
           <Icon color={secondaryColor} name={itemIcon} size={20} />
-          <Text key={feature}>{feature}</Text>
+          {includeTooltips ? (
+            <TextWithTooltips text={feature} />
+          ) : (
+            <Text>{feature}</Text>
+          )}
         </Stack>
       ))}
     </Stack>
   </Stack>
 );
+
+const TextWithTooltips = ({ text }: { text: string }) => {
+  const explainedKeys = Object.keys(EXPLAINED_FEATURES);
+  const keyInText = explainedKeys.find(key => text.includes(key));
+  if (!keyInText) {
+    return <Text>{text}</Text>;
+  }
+
+  return (
+    <Text>
+      {text.split(keyInText)[0]}
+      <Tooltip label={EXPLAINED_FEATURES[keyInText]}>
+        <Text css={{ borderBottom: '1px dotted currentColor' }}>
+          {keyInText}
+        </Text>
+      </Tooltip>
+      {text.split(keyInText)[1]}
+    </Text>
+  );
+};
 
 const CodeSandboxFriendsCard = () => (
   <Stack

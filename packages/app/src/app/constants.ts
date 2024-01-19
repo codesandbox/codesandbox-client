@@ -111,6 +111,10 @@ export type PricingPlan = {
   features: string[];
   usage: string[];
 };
+export type ExplainedFeature = {
+  text: string;
+  tooltip: string;
+};
 
 export type PricingPlanFeatures = {
   id: string;
@@ -136,6 +140,17 @@ export type PricingPlanFeatures = {
 export type PlanType = 'free' | 'pro' | 'enterprise';
 
 export type VMType = 'vm-1' | 'vm-2' | 'vm-3' | 'vm-4' | 'vm-5' | 'vm-6';
+
+export const EXPLAINED_FEATURES: Record<string, string> = {
+  'VM credits':
+    'Credits measure VM runtime and apply to Devboxes and Repositories.',
+  Devboxes:
+    'Devboxes are our Cloud Development Environment, which runs in virtual machines and requires VM credits.',
+  Sandboxes:
+    'Sandboxes are powered by your browser and don`t require credits to run.',
+  'personal drafts':
+    'Personal drafts are Sandbox drafts that are not shareable or embeddable.',
+};
 
 export const UBB_FREE_PLAN: PricingPlan = {
   id: 'free',
