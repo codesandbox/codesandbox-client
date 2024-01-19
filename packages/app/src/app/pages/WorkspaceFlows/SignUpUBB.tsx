@@ -29,6 +29,7 @@ export const SignUpUBB = () => {
     // Ensure this is run only once
     const initialSteps: WorkspaceSetupStep[] = [
       'plans',
+      'addons',
       'plan-options',
       'payment',
     ];
