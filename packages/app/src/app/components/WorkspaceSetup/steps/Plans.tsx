@@ -579,6 +579,12 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           property="sandboxes"
         />
         <FeatureComparisonNumbersRow
+          title="Personal drafts"
+          description="The maximum number of Sandbox drafts (not shareable or embeddable) per workspace user."
+          plans={plans}
+          property="drafts"
+        />
+        <FeatureComparisonNumbersRow
           title="Devboxes"
           description={
             <>

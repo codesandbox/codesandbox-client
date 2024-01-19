@@ -120,6 +120,7 @@ export type PricingPlanFeatures = {
   sandboxes: string | number;
   devboxes: number;
   repositories: number;
+  drafts: number;
   vmType: string;
   privateProject: boolean;
   shareableLinks: boolean;
@@ -209,6 +210,7 @@ export const UBB_FREE_FEATURES: PricingPlanFeatures = {
   sandboxes: 20,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  drafts: 10,
   vmType: `4 vCPUs<br/>8 GB RAM`,
   privateProject: true,
   shareableLinks: true,
@@ -225,18 +227,13 @@ export const UBB_PRO_FEATURES: PricingPlanFeatures = {
   id: 'pro',
   name: 'Pro',
   members: 20,
-  storage: `Flex: 30 GB<br/>
-Team: 50 GB<br/>
-Growth: 50 GB<br/>
-  
-  <small>+20 GB for $12 per month</small>`,
-  sandboxes: `Flex: 50<br/>
-Team: 100<br/>
-Growth: 500<br/>
-
-<small>+50 more for $9 per month</small>`,
+  storage: `50 GB<br/>
+  <small>more with add-ons</small>`,
+  sandboxes: `100<br/>
+  <small>more with add-ons</small>`,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  drafts: Number.MAX_SAFE_INTEGER,
   vmType: `16 vCPUs<br />32 GB RAM`,
   privateProject: true,
   shareableLinks: true,
@@ -257,6 +254,7 @@ export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
   sandboxes: 'Custom',
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  drafts: Number.MAX_SAFE_INTEGER,
   vmType: `64 vCPUs<br/>128 GB RAM`,
   privateProject: true,
   shareableLinks: true,
