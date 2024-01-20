@@ -100,13 +100,14 @@ export const MAX_PRO_EDITORS = 20;
 export const MAX_TEAM_FREE_EDITORS = 5;
 
 export type PricingPlan = {
-  id: string;
+  id: PlanType;
   name: string;
-  price: number | string;
+  price: number;
   priceDiscountNote?: string;
   credits: number;
   creditsNote?: string;
-  additionalCreditsCost: number | null;
+  sandboxes: number;
+  storage?: number;
   highestVM: VMType;
   features: string[];
   usage: string[];
@@ -117,7 +118,7 @@ export type ExplainedFeature = {
 };
 
 export type PricingPlanFeatures = {
-  id: string;
+  id: PlanType;
   name: string;
   members: number;
   storage: string;
@@ -137,7 +138,7 @@ export type PricingPlanFeatures = {
   onPremise: boolean;
 };
 
-export type PlanType = 'free' | 'pro' | 'enterprise';
+export type PlanType = 'free' | 'flex' | 'enterprise';
 
 export type VMType = 'vm-1' | 'vm-2' | 'vm-3' | 'vm-4' | 'vm-5' | 'vm-6';
 
@@ -147,7 +148,7 @@ export const EXPLAINED_FEATURES: Record<string, string> = {
   Devboxes:
     'Devboxes are our Cloud Development Environment, which runs in virtual machines and requires VM credits.',
   Sandboxes:
-    'Sandboxes are powered by your browser and don`t require credits to run.',
+    "Sandboxes are powered by your browser and don't require credits to run.",
   'personal drafts':
     'Personal drafts are Sandbox drafts that are not shareable or embeddable.',
 };
@@ -158,7 +159,7 @@ export const UBB_FREE_PLAN: PricingPlan = {
   price: 0,
   credits: 400,
   creditsNote: 'Ideal for hobbyists using Devboxes up to 40 hours a month.',
-  additionalCreditsCost: null,
+  sandboxes: 20,
   highestVM: 'vm-2',
   usage: [
     'Up to 40 hours worth of VM credits per month',
@@ -177,14 +178,14 @@ export const UBB_FREE_PLAN: PricingPlan = {
 };
 
 export const UBB_PRO_PLAN: PricingPlan = {
-  id: 'pro',
+  id: 'flex',
   name: 'Pro',
   price: 9,
   priceDiscountNote: 'Early access discount',
   credits: 1000,
   creditsNote:
     'Ideal to get started with cloud development and understand your usage needs.',
-  additionalCreditsCost: 0.018,
+  sandboxes: 100,
   highestVM: 'vm-4',
   features: ['All free features'],
   usage: [
@@ -201,9 +202,9 @@ export const UBB_PRO_PLAN: PricingPlan = {
 export const UBB_ENTERPRISE_PLAN: PricingPlan = {
   id: 'enterprise',
   name: 'Enterprise',
-  price: 'Custom',
+  price: 0,
   credits: 0,
-  additionalCreditsCost: 0,
+  sandboxes: 0,
   highestVM: 'vm-6',
   usage: [],
   features: [
@@ -239,7 +240,7 @@ export const UBB_FREE_FEATURES: PricingPlanFeatures = {
 };
 
 export const UBB_PRO_FEATURES: PricingPlanFeatures = {
-  id: 'pro',
+  id: 'flex',
   name: 'Pro',
   members: 20,
   storage: `50 GB<br/>
@@ -284,6 +285,6 @@ export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
 
 export const PRICING_PLANS: Record<PlanType, PricingPlan> = {
   free: UBB_FREE_PLAN,
-  pro: UBB_PRO_PLAN,
+  flex: UBB_PRO_PLAN,
   enterprise: UBB_ENTERPRISE_PLAN,
 };

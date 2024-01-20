@@ -1,7 +1,6 @@
 import React from 'react';
 import { Stack, Button, Text, Element } from '@codesandbox/components';
-import { PRICING_PLANS } from 'app/constants';
-import { useActions, useAppState } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import {
   CREDIT_ADDONS,
   SANDBOX_ADDONS,
@@ -23,20 +22,16 @@ export const Addons: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
-  const { checkout } = useAppState();
-
-  const plan = PRICING_PLANS[checkout.plan];
-
-  if (!plan) {
-    onPrevStep();
-    return null;
-  }
+  const { checkout } = useActions();
 
   return (
     <AnimatedStep>
       <Stack direction="vertical" gap={12}>
         <StepHeader
-          onPrevStep={onPrevStep}
+          onPrevStep={() => {
+            checkout.clearCheckout();
+            onPrevStep();
+          }}
           onDismiss={onDismiss}
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
@@ -55,7 +50,7 @@ export const Addons: React.FC<StepProps> = ({
                 css={{ textDecoration: 'none', color: '#DCF76E' }}
                 as="a"
                 target="_blank"
-                href="https://codesandbox.io/docs/learn/devboxes/overview"
+                href="https://codesandbox.io/docs/learn/plans/ubb"
               >
                 Learn more
               </Text>
@@ -67,6 +62,12 @@ export const Addons: React.FC<StepProps> = ({
               gridTemplateColumns: '1fr 1fr 1fr',
               width: '100%',
               gap: '16px',
+              '@media (max-width: 1460px)': {
+                gridTemplateColumns: '1fr 1fr',
+              },
+              '@media (max-width: 1170px)': {
+                gridTemplateColumns: '1fr',
+              },
             }}
           >
             {CREDIT_ADDONS.map(addon => (
@@ -81,13 +82,13 @@ export const Addons: React.FC<StepProps> = ({
               Would you like to add Sandboxes to your plan?
             </Text>
             <Text>
-              Sandboxes are powered by your browser and don`t require credits to
-              run.{' '}
+              Sandboxes are powered by your browser and don&apos;t require
+              credits to run.{' '}
               <Text
                 css={{ textDecoration: 'none', color: '#DCF76E' }}
                 as="a"
                 target="_blank"
-                href="https://codesandbox.io/docs/learn/sandboxes/editor-features"
+                href="https://codesandbox.io/docs/learn/plans/ubb"
               >
                 Learn more
               </Text>
@@ -99,6 +100,12 @@ export const Addons: React.FC<StepProps> = ({
               gridTemplateColumns: '1fr 1fr 1fr',
               width: '100%',
               gap: '16px',
+              '@media (max-width: 1460px)': {
+                gridTemplateColumns: '1fr 1fr',
+              },
+              '@media (max-width: 1170px)': {
+                gridTemplateColumns: '1fr',
+              },
             }}
           >
             {SANDBOX_ADDONS.map(addon => (
@@ -106,10 +113,6 @@ export const Addons: React.FC<StepProps> = ({
             ))}
           </Element>
         </Stack>
-
-        <Text>Total credits: {checkout.totalCredits}</Text>
-        <Text>Total sandboxes: {checkout.totalSandboxes}</Text>
-        <Text>Checkout total: ${checkout.totalPrice}</Text>
 
         <Button autoWidth size="large" onClick={onNextStep}>
           Next
@@ -126,7 +129,13 @@ const CreditAddonButton = ({ addon }: { addon: CreditAddon }) => {
     <StyledAddonButton
       onClick={() => actions.checkout.addCreditsPackage(addon)}
     >
-      <Stack css={{ width: '100%', justifyContent: 'space-between' }}>
+      <Stack
+        css={{
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+        gap={4}
+      >
         <Stack direction="vertical">
           <Text color="#e5e5e5">{addon.credits} VM credits</Text>
           <Text size={2}>Up to {addon.credits / 10} hours of VM usage</Text>
@@ -144,7 +153,13 @@ const SandboxAddonButton = ({ addon }: { addon: SandboxAddon }) => {
     <StyledAddonButton
       onClick={() => actions.checkout.addSandboxPackage(addon)}
     >
-      <Stack css={{ width: '100%', justifyContent: 'space-between' }}>
+      <Stack
+        css={{
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+        gap={4}
+      >
         <Stack direction="vertical">
           <Text color="#e5e5e5">{addon.sandboxes} Sandboxes</Text>
         </Stack>
@@ -156,7 +171,7 @@ const SandboxAddonButton = ({ addon }: { addon: SandboxAddon }) => {
 
 const StyledPrice = ({ addon }: { addon: Addon }) => (
   <Stack direction="vertical" align="flex-end">
-    <Text color="#e5e5e5">
+    <Text color="#e5e5e5" css={{ textWrap: 'nowrap' }}>
       {addon.fullPrice && (
         <Text color="#a6a6a6" css={{ textDecoration: 'line-through' }}>
           ${addon.fullPrice}
@@ -173,6 +188,8 @@ const StyledPrice = ({ addon }: { addon: Addon }) => (
 );
 
 const StyledAddonButton = styled.button`
+  display: flex;
+  align-items: flex-start;
   border: 1px solid #5c5c5c;
   background: transparent;
   color: inherit;

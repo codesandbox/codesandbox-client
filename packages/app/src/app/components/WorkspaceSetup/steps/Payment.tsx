@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Button, Text, Icon } from '@codesandbox/components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
-import { useEffects } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
@@ -13,16 +13,17 @@ type CheckoutStatus =
   | { status: 'error'; error: string };
 
 export const Payment: React.FC<StepProps> = ({
-  onNextStep,
   onPrevStep,
   onDismiss,
   currentStep,
   numberOfSteps,
 }) => {
   const { api } = useEffects();
+  const {
+    checkout: { basePlan, creditAddons, sandboxAddons },
+  } = useAppState();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
-  const plan = getQueryParam('plan');
 
   const [checkout, setCheckout] = useState<CheckoutStatus>({
     status: 'loading',
@@ -33,21 +34,34 @@ export const Payment: React.FC<StepProps> = ({
     const successPath = dashboardURLs.portalRelativePath(workspaceId);
     const cancelPath = dashboardURLs.recent(workspaceId);
 
-    if (!workspaceId || !plan) {
+    if (!workspaceId) {
       // Shouldn't happen
       setCheckout({
         status: 'error',
-        error: 'Invalid workspace and plan',
+        error: 'Invalid workspace',
       });
       return;
     }
+
+    const addons: string[] = [];
+    creditAddons.forEach(item => {
+      for (let i = 0; i < item.quantity; i++) {
+        addons.push(item.addon.id);
+      }
+    });
+    sandboxAddons.forEach(item => {
+      for (let i = 0; i < item.quantity; i++) {
+        addons.push(item.addon.id);
+      }
+    });
 
     try {
       const payload = await api.stripeCreateUBBCheckout({
         success_path: successPath,
         cancel_path: cancelPath,
         team_id: workspaceId,
-        plan,
+        plan: basePlan.id,
+        addons,
       });
 
       if (payload.stripeCheckoutUrl) {

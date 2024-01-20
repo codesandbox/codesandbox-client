@@ -1,7 +1,7 @@
-import { PlanType } from 'app/constants';
+import { PricingPlan, UBB_PRO_PLAN } from 'app/constants';
 
 export interface State {
-  plan: PlanType;
+  basePlan: PricingPlan | null;
   creditAddons: Array<{ addon: CreditAddon; quantity: number }>;
   sandboxAddons: Array<{ addon: SandboxAddon; quantity: number }>;
   spendingLimit: number;
@@ -38,10 +38,10 @@ export type SandboxAddon = {
 };
 
 export const state: State = {
-  plan: 'free',
+  basePlan: null,
   creditAddons: [],
   sandboxAddons: [],
-  spendingLimit: 0,
+  spendingLimit: 100,
   totalCredits: 0,
   totalSandboxes: 0,
   totalPrice: 0,

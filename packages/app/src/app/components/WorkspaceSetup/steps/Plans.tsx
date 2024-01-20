@@ -11,7 +11,6 @@ import {
 import {
   CSB_FRIENDS_LINK,
   ORGANIZATION_CONTACT_LINK,
-  PlanType,
   PricingPlan,
   PricingPlanFeatures,
   UBB_ENTERPRISE_FEATURES,
@@ -39,11 +38,7 @@ export const Plans: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
-  const {
-    getQueryParam,
-    setQueryParam,
-    removeQueryParam,
-  } = useURLSearchParams();
+  const { getQueryParam } = useURLSearchParams();
   const { activeTeam } = useAppState();
   const actions = useActions();
   const effects = useEffects();
@@ -54,11 +49,6 @@ export const Plans: React.FC<StepProps> = ({
   const isUpgrading = pathname.includes('upgrade');
 
   useEffect(() => {
-    // Reset selected value in the URL when going on prev step
-    removeQueryParam('plan');
-  }, []);
-
-  useEffect(() => {
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
   }, []);
 
@@ -66,15 +56,16 @@ export const Plans: React.FC<StepProps> = ({
     if (activeTeam !== urlWorkspaceId) {
       actions.setActiveTeam({ id: urlWorkspaceId });
     }
-  }, [urlWorkspaceId, activeTeam]);
+  }, [urlWorkspaceId, activeTeam, actions]);
 
-  const handleChoosePlan = async (plan: PlanType) => {
-    setQueryParam('plan', plan);
+  const handleProPlanSelection = async () => {
     if (isSigningUpForBeta) {
       await effects.gql.mutations.joinUsageBillingBeta({
         teamId: urlWorkspaceId,
       });
     }
+
+    actions.checkout.selectPlan(UBB_PRO_PLAN);
 
     onNextStep();
   };
@@ -158,7 +149,7 @@ export const Plans: React.FC<StepProps> = ({
                 <Button
                   variant="dark"
                   size="large"
-                  onClick={() => handleChoosePlan('pro')}
+                  onClick={handleProPlanSelection}
                 >
                   Build your Pro plan
                 </Button>
@@ -191,7 +182,10 @@ export const Plans: React.FC<StepProps> = ({
                 <CardHeading>
                   The future of Cloud Development Environments
                 </CardHeading>
-                <PlanPricing plan={UBB_ENTERPRISE_PLAN} />
+                <PlanPricing
+                  plan={UBB_ENTERPRISE_PLAN}
+                  overridePrice="Custom"
+                />
                 <Button
                   as="a"
                   href={ORGANIZATION_CONTACT_LINK}
@@ -294,8 +288,11 @@ const HorizontalScroller = styled(Element)`
   }
 `;
 
-const PlanPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
-  const isPro = plan.id !== 'free' && plan.id !== 'enterprise';
+const PlanPricing: React.FC<{ plan: PricingPlan; overridePrice?: string }> = ({
+  plan,
+  overridePrice,
+}) => {
+  const isPro = plan.id === 'flex';
 
   return (
     <Stack direction="vertical" align="center" gap={2}>
@@ -310,7 +307,7 @@ const PlanPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
       </Stack>
       <Element css={{ position: 'relative' }}>
         <Text size={9} fontFamily="everett" weight="medium">
-          {typeof plan.price === 'number' ? `$${plan.price}` : plan.price}
+          {overridePrice || `$${plan.price}`}
         </Text>
 
         {plan.priceDiscountNote && (
@@ -321,9 +318,9 @@ const PlanPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
                 padding: '6px 8px',
                 borderRadius: 4,
                 display: 'block',
-                backgroundColor: plan.id === 'pro' ? '#DCF76E' : '#9D8BF9',
-                color: plan.id === 'pro' ? 'inherit' : '#fff',
-                width: plan.id === 'pro' ? 90 : 47,
+                backgroundColor: '#DCF76E',
+                color: 'inherit',
+                width: 90,
               }}
             >
               {plan.priceDiscountNote}

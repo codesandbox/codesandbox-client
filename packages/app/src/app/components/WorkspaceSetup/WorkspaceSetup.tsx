@@ -35,7 +35,10 @@ export const WorkspaceSetup: React.FC<WorkspaceSetupProps> = ({
   }
 
   return (
-    <WorkspaceFlowLayout>
+    <WorkspaceFlowLayout
+      showSummary={STEPS_WITH_CHECKOUT.includes(currentStep)}
+      allowSummaryChanges={currentStep === 'addons'}
+    >
       <Component
         currentStep={currentStepIndex}
         numberOfSteps={steps.length}
@@ -48,10 +51,7 @@ export const WorkspaceSetup: React.FC<WorkspaceSetupProps> = ({
   );
 };
 
-export const STEP_COMPONENTS: Record<
-  WorkspaceSetupStep,
-  React.FC<StepProps>
-> = {
+const STEP_COMPONENTS: Record<WorkspaceSetupStep, React.FC<StepProps>> = {
   create: Create,
   'select-workspace': SelectWorkspace,
   plans: Plans,
@@ -59,3 +59,9 @@ export const STEP_COMPONENTS: Record<
   payment: Payment,
   addons: Addons,
 };
+
+const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = [
+  'plan-options',
+  'payment',
+  'addons',
+];

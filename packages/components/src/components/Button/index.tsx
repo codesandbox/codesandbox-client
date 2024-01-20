@@ -112,7 +112,7 @@ const commonStyles = {
   transition: 'background .3s, color .3s, box-shadow .3s',
   textDecoration: 'none',
 
-  ':focus': {
+  ':focus-visible': {
     boxShadow: `0 0 0 1px #AC9CFF`,
     outline: 'none',
   },

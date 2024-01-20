@@ -671,9 +671,10 @@ export default {
     cancel_path: string;
     team_id: string;
     plan: string;
+    addons: string[];
   }) {
     return api.post<{ stripeCheckoutUrl: string }>(`/checkout`, params, {
-      version: '2024-01-01',
+      version: '2024-01-20',
     });
   },
   stripeCustomerPortal(teamId: string, return_path: string) {
