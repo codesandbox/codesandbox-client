@@ -2,7 +2,6 @@ import {
   SandboxFragmentDashboardFragment as Sandbox,
   RepoFragmentDashboardFragment as Repo,
   TemplateFragmentDashboardFragment as Template,
-  NpmRegistryFragment,
   TeamFragmentDashboardFragment,
   BranchFragment as Branch,
   ProjectFragment as Repository,
@@ -39,15 +38,11 @@ export type DashboardSandboxStructure = {
       sandboxes: Repo[];
     };
   } | null;
-  ALWAYS_ON: Sandbox[] | null;
 };
 
 export type State = {
   sandboxes: DashboardSandboxStructure;
   teams: Array<TeamFragmentDashboardFragment>;
-  workspaceSettings: {
-    npmRegistry: NpmRegistryFragment | null;
-  };
   allCollections: DELETE_ME_COLLECTION[] | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
@@ -117,7 +112,6 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   TEMPLATE_HOME: null,
   ALL: null,
   REPOS: null,
-  ALWAYS_ON: null,
 };
 
 export const state: State = {
@@ -125,9 +119,6 @@ export const state: State = {
   viewMode: 'grid',
   allCollections: null,
   teams: [],
-  workspaceSettings: {
-    npmRegistry: null,
-  },
   curatedAlbums: [],
   curatedAlbumsById: null,
   deletedSandboxesByTime: derived(({ sandboxes }: State) => {

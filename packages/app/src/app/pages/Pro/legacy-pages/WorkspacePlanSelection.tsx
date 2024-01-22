@@ -7,8 +7,7 @@ import {
   Badge,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useAppState, useActions } from 'app/overmind';
-import { Step } from 'app/overmind/namespaces/pro/types';
+import { useAppState } from 'app/overmind';
 import { SubscriptionInterval } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -24,12 +23,8 @@ import type { CTA } from '../components/SubscriptionCard';
 import { StyledPricingDetailsText } from '../components/elements';
 import { UBBWaitlist } from '../components/UBBWaitlist';
 
-// TODO: Rename
 export const WorkspacePlanSelection: React.FC = () => {
   const { activeTeam, activeTeamInfo, dashboard } = useAppState();
-  const {
-    pro: { setStep },
-  } = useActions();
 
   const { isBillingManager } = useWorkspaceAuthorization();
   // const isBillingManager = true; // DEBUG
@@ -41,35 +36,19 @@ export const WorkspacePlanSelection: React.FC = () => {
   // that this comopnent will only be used there so we will keep this check for now.
   if (!activeTeam || !dashboard.teams.length) return null;
 
-  const teamProCta: CTA =
-    // eslint-disable-next-line no-nested-ternary
-    isBillingManager
-      ? // Only allowed to change from monthly to yearly
-        subscription.billingInterval === SubscriptionInterval.Monthly
-        ? {
-            text: 'Change to yearly billing',
-            onClick: () => {
-              track('legacy subscription page - change to yearly billing', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-
-              setStep(Step.ConfirmBillingInterval);
-            },
-            variant: 'light',
-          }
-        : {
-            text: 'Contact support',
-            href: 'mailto:support@codesandbox.io',
-            variant: 'light',
-            onClick: () => {
-              track('legacy subscription page - contact support', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-            },
-          }
-      : undefined;
+  const teamProCta: CTA = isBillingManager
+    ? {
+        text: 'Contact support',
+        href: 'mailto:support@codesandbox.io',
+        variant: 'light',
+        onClick: () => {
+          track('legacy subscription page - contact support', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+        },
+      }
+    : undefined;
 
   const isYearlyInterval =
     subscription.billingInterval === SubscriptionInterval.Yearly;

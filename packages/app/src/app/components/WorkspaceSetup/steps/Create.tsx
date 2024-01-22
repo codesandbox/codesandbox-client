@@ -62,11 +62,7 @@ export const Create: React.FC<StepProps> = ({
 
     try {
       if (teamIsAlreadyCreated) {
-        actions.dashboard.setTeamInfo({
-          name: teamName,
-          description: null,
-          file: null,
-        });
+        actions.dashboard.renameCurrentTeam({ name: teamName });
       } else {
         const team = await actions.dashboard.createTeam({
           teamName,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAppState, useEffects } from 'app/overmind';
 import { useLocation } from 'react-router';
 import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
@@ -66,7 +66,7 @@ export const useCreateCheckout = (): [
   (args: CheckoutOptions) => Promise<void>,
   boolean
 ] => {
-  const { activeTeam, isProcessingPayment, user } = useAppState();
+  const { activeTeam, user } = useAppState();
   const { isFree } = useWorkspaceSubscription();
   const { isBillingManager } = useWorkspaceAuthorization();
   const [status, setStatus] = useState<CheckoutStatus>({ status: 'idle' });
@@ -74,14 +74,6 @@ export const useCreateCheckout = (): [
   const { pathname, search } = useLocation();
 
   const canCheckout = !!isFree && !!isBillingManager;
-
-  useEffect(() => {
-    if (isProcessingPayment) {
-      setStatus({ status: 'loading' });
-    } else {
-      setStatus({ status: 'idle' });
-    }
-  }, [isProcessingPayment]);
 
   async function createCheckout({
     interval = 'month',

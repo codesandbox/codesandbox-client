@@ -13,12 +13,8 @@ import {
   GitPr,
   Module,
   NpmManifest,
-  PaymentDetails,
-  PickedSandboxes,
-  PopularSandboxes,
   Profile,
   Sandbox,
-  SandboxPick,
   UploadedFilesInfo,
   UserQuery,
   UserSandbox,
@@ -39,7 +35,6 @@ import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
-  AvatarAPIResponse,
   FinalizeSignUpOptions,
   MetaFeatures,
   VMTier,
@@ -68,10 +63,6 @@ export default {
     );
 
     return response.token;
-  },
-  // We only use this function related to current_user/subscription
-  cancelPatronSubscription() {
-    return api.delete<CurrentUserFromAPI>('/users/current_user/subscription');
   },
   getCurrentUser(): Promise<CurrentUserFromAPI> {
     return api.get('/users/current');
@@ -252,22 +243,6 @@ export default {
       }
     );
   },
-  getPopularSandboxes(date: string): Promise<PopularSandboxes> {
-    return api.get(`/sandboxes/popular?start_date=${date}`);
-  },
-  saveSandboxPick(
-    sandboxId: string,
-    title: string,
-    description: string
-  ): Promise<SandboxPick> {
-    return api.post(`/sandboxes/${sandboxId}/pick`, {
-      title,
-      description,
-    });
-  },
-  getPickedSandboxes(): Promise<PickedSandboxes> {
-    return api.get(`/sandboxes/picked`);
-  },
   createDirectory(
     sandboxId: string,
     directoryShortid: string,
@@ -431,23 +406,6 @@ export default {
 
     return data.id;
   },
-  updateBadge(badgeId: string, visible: boolean): Promise<void> {
-    return api.patch(`/users/current_user/badges/${badgeId}`, {
-      badge: {
-        visible,
-      },
-    });
-  },
-  getPaymentDetails(): Promise<PaymentDetails> {
-    return api.get(`/users/current_user/payment_details`);
-  },
-  updatePaymentDetails(token: string): Promise<PaymentDetails> {
-    return api.patch('/users/current_user/payment_details', {
-      paymentDetails: {
-        token,
-      },
-    });
-  },
   getProfile(username: string): Promise<Profile> {
     return api.get(`/users/${username}`);
   },
@@ -541,16 +499,6 @@ export default {
       },
     });
   },
-  updateTeamAvatar(
-    name: string,
-    avatar: string,
-    teamId: string
-  ): Promise<AvatarAPIResponse> {
-    return api.post(`/teams/${teamId}/avatar`, {
-      name,
-      avatar,
-    });
-  },
   createVercelIntegration(code: string): Promise<CurrentUserFromAPI> {
     return api.post(`/users/current_user/integrations/vercel`, {
       code,
@@ -596,11 +544,6 @@ export default {
         template,
       })
       .then(data => data.template);
-  },
-  updateExperiments(experiments: { [key: string]: boolean }): Promise<void> {
-    return api.post(`/users/experiments`, {
-      experiments,
-    });
   },
   queryUsers(query: string): Promise<UserQuery[]> {
     return api.get(`/users/search?username=${query}`);
