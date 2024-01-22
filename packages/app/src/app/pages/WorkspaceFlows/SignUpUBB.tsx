@@ -6,15 +6,11 @@ import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { WorkspaceSetupStep } from 'app/components/WorkspaceSetup/types';
 import { useActions, useAppState } from 'app/overmind';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
 export const SignUpUBB = () => {
   const { hasLogIn } = useAppState();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-  const { isAdmin } = useWorkspaceAuthorization();
   const history = useHistory();
 
   const {
