@@ -47,11 +47,6 @@ export const SignUpUBB = () => {
     );
   }
 
-  if ((workspaceId && ubbBeta === true) || isAdmin === false) {
-    // Page was accessed with a non-ubb workspace id
-    return <Redirect to={dashboardUrls.recent(workspaceId)} />;
-  }
-
   return (
     <WorkspaceSetup
       steps={steps}
