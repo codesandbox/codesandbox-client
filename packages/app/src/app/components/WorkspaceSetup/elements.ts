@@ -12,6 +12,4 @@ export const fadeAnimation = () =>
 
 export const AnimatedStep = styled.div`
   animation: ${fadeAnimation};
-  max-width: 1360px;
-  margin: auto;
 `;

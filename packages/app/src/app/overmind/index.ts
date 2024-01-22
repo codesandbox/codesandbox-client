@@ -11,6 +11,7 @@ import * as actions from './actions';
 import * as effects from './effects';
 import { createModals } from './factories';
 import * as modals from './modals';
+import * as checkout from './namespaces/checkout';
 import * as comments from './namespaces/comments';
 import * as dashboard from './namespaces/dashboard';
 import * as sidebar from './namespaces/sidebar';
@@ -50,6 +51,7 @@ export const config = merge(
     comments,
     preview,
     pro,
+    checkout,
     modals: createModals(modals),
   })
 );

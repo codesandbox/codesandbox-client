@@ -3,30 +3,33 @@ import {
   Button,
   Element,
   Icon,
+  IconNames,
   Stack,
   Text,
   Tooltip,
 } from '@codesandbox/components';
+import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import {
   CSB_FRIENDS_LINK,
   ORGANIZATION_CONTACT_LINK,
-  PlanType,
   PricingPlan,
   PricingPlanFeatures,
   UBB_ENTERPRISE_FEATURES,
   UBB_ENTERPRISE_PLAN,
-  UBB_FLEX_PLAN,
+  UBB_PRO_FEATURES,
+  UBB_PRO_PLAN,
   UBB_FREE_FEATURES,
   UBB_FREE_PLAN,
-  UBB_GROWTH_PLAN,
-  UBB_PRO_FEATURES,
-  UBB_STANDARD_PLAN,
+  EXPLAINED_FEATURES,
 } from 'app/constants';
 import styled from 'styled-components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
-import { VMTier, VMType } from 'app/overmind/effects/api/types';
-import { useLocation } from 'react-router-dom';
+import { VMTier } from 'app/overmind/effects/api/types';
+import { Redirect, useLocation } from 'react-router-dom';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -39,28 +42,18 @@ export const Plans: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
-  const {
-    getQueryParam,
-    setQueryParam,
-    removeQueryParam,
-  } = useURLSearchParams();
+  const { getQueryParam } = useURLSearchParams();
   const { activeTeam } = useAppState();
+  const { isAdmin } = useWorkspaceAuthorization();
+  const { isPro } = useWorkspaceSubscription();
   const actions = useActions();
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
   const { pathname } = useLocation();
   const [tiers, setTiers] = useState<VMTier[]>([]);
-  const isSigningUpForBeta = pathname.includes('signup-beta');
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
-  const tierMap = tiers.reduce((acc: Record<VMType, VMTier>, tier) => {
-    acc[tier.shortid] = tier;
-    return acc;
-  }, {} as Record<VMType, VMTier>);
-
-  useEffect(() => {
-    // Reset selected value in the URL when going on prev step
-    removeQueryParam('plan');
-  }, []);
+  const isUpgrading = pathname.includes('upgrade');
 
   useEffect(() => {
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
@@ -70,22 +63,32 @@ export const Plans: React.FC<StepProps> = ({
     if (activeTeam !== urlWorkspaceId) {
       actions.setActiveTeam({ id: urlWorkspaceId });
     }
-  }, [urlWorkspaceId, activeTeam]);
+  }, [urlWorkspaceId, activeTeam, actions]);
 
-  const handleChoosePlan = async (plan: PlanType) => {
-    setQueryParam('plan', plan);
-    if (isSigningUpForBeta) {
+  const handleProPlanSelection = async () => {
+    if (!ubbBeta) {
       await effects.gql.mutations.joinUsageBillingBeta({
         teamId: urlWorkspaceId,
       });
     }
 
+    actions.checkout.selectPlan(UBB_PRO_PLAN);
+
     onNextStep();
   };
 
+  if (isAdmin === false || isPro === true) {
+    // Page was accessed by a non-admin or for pro workspaces
+    return <Redirect to={dashboardUrls.recent(urlWorkspaceId)} />;
+  }
+
   return (
     <AnimatedStep css={{ width: '100%' }}>
-      <Stack direction="vertical" gap={64}>
+      <Stack
+        direction="vertical"
+        gap={64}
+        css={{ maxWidth: '1188px', margin: 'auto' }}
+      >
         <Stack direction="vertical" gap={12}>
           <StepHeader
             onPrevStep={onPrevStep}
@@ -104,22 +107,21 @@ export const Plans: React.FC<StepProps> = ({
                 css={{
                   background: '#1d1d1d',
                   color: '#e5e5e5',
-                  width: '300px',
-                  '@media (max-width: 1400px)': {
-                    width: '260px',
-                  },
+
                   '& a': { color: '#DCF76E' },
                 }}
               >
+                <Text size={7} fontFamily="everett" weight="medium">
+                  {UBB_FREE_PLAN.name}
+                </Text>
                 <CardHeading>For learning and experimenting</CardHeading>
-                <PlanAndPricing plan={UBB_FREE_PLAN} />
-                <PlanCredits plan={UBB_FREE_PLAN} />
+                <PlanPricing plan={UBB_FREE_PLAN} />
                 <Button
                   css={{ background: '#323232' }}
                   variant="secondary"
                   size="large"
                   onClick={async () => {
-                    if (isSigningUpForBeta) {
+                    if (!ubbBeta) {
                       await effects.gql.mutations.joinUsageBillingBeta({
                         teamId: urlWorkspaceId,
                       });
@@ -128,11 +130,20 @@ export const Plans: React.FC<StepProps> = ({
                     onEarlyExit();
                   }}
                 >
-                  Choose Free
+                  {isUpgrading ? 'Choose free' : 'Get started for free'}
                 </Button>
 
-                <PlanFeatures features={UBB_FREE_PLAN.listedFeatures} />
-                <PlanVMs plan={UBB_FREE_PLAN} tierMap={tierMap} />
+                <PlanFeatures
+                  heading="Usage"
+                  secondaryColor="#a6a6a6"
+                  features={UBB_FREE_PLAN.usage}
+                  includeTooltips
+                />
+                <PlanFeatures
+                  heading="Features"
+                  secondaryColor="#a6a6a6"
+                  features={UBB_FREE_PLAN.features}
+                />
               </StyledCard>
               <StyledCard
                 direction="vertical"
@@ -140,74 +151,34 @@ export const Plans: React.FC<StepProps> = ({
                 gap={8}
                 css={{ borderColor: '#9D8BF9' }}
               >
+                <Text size={7} fontFamily="everett" weight="medium">
+                  {UBB_PRO_PLAN.name}
+                </Text>
                 <CardHeading>
                   Pay as you go with a monthly subscription
                 </CardHeading>
-                <Element
-                  css={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr',
-                    gap: '32px',
-                    '@media (max-width: 1400px)': {
-                      gap: '24px',
-                    },
-                  }}
+                <PlanPricing plan={UBB_PRO_PLAN} />
+                <Button
+                  variant="dark"
+                  size="large"
+                  onClick={handleProPlanSelection}
                 >
-                  <Stack direction="vertical" gap={8} align="center">
-                    <PlanAndPricing plan={UBB_FLEX_PLAN} />
-                    <PlanCredits plan={UBB_FLEX_PLAN} />
-                    <Button
-                      variant="dark"
-                      size="large"
-                      onClick={() => handleChoosePlan('flex')}
-                    >
-                      Choose Pro Flex
-                    </Button>
-                    <PlanFeatures features={UBB_FLEX_PLAN.listedFeatures} />
-                  </Stack>
-                  <Stack direction="vertical" gap={8} align="center">
-                    <PlanAndPricing plan={UBB_STANDARD_PLAN} />
-                    <PlanCredits plan={UBB_STANDARD_PLAN} />
-                    <Button
-                      variant="dark"
-                      size="large"
-                      onClick={() => handleChoosePlan('standard')}
-                    >
-                      Choose Pro Standard
-                    </Button>
-                    <PlanFeatures features={UBB_STANDARD_PLAN.listedFeatures} />
-                  </Stack>
-                  <Stack direction="vertical" gap={8} align="center">
-                    <PlanAndPricing plan={UBB_GROWTH_PLAN} />
-                    <PlanCredits plan={UBB_GROWTH_PLAN} />
-                    <Button
-                      variant="dark"
-                      size="large"
-                      onClick={() => handleChoosePlan('growth')}
-                    >
-                      Choose Pro Growth
-                    </Button>
-                    <PlanFeatures features={UBB_GROWTH_PLAN.listedFeatures} />
-                  </Stack>
-                </Element>
-
-                <Element
-                  css={{ background: '#DBDBDB', width: '100%', height: '1px' }}
-                />
-
+                  Build your Pro plan
+                </Button>
                 <PlanFeatures
-                  features={[
-                    'Add-ons available:',
-                    '+50 Sandboxes for $9 per month',
-                    '+20 GB storage for $12 per month',
-                  ]}
+                  heading="Usage"
+                  features={UBB_PRO_PLAN.usage}
+                  includeTooltips
                 />
-
                 <PlanFeatures
-                  features={['Unlimited Devboxes and repositories']}
+                  heading="Features"
+                  features={UBB_PRO_PLAN.features}
                 />
-
-                <PlanVMs plan={UBB_STANDARD_PLAN} tierMap={tierMap} />
+                <PlanFeatures
+                  itemIcon="plus"
+                  heading="Add-ons"
+                  features={['More VM credits', 'More Sandboxes']}
+                />
               </StyledCard>
               <StyledCard
                 direction="vertical"
@@ -215,17 +186,18 @@ export const Plans: React.FC<StepProps> = ({
                 gap={8}
                 css={{
                   borderColor: '#DCF76E',
-                  width: '300px',
-                  '@media (max-width: 1400px)': {
-                    width: '260px',
-                  },
                 }}
               >
+                <Text size={7} fontFamily="everett" weight="medium">
+                  {UBB_ENTERPRISE_PLAN.name}
+                </Text>
                 <CardHeading>
                   The future of Cloud Development Environments
                 </CardHeading>
-                <PlanAndPricing plan={UBB_ENTERPRISE_PLAN} />
-                <PlanCredits plan={UBB_ENTERPRISE_PLAN} />
+                <PlanPricing
+                  plan={UBB_ENTERPRISE_PLAN}
+                  overridePrice="Custom"
+                />
                 <Button
                   as="a"
                   href={ORGANIZATION_CONTACT_LINK}
@@ -234,13 +206,10 @@ export const Plans: React.FC<StepProps> = ({
                 >
                   Contact us
                 </Button>
-                <Stack direction="vertical" gap={6}>
+                <Stack direction="vertical" gap={4}>
                   <Text>Everything in Pro, plus:</Text>
-
-                  <PlanFeatures features={UBB_ENTERPRISE_PLAN.listedFeatures} />
+                  <PlanFeatures features={UBB_ENTERPRISE_PLAN.features} />
                 </Stack>
-
-                <PlanVMs plan={UBB_ENTERPRISE_PLAN} tierMap={tierMap} />
               </StyledCard>
             </Stack>
           </HorizontalScroller>
@@ -279,6 +248,7 @@ const StyledCard = styled(Stack)`
   padding: 40px 32px;
   border-radius: 8px;
   flex-shrink: 0;
+  width: 380px;
 
   @media (max-width: 1400px) {
     padding: 40px 20px;
@@ -330,27 +300,26 @@ const HorizontalScroller = styled(Element)`
   }
 `;
 
-const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
-  const isPro = plan.id !== 'free' && plan.id !== 'enterprise';
+const PlanPricing: React.FC<{ plan: PricingPlan; overridePrice?: string }> = ({
+  plan,
+  overridePrice,
+}) => {
+  const isPro = plan.id === 'flex';
 
   return (
     <Stack direction="vertical" align="center" gap={2}>
       <Stack direction="vertical" align="center">
         {isPro ? (
-          <Text size={7} fontFamily="everett" weight="medium">
-            Pro
+          <Text align="center" weight="medium">
+            From
           </Text>
         ) : (
-          <Element css={{ height: 37 }} />
+          <Element css={{ height: 20 }} />
         )}
-
-        <Text size={7} fontFamily="everett" weight="medium">
-          {plan.name}
-        </Text>
       </Stack>
       <Element css={{ position: 'relative' }}>
         <Text size={9} fontFamily="everett" weight="medium">
-          {typeof plan.price === 'number' ? `$${plan.price}` : plan.price}
+          {overridePrice || `$${plan.price}`}
         </Text>
 
         {plan.priceDiscountNote && (
@@ -361,9 +330,9 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
                 padding: '6px 8px',
                 borderRadius: 4,
                 display: 'block',
-                backgroundColor: plan.id === 'flex' ? '#DCF76E' : '#9D8BF9',
-                color: plan.id === 'flex' ? 'inherit' : '#fff',
-                width: plan.id === 'flex' ? 90 : 47,
+                backgroundColor: '#DCF76E',
+                color: 'inherit',
+                width: 90,
               }}
             >
               {plan.priceDiscountNote}
@@ -386,61 +355,64 @@ const PlanAndPricing: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
   );
 };
 
-const PlanCredits: React.FC<{ plan: PricingPlan }> = ({ plan }) => (
-  <Stack direction="vertical" align="center" css={{ height: '35px' }}>
-    {plan.credits > 0 &&
-      (plan.creditsNote ? (
-        <Tooltip label={plan.creditsNote}>
-          <Text
-            css={{
-              borderBottom: '1px dotted currentColor',
-              marginBottom: '5px !important',
-            }}
-          >
-            {plan.credits} credits included
-          </Text>
-        </Tooltip>
-      ) : (
-        <Text>{plan.credits} credits included</Text>
-      ))}
-    {plan.additionalCreditsCost ? (
-      <Text size={2} color="#4E3BB0" css={{ textAlign: 'center' }}>
-        Need more? ${plan.additionalCreditsCost} $/cr
+const PlanFeatures: React.FC<{
+  features: string[];
+  heading?: string;
+  secondaryColor?: string;
+  itemIcon?: IconNames;
+  includeTooltips?: boolean;
+}> = ({
+  features,
+  heading,
+  secondaryColor = '#5c5c5c',
+  itemIcon = 'simpleCheck',
+  includeTooltips = false,
+}) => (
+  <Stack
+    direction="vertical"
+    align="flex-start"
+    css={{ width: '100%' }}
+    gap={4}
+  >
+    {heading && (
+      <Text css={{ marginLeft: '28px' }} size={3} color={secondaryColor}>
+        {heading}
       </Text>
-    ) : null}
+    )}
+    <Stack as="ul" css={{ padding: 0, margin: 0 }} gap={4} direction="vertical">
+      {features.map(feature => (
+        <Stack as="li" key={feature.toString()} gap={2} align="flex-start">
+          <Icon color={secondaryColor} name={itemIcon} size={20} />
+          {includeTooltips ? (
+            <TextWithTooltips text={feature} />
+          ) : (
+            <Text>{feature}</Text>
+          )}
+        </Stack>
+      ))}
+    </Stack>
   </Stack>
 );
 
-const PlanFeatures: React.FC<{ features: string[] }> = ({ features }) => (
-  <Stack direction="vertical" align="center">
-    {features.map(feature => (
-      <Text key={feature}>{feature}</Text>
-    ))}
-  </Stack>
-);
+const TextWithTooltips = ({ text }: { text: string }) => {
+  const explainedKeys = Object.keys(EXPLAINED_FEATURES);
+  const keyInText = explainedKeys.find(key => text.includes(key));
+  if (!keyInText) {
+    return <Text>{text}</Text>;
+  }
 
-const PlanVMs: React.FC<{
-  plan: PricingPlan;
-  tierMap: Record<VMType, VMTier>;
-}> = ({ plan, tierMap }) => (
-  <Stack direction="vertical" align="center" css={{ height: '60px' }}>
-    <Text>Virtual machines up to:</Text>
-    <Text
-      css={{
-        textAlign: 'center',
-        opacity: Object.keys(tierMap).length === 0 ? 0 : 1,
-        transition: 'opacity 0.15s ease-out',
-      }}
-    >
-      {Object.keys(tierMap).length > 0 && (
-        <>
-          {tierMap[plan.highestVM].cpu} vCPUs + {tierMap[plan.highestVM].memory}{' '}
-          GB RAM
-        </>
-      )}
+  return (
+    <Text>
+      {text.split(keyInText)[0]}
+      <Tooltip label={EXPLAINED_FEATURES[keyInText]}>
+        <Text css={{ borderBottom: '1px dotted currentColor' }}>
+          {keyInText}
+        </Text>
+      </Tooltip>
+      {text.split(keyInText)[1]}
     </Text>
-  </Stack>
-);
+  );
+};
 
 const CodeSandboxFriendsCard = () => (
   <Stack
@@ -647,6 +619,12 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           }
           plans={plans}
           property="sandboxes"
+        />
+        <FeatureComparisonNumbersRow
+          title="Personal drafts"
+          description="The maximum number of Sandbox drafts (not shareable or embeddable) per workspace user."
+          plans={plans}
+          property="drafts"
         />
         <FeatureComparisonNumbersRow
           title="Devboxes"

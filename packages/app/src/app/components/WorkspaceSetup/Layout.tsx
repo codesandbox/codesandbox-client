@@ -1,30 +1,86 @@
 import React from 'react';
-import { Element, Stack, ThemeProvider } from '@codesandbox/components';
+import { Stack, ThemeProvider } from '@codesandbox/components';
+import styled, { keyframes } from 'styled-components';
+import { Summary } from './Summary';
 
-export const WorkspaceFlowLayout: React.FC = ({ children }) => {
+export const WorkspaceFlowLayout: React.FC<{
+  showSummary: boolean;
+  allowSummaryChanges: boolean;
+}> = ({ children, showSummary, allowSummaryChanges }) => {
   return (
     <ThemeProvider>
-      <Element
+      <Stack
         css={{
           backgroundColor: '#0E0E0E',
-          minHeight: '100vh',
+          width: '100%',
           fontFamily: 'Inter, sans-serif',
-          overflow: 'hidden',
-          position: 'relative',
         }}
       >
         <Stack
           css={{
-            width: '100vw',
-            height: '100%',
-            padding: '64px 16px',
+            maxWidth: '1920px',
+            width: '100%',
+            height: '100vh',
+            margin: 'auto',
+            '@media (max-width: 768px)': {
+              flexDirection: 'column',
+              height: 'auto',
+            },
           }}
-          align="center"
-          justify="center"
+          justify={showSummary ? 'space-between' : 'center'}
         >
-          {children}
+          <Stack
+            css={{
+              height: '100%',
+              padding: '64px',
+              flex: 1,
+              '@media (max-width: 1330px)': {
+                padding: '64px 24px',
+              },
+              '@media (max-width: 768px)': {
+                height: 'auto',
+              },
+            }}
+            align="flex-start"
+            justify="center"
+          >
+            {children}
+          </Stack>
+          {showSummary && (
+            <SlidePanel>
+              <Summary allowChanges={allowSummaryChanges} />
+            </SlidePanel>
+          )}
         </Stack>
-      </Element>
+      </Stack>
     </ThemeProvider>
   );
 };
+
+const slideIn = keyframes`
+  0% {
+    translate: 100%;
+    opacity: 0;
+  }
+
+  50% {
+    translate: 100%;
+  }
+
+  100% {
+    translate: 0px;
+    opacity: 1;
+  }
+`;
+
+const SlidePanel = styled.div`
+  animation: ${slideIn} 0.25s ease-out;
+  background: #242424;
+  box-sizing: border-box;
+  flex: 1;
+  max-width: 585px;
+  @media (max-width: 768px) {
+    max-width: initial;
+    width: 100%;
+  }
+`;
