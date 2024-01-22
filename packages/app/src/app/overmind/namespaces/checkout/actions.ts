@@ -38,6 +38,10 @@ export const removeCreditsPackage = (
     item => item.addon.id === addonId
   );
 
+  if (!addonItem) {
+    return;
+  }
+
   addonItem.quantity--;
 
   if (addonItem.quantity === 0) {
@@ -70,13 +74,17 @@ export const removeSandboxPackage = (
   { state, actions }: Context,
   addonId: SandboxAddonType
 ) => {
-  const addon = state.checkout.sandboxAddons.find(
+  const addonItem = state.checkout.sandboxAddons.find(
     item => item.addon.id === addonId
   );
 
-  addon.quantity--;
+  if (!addonItem) {
+    return;
+  }
 
-  if (addon.quantity === 0) {
+  addonItem.quantity--;
+
+  if (addonItem.quantity === 0) {
     state.checkout.sandboxAddons = state.checkout.sandboxAddons.filter(
       item => item.addon.id !== addonId
     );

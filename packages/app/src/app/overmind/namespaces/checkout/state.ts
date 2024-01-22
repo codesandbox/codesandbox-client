@@ -1,4 +1,4 @@
-import { PricingPlan, UBB_PRO_PLAN } from 'app/constants';
+import { PricingPlan } from 'app/constants';
 
 export interface State {
   basePlan: PricingPlan | null;
