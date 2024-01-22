@@ -8,6 +8,7 @@ import {
   Text,
   Tooltip,
 } from '@codesandbox/components';
+import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import {
   CSB_FRIENDS_LINK,
   ORGANIZATION_CONTACT_LINK,
@@ -25,7 +26,10 @@ import styled from 'styled-components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { VMTier } from 'app/overmind/effects/api/types';
-import { useLocation } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -40,12 +44,15 @@ export const Plans: React.FC<StepProps> = ({
 }) => {
   const { getQueryParam } = useURLSearchParams();
   const { activeTeam } = useAppState();
+  const { isAdmin } = useWorkspaceAuthorization();
+  const { isPro } = useWorkspaceSubscription();
   const actions = useActions();
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
   const { pathname } = useLocation();
   const [tiers, setTiers] = useState<VMTier[]>([]);
-  const isSigningUpForBeta = pathname.includes('signup-beta');
+  const { ubbBeta } = useWorkspaceFeatureFlags();
+
   const isUpgrading = pathname.includes('upgrade');
 
   useEffect(() => {
@@ -59,7 +66,7 @@ export const Plans: React.FC<StepProps> = ({
   }, [urlWorkspaceId, activeTeam, actions]);
 
   const handleProPlanSelection = async () => {
-    if (isSigningUpForBeta) {
+    if (!ubbBeta) {
       await effects.gql.mutations.joinUsageBillingBeta({
         teamId: urlWorkspaceId,
       });
@@ -69,6 +76,11 @@ export const Plans: React.FC<StepProps> = ({
 
     onNextStep();
   };
+
+  if (isAdmin === false || isPro === true) {
+    // Page was accessed by a non-admin or for pro workspaces
+    return <Redirect to={dashboardUrls.recent(urlWorkspaceId)} />;
+  }
 
   return (
     <AnimatedStep css={{ width: '100%' }}>
@@ -109,7 +121,7 @@ export const Plans: React.FC<StepProps> = ({
                   variant="secondary"
                   size="large"
                   onClick={async () => {
-                    if (isSigningUpForBeta) {
+                    if (!ubbBeta) {
                       await effects.gql.mutations.joinUsageBillingBeta({
                         teamId: urlWorkspaceId,
                       });

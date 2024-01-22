@@ -160,10 +160,12 @@ export const UBB_FREE_PLAN: PricingPlan = {
   credits: 400,
   creditsNote: 'Ideal for hobbyists using Devboxes up to 40 hours a month.',
   sandboxes: 20,
+  storage: 20,
   highestVM: 'vm-2',
   usage: [
     'Up to 40 hours worth of VM credits per month',
     'Up to 4 vCPUs + 8GB RAM in VMs',
+    '20GB storage per VM',
     'Unlimited Devboxes and repositories',
     '20 Sandboxes',
     '10 personal drafts',
@@ -186,16 +188,18 @@ export const UBB_PRO_PLAN: PricingPlan = {
   creditsNote:
     'Ideal to get started with cloud development and understand your usage needs.',
   sandboxes: 100,
+  storage: 50,
   highestVM: 'vm-4',
   features: ['All free features'],
   usage: [
     'Start from 100 hours worth of VM credits per month',
-    'Access on-demand VM credits for $0.18 per hour',
     'Up to 16 vCPUs + 32 GB RAM in VMs',
+    '50GB storage per VM',
     'Unlimited Devboxes and repositories',
     '100 Sandboxes',
     'Unlimited personal drafts',
     '20 members',
+    'Access on-demand VM credits for $0.18 per hour',
   ],
 };
 
@@ -205,6 +209,7 @@ export const UBB_ENTERPRISE_PLAN: PricingPlan = {
   price: 0,
   credits: 0,
   sandboxes: 0,
+  storage: 0,
   highestVM: 'vm-6',
   usage: [],
   features: [

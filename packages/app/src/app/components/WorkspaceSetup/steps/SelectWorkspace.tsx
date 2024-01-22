@@ -4,7 +4,7 @@ import { useActions, useAppState } from 'app/overmind';
 import { SubscriptionStatus, TeamMemberAuthorization } from 'app/graphql/types';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
 import { StepProps } from '../types';
@@ -20,37 +20,27 @@ export const SelectWorkspace: React.FC<StepProps> = ({
   const history = useHistory();
   const { setActiveTeam } = useActions();
   const { setQueryParam } = useURLSearchParams();
-  const { pathname } = useLocation();
-  const isSigningUpForBeta = pathname.includes('signup-beta');
 
-  const workspacesEligibleForUpgrade = dashboard.teams
-    .filter(
-      t =>
-        // Only teams where you are admin
-        t.userAuthorizations.find(
-          ua =>
-            ua.userId === user?.id &&
-            ua.authorization === TeamMemberAuthorization.Admin
-        ) &&
-        // And teams that are not Pro
-        !(
-          t.subscription?.status === SubscriptionStatus.Active ||
-          t.subscription?.status === SubscriptionStatus.Trialing
-        )
-    )
-    .filter(t =>
-      isSigningUpForBeta
-        ? // If this is the signup for ubb beta, show only workspaces that are not in ubb
-          // Otherwise, show only workspaces that are ubb
-          !t.featureFlags.ubbBeta
-        : t.featureFlags.ubbBeta
-    );
+  const workspacesEligibleForUpgrade = dashboard.teams.filter(
+    t =>
+      // Only teams where you are admin
+      t.userAuthorizations.find(
+        ua =>
+          ua.userId === user?.id &&
+          ua.authorization === TeamMemberAuthorization.Admin
+      ) &&
+      // And teams that are not Pro
+      !(
+        t.subscription?.status === SubscriptionStatus.Active ||
+        t.subscription?.status === SubscriptionStatus.Trialing
+      )
+  );
 
   const [workspaceId, setWorkspaceId] = useState<string>(activeTeam);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    setActiveTeam({ id: workspaceId });
+    await setActiveTeam({ id: workspaceId });
     setQueryParam('workspace', workspaceId);
     onNextStep();
   };
@@ -58,13 +48,6 @@ export const SelectWorkspace: React.FC<StepProps> = ({
   if (user && workspacesEligibleForUpgrade.length === 0) {
     // No eligible workspace to upgrade
     history.replace('/create-workspace');
-  }
-
-  if (user && workspacesEligibleForUpgrade.length === 1) {
-    // Skip selection if a single workspace can be upgraded
-    setActiveTeam({ id: workspaceId });
-    setQueryParam('workspace', workspaceId);
-    onNextStep();
   }
 
   return (

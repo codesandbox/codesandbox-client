@@ -6,15 +6,11 @@ import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { WorkspaceSetupStep } from 'app/components/WorkspaceSetup/types';
 import { useActions, useAppState } from 'app/overmind';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
 export const UpgradeWorkspace = () => {
   const { hasLogIn } = useAppState();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-  const { isAdmin } = useWorkspaceAuthorization();
   const history = useHistory();
 
   const {
@@ -45,11 +41,6 @@ export const UpgradeWorkspace = () => {
     return (
       <Redirect to={signInPageUrl(`${location.pathname}${location.search}`)} />
     );
-  }
-
-  if ((workspaceId && ubbBeta === false) || isAdmin === false) {
-    // Page was accessed with a non-ubb workspace id
-    return <Redirect to={dashboardUrls.recent(workspaceId)} />;
   }
 
   return (
