@@ -426,43 +426,10 @@ export const TEAM_QUERY = gql`
   ${TEAM_FRAGMENT}
 `;
 
-export const LEAVE_TEAM = gql`
-  mutation LeaveTeam($teamId: UUID4!) {
-    leaveTeam(teamId: $teamId)
-  }
-`;
-
-export const REMOVE_FROM_TEAM = gql`
-  mutation RemoveFromTeam($teamId: UUID4!, $userId: UUID4!) {
-    removeFromTeam(teamId: $teamId, userId: $userId) {
-      ...Team
-    }
-  }
-  ${TEAM_FRAGMENT}
-`;
-
-export const INVITE_TO_TEAM = gql`
-  mutation InviteToTeam($teamId: UUID4!, $username: String!) {
-    inviteToTeam(teamId: $teamId, username: $username) {
-      ...Team
-    }
-  }
-  ${TEAM_FRAGMENT}
-`;
-
 export const INVITE_TO_TEAM_VIA_EMAIL = gql`
   mutation InviteToTeamViaEmail($teamId: UUID4!, $email: String!) {
     inviteToTeamViaEmail(teamId: $teamId, email: $email)
   }
-`;
-
-export const REVOKE_TEAM_INVITATION = gql`
-  mutation RevokeTeamInvitation($teamId: UUID4!, $userId: UUID4!) {
-    revokeTeamInvitation(teamId: $teamId, userId: $userId) {
-      ...Team
-    }
-  }
-  ${TEAM_FRAGMENT}
 `;
 
 export const ACCEPT_TEAM_INVITATION = gql`

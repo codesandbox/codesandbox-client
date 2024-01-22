@@ -76,29 +76,6 @@ export const settingChanged = (
   });
 };
 
-export const paymentDetailsRequested = async ({ state, effects }: Context) => {
-  state.preferences.isLoadingPaymentDetails = true;
-  try {
-    state.preferences.paymentDetails = await effects.api.getPaymentDetails();
-  } catch (error) {
-    state.preferences.paymentDetailError = error.message;
-  }
-  state.preferences.isLoadingPaymentDetails = false;
-};
-
-export const paymentDetailsUpdated = async (
-  { effects, state }: Context,
-  token: string
-) => {
-  state.preferences.isLoadingPaymentDetails = true;
-  state.preferences.paymentDetails = await effects.api.updatePaymentDetails(
-    token
-  );
-  state.preferences.isLoadingPaymentDetails = false;
-
-  effects.notificationToast.success('Successfully updated payment details');
-};
-
 export const zenModeToggled = ({ state }: Context) => {
   state.preferences.settings.zenMode = !state.preferences.settings.zenMode;
 };

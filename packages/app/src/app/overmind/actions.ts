@@ -246,7 +246,6 @@ export const connectionChanged = ({ state }: Context, connected: boolean) => {
 
 type ModalName =
   | 'githubPagesLogs'
-  | 'deleteWorkspace'
   | 'deleteDeployment'
   | 'deleteSandbox'
   | 'feedback'
@@ -263,7 +262,6 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'editorSeatsUpgrade'
   | 'importRepository'
   | 'createSandbox'
   | 'createDevbox'
@@ -656,12 +654,4 @@ export const getSandboxesLimits = async ({ effects, state }: Context) => {
   const limits = await effects.api.sandboxesLimits();
 
   state.sandboxesLimits = limits;
-};
-
-export const openCancelSubscriptionModal = ({ state }: Context) => {
-  state.currentModal = 'subscriptionCancellation';
-};
-
-export const setIsProcessingPayment = ({ state }: Context, value: boolean) => {
-  state.isProcessingPayment = value;
 };

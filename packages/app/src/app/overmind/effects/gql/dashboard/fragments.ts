@@ -17,7 +17,6 @@ export const sandboxFragmentDashboard = gql`
     screenshotOutdated
     viewCount
     likeCount
-    alwaysOn
     isV2
 
     source {
@@ -244,21 +243,6 @@ export const currentTeamInfoFragment = gql`
     featureFlags {
       ubbBeta
     }
-  }
-`;
-
-export const npmRegistryFragment = gql`
-  fragment npmRegistry on PrivateRegistry {
-    id
-    authType
-    enabledScopes
-    limitToScopes
-    proxyEnabled
-    registryAuthKey
-    registryType
-    registryUrl
-    teamId
-    sandpackTrustedDomains
   }
 `;
 

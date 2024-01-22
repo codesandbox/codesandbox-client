@@ -93,7 +93,6 @@ export const Actions = () => {
     signInClicked,
     modalOpened,
     editor: { likeSandboxToggled, forkSandboxClicked },
-    explore: { pickSandboxModal },
   } = useActions();
   const {
     hasLogIn,
@@ -103,15 +102,7 @@ export const Actions = () => {
     live: { isLive },
     editor: { currentSandbox },
   } = useAppState();
-  const {
-    id,
-    author,
-    owned,
-    title,
-    description,
-    likeCount,
-    userLiked,
-  } = currentSandbox;
+  const { id, author, owned, likeCount, userLiked } = currentSandbox;
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
@@ -186,16 +177,6 @@ export const Actions = () => {
         <CollaboratorHeads />
       ) : (
         <NotLive />
-      )}
-
-      {user?.curatorAt && (
-        <Button
-          variant="secondary"
-          css={css({ paddingX: 3 })}
-          onClick={() => pickSandboxModal({ description, id, title })}
-        >
-          Pick
-        </Button>
       )}
 
       {user?.experiments.collaborator &&

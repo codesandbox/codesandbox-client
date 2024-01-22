@@ -15,16 +15,8 @@ import {
   ChangeFrozenMutation,
   ChangeFrozenMutationVariables,
   _PermanentlyDeleteSandboxesMutation,
-  _LeaveTeamMutationVariables,
-  _LeaveTeamMutation,
-  _RemoveFromTeamMutation,
-  _RemoveFromTeamMutationVariables,
-  _InviteToTeamMutation,
-  _InviteToTeamMutationVariables,
   _InviteToTeamViaEmailMutation,
   _InviteToTeamViaEmailMutationVariables,
-  _RevokeTeamInvitationMutation,
-  _RevokeTeamInvitationMutationVariables,
   _AcceptTeamInvitationMutation,
   _AcceptTeamInvitationMutationVariables,
   _RejectTeamInvitationMutation,
@@ -41,36 +33,18 @@ import {
   CreateFolderMutationVariables,
   SetTeamNameMutation,
   SetTeamNameMutationVariables,
-  ChangeTeamMemberAuthorizationMutation,
-  ChangeTeamMemberAuthorizationMutationVariables,
-  CreateOrUpdateNpmRegistryMutation,
-  CreateOrUpdateNpmRegistryMutationVariables,
-  DeleteNpmRegistryMutation,
-  DeleteNpmRegistryMutationVariables,
   DeleteWorkspaceMutation,
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
-  SetWorkspaceSandboxSettingsMutation,
-  SetWorkspaceSandboxSettingsMutationVariables,
   SetPreventSandboxesLeavingWorkspaceMutation,
   SetPreventSandboxesLeavingWorkspaceMutationVariables,
   SetPreventSandboxesExportMutation,
   SetPreventSandboxesExportMutationVariables,
-  SetDefaultTeamMemberAuthorizationMutation,
-  SetDefaultTeamMemberAuthorizationMutationVariables,
   DeleteCurrentUserMutation,
   DeleteCurrentUserMutationVariables,
   CancelDeleteCurrentUserMutation,
   CancelDeleteCurrentUserMutationVariables,
-  UpdateSubscriptionBillingIntervalMutation,
-  UpdateSubscriptionBillingIntervalMutationVariables,
-  PreviewUpdateSubscriptionBillingIntervalMutation,
-  PreviewUpdateSubscriptionBillingIntervalMutationVariables,
-  SoftCancelSubscriptionMutation,
-  SoftCancelSubscriptionMutationVariables,
-  ReactivateSubscriptionMutation,
-  ReactivateSubscriptionMutationVariables,
   UpdateCurrentUserMutation,
   UpdateCurrentUserMutationVariables,
   AddSandboxesToAlbumMutation,
@@ -89,8 +63,6 @@ import {
   DeleteBranchMutationVariables,
   CreateBranchMutation,
   CreateBranchMutationVariables,
-  SetTeamAiConsentMutation,
-  SetTeamAiConsentMutationVariables,
   SetTeamLimitsMutation,
   SetTeamLimitsMutationVariables,
 } from 'app/graphql/types';
@@ -100,8 +72,6 @@ import {
   teamFragmentDashboard,
   sidebarCollectionDashboard,
   sandboxFragmentDashboard,
-  currentTeamInfoFragment,
-  npmRegistryFragment,
 } from './fragments';
 
 export const createTeam: Query<
@@ -241,47 +211,6 @@ export const permanentlyDeleteSandboxes: Query<
   }
 `;
 
-export const leaveTeam: Query<
-  _LeaveTeamMutation,
-  _LeaveTeamMutationVariables
-> = gql`
-  mutation _LeaveTeam($teamId: UUID4!) {
-    leaveTeam(teamId: $teamId)
-  }
-`;
-
-export const removeFromTeam: Query<
-  _RemoveFromTeamMutation,
-  _RemoveFromTeamMutationVariables
-> = gql`
-  mutation _RemoveFromTeam($teamId: UUID4!, $userId: UUID4!) {
-    removeFromTeam(teamId: $teamId, userId: $userId) {
-      ...teamFragmentDashboard
-    }
-  }
-  ${teamFragmentDashboard}
-`;
-
-export const inviteToTeam: Query<
-  _InviteToTeamMutation,
-  _InviteToTeamMutationVariables
-> = gql`
-  mutation _InviteToTeam(
-    $teamId: UUID4!
-    $username: String!
-    $authorization: TeamMemberAuthorization
-  ) {
-    inviteToTeam(
-      teamId: $teamId
-      username: $username
-      authorization: $authorization
-    ) {
-      ...currentTeamInfoFragment
-    }
-  }
-  ${currentTeamInfoFragment}
-`;
-
 export const inviteToTeamViaEmail: Query<
   _InviteToTeamViaEmailMutation,
   _InviteToTeamViaEmailMutationVariables
@@ -297,18 +226,6 @@ export const inviteToTeamViaEmail: Query<
       authorization: $authorization
     )
   }
-`;
-
-export const revokeTeamInvitation: Query<
-  _RevokeTeamInvitationMutation,
-  _RevokeTeamInvitationMutationVariables
-> = gql`
-  mutation _RevokeTeamInvitation($teamId: UUID4!, $userId: UUID4!) {
-    revokeTeamInvitation(teamId: $teamId, userId: $userId) {
-      ...currentTeamInfoFragment
-    }
-  }
-  ${currentTeamInfoFragment}
 `;
 
 export const acceptTeamInvitation: Query<
@@ -378,73 +295,6 @@ export const setTeamName: Query<
   ${teamFragmentDashboard}
 `;
 
-export const changeTeamMemberAuthorization: Query<
-  ChangeTeamMemberAuthorizationMutation,
-  ChangeTeamMemberAuthorizationMutationVariables
-> = gql`
-  mutation ChangeTeamMemberAuthorization(
-    $teamId: UUID4!
-    $userId: UUID4!
-    $authorization: TeamMemberAuthorization!
-    $teamManager: Boolean
-  ) {
-    changeTeamMemberAuthorizations(
-      teamId: $teamId
-      memberAuthorizations: {
-        userId: $userId
-        authorization: $authorization
-        teamManager: $teamManager
-      }
-    ) {
-      id
-    }
-  }
-`;
-
-export const createOrUpdateNpmRegistry: Query<
-  CreateOrUpdateNpmRegistryMutation,
-  CreateOrUpdateNpmRegistryMutationVariables
-> = gql`
-  mutation CreateOrUpdateNpmRegistry(
-    $teamId: UUID4!
-    $registryType: RegistryType!
-    $registryUrl: String
-    $registryAuthKey: String!
-    $registryAuthType: AuthType
-    $proxyEnabled: Boolean!
-    $limitToScopes: Boolean!
-    $enabledScopes: [String!]!
-    $sandpackTrustedDomains: [String!]!
-  ) {
-    createOrUpdatePrivateNpmRegistry(
-      teamId: $teamId
-      registryType: $registryType
-      registryUrl: $registryUrl
-      registryAuthKey: $registryAuthKey
-      authType: $registryAuthType
-      proxyEnabled: $proxyEnabled
-      limitToScopes: $limitToScopes
-      enabledScopes: $enabledScopes
-      sandpackTrustedDomains: $sandpackTrustedDomains
-    ) {
-      ...npmRegistry
-    }
-  }
-  ${npmRegistryFragment}
-`;
-
-export const deleteNpmRegistry: Query<
-  DeleteNpmRegistryMutation,
-  DeleteNpmRegistryMutationVariables
-> = gql`
-  mutation DeleteNpmRegistry($teamId: UUID4!) {
-    deletePrivateNpmRegistry(teamId: $teamId) {
-      ...npmRegistry
-    }
-  }
-  ${npmRegistryFragment}
-`;
-
 export const deleteWorkspace: Query<
   DeleteWorkspaceMutation,
   DeleteWorkspaceMutationVariables
@@ -469,26 +319,6 @@ export const setTeamMinimumPrivacy: Query<
       updateDrafts: $updateDrafts
     ) {
       minimumPrivacy
-    }
-  }
-`;
-
-export const setWorkspaceSandboxSettings: Query<
-  SetWorkspaceSandboxSettingsMutation,
-  SetWorkspaceSandboxSettingsMutationVariables
-> = gql`
-  mutation setWorkspaceSandboxSettings(
-    $teamId: UUID4!
-    $preventSandboxLeaving: Boolean!
-    $preventSandboxExport: Boolean!
-  ) {
-    setWorkspaceSandboxSettings(
-      teamId: $teamId
-      preventSandboxLeaving: $preventSandboxLeaving
-      preventSandboxExport: $preventSandboxExport
-    ) {
-      preventSandboxLeaving
-      preventSandboxExport
     }
   }
 `;
@@ -527,23 +357,6 @@ export const setPreventSandboxesExport: Query<
   }
 `;
 
-export const setDefaultTeamMemberAuthorization: Query<
-  SetDefaultTeamMemberAuthorizationMutation,
-  SetDefaultTeamMemberAuthorizationMutationVariables
-> = gql`
-  mutation setDefaultTeamMemberAuthorization(
-    $teamId: UUID4!
-    $defaultAuthorization: TeamMemberAuthorization!
-  ) {
-    setDefaultTeamMemberAuthorization(
-      teamId: $teamId
-      defaultAuthorization: $defaultAuthorization
-    ) {
-      defaultAuthorization
-    }
-  }
-`;
-
 export const deleteAccount: Query<
   DeleteCurrentUserMutation,
   DeleteCurrentUserMutationVariables
@@ -559,74 +372,6 @@ export const undoDeleteAccount: Query<
 > = gql`
   mutation cancelDeleteCurrentUser {
     cancelDeleteCurrentUser
-  }
-`;
-
-export const updateSubscriptionBillingInterval: Query<
-  UpdateSubscriptionBillingIntervalMutation,
-  UpdateSubscriptionBillingIntervalMutationVariables
-> = gql`
-  mutation updateSubscriptionBillingInterval(
-    $teamId: UUID4!
-    $subscriptionId: UUID4!
-    $billingInterval: SubscriptionInterval!
-  ) {
-    updateSubscriptionBillingInterval(
-      teamId: $teamId
-      subscriptionId: $subscriptionId
-      billingInterval: $billingInterval
-    ) {
-      id
-    }
-  }
-`;
-
-export const previewUpdateSubscriptionBillingInterval: Query<
-  PreviewUpdateSubscriptionBillingIntervalMutation,
-  PreviewUpdateSubscriptionBillingIntervalMutationVariables
-> = gql`
-  mutation previewUpdateSubscriptionBillingInterval(
-    $teamId: UUID4!
-    $subscriptionId: UUID4!
-    $billingInterval: SubscriptionInterval!
-  ) {
-    previewUpdateSubscriptionBillingInterval(
-      teamId: $teamId
-      subscriptionId: $subscriptionId
-      billingInterval: $billingInterval
-    ) {
-      immediatePayment {
-        amount
-        currency
-      }
-      nextPayment {
-        amount
-        currency
-      }
-    }
-  }
-`;
-
-export const softCancelSubscription: Query<
-  SoftCancelSubscriptionMutation,
-  SoftCancelSubscriptionMutationVariables
-> = gql`
-  mutation softCancelSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
-    softCancelSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
-      id
-      cancelAt
-    }
-  }
-`;
-
-export const reactivateSubscription: Query<
-  ReactivateSubscriptionMutation,
-  ReactivateSubscriptionMutationVariables
-> = gql`
-  mutation reactivateSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
-    reactivateSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
-      id
-    }
   }
 `;
 
@@ -739,32 +484,6 @@ export const createBranch: Query<
     createBranch(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
       id
       name
-    }
-  }
-`;
-
-export const setTeamAiConsent: Query<
-  SetTeamAiConsentMutation,
-  SetTeamAiConsentMutationVariables
-> = gql`
-  mutation SetTeamAiConsent(
-    $teamId: UUID4!
-    $privateRepositories: Boolean!
-    $privateSandboxes: Boolean!
-    $publicSandboxes: Boolean!
-    $publicRepositories: Boolean!
-  ) {
-    setTeamAiConsent(
-      teamId: $teamId
-      privateRepositories: $privateRepositories
-      privateSandboxes: $privateSandboxes
-      publicSandboxes: $publicSandboxes
-      publicRepositories: $publicRepositories
-    ) {
-      privateRepositories
-      privateSandboxes
-      publicSandboxes
-      publicRepositories
     }
   }
 `;

@@ -134,11 +134,6 @@ const Pro = Loadable(() =>
     default: module.ProPage,
   }))
 );
-const Curator = Loadable(() =>
-  import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
-    default: module.Curator,
-  }))
-);
 
 // @ts-ignore
 const CodeSadbox = () => this[`💥`].kaboom();
@@ -192,7 +187,6 @@ const RoutesComponent: React.FC = () => {
             <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={Dashboard} />
-            <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />

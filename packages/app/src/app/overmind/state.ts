@@ -1,7 +1,6 @@
 import {
   CurrentUser,
   Notification,
-  Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
 import {
@@ -25,7 +24,6 @@ type State = {
   isFirstVisit: boolean;
   isLoggedIn: boolean;
   hasLogIn: boolean;
-  popularSandboxes: Sandbox[] | null;
   officialTemplates: TemplateFragment[];
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
@@ -81,11 +79,6 @@ type State = {
     sandboxCount: number;
     sandboxLimit: number;
   } | null;
-  /**
-   * This flag is set when the user returns form stripe with a success flag
-   * but our data does not year have the workspace subscription information
-   */
-  isProcessingPayment: boolean;
 
   /**
    * Different features might be available based on the backend response
@@ -120,7 +113,6 @@ export const state: State = {
         contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
     ) > -1
   ),
-  popularSandboxes: null,
   officialTemplates: [],
   hasLoadedApp: false,
   isAuthenticating: true,
@@ -170,7 +162,6 @@ export const state: State = {
     google: false,
     github: false,
   },
-  isProcessingPayment: false,
   features: {
     // Fallback values for when the features endpoint is not available
     loginWithApple: true,

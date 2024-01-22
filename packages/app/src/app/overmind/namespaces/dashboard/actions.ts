@@ -8,12 +8,8 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
-  TeamMemberAuthorization,
-  CreateOrUpdateNpmRegistryMutationVariables,
-  DeleteNpmRegistryMutationVariables,
   CuratedAlbumByIdQueryVariables,
   ProjectFragment,
-  ChangeTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -167,135 +163,6 @@ export const getTeams = async ({ state, effects }: Context) => {
   state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
   state.userCanStartTrial = teams.me.eligibleForTrial;
   state.userFeatureFlags = teams.me.featureFlags;
-};
-
-export const removeFromTeam = async (
-  { state, actions, effects }: Context,
-  id: string
-) => {
-  if (!state.activeTeam || !state.activeTeamInfo) return;
-  try {
-    effects.analytics.track('Dashboard - Remove Team Member');
-    await effects.gql.mutations.removeFromTeam({
-      teamId: state.activeTeam,
-      userId: id,
-    });
-
-    state.activeTeamInfo = {
-      ...state.activeTeamInfo,
-      users: (state.activeTeamInfo.users || []).filter(user => user.id !== id),
-    };
-    // update all other fields related to team
-    actions.getActiveTeamInfo();
-  } catch {
-    effects.notificationToast.error(
-      'There has been a problem removing them from your workspace'
-    );
-  }
-};
-
-export const leaveTeam = async ({ state, effects, actions }: Context) => {
-  if (!state.activeTeam || !state.activeTeamInfo) return;
-  try {
-    effects.analytics.track('Team - Leave Team', {
-      dashboardVersion: 2,
-    });
-    await effects.gql.mutations.leaveTeam({
-      teamId: state.activeTeam,
-    });
-
-    await actions.dashboard.getTeams();
-
-    actions.internal.setFallbackWorkspace();
-
-    effects.notificationToast.success(
-      `You successfully left the ${state.activeTeamInfo.name} workspace`
-    );
-  } catch (e) {
-    effects.notificationToast.error(
-      'There has been a problem removing your from the workspace'
-    );
-  }
-};
-
-export const inviteToTeam = async (
-  { state, actions, effects }: Context,
-  {
-    value,
-    authorization = null,
-    confirm = false,
-    triggerPlace,
-    inviteLink,
-  }: {
-    value: string;
-    authorization?: TeamMemberAuthorization | null;
-    confirm?: boolean;
-    triggerPlace: 'settings' | 'invite-modal';
-    inviteLink: string;
-  }
-) => {
-  if (!state.activeTeam) return;
-  const isEmail = value.includes('@');
-
-  if (confirm) {
-    const confirmed = await actions.modals.alertModal.open({
-      title: 'Add New Member',
-      customComponent: 'MemberPaymentConfirmation',
-    });
-
-    // if the user cancels the function, bail
-    if (!confirmed) {
-      effects.analytics.track('Team - Cancel Add Member', {
-        dashboardVersion: 2,
-        isEmail,
-      });
-      return;
-    }
-  }
-
-  try {
-    effects.analytics.track('Team - Add Member', {
-      place: triggerPlace,
-      inviteLink,
-      dashboardVersion: 2,
-      isEmail,
-    });
-    let data: any | null = null;
-    if (isEmail) {
-      const emailInvited = await effects.gql.mutations.inviteToTeamViaEmail({
-        teamId: state.activeTeam,
-        email: value,
-        authorization,
-      });
-
-      data = emailInvited.inviteToTeamViaEmail;
-    } else {
-      const result = await effects.gql.mutations.inviteToTeam({
-        teamId: state.activeTeam,
-        username: value,
-        authorization,
-      });
-
-      state.activeTeamInfo = result.inviteToTeam;
-      data = result.inviteToTeam;
-    }
-
-    if (!data) {
-      return;
-    }
-
-    effects.notificationToast.success(
-      `Successfully invited ${value} to your workspace`
-    );
-  } catch (e) {
-    const errorMessageExists =
-      e.response && e.response.errors && e.response.errors.length;
-    effects.notificationToast.error(
-      errorMessageExists
-        ? e.response.errors[0].message
-        : `There was a problem inviting ${value} to your workspace`
-    );
-  }
 };
 
 export const getAllFolders = async ({ state, effects }: Context) => {
@@ -569,23 +436,6 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
 
   try {
-    /**
-     * For now we decided to NOT show the templates on the home page
-     * But I would keep this code as it is referenced in a lot of places and (TEMPLATE_HOME)
-     * and we might bring it back later on.
-
-    const usedTemplates = await effects.gql.queries.listPersonalTemplates({
-      teamId: state.activeTeam,
-    });
-    if (!usedTemplates || !usedTemplates.me) {
-      return;
-    }
-    dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
-      0,
-      5
-    );
-    */
-
     const sandboxesResult = await effects.gql.queries.recentlyAccessedSandboxes(
       {
         limit: 18,
@@ -991,26 +841,6 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
   }
 };
 
-export const getAlwaysOnSandboxes = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
-  try {
-    const activeTeam = state.activeTeam;
-    if (!activeTeam) return;
-
-    const data = await effects.gql.queries.alwaysOnTeamSandboxes({
-      teamId: activeTeam,
-    });
-
-    if (data?.me?.team?.sandboxes == null) return;
-
-    dashboard.sandboxes[sandboxesTypes.ALWAYS_ON] = data.me.team.sandboxes;
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem getting your sandboxes'
-    );
-  }
-};
-
 export const getPage = async (
   { actions, state }: Context,
   page: sandboxesTypes
@@ -1037,9 +867,6 @@ export const getPage = async (
           teamId: state.activeTeam,
         });
       }
-      break;
-    case sandboxesTypes.ALWAYS_ON:
-      dashboard.getAlwaysOnSandboxes();
       break;
     case sandboxesTypes.SHARED:
       dashboard.getSharedSandboxes();
@@ -1130,57 +957,15 @@ export const createTeam = async (
   return newTeam;
 };
 
-export const revokeTeamInvitation = async (
-  { effects, state }: Context,
-  {
-    teamId,
-    userId,
-  }: {
-    teamId: string;
-    userId: string;
-  }
-) => {
-  const oldInvitees = state.activeTeamInfo!.invitees;
-  const user = state.activeTeamInfo!.invitees.find(f => f.id === userId);
-  state.activeTeamInfo!.invitees = state.activeTeamInfo!.invitees.filter(
-    f => f.id !== userId
-  );
-
-  try {
-    const result = await effects.gql.mutations.revokeTeamInvitation({
-      userId,
-      teamId,
-    });
-
-    state.activeTeamInfo = result.revokeTeamInvitation;
-
-    let successMessage = 'Successfully revoked invitation';
-    if (user) {
-      successMessage += ` to ${user.username}`;
-    }
-    effects.notificationToast.success(successMessage);
-  } catch (e) {
-    state.activeTeamInfo!.invitees = oldInvitees;
-  }
-};
-
-export const setTeamInfo = async (
+export const renameCurrentTeam = async (
   { effects, state, actions }: Context,
   {
     name,
-    description,
-    file,
   }: {
     name: string;
-    description: string | null;
-    file: { name: string; url: string } | null;
   }
 ) => {
   if (!state.activeTeam) return;
-
-  effects.analytics.track('Team - Update Info', {
-    dashboardVersion: 2,
-  });
 
   const oldTeamInfo = state.dashboard.teams.find(
     team => team.id === state.activeTeam
@@ -1194,28 +979,11 @@ export const setTeamInfo = async (
       teamId: state.activeTeam,
     });
 
-    if (description) {
-      await effects.gql.mutations.setTeamDescription({
-        description,
-        // only way to pass, null is a value in the BE
-        // @ts-ignore
-        teamId: state.activeTeam,
-      });
-    }
-
-    if (file) {
-      await actions.dashboard.updateTeamAvatar({
-        ...file,
-        teamId: state.activeTeam,
-      });
-    }
     state.dashboard.teams = state.dashboard.teams.map(team => {
       if (oldTeamInfo && team.id === oldTeamInfo.id) {
         return {
           ...team,
           name,
-          description,
-          avatarUrl: file ? file.url : team.avatarUrl,
         };
       }
 
@@ -1226,8 +994,6 @@ export const setTeamInfo = async (
       state.activeTeamInfo = {
         ...oldActiveTeamInfo,
         name,
-        description,
-        avatarUrl: file ? file.url : oldActiveTeamInfo.avatarUrl,
       };
     }
   } catch (e) {
@@ -1330,164 +1096,12 @@ export const changeSandboxesPrivacy = async (
   }
 };
 
-export const updateTeamAvatar = async (
-  { actions, effects, state }: Context,
-  {
-    name,
-    url,
-    teamId,
-  }: {
-    name: string;
-    url: string;
-    teamId: string;
-  }
-) => {
-  if (!state.activeTeamInfo || !state.user) return;
-  const oldAvatar = state.activeTeamInfo.avatarUrl;
-
-  state.activeTeamInfo.avatarUrl = url;
-  effects.analytics.track('Team - Update Team Avatar', { dashboardVersion: 2 });
-
-  try {
-    await effects.api.updateTeamAvatar(name, url, teamId);
-  } catch (error) {
-    state.activeTeamInfo.avatarUrl = oldAvatar;
-
-    actions.internal.handleError({
-      message: "We weren't able to update your team avatar",
-      error,
-    });
-  }
-};
-
-export const changeAuthorizationInState = (
-  { state }: Context,
-  {
-    userId,
-    authorization,
-  }: {
-    userId: string;
-    authorization: TeamMemberAuthorization;
-  }
-) => {
-  const userAuthorizations = state.activeTeamInfo!.userAuthorizations.map(
-    user => {
-      if (user.userId === userId) return { ...user, authorization };
-      return user;
-    }
-  );
-
-  state.activeTeamInfo!.userAuthorizations = userAuthorizations;
-};
-
-type ChangeAuthorizationParams = Omit<
-  ChangeTeamMemberAuthorizationMutationVariables,
-  'teamId'
-> & {
-  confirm?: boolean;
-};
-export const changeAuthorization = async (
-  { state, effects, actions }: Context,
-  { userId, authorization, confirm, teamManager }: ChangeAuthorizationParams
-) => {
-  if (confirm) {
-    const confirmed = await actions.modals.alertModal.open({
-      title: 'Change Authorization',
-      customComponent: 'MemberPaymentConfirmation',
-    });
-
-    // if the user cancels the function, bail
-    if (!confirmed) return;
-  }
-
-  // optimistic update
-  const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
-    user => user.userId === userId
-  )!.authorization;
-
-  actions.dashboard.changeAuthorizationInState({ userId, authorization });
-
-  try {
-    await effects.gql.mutations.changeTeamMemberAuthorization({
-      teamId: state.activeTeam!,
-      userId,
-      authorization,
-      teamManager,
-    });
-    actions.getActiveTeamInfo();
-  } catch (e) {
-    let message = 'There has been a problem changing user authorization.';
-    if (e?.response?.errors) {
-      message += ' ' + e.response.errors.map(error => error.message).join(', ');
-    }
-
-    effects.notificationToast.error(message);
-
-    // undo optimistic update
-    actions.dashboard.changeAuthorizationInState({
-      userId,
-      authorization: oldAuthorization,
-    });
-  }
-};
-
-export const deleteCurrentNpmRegistry = async (
-  { state, actions, effects }: Context,
-  params: Omit<DeleteNpmRegistryMutationVariables, 'teamId'>
-) => {
-  const confirmed = await actions.modals.alertModal.open({
-    title: 'Are you sure?',
-    message: 'This will reset the current private npm registry information.',
-  });
-  if (confirmed) {
-    try {
-      await effects.gql.mutations.deleteNpmRegistry({
-        ...params,
-        teamId: state.activeTeam,
-      });
-
-      await actions.dashboard.fetchCurrentNpmRegistry();
-
-      effects.notificationToast.success('Successfully reset the registry!');
-    } catch (e) {
-      actions.internal.handleError({
-        message: 'There was a problem resetting the registry settings',
-        error: e,
-      });
-    }
-  }
-};
-
-export const createOrUpdateCurrentNpmRegistry = async (
-  { state, actions, effects }: Context,
-  params: Omit<CreateOrUpdateNpmRegistryMutationVariables, 'teamId'>
-) => {
-  try {
-    await effects.gql.mutations.createOrUpdateNpmRegistry({
-      ...params,
-      teamId: state.activeTeam,
-    });
-
-    await actions.dashboard.fetchCurrentNpmRegistry();
-
-    effects.notificationToast.success(
-      'Successfully saved new registry settings!'
-    );
-  } catch (e) {
-    actions.internal.handleError({
-      message: 'There was a problem saving the registry settings',
-      error: e,
-    });
-  }
-};
-
 export const deleteWorkspace = async ({ actions, effects, state }: Context) => {
   if (!state.activeTeamInfo) return;
 
   try {
     await effects.gql.mutations.deleteWorkspace({ teamId: state.activeTeam });
 
-    actions.modalClosed();
     effects.router.redirectToDashboard();
     await actions.dashboard.getTeams();
 
@@ -1502,34 +1116,6 @@ export const deleteWorkspace = async ({ actions, effects, state }: Context) => {
     actions.internal.handleError({
       message: 'There was a problem deleting your workspace',
       error: { name: 'Delete workspace', message },
-    });
-  }
-};
-
-export const fetchCurrentNpmRegistry = async ({
-  state,
-  effects,
-  actions,
-}: Context) => {
-  const activeTeam = state.activeTeam;
-  if (!activeTeam) {
-    return;
-  }
-
-  try {
-    const data = await effects.gql.queries.getPrivateNpmRegistry({
-      teamId: activeTeam,
-    });
-
-    // Check if active team is still the same
-    if (activeTeam === state.activeTeam) {
-      state.dashboard.workspaceSettings.npmRegistry =
-        data.me?.team?.privateRegistry || null;
-    }
-  } catch (error) {
-    actions.internal.handleError({
-      message: 'There was a problem fetcing the registry',
-      error,
     });
   }
 };
@@ -1572,73 +1158,6 @@ export const setTeamMinimumPrivacy = async (
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem updating your settings'
-    );
-  }
-};
-
-export const setTeamAiConsent = async (
-  { state, effects }: Context,
-  params: {
-    privateRepositories: boolean;
-    privateSandboxes: boolean;
-    publicSandboxes: boolean;
-    publicRepositories: boolean;
-  }
-) => {
-  const teamId = state.activeTeam;
-
-  try {
-    await effects.gql.mutations.setTeamAiConsent({
-      ...params,
-      teamId,
-    });
-
-    effects.notificationToast.success('AI permissions updated.');
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem updating your workspace settings'
-    );
-  }
-};
-
-export const setWorkspaceSandboxSettings = async (
-  { state, effects }: Context,
-  {
-    preventSandboxLeaving,
-    preventSandboxExport,
-  }: {
-    preventSandboxLeaving: boolean;
-    preventSandboxExport: boolean;
-  }
-) => {
-  if (!state.activeTeamInfo || !state.activeTeamInfo.settings) return;
-
-  const teamId = state.activeTeam;
-  // optimistic update
-  const oldLeavingValue = state.activeTeamInfo.settings.preventSandboxLeaving;
-  const oldExportValue = state.activeTeamInfo.settings.preventSandboxExport;
-  state.activeTeamInfo.settings.preventSandboxLeaving = preventSandboxLeaving;
-  state.activeTeamInfo.settings.preventSandboxExport = preventSandboxExport;
-
-  effects.analytics.track('Team - Change workspace sandbox permissions', {
-    preventSandboxLeaving,
-    preventSandboxExport,
-  });
-
-  try {
-    await effects.gql.mutations.setWorkspaceSandboxSettings({
-      teamId,
-      preventSandboxLeaving,
-      preventSandboxExport,
-    });
-
-    effects.notificationToast.success('Workspace sandbox permissions updated.');
-  } catch (error) {
-    state.activeTeamInfo.settings.preventSandboxLeaving = oldLeavingValue;
-    state.activeTeamInfo.settings.preventSandboxExport = oldExportValue;
-
-    effects.notificationToast.error(
-      'There was a problem updating your workspace settings'
     );
   }
 };
@@ -1734,42 +1253,6 @@ export const setPreventSandboxesExport = async (
     );
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
-    );
-  }
-};
-
-export const setDefaultTeamMemberAuthorization = async (
-  { state, effects }: Context,
-  {
-    defaultAuthorization,
-  }: {
-    defaultAuthorization: TeamMemberAuthorization;
-  }
-) => {
-  if (!state.activeTeamInfo || !state.activeTeamInfo.settings) return;
-
-  const teamId = state.activeTeam;
-
-  // optimistic update
-  const oldValue = state.activeTeamInfo.settings.defaultAuthorization;
-  state.activeTeamInfo.settings.defaultAuthorization = defaultAuthorization;
-
-  effects.analytics.track('Team - Change default authorization', {
-    defaultAuthorization,
-  });
-
-  try {
-    await effects.gql.mutations.setDefaultTeamMemberAuthorization({
-      teamId,
-      defaultAuthorization,
-    });
-
-    effects.notificationToast.success('Default member permissions updated.');
-  } catch (error) {
-    state.activeTeamInfo.settings.defaultAuthorization = oldValue;
-
-    effects.notificationToast.error(
-      'There was a problem updating default member permissions'
     );
   }
 };
