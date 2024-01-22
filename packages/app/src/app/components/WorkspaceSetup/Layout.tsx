@@ -22,6 +22,10 @@ export const WorkspaceFlowLayout: React.FC<{
             width: '100%',
             height: '100vh',
             margin: 'auto',
+            '@media (max-width: 768px)': {
+              flexDirection: 'column',
+              height: 'auto',
+            },
           }}
           justify={showSummary ? 'space-between' : 'center'}
         >
@@ -32,6 +36,9 @@ export const WorkspaceFlowLayout: React.FC<{
               flex: 1,
               '@media (max-width: 1330px)': {
                 padding: '64px 24px',
+              },
+              '@media (max-width: 768px)': {
+                height: 'auto',
               },
             }}
             align="flex-start"
@@ -72,4 +79,8 @@ const SlidePanel = styled.div`
   box-sizing: border-box;
   flex: 1;
   max-width: 585px;
+  @media (max-width: 768px) {
+    max-width: initial;
+    width: 100%;
+  }
 `;
