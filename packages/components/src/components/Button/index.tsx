@@ -30,7 +30,7 @@ const variantStyles = {
   },
   link: {
     backgroundColor: 'transparent',
-    color: 'mutedForeground',
+    color: '#dbdbdb',
 
     ':hover:not(:disabled), :focus:not(:disabled)': {
       color: 'foreground',
@@ -39,7 +39,7 @@ const variantStyles = {
   },
   ghost: {
     backgroundColor: 'transparent',
-    color: 'mutedForeground',
+    color: '#dbdbdb',
 
     ':hover:not(:disabled), :focus:not(:disabled)': {
       color: 'foreground',

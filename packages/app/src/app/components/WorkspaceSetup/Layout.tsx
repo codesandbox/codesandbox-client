@@ -10,29 +10,40 @@ export const WorkspaceFlowLayout: React.FC<{
   return (
     <ThemeProvider>
       <Stack
-        justify={showSummary ? 'flex-start' : 'center'}
         css={{
           backgroundColor: '#0E0E0E',
-          minHeight: '100vh',
           width: '100%',
           fontFamily: 'Inter, sans-serif',
-          overflow: 'hidden',
         }}
       >
-        {showSummary && (
-          <SlidePanel>
-            <Summary allowChanges={allowSummaryChanges} />
-          </SlidePanel>
-        )}
         <Stack
           css={{
-            height: '100%',
-            padding: '64px',
+            maxWidth: '1920px',
+            width: '100%',
+            height: '100vh',
+            margin: 'auto',
           }}
-          align="flex-start"
-          justify="center"
+          justify={showSummary ? 'space-between' : 'center'}
         >
-          {children}
+          <Stack
+            css={{
+              height: '100%',
+              padding: '64px',
+              flex: 1,
+              '@media (max-width: 1330px)': {
+                padding: '64px 24px',
+              },
+            }}
+            align="flex-start"
+            justify="center"
+          >
+            {children}
+          </Stack>
+          {showSummary && (
+            <SlidePanel>
+              <Summary allowChanges={allowSummaryChanges} />
+            </SlidePanel>
+          )}
         </Stack>
       </Stack>
     </ThemeProvider>
@@ -41,12 +52,12 @@ export const WorkspaceFlowLayout: React.FC<{
 
 const slideIn = keyframes`
   0% {
-    translate: -100%;
+    translate: 100%;
     opacity: 0;
   }
 
   50% {
-    translate: -100%;
+    translate: 100%;
   }
 
   100% {
@@ -59,4 +70,6 @@ const SlidePanel = styled.div`
   animation: ${slideIn} 0.25s ease-out;
   background: #242424;
   box-sizing: border-box;
+  flex: 1;
+  max-width: 585px;
 `;

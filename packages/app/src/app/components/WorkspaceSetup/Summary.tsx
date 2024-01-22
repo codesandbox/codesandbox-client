@@ -26,6 +26,9 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
       direction="vertical"
       css={{
         padding: '64px 48px',
+        '@media (max-width: 1330px)': {
+          padding: '64px 24px',
+        },
       }}
     >
       <Text size={6} color="#fff">
@@ -142,7 +145,7 @@ const QuantityCounter: React.FC<{
     <Stack
       align="center"
       justify="space-between"
-      css={{ border: '1px solid #3B3B3B', borderRadius: '4px', width: '84px' }}
+      css={{ border: '1px solid #5c5c5c', borderRadius: '4px', width: '84px' }}
     >
       <IconButton
         title={quantity === 1 ? 'Remove addon' : 'Decrease quantity'}
@@ -151,7 +154,7 @@ const QuantityCounter: React.FC<{
         name="minus"
         css={{ borderRadius: '3px 0 0 3px' }} // 3px fills the space inside the 4px border radius wrapper
       />
-      <Text>{quantity}</Text>
+      <Text color="#fff">{quantity}</Text>
       <IconButton
         title="Increase quantity"
         onClick={onIncrement}
