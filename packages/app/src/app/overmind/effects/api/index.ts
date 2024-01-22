@@ -645,8 +645,8 @@ export default {
       sandboxLimit: number;
     }>(`/sandboxes/limits`);
   },
-  getPrices() {
-    return api.get(`/prices`, undefined, { version: '2023-08-15' });
+  getPrices(version?: string) {
+    return api.get(`/prices`, undefined, { version: version || '2023-08-15' });
   },
   stripeCreateCheckout({
     success_path,
