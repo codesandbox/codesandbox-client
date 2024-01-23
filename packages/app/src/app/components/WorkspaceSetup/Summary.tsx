@@ -120,12 +120,8 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
 
       <Text>
         Additional VM credits are available on-demand for $0.018/credit.
-        {spendingLimit > 0 && (
-          <>
-            <br />
-            Spending limit: ${spendingLimit}
-          </>
-        )}
+        <br />
+        Spending limit: ${spendingLimit}
       </Text>
     </Stack>
   );
