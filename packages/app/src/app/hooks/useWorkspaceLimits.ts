@@ -53,7 +53,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isCloseToOutOfCredits ||
       isAtSpendingLimit ||
       isCloseToSpendingLimit,
-    isFrozen: frozen,
+    isFrozen: ubbBeta && frozen,
   };
 };
 
