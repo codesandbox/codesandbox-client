@@ -79,7 +79,7 @@ export const Addons: React.FC<StepProps> = ({
         <Stack direction="vertical" gap={8}>
           <Stack direction="vertical" gap={2}>
             <Text color="#e5e5e5" size={6}>
-              Would you like to add Sandboxes to your plan?
+              Would you like to add more Sandboxes to your plan?
             </Text>
             <Text>
               Sandboxes are powered by your browser and don&apos;t require
