@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
-import { Link as RouterLink } from 'react-router-dom';
 
 import {
   SkeletonText,
@@ -10,7 +9,6 @@ import {
   Stack,
   Text,
   Icon,
-  Link,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 
@@ -24,7 +22,6 @@ import { SolidSkeleton } from 'app/pages/Dashboard/Components/Skeleton';
 import { ProjectFragment as Repository } from 'app/graphql/types';
 import { AuthorizeForSuggested } from 'app/components/Create/ImportRepository/AuthorizeForSuggested';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 import { EmptyPage } from '../EmptyPage';
 
@@ -35,7 +32,6 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
   const [isImporting, setIsImporting] = useState<boolean>(false);
   const githubAccounts = useGithubAccounts();
   const { restrictsPrivateRepos } = useGitHubPermissions();
-  const { isFree } = useWorkspaceSubscription();
 
   const selectOptions = useMemo(
     () =>
@@ -178,7 +174,6 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
         <Text>No GitHub repositories found to import.</Text>
       ) : null}
 
-      {isFree ? <UpgradeMessage page={page} /> : null}
       {restrictsPrivateRepos ? <AuthorizeForSuggested /> : null}
     </EmptyPage.StyledGridWrapper>
   );
@@ -223,34 +218,5 @@ const SuggestionCard = ({
         </Stack>
       </StyledCard>
     </InteractiveOverlay>
-  );
-};
-
-const UpgradeMessage = ({ page }: { page: string }) => {
-  const { isEligibleForTrial } = useWorkspaceSubscription();
-
-  return (
-    <Text color="#999999" size={12}>
-      <Link
-        as={RouterLink}
-        to="/pro"
-        onClick={() => {
-          track(
-            `Suggested repos - ${
-              isEligibleForTrial ? 'Start a trial' : 'Upgrade to Pro'
-            } from ${page} page`,
-            {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            }
-          );
-        }}
-      >
-        <Text color="#EDFFA5">
-          {isEligibleForTrial ? 'Start a free trial' : 'Upgrade to Pro'}{' '}
-        </Text>
-      </Link>{' '}
-      to import private repositories.
-    </Text>
   );
 };

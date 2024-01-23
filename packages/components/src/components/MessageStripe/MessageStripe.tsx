@@ -58,11 +58,10 @@ export const MessageMultiActions = ({
 const backgroundVariants: Record<Variant, string> = {
   trial: '#644ED7',
   warning: '#F7CC66',
-  error: '#F9CDCD',
+  error: '#F5A8A8',
   primary: 'button.background',
   info: '#7DA1F9',
 };
-
 const colorVariants: Record<Variant, string> = {
   trial: 'inherit',
   warning: '#0E0E0E',

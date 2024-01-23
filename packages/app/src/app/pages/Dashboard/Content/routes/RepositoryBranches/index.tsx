@@ -54,7 +54,7 @@ export const RepositoryBranchesPage = () => {
   const { isFree } = useWorkspaceSubscription();
   const { ubbBeta } = useWorkspaceFeatureFlags();
   const isPrivate = repositoryProject?.repository.private;
-  const restricted = (!ubbBeta && isFree && isPrivate) || isFrozen;
+  const restricted = !ubbBeta && isFree && isPrivate;
 
   const pageType: PageTypes = 'repository-branches';
 
@@ -103,7 +103,7 @@ export const RepositoryBranchesPage = () => {
         type: 'new-branch',
         workspaceId: repositoryProject?.team?.id,
         repo: { owner, name },
-        disabled: restricted,
+        disabled: restricted || isFrozen,
         onClick: () => {
           actions.dashboard.createDraftBranch({
             owner,

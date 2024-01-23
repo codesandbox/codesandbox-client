@@ -138,7 +138,8 @@ export const RecentContent: React.FC<RecentContentProps> = ({
   const { isFrozen } = useWorkspaceLimits();
   const { restrictsPublicRepos } = useGitHubPermissions();
   const page: PageTypes = 'recent';
-  const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
+  const showRepositoryImport =
+    !isOnPrem && !isFrozen && restrictsPublicRepos === false;
   const showDocsLine = !isOnPrem;
   const branches = recentItems.filter(
     item => item.type === 'branch'
