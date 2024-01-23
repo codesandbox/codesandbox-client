@@ -8,7 +8,7 @@ const SPENDING_LIMIT_WARNING = 0.9; // 90% of the included + ondemand credits us
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const { activeTeamInfo } = useAppState();
   const { isFree, isPro } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
+  const { ubbBeta, friendOfCsb } = useWorkspaceFeatureFlags();
 
   if (!activeTeamInfo) {
     return {
@@ -28,18 +28,20 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const hasOver20Sandboxes = isFree === true && usage.sandboxes > 20;
   const hasOver200Sandboxes = isFree === true && usage.sandboxes > 200;
 
-  const isOutOfCredits = ubbBeta && isFree === true && frozen;
+  const isOutOfCredits = !friendOfCsb && ubbBeta && isFree && frozen;
   const isCloseToOutOfCredits =
+    !friendOfCsb &&
     ubbBeta &&
-    isFree === true &&
+    isFree &&
     !frozen &&
     limits.includedCredits - usage.credits < OUT_OF_CREDITS_TRESHOLD;
-  const isAtSpendingLimit = ubbBeta && isPro === true && frozen;
+  const isAtSpendingLimit = !friendOfCsb && ubbBeta && isPro && frozen;
 
   const onDemandCreditsLimit = limits.onDemandCreditLimit ?? 0;
   const isCloseToSpendingLimit =
+    !friendOfCsb &&
     ubbBeta &&
-    isPro === true &&
+    isPro &&
     !frozen &&
     usage.credits / (limits.includedCredits + onDemandCreditsLimit) >
       SPENDING_LIMIT_WARNING;
@@ -56,7 +58,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isCloseToOutOfCredits ||
       isAtSpendingLimit ||
       isCloseToSpendingLimit,
-    isFrozen: ubbBeta && frozen,
+    isFrozen: !friendOfCsb && ubbBeta && frozen,
   };
 };
 

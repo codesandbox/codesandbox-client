@@ -156,6 +156,7 @@ export const teamFragmentDashboard = gql`
 
     featureFlags {
       ubbBeta
+      friendOfCsb
     }
   }
 `;
@@ -234,6 +235,7 @@ export const currentTeamInfoFragment = gql`
 
     featureFlags {
       ubbBeta
+      friendOfCsb
     }
   }
 `;
