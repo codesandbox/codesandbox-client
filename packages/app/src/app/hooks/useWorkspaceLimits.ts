@@ -38,7 +38,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const isCloseToSpendingLimit =
     ubbBeta &&
     isPro === true &&
-    limits.onDemandCreditLimit &&
+    !!limits.onDemandCreditLimit &&
     usage.credits / (limits.includedCredits + limits.onDemandCreditLimit) >
       SPENDING_LIMIT_WARNING;
 
