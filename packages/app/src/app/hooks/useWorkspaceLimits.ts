@@ -1,5 +1,6 @@
 import { useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from './useWorkspaceSubscription';
+import { useWorkspaceFeatureFlags } from './useWorkspaceFeatureFlags';
 
 const OUT_OF_CREDITS_TRESHOLD = 50; // 50 credits left from the free plan included credits
 const SPENDING_LIMIT_WARNING = 0.9; // 90% of the included + ondemand credits used
@@ -7,6 +8,7 @@ const SPENDING_LIMIT_WARNING = 0.9; // 90% of the included + ondemand credits us
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const { activeTeamInfo } = useAppState();
   const { isFree, isPro } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   if (!activeTeamInfo) {
     return {
@@ -26,13 +28,15 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const hasOver20Sandboxes = isFree === true && usage.sandboxes > 20;
   const hasOver200Sandboxes = isFree === true && usage.sandboxes > 200;
 
-  const isOutOfCredits = isFree === true && frozen;
+  const isOutOfCredits = ubbBeta && isFree === true && frozen;
   const isCloseToOutOfCredits =
+    ubbBeta &&
     isFree === true &&
     !frozen &&
     limits.includedCredits - usage.credits < OUT_OF_CREDITS_TRESHOLD;
-  const isAtSpendingLimit = isPro === true && frozen;
+  const isAtSpendingLimit = ubbBeta && isPro === true && frozen;
   const isCloseToSpendingLimit =
+    ubbBeta &&
     isPro === true &&
     usage.credits / (limits.includedCredits + limits.onDemandCreditLimit) >
       SPENDING_LIMIT_WARNING;
