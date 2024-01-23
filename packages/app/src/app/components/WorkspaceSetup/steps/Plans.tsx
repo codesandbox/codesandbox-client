@@ -203,6 +203,7 @@ export const Plans: React.FC<StepProps> = ({
                   href={ORGANIZATION_CONTACT_LINK}
                   variant="dark"
                   size="large"
+                  target="_blank"
                 >
                   Contact us
                 </Button>
