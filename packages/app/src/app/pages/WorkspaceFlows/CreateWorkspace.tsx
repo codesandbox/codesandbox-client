@@ -12,7 +12,7 @@ export const CreateWorkspace = () => {
     string
   >('FRESH_WORKSPACE_ID', undefined);
 
-  const { hasLogIn, userFeatureFlags } = useAppState();
+  const { hasLogIn } = useAppState();
 
   if (!hasLogIn) {
     return (
@@ -20,13 +20,9 @@ export const CreateWorkspace = () => {
     );
   }
 
-  if (userFeatureFlags.ubbBeta === false) {
-    return <Redirect to={dashboardUrls.recent()} />;
-  }
-
   return (
     <WorkspaceSetup
-      steps={['create', 'plans', 'plan-options', 'payment']}
+      steps={['create', 'plans', 'addons', 'plan-options', 'payment']}
       onComplete={() => {
         clearFreshWorkspaceId();
         window.location.href = dashboardUrls.recent();

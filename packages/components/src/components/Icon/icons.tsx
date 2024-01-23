@@ -311,6 +311,22 @@ export const plusInCircle = props => (
   </Element>
 );
 
+export const minus = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M0 8C0 7.72386 0.223858 7.5 0.5 7.5H15.5C15.7761 7.5 16 7.72386 16 8C16 8.27614 15.7761 8.5 15.5 8.5H0.5C0.223858 8.5 0 8.27614 0 8Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
 export const menu = props => (
   <Element
     as="svg"

@@ -50,32 +50,59 @@ const StyledItemsWrapper = styled(Element)<{ viewMode: 'grid' | 'list' }>`
   margin: 0;
   padding: 0;
 
+  @media (width <= 1149px) {
+    & li.create-branch:not(:nth-child(-n + 4)) {
+      display: none;
+    }
+  }
+
+  @media (width <= 1425px) {
+    & li.create-branch:not(:nth-child(-n + 3)) {
+      display: none;
+    }
+  }
+
   @media (width <= 1702px) {
-    & li:not(:nth-child(-n + 12)) {
+    & li.recent-item:not(:nth-child(-n + 12)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 4)) {
       display: none;
     }
   }
 
   @media (1702px < width <= 1978px) {
-    & li:not(:nth-child(-n + 15)) {
+    & li.recent-item:not(:nth-child(-n + 15)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 5)) {
       display: none;
     }
   }
 
   @media (1978px < width <= 2254px) {
-    & li:not(:nth-child(-n + 18)) {
+    & li.recent-item:not(:nth-child(-n + 18)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 6)) {
       display: none;
     }
   }
 
   @media (2254px < width <= 2530px) {
-    & li:not(:nth-child(-n + 14)) {
+    & li.recent-item:not(:nth-child(-n + 14)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 7)) {
       display: none;
     }
   }
 
   @media (2530px < width <= 2806px) {
-    & li:not(:nth-child(-n + 16)) {
+    & li.recent-item:not(:nth-child(-n + 16)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 8)) {
       display: none;
     }
   }
@@ -128,7 +155,8 @@ export const RecentContent: React.FC<RecentContentProps> = ({
         acc.push(repo);
       }
       return acc;
-    }, [] as { owner: string; name: string; default: string }[]);
+    }, [] as { owner: string; name: string; default: string }[])
+    .slice(0, 8); // Enure only a single line max is filled
 
   return (
     <StyledWrapper>
@@ -144,6 +172,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
               return (
                 <Stack
                   as="li"
+                  className="create-branch"
                   css={{ '> *': { width: '100%' } }}
                   key={`${repo.owner}/${repo.name}`}
                 >
@@ -200,7 +229,12 @@ export const RecentContent: React.FC<RecentContentProps> = ({
                 item.type === 'branch' ? item.branch.id : item.sandbox.id;
 
               return (
-                <Stack as="li" css={{ '> *': { width: '100%' } }} key={itemId}>
+                <Stack
+                  as="li"
+                  className="recent-item"
+                  css={{ '> *': { width: '100%' } }}
+                  key={itemId}
+                >
                   {item.type === 'sandbox' && (
                     <Sandbox isScrolling={false} item={item} page={page} />
                   )}

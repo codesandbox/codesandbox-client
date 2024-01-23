@@ -100,25 +100,32 @@ export const MAX_PRO_EDITORS = 20;
 export const MAX_TEAM_FREE_EDITORS = 5;
 
 export type PricingPlan = {
-  id: string;
+  id: PlanType;
   name: string;
-  price: number | string;
+  price: number;
   priceDiscountNote?: string;
   credits: number;
   creditsNote?: string;
-  additionalCreditsCost: number | null;
+  sandboxes: number;
+  storage?: number;
   highestVM: VMType;
-  listedFeatures: string[];
+  features: string[];
+  usage: string[];
+};
+export type ExplainedFeature = {
+  text: string;
+  tooltip: string;
 };
 
 export type PricingPlanFeatures = {
-  id: string;
+  id: PlanType;
   name: string;
   members: number;
   storage: string;
   sandboxes: string | number;
   devboxes: number;
   repositories: number;
+  drafts: number;
   vmType: string;
   privateProject: boolean;
   shareableLinks: boolean;
@@ -131,9 +138,20 @@ export type PricingPlanFeatures = {
   onPremise: boolean;
 };
 
-export type PlanType = 'free' | 'flex' | 'standard' | 'growth' | 'enterprise';
+export type PlanType = 'free' | 'flex' | 'enterprise';
 
 export type VMType = 'vm-1' | 'vm-2' | 'vm-3' | 'vm-4' | 'vm-5' | 'vm-6';
+
+export const EXPLAINED_FEATURES: Record<string, string> = {
+  'VM credits':
+    'Credits measure VM runtime and apply to Devboxes and Repositories.',
+  Devboxes:
+    'Devboxes are our Cloud Development Environment, which runs in virtual machines and requires VM credits.',
+  Sandboxes:
+    "Sandboxes are powered by your browser and don't require credits to run.",
+  'personal drafts':
+    'Personal drafts are Sandbox drafts that are not shareable or embeddable.',
+};
 
 export const UBB_FREE_PLAN: PricingPlan = {
   id: 'free',
@@ -141,66 +159,63 @@ export const UBB_FREE_PLAN: PricingPlan = {
   price: 0,
   credits: 400,
   creditsNote: 'Ideal for hobbyists using Devboxes up to 40 hours a month.',
-  additionalCreditsCost: null,
+  sandboxes: 20,
+  storage: 20,
   highestVM: 'vm-2',
-  listedFeatures: [
-    '5 members',
-    '30 GB storage',
+  usage: [
+    'Up to 40 hours worth of VM credits per month',
+    'Up to 4 vCPUs + 8GB RAM in VMs',
+    '20GB storage per VM',
+    'Unlimited Devboxes and repositories',
     '20 Sandboxes',
-    'Unlimited Devboxes',
-    'Unlimited Repositories',
+    '10 personal drafts',
+    '5 members',
+  ],
+  features: [
+    'Private Sandboxes, Devboxes & repos',
+    'Codeium AI code-completion',
+    'Live collaboration',
+    'VS Code extension',
   ],
 };
 
-export const UBB_FLEX_PLAN: PricingPlan = {
+export const UBB_PRO_PLAN: PricingPlan = {
   id: 'flex',
-  name: 'Flex',
+  name: 'Pro',
   price: 9,
   priceDiscountNote: 'Early access discount',
   credits: 1000,
   creditsNote:
     'Ideal to get started with cloud development and understand your usage needs.',
-  additionalCreditsCost: 0.018,
+  sandboxes: 100,
+  storage: 50,
   highestVM: 'vm-4',
-  listedFeatures: ['20 members', '30 GB storage', '50 Sandboxes'],
-};
-
-export const UBB_STANDARD_PLAN: PricingPlan = {
-  id: 'pro',
-  name: 'Team',
-  price: 45,
-  priceDiscountNote: 'Save $39',
-  credits: 4000,
-  creditsNote:
-    'Ideal for teams of 5-10 people using Devboxes 2 hours a day, each.',
-  additionalCreditsCost: 0.018,
-  highestVM: 'vm-4',
-  listedFeatures: ['20 members', '50 GB storage', '100 Sandboxes'],
-};
-
-export const UBB_GROWTH_PLAN: PricingPlan = {
-  id: 'growth',
-  name: 'Growth',
-  price: 249,
-  priceDiscountNote: 'Save $304',
-  credits: 24000,
-  creditsNote:
-    'Ideal for teams of 11-20 people using Devboxes 2 hours a day, each.',
-  additionalCreditsCost: 0.018,
-  highestVM: 'vm-4',
-  listedFeatures: ['20 members', '50 GB storage', '500 Sandboxes'],
+  features: ['All free features'],
+  usage: [
+    'Start from 100 hours worth of VM credits per month',
+    'Up to 16 vCPUs + 32 GB RAM in VMs',
+    '50GB storage per VM',
+    'Unlimited Devboxes and repositories',
+    '100 Sandboxes',
+    'Unlimited personal drafts',
+    '20 members',
+    'Access on-demand VM credits for $0.18 per hour',
+  ],
 };
 
 export const UBB_ENTERPRISE_PLAN: PricingPlan = {
   id: 'enterprise',
   name: 'Enterprise',
-  price: 'Custom',
+  price: 0,
   credits: 0,
-  additionalCreditsCost: 0,
+  sandboxes: 0,
+  storage: 0,
   highestVM: 'vm-6',
-  listedFeatures: [
+  usage: [],
+  features: [
     'Unlimited members',
     'Unlimited API',
+    'Up to 64 vCPUs + 128 GB RAM in VMs',
     'On-premise options',
     'Private managed cloud',
     'Dedicated support',
@@ -216,6 +231,7 @@ export const UBB_FREE_FEATURES: PricingPlanFeatures = {
   sandboxes: 20,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  drafts: 10,
   vmType: `4 vCPUs<br/>8 GB RAM`,
   privateProject: true,
   shareableLinks: true,
@@ -229,21 +245,16 @@ export const UBB_FREE_FEATURES: PricingPlanFeatures = {
 };
 
 export const UBB_PRO_FEATURES: PricingPlanFeatures = {
-  id: 'pro',
+  id: 'flex',
   name: 'Pro',
   members: 20,
-  storage: `Flex: 30 GB<br/>
-Team: 50 GB<br/>
-Growth: 50 GB<br/>
-  
-  <small>+20 GB for $12 per month</small>`,
-  sandboxes: `Flex: 50<br/>
-Team: 100<br/>
-Growth: 500<br/>
-
-<small>+50 more for $9 per month</small>`,
+  storage: `50 GB<br/>
+  <small>more with add-ons</small>`,
+  sandboxes: `100<br/>
+  <small>more with add-ons</small>`,
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  drafts: Number.MAX_SAFE_INTEGER,
   vmType: `16 vCPUs<br />32 GB RAM`,
   privateProject: true,
   shareableLinks: true,
@@ -264,6 +275,7 @@ export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
   sandboxes: 'Custom',
   devboxes: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
+  drafts: Number.MAX_SAFE_INTEGER,
   vmType: `64 vCPUs<br/>128 GB RAM`,
   privateProject: true,
   shareableLinks: true,
@@ -278,8 +290,6 @@ export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
 
 export const PRICING_PLANS: Record<PlanType, PricingPlan> = {
   free: UBB_FREE_PLAN,
-  flex: UBB_FLEX_PLAN,
-  standard: UBB_STANDARD_PLAN,
-  growth: UBB_GROWTH_PLAN,
+  flex: UBB_PRO_PLAN,
   enterprise: UBB_ENTERPRISE_PLAN,
 };

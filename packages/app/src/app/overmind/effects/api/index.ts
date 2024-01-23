@@ -588,8 +588,8 @@ export default {
       sandboxLimit: number;
     }>(`/sandboxes/limits`);
   },
-  getPrices() {
-    return api.get(`/prices`, undefined, { version: '2023-08-15' });
+  getPrices(version?: string) {
+    return api.get(`/prices`, undefined, { version: version || '2023-08-15' });
   },
   stripeCreateCheckout({
     success_path,
@@ -614,9 +614,10 @@ export default {
     cancel_path: string;
     team_id: string;
     plan: string;
+    addons: string[];
   }) {
     return api.post<{ stripeCheckoutUrl: string }>(`/checkout`, params, {
-      version: '2024-01-01',
+      version: '2024-01-20',
     });
   },
   stripeCustomerPortal(teamId: string, return_path: string) {
