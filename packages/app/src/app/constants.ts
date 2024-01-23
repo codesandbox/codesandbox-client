@@ -91,14 +91,6 @@ export const ORG_FEATURES: Feature[] = [
   { key: 'customer', label: 'Customer success manager' },
 ];
 
-// Soft limit of maximum amount of pro
-// editor a team can have. Above this,
-// we should prompt CTAs to enable
-// custom pricing.
-export const MAX_PRO_EDITORS = 20;
-
-export const MAX_TEAM_FREE_EDITORS = 5;
-
 export type PricingPlan = {
   id: PlanType;
   name: string;
