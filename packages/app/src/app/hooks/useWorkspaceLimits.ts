@@ -28,20 +28,20 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const hasOver20Sandboxes = isFree === true && usage.sandboxes > 20;
   const hasOver200Sandboxes = isFree === true && usage.sandboxes > 200;
 
-  const isOutOfCredits = !friendOfCsb && ubbBeta && isFree && frozen;
+  const isOutOfCredits = !friendOfCsb && ubbBeta && isFree === true && frozen;
   const isCloseToOutOfCredits =
     !friendOfCsb &&
     ubbBeta &&
-    isFree &&
+    isFree === true &&
     !frozen &&
     limits.includedCredits - usage.credits < OUT_OF_CREDITS_TRESHOLD;
-  const isAtSpendingLimit = !friendOfCsb && ubbBeta && isPro && frozen;
+  const isAtSpendingLimit = !friendOfCsb && ubbBeta && isPro === true && frozen;
 
   const onDemandCreditsLimit = limits.onDemandCreditLimit ?? 0;
   const isCloseToSpendingLimit =
     !friendOfCsb &&
     ubbBeta &&
-    isPro &&
+    isPro === true &&
     !frozen &&
     usage.credits / (limits.includedCredits + onDemandCreditsLimit) >
       SPENDING_LIMIT_WARNING;
