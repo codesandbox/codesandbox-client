@@ -87,7 +87,7 @@ export const Plans: React.FC<StepProps> = ({
       <Stack
         direction="vertical"
         gap={64}
-        css={{ maxWidth: '1188px', margin: 'auto' }}
+        css={{ maxWidth: '1188px', margin: 'auto', paddingBottom: 120 }}
       >
         <Stack direction="vertical" gap={12}>
           <StepHeader
