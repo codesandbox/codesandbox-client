@@ -222,21 +222,13 @@ export const currentTeamInfoFragment = gql`
     }
 
     limits {
-      maxEditors
-      maxPrivateProjects
-      maxPrivateSandboxes
-      maxPublicProjects
-      maxPublicSandboxes
-      onDemandSpendingLimit
+      includedCredits
+      includedSandboxes
       onDemandCreditLimit
     }
 
     usage {
-      editorsQuantity
-      privateProjectsQuantity
-      privateSandboxesQuantity
-      publicProjectsQuantity
-      publicSandboxesQuantity
+      sandboxes
       credits
     }
 

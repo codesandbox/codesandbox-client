@@ -1103,13 +1103,15 @@ export enum TeamType {
 
 export type TeamUsage = {
   __typename?: 'TeamUsage';
-  browserSandboxes: Scalars['Int'];
   credits: Scalars['Int'];
   editorsQuantity: Scalars['Int'];
   privateProjectsQuantity: Scalars['Int'];
   privateSandboxesQuantity: Scalars['Int'];
   publicProjectsQuantity: Scalars['Int'];
   publicSandboxesQuantity: Scalars['Int'];
+  restrictedSandboxes: Scalars['Int'];
+  sandboxes: Scalars['Int'];
+  unrestrictedSandboxes: Scalars['Int'];
 };
 
 export type UserAuthorization = {
@@ -4654,23 +4656,11 @@ export type CurrentTeamInfoFragmentFragment = {
   } | null;
   limits: {
     __typename?: 'TeamLimits';
-    maxEditors: number | null;
-    maxPrivateProjects: number | null;
-    maxPrivateSandboxes: number | null;
-    maxPublicProjects: number | null;
-    maxPublicSandboxes: number | null;
-    onDemandSpendingLimit: number | null;
+    includedCredits: number;
+    includedSandboxes: number;
     onDemandCreditLimit: number | null;
   };
-  usage: {
-    __typename?: 'TeamUsage';
-    editorsQuantity: number;
-    privateProjectsQuantity: number;
-    privateSandboxesQuantity: number;
-    publicProjectsQuantity: number;
-    publicSandboxesQuantity: number;
-    credits: number;
-  };
+  usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
   featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
 };
 
@@ -6389,23 +6379,11 @@ export type GetTeamQuery = {
       } | null;
       limits: {
         __typename?: 'TeamLimits';
-        maxEditors: number | null;
-        maxPrivateProjects: number | null;
-        maxPrivateSandboxes: number | null;
-        maxPublicProjects: number | null;
-        maxPublicSandboxes: number | null;
-        onDemandSpendingLimit: number | null;
+        includedCredits: number;
+        includedSandboxes: number;
         onDemandCreditLimit: number | null;
       };
-      usage: {
-        __typename?: 'TeamUsage';
-        editorsQuantity: number;
-        privateProjectsQuantity: number;
-        privateSandboxesQuantity: number;
-        publicProjectsQuantity: number;
-        publicSandboxesQuantity: number;
-        credits: number;
-      };
+      usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
       featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
     } | null;
   } | null;
