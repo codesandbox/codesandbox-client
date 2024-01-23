@@ -23,8 +23,8 @@ export const PlanOptions: React.FC<StepProps> = ({
   const handleChange = e => {
     setError('');
     const value = Number(e.target.value);
-    if (Number.isNaN(value) || value < 1) {
-      setError('Please enter a valid amount between 1 and 100');
+    if (Number.isNaN(value) || value < 0) {
+      setError('Please enter a valid amount between 0 and 100');
     } else if (value > 100) {
       setError(
         <>
@@ -86,7 +86,7 @@ export const PlanOptions: React.FC<StepProps> = ({
             name="spending-limit"
             required
             max={100}
-            min={1}
+            min={0}
             defaultValue={checkout.spendingLimit}
             type="number"
             autoFocus
