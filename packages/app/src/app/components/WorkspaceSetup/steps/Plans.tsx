@@ -77,7 +77,7 @@ export const Plans: React.FC<StepProps> = ({
     onNextStep();
   };
 
-  if (isAdmin === false || isPro === true) {
+  if ((isUpgrading && isAdmin === false) || isPro === true) {
     // Page was accessed by a non-admin or for pro workspaces
     return <Redirect to={dashboardUrls.recent(urlWorkspaceId)} />;
   }
