@@ -4,7 +4,7 @@ export type WorkspaceSetupStep =
   | 'plans'
   | 'addons'
   | 'plan-options'
-  | 'payment';
+  | 'finalize';
 
 export interface StepProps {
   currentStep: number;

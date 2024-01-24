@@ -11,6 +11,8 @@ import {
   SandboxAddon,
 } from 'app/overmind/namespaces/checkout/state';
 import styled from 'styled-components';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -22,7 +24,17 @@ export const Addons: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
+  const { isPro } = useWorkspaceSubscription();
   const { checkout } = useActions();
+  const { getQueryParam } = useURLSearchParams();
+  const urlWorkspaceId = getQueryParam('workspace');
+
+  const handleSubmit = () => {
+    if (isPro) {
+      checkout.calculateConversionCharge({ workspaceId: urlWorkspaceId });
+    }
+    onNextStep();
+  };
 
   return (
     <AnimatedStep>
@@ -114,7 +126,7 @@ export const Addons: React.FC<StepProps> = ({
           </Element>
         </Stack>
 
-        <Button autoWidth size="large" onClick={onNextStep}>
+        <Button autoWidth size="large" onClick={handleSubmit}>
           Next
         </Button>
       </Stack>

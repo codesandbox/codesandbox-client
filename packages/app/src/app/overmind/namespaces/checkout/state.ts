@@ -1,4 +1,5 @@
 import { PricingPlan } from 'app/constants';
+import { InvoicePreview } from 'app/graphql/types';
 
 export interface State {
   basePlan: PricingPlan | null;
@@ -8,6 +9,7 @@ export interface State {
   totalCredits: number;
   totalSandboxes: number;
   totalPrice: number;
+  convertProToUBBCharge: InvoicePreview | null;
 }
 
 export type Addon = CreditAddon | SandboxAddon;
@@ -45,4 +47,5 @@ export const state: State = {
   totalCredits: 0,
   totalSandboxes: 0,
   totalPrice: 0,
+  convertProToUBBCharge: null,
 };

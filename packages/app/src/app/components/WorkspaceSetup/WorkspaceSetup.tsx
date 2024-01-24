@@ -4,9 +4,9 @@ import { StepProps, WorkspaceSetupStep } from './types';
 import { Create } from './steps/Create';
 import { Plans } from './steps/Plans';
 import { PlanOptions } from './steps/PlanOptions';
-import { Payment } from './steps/Payment';
 import { SelectWorkspace } from './steps/SelectWorkspace';
 import { Addons } from './steps/Addons';
+import { Finalize } from './steps/Finalize';
 
 export type WorkspaceSetupProps = {
   steps: WorkspaceSetupStep[];
@@ -56,12 +56,12 @@ const STEP_COMPONENTS: Record<WorkspaceSetupStep, React.FC<StepProps>> = {
   'select-workspace': SelectWorkspace,
   plans: Plans,
   'plan-options': PlanOptions,
-  payment: Payment,
   addons: Addons,
+  finalize: Finalize,
 };
 
 const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = [
   'plan-options',
-  'payment',
   'addons',
+  'finalize',
 ];

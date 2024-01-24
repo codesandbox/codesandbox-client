@@ -137,6 +137,7 @@ export const clearCheckout = ({ state }: Context) => {
     totalCredits: 0,
     totalSandboxes: 0,
     spendingLimit: 100,
+    convertProToUBBCharge: null,
   };
 };
 
@@ -154,4 +155,80 @@ export const setSpendingLimit = async (
   } catch (e) {
     state.checkout.spendingLimit = 100; // Input value default will be used if mutation fails
   }
+};
+
+export const calculateConversionCharge = async (
+  { state, effects, actions }: Context,
+  { workspaceId }: { workspaceId: string }
+) => {
+  const { basePlan } = state.checkout;
+
+  if (!basePlan) {
+    return;
+  }
+
+  try {
+    const result = await effects.gql.mutations.previewConvertToUsageBilling({
+      teamId: workspaceId,
+      plan: basePlan.id,
+      addons: actions.checkout.getFlatAddonsList(),
+    });
+
+    // Cap the values to a min of 0
+    state.checkout.convertProToUBBCharge = {
+      total: Math.max(result.previewConvertToUsageBilling.total / 100, 0),
+      totalExcludingTax: Math.max(
+        result.previewConvertToUsageBilling.totalExcludingTax / 100,
+        0
+      ),
+    };
+  } catch (e) {
+    state.checkout.convertProToUBBCharge = null;
+  }
+};
+
+export const convertToUsageBilling = async (
+  { state, effects, actions }: Context,
+  { workspaceId }: { workspaceId: string }
+): Promise<{ success: boolean; error?: string }> => {
+  const { basePlan } = state.checkout;
+
+  if (!basePlan) {
+    return { success: false, error: 'No plan selected' };
+  }
+
+  try {
+    await effects.gql.mutations.convertToUsageBilling({
+      teamId: workspaceId,
+      plan: basePlan.id,
+      addons: actions.checkout.getFlatAddonsList(),
+    });
+
+    return { success: true };
+  } catch (e) {
+    if (e.response && e.response.errors) {
+      return { success: false, error: e.response.errors[0].message };
+    }
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
+};
+
+export const getFlatAddonsList = ({ state }: Context): string[] => {
+  const { creditAddons, sandboxAddons } = state.checkout;
+  const addons: string[] = [];
+  creditAddons.forEach(item => {
+    for (let i = 0; i < item.quantity; i++) {
+      addons.push(item.addon.id);
+    }
+  });
+  sandboxAddons.forEach(item => {
+    for (let i = 0; i < item.quantity; i++) {
+      addons.push(item.addon.id);
+    }
+  });
+
+  return addons;
 };

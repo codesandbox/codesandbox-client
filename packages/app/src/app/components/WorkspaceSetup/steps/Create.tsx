@@ -70,6 +70,7 @@ export const Create: React.FC<StepProps> = ({
 
         setQueryParam('workspace', team.id);
         setFreshWorkspaceId(team.id);
+        await actions.dashboard.getTeams();
         await actions.setActiveTeam({ id: team.id });
       }
     } catch {

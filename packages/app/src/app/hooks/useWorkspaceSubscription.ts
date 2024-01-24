@@ -7,6 +7,7 @@ import { useAppState } from 'app/overmind';
 import { isBefore, startOfToday } from 'date-fns';
 import { useControls } from 'leva';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
+import { useWorkspaceFeatureFlags } from './useWorkspaceFeatureFlags';
 
 export enum SubscriptionDebugStatus {
   'DEFAULT' = 'Default (use API data)',
@@ -16,6 +17,7 @@ export enum SubscriptionDebugStatus {
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { activeTeamInfo, userCanStartTrial, environment } = useAppState();
   const { isBillingManager } = useWorkspaceAuthorization();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
 
@@ -73,6 +75,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isPaddle =
     subscription.paymentProvider === SubscriptionPaymentProvider.Paddle;
 
+  const isUbbPro = isPro && ubbBeta; // Will be replaced with a new subscription field
+
   return {
     subscription,
     isEligibleForTrial,
@@ -82,6 +86,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     hasExpiredTeamTrial,
     hasPaymentMethod,
     isPaddle,
+    isUbbPro,
   };
 };
 
@@ -94,6 +99,7 @@ const NO_WORKSPACE = {
   hasExpiredTeamTrial: undefined,
   hasPaymentMethod: undefined,
   isPaddle: undefined,
+  isUbbPro: undefined,
 };
 
 const NO_SUBSCRIPTION = {
@@ -104,6 +110,7 @@ const NO_SUBSCRIPTION = {
   hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
   isPaddle: false,
+  isUbbPro: false,
 };
 
 export type WorkspaceSubscriptionReturn =
@@ -120,4 +127,5 @@ export type WorkspaceSubscriptionReturn =
       hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;
       isPaddle: boolean;
+      isUbbPro: boolean;
     };

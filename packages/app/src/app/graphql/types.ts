@@ -5517,6 +5517,32 @@ export type JoinUsageBillingBetaMutation = {
   joinUsageBillingBeta: boolean;
 };
 
+export type PreviewConvertToUsageBillingMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  addons: Array<Scalars['String']> | Scalars['String'];
+  plan: Scalars['String'];
+}>;
+
+export type PreviewConvertToUsageBillingMutation = {
+  __typename?: 'RootMutationType';
+  previewConvertToUsageBilling: {
+    __typename?: 'InvoicePreview';
+    total: number;
+    totalExcludingTax: number | null;
+  };
+};
+
+export type ConvertToUsageBillingMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  addons: Array<Scalars['String']> | Scalars['String'];
+  plan: Scalars['String'];
+}>;
+
+export type ConvertToUsageBillingMutation = {
+  __typename?: 'RootMutationType';
+  convertToUsageBilling: boolean;
+};
+
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
   [key: string]: never;
 }>;
