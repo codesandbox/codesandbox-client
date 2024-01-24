@@ -20,31 +20,36 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isCloseToSpendingLimit: undefined,
       showUsageLimitBanner: undefined,
       isFrozen: undefined,
+      hasRestrictedSandboxes: undefined,
     };
   }
 
+  // Will be replaced with a check on the subscription if it's ubb or not
+  const applyUbbRestrictions = !friendOfCsb && ubbBeta;
+
   const { limits, usage, frozen } = activeTeamInfo;
 
-  const hasOver20Sandboxes = isFree === true && usage.sandboxes > 20;
-  const hasOver200Sandboxes = isFree === true && usage.sandboxes > 200;
+  const hasOver20Sandboxes = applyUbbRestrictions && usage.sandboxes > 20;
+  const hasOver200Sandboxes = applyUbbRestrictions && usage.sandboxes > 200;
 
-  const isOutOfCredits = !friendOfCsb && ubbBeta && isFree === true && frozen;
+  const isOutOfCredits = applyUbbRestrictions && isFree === true && frozen;
   const isCloseToOutOfCredits =
-    !friendOfCsb &&
-    ubbBeta &&
+    applyUbbRestrictions &&
     isFree === true &&
     !frozen &&
     limits.includedCredits - usage.credits < OUT_OF_CREDITS_TRESHOLD;
-  const isAtSpendingLimit = !friendOfCsb && ubbBeta && isPro === true && frozen;
+  const isAtSpendingLimit = applyUbbRestrictions && isPro === true && frozen;
 
   const onDemandCreditsLimit = limits.onDemandCreditLimit ?? 0;
   const isCloseToSpendingLimit =
-    !friendOfCsb &&
-    ubbBeta &&
+    applyUbbRestrictions &&
     isPro === true &&
     !frozen &&
     usage.credits / (limits.includedCredits + onDemandCreditsLimit) >
       SPENDING_LIMIT_WARNING;
+
+  const hasRestrictedSandboxes =
+    applyUbbRestrictions && usage.sandboxes > limits.includedSandboxes;
 
   return {
     hasOver20Sandboxes,
@@ -53,12 +58,13 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     isCloseToOutOfCredits,
     isAtSpendingLimit,
     isCloseToSpendingLimit,
+    hasRestrictedSandboxes,
     showUsageLimitBanner:
       isOutOfCredits ||
       isCloseToOutOfCredits ||
       isAtSpendingLimit ||
       isCloseToSpendingLimit,
-    isFrozen: !friendOfCsb && ubbBeta && frozen,
+    isFrozen: applyUbbRestrictions && frozen,
   };
 };
 
@@ -72,6 +78,7 @@ export type WorkspaceLimitsReturn =
       isCloseToSpendingLimit: undefined;
       showUsageLimitBanner: undefined;
       isFrozen: undefined;
+      hasRestrictedSandboxes: undefined;
     }
   | {
       hasOver20Sandboxes: boolean;
@@ -82,4 +89,5 @@ export type WorkspaceLimitsReturn =
       isCloseToSpendingLimit: boolean;
       showUsageLimitBanner: boolean;
       isFrozen: boolean;
+      hasRestrictedSandboxes: boolean;
     };

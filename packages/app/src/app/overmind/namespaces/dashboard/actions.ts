@@ -1894,3 +1894,19 @@ export const createDraftBranch = async (
     });
   }
 };
+
+export const convertToDevbox = async (
+  { effects, actions }: Context,
+  sandboxId: string
+) => {
+  await effects.api.updateSandbox(sandboxId, { v2: true });
+
+  // Update in-memory state
+  actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds: [sandboxId],
+    sandboxMutation: sandbox => ({ ...sandbox, isV2: true, restricted: false }),
+  });
+
+  // Re-fetch team to get updated usage data
+  actions.getActiveTeamInfo();
+};

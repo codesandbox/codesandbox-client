@@ -1,5 +1,6 @@
 import React from 'react';
 import { Menu } from '@codesandbox/components';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 
 interface ContainerMenuProps {
@@ -14,6 +15,7 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
   createNewDevbox,
 }) => {
   const { visible, setVisibility, position } = React.useContext(Context);
+  const { hasRestrictedSandboxes } = useWorkspaceLimits();
 
   return (
     <Menu.ContextMenu
@@ -30,6 +32,7 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
         Create new devbox
       </MenuItem>
       <MenuItem
+        disabled={hasRestrictedSandboxes}
         onSelect={() => {
           createNewSandbox();
         }}

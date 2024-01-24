@@ -10,6 +10,8 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
+import { RestrictedSandboxes } from 'app/components/StripeMessages/RestrictedSandboxes';
+import { Element } from '@codesandbox/components';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -21,7 +23,7 @@ export const SandboxesPage = () => {
   const cleanParam = currentPath.split(' ').join('{}');
   const items = useFilteredItems(currentPath, cleanParam, level);
   const actions = useActions();
-  const { isFrozen } = useWorkspaceLimits();
+  const { isFrozen, hasRestrictedSandboxes } = useWorkspaceLimits();
   const {
     dashboard: { allCollections, sandboxes },
     activeTeam,
@@ -98,6 +100,12 @@ export const SandboxesPage = () => {
         showSortOptions={!isEmpty && Boolean(currentPath)}
       />
 
+      {hasRestrictedSandboxes && (
+        <Element css={{ padding: '0 26px 16px 16px' }}>
+          <RestrictedSandboxes />
+        </Element>
+      )}
+
       {isEmpty ? (
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledGrid>
@@ -110,13 +118,17 @@ export const SandboxesPage = () => {
                   event_source: 'UI',
                 });
 
-                actions.modalOpened({ modal: 'createDevbox' });
+                actions.modalOpened({
+                  modal: 'createDevbox',
+                  itemId: currentCollection.id,
+                });
               }}
             >
               Create devbox
             </ActionCard>
             <ActionCard
               icon="boxSandbox"
+              disabled={hasRestrictedSandboxes}
               onClick={() => {
                 track('Empty Folder - Create sandbox', {
                   codesandbox: 'V1',
@@ -125,7 +137,10 @@ export const SandboxesPage = () => {
                   tab: 'default',
                 });
 
-                actions.modalOpened({ modal: 'createSandbox' });
+                actions.modalOpened({
+                  modal: 'createSandbox',
+                  itemId: currentCollection.id,
+                });
               }}
             >
               Create sandbox

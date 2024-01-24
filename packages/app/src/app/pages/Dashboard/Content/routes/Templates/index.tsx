@@ -7,6 +7,9 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { TemplateFragmentDashboardFragment } from 'app/graphql/types';
+import { Element } from '@codesandbox/components';
+import { RestrictedSandboxes } from 'app/components/StripeMessages/RestrictedSandboxes';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { getPossibleTemplates } from '../../utils';
 
 export const Templates = () => {
@@ -15,6 +18,7 @@ export const Templates = () => {
     activeTeam,
   } = useAppState();
   const { getPage } = useActions().dashboard;
+  const { hasRestrictedSandboxes } = useWorkspaceLimits();
 
   useEffect(() => {
     getPage(sandboxesTypes.TEMPLATES);
@@ -62,6 +66,11 @@ export const Templates = () => {
         showFilters
         showSortOptions
       />
+      {hasRestrictedSandboxes && (
+        <Element css={{ padding: '0 26px 16px 16px' }}>
+          <RestrictedSandboxes />
+        </Element>
+      )}
       <VariableGrid items={items} page={pageType} />
     </SelectionProvider>
   );
