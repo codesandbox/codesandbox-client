@@ -22,7 +22,7 @@ export const CreateWorkspace = () => {
 
   return (
     <WorkspaceSetup
-      steps={['create', 'plans', 'addons', 'plan-options', 'payment']}
+      steps={['create', 'plans', 'addons', 'plan-options', 'finalize']}
       onComplete={() => {
         clearFreshWorkspaceId();
         window.location.href = dashboardUrls.recent();

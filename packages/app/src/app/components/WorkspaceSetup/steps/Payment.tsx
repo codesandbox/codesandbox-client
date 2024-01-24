@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Button, Text, Icon } from '@codesandbox/components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
-import { useAppState, useEffects } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
@@ -20,8 +20,9 @@ export const Payment: React.FC<StepProps> = ({
 }) => {
   const { api } = useEffects();
   const {
-    checkout: { basePlan, creditAddons, sandboxAddons },
+    checkout: { basePlan },
   } = useAppState();
+  const actions = useActions();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
 
@@ -43,25 +44,13 @@ export const Payment: React.FC<StepProps> = ({
       return;
     }
 
-    const addons: string[] = [];
-    creditAddons.forEach(item => {
-      for (let i = 0; i < item.quantity; i++) {
-        addons.push(item.addon.id);
-      }
-    });
-    sandboxAddons.forEach(item => {
-      for (let i = 0; i < item.quantity; i++) {
-        addons.push(item.addon.id);
-      }
-    });
-
     try {
       const payload = await api.stripeCreateUBBCheckout({
         success_path: successPath,
         cancel_path: cancelPath,
         team_id: workspaceId,
         plan: basePlan.id,
-        addons,
+        addons: actions.checkout.getFlatAddonsList(),
       });
 
       if (payload.stripeCheckoutUrl) {

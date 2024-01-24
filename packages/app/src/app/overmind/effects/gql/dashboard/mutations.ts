@@ -65,6 +65,10 @@ import {
   CreateBranchMutationVariables,
   SetTeamLimitsMutation,
   SetTeamLimitsMutationVariables,
+  PreviewConvertToUsageBillingMutation,
+  PreviewConvertToUsageBillingMutationVariables,
+  ConvertToUsageBillingMutation,
+  ConvertToUsageBillingMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -503,5 +507,38 @@ export const setTeamLimits: Query<
 export const joinUsageBillingBeta = gql`
   mutation JoinUsageBillingBeta($teamId: UUID4!) {
     joinUsageBillingBeta(teamId: $teamId)
+  }
+`;
+
+export const previewConvertToUsageBilling: Query<
+  PreviewConvertToUsageBillingMutation,
+  PreviewConvertToUsageBillingMutationVariables
+> = gql`
+  mutation PreviewConvertToUsageBilling(
+    $teamId: UUID4!
+    $addons: [String!]!
+    $plan: String!
+  ) {
+    previewConvertToUsageBilling(
+      plan: $plan
+      addons: $addons
+      teamId: $teamId
+    ) {
+      total
+      totalExcludingTax
+    }
+  }
+`;
+
+export const convertToUsageBilling: Query<
+  ConvertToUsageBillingMutation,
+  ConvertToUsageBillingMutationVariables
+> = gql`
+  mutation ConvertToUsageBilling(
+    $teamId: UUID4!
+    $addons: [String!]!
+    $plan: String!
+  ) {
+    convertToUsageBilling(plan: $plan, addons: $addons, teamId: $teamId)
   }
 `;

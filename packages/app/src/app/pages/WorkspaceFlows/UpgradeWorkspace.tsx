@@ -6,9 +6,13 @@ import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { WorkspaceSetupStep } from 'app/components/WorkspaceSetup/types';
 import { useActions, useAppState } from 'app/overmind';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const UpgradeWorkspace = () => {
   const { hasLogIn } = useAppState();
+  const { isAdmin } = useWorkspaceAuthorization();
+  const { isUbbPro, isPaddle } = useWorkspaceSubscription();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
   const history = useHistory();
@@ -27,7 +31,7 @@ export const UpgradeWorkspace = () => {
       'plans',
       'addons',
       'plan-options',
-      'payment',
+      'finalize',
     ];
 
     if (!workspaceId) {
@@ -41,6 +45,11 @@ export const UpgradeWorkspace = () => {
     return (
       <Redirect to={signInPageUrl(`${location.pathname}${location.search}`)} />
     );
+  }
+
+  if (workspaceId && (isAdmin === false || isUbbPro || isPaddle)) {
+    // Page was accessed by a non-admin or for pro ubb workspaces or paddle
+    return <Redirect to={dashboardUrls.recent(workspaceId)} />;
   }
 
   return (
