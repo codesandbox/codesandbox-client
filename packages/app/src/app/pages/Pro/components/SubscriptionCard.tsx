@@ -150,6 +150,7 @@ export const SubscriptionCard = ({
             {...(props.cta.href
               ? {
                   href: props.cta.href,
+                  target: "_blank",
                   onClick: props.cta.onClick,
                 }
               : {
