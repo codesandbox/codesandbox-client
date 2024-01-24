@@ -174,6 +174,10 @@ export const calculateConversionCharge = async (
       addons: actions.checkout.getFlatAddonsList(),
     });
 
+    if (!result.previewConvertToUsageBilling) {
+      return;
+    }
+
     // Cap the values to a min of 0
     state.checkout.convertProToUBBCharge = {
       total: Math.max(result.previewConvertToUsageBilling.total / 100, 0),
