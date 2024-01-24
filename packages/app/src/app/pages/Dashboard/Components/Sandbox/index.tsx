@@ -12,9 +12,7 @@ import track, {
 } from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -33,6 +31,7 @@ const PrivacyIcons = {
   0: () => null,
   1: () => <Icon name="link" size={12} />,
   2: () => <Icon name="lock" size={12} />,
+  3: () => <Icon name="edit" size={12} />, // In the future, draft will be a privacy level
 };
 
 interface GenericSandboxProps {
@@ -72,8 +71,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const { dashboard, activeWorkspaceAuthorization } = useAppState();
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const actions = useActions();
-  const { isFree } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   const { sandbox } = item;
 
@@ -95,7 +92,9 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
 
   const TemplateIcon = getTemplateIcon(sandbox);
-  const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
+  const privacyLevel = sandbox.draft ? 3 : sandbox.privacy;
+  const PrivacyIcon = PrivacyIcons[privacyLevel];
+  const restricted = sandbox.restricted && !sandbox.draft;
 
   let screenshotUrl = sandbox.screenshotUrl;
   // We set a fallback thumbnail in the API which is used for
@@ -153,7 +152,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const selected = selectedIds.includes(sandbox.id);
   const isDragging = isAnythingDragging && selected;
-  const restricted = !ubbBeta && isFree && sandbox.privacy !== 0;
 
   const onClick = event => {
     onSelectionClick(event, sandbox.id);
@@ -271,8 +269,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     sandbox,
     TemplateIcon,
     PrivacyIcon,
-    screenshotUrl,
     restricted,
+    screenshotUrl,
     // edit mode
     editing: isRenaming && selected,
     newTitle,

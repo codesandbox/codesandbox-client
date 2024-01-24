@@ -18,6 +18,8 @@ export const sandboxFragmentDashboard = gql`
     viewCount
     likeCount
     isV2
+    draft
+    restricted
 
     source {
       template

@@ -254,6 +254,7 @@ export type Sandbox = {
   /** If the sandbox is a template this will be set */
   customTemplate: Maybe<Template>;
   description: Maybe<Scalars['String']>;
+  draft: Scalars['Boolean'];
   forkCount: Scalars['Int'];
   forkedTemplate: Maybe<Template>;
   /** If the sandbox has a v1 git repo tied to it this will be set */
@@ -274,6 +275,7 @@ export type Sandbox = {
   /** If a PR has been opened on the sandbox, this will be set to the PR number */
   prNumber: Maybe<Scalars['Int']>;
   removedAt: Maybe<Scalars['String']>;
+  restricted: Scalars['Boolean'];
   screenshotOutdated: Scalars['Boolean'];
   screenshotUrl: Maybe<Scalars['String']>;
   settings: SandboxSettings;
@@ -4440,6 +4442,8 @@ export type SandboxFragmentDashboardFragment = {
   viewCount: number;
   likeCount: number;
   isV2: boolean;
+  draft: boolean;
+  restricted: boolean;
   authorId: any | null;
   teamId: any | null;
   source: { __typename?: 'Source'; template: string | null };
@@ -4481,6 +4485,8 @@ export type RepoFragmentDashboardFragment = {
   viewCount: number;
   likeCount: number;
   isV2: boolean;
+  draft: boolean;
+  restricted: boolean;
   authorId: any | null;
   teamId: any | null;
   baseGit: {
@@ -4550,6 +4556,8 @@ export type TemplateFragmentDashboardFragment = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
+    restricted: boolean;
     authorId: any | null;
     teamId: any | null;
     git: {
@@ -4903,6 +4911,8 @@ export type AddToFolderMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
+    restricted: boolean;
     authorId: any | null;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
@@ -4950,6 +4960,8 @@ export type MoveToTrashMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
+    restricted: boolean;
     authorId: any | null;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
@@ -4998,6 +5010,8 @@ export type ChangePrivacyMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
+    restricted: boolean;
     authorId: any | null;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
@@ -5046,6 +5060,8 @@ export type ChangeFrozenMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
+    restricted: boolean;
     authorId: any | null;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
@@ -5094,6 +5110,8 @@ export type _RenameSandboxMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
+    restricted: boolean;
     authorId: any | null;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
@@ -5569,6 +5587,8 @@ export type RecentlyDeletedPersonalSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
+      draft: boolean;
+      restricted: boolean;
       authorId: any | null;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
@@ -5621,6 +5641,8 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
+        restricted: boolean;
         authorId: any | null;
         teamId: any | null;
         source: { __typename?: 'Source'; template: string | null };
@@ -5683,6 +5705,8 @@ export type SandboxesByPathQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
+        restricted: boolean;
         authorId: any | null;
         teamId: any | null;
         source: { __typename?: 'Source'; template: string | null };
@@ -5737,6 +5761,8 @@ export type TeamDraftsQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
+        restricted: boolean;
         authorId: any | null;
         teamId: any | null;
         source: { __typename?: 'Source'; template: string | null };
@@ -5804,6 +5830,8 @@ export type GetPersonalReposQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
+      draft: boolean;
+      restricted: boolean;
       authorId: any | null;
       teamId: any | null;
       baseGit: {
@@ -5873,6 +5901,8 @@ export type GetTeamReposQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
+        restricted: boolean;
         authorId: any | null;
         teamId: any | null;
         baseGit: {
@@ -5950,6 +5980,8 @@ export type TeamTemplatesQuery = {
           viewCount: number;
           likeCount: number;
           isV2: boolean;
+          draft: boolean;
+          restricted: boolean;
           authorId: any | null;
           teamId: any | null;
           git: {
@@ -6019,6 +6051,8 @@ export type OwnedTemplatesQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
+        restricted: boolean;
         authorId: any | null;
         teamId: any | null;
         git: {
@@ -6140,6 +6174,8 @@ export type _SearchPersonalSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
+      draft: boolean;
+      restricted: boolean;
       authorId: any | null;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
@@ -6192,6 +6228,8 @@ export type _SearchTeamSandboxesQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
+        restricted: boolean;
         authorId: any | null;
         teamId: any | null;
         source: { __typename?: 'Source'; template: string | null };
@@ -6244,6 +6282,8 @@ export type RecentlyAccessedSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
+      draft: boolean;
+      restricted: boolean;
       authorId: any | null;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
@@ -6325,6 +6365,8 @@ export type SharedWithMeSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
+      draft: boolean;
+      restricted: boolean;
       authorId: any | null;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
@@ -6373,6 +6415,8 @@ export type LikedSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
+      draft: boolean;
+      restricted: boolean;
       authorId: any | null;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
@@ -6510,6 +6554,8 @@ export type CuratedAlbumsQuery = {
       screenshotOutdated: boolean;
       viewCount: number;
       isV2: boolean;
+      draft: boolean;
+      restricted: boolean;
       authorId: any | null;
       teamId: any | null;
       author: {
@@ -6568,6 +6614,8 @@ export type CuratedAlbumByIdQuery = {
       screenshotOutdated: boolean;
       viewCount: number;
       isV2: boolean;
+      draft: boolean;
+      restricted: boolean;
       authorId: any | null;
       teamId: any | null;
       author: {

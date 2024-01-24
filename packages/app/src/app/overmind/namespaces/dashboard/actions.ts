@@ -225,11 +225,11 @@ export const createFolder = async (
 };
 
 export const getDrafts = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
+  const { dashboard, activeTeam } = state;
   try {
     let sandboxes: SandboxFragmentDashboardFragment[];
 
-    if (state.activeTeam) {
+    if (activeTeam) {
       const data = await effects.gql.queries.getTeamDrafts({
         teamId: state.activeTeam,
         authorId: null,
@@ -238,15 +238,6 @@ export const getDrafts = async ({ state, effects }: Context) => {
         return;
       }
       sandboxes = data.me.team.drafts;
-    } else {
-      const data = await effects.gql.queries.sandboxesByPath({
-        path: '/',
-        teamId: state.activeTeam,
-      });
-      if (typeof data?.me?.collection?.sandboxes === 'undefined') {
-        return;
-      }
-      sandboxes = data.me.collection.sandboxes;
     }
 
     dashboard.sandboxes[sandboxesTypes.DRAFTS] = sandboxes.filter(

@@ -1,12 +1,10 @@
 import React from 'react';
-import { RepoFragmentDashboardFragment } from 'app/graphql/types';
 import {
   Stack,
   Text,
   Input,
   Icon,
   IconButton,
-  Link,
   InteractiveOverlay,
   Element,
 } from '@codesandbox/components';
@@ -136,25 +134,13 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = {
   isFrozen?: boolean;
-  isTemplate?: boolean;
-  prNumber?: number;
-  restricted: boolean;
-  isDevbox: boolean;
-  originalGit?: RepoFragmentDashboardFragment['originalGit'];
-} & Pick<SandboxItemComponentProps, 'noDrag' | 'lastUpdated' | 'PrivacyIcon'>;
+} & Pick<
+  SandboxItemComponentProps,
+  'noDrag' | 'lastUpdated' | 'PrivacyIcon' | 'sandbox' | 'restricted'
+>;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({
-    isFrozen,
-    isTemplate,
-    restricted,
-    isDevbox,
-    noDrag,
-    lastUpdated,
-    PrivacyIcon,
-    prNumber,
-    originalGit,
-  }) => {
-    const boxType = isDevbox ? 'devbox' : 'sandbox';
+  ({ isFrozen, noDrag, lastUpdated, PrivacyIcon, sandbox, restricted }) => {
+    const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
 
     const lastUpdatedText = (
       <Text key="last-updated" size={12} truncate>
@@ -177,23 +163,9 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           {isFrozen && (
             <Icon size={16} title={`Protected ${boxType}`} name="frozen" />
           )}
-          {prNumber ? (
-            <Link
-              title="Open pull request on GitHub"
-              css={{ display: 'flex' }}
-              href={`https://github.com/${originalGit.username}/${originalGit.repo}/pull/${prNumber}`}
-              target="_blank"
-            >
-              <Icon size={16} name="pr" color="#5BC266" />
-            </Link>
-          ) : null}
           {noDrag ? null : lastUpdatedText}
         </Stack>
-        <SandboxBadge
-          restricted={restricted}
-          isTemplate={isTemplate}
-          isDevbox={isDevbox}
-        />
+        <SandboxBadge sandbox={sandbox} restricted={restricted} />
       </Stack>
     );
   }
@@ -205,9 +177,9 @@ export const SandboxCard = ({
   lastUpdated,
   PrivacyIcon,
   screenshotUrl,
+  restricted,
   // interactions
   selected,
-  restricted,
   // drag preview
   thumbnailRef,
   isDragging,
@@ -309,14 +281,11 @@ export const SandboxCard = ({
           <SandboxTitle brightness={thumbnail.brightness} {...props} />
           <SandboxStats
             noDrag={noDrag}
-            originalGit={sandbox.originalGit}
-            prNumber={sandbox.prNumber}
             lastUpdated={lastUpdated}
-            isTemplate={!!sandbox.customTemplate}
             isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
-            isDevbox={sandbox.isV2}
+            sandbox={sandbox}
           />
         </CardContent>
       </StyledCard>
