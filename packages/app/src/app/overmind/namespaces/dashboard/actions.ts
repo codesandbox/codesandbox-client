@@ -1903,13 +1903,3 @@ export const createDraftBranch = async (
     });
   }
 };
-
-export const getLimits = async ({ state, effects }: Context) => {
-  const { limits } = await effects.gql.queries.getLimits({});
-
-  if (!limits) {
-    return;
-  }
-
-  state.dashboard.limits = limits;
-};

@@ -17,6 +17,7 @@ import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { pluralize } from 'app/utils/pluralize';
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import {
   Container,
   Tab,
@@ -58,6 +59,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const actions = useActions();
+  const { isFrozen } = useWorkspaceLimits();
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
@@ -357,7 +359,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       : null}
                   </Tabs>
                 </Stack>
-                {!mobileScreenSize && (
+                {!mobileScreenSize && !isFrozen && (
                   <Stack
                     direction="vertical"
                     css={{ paddingBottom: '16px' }}

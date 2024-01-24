@@ -24,6 +24,7 @@ import {
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { Branch } from 'app/pages/Dashboard/Components/Branch';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { DocumentationRow } from './DocumentationRow';
 import { RecentHeader } from './RecentHeader';
 
@@ -134,9 +135,11 @@ export const RecentContent: React.FC<RecentContentProps> = ({
     dashboard: { viewMode },
   } = useAppState();
   const actions = useActions();
+  const { isFrozen } = useWorkspaceLimits();
   const { restrictsPublicRepos } = useGitHubPermissions();
   const page: PageTypes = 'recent';
-  const showRepositoryImport = !isOnPrem && restrictsPublicRepos === false;
+  const showRepositoryImport =
+    !isOnPrem && !isFrozen && restrictsPublicRepos === false;
   const showDocsLine = !isOnPrem;
   const branches = recentItems.filter(
     item => item.type === 'branch'
@@ -188,6 +191,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
                       });
                     }}
                     icon="branch"
+                    disabled={isFrozen}
                   >
                     <Stack gap={1} direction="vertical">
                       <Text truncate color="#e5e5e5" weight="500">

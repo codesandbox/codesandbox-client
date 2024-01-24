@@ -64,7 +64,6 @@ export const UbbUpgradeBanner: React.FC = () => {
                 })}
               >
                 <Button
-                  as="a"
                   onClick={() => {
                     track('Home Banner - Upgrade', {
                       codesandbox: 'V1',

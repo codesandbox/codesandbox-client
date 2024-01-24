@@ -472,17 +472,42 @@ export enum Direction {
 
 export type TeamFeatureFlags = {
   __typename?: 'TeamFeatureFlags';
+  friendOfCsb: Scalars['Boolean'];
   ubbBeta: Scalars['Boolean'];
 };
 
 export type TeamLimits = {
   __typename?: 'TeamLimits';
+  /** VM credits included with the team's subscription every month, including add-ons */
+  includedCredits: Scalars['Int'];
+  /** Number of workspace members included with the team's subscription, including add-ons */
+  includedMembers: Scalars['Int'];
+  /** Number of sandboxes included with the team's subscription, including add-ons */
+  includedSandboxes: Scalars['Int'];
+  /** Storage (in GB) included with the team's subscription, including add-ons */
+  includedStorage: Scalars['Int'];
+  /** @deprecated Will be removed in a future release */
   maxEditors: Maybe<Scalars['Int']>;
+  /** @deprecated Will be removed in a future release */
   maxPrivateProjects: Maybe<Scalars['Int']>;
+  /** @deprecated Will be removed in a future release */
   maxPrivateSandboxes: Maybe<Scalars['Int']>;
+  /** @deprecated Will be removed in a future release */
   maxPublicProjects: Maybe<Scalars['Int']>;
+  /** @deprecated Will be removed in a future release */
   maxPublicSandboxes: Maybe<Scalars['Int']>;
+  /**
+   * Maximum number of credits that can be purchased on-demand in a month
+   *
+   * This value is set automatically based on the `onDemandSpendingLimit` set by the user using
+   * `mutation setTeamLimits`.
+   */
   onDemandCreditLimit: Maybe<Scalars['Int']>;
+  /**
+   * Maximum spending, in whole dollars, allowed for on-demand credits in a month
+   *
+   * This value is set by the user using `mutation setTeamLimits`.
+   */
   onDemandSpendingLimit: Maybe<Scalars['Int']>;
 };
 
@@ -1079,13 +1104,15 @@ export enum TeamType {
 
 export type TeamUsage = {
   __typename?: 'TeamUsage';
-  browserSandboxes: Scalars['Int'];
   credits: Scalars['Int'];
   editorsQuantity: Scalars['Int'];
   privateProjectsQuantity: Scalars['Int'];
   privateSandboxesQuantity: Scalars['Int'];
   publicProjectsQuantity: Scalars['Int'];
   publicSandboxesQuantity: Scalars['Int'];
+  restrictedSandboxes: Scalars['Int'];
+  sandboxes: Scalars['Int'];
+  unrestrictedSandboxes: Scalars['Int'];
 };
 
 export type UserAuthorization = {
@@ -1546,6 +1573,14 @@ export type RootMutationType = {
   changeTeamMemberAuthorizations: Team;
   /** Clear notification unread count */
   clearNotificationCount: User;
+  /**
+   * Convert an existing subscription to usage-based billing
+   *
+   * This mutation requires the caller to be an admin of the team. Otherwise, an error will be
+   * returned `"Not an admin"`. This return value will always be `true`. Clients should observe
+   * the `teamEvents` subscription for updates to the workspace subscription.
+   */
+  convertToUsageBilling: Scalars['Boolean'];
   createAlbum: Album;
   /**
    * Create or import a branch to a team-associated project
@@ -1861,6 +1896,14 @@ export type RootMutationType = {
    */
   mergeGithubPullRequest: Scalars['String'];
   permanentlyDeleteSandboxes: Array<Sandbox>;
+  /**
+   * See proposed invoice for converting from seat-based to usage-based billing
+   *
+   * This mutation requires the caller to be an admin of the team. Otherwise, an error will be
+   * returned `"Not an admin"`. Why a mutation? This operation requires communicating information
+   * with Stripe in a way that is more appropriate for a mutation than a query.
+   */
+  previewConvertToUsageBilling: InvoicePreview;
   previewUpdateSubscriptionBillingInterval: BillingPreview;
   reactivateSubscription: ProSubscription;
   redeemSandboxInvitation: Invitation;
@@ -2064,6 +2107,12 @@ export type RootMutationTypeChangeSandboxInvitationAuthorizationArgs = {
 
 export type RootMutationTypeChangeTeamMemberAuthorizationsArgs = {
   memberAuthorizations: InputMaybe<Array<MemberAuthorization>>;
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeConvertToUsageBillingArgs = {
+  addons: Array<Scalars['String']>;
+  plan: Scalars['String'];
   teamId: Scalars['UUID4'];
 };
 
@@ -2291,6 +2340,12 @@ export type RootMutationTypeMergeGithubPullRequestArgs = {
 
 export type RootMutationTypePermanentlyDeleteSandboxesArgs = {
   sandboxIds: Array<Scalars['ID']>;
+};
+
+export type RootMutationTypePreviewConvertToUsageBillingArgs = {
+  addons: Array<Scalars['String']>;
+  plan: Scalars['String'];
+  teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypePreviewUpdateSubscriptionBillingIntervalArgs = {
@@ -2639,6 +2694,13 @@ export enum GitHubPullRequestMergeMethod {
   Squash = 'SQUASH',
 }
 
+export type InvoicePreview = {
+  __typename?: 'InvoicePreview';
+  total: Scalars['Int'];
+  totalExcludingTax: Maybe<Scalars['Int']>;
+};
+
+/** DEPRECATED: Conversion to usage-based billing uses InvoicePreview instead */
 export type BillingPreview = {
   __typename?: 'BillingPreview';
   immediatePayment: Maybe<BillingDetails>;
@@ -4531,6 +4593,7 @@ export type TeamFragmentDashboardFragment = {
   creatorId: any | null;
   avatarUrl: string | null;
   legacy: boolean;
+  frozen: boolean;
   settings: {
     __typename?: 'WorkspaceSandboxSettings';
     minimumPrivacy: number;
@@ -4562,7 +4625,11 @@ export type TeamFragmentDashboardFragment = {
     status: SubscriptionStatus;
     paymentProvider: SubscriptionPaymentProvider | null;
   } | null;
-  featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
+  featureFlags: {
+    __typename?: 'TeamFeatureFlags';
+    ubbBeta: boolean;
+    friendOfCsb: boolean;
+  };
 };
 
 export type CurrentTeamInfoFragmentFragment = {
@@ -4575,6 +4642,7 @@ export type CurrentTeamInfoFragmentFragment = {
   type: TeamType;
   avatarUrl: string | null;
   legacy: boolean;
+  frozen: boolean;
   users: Array<{
     __typename?: 'User';
     id: any;
@@ -4628,21 +4696,16 @@ export type CurrentTeamInfoFragmentFragment = {
   } | null;
   limits: {
     __typename?: 'TeamLimits';
-    maxEditors: number | null;
-    maxPrivateProjects: number | null;
-    maxPrivateSandboxes: number | null;
-    maxPublicProjects: number | null;
-    maxPublicSandboxes: number | null;
+    includedCredits: number;
+    includedSandboxes: number;
+    onDemandCreditLimit: number | null;
   };
-  usage: {
-    __typename?: 'TeamUsage';
-    editorsQuantity: number;
-    privateProjectsQuantity: number;
-    privateSandboxesQuantity: number;
-    publicProjectsQuantity: number;
-    publicSandboxesQuantity: number;
+  usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
+  featureFlags: {
+    __typename?: 'TeamFeatureFlags';
+    ubbBeta: boolean;
+    friendOfCsb: boolean;
   };
-  featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
 };
 
 export type BranchFragment = {
@@ -4712,17 +4775,6 @@ export type ProjectWithBranchesFragment = {
   team: { __typename?: 'Team'; id: any } | null;
 };
 
-export type TeamLimitsFragment = {
-  __typename?: 'TeamLimits';
-  maxEditors: number | null;
-  maxPrivateProjects: number | null;
-  maxPrivateSandboxes: number | null;
-  maxPublicProjects: number | null;
-  maxPublicSandboxes: number | null;
-  onDemandSpendingLimit: number | null;
-  onDemandCreditLimit: number | null;
-};
-
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -4738,6 +4790,7 @@ export type _CreateTeamMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -4769,7 +4822,11 @@ export type _CreateTeamMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
-    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
+    featureFlags: {
+      __typename?: 'TeamFeatureFlags';
+      ubbBeta: boolean;
+      friendOfCsb: boolean;
+    };
   };
 };
 
@@ -5095,6 +5152,7 @@ export type _AcceptTeamInvitationMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5126,7 +5184,11 @@ export type _AcceptTeamInvitationMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
-    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
+    featureFlags: {
+      __typename?: 'TeamFeatureFlags';
+      ubbBeta: boolean;
+      friendOfCsb: boolean;
+    };
   };
 };
 
@@ -5155,6 +5217,7 @@ export type _SetTeamDescriptionMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5186,7 +5249,11 @@ export type _SetTeamDescriptionMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
-    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
+    featureFlags: {
+      __typename?: 'TeamFeatureFlags';
+      ubbBeta: boolean;
+      friendOfCsb: boolean;
+    };
   };
 };
 
@@ -5224,6 +5291,7 @@ export type _SetTeamNameMutation = {
     creatorId: any | null;
     avatarUrl: string | null;
     legacy: boolean;
+    frozen: boolean;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5255,7 +5323,11 @@ export type _SetTeamNameMutation = {
       status: SubscriptionStatus;
       paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
-    featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
+    featureFlags: {
+      __typename?: 'TeamFeatureFlags';
+      ubbBeta: boolean;
+      friendOfCsb: boolean;
+    };
   };
 };
 
@@ -5975,6 +6047,7 @@ export type AllTeamsQuery = {
       creatorId: any | null;
       avatarUrl: string | null;
       legacy: boolean;
+      frozen: boolean;
       settings: {
         __typename?: 'WorkspaceSandboxSettings';
         minimumPrivacy: number;
@@ -6006,7 +6079,11 @@ export type AllTeamsQuery = {
         status: SubscriptionStatus;
         paymentProvider: SubscriptionPaymentProvider | null;
       } | null;
-      featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
+      featureFlags: {
+        __typename?: 'TeamFeatureFlags';
+        ubbBeta: boolean;
+        friendOfCsb: boolean;
+      };
     }>;
   } | null;
 };
@@ -6312,6 +6389,7 @@ export type GetTeamQuery = {
       type: TeamType;
       avatarUrl: string | null;
       legacy: boolean;
+      frozen: boolean;
       users: Array<{
         __typename?: 'User';
         id: any;
@@ -6365,21 +6443,16 @@ export type GetTeamQuery = {
       } | null;
       limits: {
         __typename?: 'TeamLimits';
-        maxEditors: number | null;
-        maxPrivateProjects: number | null;
-        maxPrivateSandboxes: number | null;
-        maxPublicProjects: number | null;
-        maxPublicSandboxes: number | null;
+        includedCredits: number;
+        includedSandboxes: number;
+        onDemandCreditLimit: number | null;
       };
-      usage: {
-        __typename?: 'TeamUsage';
-        editorsQuantity: number;
-        privateProjectsQuantity: number;
-        privateSandboxesQuantity: number;
-        publicProjectsQuantity: number;
-        publicSandboxesQuantity: number;
+      usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
+      featureFlags: {
+        __typename?: 'TeamFeatureFlags';
+        ubbBeta: boolean;
+        friendOfCsb: boolean;
       };
-      featureFlags: { __typename?: 'TeamFeatureFlags'; ubbBeta: boolean };
     } | null;
   } | null;
 };
@@ -6598,55 +6671,6 @@ export type RepositoryByDetailsQuery = {
     };
     team: { __typename?: 'Team'; id: any } | null;
   } | null;
-};
-
-export type LimitsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type LimitsQuery = {
-  __typename?: 'RootQueryType';
-  limits: {
-    __typename?: 'Limits';
-    personalFree: {
-      __typename?: 'TeamLimits';
-      maxEditors: number | null;
-      maxPrivateProjects: number | null;
-      maxPrivateSandboxes: number | null;
-      maxPublicProjects: number | null;
-      maxPublicSandboxes: number | null;
-      onDemandSpendingLimit: number | null;
-      onDemandCreditLimit: number | null;
-    };
-    personalPro: {
-      __typename?: 'TeamLimits';
-      maxEditors: number | null;
-      maxPrivateProjects: number | null;
-      maxPrivateSandboxes: number | null;
-      maxPublicProjects: number | null;
-      maxPublicSandboxes: number | null;
-      onDemandSpendingLimit: number | null;
-      onDemandCreditLimit: number | null;
-    };
-    teamFree: {
-      __typename?: 'TeamLimits';
-      maxEditors: number | null;
-      maxPrivateProjects: number | null;
-      maxPrivateSandboxes: number | null;
-      maxPublicProjects: number | null;
-      maxPublicSandboxes: number | null;
-      onDemandSpendingLimit: number | null;
-      onDemandCreditLimit: number | null;
-    };
-    teamPro: {
-      __typename?: 'TeamLimits';
-      maxEditors: number | null;
-      maxPrivateProjects: number | null;
-      maxPrivateSandboxes: number | null;
-      maxPublicProjects: number | null;
-      maxPublicSandboxes: number | null;
-      onDemandSpendingLimit: number | null;
-      onDemandCreditLimit: number | null;
-    };
-  };
 };
 
 export type RecentNotificationFragment = {

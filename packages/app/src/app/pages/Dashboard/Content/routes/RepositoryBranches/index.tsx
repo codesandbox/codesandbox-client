@@ -16,6 +16,7 @@ import {
 import { BranchFragment } from 'app/graphql/types';
 import { InstallGHAppStripe } from 'app/pages/Dashboard/Components/shared/InstallGHAppStripe';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
 type MappedBranches = {
   defaultBranch: BranchFragment | null;
@@ -24,6 +25,7 @@ type MappedBranches = {
 };
 
 export const RepositoryBranchesPage = () => {
+  const { isFrozen } = useWorkspaceLimits();
   const params = useParams<{ path: string }>();
   const path = params.path || '';
   const [, owner, name] = path.split('/');
@@ -101,7 +103,7 @@ export const RepositoryBranchesPage = () => {
         type: 'new-branch',
         workspaceId: repositoryProject?.team?.id,
         repo: { owner, name },
-        disabled: restricted,
+        disabled: restricted || isFrozen,
         onClick: () => {
           actions.dashboard.createDraftBranch({
             owner,

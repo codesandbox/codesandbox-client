@@ -122,6 +122,7 @@ export const teamFragmentDashboard = gql`
     creatorId
     avatarUrl
     legacy
+    frozen
     settings {
       minimumPrivacy
     }
@@ -155,6 +156,7 @@ export const teamFragmentDashboard = gql`
 
     featureFlags {
       ubbBeta
+      friendOfCsb
     }
   }
 `;
@@ -169,6 +171,7 @@ export const currentTeamInfoFragment = gql`
     type
     avatarUrl
     legacy
+    frozen
     users {
       id
       avatarUrl
@@ -220,23 +223,19 @@ export const currentTeamInfoFragment = gql`
     }
 
     limits {
-      maxEditors
-      maxPrivateProjects
-      maxPrivateSandboxes
-      maxPublicProjects
-      maxPublicSandboxes
+      includedCredits
+      includedSandboxes
+      onDemandCreditLimit
     }
 
     usage {
-      editorsQuantity
-      privateProjectsQuantity
-      privateSandboxesQuantity
-      publicProjectsQuantity
-      publicSandboxesQuantity
+      sandboxes
+      credits
     }
 
     featureFlags {
       ubbBeta
+      friendOfCsb
     }
   }
 `;
@@ -302,16 +301,4 @@ export const projectWithBranchesFragment = gql`
     }
   }
   ${branchFragment}
-`;
-
-export const teamLimitsFragment = gql`
-  fragment teamLimits on TeamLimits {
-    maxEditors
-    maxPrivateProjects
-    maxPrivateSandboxes
-    maxPublicProjects
-    maxPublicSandboxes
-    onDemandSpendingLimit
-    onDemandCreditLimit
-  }
 `;

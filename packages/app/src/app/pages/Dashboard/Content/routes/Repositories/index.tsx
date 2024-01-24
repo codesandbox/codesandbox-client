@@ -10,10 +10,12 @@ import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 import { useDismissible } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { EmptyRepositories } from './EmptyRepositories';
 
 export const RepositoriesPage = () => {
   const actions = useActions();
+  const { isFrozen } = useWorkspaceLimits();
   const {
     activeTeam,
     dashboard: { repositoriesByTeamId, viewMode },
@@ -52,6 +54,7 @@ export const RepositoriesPage = () => {
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
         type: 'import-repository',
+        disabled: isFrozen,
         onImportClicked: () => {
           track('Repositories Page - Import Repository', {
             codesandbox: 'V1',

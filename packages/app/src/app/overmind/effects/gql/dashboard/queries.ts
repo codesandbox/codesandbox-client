@@ -41,8 +41,6 @@ import {
   RepositoriesByTeamQueryVariables,
   RepositoryByDetailsQuery,
   RepositoryByDetailsQueryVariables,
-  LimitsQuery,
-  LimitsQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -56,7 +54,6 @@ import {
   branchFragment,
   projectFragment,
   projectWithBranchesFragment,
-  teamLimitsFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -408,24 +405,4 @@ export const getRepositoryByDetails: Query<
   }
   ${projectWithBranchesFragment}
   ${branchFragment}
-`;
-
-export const getLimits: Query<LimitsQuery, LimitsQueryVariables> = gql`
-  query Limits {
-    limits {
-      personalFree {
-        ...teamLimits
-      }
-      personalPro {
-        ...teamLimits
-      }
-      teamFree {
-        ...teamLimits
-      }
-      teamPro {
-        ...teamLimits
-      }
-    }
-  }
-  ${teamLimitsFragment}
 `;
