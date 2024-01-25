@@ -8,18 +8,28 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 export const RestrictedSandboxes = () => {
   const { activeTeam } = useAppState();
   const { isAdmin } = useWorkspaceAuthorization();
-  const { isPro } = useWorkspaceSubscription();
+  const { isPro, isFree } = useWorkspaceSubscription();
 
-  const text = isPro
-    ? 'You reached the maximum amount of shareable Sandboxes. To create more, buy an add-on for your Pro subscription.'
-    : 'You reached the maximum amount of shareable Sandboxes in this workspace. Upgrade to Pro to create more shareable Sandboxes.';
+  if (isAdmin && isPro) {
+    return (
+      <MessageStripe variant="info" justify="space-between">
+        You reached the maximum amount of shareable Sandboxes in this workspace.
+        Contact us to increase your limit.
+        <MessageStripe.Action
+          as="a"
+          href="mailto:support@codesandbox.io?subject=Sandbox limit on Pro plan"
+        >
+          Contact us
+        </MessageStripe.Action>
+      </MessageStripe>
+    );
+  }
 
-  const cta = isPro ? 'Buy add-on' : 'Upgrade to Pro';
-
-  return (
-    <MessageStripe variant="info" justify="space-between">
-      {text}
-      {isAdmin ? (
+  if (isAdmin && isFree) {
+    return (
+      <MessageStripe variant="info" justify="space-between">
+        You reached the maximum amount of shareable Sandboxes in this workspace.
+        Upgrade to Pro to create more shareable Sandboxes.
         <MessageStripe.Action
           as="a"
           href={proUrl({
@@ -28,9 +38,29 @@ export const RestrictedSandboxes = () => {
             ubbBeta: true,
           })}
         >
-          {cta}
+          Upgrade to Pro
         </MessageStripe.Action>
-      ) : null}
-    </MessageStripe>
-  );
+      </MessageStripe>
+    );
+  }
+
+  if (!isAdmin && isPro) {
+    return (
+      <MessageStripe variant="info" justify="space-between">
+        You reached the maximum amount of shareable Sandboxes in this workspace.
+        Ask your administrator to increase the limit.
+      </MessageStripe>
+    );
+  }
+
+  if (!isAdmin && isFree) {
+    return (
+      <MessageStripe variant="info" justify="space-between">
+        You reached the maximum amount of shareable Sandboxes in this workspace.
+        To increase the limit, ask your administrator to upgrade to Pro.
+      </MessageStripe>
+    );
+  }
+
+  return null;
 };
