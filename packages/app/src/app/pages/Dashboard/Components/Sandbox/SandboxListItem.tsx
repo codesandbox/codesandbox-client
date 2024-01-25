@@ -24,6 +24,7 @@ export const SandboxListItem = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
+  restricted,
   // interactions
   selected,
   onClick,
@@ -37,7 +38,6 @@ export const SandboxListItem = ({
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  restricted,
   // drag preview
   thumbnailRef,
   isDragging,
@@ -135,7 +135,9 @@ export const SandboxListItem = ({
                       size={3}
                       weight="medium"
                       maxWidth="100%"
-                      css={{ color: restricted ? '#999999' : '#E5E5E5' }}
+                      css={{
+                        color: restricted ? '#999999' : '#E5E5E5',
+                      }}
                     >
                       {sandboxTitle}
                     </Text>
@@ -148,11 +150,7 @@ export const SandboxListItem = ({
         {/* Column span 0 on mobile because the Grid is bugged */}
         <Column span={[0, 2, 2]}>
           <Stack align="center">
-            <SandboxBadge
-              isDevbox={sandbox.isV2}
-              isTemplate={!!sandbox.customTemplate}
-              restricted={restricted}
-            />
+            <SandboxBadge sandbox={sandbox} restricted={restricted} />
           </Stack>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">

@@ -304,6 +304,16 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
 
+      {boxType === 'sandbox' && userRole !== 'READ' && (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.convertToDevbox(sandbox.id);
+          }}
+        >
+          Convert to Devbox
+        </MenuItem>
+      )}
+
       {hasAccess &&
         (isTemplate ? (
           <MenuItem
@@ -412,15 +422,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             </MenuItem>
           )}
         </>
-      )}
-      {!hasAccess && !isTemplate && location.pathname.includes('liked') && (
-        <MenuItem
-          onSelect={() => {
-            actions.dashboard.unlikeSandbox(sandbox.id);
-          }}
-        >
-          Unlike {boxType}
-        </MenuItem>
       )}
     </Menu.ContextMenu>
   );

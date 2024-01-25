@@ -14,6 +14,7 @@ export interface SandboxItemComponentProps {
   }>;
   PrivacyIcon: React.FC;
   screenshotUrl: string | null;
+  restricted: boolean;
 
   interaction: 'button' | 'link';
   isScrolling: boolean;
@@ -29,7 +30,6 @@ export interface SandboxItemComponentProps {
   onInputKeyDown: (evt: React.KeyboardEvent<HTMLInputElement>) => void;
   onSubmit: (evt: React.FormEvent<HTMLFormElement>) => void;
   onInputBlur: (evt: React.FocusEvent<HTMLInputElement>) => void;
-  restricted?: boolean;
 
   thumbnailRef: React.Ref<HTMLDivElement>;
   isDragging: boolean;

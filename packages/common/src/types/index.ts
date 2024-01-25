@@ -438,6 +438,8 @@ export type Sandbox = {
   } | null;
   roomId: string | null;
   privacy: 0 | 1 | 2;
+  draft: boolean;
+  restricted: boolean;
   author: SandboxAuthor | null;
   forkedFromSandbox: ForkedSandbox | null;
   git: GitInfo | null;
@@ -479,12 +481,8 @@ export type Sandbox = {
   // New restrictions object. Remove the optional from the properties
   // when resrcitions are deployed to production.
   restrictions?: {
-    freePlanEditingRestricted?: boolean;
     liveSessionsRestricted?: boolean;
   };
-  // Legacy freePlanEditingRestricted. We can remove this when the
-  // restrictions above have been implemented.
-  freePlanEditingRestricted: boolean;
 };
 
 export type PrettierConfig = {

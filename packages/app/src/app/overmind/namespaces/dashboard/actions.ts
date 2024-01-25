@@ -225,11 +225,11 @@ export const createFolder = async (
 };
 
 export const getDrafts = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
+  const { dashboard, activeTeam } = state;
   try {
-    let sandboxes: SandboxFragmentDashboardFragment[];
+    let sandboxes: SandboxFragmentDashboardFragment[] = [];
 
-    if (state.activeTeam) {
+    if (activeTeam) {
       const data = await effects.gql.queries.getTeamDrafts({
         teamId: state.activeTeam,
         authorId: null,
@@ -238,15 +238,6 @@ export const getDrafts = async ({ state, effects }: Context) => {
         return;
       }
       sandboxes = data.me.team.drafts;
-    } else {
-      const data = await effects.gql.queries.sandboxesByPath({
-        path: '/',
-        teamId: state.activeTeam,
-      });
-      if (typeof data?.me?.collection?.sandboxes === 'undefined') {
-        return;
-      }
-      sandboxes = data.me.collection.sandboxes;
     }
 
     dashboard.sandboxes[sandboxesTypes.DRAFTS] = sandboxes.filter(
@@ -1902,4 +1893,25 @@ export const createDraftBranch = async (
       status: NotificationStatus.ERROR,
     });
   }
+};
+
+export const convertToDevbox = async (
+  { effects, actions }: Context,
+  sandboxId: string
+) => {
+  await effects.api.updateSandbox(sandboxId, { v2: true });
+
+  // Update in-memory state
+  actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds: [sandboxId],
+    sandboxMutation: sandbox => ({
+      ...sandbox,
+      isV2: true,
+      // Update only non-draft restricted sandboxes when they are converted to devboxes
+      restricted: sandbox.draft ? sandbox.restricted : false,
+    }),
+  });
+
+  // Re-fetch team to get updated usage data
+  actions.getActiveTeamInfo();
 };

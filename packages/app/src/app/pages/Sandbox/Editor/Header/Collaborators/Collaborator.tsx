@@ -8,8 +8,6 @@ import { Authorization } from 'app/graphql/types';
 import { useAppState, useActions } from 'app/overmind';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { Mail, WarningIcon } from './icons';
 import { PermissionSelect } from './PermissionSelect';
@@ -233,12 +231,12 @@ interface ILinkPermissionProps {
 export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
   const state = useAppState();
   const actions = useActions();
-  const { privacy } = state.editor.currentSandbox;
-  const isPro = Boolean(state.activeTeamInfo?.subscription);
+  const { privacy, draft } = state.editor.currentSandbox;
 
   const PrivacyIcon = privacyToIcon[privacy];
+  const isPrivateDraft = draft && privacy === 2;
 
-  const isReadOnly = readOnly || !isPro;
+  const isReadOnly = readOnly || isPrivateDraft;
 
   const onChange = value => {
     actions.workspace.sandboxPrivacyChanged({
@@ -248,7 +246,7 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
   };
 
   return (
-    <Stack gap={4} align="center" direction="vertical">
+    <Stack gap={2} align="flex-start" direction="vertical">
       <CollaboratorItem
         avatarComponent={<PrivacyIcon />}
         name={
@@ -273,18 +271,9 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
         style={{ width: '100%' }}
       />
 
-      {!isPro && (
-        <Text size={3} variant="muted" align="center">
-          Changing sandbox access is available with{' '}
-          <a
-            href={proUrl({ source: 'v1_share' })}
-            target="_blank"
-            rel="noreferrer noopener"
-            onClick={() => track('Editor - Share sandbox Pricing link')}
-            style={{ textDecoration: 'none' }}
-          >
-            CodeSandbox Pro
-          </a>
+      {isPrivateDraft && (
+        <Text size={3} variant="muted">
+          Drafts are private and non-shareable.
         </Text>
       )}
     </Stack>

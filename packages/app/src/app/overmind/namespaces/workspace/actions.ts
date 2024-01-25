@@ -324,9 +324,6 @@ export const sandboxPrivacyChanged = async (
   // at all, so we have to use the gql mutation to update the privacy from private
   // or unlisted to public.
   if (privacy === 0) {
-    // Optimistically update editing restriction
-    state.editor.currentSandbox.freePlanEditingRestricted = false;
-
     try {
       await effects.gql.mutations.changePrivacy({
         sandboxIds: [state.editor.currentSandbox.id],
@@ -342,7 +339,6 @@ export const sandboxPrivacyChanged = async (
     } catch (error) {
       // Reset previous state
       state.editor.currentSandbox.privacy = oldPrivacy;
-      state.editor.currentSandbox.freePlanEditingRestricted = true;
 
       actions.internal.handleError({
         message: "We weren't able to update the sandbox privacy",
@@ -366,6 +362,11 @@ export const sandboxPrivacyChanged = async (
         // Privacy changed from private to unlisted/public or other way around, restart
         // the sandbox to notify containers
         actions.server.restartContainer();
+      }
+
+      if (state.editor.currentSandbox.draft && privacy === 2) {
+        // Optimistically update editing restriction when draft is set to private
+        state.editor.currentSandbox.restricted = false;
       }
     } catch (error) {
       // Reset previous state
