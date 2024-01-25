@@ -227,7 +227,7 @@ export const createFolder = async (
 export const getDrafts = async ({ state, effects }: Context) => {
   const { dashboard, activeTeam } = state;
   try {
-    let sandboxes: SandboxFragmentDashboardFragment[];
+    let sandboxes: SandboxFragmentDashboardFragment[] = [];
 
     if (activeTeam) {
       const data = await effects.gql.queries.getTeamDrafts({
