@@ -110,6 +110,8 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
 
   const sandbox = state.editor.currentSandbox;
   const sandboxFromActiveWorkspace = sandbox?.team?.id === state.activeTeam;
+  const showRestrictedBanner =
+    sandboxFromActiveWorkspace && sandbox?.restricted;
 
   const hideNavigation =
     state.preferences.settings.zenMode && state.workspace.workspaceHidden;
@@ -133,7 +135,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     if (
       subscription?.status === SubscriptionStatus.Unpaid ||
       showTrialWithoutPaymentInfoBanner ||
-      sandbox?.restricted ||
+      showRestrictedBanner ||
       showCloudSandboxConvert
     ) {
       // Header height + MessageStripe
@@ -172,9 +174,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               />
             )}
 
-            {sandboxFromActiveWorkspace && sandbox?.restricted ? (
-              <RestrictedSandbox />
-            ) : null}
+            {showRestrictedBanner ? <RestrictedSandbox /> : null}
             {showCloudSandboxConvert ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>
