@@ -19,7 +19,7 @@ export const RestrictedSandbox = () => {
     // Draft sandboxes restricted if not private
     return (
       <MessageStripe variant="error" corners="straight">
-        From Jan 31st, all draft Sandboxes need to be private. To edit this
+        From Jan 30th, all draft Sandboxes need to be private. To edit this
         draft Sandbox, make it private. (it will become non-shareable and
         non-embeddable).
         <MessageStripe.Action onClick={changeToPrivate}>
@@ -42,7 +42,10 @@ export const RestrictedSandbox = () => {
             : 'Ask your administrator to increase the limit.'}
         </Text>
         {isAdmin ? (
-          <MessageStripe.Action as="a" href="mailto:support@codesandbox.io">
+          <MessageStripe.Action
+            as="a"
+            href="mailto:support@codesandbox.io?subject=Sandbox limit on Pro plan"
+          >
             Contact us
           </MessageStripe.Action>
         ) : null}
