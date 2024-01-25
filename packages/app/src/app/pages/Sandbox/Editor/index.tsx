@@ -109,6 +109,8 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
   }, [effects.vscode]);
 
   const sandbox = state.editor.currentSandbox;
+  const sandboxFromActiveWorkspace = sandbox?.team?.id === state.activeTeam;
+
   const hideNavigation =
     state.preferences.settings.zenMode && state.workspace.workspaceHidden;
   const { statusBar } = state.editor;
@@ -170,7 +172,9 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               />
             )}
 
-            {sandbox?.restricted ? <RestrictedSandbox /> : null}
+            {sandboxFromActiveWorkspace && sandbox?.restricted ? (
+              <RestrictedSandbox />
+            ) : null}
             {showCloudSandboxConvert ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>

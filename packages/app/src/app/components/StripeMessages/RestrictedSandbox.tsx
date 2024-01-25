@@ -68,6 +68,7 @@ export const RestrictedSandbox = () => {
           href={proUrl({
             source: 'v1_editor_restricted_sandbox_banner',
             workspaceId: activeTeam,
+            ubbBeta: true,
           })}
         >
           Upgrade to Pro

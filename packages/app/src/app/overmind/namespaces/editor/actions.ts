@@ -335,7 +335,7 @@ export const sandboxChanged = withLoadApp<{
           hasBetaEditorExperiment
         );
 
-        // window.location.href = sandboxV2Url;
+        window.location.href = sandboxV2Url;
       }
 
       actions.internal.setCurrentSandbox(sandbox);
