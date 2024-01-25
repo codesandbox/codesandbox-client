@@ -31,7 +31,6 @@ const PrivacyIcons = {
   0: () => null,
   1: () => <Icon name="link" size={12} />,
   2: () => <Icon name="lock" size={12} />,
-  3: () => <Icon name="edit" size={12} />, // In the future, draft will be a privacy level
 };
 
 interface GenericSandboxProps {
@@ -92,8 +91,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
 
   const TemplateIcon = getTemplateIcon(sandbox);
-  const privacyLevel = sandbox.draft ? 3 : sandbox.privacy;
-  const PrivacyIcon = PrivacyIcons[privacyLevel];
+  const PrivacyIcon = PrivacyIcons[sandbox.privacy];
   const restricted = sandbox.restricted && !sandbox.draft;
 
   let screenshotUrl = sandbox.screenshotUrl;

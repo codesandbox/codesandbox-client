@@ -9,7 +9,7 @@ import {
 } from '@codesandbox/components';
 import { GenericCreate } from 'app/components/Create/GenericCreate';
 import {
-  FreeViewOnlyStripe,
+  RestrictedSandbox,
   PaymentPending,
   TrialWithoutPaymentInfo,
 } from 'app/components/StripeMessages';
@@ -131,7 +131,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     if (
       subscription?.status === SubscriptionStatus.Unpaid ||
       showTrialWithoutPaymentInfoBanner ||
-      sandbox?.freePlanEditingRestricted ||
+      sandbox?.restricted ||
       showCloudSandboxConvert
     ) {
       // Header height + MessageStripe
@@ -170,7 +170,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               />
             )}
 
-            {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
+            {sandbox?.restricted ? <RestrictedSandbox /> : null}
             {showCloudSandboxConvert ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>
