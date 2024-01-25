@@ -150,7 +150,7 @@ export const SandboxListItem = ({
         {/* Column span 0 on mobile because the Grid is bugged */}
         <Column span={[0, 2, 2]}>
           <Stack align="center">
-            <SandboxBadge sandbox={sandbox} />
+            <SandboxBadge sandbox={sandbox} restricted={restricted} />
           </Stack>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">
