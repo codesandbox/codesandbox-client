@@ -49,7 +49,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       SPENDING_LIMIT_WARNING;
 
   const hasRestrictedSandboxes =
-    applyUbbRestrictions && usage.sandboxes > limits.includedSandboxes;
+    applyUbbRestrictions && usage.sandboxes >= limits.includedSandboxes;
 
   return {
     hasOver20Sandboxes,

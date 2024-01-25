@@ -8,8 +8,6 @@ import { Authorization } from 'app/graphql/types';
 import { useAppState, useActions } from 'app/overmind';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { Mail, WarningIcon } from './icons';
 import { PermissionSelect } from './PermissionSelect';

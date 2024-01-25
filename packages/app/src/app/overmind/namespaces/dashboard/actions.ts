@@ -1904,7 +1904,12 @@ export const convertToDevbox = async (
   // Update in-memory state
   actions.dashboard.internal.changeSandboxesInState({
     sandboxIds: [sandboxId],
-    sandboxMutation: sandbox => ({ ...sandbox, isV2: true, restricted: false }),
+    sandboxMutation: sandbox => ({
+      ...sandbox,
+      isV2: true,
+      // Update only non-draft restricted sandboxes when they are converted to devboxes
+      restricted: sandbox.draft ? sandbox.restricted : false,
+    }),
   });
 
   // Re-fetch team to get updated usage data
