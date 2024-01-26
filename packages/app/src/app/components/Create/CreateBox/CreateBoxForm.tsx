@@ -128,7 +128,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           <Text size={3} as="label">
             Visibility
           </Text>
-          <Stack direction="vertical" gap={1}>
+          <Stack direction="vertical" gap={2}>
             {canSetPrivacy ? (
               <Select
                 icon={PRIVACY_OPTIONS[permission].icon}
@@ -146,8 +146,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   value="Private"
                   disabled
                 />
-                <Stack gap={1}>
-                  <Icon color="#999" name="circleBang" />
+                <Stack gap={1} align="center">
+                  <Icon color="#999" name="circleBang" size={14} />
                   <Text size={3} variant="muted">
                     Drafts are private and only visible to you. Move them to the{' '}
                     <Text
@@ -219,8 +219,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             value={defaultSpecs}
             disabled
           />
-          <Stack gap={1}>
-            <Icon color="#999" name="circleBang" />
+          <Stack gap={1} align="center">
+            <Icon color="#999" name="circleBang" size={14} />
             <Text size={3} variant="muted">
               {specsInfo}
             </Text>
