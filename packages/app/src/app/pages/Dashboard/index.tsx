@@ -22,7 +22,6 @@ import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPayment
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
-import { useScopedPersistedState } from 'app/hooks/usePersistedState';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { UsageLimitMessageStripe } from 'app/components/StripeMessages/UsageLimitMessageStripe';
 import { Header } from './Header';
