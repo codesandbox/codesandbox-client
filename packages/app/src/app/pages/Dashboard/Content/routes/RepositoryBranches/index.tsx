@@ -8,7 +8,6 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { PrivateRepoFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
 import {
   getProjectUniqueKey,
   sortByLastAccessed,
@@ -120,29 +119,6 @@ export const RepositoryBranchesPage = () => {
   const itemsToShow = getItemsToShow();
   const ownerNamePath = `${owner}/${name}`;
 
-  const renderMessageStripe = () => {
-    if (restricted) {
-      return <PrivateRepoFreeTeam />;
-    }
-
-    if (repositoryProject?.appInstalled === false) {
-      return (
-        <InstallGHAppStripe
-          onCloseWindow={() => {
-            // Refetch repo data to get rid of the banner until we implement the GH app subscription
-            actions.dashboard.getRepositoryWithBranches({
-              activeTeam,
-              owner,
-              name,
-            });
-          }}
-        />
-      );
-    }
-  };
-
-  const messageStripe = renderMessageStripe();
-
   return (
     <SelectionProvider
       page={pageType}
@@ -165,9 +141,18 @@ export const RepositoryBranchesPage = () => {
         readOnly={restricted}
       />
 
-      {messageStripe && (
+      {repositoryProject?.appInstalled === false && (
         <Element paddingX={4} paddingBottom={4}>
-          {messageStripe}
+          <InstallGHAppStripe
+            onCloseWindow={() => {
+              // Refetch repo data to get rid of the banner until we implement the GH app subscription
+              actions.dashboard.getRepositoryWithBranches({
+                activeTeam,
+                owner,
+                name,
+              });
+            }}
+          />
         </Element>
       )}
 
