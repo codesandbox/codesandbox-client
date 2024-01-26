@@ -14,11 +14,11 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
   type: 'sandbox' | 'devbox';
+  isDraft?: boolean;
   onCancel: () => void;
   onSubmit: (params: CreateParams) => void;
 }
@@ -27,6 +27,7 @@ type PrivacyLevel = 0 | 1 | 2;
 
 export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   type,
+  isDraft,
   onCancel,
   onSubmit,
 }) => {
@@ -37,11 +38,10 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isPro } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-  const canSetPrivacy = isPro || ubbBeta;
+  const canSetPrivacy = !isDraft;
   const miniumPrivacy = canSetPrivacy
     ? ((activeTeamInfo?.settings.minimumPrivacy || 0) as PrivacyLevel)
-    : 0;
+    : 2;
 
   const [permission, setPermission] = useState<PrivacyLevel>(miniumPrivacy);
   const [editor, setEditor] = useGlobalPersistedState<'csb' | 'vscode'>(
@@ -129,7 +129,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             margin: 0,
           }}
         >
-          Create {label}
+          Create {label} {isDraft && '(Draft)'}
         </Text>
         <Stack direction="vertical" gap={1}>
           <Text size={3} as="label">
@@ -167,22 +167,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               <>
                 <Input
                   css={{ opacity: 0.7, cursor: 'not-allowed' }}
-                  value="Public"
+                  value="Private"
                   disabled
                 />
                 <Stack gap={1}>
                   <Icon color="#999" name="circleBang" />
                   <Text size={3} variant="muted">
-                    You need a{' '}
-                    <Text
-                      as="a"
-                      variant="active"
-                      css={{ textDecoration: 'none' }}
-                      href={proUrl()}
-                    >
-                      Pro workspace
-                    </Text>{' '}
-                    to change {type} visibility.
+                    Drafts are private and only visible to you. To share this{' '}
+                    {label} move in{' '}
+                    <Text color="#e5e5e5">All devboxes and sandboxes</Text>.
                   </Text>
                 </Stack>
               </>
