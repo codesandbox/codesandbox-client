@@ -12,13 +12,13 @@ import {
 import { useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { sandboxes } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
   type: 'sandbox' | 'devbox';
+  isDraft?: boolean;
   onCancel: () => void;
   onSubmit: (params: CreateParams) => void;
 }
@@ -27,21 +27,21 @@ type PrivacyLevel = 0 | 1 | 2;
 
 export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   type,
+  isDraft,
   onCancel,
   onSubmit,
 }) => {
   const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
 
-  const { activeTeamInfo } = useAppState();
+  const { activeTeamInfo, activeTeam } = useAppState();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isPro } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-  const canSetPrivacy = isPro || ubbBeta;
+  const canSetPrivacy = !isDraft;
   const miniumPrivacy = canSetPrivacy
     ? ((activeTeamInfo?.settings.minimumPrivacy || 0) as PrivacyLevel)
-    : 0;
+    : 2;
 
   const [permission, setPermission] = useState<PrivacyLevel>(miniumPrivacy);
   const [editor, setEditor] = useGlobalPersistedState<'csb' | 'vscode'>(
@@ -59,35 +59,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const specsInfo =
     // eslint-disable-next-line no-nested-ternary
-    type === 'sandbox' ? (
-      'Sandboxes run in your browser.'
-    ) : isPro ? (
-      <>
-        VM specs are currently tied to{' '}
-        <Text
-          as="a"
-          css={{ textDecoration: 'none' }}
-          variant="active"
-          href={proUrl()}
-        >
-          your Pro subscription
-        </Text>
-        .
-      </>
-    ) : (
-      <>
-        Better specs are available for{' '}
-        <Text
-          as="a"
-          css={{ textDecoration: 'none' }}
-          variant="active"
-          href={proUrl()}
-        >
-          Pro workspaces
-        </Text>
-        .
-      </>
-    );
+    type === 'sandbox'
+      ? 'Sandboxes run in your browser.'
+      : isPro
+      ? 'VM specs are currently tied to your Pro subscription.'
+      : 'Better specs are available for Pro workspaces';
 
   useEffect(() => {
     effects.api.getSandboxTitle().then(({ title }) => {
@@ -129,7 +105,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             margin: 0,
           }}
         >
-          Create {label}
+          Create {label} {isDraft && '(Draft)'}
         </Text>
         <Stack direction="vertical" gap={1}>
           <Text size={3} as="label">
@@ -152,7 +128,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           <Text size={3} as="label">
             Visibility
           </Text>
-          <Stack direction="vertical" gap={1}>
+          <Stack direction="vertical" gap={2}>
             {canSetPrivacy ? (
               <Select
                 icon={PRIVACY_OPTIONS[permission].icon}
@@ -167,22 +143,23 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               <>
                 <Input
                   css={{ opacity: 0.7, cursor: 'not-allowed' }}
-                  value="Public"
+                  value="Private"
                   disabled
                 />
-                <Stack gap={1}>
-                  <Icon color="#999" name="circleBang" />
+                <Stack gap={1} align="center">
+                  <Icon color="#999" name="circleBang" size={14} />
                   <Text size={3} variant="muted">
-                    You need a{' '}
+                    Drafts are private and only visible to you. Move them to the{' '}
                     <Text
                       as="a"
-                      variant="active"
+                      target="_blank"
                       css={{ textDecoration: 'none' }}
-                      href={proUrl()}
+                      variant="active"
+                      href={sandboxes('/', activeTeam)}
                     >
-                      Pro workspace
+                      workspace folder
                     </Text>{' '}
-                    to change {type} visibility.
+                    for more options.
                   </Text>
                 </Stack>
               </>
@@ -242,8 +219,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             value={defaultSpecs}
             disabled
           />
-          <Stack gap={1}>
-            <Icon color="#999" name="circleBang" />
+          <Stack gap={1} align="center">
+            <Icon color="#999" name="circleBang" size={14} />
             <Text size={3} variant="muted">
               {specsInfo}
             </Text>

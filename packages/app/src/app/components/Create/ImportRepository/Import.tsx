@@ -23,11 +23,9 @@ import {
   RepositoryTeamsQueryVariables,
 } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shared/RestrictedPublicReposImport';
 
-import { PrivateRepoFreeTeam } from './PrivateRepoFreeTeam';
 import { RestrictedPrivateReposImport } from './RestrictedPrivateRepositoriesImport';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
@@ -77,7 +75,7 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
-  const { activeTeam, hasLogIn, activeTeamInfo } = useAppState();
+  const { activeTeam, hasLogIn } = useAppState();
   const {
     restrictsPublicRepos,
     restrictsPrivateRepos,
@@ -85,9 +83,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const {
     dashboard: { importGitHubRepository },
   } = useActions();
-
-  const { isFree } = useWorkspaceSubscription();
-  const isUbbBeta = activeTeamInfo?.featureFlags.ubbBeta;
 
   // Use a variable instead of `loading` from `useLazyQuery` because
   // we want the UI to look like it's loading before the debounced fn
@@ -106,10 +101,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
   const [isImporting, setIsImporting] = React.useState(false);
   const [shouldFetch, setShouldFetch] = React.useState(false);
-  const [
-    privateRepoFreeAccountError,
-    setPrivateRepoFreeAccountError,
-  ] = React.useState<string | undefined>(undefined);
+
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
     parsed: null,
@@ -146,11 +138,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     onCompleted: async repo => {
       setShouldFetch(false);
 
-      if (repo.private && isFree && !isUbbBeta) {
-        setPrivateRepoFreeAccountError(url.raw);
-        return;
-      }
-
       if (repo.authorization === GithubRepoAuthorization.Write) {
         setIsImporting(true);
         await importGitHubRepository({
@@ -165,8 +152,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   });
 
   const isLoading = githubRepo.state === 'loading' || isImporting;
-  const limitImportBasedOnSubscription =
-    privateRepoFreeAccountError === url.raw && !isUbbBeta;
+
   const hasExistingImports =
     existingRepositoryTeams && existingRepositoryTeams.length >= 1;
 
@@ -281,9 +267,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             }}
             id="form-error"
           >
-            {url.error ||
-            githubRepo.state === 'error' ||
-            limitImportBasedOnSubscription ? (
+            {url.error || githubRepo.state === 'error' ? (
               <Text size={12} variant="danger">
                 {url.error}
                 {/**
@@ -302,7 +286,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
                 {githubRepo.state === 'error' && !restrictsPrivateRepos
                   ? githubRepo.error
                   : null}
-                {limitImportBasedOnSubscription && <PrivateRepoFreeTeam />}
               </Text>
             ) : null}
           </Element>

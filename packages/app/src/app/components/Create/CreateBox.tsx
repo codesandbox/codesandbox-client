@@ -110,6 +110,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
   const showTeamTemplates = teamTemplates.length > 0;
   const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
+  const isDraft = !collectionId;
 
   useEffect(() => {
     if (searchQuery) {
@@ -518,6 +519,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             {viewState === 'fromTemplate' ? (
               <CreateBoxForm
                 type={type}
+                isDraft={isDraft}
                 onCancel={() => {
                   setViewState('initial');
                 }}
