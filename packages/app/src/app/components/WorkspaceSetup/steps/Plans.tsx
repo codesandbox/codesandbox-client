@@ -27,6 +27,7 @@ import { useActions, useAppState, useEffects } from 'app/overmind';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useLocation } from 'react-router-dom';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -48,7 +49,26 @@ export const Plans: React.FC<StepProps> = ({
   const { pathname } = useLocation();
   const [tiers, setTiers] = useState<VMTier[]>([]);
   const { ubbBeta } = useWorkspaceFeatureFlags();
+  const { isFree } = useWorkspaceSubscription();
   const isUpgrading = pathname.includes('upgrade');
+  const shouldToggleUbbFlag = !ubbBeta && isFree;
+
+  // Until the 30th of Jan existing Pro can see this page
+  // However, they should not see the free plan
+  const showFreePlan = isFree;
+
+  // For new workspaces
+  let freeButtonCTA = 'Get started for free';
+
+  if (isUpgrading) {
+    if (ubbBeta) {
+      // For free workspaces, early exit, no upgrade
+      freeButtonCTA = 'Continue on Free';
+    } else {
+      // For workspaces converting from old free
+      freeButtonCTA = 'Choose Free';
+    }
+  }
 
   useEffect(() => {
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
@@ -61,7 +81,7 @@ export const Plans: React.FC<StepProps> = ({
   }, [urlWorkspaceId, activeTeam, actions]);
 
   const handleProPlanSelection = async () => {
-    if (!ubbBeta) {
+    if (shouldToggleUbbFlag) {
       await effects.gql.mutations.joinUsageBillingBeta({
         teamId: urlWorkspaceId,
       });
@@ -89,52 +109,56 @@ export const Plans: React.FC<StepProps> = ({
           />
 
           <HorizontalScroller css={{ width: '100%' }}>
-            <Stack gap={6}>
-              <StyledCard
-                direction="vertical"
-                align="center"
-                gap={8}
-                css={{
-                  background: '#1d1d1d',
-                  color: '#e5e5e5',
+            <Stack gap={6} justify="center">
+              {showFreePlan && (
+                <StyledCard
+                  direction="vertical"
+                  align="center"
+                  gap={8}
+                  css={{
+                    background: '#1d1d1d',
+                    color: '#e5e5e5',
 
-                  '& a': { color: '#DCF76E' },
-                }}
-              >
-                <Text size={7} fontFamily="everett" weight="medium">
-                  {UBB_FREE_PLAN.name}
-                </Text>
-                <CardHeading>For learning and experimenting</CardHeading>
-                <PlanPricing plan={UBB_FREE_PLAN} />
-                <Button
-                  css={{ background: '#323232' }}
-                  variant="secondary"
-                  size="large"
-                  onClick={async () => {
-                    if (!ubbBeta) {
-                      await effects.gql.mutations.joinUsageBillingBeta({
-                        teamId: urlWorkspaceId,
-                      });
-                    }
-
-                    onEarlyExit();
+                    '& a': { color: '#DCF76E' },
                   }}
                 >
-                  {isUpgrading ? 'Choose free' : 'Get started for free'}
-                </Button>
+                  <Text size={7} fontFamily="everett" weight="medium">
+                    {UBB_FREE_PLAN.name}
+                  </Text>
+                  <CardHeading>For learning and experimenting</CardHeading>
+                  <PlanPricing plan={UBB_FREE_PLAN} />
 
-                <PlanFeatures
-                  heading="Usage"
-                  secondaryColor="#a6a6a6"
-                  features={UBB_FREE_PLAN.usage}
-                  includeTooltips
-                />
-                <PlanFeatures
-                  heading="Features"
-                  secondaryColor="#a6a6a6"
-                  features={UBB_FREE_PLAN.features}
-                />
-              </StyledCard>
+                  <Button
+                    css={{ background: '#323232' }}
+                    variant="secondary"
+                    size="large"
+                    onClick={async () => {
+                      if (shouldToggleUbbFlag) {
+                        await effects.gql.mutations.joinUsageBillingBeta({
+                          teamId: urlWorkspaceId,
+                        });
+                      }
+
+                      // Full reload
+                      onEarlyExit(shouldToggleUbbFlag);
+                    }}
+                  >
+                    {freeButtonCTA}
+                  </Button>
+
+                  <PlanFeatures
+                    heading="Usage"
+                    secondaryColor="#a6a6a6"
+                    features={UBB_FREE_PLAN.usage}
+                    includeTooltips
+                  />
+                  <PlanFeatures
+                    heading="Features"
+                    secondaryColor="#a6a6a6"
+                    features={UBB_FREE_PLAN.features}
+                  />
+                </StyledCard>
+              )}
               <StyledCard
                 direction="vertical"
                 align="center"
