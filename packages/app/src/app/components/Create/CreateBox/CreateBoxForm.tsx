@@ -12,7 +12,7 @@ import {
 import { useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { sandboxes } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { CreateParams } from '../utils/types';
 
@@ -33,7 +33,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 }) => {
   const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
 
-  const { activeTeamInfo } = useAppState();
+  const { activeTeamInfo, activeTeam } = useAppState();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -59,35 +59,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const specsInfo =
     // eslint-disable-next-line no-nested-ternary
-    type === 'sandbox' ? (
-      'Sandboxes run in your browser.'
-    ) : isPro ? (
-      <>
-        VM specs are currently tied to{' '}
-        <Text
-          as="a"
-          css={{ textDecoration: 'none' }}
-          variant="active"
-          href={proUrl()}
-        >
-          your Pro subscription
-        </Text>
-        .
-      </>
-    ) : (
-      <>
-        Better specs are available for{' '}
-        <Text
-          as="a"
-          css={{ textDecoration: 'none' }}
-          variant="active"
-          href={proUrl()}
-        >
-          Pro workspaces
-        </Text>
-        .
-      </>
-    );
+    type === 'sandbox'
+      ? 'Sandboxes run in your browser.'
+      : isPro
+      ? 'VM specs are currently tied to your Pro subscription.'
+      : 'Better specs are available for Pro workspaces';
 
   useEffect(() => {
     effects.api.getSandboxTitle().then(({ title }) => {
@@ -173,9 +149,17 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 <Stack gap={1}>
                   <Icon color="#999" name="circleBang" />
                   <Text size={3} variant="muted">
-                    Drafts are private and only visible to you. To share this{' '}
-                    {label} move in{' '}
-                    <Text color="#e5e5e5">All devboxes and sandboxes</Text>.
+                    Drafts are private and only visible to you. Move them to the{' '}
+                    <Text
+                      as="a"
+                      target="_blank"
+                      css={{ textDecoration: 'none' }}
+                      variant="active"
+                      href={sandboxes('/', activeTeam)}
+                    >
+                      workspace folder
+                    </Text>{' '}
+                    for more options.
                   </Text>
                 </Stack>
               </>
