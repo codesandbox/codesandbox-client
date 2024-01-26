@@ -11,7 +11,7 @@ import { Finalize } from './steps/Finalize';
 export type WorkspaceSetupProps = {
   steps: WorkspaceSetupStep[];
   startFrom?: WorkspaceSetupStep; // when this isn't passed, first one from the array is used
-  onComplete: () => void;
+  onComplete: (fullReload?: boolean) => void;
   onDismiss: () => void;
 };
 

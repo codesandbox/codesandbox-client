@@ -55,10 +55,12 @@ export const UpgradeWorkspace = () => {
   return (
     <WorkspaceSetup
       steps={steps}
-      onComplete={() => {
-        // If the flow is actually completed with a stripe checkout
-        // the redirect is handled by stripe so this is just for early exit
-        history.push(dashboardUrls.recent(workspaceId));
+      onComplete={fullReload => {
+        if (fullReload) {
+          window.location.href = dashboardUrls.recent(workspaceId);
+        } else {
+          history.push(dashboardUrls.recent(workspaceId));
+        }
       }}
       onDismiss={() => {
         history.push(dashboardUrls.recent(workspaceId));

@@ -11,6 +11,6 @@ export interface StepProps {
   numberOfSteps: number;
   onNextStep: () => void;
   onPrevStep: () => void;
-  onEarlyExit: () => void;
+  onEarlyExit: (fullReload?: boolean) => void;
   onDismiss: () => void;
 }
