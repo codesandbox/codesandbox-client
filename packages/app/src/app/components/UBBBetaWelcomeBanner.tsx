@@ -5,7 +5,8 @@ import { Banner, Button, Stack, Text, Icon } from '@codesandbox/components';
 
 import { useDismissible } from 'app/hooks';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
-import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
+import { useAppState } from 'app/overmind';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const UBBBetaWelcomeBanner: React.FC = () => {
   const [isBannerDismissed, dismissBanner] = useDismissible(
@@ -56,8 +57,8 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
 };
 
 const StyledFeatures: React.FC = () => {
-  const { getQueryParam } = useURLSearchParams();
-  const workspaceId = getQueryParam('workspace');
+  const { activeTeam } = useAppState();
+  const { isFree } = useWorkspaceSubscription();
 
   return (
     <Stack
@@ -66,30 +67,41 @@ const StyledFeatures: React.FC = () => {
       css={{
         listStyle: 'none',
         padding: '12px 0 24px 0',
-        maxWidth: 724,
+        maxWidth: 960,
       }}
     >
-      <Stack gap={3} as="li">
-        <Icon css={{ flexShrink: 0, color: '#C2C2C2' }} name="lock" />
-        <Text css={{ color: '#999' }} size={3}>
+      <Stack gap={2} as="li">
+        <Icon css={{ flexShrink: 0 }} name="lock" size={16} />
+        <Text color="#a6a6a6" size={3}>
           Create private sandboxes and devboxes for free.
         </Text>
       </Stack>
 
-      <Stack gap={3} as="li">
-        <Icon css={{ flexShrink: 0, color: '#C2C2C2' }} name="server" />
-        <Text css={{ color: '#999' }} size={3}>
-          Customize Virtual Machine specs through the new{' '}
-          <a href={dashboardURLs.portalOverview(workspaceId)}>
-            customer portal.
-          </a>
+      <Stack gap={2} as="li">
+        <Icon css={{ flexShrink: 0 }} name="server" size={16} />
+        <Text color="#a6a6a6" size={3}>
+          Customize{' '}
+          <a href={dashboardURLs.portalVMSettings(activeTeam)}>
+            Virtual Machine specs
+          </a>{' '}
+          for your repositories and Devboxes.
         </Text>
       </Stack>
 
-      <Stack gap={3} as="li">
-        <Icon css={{ flexShrink: 0, color: '#C2C2C2' }} name="sandbox" />
-        <Text css={{ color: '#999' }} size={3}>
+      <Stack gap={2} as="li">
+        <Icon css={{ flexShrink: 0 }} name="sandbox" size={16} />
+        <Text color="#a6a6a6" size={3}>
           Run devboxes and repositories on credits.
+        </Text>
+      </Stack>
+
+      <Stack gap={2} as="li">
+        <Icon css={{ flexShrink: 0 }} name="profile" size={16} />
+        <Text color="#a6a6a6" size={3}>
+          <a href={dashboardURLs.portalOverview(activeTeam)}>
+            Add {isFree ? 'up to 5' : 'more'} members
+          </a>{' '}
+          to your workspace.
         </Text>
       </Stack>
     </Stack>
