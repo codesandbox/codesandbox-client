@@ -16,7 +16,6 @@ import css from '@styled-system/css';
 
 import {
   PaymentPending,
-  SandboxLimitation,
   TrialWithoutPaymentInfo,
 } from 'app/components/StripeMessages';
 import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
@@ -41,22 +40,15 @@ export const Dashboard: FunctionComponent = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { hasLogIn, activeTeam } = useAppState();
+  const { hasLogIn } = useAppState();
   const actions = useActions();
-  const { subscription, isFree } = useWorkspaceSubscription();
+  const { subscription } = useWorkspaceSubscription();
   const { showUsageLimitBanner } = useWorkspaceLimits();
   const { trackVisit } = useDashboardVisit();
   const [
     showTrialWithoutPaymentInfoBanner,
     dismissTrialWithoutPaymentInfoBanner,
   ] = useShowBanner();
-
-  const [sandboxBannerDismissed] = useScopedPersistedState(
-    'SANDBOX_BANNER_DISMISSED',
-    false,
-    activeTeam
-  );
-  const showSandboxLimitationBanner = isFree && !sandboxBannerDismissed;
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -83,7 +75,6 @@ export const Dashboard: FunctionComponent = () => {
   const hasTopBarBanner =
     showTrialWithoutPaymentInfoBanner ||
     hasUnpaidSubscription ||
-    showSandboxLimitationBanner ||
     showUsageLimitBanner;
 
   useEffect(() => {
@@ -135,7 +126,6 @@ export const Dashboard: FunctionComponent = () => {
         >
           <SkipNav.Link />
           {hasUnpaidSubscription && <PaymentPending />}
-          {showSandboxLimitationBanner && <SandboxLimitation />}
           {showUsageLimitBanner && <UsageLimitMessageStripe />}
           {showTrialWithoutPaymentInfoBanner && (
             <TrialWithoutPaymentInfo
