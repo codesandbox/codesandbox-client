@@ -20,7 +20,7 @@ export const WorkspaceFlowLayout: React.FC<{
           css={{
             maxWidth: '1920px',
             width: '100%',
-            height: '100vh',
+            minHeight: '100vh',
             margin: 'auto',
             '@media (max-width: 768px)': {
               flexDirection: 'column',
