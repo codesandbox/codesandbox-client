@@ -3,7 +3,6 @@ import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import styled from 'styled-components';
 import VisuallyHidden from '@reach/visually-hidden';
-import { Link as RouterLink } from 'react-router-dom';
 
 import {
   Stack,
@@ -12,13 +11,11 @@ import {
   InteractiveOverlay,
   AnimatingDots,
   SkeletonText,
-  Link,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useActions, useAppState } from 'app/overmind';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
@@ -36,9 +33,8 @@ export const SuggestedRepositories = ({
     activeTeamInfo,
     dashboard: { repositoriesByTeamId },
   } = useAppState();
-  const { modalClosed, dashboard: dashboardActions } = useActions();
+  const { dashboard: dashboardActions } = useActions();
   const { restrictsPrivateRepos } = useGitHubPermissions();
-  const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
   const [importsInProgress, setImportsInProgress] = useState<
     Array<{ owner: string; name: string }>
   >([]);
@@ -167,83 +163,75 @@ export const SuggestedRepositories = ({
 
               return (
                 <InteractiveOverlay key={repo.id}>
-                  <StyledItem
-                    isDisabled={isFree && repo.private}
-                    alwaysShowIndicator={disableActions}
-                  >
+                  <StyledItem alwaysShowIndicator={disableActions}>
                     <Stack gap={4} align="center">
                       <Icon name="repository" color="#999999B3" />
-                      {isFree && repo.private ? (
-                        <Text size={13} variant="muted">
-                          {repo.name}
-                        </Text>
-                      ) : (
-                        <InteractiveOverlay.Button
-                          onClick={async () => {
-                            const repoInfo = {
-                              owner: repo.owner.login,
-                              name: repo.name,
-                            };
+                      <InteractiveOverlay.Button
+                        onClick={async () => {
+                          const repoInfo = {
+                            owner: repo.owner.login,
+                            name: repo.name,
+                          };
 
-                            setImportsInProgress(prev => [...prev, repoInfo]);
+                          setImportsInProgress(prev => [...prev, repoInfo]);
 
-                            const isPersonalRepository =
-                              repo.owner.login ===
-                              githubAccounts?.data?.personal?.login;
+                          const isPersonalRepository =
+                            repo.owner.login ===
+                            githubAccounts?.data?.personal?.login;
 
-                            if (isPersonalRepository) {
-                              track(
-                                `Suggested repos ${
-                                  isImportOnly
-                                    ? 'create team modal'
-                                    : 'create new modal'
-                                } - Imported personal repository into team space`,
-                                {
-                                  codesandbox: 'V1',
-                                  event_source: 'UI',
-                                }
-                              );
-                            } else {
-                              track(
-                                `Suggested repos ${
-                                  isImportOnly
-                                    ? 'create team modal'
-                                    : 'create new modal'
-                                } - Imported organization repository into team space`,
-                                {
-                                  codesandbox: 'V1',
-                                  event_source: 'UI',
-                                }
-                              );
-                            }
-
-                            const importResult = await dashboardActions.importGitHubRepository(
+                          if (isPersonalRepository) {
+                            track(
+                              `Suggested repos ${
+                                isImportOnly
+                                  ? 'create team modal'
+                                  : 'create new modal'
+                              } - Imported personal repository into team space`,
                               {
-                                ...repoInfo,
-                                redirect: !isImportOnly,
+                                codesandbox: 'V1',
+                                event_source: 'UI',
                               }
                             );
-
-                            // Remove the repo from the in progress list
-                            setImportsInProgress(prev =>
-                              prev.filter(
-                                r =>
-                                  r.owner !== repoInfo.owner &&
-                                  r.name !== repoInfo.name
-                              )
+                          } else {
+                            track(
+                              `Suggested repos ${
+                                isImportOnly
+                                  ? 'create team modal'
+                                  : 'create new modal'
+                              } - Imported organization repository into team space`,
+                              {
+                                codesandbox: 'V1',
+                                event_source: 'UI',
+                              }
                             );
+                          }
 
-                            // Add the repo into the done list
-                            if (importResult) {
-                              setImportsDone(prev => [...prev, repoInfo]);
+                          const importResult = await dashboardActions.importGitHubRepository(
+                            {
+                              ...repoInfo,
+                              redirect: !isImportOnly,
                             }
-                          }}
-                          disabled={disableActions}
-                        >
-                          <VisuallyHidden>Import</VisuallyHidden>
-                          <Text size={13}>{repo.name}</Text>
-                        </InteractiveOverlay.Button>
-                      )}
+                          );
+
+                          // Remove the repo from the in progress list
+                          setImportsInProgress(prev =>
+                            prev.filter(
+                              r =>
+                                r.owner !== repoInfo.owner &&
+                                r.name !== repoInfo.name
+                            )
+                          );
+
+                          // Add the repo into the done list
+                          if (importResult) {
+                            setImportsDone(prev => [...prev, repoInfo]);
+                          }
+                        }}
+                        disabled={disableActions}
+                      >
+                        <VisuallyHidden>Import</VisuallyHidden>
+                        <Text size={13}>{repo.name}</Text>
+                      </InteractiveOverlay.Button>
+
                       {repo.private ? (
                         <>
                           <VisuallyHidden>Private repository</VisuallyHidden>
@@ -263,58 +251,15 @@ export const SuggestedRepositories = ({
                         </Text>
                       ) : null}
                     </Stack>
-                    {isFree && repo.private ? (
-                      <StyledIndicator>
-                        <InteractiveOverlay.Item>
-                          <Link
-                            as={RouterLink}
-                            to="/pro"
-                            onClick={() => {
-                              track(
-                                'Suggested repos - Upgrade to Pro from private repo',
-                                {
-                                  codesandbox: 'V1',
-                                  event_source: 'UI',
-                                }
-                              );
-                              modalClosed();
-                            }}
-                          >
-                            <Text
-                              size={12}
-                              css={{
-                                display: 'block',
-                                width: 152,
-                                color: '#999999B3',
-                              }}
-                              align="right"
-                            >
-                              <VisuallyHidden>
-                                {repo.name} is a private repository.
-                              </VisuallyHidden>
-                              <Text color="#C2C2C2">
-                                {isEligibleForTrial
-                                  ? 'Start a free trial '
-                                  : 'Upgrade to Pro '}
-                              </Text>
-                              to import private repositories.
-                            </Text>
-                          </Link>
-                        </InteractiveOverlay.Item>
-                      </StyledIndicator>
-                    ) : (
-                      <StyledIndicator aria-hidden>
-                        <StyledImportIndicator>
-                          {disableActions && repoIsImporting && (
-                            <AnimatingDots />
-                          )}
-                          {disableActions && repoWasImported && (
-                            <Icon name="simpleCheck" />
-                          )}
-                          {!disableActions && <>Import</>}
-                        </StyledImportIndicator>
-                      </StyledIndicator>
-                    )}
+                    <StyledIndicator aria-hidden>
+                      <StyledImportIndicator>
+                        {disableActions && repoIsImporting && <AnimatingDots />}
+                        {disableActions && repoWasImported && (
+                          <Icon name="simpleCheck" />
+                        )}
+                        {!disableActions && <>Import</>}
+                      </StyledImportIndicator>
+                    </StyledIndicator>
                   </StyledItem>
                 </InteractiveOverlay>
               );

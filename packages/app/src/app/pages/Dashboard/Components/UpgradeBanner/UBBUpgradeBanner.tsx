@@ -13,7 +13,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
@@ -57,10 +57,9 @@ export const UbbUpgradeBanner: React.FC = () => {
           <Stack align="center" gap={6}>
             {isAdmin && (
               <RouterLink
-                to={proUrl({
+                to={upgradeUrl({
                   workspaceId: activeTeam,
                   source: 'home_banner',
-                  ubbBeta: true,
                 })}
               >
                 <Button

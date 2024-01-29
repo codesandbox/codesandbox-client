@@ -1,14 +1,10 @@
-import css from '@styled-system/css';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { useAppState, useActions } from 'app/overmind';
-import { ThemeProvider, Element, Stack } from '@codesandbox/components';
-import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { Editor } from './Editor';
-import { GitHubError } from './GitHubError';
 import { OnBoarding } from './OnBoarding';
 
 interface Props {
@@ -86,69 +82,6 @@ export const Sandbox = React.memo<Props>(
       },
       [actions.live]
     );
-
-    function getContent() {
-      const {
-        isLoggedIn,
-        editor: { error },
-      } = state;
-
-      if (error) {
-        const isGithub = match?.params?.id.includes('github');
-
-        return (
-          <GitHubError
-            signIn={() => actions.signInClicked()}
-            isGithub={isGithub}
-            error={error}
-            isLoggedIn={isLoggedIn}
-          />
-        );
-      }
-
-      return null;
-    }
-
-    const content = getContent();
-
-    if (content) {
-      return (
-        <ThemeProvider>
-          <Element
-            css={css({
-              display: 'flex',
-              flex: 'auto',
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'sideBar.background',
-              fontFamily: 'Inter',
-            })}
-          >
-            <Stack
-              style={{
-                flexDirection: 'column',
-                width: '100vw',
-                height: '100vh',
-              }}
-              margin={1}
-            >
-              <Navigation title="Sandbox Editor" />
-              <Stack
-                align="center"
-                justify="center"
-                style={{
-                  flexDirection: 'column',
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                {content}
-              </Stack>
-            </Stack>
-          </Element>
-        </ThemeProvider>
-      );
-    }
 
     const sandbox = state.editor.currentSandbox;
 

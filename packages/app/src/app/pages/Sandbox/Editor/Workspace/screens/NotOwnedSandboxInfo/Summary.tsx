@@ -168,24 +168,12 @@ export const Summary = () => {
 
         {!author && currentSandbox.git ? (
           <Stack as="section" direction="vertical" gap={4} paddingX={2}>
-            {!isPro && isUnlistedOrPrivate ? (
-              <Text variant="muted" size={3}>
-                This is {privacy === 2 ? 'a private' : 'an unlisted'} sandbox.{' '}
-                <Link href="/pro" css={{ color: 'white' }}>
-                  Upgrade to{' '}
-                  <Element as="span" css={{ textTransform: 'uppercase' }}>
-                    pro
-                  </Element>
-                </Link>{' '}
-                to fork this sandbox.
-              </Text>
-            ) : (
-              <Text variant="muted" size={3}>
-                This sandbox is in sync with{' '}
-                <Text weight="bold">{currentSandbox.git.branch}</Text> on
-                GitHub. You have to fork to make changes.
-              </Text>
-            )}
+            <Text variant="muted" size={3}>
+              This sandbox is in sync with{' '}
+              <Text weight="bold">{currentSandbox.git.branch}</Text> on GitHub.
+              You have to fork to make changes.
+            </Text>
+
             <Button
               variant="primary"
               disabled={!isPro && isUnlistedOrPrivate}

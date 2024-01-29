@@ -11,8 +11,7 @@ import React, { FunctionComponent } from 'react';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
@@ -26,7 +25,6 @@ export const UserMenu: FunctionComponent & {
   const { user, activeTeam, environment } = useAppState();
   const { isAdmin } = useWorkspaceAuthorization();
   const { isPro, isFree } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
   const isEditorPage = useIsEditorPage();
 
   if (!user) {
@@ -95,10 +93,9 @@ export const UserMenu: FunctionComponent & {
 
           {showBecomePro && (
             <Menu.Link
-              to={proUrl({
+              to={upgradeUrl({
                 workspaceId: activeTeam,
                 source: 'main_menu',
-                ubbBeta,
               })}
             >
               <Stack align="center" gap={2}>

@@ -2,10 +2,8 @@ import React, { FunctionComponent } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Collapsible,
-  Link,
   Select,
   Stack,
-  Text,
   Label,
   Switch,
   ListAction,
@@ -64,21 +62,6 @@ export const Permissions: FunctionComponent = () => {
             <option value={1}>Unlisted (only available by url)</option>
             <option value={2}>Private</option>
           </Select>
-
-          {!isPaidUser ? (
-            <Text variant="muted" size={2}>
-              You can change privacy of a sandbox as a Pro.{' '}
-              <Link
-                href="/pro"
-                css={{
-                  textDecoration: 'underline !important',
-                  color: '#ffffff',
-                }}
-              >
-                Upgrade to Pro
-              </Link>
-            </Text>
-          ) : null}
         </Stack>
         {sandoxPermissionsVisible ? (
           <Stack direction="vertical">

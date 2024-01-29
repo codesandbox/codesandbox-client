@@ -4,16 +4,12 @@ import {
   Column,
   Stack,
   Text,
-  Link,
-  Button,
-  Icon,
   IconButton,
   Menu,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { motion } from 'framer-motion';
-import { useActions, useAppState, useEffects } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SANDBOXES_PER_PAGE, SandboxType } from './constants';
 
@@ -81,8 +77,6 @@ export const AllSandboxes = () => {
       gap={6}
       style={{ marginTop: isOnlySection ? -50 : 0 }}
     >
-      <UpgradeBanner />
-
       <Stack justify="space-between" align="center">
         {featuredSandboxes.length ? (
           <Text size={7} weight="bold">
@@ -211,93 +205,5 @@ const Pagination = () => {
         </li>
       </Stack>
     </nav>
-  );
-};
-
-const UpgradeBanner = () => {
-  const {
-    user,
-    profile: { current },
-    dashboard: { teams },
-    activeTeamInfo,
-    primaryWorkspaceId,
-  } = useAppState();
-  const { modalOpened } = useActions();
-  const { storage } = useEffects().browser;
-
-  const myProfile = user?.username === current.username;
-  const isPro = activeTeamInfo?.subscription;
-
-  const [showUpgradeMessage, setShowUpgradeMessage] = React.useState(
-    myProfile && storage.get('PROFILE_SHOW_UPGRADE') !== false
-  );
-
-  const donShowUpgradeMessage = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-    storage.set('PROFILE_SHOW_UPGRADE', false);
-    setShowUpgradeMessage(false);
-  };
-
-  if (!showUpgradeMessage) return null;
-
-  const primaryWorkspace = teams.find(team => team.id === primaryWorkspaceId);
-
-  return (
-    <Stack
-      as={isPro ? Button : Link}
-      href={isPro ? null : '/pro'}
-      variant="link"
-      onClick={() => {
-        // if not pro, the link will take care of it
-        if (isPro) modalOpened({ modal: 'minimumPrivacy' });
-      }}
-      justify="space-between"
-      align="center"
-      css={css({
-        backgroundColor: 'grays.600',
-        borderRadius: 'medium',
-        paddingLeft: 3,
-        paddingRight: 2,
-        paddingY: 2,
-        color: 'foreground',
-        height: 'auto',
-        cursor: 'pointer',
-        transitionProperty: 'transform',
-        transitionDuration: (theme: typeof designLanguage) => theme.speeds[2],
-        ':hover': { transform: 'scale(1.01)' },
-      })}
-    >
-      <Stack align="center" gap={4}>
-        <Icon
-          name="eye"
-          size={16}
-          css={css({
-            flexShrink: 0,
-            display: ['none', 'block', 'block'],
-          })}
-        />
-        {isPro ? (
-          <Text size={2} css={{ lineHeight: '16px' }}>
-            {primaryWorkspace?.settings.minimumPrivacy === 0
-              ? 'Change default privacy settings to hide your drafts'
-              : 'Your drafts are hidden. Change default privacy settings to show drafts'}
-          </Text>
-        ) : (
-          <Text size={2} css={{ lineHeight: '16px' }}>
-            <Text css={css({ color: 'blues.700' })}>Upgrade to Pro</Text> to
-            change default privacy settings to hide your drafts
-          </Text>
-        )}
-      </Stack>
-
-      <IconButton
-        name="cross"
-        size={10}
-        title="Don't show me this again"
-        onClick={donShowUpgradeMessage}
-      />
-    </Stack>
   );
 };
