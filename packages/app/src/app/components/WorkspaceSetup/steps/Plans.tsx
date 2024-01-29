@@ -99,15 +99,15 @@ export const Plans: React.FC<StepProps> = ({
         gap={64}
         css={{ maxWidth: '1188px', margin: 'auto', paddingBottom: 120 }}
       >
-        <Stack direction="vertical" gap={12}>
-          <StepHeader
-            onPrevStep={onPrevStep}
-            onDismiss={onDismiss}
-            currentStep={currentStep}
-            numberOfSteps={numberOfSteps}
-            title="Choose a plan"
-          />
+        <StepHeader
+          onPrevStep={onPrevStep}
+          onDismiss={onDismiss}
+          currentStep={currentStep}
+          numberOfSteps={numberOfSteps}
+          title="Choose a plan"
+        />
 
+        <Stack gap={4} direction="vertical">
           <HorizontalScroller css={{ width: '100%' }}>
             <Stack gap={6} justify="center">
               {showFreePlan && (
@@ -277,9 +277,8 @@ const CardHeading = styled(Text)`
 
 const GridCell = styled(Stack)`
   padding: 24px 16px;
-  height: 80px;
+  max-height: 80px;
   width: 100%;
-  max-width: 250px;
   min-width: 160px;
   align-items: center;
   justify-content: center;
@@ -296,7 +295,7 @@ const GridCell = styled(Stack)`
 `;
 
 const GridCellDetails = styled(GridCell)`
-  height: 100px;
+  min-height: 100px;
   text-align: center;
   line-height: 1.4;
   small {
