@@ -8,14 +8,23 @@ import { useActions, useAppState } from 'app/overmind';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { UBB_PRO_PLAN } from 'app/constants';
 
 export const UpgradeWorkspace = () => {
-  const { hasLogIn } = useAppState();
+  const { hasLogIn, checkout } = useAppState();
+  const actions = useActions();
   const { isAdmin } = useWorkspaceAuthorization();
   const { isUbbPro, isPaddle } = useWorkspaceSubscription();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
+  const plan = getQueryParam('plan');
   const history = useHistory();
+
+  const proPlanPreSelected = plan === 'pro' && workspaceId;
+
+  if (proPlanPreSelected && !checkout.basePlan) {
+    actions.checkout.selectPlan(UBB_PRO_PLAN);
+  }
 
   const {
     dashboard: { dashboardMounted },
@@ -65,6 +74,7 @@ export const UpgradeWorkspace = () => {
       onDismiss={() => {
         history.push(dashboardUrls.recent(workspaceId));
       }}
+      startFrom={proPlanPreSelected ? 'addons' : undefined}
     />
   );
 };
