@@ -139,11 +139,10 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             query={PATHED_SANDBOXES_FOLDER_QUERY}
             fetchPolicy="network-only"
           >
-            {({ data, loading }) => {
+            {({ data }) => {
               return (
                 <Select
                   icon={() => <Icon name="folder" size={12} />}
-                  loading={loading}
                   value={collectionId}
                   onChange={({ target: { value } }) =>
                     value === '$CSBDRAFTS'
