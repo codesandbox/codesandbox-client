@@ -5,7 +5,6 @@ import {
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { useControls } from 'leva';
-import { useWorkspaceFeatureFlags } from './useWorkspaceFeatureFlags';
 
 export enum SubscriptionDebugStatus {
   'DEFAULT' = 'Default (use API data)',
@@ -14,7 +13,6 @@ export enum SubscriptionDebugStatus {
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { activeTeamInfo, environment } = useAppState();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
 
@@ -57,15 +55,12 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isPaddle =
     subscription.paymentProvider === SubscriptionPaymentProvider.Paddle;
 
-  const isUbbPro = isPro && ubbBeta; // Will be replaced with a new subscription field
-
   return {
     subscription,
     isPro,
     isFree,
     hasPaymentMethod,
     isPaddle,
-    isUbbPro,
   };
 };
 
@@ -75,7 +70,6 @@ const NO_WORKSPACE = {
   isFree: undefined,
   hasPaymentMethod: undefined,
   isPaddle: undefined,
-  isUbbPro: undefined,
 };
 
 const NO_SUBSCRIPTION = {
@@ -84,7 +78,6 @@ const NO_SUBSCRIPTION = {
   isFree: true,
   hasPaymentMethod: false,
   isPaddle: false,
-  isUbbPro: false,
 };
 
 export type WorkspaceSubscriptionReturn =
@@ -96,5 +89,4 @@ export type WorkspaceSubscriptionReturn =
       isFree: boolean;
       hasPaymentMethod: boolean;
       isPaddle: boolean;
-      isUbbPro: boolean;
     };

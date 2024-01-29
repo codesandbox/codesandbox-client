@@ -22,7 +22,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     };
   }
 
-  // Will be replaced with a check on the subscription if it's ubb or not
   const applyUbbRestrictions = !friendOfCsb && ubbBeta;
 
   const { limits, usage, frozen } = activeTeamInfo;

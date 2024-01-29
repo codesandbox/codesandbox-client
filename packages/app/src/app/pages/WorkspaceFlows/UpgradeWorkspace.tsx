@@ -9,18 +9,23 @@ import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { UBB_PRO_PLAN } from 'app/constants';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
 export const UpgradeWorkspace = () => {
   const { hasLogIn, checkout } = useAppState();
   const actions = useActions();
   const { isAdmin } = useWorkspaceAuthorization();
-  const { isUbbPro, isPaddle } = useWorkspaceSubscription();
+  const { isPro, isPaddle } = useWorkspaceSubscription();
+  const { ubbBeta } = useWorkspaceFeatureFlags();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
   const plan = getQueryParam('plan');
   const history = useHistory();
 
   const proPlanPreSelected = plan === 'pro' && workspaceId;
+
+  // Cannot upgrade if already on ubb or legacy paddle
+  const cannotUpgradeToUbb = (ubbBeta && isPro) || isPaddle;
 
   if (proPlanPreSelected && !checkout.basePlan) {
     actions.checkout.selectPlan(UBB_PRO_PLAN);
@@ -56,8 +61,8 @@ export const UpgradeWorkspace = () => {
     );
   }
 
-  if (workspaceId && (isAdmin === false || isUbbPro || isPaddle)) {
-    // Page was accessed by a non-admin or for pro ubb workspaces or paddle
+  if (workspaceId && (isAdmin === false || cannotUpgradeToUbb)) {
+    // Page was accessed by a non-admin or workpace cannot be upgraded
     return <Redirect to={dashboardUrls.recent(workspaceId)} />;
   }
 
