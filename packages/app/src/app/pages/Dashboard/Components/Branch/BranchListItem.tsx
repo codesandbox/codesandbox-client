@@ -4,7 +4,6 @@ import {
   Column,
   Stack,
   Element,
-  Badge,
   Text,
   ListAction,
   IconButton,
@@ -20,7 +19,6 @@ export const BranchListItem = ({
   selected,
   isBeingRemoved,
   onContextMenu,
-  restricted,
 }: BranchProps) => {
   const { name: branchName, project, contribution } = branch;
   const { repository } = project;
@@ -91,7 +89,7 @@ export const BranchListItem = ({
                     size={3}
                     weight="medium"
                     maxWidth="100%"
-                    css={{ color: restricted ? '#999999' : '#E5E5E5' }}
+                    css={{ color: '#E5E5E5' }}
                   >
                     {branchName}
                   </Text>
@@ -99,14 +97,7 @@ export const BranchListItem = ({
               </Element>
             </Stack>
           </Column>
-          <Column span={[0, 2, 2]}>
-            {restricted ? (
-              <Stack align="center">
-                <Badge variant="trial">Restricted</Badge>
-              </Stack>
-            ) : null}
-          </Column>
-          <Column span={[0, 5, 6]} as={Stack} align="center">
+          <Column span={[0, 7, 8]} as={Stack} align="center">
             <Text size={3} variant="muted" maxWidth="100%">
               {repository.owner}/{repository.name}
             </Text>

@@ -114,9 +114,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             >
               {workspaces.map(team => {
                 const showPro =
-                  team.subscription?.status === SubscriptionStatus.Active ||
-                  team.subscription?.status === SubscriptionStatus.Trialing;
-
+                  team.subscription?.status === SubscriptionStatus.Active;
                 return (
                   <Stack
                     as={Menu.Item}

@@ -4,7 +4,7 @@ import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-ge
 import { Banner, Button, Stack, Text, Icon } from '@codesandbox/components';
 
 import { useDismissible } from 'app/hooks';
-import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
+import { SUBSCRIPTION_DOCS_URL } from 'app/constants';
 import { useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
@@ -42,7 +42,7 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
           target="_blank"
           autoWidth
           onClick={() => {
-            window.open(SUBSCRIPTION_DOCS_URLS.teams.non_trial);
+            window.open(SUBSCRIPTION_DOCS_URL);
             dismissBanner();
           }}
         >

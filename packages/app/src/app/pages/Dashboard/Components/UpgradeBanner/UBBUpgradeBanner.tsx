@@ -10,7 +10,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import { useDismissible } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
+import { SUBSCRIPTION_DOCS_URL } from 'app/constants';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
@@ -76,7 +76,7 @@ export const UbbUpgradeBanner: React.FC = () => {
               </RouterLink>
             )}
             <Link
-              href={SUBSCRIPTION_DOCS_URLS.teams.non_trial}
+              href={SUBSCRIPTION_DOCS_URL}
               target="_blank"
               onClick={() => {
                 track('Home Banner - Learn More', {

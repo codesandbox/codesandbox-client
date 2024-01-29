@@ -4,9 +4,7 @@ import {
   SubscriptionStatus,
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
-import { isBefore, startOfToday } from 'date-fns';
 import { useControls } from 'leva';
-import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 import { useWorkspaceFeatureFlags } from './useWorkspaceFeatureFlags';
 
 export enum SubscriptionDebugStatus {
@@ -15,8 +13,7 @@ export enum SubscriptionDebugStatus {
 }
 
 export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
-  const { activeTeamInfo, userCanStartTrial, environment } = useAppState();
-  const { isBillingManager } = useWorkspaceAuthorization();
+  const { activeTeamInfo, environment } = useAppState();
   const { ubbBeta } = useWorkspaceFeatureFlags();
 
   const options: SubscriptionDebugStatus[] = [SubscriptionDebugStatus.DEFAULT];
@@ -47,30 +44,15 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
       : activeTeamInfo.subscription;
 
   if (!subscription) {
-    return {
-      ...NO_SUBSCRIPTION,
-      isEligibleForTrial: userCanStartTrial,
-    };
+    return NO_SUBSCRIPTION;
   }
 
   const isPro =
     environment.isOnPrem || // On prem workspaces are pro by default
-    subscription.status === SubscriptionStatus.Active ||
-    subscription.status === SubscriptionStatus.Trialing;
+    subscription.status === SubscriptionStatus.Active;
   const isFree = !isPro;
 
-  const isEligibleForTrial = userCanStartTrial && !!isBillingManager;
-
   const hasPaymentMethod = subscription.paymentMethodAttached;
-
-  const hasActiveTeamTrial =
-    subscription.status === SubscriptionStatus.Trialing;
-
-  const today = startOfToday();
-  const hasExpiredTeamTrial =
-    subscription.status !== SubscriptionStatus.Active && // the subscription isn't active
-    !hasPaymentMethod && // there's no payment method attached
-    isBefore(new Date(subscription.trialEnd), today); // the trial ended before today;
 
   const isPaddle =
     subscription.paymentProvider === SubscriptionPaymentProvider.Paddle;
@@ -79,11 +61,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
 
   return {
     subscription,
-    isEligibleForTrial,
     isPro,
     isFree,
-    hasActiveTeamTrial,
-    hasExpiredTeamTrial,
     hasPaymentMethod,
     isPaddle,
     isUbbPro,
@@ -94,9 +73,6 @@ const NO_WORKSPACE = {
   subscription: undefined,
   isPro: undefined,
   isFree: undefined,
-  isEligibleForTrial: undefined,
-  hasActiveTeamTrial: undefined,
-  hasExpiredTeamTrial: undefined,
   hasPaymentMethod: undefined,
   isPaddle: undefined,
   isUbbPro: undefined,
@@ -106,8 +82,6 @@ const NO_SUBSCRIPTION = {
   subscription: null,
   isPro: false,
   isFree: true,
-  hasActiveTeamTrial: false,
-  hasExpiredTeamTrial: false,
   hasPaymentMethod: false,
   isPaddle: false,
   isUbbPro: false,
@@ -115,16 +89,11 @@ const NO_SUBSCRIPTION = {
 
 export type WorkspaceSubscriptionReturn =
   | typeof NO_WORKSPACE
-  | (typeof NO_SUBSCRIPTION & {
-      isEligibleForTrial: boolean;
-    })
+  | typeof NO_SUBSCRIPTION
   | {
       subscription: CurrentTeamInfoFragmentFragment['subscription'];
       isPro: boolean;
       isFree: boolean;
-      isEligibleForTrial: boolean;
-      hasActiveTeamTrial: boolean;
-      hasExpiredTeamTrial: boolean;
       hasPaymentMethod: boolean;
       isPaddle: boolean;
       isUbbPro: boolean;

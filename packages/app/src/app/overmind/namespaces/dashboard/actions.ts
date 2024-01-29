@@ -161,7 +161,6 @@ export const getTeams = async ({ state, effects }: Context) => {
 
   state.dashboard.teams = teams.me.workspaces;
   state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
-  state.userCanStartTrial = teams.me.eligibleForTrial;
   state.userFeatureFlags = teams.me.featureFlags;
 };
 

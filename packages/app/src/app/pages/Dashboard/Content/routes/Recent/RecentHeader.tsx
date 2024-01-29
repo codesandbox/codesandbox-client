@@ -8,14 +8,10 @@ import {
 import { UBBBetaWelcomeBanner } from 'app/components/UBBBetaWelcomeBanner';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
 import { useDismissible } from 'app/hooks';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
-import {
-  UpgradeBanner,
-  UbbUpgradeBanner,
-} from 'app/pages/Dashboard/Components/UpgradeBanner';
+import { UbbUpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
@@ -101,16 +97,11 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
 };
 
 const TopBanner = () => {
-  const { ubbBeta } = useWorkspaceFeatureFlags();
   const [welcomeBannerDismissed] = useDismissible('DASHBOARD_UBB_BETA_WELCOME');
 
-  if (ubbBeta) {
-    if (welcomeBannerDismissed) {
-      return <UbbUpgradeBanner />;
-    }
-
-    return <UBBBetaWelcomeBanner />;
+  if (welcomeBannerDismissed) {
+    return <UbbUpgradeBanner />;
   }
 
-  return <UpgradeBanner />;
+  return <UBBBetaWelcomeBanner />;
 };

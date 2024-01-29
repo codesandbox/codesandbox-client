@@ -614,7 +614,6 @@ export const initializeActiveWorkspace = async ({
     if (teams?.me) {
       state.dashboard.teams = teams.me.workspaces;
       state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
-      state.userCanStartTrial = teams.me.eligibleForTrial;
       state.userFeatureFlags = teams.me.featureFlags;
     }
 
@@ -640,9 +639,7 @@ export const setFallbackWorkspace = ({ actions, state }: Context) => {
     const firstWorkspace =
       state.dashboard.teams.length > 0 ? state.dashboard.teams[0] : null;
     const firstProWorkspace = state.dashboard.teams.find(
-      team =>
-        team.subscription?.status === SubscriptionStatus.Active ||
-        team.subscription?.status === SubscriptionStatus.Trialing
+      team => team.subscription?.status === SubscriptionStatus.Active
     );
 
     if (firstProWorkspace) {

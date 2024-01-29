@@ -36,7 +36,6 @@ type State = {
   primaryWorkspaceId: string | null;
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
-  userCanStartTrial: boolean;
   userFeatureFlags: { ubbBeta: boolean | undefined };
   connected: boolean;
   notifications: Notification[];
@@ -133,7 +132,6 @@ export const state: State = {
   activeTeam: null,
   activeTeamInfo: null,
   primaryWorkspaceId: null,
-  userCanStartTrial: false,
   userFeatureFlags: { ubbBeta: undefined },
   connected: true,
   notifications: [],

@@ -14,11 +14,7 @@ import {
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
-import {
-  PaymentPending,
-  TrialWithoutPaymentInfo,
-} from 'app/components/StripeMessages';
-import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
+import { PaymentPending } from 'app/components/StripeMessages';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
@@ -44,10 +40,6 @@ export const Dashboard: FunctionComponent = () => {
   const { subscription } = useWorkspaceSubscription();
   const { showUsageLimitBanner } = useWorkspaceLimits();
   const { trackVisit } = useDashboardVisit();
-  const [
-    showTrialWithoutPaymentInfoBanner,
-    dismissTrialWithoutPaymentInfoBanner,
-  ] = useShowBanner();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -71,10 +63,7 @@ export const Dashboard: FunctionComponent = () => {
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
-  const hasTopBarBanner =
-    showTrialWithoutPaymentInfoBanner ||
-    hasUnpaidSubscription ||
-    showUsageLimitBanner;
+  const hasTopBarBanner = hasUnpaidSubscription || showUsageLimitBanner;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -126,11 +115,6 @@ export const Dashboard: FunctionComponent = () => {
           <SkipNav.Link />
           {hasUnpaidSubscription && <PaymentPending />}
           {showUsageLimitBanner && <UsageLimitMessageStripe />}
-          {showTrialWithoutPaymentInfoBanner && (
-            <TrialWithoutPaymentInfo
-              onDismiss={dismissTrialWithoutPaymentInfoBanner}
-            />
-          )}
           <Header onSidebarToggle={onSidebarToggle} />
           <Media
             query={theme.media

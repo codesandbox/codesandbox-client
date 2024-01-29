@@ -212,7 +212,6 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   query AllTeams {
     me {
       primaryWorkspaceId
-      eligibleForTrial
       featureFlags {
         ubbBeta
       }
