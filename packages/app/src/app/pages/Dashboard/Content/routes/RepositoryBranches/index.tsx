@@ -7,14 +7,12 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import {
   getProjectUniqueKey,
   sortByLastAccessed,
 } from 'app/overmind/namespaces/dashboard/utils';
 import { BranchFragment } from 'app/graphql/types';
 import { InstallGHAppStripe } from 'app/pages/Dashboard/Components/shared/InstallGHAppStripe';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
 type MappedBranches = {
@@ -49,11 +47,6 @@ export const RepositoryBranchesPage = () => {
       });
     }
   }, [activeTeam]);
-
-  const { isFree } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-  const isPrivate = repositoryProject?.repository.private;
-  const restricted = !ubbBeta && isFree && isPrivate;
 
   const pageType: PageTypes = 'repository-branches';
 
@@ -102,7 +95,7 @@ export const RepositoryBranchesPage = () => {
         type: 'new-branch',
         workspaceId: repositoryProject?.team?.id,
         repo: { owner, name },
-        disabled: restricted || isFrozen,
+        disabled: isFrozen,
         onClick: () => {
           actions.dashboard.createDraftBranch({
             owner,
@@ -138,7 +131,7 @@ export const RepositoryBranchesPage = () => {
           name: repositoryProject?.repository.name,
           assignedTeamId: repositoryProject?.team?.id,
         }}
-        readOnly={restricted}
+        readOnly={isFrozen}
       />
 
       {repositoryProject?.appInstalled === false && (

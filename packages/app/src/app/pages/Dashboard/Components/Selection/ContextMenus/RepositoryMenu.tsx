@@ -9,8 +9,7 @@ import {
 import { useActions, useAppState } from 'app/overmind';
 import { quotes } from 'app/utils/quotes';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 
 type RepositoryMenuProps = {
@@ -30,16 +29,13 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   const history = useHistory();
   const state = useAppState();
   const actions = useActions();
-  const { isFree } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
+  const { isFrozen } = useWorkspaceLimits();
 
   const [experimentalMode] = useState(() => {
     return window.localStorage.getItem('CSB_DEBUG') === 'ENABLED';
   });
 
   const { repository, team: assignedTeam } = project;
-
-  const restricted = !ubbBeta && isFree && repository.private;
 
   const repositoryUrl = dashboard.repository({
     owner: repository.owner,
@@ -90,7 +86,7 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
             teamId: assignedTeam?.id,
           });
         }}
-        disabled={restricted}
+        disabled={isFrozen}
       >
         Create branch
       </MenuItem>
