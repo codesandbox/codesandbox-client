@@ -298,7 +298,7 @@ export const getReposByPath = async (
     if (path && dashboard.sandboxes.REPOS) {
       return;
     }
-    let sandboxes: RepoFragmentDashboardFragment[];
+    let sandboxes: RepoFragmentDashboardFragment[] = [];
     if (state.activeTeam) {
       dashboard.sandboxes.REPOS = null;
       const teamData = await effects.gql.queries.getTeamRepos({
@@ -353,22 +353,17 @@ export const getReposByPath = async (
 
 export const getDeletedSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
+
+  if (state.activeTeam) {
+    return;
+  }
+
   try {
-    let sandboxes;
+    const data = await effects.gql.queries.deletedTeamSandboxes({
+      teamId: state.activeTeam,
+    });
 
-    if (state.activeTeam) {
-      const data = await effects.gql.queries.deletedTeamSandboxes({
-        teamId: state.activeTeam,
-      });
-
-      sandboxes = data?.me?.team?.sandboxes;
-    }
-
-    if (!sandboxes) {
-      return;
-    }
-
-    dashboard.sandboxes[sandboxesTypes.DELETED] = sandboxes;
+    dashboard.sandboxes[sandboxesTypes.DELETED] = data?.me?.team?.sandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your deleted Sandboxes'
@@ -775,7 +770,7 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
   try {
     const activeTeam = state.activeTeam;
 
-    let sandboxes: SandboxFragmentDashboardFragment[];
+    let sandboxes: SandboxFragmentDashboardFragment[] = [];
     if (activeTeam) {
       const data = await effects.gql.queries.searchTeamSandboxes({
         teamId: activeTeam,

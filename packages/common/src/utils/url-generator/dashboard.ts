@@ -152,7 +152,10 @@ type UpgradeParams = {
   source?: string;
 };
 
-export const upgradeUrl = ({ workspaceId, source }: UpgradeParams = {}): string => {
+export const upgradeUrl = ({
+  workspaceId,
+  source,
+}: UpgradeParams = {}): string => {
   const searchQuery = new URLSearchParams({});
   if (workspaceId) {
     searchQuery.set('workspace', workspaceId);
@@ -164,4 +167,17 @@ export const upgradeUrl = ({ workspaceId, source }: UpgradeParams = {}): string 
 
   const queryString = searchQuery.toString();
   return queryString ? `/upgrade?${queryString}` : '/upgrade';
+};
+
+export const createWorkspaceUrl = ({
+  workspaceId,
+}: {
+  workspaceId: string;
+}) => {
+  const searchQuery = new URLSearchParams();
+  if (workspaceId) {
+    searchQuery.set('workspace', workspaceId);
+  }
+  const queryString = searchQuery.toString();
+  return queryString ? `/create-workspace?${queryString}` : '/create-workspace';
 };

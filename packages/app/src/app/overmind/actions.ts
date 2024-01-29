@@ -4,7 +4,7 @@ import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { createWorkspaceUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
@@ -607,19 +607,15 @@ export const finalizeSignUp = async (
 ) => {
   if (!state.pendingUser) return;
   try {
-    await effects.api.finalizeSignUp({
+    const { primaryTeamId } = await effects.api.finalizeSignUp({
       id: state.pendingUser.id,
       username,
       name,
       role,
       usage,
     });
-    window.postMessage(
-      {
-        type: 'signin',
-      },
-      protocolAndHost()
-    );
+
+    window.location.href = createWorkspaceUrl({ workspaceId: primaryTeamId });
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem creating your account',
