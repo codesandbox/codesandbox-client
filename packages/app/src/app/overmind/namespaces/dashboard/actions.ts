@@ -308,15 +308,6 @@ export const getReposByPath = async (
         return;
       }
       sandboxes = teamData.me.team.sandboxes;
-    } else {
-      dashboard.sandboxes.REPOS = null;
-      const myData = await effects.gql.queries.getPersonalRepos({});
-
-      if (!myData || !myData.me) {
-        return;
-      }
-
-      sandboxes = myData.me.sandboxes;
     }
 
     if (!sandboxes) {
@@ -371,10 +362,6 @@ export const getDeletedSandboxes = async ({ state, effects }: Context) => {
       });
 
       sandboxes = data?.me?.team?.sandboxes;
-    } else {
-      const data = await effects.gql.queries.deletedPersonalSandboxes({});
-
-      sandboxes = data?.me?.sandboxes;
     }
 
     if (!sandboxes) {
@@ -403,16 +390,6 @@ export const getTemplateSandboxes = async ({ state, effects }: Context) => {
       }
 
       dashboard.sandboxes[sandboxesTypes.TEMPLATES] = data.me.team.templates;
-    } else {
-      dashboard.sandboxes[sandboxesTypes.TEMPLATES] = null;
-      const data = await effects.gql.queries.ownedTemplates({
-        showAll: false,
-      });
-      if (!data || !data.me) {
-        return;
-      }
-
-      dashboard.sandboxes[sandboxesTypes.TEMPLATES] = data.me.templates;
     }
   } catch (error) {
     effects.notificationToast.error(
@@ -808,14 +785,6 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
       }
 
       sandboxes = data.me.team.sandboxes;
-    } else {
-      // This will be gone once we move everyone (even personal spaces) to workspaces
-      const data = await effects.gql.queries.searchPersonalSandboxes({});
-      if (data?.me?.sandboxes == null) {
-        return;
-      }
-
-      sandboxes = data.me.sandboxes;
     }
 
     const sandboxesToShow = state.dashboard

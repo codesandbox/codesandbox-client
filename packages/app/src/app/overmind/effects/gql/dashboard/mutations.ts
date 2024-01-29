@@ -15,14 +15,10 @@ import {
   ChangeFrozenMutation,
   ChangeFrozenMutationVariables,
   _PermanentlyDeleteSandboxesMutation,
-  _InviteToTeamViaEmailMutation,
-  _InviteToTeamViaEmailMutationVariables,
   _AcceptTeamInvitationMutation,
   _AcceptTeamInvitationMutationVariables,
   _RejectTeamInvitationMutation,
   _RejectTeamInvitationMutationVariables,
-  _SetTeamDescriptionMutation,
-  _SetTeamDescriptionMutationVariables,
   _CreateTeamMutation,
   _CreateTeamMutationVariables,
   _RenameSandboxMutation,
@@ -215,23 +211,6 @@ export const permanentlyDeleteSandboxes: Query<
   }
 `;
 
-export const inviteToTeamViaEmail: Query<
-  _InviteToTeamViaEmailMutation,
-  _InviteToTeamViaEmailMutationVariables
-> = gql`
-  mutation _InviteToTeamViaEmail(
-    $teamId: UUID4!
-    $email: String!
-    $authorization: TeamMemberAuthorization
-  ) {
-    inviteToTeamViaEmail(
-      teamId: $teamId
-      email: $email
-      authorization: $authorization
-    )
-  }
-`;
-
 export const acceptTeamInvitation: Query<
   _AcceptTeamInvitationMutation,
   _AcceptTeamInvitationMutationVariables
@@ -251,18 +230,6 @@ export const rejectTeamInvitation: Query<
   mutation _RejectTeamInvitation($teamId: UUID4!) {
     rejectTeamInvitation(teamId: $teamId)
   }
-`;
-
-export const setTeamDescription: Query<
-  _SetTeamDescriptionMutation,
-  _SetTeamDescriptionMutationVariables
-> = gql`
-  mutation _SetTeamDescription($teamId: UUID4!, $description: String!) {
-    setTeamDescription(teamId: $teamId, description: $description) {
-      ...teamFragmentDashboard
-    }
-  }
-  ${teamFragmentDashboard}
 `;
 
 export const unmakeSandboxesTemplate: Query<

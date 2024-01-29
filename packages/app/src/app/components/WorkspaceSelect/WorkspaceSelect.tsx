@@ -158,7 +158,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 css={{
                   textAlign: 'left',
                 }}
-                onSelect={history.push('/create-workspace')}
+                onSelect={() => history.push('/create-workspace')}
               >
                 <Stack
                   justify="center"
