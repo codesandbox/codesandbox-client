@@ -8,13 +8,11 @@ import {
   Grid,
   Icon,
   IconNames,
-  Link,
   Stack,
   Text,
 } from '@codesandbox/components';
 import { useCreateCheckout, useDismissible } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 
@@ -107,22 +105,6 @@ export const UpgradeBanner: React.FC = () => {
             >
               <Stack align="center" gap={6}>
                 {renderMainCTA()}
-                <Link
-                  href={
-                    isEligibleForTrial
-                      ? SUBSCRIPTION_DOCS_URLS.teams.trial
-                      : SUBSCRIPTION_DOCS_URLS.teams.non_trial
-                  }
-                  target="_blank"
-                  onClick={() => {
-                    track('Home Banner - Learn More', {
-                      codesandbox: 'V1',
-                      event_source: 'UI',
-                    });
-                  }}
-                >
-                  <Text size={3}>Learn more</Text>
-                </Link>
               </Stack>
             </Stack>
           </Stack>
