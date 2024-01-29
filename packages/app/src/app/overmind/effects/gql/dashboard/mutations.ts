@@ -27,8 +27,8 @@ import {
   _MakeSandboxesTemplateMutationVariables,
   CreateFolderMutation,
   CreateFolderMutationVariables,
-  SetTeamNameMutation,
-  SetTeamNameMutationVariables,
+  _SetTeamNameMutation,
+  _SetTeamNameMutationVariables,
   DeleteWorkspaceMutation,
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
@@ -255,8 +255,8 @@ export const makeSandboxesTemplate: Query<
 `;
 
 export const setTeamName: Query<
-  SetTeamNameMutation,
-  SetTeamNameMutationVariables
+  _SetTeamNameMutation,
+  _SetTeamNameMutationVariables
 > = gql`
   mutation _SetTeamName($teamId: UUID4!, $name: String!) {
     setTeamName(teamId: $teamId, name: $name) {
