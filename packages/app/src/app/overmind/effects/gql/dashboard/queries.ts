@@ -212,9 +212,6 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   query AllTeams {
     me {
       primaryWorkspaceId
-      featureFlags {
-        ubbBeta
-      }
       workspaces {
         ...teamFragmentDashboard
       }

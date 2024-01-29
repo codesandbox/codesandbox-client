@@ -161,7 +161,6 @@ export const getTeams = async ({ state, effects }: Context) => {
 
   state.dashboard.teams = teams.me.workspaces;
   state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
-  state.userFeatureFlags = teams.me.featureFlags;
 };
 
 export const getAllFolders = async ({ state, effects }: Context) => {

@@ -6096,8 +6096,6 @@ export type AllTeamsQuery = {
   me: {
     __typename?: 'CurrentUser';
     primaryWorkspaceId: any | null;
-    eligibleForTrial: boolean;
-    featureFlags: { __typename?: 'UserFeatureFlags'; ubbBeta: boolean };
     workspaces: Array<{
       __typename?: 'Team';
       id: any;
