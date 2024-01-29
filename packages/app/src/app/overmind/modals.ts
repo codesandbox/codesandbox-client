@@ -7,8 +7,6 @@
   actions.modals.myModal.close() (Close it, with optional value matching its result)
 */
 
-import { TeamStep } from 'app/pages/Dashboard/Components/NewTeamModal';
-
 export const forkFrozenModal = {
   result: 'fork' as 'fork' | 'cancel' | 'unfreeze',
 };
@@ -47,12 +45,4 @@ export const alertModal: {
 
 export const extensionInstalledModal = {
   result: true,
-};
-
-export const newTeamModal: {
-  state: { step?: TeamStep; hasNextStep?: boolean };
-  result: undefined;
-} = {
-  state: {},
-  result: undefined,
 };

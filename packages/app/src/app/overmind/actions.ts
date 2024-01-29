@@ -6,7 +6,6 @@ import {
 } from '@codesandbox/common/lib/utils/notifications';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
-import { TeamStep } from 'app/pages/Dashboard/Components/NewTeamModal';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
@@ -589,20 +588,6 @@ export const getActiveTeamInfo = async ({
   state.activeTeamInfo = currentTeam;
 
   return currentTeam;
-};
-
-type OpenCreateTeamModalParams = {
-  step: TeamStep;
-  hasNextStep?: boolean;
-};
-export const openCreateTeamModal = (
-  { actions }: Context,
-  props?: OpenCreateTeamModalParams
-) => {
-  actions.modals.newTeamModal.open({
-    step: props?.step ?? 'create',
-    hasNextStep: props?.hasNextStep ?? true,
-  });
 };
 
 export const validateUsername = async (

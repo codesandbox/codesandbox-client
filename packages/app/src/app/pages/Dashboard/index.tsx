@@ -24,7 +24,6 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
-import { NewTeamModal } from './Components/NewTeamModal';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
@@ -165,7 +164,6 @@ export const Dashboard: FunctionComponent = () => {
           </Element>
         </Stack>
       </DndProvider>
-      <NewTeamModal />
     </ThemeProvider>
   );
 };
