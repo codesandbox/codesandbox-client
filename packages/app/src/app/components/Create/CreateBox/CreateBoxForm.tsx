@@ -14,11 +14,14 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { sandboxes } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { PATHED_SANDBOXES_FOLDER_QUERY } from 'app/pages/Dashboard/queries';
+import { Query } from 'react-apollo';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
   type: 'sandbox' | 'devbox';
-  isDraft?: boolean;
+  collectionId: string | null;
+  setCollectionId: (collectionId: string | undefined) => void;
   onCancel: () => void;
   onSubmit: (params: CreateParams) => void;
 }
@@ -27,7 +30,8 @@ type PrivacyLevel = 0 | 1 | 2;
 
 export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   type,
-  isDraft,
+  collectionId,
+  setCollectionId,
   onCancel,
   onSubmit,
 }) => {
@@ -38,6 +42,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isPro } = useWorkspaceSubscription();
+  const isDraft = collectionId == null;
   const canSetPrivacy = !isDraft;
   const miniumPrivacy = canSetPrivacy
     ? ((activeTeamInfo?.settings.minimumPrivacy || 0) as PrivacyLevel)
@@ -122,6 +127,38 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             aria-describedby="name-desc"
             ref={nameInputRef}
           />
+        </Stack>
+
+        <Stack direction="vertical" gap={1}>
+          <Text size={3} as="label">
+            Folder
+          </Text>
+
+          <Query
+            variables={{ teamId: activeTeam }}
+            query={PATHED_SANDBOXES_FOLDER_QUERY}
+            fetchPolicy="network-only"
+          >
+            {({ data, loading }) => {
+              return (
+                <Select
+                  icon={() => <Icon name="folder" size={12} />}
+                  loading={loading}
+                  value={collectionId}
+                  onChange={({ target: { value } }) =>
+                    value === '$CSBDRAFTS'
+                      ? setCollectionId(undefined)
+                      : setCollectionId(value)
+                  }
+                >
+                  <option value="$CSBDRAFTS">Drafts</option>
+                  {data?.me?.collections?.map(collection => (
+                    <option value={collection.id}>{collection.path}</option>
+                  ))}
+                </Select>
+              );
+            }}
+          </Query>
         </Stack>
 
         <Stack direction="vertical" gap={2}>
