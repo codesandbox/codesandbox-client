@@ -25,12 +25,15 @@ const USAGE_OPTIONS = [
 ];
 
 const COMPANY_SIZE_OPTIONS = [
-  { value: '1', label: 'I work as a contractor' },
-  { value: '1-5', label: '1-5 members' },
-  { value: '5-10', label: '5-10 members' },
-  { value: '10-20', label: '10-20 members' },
-  { value: '20-50', label: '20-50 members' },
-  { value: '50+', label: '50+ members' },
+  { value: '1-5', label: '1' },
+  { value: '2-10', label: '2-10' },
+  { value: '10-50', label: '10-50' },
+  { value: '50-200', label: '50-200' },
+  { value: '200-500', label: '200-500' },
+  { value: '500-1000', label: '500-1000' },
+  { value: '1000-5000', label: '1000-5000' },
+  { value: '5000-10000', label: '5000-10000' },
+  { value: '10000+', label: '10000+' },
 ];
 
 export const Onboarding = () => {

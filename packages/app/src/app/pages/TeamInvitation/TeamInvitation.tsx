@@ -1,6 +1,6 @@
 import * as React from 'react';
 import css from '@styled-system/css';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   ThemeProvider,
   Text,
