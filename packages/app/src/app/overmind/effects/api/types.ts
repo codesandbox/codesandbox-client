@@ -40,6 +40,8 @@ export type FinalizeSignUpOptions = {
   username: string;
   role: string;
   usage: string;
+  companyName: string;
+  companySize: string;
 };
 
 export type MetaFeatures = {

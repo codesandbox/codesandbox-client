@@ -11,7 +11,6 @@ import { GenericCreate } from 'app/components/Create/GenericCreate';
 import {
   RestrictedSandbox,
   PaymentPending,
-  TrialWithoutPaymentInfo,
 } from 'app/components/StripeMessages';
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
@@ -24,7 +23,6 @@ import styled, { ThemeProvider } from 'styled-components';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
@@ -63,10 +61,6 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     customVSCodeTheme: null,
   });
   const { subscription } = useWorkspaceSubscription();
-  const [
-    showTrialWithoutPaymentInfoBanner,
-    dismissTrialWithoutPaymentInfoBanner,
-  ] = useShowBanner();
 
   useEffect(() => {
     let timeout;
@@ -134,7 +128,6 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     // Has MessageStripe
     if (
       subscription?.status === SubscriptionStatus.Unpaid ||
-      showTrialWithoutPaymentInfoBanner ||
       showRestrictedBanner ||
       showCloudSandboxConvert
     ) {
@@ -166,12 +159,6 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
 
             {subscription?.status === SubscriptionStatus.Unpaid && (
               <PaymentPending />
-            )}
-
-            {showTrialWithoutPaymentInfoBanner && (
-              <TrialWithoutPaymentInfo
-                onDismiss={dismissTrialWithoutPaymentInfoBanner}
-              />
             )}
 
             {showRestrictedBanner ? <RestrictedSandbox /> : null}

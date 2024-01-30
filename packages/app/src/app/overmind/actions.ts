@@ -6,7 +6,6 @@ import {
 } from '@codesandbox/common/lib/utils/notifications';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
-import { TeamStep } from 'app/pages/Dashboard/Components/NewTeamModal';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
@@ -299,14 +298,6 @@ export const signInClicked = (
   state.cancelOnLogin = props?.onCancel ?? null;
 };
 
-export const signInWithRedirectClicked = (
-  { state }: Context,
-  redirectTo: string
-) => {
-  state.signInModalOpen = true;
-  state.redirectOnLogin = redirectTo;
-};
-
 export const toggleSignInModal = ({ state }: Context) => {
   if (state.signInModalOpen) {
     state.cancelOnLogin = null;
@@ -427,14 +418,6 @@ export const signInGithubClicked = async (
   if (state.editor.currentSandbox?.originalGit) {
     actions.git.loadGitSource();
   }
-};
-
-export const signInGoogleClicked = async ({ actions }: Context) => {
-  await actions.internal.signIn({ provider: 'google' });
-};
-
-export const signInAppleClicked = async ({ actions }: Context) => {
-  await actions.internal.signIn({ provider: 'apple' });
 };
 
 export const signOutClicked = async ({ state, effects, actions }: Context) => {
@@ -591,20 +574,6 @@ export const getActiveTeamInfo = async ({
   return currentTeam;
 };
 
-type OpenCreateTeamModalParams = {
-  step: TeamStep;
-  hasNextStep?: boolean;
-};
-export const openCreateTeamModal = (
-  { actions }: Context,
-  props?: OpenCreateTeamModalParams
-) => {
-  actions.modals.newTeamModal.open({
-    step: props?.step ?? 'create',
-    hasNextStep: props?.hasNextStep ?? true,
-  });
-};
-
 export const validateUsername = async (
   { effects, state }: Context,
   userName: string
@@ -618,17 +587,17 @@ export const validateUsername = async (
 type SignUpOptions = Omit<FinalizeSignUpOptions, 'id'>;
 export const finalizeSignUp = async (
   { effects, actions, state }: Context,
-  { username, name, role, usage }: SignUpOptions
+  options: SignUpOptions
 ) => {
   if (!state.pendingUser) return;
   try {
-    await effects.api.finalizeSignUp({
+    const { primaryTeamId } = await effects.api.finalizeSignUp({
       id: state.pendingUser.id,
-      username,
-      name,
-      role,
-      usage,
+      ...options,
     });
+
+    state.newUserFirstWorkspaceId = primaryTeamId;
+
     window.postMessage(
       {
         type: 'signin',
@@ -654,4 +623,8 @@ export const getSandboxesLimits = async ({ effects, state }: Context) => {
   const limits = await effects.api.sandboxesLimits();
 
   state.sandboxesLimits = limits;
+};
+
+export const clearNewUserFirstWorkspaceId = ({ state }: Context) => {
+  state.newUserFirstWorkspaceId = null;
 };

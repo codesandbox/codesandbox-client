@@ -5144,17 +5144,6 @@ export type _PermanentlyDeleteSandboxesMutation = {
   permanentlyDeleteSandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
-export type _InviteToTeamViaEmailMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  email: Scalars['String'];
-  authorization: InputMaybe<TeamMemberAuthorization>;
-}>;
-
-export type _InviteToTeamViaEmailMutation = {
-  __typename?: 'RootMutationType';
-  inviteToTeamViaEmail: string;
-};
-
 export type _AcceptTeamInvitationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -5217,62 +5206,6 @@ export type _RejectTeamInvitationMutationVariables = Exact<{
 export type _RejectTeamInvitationMutation = {
   __typename?: 'RootMutationType';
   rejectTeamInvitation: string;
-};
-
-export type _SetTeamDescriptionMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  description: Scalars['String'];
-}>;
-
-export type _SetTeamDescriptionMutation = {
-  __typename?: 'RootMutationType';
-  setTeamDescription: {
-    __typename?: 'Team';
-    id: any;
-    name: string;
-    type: TeamType;
-    description: string | null;
-    creatorId: any | null;
-    avatarUrl: string | null;
-    legacy: boolean;
-    frozen: boolean;
-    settings: {
-      __typename?: 'WorkspaceSandboxSettings';
-      minimumPrivacy: number;
-    } | null;
-    userAuthorizations: Array<{
-      __typename?: 'UserAuthorization';
-      userId: any;
-      authorization: TeamMemberAuthorization;
-      teamManager: boolean;
-    }>;
-    users: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    invitees: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    subscription: {
-      __typename?: 'ProSubscription';
-      origin: SubscriptionOrigin | null;
-      type: SubscriptionType;
-      status: SubscriptionStatus;
-      paymentProvider: SubscriptionPaymentProvider | null;
-    } | null;
-    featureFlags: {
-      __typename?: 'TeamFeatureFlags';
-      ubbBeta: boolean;
-      friendOfCsb: boolean;
-    };
-  };
 };
 
 export type _UnmakeSandboxesTemplateMutationVariables = Exact<{
@@ -5561,58 +5494,6 @@ export type ConvertToUsageBillingMutation = {
   convertToUsageBilling: boolean;
 };
 
-export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
-  [key: string]: never;
-}>;
-
-export type RecentlyDeletedPersonalSandboxesQuery = {
-  __typename?: 'RootQueryType';
-  me: {
-    __typename?: 'CurrentUser';
-    sandboxes: Array<{
-      __typename?: 'Sandbox';
-      id: string;
-      alias: string | null;
-      title: string | null;
-      description: string | null;
-      lastAccessedAt: any;
-      insertedAt: string;
-      updatedAt: string;
-      removedAt: string | null;
-      privacy: number;
-      isFrozen: boolean;
-      isSse: boolean | null;
-      screenshotUrl: string | null;
-      screenshotOutdated: boolean;
-      viewCount: number;
-      likeCount: number;
-      isV2: boolean;
-      draft: boolean;
-      restricted: boolean;
-      authorId: any | null;
-      teamId: any | null;
-      source: { __typename?: 'Source'; template: string | null };
-      customTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        iconUrl: string | null;
-      } | null;
-      forkedTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        color: string | null;
-        iconUrl: string | null;
-      } | null;
-      collection: { __typename?: 'Collection'; path: string } | null;
-      permissions: {
-        __typename?: 'SandboxProtectionSettings';
-        preventSandboxLeaving: boolean;
-        preventSandboxExport: boolean;
-      } | null;
-    }>;
-  } | null;
-};
-
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -5805,73 +5686,6 @@ export type AllCollectionsQuery = {
   } | null;
 };
 
-export type GetPersonalReposQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetPersonalReposQuery = {
-  __typename?: 'RootQueryType';
-  me: {
-    __typename?: 'CurrentUser';
-    sandboxes: Array<{
-      __typename?: 'Sandbox';
-      prNumber: number | null;
-      id: string;
-      alias: string | null;
-      title: string | null;
-      description: string | null;
-      lastAccessedAt: any;
-      insertedAt: string;
-      updatedAt: string;
-      removedAt: string | null;
-      privacy: number;
-      isFrozen: boolean;
-      isSse: boolean | null;
-      screenshotUrl: string | null;
-      screenshotOutdated: boolean;
-      viewCount: number;
-      likeCount: number;
-      isV2: boolean;
-      draft: boolean;
-      restricted: boolean;
-      authorId: any | null;
-      teamId: any | null;
-      baseGit: {
-        __typename?: 'Git';
-        branch: string | null;
-        id: any | null;
-        repo: string | null;
-        username: string | null;
-        path: string | null;
-      } | null;
-      originalGit: {
-        __typename?: 'Git';
-        branch: string | null;
-        id: any | null;
-        repo: string | null;
-        username: string | null;
-        path: string | null;
-      } | null;
-      source: { __typename?: 'Source'; template: string | null };
-      customTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        iconUrl: string | null;
-      } | null;
-      forkedTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        color: string | null;
-        iconUrl: string | null;
-      } | null;
-      collection: { __typename?: 'Collection'; path: string } | null;
-      permissions: {
-        __typename?: 'SandboxProtectionSettings';
-        preventSandboxLeaving: boolean;
-        preventSandboxExport: boolean;
-      } | null;
-    }>;
-  } | null;
-};
-
 export type GetTeamReposQueryVariables = Exact<{
   id: Scalars['UUID4'];
 }>;
@@ -6019,76 +5833,6 @@ export type TeamTemplatesQuery = {
   } | null;
 };
 
-export type OwnedTemplatesQueryVariables = Exact<{
-  showAll: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type OwnedTemplatesQuery = {
-  __typename?: 'RootQueryType';
-  me: {
-    __typename?: 'CurrentUser';
-    templates: Array<{
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-      iconUrl: string | null;
-      published: boolean | null;
-      sandbox: {
-        __typename?: 'Sandbox';
-        id: string;
-        alias: string | null;
-        title: string | null;
-        description: string | null;
-        lastAccessedAt: any;
-        insertedAt: string;
-        updatedAt: string;
-        removedAt: string | null;
-        privacy: number;
-        isFrozen: boolean;
-        isSse: boolean | null;
-        screenshotUrl: string | null;
-        screenshotOutdated: boolean;
-        viewCount: number;
-        likeCount: number;
-        isV2: boolean;
-        draft: boolean;
-        restricted: boolean;
-        authorId: any | null;
-        teamId: any | null;
-        git: {
-          __typename?: 'Git';
-          id: any | null;
-          username: string | null;
-          commitSha: string | null;
-          path: string | null;
-          repo: string | null;
-          branch: string | null;
-        } | null;
-        team: { __typename?: 'TeamPreview'; name: string } | null;
-        author: { __typename?: 'User'; username: string } | null;
-        source: { __typename?: 'Source'; template: string | null };
-        customTemplate: {
-          __typename?: 'Template';
-          id: any | null;
-          iconUrl: string | null;
-        } | null;
-        forkedTemplate: {
-          __typename?: 'Template';
-          id: any | null;
-          color: string | null;
-          iconUrl: string | null;
-        } | null;
-        collection: { __typename?: 'Collection'; path: string } | null;
-        permissions: {
-          __typename?: 'SandboxProtectionSettings';
-          preventSandboxLeaving: boolean;
-          preventSandboxExport: boolean;
-        } | null;
-      } | null;
-    }>;
-  } | null;
-};
-
 export type AllTeamsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type AllTeamsQuery = {
@@ -6096,8 +5840,6 @@ export type AllTeamsQuery = {
   me: {
     __typename?: 'CurrentUser';
     primaryWorkspaceId: any | null;
-    eligibleForTrial: boolean;
-    featureFlags: { __typename?: 'UserFeatureFlags'; ubbBeta: boolean };
     workspaces: Array<{
       __typename?: 'Team';
       id: any;
@@ -6144,58 +5886,6 @@ export type AllTeamsQuery = {
         ubbBeta: boolean;
         friendOfCsb: boolean;
       };
-    }>;
-  } | null;
-};
-
-export type _SearchPersonalSandboxesQueryVariables = Exact<{
-  [key: string]: never;
-}>;
-
-export type _SearchPersonalSandboxesQuery = {
-  __typename?: 'RootQueryType';
-  me: {
-    __typename?: 'CurrentUser';
-    sandboxes: Array<{
-      __typename?: 'Sandbox';
-      id: string;
-      alias: string | null;
-      title: string | null;
-      description: string | null;
-      lastAccessedAt: any;
-      insertedAt: string;
-      updatedAt: string;
-      removedAt: string | null;
-      privacy: number;
-      isFrozen: boolean;
-      isSse: boolean | null;
-      screenshotUrl: string | null;
-      screenshotOutdated: boolean;
-      viewCount: number;
-      likeCount: number;
-      isV2: boolean;
-      draft: boolean;
-      restricted: boolean;
-      authorId: any | null;
-      teamId: any | null;
-      source: { __typename?: 'Source'; template: string | null };
-      customTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        iconUrl: string | null;
-      } | null;
-      forkedTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        color: string | null;
-        iconUrl: string | null;
-      } | null;
-      collection: { __typename?: 'Collection'; path: string } | null;
-      permissions: {
-        __typename?: 'SandboxProtectionSettings';
-        preventSandboxLeaving: boolean;
-        preventSandboxExport: boolean;
-      } | null;
     }>;
   } | null;
 };
@@ -6971,36 +6661,6 @@ export type TeamsSidebarQuery = {
   } | null;
 };
 
-export type CreateTeamMutationVariables = Exact<{
-  name: Scalars['String'];
-}>;
-
-export type CreateTeamMutation = {
-  __typename?: 'RootMutationType';
-  createTeam: {
-    __typename?: 'Team';
-    id: any;
-    name: string;
-    inviteToken: string;
-    description: string | null;
-    creatorId: any | null;
-    users: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    invitees: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-  };
-};
-
 export type PathedSandboxesFoldersQueryVariables = Exact<{
   teamId: InputMaybe<Scalars['ID']>;
 }>;
@@ -7395,16 +7055,6 @@ export type TeamQuery = {
   } | null;
 };
 
-export type InviteToTeamViaEmailMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  email: Scalars['String'];
-}>;
-
-export type InviteToTeamViaEmailMutation = {
-  __typename?: 'RootMutationType';
-  inviteToTeamViaEmail: string;
-};
-
 export type AcceptTeamInvitationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -7442,68 +7092,6 @@ export type RejectTeamInvitationMutationVariables = Exact<{
 export type RejectTeamInvitationMutation = {
   __typename?: 'RootMutationType';
   rejectTeamInvitation: string;
-};
-
-export type SetTeamDescriptionMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  description: Scalars['String'];
-}>;
-
-export type SetTeamDescriptionMutation = {
-  __typename?: 'RootMutationType';
-  setTeamDescription: {
-    __typename?: 'Team';
-    id: any;
-    name: string;
-    inviteToken: string;
-    description: string | null;
-    creatorId: any | null;
-    users: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    invitees: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-  };
-};
-
-export type SetTeamNameMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  name: Scalars['String'];
-}>;
-
-export type SetTeamNameMutation = {
-  __typename?: 'RootMutationType';
-  setTeamName: {
-    __typename?: 'Team';
-    id: any;
-    name: string;
-    inviteToken: string;
-    description: string | null;
-    creatorId: any | null;
-    users: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    invitees: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-  };
 };
 
 export type BookmarkTemplateMutationVariables = Exact<{

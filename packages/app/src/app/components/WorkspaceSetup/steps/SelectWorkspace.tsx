@@ -44,8 +44,7 @@ export const SelectWorkspace: React.FC<StepProps> = ({
       t =>
         !(
           t.featureFlags.ubbBeta &&
-          (t.subscription?.status === SubscriptionStatus.Active ||
-            t.subscription?.status === SubscriptionStatus.Trialing)
+          t.subscription?.status === SubscriptionStatus.Active
         )
     );
 

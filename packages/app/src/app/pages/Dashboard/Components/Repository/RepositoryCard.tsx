@@ -5,7 +5,6 @@ import {
   IconButton,
   Stack,
   Text,
-  Badge,
   InteractiveOverlay,
 } from '@codesandbox/components';
 import { RepositoryProps } from './types';
@@ -17,7 +16,6 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
   selected,
   onContextMenu,
   isBeingRemoved,
-  restricted,
   ...props
 }) => {
   return (
@@ -51,11 +49,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               css={{ textDecoration: 'none' }}
               {...props}
             >
-              <Text
-                color={restricted ? '#999' : '#e5e5e5'}
-                size={13}
-                weight="500"
-              >
+              <Text color="#e5e5e5" size={13} weight="500">
                 {repository.name}
               </Text>
             </Link>
@@ -75,8 +69,6 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               </Text>
             </Stack>
           </Stack>
-
-          {restricted ? <Badge variant="trial">Restricted</Badge> : null}
         </Stack>
       </StyledCard>
     </InteractiveOverlay>

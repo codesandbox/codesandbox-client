@@ -36,8 +36,6 @@ type State = {
   primaryWorkspaceId: string | null;
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
-  userCanStartTrial: boolean;
-  userFeatureFlags: { ubbBeta: boolean | undefined };
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
@@ -45,6 +43,8 @@ type State = {
   isLoadingVercel: boolean;
   pendingUserId: string | null;
   pendingUser: PendingUserType;
+  // Persists the primaryWorkspaceId for a fresh user until redirect
+  newUserFirstWorkspaceId: string | null;
   contextMenu: {
     show: boolean;
     items: string[];
@@ -60,7 +60,6 @@ type State = {
   updateStatus: string | null;
   isContributor: (username: String) => boolean;
   signInModalOpen: boolean;
-  redirectOnLogin: string | null;
   cancelOnLogin: null | (() => void);
   duplicateAccountStatus: {
     duplicate: boolean;
@@ -102,6 +101,7 @@ type State = {
 export const state: State = {
   pendingUserId: null,
   pendingUser: null,
+  newUserFirstWorkspaceId: null,
   isFirstVisit: false,
   isLoggedIn: derived(({ hasLogIn: has, user }: State) => has && Boolean(user)),
   // TODO: Should not reference store directly here, rather initialize
@@ -133,8 +133,6 @@ export const state: State = {
   activeTeam: null,
   activeTeamInfo: null,
   primaryWorkspaceId: null,
-  userCanStartTrial: false,
-  userFeatureFlags: { ubbBeta: undefined },
   connected: true,
   notifications: [],
   contributors: [],
@@ -154,7 +152,6 @@ export const state: State = {
   usedStorage: 0,
   updateStatus: null,
   signInModalOpen: false,
-  redirectOnLogin: null,
   cancelOnLogin: null,
   duplicateAccountStatus: null,
   loadingAuth: {

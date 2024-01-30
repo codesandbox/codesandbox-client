@@ -20,7 +20,6 @@ import {
   tosUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useActions, useAppState, useEffects } from 'app/overmind';
-import history from 'app/utils/history';
 import { Button } from './components/Button';
 import type { SignInMode } from './types';
 
@@ -195,12 +194,10 @@ const SSOSignIn: React.FC<SSOSignInProps> = ({
 };
 
 type ChooseProviderProps = {
-  redirectTo?: string;
   defaultSignInMode?: SignInMode;
   onSignIn?: () => void;
 };
 export const ChooseProvider: React.FC<ChooseProviderProps> = ({
-  redirectTo,
   defaultSignInMode,
   onSignIn,
 }) => {
@@ -227,21 +224,9 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
     ssoURL?: string
   ) => {
     setLoadingAuth(provider);
-
     await signInButtonClicked({ provider, ssoURL });
-
     if (onSignIn) {
       return onSignIn();
-    }
-
-    if (redirectTo) {
-      if (redirectTo.startsWith('https')) {
-        window.location.replace(redirectTo);
-
-        return null;
-      }
-
-      return history.push(redirectTo.replace(location.origin, ''));
     }
 
     setLoadingAuth(provider);

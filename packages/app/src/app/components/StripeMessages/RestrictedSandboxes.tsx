@@ -2,7 +2,7 @@ import React from 'react';
 import { MessageStripe } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const RestrictedSandboxes = () => {
@@ -32,10 +32,9 @@ export const RestrictedSandboxes = () => {
         Upgrade to Pro to create more shareable Sandboxes.
         <MessageStripe.Action
           as="a"
-          href={proUrl({
+          href={upgradeUrl({
             source: 'dashboard_restricted_sandboxes_banner',
             workspaceId: activeTeam,
-            ubbBeta: true,
           })}
         >
           Upgrade to Pro

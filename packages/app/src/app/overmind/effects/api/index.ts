@@ -439,7 +439,7 @@ export default {
   validateUsername(username: string): Promise<{ available: boolean }> {
     return api.get('/users/available/' + username);
   },
-  finalizeSignUp(options: FinalizeSignUpOptions): Promise<void> {
+  finalizeSignUp(options: FinalizeSignUpOptions): Promise<{primaryTeamId: string}> {
     return api.post('/users/finalize', options);
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {

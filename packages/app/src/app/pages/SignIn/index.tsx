@@ -6,24 +6,35 @@ import { useAppState, useActions } from 'app/overmind';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Element, Stack, ThemeProvider } from '@codesandbox/components';
 
+import { createWorkspaceUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { SignIn } from './SignIn';
 
 export const SignInPage = () => {
   const state = useAppState();
   const { genericPageMounted } = useActions();
-  const redirectTo = new URL(location.href).searchParams.get('continue');
+  const redirectAfterSignIn = state.newUserFirstWorkspaceId
+    ? createWorkspaceUrl({
+        workspaceId: state.newUserFirstWorkspaceId,
+      })
+    : new URL(location.href).searchParams.get('continue');
 
   useEffect(() => {
     genericPageMounted();
   }, [genericPageMounted]);
 
-  /**
-   * 🚧 Utility to debug Trial Onboarding Questions
-   */
-  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
+  if (state.hasLogIn) {
+    // All post-sigin redirects are handled here
+    if (redirectAfterSignIn) {
+      // Full redirect if https://
+      if (redirectAfterSignIn.startsWith('https')) {
+        window.location.replace(redirectAfterSignIn);
 
-  // 🚧 Remove && !TOQ_DEBUG
-  if (state.hasLogIn && !redirectTo && !TOQ_DEBUG) {
+        return null;
+      }
+
+      return <Redirect to={redirectAfterSignIn} />;
+    }
+
     return <Redirect to={dashboardUrl()} />;
   }
 
@@ -47,7 +58,7 @@ export const SignInPage = () => {
           align="center"
           justify="center"
         >
-          <SignIn redirectTo={redirectTo} />
+          <SignIn />
         </Stack>
       </Element>
     </ThemeProvider>

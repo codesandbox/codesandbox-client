@@ -26,7 +26,6 @@ import * as server from './namespaces/server';
 import * as userNotifications from './namespaces/userNotifications';
 import * as workspace from './namespaces/workspace';
 import * as preview from './namespaces/preview';
-import * as pro from './namespaces/pro';
 import { state } from './state';
 
 export const config = merge(
@@ -50,7 +49,6 @@ export const config = merge(
     server,
     comments,
     preview,
-    pro,
     checkout,
     modals: createModals(modals),
   })

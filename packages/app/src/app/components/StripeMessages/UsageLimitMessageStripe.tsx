@@ -5,12 +5,12 @@ import { useAppState } from 'app/overmind';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import {
-  proUrl,
+  upgradeUrl,
   portalOverview,
 } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 export const UsageLimitMessageStripe: React.FC = () => {
-  const { activeTeam, activeTeamInfo } = useAppState();
+  const { activeTeam } = useAppState();
   const { isAdmin } = useWorkspaceAuthorization();
   const {
     isOutOfCredits,
@@ -37,9 +37,8 @@ export const UsageLimitMessageStripe: React.FC = () => {
         {isAdmin && (
           <MessageStripe.Action
             as="a"
-            href={proUrl({
+            href={upgradeUrl({
               workspaceId: activeTeam,
-              ubbBeta: activeTeamInfo?.featureFlags.ubbBeta,
               source: 'out_of_credits_banner',
             })}
           >
@@ -63,9 +62,8 @@ export const UsageLimitMessageStripe: React.FC = () => {
         {isAdmin && (
           <MessageStripe.Action
             as="a"
-            href={proUrl({
+            href={upgradeUrl({
               workspaceId: activeTeam,
-              ubbBeta: activeTeamInfo?.featureFlags.ubbBeta,
               source: 'out_of_credits_banner',
             })}
           >

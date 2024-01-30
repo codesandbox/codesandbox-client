@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Element, Button, Text, Stack } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { InputText } from 'app/components/dashboard/InputText';
@@ -24,36 +24,34 @@ const USAGE_OPTIONS = [
   { value: 'education', label: 'Education' },
 ];
 
+const COMPANY_SIZE_OPTIONS = [
+  { value: '1', label: 'I work as a contractor' },
+  { value: '1-5', label: '1-5 members' },
+  { value: '5-10', label: '5-10 members' },
+  { value: '10-20', label: '10-20 members' },
+  { value: '20-50', label: '20-50 members' },
+  { value: '50+', label: '50+ members' },
+];
+
 export const Onboarding = () => {
-  /**
-   * 🚧 Utility to debug Trial Onboarding Questions
-   */
-  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
-
-  // 🚧 Remove
-  let pendingUser = useAppState().pendingUser;
-
-  // 🚧 Uncomment
-  // const { pendingUser } = useAppState();
-
-  // 🚧 Remove
-  if (TOQ_DEBUG) {
-    pendingUser = {
-      avatarUrl: 'https://avatars.githubusercontent.com/u/7533849?v=4',
-      username: 'tristandubbeld',
-      name: 'Tristan Dubbeld',
-      id: 'id',
-      valid: true,
-    };
-  }
+  const { pendingUser } = useAppState();
 
   const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState(pendingUser?.username || '');
   const [newDisplayName, setNewDisplayName] = useState(pendingUser?.name || '');
   const [role, setRole] = useState('');
   const [usage, setUsage] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companySize, setCompanySize] = useState('');
   const [loadingUsername, setLoadingUserName] = useState(false);
   const firstName = (pendingUser?.name || '').split(' ')[0];
+
+  useEffect(() => {
+    if (usage !== 'work') {
+      setCompanyName('');
+      setCompanySize('');
+    }
+  }, [usage]);
 
   return (
     <Stack
@@ -108,6 +106,8 @@ export const Onboarding = () => {
             name: newDisplayName,
             role,
             usage,
+            companyName,
+            companySize,
           });
         }}
       >
@@ -190,6 +190,32 @@ export const Onboarding = () => {
             }}
             required
           />
+
+          {usage === 'work' && (
+            <>
+              <InputText
+                id="companyName"
+                name="companyName"
+                label="What company do you work for?"
+                value={companyName}
+                onChange={e => {
+                  setCompanyName(e.target.value);
+                }}
+              />
+              <InputSelect
+                id="companySize"
+                name="companySize"
+                label="How many members does your team have?"
+                options={COMPANY_SIZE_OPTIONS}
+                placeholder="Please select an option"
+                value={companySize}
+                onChange={e => {
+                  setCompanySize(e.target.value);
+                }}
+                required
+              />
+            </>
+          )}
         </Stack>
         <Button
           type="submit"

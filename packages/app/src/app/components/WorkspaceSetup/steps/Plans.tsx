@@ -26,7 +26,6 @@ import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useLocation } from 'react-router-dom';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
@@ -48,27 +47,17 @@ export const Plans: React.FC<StepProps> = ({
   const urlWorkspaceId = getQueryParam('workspace');
   const { pathname } = useLocation();
   const [tiers, setTiers] = useState<VMTier[]>([]);
-  const { ubbBeta } = useWorkspaceFeatureFlags();
   const { isFree } = useWorkspaceSubscription();
   const isUpgrading = pathname.includes('upgrade');
-  const shouldToggleUbbFlag = !ubbBeta && isFree;
 
   // Until the 30th of Jan existing Pro can see this page
   // However, they should not see the free plan
   const showFreePlan = isFree;
 
   // For new workspaces
-  let freeButtonCTA = 'Get started for free';
-
-  if (isUpgrading) {
-    if (ubbBeta) {
-      // For free workspaces, early exit, no upgrade
-      freeButtonCTA = 'Continue on Free';
-    } else {
-      // For workspaces converting from old free
-      freeButtonCTA = 'Choose Free';
-    }
-  }
+  const freeButtonCTA = isUpgrading
+    ? 'Continue on Free'
+    : 'Get started for free';
 
   useEffect(() => {
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
@@ -81,14 +70,7 @@ export const Plans: React.FC<StepProps> = ({
   }, [urlWorkspaceId, activeTeam, actions]);
 
   const handleProPlanSelection = async () => {
-    if (shouldToggleUbbFlag) {
-      await effects.gql.mutations.joinUsageBillingBeta({
-        teamId: urlWorkspaceId,
-      });
-    }
-
     actions.checkout.selectPlan(UBB_PRO_PLAN);
-
     onNextStep();
   };
 
@@ -132,16 +114,7 @@ export const Plans: React.FC<StepProps> = ({
                     css={{ background: '#323232' }}
                     variant="secondary"
                     size="large"
-                    onClick={async () => {
-                      if (shouldToggleUbbFlag) {
-                        await effects.gql.mutations.joinUsageBillingBeta({
-                          teamId: urlWorkspaceId,
-                        });
-                      }
-
-                      // Full reload
-                      onEarlyExit(shouldToggleUbbFlag);
-                    }}
+                    onClick={() => onEarlyExit()}
                   >
                     {freeButtonCTA}
                   </Button>
