@@ -11,7 +11,7 @@ import { SignIn } from './SignIn';
 
 export const SignInPage = () => {
   const state = useAppState();
-  const { genericPageMounted, clearNewUserFirstWorkspaceId } = useActions();
+  const { genericPageMounted } = useActions();
   const redirectAfterSignIn = state.newUserFirstWorkspaceId
     ? createWorkspaceUrl({
         workspaceId: state.newUserFirstWorkspaceId,
@@ -27,9 +27,6 @@ export const SignInPage = () => {
     console.log('redirectAfterSignIn', redirectAfterSignIn);
     // All post-sigin redirects are handled here
     if (redirectAfterSignIn) {
-      // Clear the state persisted workspace id for the redirect
-      clearNewUserFirstWorkspaceId();
-
       // Full redirect if https://
       if (redirectAfterSignIn.startsWith('https')) {
         window.location.replace(redirectAfterSignIn);
