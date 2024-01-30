@@ -587,16 +587,13 @@ export const validateUsername = async (
 type SignUpOptions = Omit<FinalizeSignUpOptions, 'id'>;
 export const finalizeSignUp = async (
   { effects, actions, state }: Context,
-  { username, name, role, usage }: SignUpOptions
+  options: SignUpOptions
 ) => {
   if (!state.pendingUser) return;
   try {
     const { primaryTeamId } = await effects.api.finalizeSignUp({
       id: state.pendingUser.id,
-      username,
-      name,
-      role,
-      usage,
+      ...options,
     });
 
     state.newUserFirstWorkspaceId = primaryTeamId;
