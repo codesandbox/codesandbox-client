@@ -363,6 +363,10 @@ export const getDeletedSandboxes = async ({ state, effects }: Context) => {
       teamId: state.activeTeam,
     });
 
+    if (!data?.me?.team?.sandboxes) {
+      return;
+    }
+
     dashboard.sandboxes[sandboxesTypes.DELETED] = data?.me?.team?.sandboxes;
   } catch (error) {
     effects.notificationToast.error(

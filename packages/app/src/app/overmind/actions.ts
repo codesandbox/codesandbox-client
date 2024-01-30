@@ -4,7 +4,7 @@ import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
-import { createWorkspaceUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
@@ -615,7 +615,14 @@ export const finalizeSignUp = async (
       usage,
     });
 
-    window.location.href = createWorkspaceUrl({ workspaceId: primaryTeamId });
+    state.newUserFirstWorkspaceId = primaryTeamId;
+
+    window.postMessage(
+      {
+        type: 'signin',
+      },
+      protocolAndHost()
+    );
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem creating your account',

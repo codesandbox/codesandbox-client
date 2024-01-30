@@ -19,6 +19,7 @@ import {
   privacyUrl,
   tosUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { createWorkspaceUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import history from 'app/utils/history';
 import { Button } from './components/Button';
@@ -209,7 +210,12 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
     setLoadingAuth,
     toggleSignInModal,
   } = useActions();
-  const { loadingAuth, cancelOnLogin, features } = useAppState();
+  const {
+    loadingAuth,
+    cancelOnLogin,
+    features,
+    newUserFirstWorkspaceId,
+  } = useAppState();
 
   const [signInMode, setSignInMode] = React.useState<SignInMode>(
     defaultSignInMode
@@ -232,6 +238,12 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
 
     if (onSignIn) {
       return onSignIn();
+    }
+
+    if (newUserFirstWorkspaceId) {
+      return history.push(
+        createWorkspaceUrl({ workspaceId: newUserFirstWorkspaceId })
+      );
     }
 
     if (redirectTo) {

@@ -43,6 +43,7 @@ type State = {
   isLoadingVercel: boolean;
   pendingUserId: string | null;
   pendingUser: PendingUserType;
+  newUserFirstWorkspaceId: string | null;
   contextMenu: {
     show: boolean;
     items: string[];
@@ -100,6 +101,7 @@ type State = {
 export const state: State = {
   pendingUserId: null,
   pendingUser: null,
+  newUserFirstWorkspaceId: null,
   isFirstVisit: false,
   isLoggedIn: derived(({ hasLogIn: has, user }: State) => has && Boolean(user)),
   // TODO: Should not reference store directly here, rather initialize
