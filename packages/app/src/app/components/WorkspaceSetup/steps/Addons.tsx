@@ -1,5 +1,6 @@
 import React from 'react';
 import { Stack, Button, Text, Element } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions } from 'app/overmind';
 import {
   CREDIT_ADDONS,
@@ -13,6 +14,7 @@ import {
 import styled from 'styled-components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
+import { useLocation } from 'react-router-dom';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -27,12 +29,19 @@ export const Addons: React.FC<StepProps> = ({
   const { isPro } = useWorkspaceSubscription();
   const { checkout } = useActions();
   const { getQueryParam } = useURLSearchParams();
+  const { pathname } = useLocation();
   const urlWorkspaceId = getQueryParam('workspace');
+  const isUpgrading = pathname.includes('upgrade');
 
   const handleSubmit = () => {
     if (isPro) {
       checkout.calculateConversionCharge({ workspaceId: urlWorkspaceId });
     }
+
+    track('Checkout - Next from addons', {
+      from: isUpgrading ? 'upgrade' : 'create-workspace',
+      currentPlan: isPro ? 'pro' : 'free',
+    });
     onNextStep();
   };
 
@@ -136,10 +145,19 @@ export const Addons: React.FC<StepProps> = ({
 
 const CreditAddonButton = ({ addon }: { addon: CreditAddon }) => {
   const actions = useActions();
+  const { isPro } = useWorkspaceSubscription();
+  const { pathname } = useLocation();
+  const isUpgrading = pathname.includes('upgrade');
 
   return (
     <StyledAddonButton
-      onClick={() => actions.checkout.addCreditsPackage(addon)}
+      onClick={() => {
+        track('Checkout - Click on addon', {
+          from: isUpgrading ? 'upgrade' : 'create-workspace',
+          currentPlan: isPro ? 'pro' : 'free',
+        });
+        actions.checkout.addCreditsPackage(addon);
+      }}
     >
       <Stack
         css={{
