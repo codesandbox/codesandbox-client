@@ -43,6 +43,7 @@ type State = {
   isLoadingVercel: boolean;
   pendingUserId: string | null;
   pendingUser: PendingUserType;
+  // Persists the primaryWorkspaceId for a fresh user until redirect
   newUserFirstWorkspaceId: string | null;
   contextMenu: {
     show: boolean;

@@ -635,3 +635,7 @@ export const getSandboxesLimits = async ({ effects, state }: Context) => {
 
   state.sandboxesLimits = limits;
 };
+
+export const clearNewUserFirstWorkspaceId = ({ state }: Context) => {
+  state.newUserFirstWorkspaceId = null;
+};
