@@ -62,7 +62,7 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
           as="a"
           target="_blank"
           autoWidth
-          href={dashboardURLs.proUrl({ workspaceId: activeTeam })}
+          href={dashboardURLs.upgradeUrl({ workspaceId: activeTeam })}
         >
           View upgrade options
         </Button>
@@ -155,7 +155,7 @@ const StyledProFeatures: React.FC = () => {
         </Text>
       </Stack>
       <Stack gap={2} as="li">
-        <Icon css={{ flexShrink: 0 }} name="vscode" size={16} />
+        <Icon css={{ flexShrink: 0 }} name="devbox" size={16} />
         <Text color="#a6a6a6" size={3}>
           Create unlimited Devboxes and personal Sandbox drafts.
         </Text>
