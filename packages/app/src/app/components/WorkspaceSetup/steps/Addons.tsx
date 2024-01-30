@@ -155,6 +155,7 @@ const CreditAddonButton = ({ addon }: { addon: CreditAddon }) => {
         track('Checkout - Click on addon', {
           from: isUpgrading ? 'upgrade' : 'create-workspace',
           currentPlan: isPro ? 'pro' : 'free',
+          addonId: addon.id,
         });
         actions.checkout.addCreditsPackage(addon);
       }}
