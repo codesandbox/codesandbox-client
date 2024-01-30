@@ -42,7 +42,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isPro } = useWorkspaceSubscription();
-  const isDraft = collectionId == null;
+  const isDraft = collectionId === undefined;
   const canSetPrivacy = !isDraft;
   const miniumPrivacy = canSetPrivacy
     ? ((activeTeamInfo?.settings.minimumPrivacy || 0) as PrivacyLevel)
