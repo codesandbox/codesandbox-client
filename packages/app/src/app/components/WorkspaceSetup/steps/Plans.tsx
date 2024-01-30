@@ -8,6 +8,7 @@ import {
   Text,
   Tooltip,
 } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import {
   CSB_FRIENDS_LINK,
   ORGANIZATION_CONTACT_LINK,
@@ -72,6 +73,10 @@ export const Plans: React.FC<StepProps> = ({
 
   const handleProPlanSelection = async () => {
     actions.checkout.selectPlan(UBB_PRO_PLAN);
+    track('Checkout - Select Pro Plan', {
+      from: isUpgrading ? 'upgrade' : 'create-workspace',
+      currentPlan: isFree ? 'free' : 'pro',
+    });
     onNextStep();
   };
 
@@ -117,7 +122,13 @@ export const Plans: React.FC<StepProps> = ({
                       '&:hover': { backgroundColor: '#fff' },
                     }}
                     size="large"
-                    onClick={() => onEarlyExit()}
+                    onClick={() => {
+                      track('Checkout - Select Free Plan', {
+                        from: isUpgrading ? 'upgrade' : 'create-workspace',
+                        currentPlan: isFree ? 'free' : 'pro',
+                      });
+                      onEarlyExit();
+                    }}
                   >
                     {freeButtonCTA}
                   </Button>
@@ -195,6 +206,12 @@ export const Plans: React.FC<StepProps> = ({
                 <Button
                   as="a"
                   href={ORGANIZATION_CONTACT_LINK}
+                  onClick={() => {
+                    track('Checkout - Select Enterprise Plan', {
+                      from: isUpgrading ? 'upgrade' : 'create-workspace',
+                      currentPlan: isFree ? 'free' : 'pro',
+                    });
+                  }}
                   variant="primary"
                   size="large"
                   target="_blank"

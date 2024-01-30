@@ -1,8 +1,11 @@
 import React from 'react';
 import { Stack, Button, Text } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { InputText } from 'app/components/dashboard/InputText';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState } from 'app/overmind';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useLocation } from 'react-router-dom';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -19,6 +22,9 @@ export const PlanOptions: React.FC<StepProps> = ({
   const { getQueryParam } = useURLSearchParams();
   const urlWorkspaceId = getQueryParam('workspace');
   const [error, setError] = React.useState<React.ReactNode>('');
+  const { isPro } = useWorkspaceSubscription();
+  const { pathname } = useLocation();
+  const isUpgrading = pathname.includes('upgrade');
 
   const handleChange = e => {
     setError('');
@@ -61,6 +67,10 @@ export const PlanOptions: React.FC<StepProps> = ({
         css={{ maxWidth: '400px' }}
         as="form"
         onSubmit={() => {
+          track('Checkout - Proceed to checkout', {
+            from: isUpgrading ? 'upgrade' : 'create-workspace',
+            currentPlan: isPro ? 'pro' : 'free',
+          });
           onNextStep();
         }}
       >
