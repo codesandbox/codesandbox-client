@@ -428,14 +428,6 @@ export const signInGithubClicked = async (
   }
 };
 
-export const signInGoogleClicked = async ({ actions }: Context) => {
-  await actions.internal.signIn({ provider: 'google' });
-};
-
-export const signInAppleClicked = async ({ actions }: Context) => {
-  await actions.internal.signIn({ provider: 'apple' });
-};
-
 export const signOutClicked = async ({ state, effects, actions }: Context) => {
   effects.analytics.track('Sign Out', {});
   state.workspace.openedWorkspaceItem = 'files';
@@ -607,6 +599,7 @@ export const finalizeSignUp = async (
 ) => {
   if (!state.pendingUser) return;
   try {
+    console.log('Start of finalize');
     const { primaryTeamId } = await effects.api.finalizeSignUp({
       id: state.pendingUser.id,
       username,
@@ -617,12 +610,16 @@ export const finalizeSignUp = async (
 
     state.newUserFirstWorkspaceId = primaryTeamId;
 
+    console.log('Before post message signin');
+
     window.postMessage(
       {
         type: 'signin',
       },
       protocolAndHost()
     );
+
+    console.log('End of finalize');
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem creating your account',

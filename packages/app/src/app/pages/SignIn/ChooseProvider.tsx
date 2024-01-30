@@ -233,20 +233,23 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
     ssoURL?: string
   ) => {
     setLoadingAuth(provider);
-
+    console.log('Choose provider before click', newUserFirstWorkspaceId);
     await signInButtonClicked({ provider, ssoURL });
-
+    console.log('Choose provider after click', newUserFirstWorkspaceId);
     if (onSignIn) {
       return onSignIn();
     }
 
     if (newUserFirstWorkspaceId) {
-      return history.push(
+      history.push(
         createWorkspaceUrl({ workspaceId: newUserFirstWorkspaceId })
       );
+
+      return null;
     }
 
     if (redirectTo) {
+      console.log('Redirect from Choose Provider');
       if (redirectTo.startsWith('https')) {
         window.location.replace(redirectTo);
 

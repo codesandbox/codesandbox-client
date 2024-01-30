@@ -6,6 +6,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Element, Stack, ThemeProvider } from '@codesandbox/components';
 
+import { createWorkspaceUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { SignIn } from './SignIn';
 
 export const SignInPage = () => {
@@ -22,8 +23,21 @@ export const SignInPage = () => {
    */
   const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
 
+  if (state.hasLogIn && state.newUserFirstWorkspaceId) {
+    console.log(
+      'top level redirect to create workspace',
+      state.newUserFirstWorkspaceId
+    );
+    return (
+      <Redirect
+        to={createWorkspaceUrl({ workspaceId: state.newUserFirstWorkspaceId })}
+      />
+    );
+  }
+
   // 🚧 Remove && !TOQ_DEBUG
   if (state.hasLogIn && !redirectTo && !TOQ_DEBUG) {
+    console.log('top level redirect to dashboard');
     return <Redirect to={dashboardUrl()} />;
   }
 
