@@ -23,6 +23,8 @@ export const SignInPage = () => {
   }, [genericPageMounted]);
 
   if (state.hasLogIn) {
+    console.log('state.newUserFirstWorkspaceId', state.newUserFirstWorkspaceId);
+    console.log('redirectAfterSignIn', redirectAfterSignIn);
     // All post-sigin redirects are handled here
     if (redirectAfterSignIn) {
       // Clear the state persisted workspace id for the redirect

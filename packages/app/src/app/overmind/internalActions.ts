@@ -616,7 +616,13 @@ export const initializeActiveWorkspace = async ({
       state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
     }
 
-    // TODO: Treat here future scenario when no workspaces are available
+    // Hard redirect to /create-workspace when no workspace is available
+    if (
+      !window.location.href.includes('/create-workspace') &&
+      state.dashboard.teams.length === 0
+    ) {
+      window.location.href = '/create-workspace';
+    }
   }
 
   const isPersistedWorkspaceValid = state.dashboard.teams.some(
