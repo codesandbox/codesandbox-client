@@ -208,7 +208,7 @@ export const Onboarding = () => {
               <InputSelect
                 id="companySize"
                 name="companySize"
-                label="How many members does your team have?"
+                label="What is the size of your company?"
                 options={COMPANY_SIZE_OPTIONS}
                 placeholder="Please select an option"
                 value={companySize}
