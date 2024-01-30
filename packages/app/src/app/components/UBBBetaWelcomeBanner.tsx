@@ -155,7 +155,7 @@ const StyledProFeatures: React.FC = () => {
         </Text>
       </Stack>
       <Stack gap={2} as="li">
-        <Icon css={{ flexShrink: 0 }} name="devbox" size={16} />
+        <Icon css={{ flexShrink: 0 }} name="sandbox" size={16} />
         <Text color="#a6a6a6" size={3}>
           Create unlimited Devboxes and personal Sandbox drafts.
         </Text>
