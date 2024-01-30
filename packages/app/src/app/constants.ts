@@ -128,6 +128,8 @@ export type PricingPlanFeatures = {
   sso: boolean;
   privateCloud: boolean;
   onPremise: boolean;
+  instantEnvironmentResume: boolean;
+  instantEnvironmentShare: boolean;
 };
 
 export type PlanType = 'free' | 'flex' | 'enterprise';
@@ -156,8 +158,8 @@ export const UBB_FREE_PLAN: PricingPlan = {
   highestVM: 'vm-2',
   usage: [
     'Up to 40 hours worth of VM credits per month',
-    'Up to 4 vCPUs + 8GB RAM in VMs',
-    '20GB storage per VM',
+    '20 GB storage per VM',
+    'VMs up to 4 vCPUs + 8 GB RAM',
     'Unlimited Devboxes and repositories',
     '20 Sandboxes',
     '10 personal drafts',
@@ -168,6 +170,8 @@ export const UBB_FREE_PLAN: PricingPlan = {
     'Codeium AI code-completion',
     'Live collaboration',
     'VS Code extension',
+    'Instant environment resume',
+    'Instant environment share',
   ],
 };
 
@@ -185,8 +189,8 @@ export const UBB_PRO_PLAN: PricingPlan = {
   features: ['All free features'],
   usage: [
     'Start from 100 hours worth of VM credits per month',
-    'Up to 16 vCPUs + 32 GB RAM in VMs',
-    '50GB storage per VM',
+    '50 GB storage per VM',
+    'VMs up to 16 vCPUs + 32 GB RAM',
     'Unlimited Devboxes and repositories',
     '100 Sandboxes',
     'Unlimited personal drafts',
@@ -207,7 +211,7 @@ export const UBB_ENTERPRISE_PLAN: PricingPlan = {
   features: [
     'Unlimited members',
     'Unlimited API',
-    'Up to 64 vCPUs + 128 GB RAM in VMs',
+    'VMs up to 64 vCPUs + 128 GB RAM',
     'On-premise options',
     'Private managed cloud',
     'Dedicated support',
@@ -234,6 +238,8 @@ export const UBB_FREE_FEATURES: PricingPlanFeatures = {
   sso: false,
   privateCloud: false,
   onPremise: false,
+  instantEnvironmentResume: true,
+  instantEnvironmentShare: true,
 };
 
 export const UBB_PRO_FEATURES: PricingPlanFeatures = {
@@ -257,6 +263,8 @@ export const UBB_PRO_FEATURES: PricingPlanFeatures = {
   sso: false,
   privateCloud: false,
   onPremise: false,
+  instantEnvironmentResume: true,
+  instantEnvironmentShare: true,
 };
 
 export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
@@ -278,6 +286,8 @@ export const UBB_ENTERPRISE_FEATURES: PricingPlanFeatures = {
   sso: true,
   privateCloud: true,
   onPremise: true,
+  instantEnvironmentResume: true,
+  instantEnvironmentShare: true,
 };
 
 export const PRICING_PLANS: Record<PlanType, PricingPlan> = {
