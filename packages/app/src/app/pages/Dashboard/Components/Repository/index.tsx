@@ -2,8 +2,6 @@ import React from 'react';
 import { useAppState } from 'app/overmind';
 import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { DashboardRepository } from '../../types';
 import { RepositoryCard } from './RepositoryCard';
 import { RepositoryListItem } from './RepositoryListItem';
@@ -35,12 +33,6 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     else onMenuEvent(event, repositoryId);
   };
 
-  const { isFree } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-
-  const isPrivate = providerRepository?.private;
-  const restricted = !ubbBeta && isFree && isPrivate;
-
   const props: RepositoryProps = {
     repository: {
       owner: providerRepository.owner,
@@ -58,7 +50,6 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     isBeingRemoved:
       removingRepository?.owner === providerRepository.owner &&
       removingRepository?.name === providerRepository.name,
-    restricted,
     appInstalled,
   };
 

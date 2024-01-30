@@ -10,7 +10,7 @@ import {
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -25,7 +25,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const actions = useActions();
   const { user, activeTeam } = useAppState();
 
-  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isPro } = useWorkspaceSubscription();
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
 
   const {
@@ -38,7 +38,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const history = useHistory();
   const location = useLocation();
   const { userRole, isTeamAdmin } = useWorkspaceAuthorization();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
+  const { isFrozen } = useWorkspaceLimits();
 
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
   const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
@@ -46,8 +46,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
 
   const label = isTemplate ? 'template' : boxType;
-  const canChangePrivacy = ubbBeta || isPro;
-  const restricted = !ubbBeta && isFree && sandbox.privacy !== 0;
+  const restrictedFork = isFrozen;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -177,7 +176,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               hasBetaEditorExperiment,
             });
           }}
-          disabled={restricted}
+          disabled={restrictedFork}
         >
           Fork {boxType}
         </MenuItem>
@@ -218,26 +217,21 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </Tooltip>
       )}
 
-      {hasAccess && userRole !== 'READ'
-        ? sandbox.privacy !== 0 && (
-            <>
-              <Menu.Divider />
-              <MenuItem
-                onSelect={() =>
-                  actions.dashboard.changeSandboxesPrivacy({
-                    sandboxIds: [sandbox.id],
-                    privacy: 0,
-                  })
-                }
-              >
-                Make {label} public
-              </MenuItem>
-            </>
-          )
-        : null}
-
-      {hasAccess && userRole !== 'READ' && canChangePrivacy ? (
+      {hasAccess && userRole !== 'READ' ? (
         <>
+          <Menu.Divider />
+          {sandbox.privacy !== 0 && (
+            <MenuItem
+              onSelect={() =>
+                actions.dashboard.changeSandboxesPrivacy({
+                  sandboxIds: [sandbox.id],
+                  privacy: 0,
+                })
+              }
+            >
+              Make {label} public
+            </MenuItem>
+          )}
           {sandbox.privacy !== 1 && (
             <MenuItem
               onSelect={() =>
@@ -246,7 +240,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 1,
                 })
               }
-              disabled={restricted}
             >
               Make {label} unlisted
             </MenuItem>
@@ -259,7 +252,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 2,
                 })
               }
-              disabled={restricted}
             >
               Make {label} private
             </MenuItem>
@@ -270,9 +262,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {hasAccess && userRole !== 'READ' && (
         <>
           <Menu.Divider />
-          <MenuItem onSelect={() => setRenaming(true)} disabled={restricted}>
-            Rename {label}
-          </MenuItem>
+          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
         </>
       )}
       {hasAccess &&
@@ -286,7 +276,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isFrozen: false,
               });
             }}
-            disabled={restricted}
           >
             Remove {label} protection
           </MenuItem>
@@ -298,7 +287,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isFrozen: true,
               });
             }}
-            disabled={restricted}
           >
             Protect {label}
           </MenuItem>
@@ -323,7 +311,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isOnRecentPage: location.pathname.includes('recent'),
               });
             }}
-            disabled={restricted}
           >
             Convert back to {boxType}
           </MenuItem>
@@ -335,7 +322,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isOnRecentPage: location.pathname.includes('recent'),
               });
             }}
-            disabled={restricted}
           >
             Convert into a template
           </MenuItem>

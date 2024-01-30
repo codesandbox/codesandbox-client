@@ -3,8 +3,6 @@ import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analy
 import { useAppState } from 'app/overmind';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import React from 'react';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { DashboardBranch } from '../../types';
 import { useSelection } from '../Selection';
 import { BranchCard } from './BranchCard';
@@ -49,12 +47,6 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
     removingRepository?.owner === project.repository.owner &&
     removingRepository?.name === project.repository.name;
 
-  const { isFree } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-
-  const isPrivate = branch?.project?.repository?.private;
-  const restricted = !ubbBeta && isFree && isPrivate && page === 'recent';
-
   const props = {
     branch,
     branchUrl,
@@ -63,7 +55,6 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
       removingBranch?.id === branch.id || isParentRepositoryBeingRemoved,
     onContextMenu: handleContextMenu,
     onClick: handleClick,
-    restricted,
     showRepo: page !== 'repository-branches',
     /**
      * If we ever need selection for branch entries, `data-selection-id` must be set

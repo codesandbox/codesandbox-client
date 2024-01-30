@@ -91,15 +91,6 @@ export const TEAMS_QUERY = gql`
   }
 `;
 
-export const CREATE_TEAM_MUTATION = gql`
-  mutation CreateTeam($name: String!) {
-    createTeam(name: $name) {
-      ...Team
-    }
-  }
-  ${TEAM_FRAGMENT}
-`;
-
 export const PATHED_SANDBOXES_FOLDER_QUERY = gql`
   query PathedSandboxesFolders($teamId: ID) {
     me {
@@ -426,12 +417,6 @@ export const TEAM_QUERY = gql`
   ${TEAM_FRAGMENT}
 `;
 
-export const INVITE_TO_TEAM_VIA_EMAIL = gql`
-  mutation InviteToTeamViaEmail($teamId: UUID4!, $email: String!) {
-    inviteToTeamViaEmail(teamId: $teamId, email: $email)
-  }
-`;
-
 export const ACCEPT_TEAM_INVITATION = gql`
   mutation AcceptTeamInvitation($teamId: UUID4!) {
     acceptTeamInvitation(teamId: $teamId) {
@@ -445,22 +430,4 @@ export const REJECT_TEAM_INVITATION = gql`
   mutation RejectTeamInvitation($teamId: UUID4!) {
     rejectTeamInvitation(teamId: $teamId)
   }
-`;
-
-export const SET_TEAM_DESCRIPTION = gql`
-  mutation SetTeamDescription($teamId: UUID4!, $description: String!) {
-    setTeamDescription(teamId: $teamId, description: $description) {
-      ...Team
-    }
-  }
-  ${TEAM_FRAGMENT}
-`;
-
-export const SET_TEAM_NAME = gql`
-  mutation SetTeamName($teamId: UUID4!, $name: String!) {
-    setTeamName(teamId: $teamId, name: $name) {
-      ...Team
-    }
-  }
-  ${TEAM_FRAGMENT}
 `;

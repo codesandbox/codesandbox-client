@@ -129,11 +129,6 @@ const SignUp = Loadable(() =>
     default: module.SignUp,
   }))
 );
-const Pro = Loadable(() =>
-  import(/* webpackChunkName: 'page-pro' */ './Pro').then(module => ({
-    default: module.ProPage,
-  }))
-);
 
 // @ts-ignore
 const CodeSadbox = () => this[`💥`].kaboom();
@@ -197,11 +192,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/u/:username" component={Profile} />
             <Route path="/u2/:username" component={Profile} />
             <Route path="/search" component={Search} />
-            {environment.isOnPrem ? (
-              <Redirect from="/pro" to="/dashboard" />
-            ) : (
-              <Route path="/pro" component={Pro} />
-            )}
+
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={MobileAuth} />
             <Route path="/vscode/login" component={VSCodeAuth} />
@@ -215,7 +206,13 @@ const RoutesComponent: React.FC = () => {
             <Route path="/standalone/:componentId" component={StandalonePage} />
             <Route path="/create-workspace" component={CreateWorkspace} />
             <Route path="/upgrade" component={UpgradeWorkspace} />
-            <Redirect from="/patron" to="/pro" />
+
+            {environment.isOnPrem ? (
+              <Redirect from="/pro" to="/dashboard" />
+            ) : (
+              <Redirect from="/pro" to="/upgrade" />
+            )}
+
             <Route component={NotFound} />
           </Switch>
         </Content>

@@ -6,7 +6,7 @@ import { useAppState, useActions } from 'app/overmind';
 import React, { ChangeEvent, FunctionComponent, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import { Container, Link, Select, Text, Button } from './elements';
+import { Container, Select, Text, Button } from './elements';
 import { Private, Public, Unlisted } from './icons';
 
 export const PrivacyTooltip: FunctionComponent = () => {
@@ -52,25 +52,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
   const { description, Icon } = config[privacy];
 
   const Owned = () => {
-    if (isPro) {
-      return <Text color="grays.300">Adjust privacy settings.</Text>;
-    }
-
-    if (privacy !== 0) {
-      return (
-        <Text color="grays.300">
-          This sandbox is currently restricted.{' '}
-          <Link href="/pro">Upgrade to Pro</Link> or make it public to edit.
-        </Text>
-      );
-    }
-
-    return (
-      <Text color="grays.300">
-        This sandbox is public. <Link href="/pro">Upgrade to Pro</Link> to
-        update the privacy.
-      </Text>
-    );
+    return <Text color="grays.300">Adjust privacy settings.</Text>;
   };
 
   return (

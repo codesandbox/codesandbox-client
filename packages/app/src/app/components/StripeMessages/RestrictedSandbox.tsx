@@ -2,7 +2,7 @@ import React from 'react';
 import { MessageStripe, Text } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { proUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const RestrictedSandbox = () => {
@@ -65,10 +65,9 @@ export const RestrictedSandbox = () => {
       {isAdmin ? (
         <MessageStripe.Action
           as="a"
-          href={proUrl({
+          href={upgradeUrl({
             source: 'v1_editor_restricted_sandbox_banner',
             workspaceId: activeTeam,
-            ubbBeta: true,
           })}
         >
           Upgrade to Pro

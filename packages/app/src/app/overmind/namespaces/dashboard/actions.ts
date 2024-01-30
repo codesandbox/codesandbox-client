@@ -161,8 +161,6 @@ export const getTeams = async ({ state, effects }: Context) => {
 
   state.dashboard.teams = teams.me.workspaces;
   state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
-  state.userCanStartTrial = teams.me.eligibleForTrial;
-  state.userFeatureFlags = teams.me.featureFlags;
 };
 
 export const getAllFolders = async ({ state, effects }: Context) => {
@@ -300,7 +298,7 @@ export const getReposByPath = async (
     if (path && dashboard.sandboxes.REPOS) {
       return;
     }
-    let sandboxes: RepoFragmentDashboardFragment[];
+    let sandboxes: RepoFragmentDashboardFragment[] = [];
     if (state.activeTeam) {
       dashboard.sandboxes.REPOS = null;
       const teamData = await effects.gql.queries.getTeamRepos({
@@ -310,15 +308,6 @@ export const getReposByPath = async (
         return;
       }
       sandboxes = teamData.me.team.sandboxes;
-    } else {
-      dashboard.sandboxes.REPOS = null;
-      const myData = await effects.gql.queries.getPersonalRepos({});
-
-      if (!myData || !myData.me) {
-        return;
-      }
-
-      sandboxes = myData.me.sandboxes;
     }
 
     if (!sandboxes) {
@@ -364,26 +353,21 @@ export const getReposByPath = async (
 
 export const getDeletedSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
+
+  if (state.activeTeam) {
+    return;
+  }
+
   try {
-    let sandboxes;
+    const data = await effects.gql.queries.deletedTeamSandboxes({
+      teamId: state.activeTeam,
+    });
 
-    if (state.activeTeam) {
-      const data = await effects.gql.queries.deletedTeamSandboxes({
-        teamId: state.activeTeam,
-      });
-
-      sandboxes = data?.me?.team?.sandboxes;
-    } else {
-      const data = await effects.gql.queries.deletedPersonalSandboxes({});
-
-      sandboxes = data?.me?.sandboxes;
-    }
-
-    if (!sandboxes) {
+    if (!data?.me?.team?.sandboxes) {
       return;
     }
 
-    dashboard.sandboxes[sandboxesTypes.DELETED] = sandboxes;
+    dashboard.sandboxes[sandboxesTypes.DELETED] = data?.me?.team?.sandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your deleted Sandboxes'
@@ -405,16 +389,6 @@ export const getTemplateSandboxes = async ({ state, effects }: Context) => {
       }
 
       dashboard.sandboxes[sandboxesTypes.TEMPLATES] = data.me.team.templates;
-    } else {
-      dashboard.sandboxes[sandboxesTypes.TEMPLATES] = null;
-      const data = await effects.gql.queries.ownedTemplates({
-        showAll: false,
-      });
-      if (!data || !data.me) {
-        return;
-      }
-
-      dashboard.sandboxes[sandboxesTypes.TEMPLATES] = data.me.templates;
     }
   } catch (error) {
     effects.notificationToast.error(
@@ -800,7 +774,7 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
   try {
     const activeTeam = state.activeTeam;
 
-    let sandboxes: SandboxFragmentDashboardFragment[];
+    let sandboxes: SandboxFragmentDashboardFragment[] = [];
     if (activeTeam) {
       const data = await effects.gql.queries.searchTeamSandboxes({
         teamId: activeTeam,
@@ -810,14 +784,6 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
       }
 
       sandboxes = data.me.team.sandboxes;
-    } else {
-      // This will be gone once we move everyone (even personal spaces) to workspaces
-      const data = await effects.gql.queries.searchPersonalSandboxes({});
-      if (data?.me?.sandboxes == null) {
-        return;
-      }
-
-      sandboxes = data.me.sandboxes;
     }
 
     const sandboxesToShow = state.dashboard

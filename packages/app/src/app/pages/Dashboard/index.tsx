@@ -14,23 +14,16 @@ import {
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
-import {
-  PaymentPending,
-  SandboxLimitation,
-  TrialWithoutPaymentInfo,
-} from 'app/components/StripeMessages';
-import { useShowBanner } from 'app/components/StripeMessages/TrialWithoutPaymentInfo';
+import { PaymentPending } from 'app/components/StripeMessages';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
-import { useScopedPersistedState } from 'app/hooks/usePersistedState';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { UsageLimitMessageStripe } from 'app/components/StripeMessages/UsageLimitMessageStripe';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
-import { NewTeamModal } from './Components/NewTeamModal';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
@@ -41,22 +34,11 @@ export const Dashboard: FunctionComponent = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { hasLogIn, activeTeam } = useAppState();
+  const { hasLogIn } = useAppState();
   const actions = useActions();
-  const { subscription, isFree } = useWorkspaceSubscription();
+  const { subscription } = useWorkspaceSubscription();
   const { showUsageLimitBanner } = useWorkspaceLimits();
   const { trackVisit } = useDashboardVisit();
-  const [
-    showTrialWithoutPaymentInfoBanner,
-    dismissTrialWithoutPaymentInfoBanner,
-  ] = useShowBanner();
-
-  const [sandboxBannerDismissed] = useScopedPersistedState(
-    'SANDBOX_BANNER_DISMISSED',
-    false,
-    activeTeam
-  );
-  const showSandboxLimitationBanner = isFree && !sandboxBannerDismissed;
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -80,11 +62,7 @@ export const Dashboard: FunctionComponent = () => {
 
   const hasUnpaidSubscription =
     subscription?.status === SubscriptionStatus.Unpaid;
-  const hasTopBarBanner =
-    showTrialWithoutPaymentInfoBanner ||
-    hasUnpaidSubscription ||
-    showSandboxLimitationBanner ||
-    showUsageLimitBanner;
+  const hasTopBarBanner = hasUnpaidSubscription || showUsageLimitBanner;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -135,13 +113,7 @@ export const Dashboard: FunctionComponent = () => {
         >
           <SkipNav.Link />
           {hasUnpaidSubscription && <PaymentPending />}
-          {showSandboxLimitationBanner && <SandboxLimitation />}
           {showUsageLimitBanner && <UsageLimitMessageStripe />}
-          {showTrialWithoutPaymentInfoBanner && (
-            <TrialWithoutPaymentInfo
-              onDismiss={dismissTrialWithoutPaymentInfoBanner}
-            />
-          )}
           <Header onSidebarToggle={onSidebarToggle} />
           <Media
             query={theme.media
@@ -192,7 +164,6 @@ export const Dashboard: FunctionComponent = () => {
           </Element>
         </Stack>
       </DndProvider>
-      <NewTeamModal />
     </ThemeProvider>
   );
 };

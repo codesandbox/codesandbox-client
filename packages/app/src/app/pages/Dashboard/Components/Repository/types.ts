@@ -12,6 +12,5 @@ export type RepositoryProps = {
   onClick: (evt: React.MouseEvent) => void;
   selected: boolean;
   isBeingRemoved: boolean;
-  restricted?: boolean;
   appInstalled: boolean;
 };

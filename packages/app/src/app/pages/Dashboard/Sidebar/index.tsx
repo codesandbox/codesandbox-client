@@ -7,22 +7,14 @@ import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import { Element, List, Text, Stack, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
-import { getDaysUntil } from 'app/utils/dateTime';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH } from './constants';
-import { UpgradeFreeTeamToPro } from './BottomMessages/UpgradeFreeTeamToPro';
-import { TrialExpiring } from './BottomMessages/TrialExpiring';
-import { StartTrial } from './BottomMessages/StartTrial';
 import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
-
-const DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE = 5;
 
 interface SidebarProps {
   visible: boolean;
@@ -86,25 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
   const showRespositories = !state.environment.isOnPrem;
 
-  const { isBillingManager, isPrimarySpace } = useWorkspaceAuthorization();
-
-  const {
-    subscription,
-    isFree,
-    hasActiveTeamTrial,
-    hasPaymentMethod,
-    isEligibleForTrial,
-  } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-
-  // Compute number of days left for TeamPro trial
-  const trialDaysLeft = hasActiveTeamTrial
-    ? getDaysUntil(subscription?.trialEnd)
-    : null;
-
-  const showDaysLeftMessage =
-    trialDaysLeft !== null &&
-    trialDaysLeft <= DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE;
+  const { isPrimarySpace } = useWorkspaceAuthorization();
 
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
@@ -294,28 +268,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
           <Element marginTop={3} />
         </List>
-
-        {teamDataLoaded && isFree && isBillingManager ? (
-          <Element css={{ margin: 'auto 24px 0' }}>
-            {isEligibleForTrial && !ubbBeta ? (
-              <StartTrial activeTeam={activeTeam} />
-            ) : (
-              <UpgradeFreeTeamToPro activeTeam={activeTeam} ubbBeta={ubbBeta} />
-            )}
-          </Element>
-        ) : null}
-
-        {teamDataLoaded && showDaysLeftMessage ? (
-          <Element css={{ margin: 'auto 24px 0' }}>
-            <TrialExpiring
-              activeTeam={activeTeam}
-              cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd}
-              hasPaymentMethod={hasPaymentMethod}
-              daysLeft={trialDaysLeft}
-              isBillingManager={isBillingManager}
-            />
-          </Element>
-        ) : null}
       </Stack>
 
       <AnimatePresence>

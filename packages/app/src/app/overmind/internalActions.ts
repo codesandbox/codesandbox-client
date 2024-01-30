@@ -614,11 +614,15 @@ export const initializeActiveWorkspace = async ({
     if (teams?.me) {
       state.dashboard.teams = teams.me.workspaces;
       state.primaryWorkspaceId = teams.me.primaryWorkspaceId;
-      state.userCanStartTrial = teams.me.eligibleForTrial;
-      state.userFeatureFlags = teams.me.featureFlags;
     }
 
-    // TODO: Treat here future scenario when no workspaces are available
+    // Hard redirect to /create-workspace when no workspace is available
+    if (
+      !window.location.href.includes('/create-workspace') &&
+      state.dashboard.teams.length === 0
+    ) {
+      window.location.href = '/create-workspace';
+    }
   }
 
   const isPersistedWorkspaceValid = state.dashboard.teams.some(
@@ -640,9 +644,7 @@ export const setFallbackWorkspace = ({ actions, state }: Context) => {
     const firstWorkspace =
       state.dashboard.teams.length > 0 ? state.dashboard.teams[0] : null;
     const firstProWorkspace = state.dashboard.teams.find(
-      team =>
-        team.subscription?.status === SubscriptionStatus.Active ||
-        team.subscription?.status === SubscriptionStatus.Trialing
+      team => team.subscription?.status === SubscriptionStatus.Active
     );
 
     if (firstProWorkspace) {

@@ -4,7 +4,6 @@ import {
   IconButton,
   Stack,
   Text,
-  Badge,
   InteractiveOverlay,
 } from '@codesandbox/components';
 import { BranchProps } from './types';
@@ -16,7 +15,6 @@ export const BranchCard: React.FC<BranchProps> = ({
   isBeingRemoved,
   selected,
   onContextMenu,
-  restricted,
   showRepo,
   ...props
 }) => {
@@ -54,12 +52,7 @@ export const BranchCard: React.FC<BranchProps> = ({
                   radius={4}
                   {...props}
                 >
-                  <Text
-                    color={restricted ? '#999999' : '#E5E5E5'}
-                    weight="medium"
-                    size={13}
-                    truncate
-                  >
+                  <Text color="#E5E5E5" weight="medium" size={13} truncate>
                     {branchName}
                   </Text>
                 </InteractiveOverlay.Anchor>
@@ -80,9 +73,6 @@ export const BranchCard: React.FC<BranchProps> = ({
                 }}
               />
             </Stack>
-          </Stack>
-          <Stack justify="flex-end">
-            {restricted ? <Badge variant="trial">Restricted</Badge> : null}
           </Stack>
         </Stack>
       </StyledCard>

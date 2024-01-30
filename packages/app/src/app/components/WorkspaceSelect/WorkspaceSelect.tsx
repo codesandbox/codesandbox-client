@@ -1,5 +1,5 @@
 import React from 'react';
-import { useActions, useAppState } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import {
   Badge,
   Text,
@@ -24,9 +24,8 @@ interface WorkspaceSelectProps {
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
-    const actions = useActions();
     const history = useHistory();
-    const { dashboard, userFeatureFlags } = state;
+    const { dashboard } = state;
     const { isPro } = useWorkspaceSubscription();
 
     if (dashboard.teams.length === 0) return null;
@@ -114,9 +113,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             >
               {workspaces.map(team => {
                 const showPro =
-                  team.subscription?.status === SubscriptionStatus.Active ||
-                  team.subscription?.status === SubscriptionStatus.Trialing;
-
+                  team.subscription?.status === SubscriptionStatus.Active;
                 return (
                   <Stack
                     as={Menu.Item}
@@ -161,13 +158,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 css={{
                   textAlign: 'left',
                 }}
-                onSelect={() => {
-                  if (userFeatureFlags.ubbBeta) {
-                    history.push('/create-workspace');
-                  } else {
-                    actions.openCreateTeamModal({ step: 'create' });
-                  }
-                }}
+                onSelect={() => history.push('/create-workspace')}
               >
                 <Stack
                   justify="center"

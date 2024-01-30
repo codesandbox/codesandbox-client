@@ -55,15 +55,3 @@ export const getOwnerAndNameFromInput = (input: string) => {
 
   return null;
 };
-
-export const getEventName = (
-  isEligibleForTrial: boolean,
-  isBillingManager: boolean
-): string => {
-  if (isEligibleForTrial) {
-    const event = 'Limit banner: import - Start trial';
-    return isBillingManager ? event : `${event} - As non-admin`;
-  }
-
-  return 'Limit banner: import - Upgrade';
-};

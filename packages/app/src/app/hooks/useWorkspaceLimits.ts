@@ -12,8 +12,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
 
   if (!activeTeamInfo) {
     return {
-      hasOver20Sandboxes: undefined,
-      hasOver200Sandboxes: undefined,
       isOutOfCredits: undefined,
       isCloseToOutOfCredits: undefined,
       isAtSpendingLimit: undefined,
@@ -24,13 +22,9 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     };
   }
 
-  // Will be replaced with a check on the subscription if it's ubb or not
   const applyUbbRestrictions = !friendOfCsb && ubbBeta;
 
   const { limits, usage, frozen } = activeTeamInfo;
-
-  const hasOver20Sandboxes = applyUbbRestrictions && usage.sandboxes > 20;
-  const hasOver200Sandboxes = applyUbbRestrictions && usage.sandboxes > 200;
 
   const isOutOfCredits = applyUbbRestrictions && isFree === true && frozen;
   const isCloseToOutOfCredits =
@@ -52,8 +46,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     applyUbbRestrictions && usage.sandboxes >= limits.includedSandboxes;
 
   return {
-    hasOver20Sandboxes,
-    hasOver200Sandboxes,
     isOutOfCredits,
     isCloseToOutOfCredits,
     isAtSpendingLimit,
@@ -70,8 +62,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
 
 export type WorkspaceLimitsReturn =
   | {
-      hasOver20Sandboxes: undefined;
-      hasOver200Sandboxes: undefined;
       isOutOfCredits: undefined;
       isCloseToOutOfCredits: undefined;
       isAtSpendingLimit: undefined;
@@ -81,8 +71,6 @@ export type WorkspaceLimitsReturn =
       hasRestrictedSandboxes: undefined;
     }
   | {
-      hasOver20Sandboxes: boolean;
-      hasOver200Sandboxes: boolean;
       isOutOfCredits: boolean;
       isCloseToOutOfCredits: boolean;
       isAtSpendingLimit: boolean;
