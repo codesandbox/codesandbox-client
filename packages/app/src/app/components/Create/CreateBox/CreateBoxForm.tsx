@@ -20,7 +20,7 @@ import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
   type: 'sandbox' | 'devbox';
-  collectionId: string | null;
+  collectionId: string | undefined;
   setCollectionId: (collectionId: string | undefined) => void;
   onCancel: () => void;
   onSubmit: (params: CreateParams) => void;
