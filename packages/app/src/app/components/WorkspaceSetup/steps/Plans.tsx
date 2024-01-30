@@ -450,8 +450,8 @@ const CodeSandboxFriendsCard = () => (
       </Text>
       <Text css={{ textWrap: 'balance' }}>
         Get special conditions and free or low-cost access to CodeSandbox if
-        you're working on educational projects, licensed open-source software,
-        developer community projects or for non-profit organizations.
+        you&apos;re working on educational projects, licensed open-source
+        software, developer community projects or for non-profit organizations.
       </Text>
     </Stack>
     <Button
