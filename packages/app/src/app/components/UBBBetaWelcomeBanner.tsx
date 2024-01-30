@@ -12,7 +12,7 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_UBB_BETA_WELCOME'
   );
-  const { isPro } = useWorkspaceSubscription();
+  const { isPro, isFree } = useWorkspaceSubscription();
 
   if (isBannerDismissed) {
     return null;
@@ -44,7 +44,11 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
         )}
       </Stack>
 
-      {isPro ? <StyledProFeatures /> : <StyledFreeFeatures />}
+      {isPro ? (
+        <StyledProFeatures activeTeam={activeTeam} />
+      ) : (
+        <StyledFreeFeatures activeTeam={activeTeam} />
+      )}
 
       <Stack
         align="center"
@@ -57,15 +61,17 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
           Dismiss
         </Button>
 
-        <Button
-          variant="ghost"
-          as="a"
-          target="_blank"
-          autoWidth
-          href={dashboardURLs.upgradeUrl({ workspaceId: activeTeam })}
-        >
-          View upgrade options
-        </Button>
+        {isFree && (
+          <Button
+            variant="ghost"
+            as="a"
+            target="_blank"
+            autoWidth
+            href={dashboardURLs.upgradeUrl({ workspaceId: activeTeam })}
+          >
+            View upgrade options
+          </Button>
+        )}
 
         <Button
           variant="ghost"
@@ -84,7 +90,9 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
   );
 };
 
-const StyledFreeFeatures: React.FC = () => {
+const StyledFreeFeatures: React.FC<{ activeTeam: string }> = ({
+  activeTeam,
+}) => {
   return (
     <Stack
       gap={6}
@@ -104,7 +112,10 @@ const StyledFreeFeatures: React.FC = () => {
       <Stack gap={2} as="li">
         <Icon css={{ flexShrink: 0 }} name="people" size={16} />
         <Text color="#a6a6a6" size={3}>
-          Collaborate live with up to 5 workspace members.
+          Collaborate live with{' '}
+          <Text as="a" href={dashboardURLs.portalOverview(activeTeam)}>
+            up to 5 workspace members.
+          </Text>
         </Text>
       </Stack>
       <Stack gap={2} as="li">
@@ -125,7 +136,9 @@ const StyledFreeFeatures: React.FC = () => {
   );
 };
 
-const StyledProFeatures: React.FC = () => {
+const StyledProFeatures: React.FC<{ activeTeam: string }> = ({
+  activeTeam,
+}) => {
   return (
     <Stack
       gap={6}
@@ -139,13 +152,19 @@ const StyledProFeatures: React.FC = () => {
       <Stack gap={2} as="li">
         <Icon css={{ flexShrink: 0 }} name="people" size={16} />
         <Text color="#a6a6a6" size={3}>
-          Add up to 20 workspace members at no extra cost.
+          <Text as="a" href={dashboardURLs.portalOverview(activeTeam)}>
+            Add up to 20 workspace members
+          </Text>{' '}
+          at no extra cost.
         </Text>
       </Stack>
       <Stack gap={2} as="li">
         <Icon css={{ flexShrink: 0 }} name="machine" size={16} />
         <Text color="#a6a6a6" size={3}>
-          Choose from different VM sizes (up to 16 vCPUs + 32 GB RAM).
+          <Text as="a" href={dashboardURLs.portalVMSettings(activeTeam)}>
+            Choose from different VM sizes
+          </Text>{' '}
+          (up to 16 vCPUs + 32 GB RAM).
         </Text>
       </Stack>
       <Stack gap={2} as="li">
