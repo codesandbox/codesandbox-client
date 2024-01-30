@@ -8,6 +8,7 @@ import {
 import { UBBBetaWelcomeBanner } from 'app/components/UBBBetaWelcomeBanner';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
 import { useDismissible } from 'app/hooks';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
@@ -97,7 +98,12 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
 };
 
 const TopBanner = () => {
+  const { ubbBeta } = useWorkspaceFeatureFlags();
   const [welcomeBannerDismissed] = useDismissible('DASHBOARD_UBB_BETA_WELCOME');
+
+  if (!ubbBeta) {
+    return null;
+  }
 
   if (welcomeBannerDismissed) {
     return <UbbUpgradeBanner />;
