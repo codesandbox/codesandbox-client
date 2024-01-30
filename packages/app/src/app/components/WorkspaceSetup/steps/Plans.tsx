@@ -446,12 +446,12 @@ const CodeSandboxFriendsCard = () => (
   >
     <Stack direction="vertical" gap={2}>
       <Text weight="medium" fontFamily="everett" size={6}>
-        Discounts for open source and non-profits
+        Discounts for education, open source and non-profits.
       </Text>
       <Text css={{ textWrap: 'balance' }}>
-        Remove limits and get free or low-cost access to CodeSandbox if
-        you&apos;re working on licensed open-source software, developer
-        community projects or for non-profit organizations.{' '}
+        Get special conditions and free or low-cost access to CodeSandbox if
+        you're working on educational projects, licensed open-source software,
+        developer community projects or for non-profit organizations.
       </Text>
     </Stack>
     <Button
