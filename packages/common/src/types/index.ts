@@ -780,7 +780,7 @@ export type SandboxUrlSourceData = {
   git?: GitInfo | null;
   isV2?: boolean;
   isSse?: boolean;
-  query?: Record<string, string>;
+  query?: Record<string, string> | URLSearchParams;
 };
 
 export type DevToolsTabPosition = {
