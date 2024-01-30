@@ -72,10 +72,12 @@ export const PlanOptions: React.FC<StepProps> = ({
           title="Set a spending limit"
         />
 
-        <Text>
-          Set a monthly spending limit for your on-demand credits, so that you
-          can stay within your budget. You can change this limit later at any
-          time.
+        <Text color="#a6a6a6">
+          Your plan will include {checkout.totalCredits} credits/month. If your
+          usage exceeds that amount, we will automatically bill you for
+          on-demand credits at $0.018/credit. You can set a monthly spend limit
+          for on-demand credits to control your spend. You can change this limit
+          at any time.
         </Text>
 
         <Stack direction="vertical" gap={2}>
