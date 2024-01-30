@@ -599,7 +599,6 @@ export const finalizeSignUp = async (
 ) => {
   if (!state.pendingUser) return;
   try {
-    console.log('Start of finalize');
     const { primaryTeamId } = await effects.api.finalizeSignUp({
       id: state.pendingUser.id,
       username,
@@ -610,16 +609,12 @@ export const finalizeSignUp = async (
 
     state.newUserFirstWorkspaceId = primaryTeamId;
 
-    console.log('Before post message signin');
-
     window.postMessage(
       {
         type: 'signin',
       },
       protocolAndHost()
     );
-
-    console.log('End of finalize');
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem creating your account',

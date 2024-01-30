@@ -25,27 +25,7 @@ const USAGE_OPTIONS = [
 ];
 
 export const Onboarding = () => {
-  /**
-   * 🚧 Utility to debug Trial Onboarding Questions
-   */
-  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
-
-  // 🚧 Remove
-  let pendingUser = useAppState().pendingUser;
-
-  // 🚧 Uncomment
-  // const { pendingUser } = useAppState();
-
-  // 🚧 Remove
-  if (TOQ_DEBUG) {
-    pendingUser = {
-      avatarUrl: 'https://avatars.githubusercontent.com/u/7533849?v=4',
-      username: 'tristandubbeld',
-      name: 'Tristan Dubbeld',
-      id: 'id',
-      valid: true,
-    };
-  }
+  const { pendingUser } = useAppState();
 
   const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState(pendingUser?.username || '');

@@ -8,11 +8,10 @@ import { Onboarding } from './Onboarding';
 import type { SignInMode } from './types';
 
 interface SignInProps {
-  redirectTo?: string;
   onSignIn?: () => void;
 }
 
-export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
+export const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
   const {
     duplicateAccountStatus,
     pendingUser,
@@ -36,29 +35,11 @@ export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
       ? 'SSO'
       : 'DEFAULT';
 
-  /**
-   * 🚧 Utility to debug Duplicate Account
-   */
-  const DA_DEBUG = window.localStorage.getItem('DA_DEBUG') === 'ENABLED';
-
-  // 🚧 Remove || DA_DEBUG
-  if (duplicateAccountStatus || DA_DEBUG) {
-    // 🚧 Remove
-    return DA_DEBUG ? (
-      <DuplicateAccount provider={'google'} />
-    ) : (
-      // 🚧 Keep this (return)
-      <DuplicateAccount provider={duplicateAccountStatus.provider} />
-    );
+  if (duplicateAccountStatus) {
+    return <DuplicateAccount provider={duplicateAccountStatus.provider} />;
   }
 
-  /**
-   * 🚧 Utility to debug Trial Onboarding Questions
-   */
-  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
-
-  // 🚧 Remove || TOQ_DEBUG
-  if (pendingUser || TOQ_DEBUG) {
+  if (pendingUser) {
     return <Onboarding />;
   }
 
@@ -66,10 +47,6 @@ export const SignIn: React.FC<SignInProps> = ({ redirectTo, onSignIn }) => {
    * ⬇️ Sign in provider
    */
   return (
-    <ChooseProvider
-      redirectTo={redirectTo}
-      onSignIn={onSignIn}
-      defaultSignInMode={defaultSignInMode}
-    />
+    <ChooseProvider onSignIn={onSignIn} defaultSignInMode={defaultSignInMode} />
   );
 };

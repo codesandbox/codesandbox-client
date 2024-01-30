@@ -12,32 +12,28 @@ import { SignIn } from './SignIn';
 export const SignInPage = () => {
   const state = useAppState();
   const { genericPageMounted } = useActions();
-  const redirectTo = new URL(location.href).searchParams.get('continue');
+  const redirectAfterSignIn = state.newUserFirstWorkspaceId
+    ? createWorkspaceUrl({
+        workspaceId: state.newUserFirstWorkspaceId,
+      })
+    : new URL(location.href).searchParams.get('continue');
 
   useEffect(() => {
     genericPageMounted();
   }, [genericPageMounted]);
 
-  /**
-   * 🚧 Utility to debug Trial Onboarding Questions
-   */
-  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
+  if (state.hasLogIn) {
+    // All post-sigin redirects are handled here
+    if (redirectAfterSignIn) {
+      if (redirectAfterSignIn.startsWith('https')) {
+        window.location.replace(redirectAfterSignIn);
 
-  if (state.hasLogIn && state.newUserFirstWorkspaceId) {
-    console.log(
-      'top level redirect to create workspace',
-      state.newUserFirstWorkspaceId
-    );
-    return (
-      <Redirect
-        to={createWorkspaceUrl({ workspaceId: state.newUserFirstWorkspaceId })}
-      />
-    );
-  }
+        return null;
+      }
 
-  // 🚧 Remove && !TOQ_DEBUG
-  if (state.hasLogIn && !redirectTo && !TOQ_DEBUG) {
-    console.log('top level redirect to dashboard');
+      return <Redirect to={redirectAfterSignIn} />;
+    }
+
     return <Redirect to={dashboardUrl()} />;
   }
 
@@ -61,7 +57,7 @@ export const SignInPage = () => {
           align="center"
           justify="center"
         >
-          <SignIn redirectTo={redirectTo} />
+          <SignIn />
         </Stack>
       </Element>
     </ThemeProvider>

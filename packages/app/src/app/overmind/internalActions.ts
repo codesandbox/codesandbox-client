@@ -77,11 +77,7 @@ export const signIn = async (
     provider: options.provider,
   });
   try {
-    console.log('start of sign in action');
-
     await actions.internal.runProviderAuth(options);
-
-    console.log('After runProviderAuth');
 
     state.signInModalOpen = false;
     state.cancelOnLogin = null;
@@ -95,8 +91,6 @@ export const signIn = async (
     state.hasLogIn = true;
     state.isAuthenticating = false;
     actions.getActiveTeamInfo();
-
-    console.log('End of signIn internal action');
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not authenticate',
@@ -238,8 +232,6 @@ export const runProviderAuth = (
   const signInPromise = effects.browser
     .waitForMessage('signin')
     .then((data: any) => {
-      console.log('on window.postMessage', data);
-
       if (useDevAuth) {
         localStorage.setItem('devJwt', data.jwt);
 
