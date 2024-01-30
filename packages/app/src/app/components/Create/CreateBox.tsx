@@ -51,7 +51,7 @@ type CreateBoxProps = ModalContentProps & {
 };
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
-  collectionId,
+  collectionId: initialCollectionId,
   type = 'devbox',
   hasSecondStep = true,
   closeModal,
@@ -60,6 +60,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const { hasLogIn, activeTeam } = useAppState();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
+  const [collectionId, setCollectionId] = useState<string | undefined>(
+    initialCollectionId
+  );
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
@@ -110,7 +113,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
   const showTeamTemplates = teamTemplates.length > 0;
   const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
-  const isDraft = !collectionId;
 
   useEffect(() => {
     if (searchQuery) {
@@ -519,7 +521,8 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             {viewState === 'fromTemplate' ? (
               <CreateBoxForm
                 type={type}
-                isDraft={isDraft}
+                collectionId={collectionId}
+                setCollectionId={setCollectionId}
                 onCancel={() => {
                   setViewState('initial');
                 }}

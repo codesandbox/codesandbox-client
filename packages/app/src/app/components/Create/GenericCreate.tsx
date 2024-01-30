@@ -1,9 +1,16 @@
 import React, { useEffect } from 'react';
 
-import { Stack, Text, IconButton, Element } from '@codesandbox/components';
+import {
+  Stack,
+  Text,
+  IconButton,
+  Element,
+  Button,
+} from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions } from 'app/overmind';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+
 import { Container, HeaderInformation } from './elements';
 import { LargeCTAButton } from '../dashboard/LargeCTAButton';
 import {
@@ -29,7 +36,7 @@ export const GenericCreate: React.FC<{
   return (
     <Container
       css={{
-        height: '260px',
+        height: isModal ? '260px' : '290px',
         '@media screen and (max-width: 750px)': {
           height: 'auto',
         },
@@ -132,6 +139,20 @@ export const GenericCreate: React.FC<{
           alignment="vertical"
         />
       </Element>
+
+      {!isModal && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            paddingBottom: '16px',
+          }}
+        >
+          <Button css={{ width: 'fit-content' }} variant="link" to="/dashboard">
+            Go to Dashboard
+          </Button>
+        </div>
+      )}
     </Container>
   );
 };

@@ -263,6 +263,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
                           width: 950,
                           position: 'relative',
                           marginTop: '-200px',
+                          borderRadius: '8px',
 
                           '@media screen and (max-width: 950)': {
                             width: 'auto',
