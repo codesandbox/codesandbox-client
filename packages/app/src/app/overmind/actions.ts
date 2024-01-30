@@ -298,14 +298,6 @@ export const signInClicked = (
   state.cancelOnLogin = props?.onCancel ?? null;
 };
 
-export const signInWithRedirectClicked = (
-  { state }: Context,
-  redirectTo: string
-) => {
-  state.signInModalOpen = true;
-  state.redirectOnLogin = redirectTo;
-};
-
 export const toggleSignInModal = ({ state }: Context) => {
   if (state.signInModalOpen) {
     state.cancelOnLogin = null;

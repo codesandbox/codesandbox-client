@@ -60,7 +60,6 @@ type State = {
   updateStatus: string | null;
   isContributor: (username: String) => boolean;
   signInModalOpen: boolean;
-  redirectOnLogin: string | null;
   cancelOnLogin: null | (() => void);
   duplicateAccountStatus: {
     duplicate: boolean;
@@ -153,7 +152,6 @@ export const state: State = {
   usedStorage: 0,
   updateStatus: null,
   signInModalOpen: false,
-  redirectOnLogin: null,
   cancelOnLogin: null,
   duplicateAccountStatus: null,
   loadingAuth: {

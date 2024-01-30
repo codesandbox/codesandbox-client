@@ -10,7 +10,7 @@ import { useAppState, useActions } from 'app/overmind';
 
 export const SignInModal = () => {
   const { toggleSignInModal } = useActions();
-  const { redirectOnLogin, signInModalOpen, user } = useAppState();
+  const { signInModalOpen, user } = useAppState();
 
   const closeModal = useCallback(
     event => {
@@ -73,7 +73,7 @@ export const SignInModal = () => {
                   boxShadow: '2',
                 })}
               >
-                <SignIn redirectTo={redirectOnLogin} />
+                <SignIn />
               </Element>
             </OutsideClickHandler>
           </Stack>
