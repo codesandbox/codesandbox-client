@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Text, Stack } from '@codesandbox/components';
-import { useAppState, useActions } from 'app/overmind';
+import { Text, Stack } from '@codesandbox/components';
+import { useActions } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TemplateCard } from './TemplateCard';
@@ -29,10 +29,7 @@ export const TemplateList = ({
   searchQuery,
   type,
 }: TemplateListProps) => {
-  const { hasLogIn } = useAppState();
   const actions = useActions();
-
-  const requireLogin = !hasLogIn && type === 'devbox';
 
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={4}>
@@ -50,30 +47,11 @@ export const TemplateList = ({
         </Text>
       </Stack>
 
-      {requireLogin ? (
-        <Stack direction="vertical" gap={4}>
-          <Text id="unauthenticated-label" css={{ color: '#999999' }} size={3}>
-            You need to be signed in to fork a devbox template.
-          </Text>
-          <Button
-            aria-describedby="unauthenticated-label"
-            css={{
-              width: '132px',
-            }}
-            onClick={() => actions.signInClicked()}
-            variant="primary"
-          >
-            Sign in
-          </Button>
-        </Stack>
-      ) : null}
-
       {templates.length > 0 && (
         <TemplateGrid>
           {templates.map(template => (
             <TemplateCard
               key={template.id}
-              disabled={requireLogin}
               template={template}
               onSelectTemplate={onSelectTemplate}
               onOpenTemplate={onOpenTemplate}
