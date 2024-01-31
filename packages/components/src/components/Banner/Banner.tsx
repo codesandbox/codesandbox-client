@@ -26,7 +26,7 @@ export const Banner = ({ children, onDismiss }: BannerProps) => {
         >
           <IconButton
             name="cross"
-            variant="round"
+            variant="square"
             title="Dismiss"
             onClick={onDismiss}
           />

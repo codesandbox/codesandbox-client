@@ -1,25 +1,30 @@
 import * as React from 'react';
-
-import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
+import { Link as RouterLink } from 'react-router-dom';
+import {
+  dashboard as dashboardURLs,
+  docsUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { Banner, Button, Stack, Text, Icon } from '@codesandbox/components';
 
-import { useDismissible } from 'app/hooks';
 import { useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { BannerProps } from './types';
 
-export const UBBBetaWelcomeBanner: React.FC = () => {
+export const UBBWelcomeBanner: React.FC<BannerProps> = ({ onDismiss }) => {
   const { activeTeam } = useAppState();
-  const [isBannerDismissed, dismissBanner] = useDismissible(
-    'DASHBOARD_UBB_BETA_WELCOME'
-  );
+  const { isAdmin } = useWorkspaceAuthorization();
   const { isPro, isFree } = useWorkspaceSubscription();
 
-  if (isBannerDismissed) {
-    return null;
-  }
-
   return (
-    <Banner onDismiss={dismissBanner}>
+    <Banner
+      onDismiss={() => {
+        track('UBB Welcome Banner - Dismiss');
+        onDismiss();
+      }}
+    >
       <Stack gap={2} direction="vertical">
         {isPro ? (
           <>
@@ -50,38 +55,34 @@ export const UBBBetaWelcomeBanner: React.FC = () => {
         <StyledFreeFeatures activeTeam={activeTeam} />
       )}
 
-      <Stack
-        align="center"
-        gap={2}
-        css={{
-          marginTop: '24px',
-        }}
-      >
-        <Button autoWidth onClick={dismissBanner}>
-          Dismiss
-        </Button>
-
-        {isFree && (
-          <Button
-            variant="ghost"
-            as="a"
-            target="_blank"
-            autoWidth
-            href={dashboardURLs.upgradeUrl({ workspaceId: activeTeam })}
+      <Stack align="center" gap={2}>
+        {isFree && isAdmin && (
+          <RouterLink
+            to={upgradeUrl({
+              workspaceId: activeTeam,
+              source: 'home_banner',
+            })}
           >
-            View upgrade options
-          </Button>
+            <Button
+              autoWidth
+              onClick={() => {
+                track('UBB Welcome Banner - View upgrade options');
+                onDismiss();
+              }}
+            >
+              View upgrade options
+            </Button>
+          </RouterLink>
         )}
 
         <Button
           variant="ghost"
-          target="_blank"
           autoWidth
           as="a"
-          href="/docs/learn/plans/usage-based-billing"
           onClick={() => {
-            dismissBanner();
+            track('UBB Welcome Banner - Learn more');
           }}
+          href={docsUrl('/learn/plans/usage-based-billing')}
         >
           Learn more
         </Button>
