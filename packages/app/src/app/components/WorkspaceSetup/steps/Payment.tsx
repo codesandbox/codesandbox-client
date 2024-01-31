@@ -3,6 +3,7 @@ import { Stack, Button, Text, Icon } from '@codesandbox/components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -55,8 +56,12 @@ export const Payment: React.FC<StepProps> = ({
 
       if (payload.stripeCheckoutUrl) {
         setCheckout({ status: 'success' });
+        track('Subscription - Checkout successfully created');
+
         window.location.href = payload.stripeCheckoutUrl;
       } else {
+        track('Subscription - Failed to create checkout');
+
         setCheckout({
           status: 'error',
           error: 'Could not generate a checkout URL. Please try again later.',
