@@ -169,6 +169,13 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     template: TemplateFragment,
     trackingSource: string
   ) => {
+    const { sandbox } = template;
+    if (!hasLogIn) {
+      // Open template in editor for anonymous users
+      window.location.href = sandboxUrl(sandbox, hasBetaEditorExperiment);
+      return;
+    }
+
     if (hasSecondStep) {
       setSelectedTemplate(template);
       setViewState('fromTemplate');
