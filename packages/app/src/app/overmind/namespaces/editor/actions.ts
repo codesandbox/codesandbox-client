@@ -331,6 +331,7 @@ export const sandboxChanged = withLoadApp<{
             git: githubInfoForURL,
             isV2: sandbox.v2,
             isSse: sandbox.isSse,
+            query: url.searchParams,
           },
           hasBetaEditorExperiment
         );
