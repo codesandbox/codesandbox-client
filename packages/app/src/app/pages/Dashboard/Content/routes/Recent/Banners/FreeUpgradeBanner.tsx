@@ -8,38 +8,22 @@ import {
   Text,
 } from '@codesandbox/components';
 import { Link as RouterLink } from 'react-router-dom';
-import { useDismissible } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { SUBSCRIPTION_DOCS_URL } from 'app/constants';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { BannerProps } from './types';
 
-export const UbbUpgradeBanner: React.FC = () => {
-  const [isBannerDismissed, dismissBanner] = useDismissible(
-    'DASHBOARD_RECENT_UBB_UPGRADE'
-  );
+export const FreeUpgradeBanner: React.FC<BannerProps> = ({ onDismiss }) => {
   const { activeTeam } = useAppState();
-  const { isPro } = useWorkspaceSubscription();
   const { isAdmin } = useWorkspaceAuthorization();
-
-  const { hasVisited } = useDashboardVisit();
-
-  if (isBannerDismissed || !hasVisited || isPro) {
-    return null;
-  }
 
   return (
     <Banner
       onDismiss={() => {
-        track('Home Banner - Dismiss', {
-          codesandbox: 'V1',
-          event_source: 'UI',
-        });
-
-        dismissBanner();
+        track('Pro Upsell Banner - Dismiss');
+        onDismiss();
       }}
     >
       <Element css={{ overflow: 'hidden' }}>
@@ -64,10 +48,8 @@ export const UbbUpgradeBanner: React.FC = () => {
               >
                 <Button
                   onClick={() => {
-                    track('Home Banner - Upgrade', {
-                      codesandbox: 'V1',
-                      event_source: 'UI',
-                    });
+                    track('Pro Upsell Banner - Upgrade');
+                    onDismiss();
                   }}
                   autoWidth
                 >
@@ -76,13 +58,12 @@ export const UbbUpgradeBanner: React.FC = () => {
               </RouterLink>
             )}
             <Link
-              href={SUBSCRIPTION_DOCS_URL}
+              href={docsUrl(
+                '/learn/plans/workspace#managing-teams-and-subscriptions'
+              )}
               target="_blank"
               onClick={() => {
-                track('Home Banner - Learn More', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
+                track('Pro Upsell Banner - Learn more');
               }}
             >
               <Text size={3}>Learn more</Text>

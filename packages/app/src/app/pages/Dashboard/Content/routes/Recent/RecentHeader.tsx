@@ -1,3 +1,4 @@
+import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Text } from '@codesandbox/components';
 import {
@@ -5,15 +6,11 @@ import {
   IMPORT_BUTTON_DESCRIPTION,
   SANDBOX_BUTTON_DESCRIPTION,
 } from 'app/components/Create/utils/constants';
-import { UBBBetaWelcomeBanner } from 'app/components/UBBBetaWelcomeBanner';
 import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
-import { useDismissible } from 'app/hooks';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
-import { UbbUpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
-import React from 'react';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { TopBanner } from './TopBanner';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
@@ -95,19 +92,4 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       </Stack>
     </Stack>
   );
-};
-
-const TopBanner = () => {
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-  const [welcomeBannerDismissed] = useDismissible('DASHBOARD_UBB_BETA_WELCOME');
-
-  if (!ubbBeta) {
-    return null;
-  }
-
-  if (welcomeBannerDismissed) {
-    return <UbbUpgradeBanner />;
-  }
-
-  return <UBBBetaWelcomeBanner />;
 };
