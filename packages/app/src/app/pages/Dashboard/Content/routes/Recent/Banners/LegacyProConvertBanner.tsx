@@ -36,7 +36,7 @@ export const LegacyProConvertBanner: React.FC<BannerProps> = ({
             <Text color="#EDFFA5" size={6} weight="500">
               Pay only for what you use
             </Text>
-            <Text>
+            <Text css={{ textWrap: 'balance' }}>
               Switch to one of our new Pro plans to get usage-based pricing
               (instead of seat-based), more virtual machine options, adjustable
               spending controls, and access to storage add-ons.
