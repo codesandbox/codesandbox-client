@@ -354,7 +354,7 @@ export const getReposByPath = async (
 export const getDeletedSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
 
-  if (state.activeTeam) {
+  if (!state.activeTeam) {
     return;
   }
 
