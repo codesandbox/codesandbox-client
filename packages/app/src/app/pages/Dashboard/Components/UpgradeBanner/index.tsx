@@ -1,1 +1,0 @@
-export { UbbUpgradeBanner } from './UBBUpgradeBanner';
