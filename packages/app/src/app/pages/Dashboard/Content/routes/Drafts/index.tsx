@@ -1,4 +1,5 @@
 import React from 'react';
+import { Element, Text } from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
@@ -7,7 +8,6 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { getPossibleTemplates } from '../../utils';
-import { EmptyDrafts } from './EmptyDrafts';
 
 export const Drafts = () => {
   const {
@@ -49,11 +49,17 @@ export const Drafts = () => {
         showFilters={!isEmpty}
         showSortOptions={!isEmpty}
       />
-      {isEmpty ? (
-        <EmptyDrafts />
-      ) : (
-        <VariableGrid page={pageType} items={items} />
-      )}
+
+      <Element
+        css={{ paddingLeft: '16px', paddingBottom: '24px', paddingTop: '8px' }}
+      >
+        <Text>
+          Drafts are private to you. To share a draft, move it to another
+          folder.
+        </Text>
+      </Element>
+
+      <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
 };

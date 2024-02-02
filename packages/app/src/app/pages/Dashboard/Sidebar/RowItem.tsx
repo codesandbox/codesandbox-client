@@ -87,7 +87,9 @@ export const RowItem: React.FC<RowItemProps> = ({
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop:
-        monitor.canDrop() && !isSamePath(monitor.getItem(), page, usedPath),
+        monitor.canDrop() &&
+        page === 'sandboxes' &&
+        !isSamePath(monitor.getItem(), page, usedPath),
       isDragging: !!monitor.getItem(),
     }),
   });

@@ -74,20 +74,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
             {modals.moveSandboxModal.sandboxIds.length > 1 ? 'items' : 'item'}
           </Text>
           <Stack gap={4} direction="vertical">
-            <Element
-              css={css({
-                height: 10,
-                borderRadius: 4,
-                border: '1px solid',
-                borderColor: 'sideBar.border',
-              })}
-            >
-              <WorkspaceSelect
-                selectedTeamId={teamId}
-                disabled={preventSandboxLeaving}
-                onSelect={setTeamId}
-              />
-            </Element>
             <Stack direction="vertical" gap={4}>
               <Element
                 css={css({
