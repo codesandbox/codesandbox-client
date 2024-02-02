@@ -11,6 +11,7 @@ import {
   ThemeProvider,
 } from '@codesandbox/components';
 import Modal from 'app/components/Modal';
+import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 
 import { DirectoryPicker } from './DirectoryPicker';
 
@@ -23,6 +24,15 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     modals.moveSandboxModal.defaultOpenedPath
   );
   const [teamId, setTeamId] = useState(activeTeam);
+  const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
+
+  const onWorkspaceSelect = (newTeamId: string) => {
+    track('Dashboard Move Modal - Workspace Select', {
+      teamId: newTeamId,
+      oldTeamId: teamId,
+    });
+    setTeamId(newTeamId);
+  };
 
   const handleMove = () => {
     setLoading(true);
@@ -72,6 +82,21 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
           </Text>
           <Stack gap={4} direction="vertical">
             <Stack direction="vertical" gap={4}>
+              <Element
+                css={css({
+                  height: 10,
+                  borderRadius: 4,
+                  border: '1px solid',
+                  borderColor: 'sideBar.border',
+                })}
+              >
+                <WorkspaceSelect
+                  selectedTeamId={teamId}
+                  disabled={preventSandboxLeaving}
+                  onSelect={onWorkspaceSelect}
+                />
+              </Element>
+
               <Element
                 css={css({
                   maxHeight: 400,
