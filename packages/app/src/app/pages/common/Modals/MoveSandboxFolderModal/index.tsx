@@ -63,21 +63,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
         onClose={() => modalsActions.moveSandboxModal.close()}
         width={480}
       >
-        <Element
-          css={css({
-            height: 10,
-            borderRadius: 4,
-            border: '1px solid',
-            borderColor: 'sideBar.border',
-          })}
-        >
-          <WorkspaceSelect
-            selectedTeamId={teamId}
-            disabled={preventSandboxLeaving}
-            onSelect={setTeamId}
-          />
-        </Element>
-
         <Stack
           css={css({ width: '100%', paddingX: 6, paddingY: 7 })}
           gap={6}
@@ -89,6 +74,21 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
           </Text>
           <Stack gap={4} direction="vertical">
             <Stack direction="vertical" gap={4}>
+              <Element
+                css={css({
+                  height: 10,
+                  borderRadius: 4,
+                  border: '1px solid',
+                  borderColor: 'sideBar.border',
+                })}
+              >
+                <WorkspaceSelect
+                  selectedTeamId={teamId}
+                  disabled={preventSandboxLeaving}
+                  onSelect={setTeamId}
+                />
+              </Element>
+
               <Element
                 css={css({
                   maxHeight: 400,
