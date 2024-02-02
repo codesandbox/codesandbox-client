@@ -1,6 +1,5 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { basename } from 'path';
-import ChevronRight from 'react-icons/lib/md/chevron-right';
 import React, { FunctionComponent, useState } from 'react';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
