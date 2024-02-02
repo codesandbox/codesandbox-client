@@ -68,6 +68,7 @@ export const Recent = props => {
           <Loading size={12} />
         </Stack>
       )}
+
       {pageState === 'empty' && <EmptyRecent />}
       {pageState === 'ready' && <RecentContent recentItems={items} />}
     </>

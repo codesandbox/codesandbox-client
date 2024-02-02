@@ -10,15 +10,18 @@ import { LargeCTAButton } from 'app/components/dashboard/LargeCTAButton';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { RestrictedSandboxes } from 'app/components/StripeMessages/RestrictedSandboxes';
 import { TopBanner } from './TopBanner';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
-  const { isFrozen } = useWorkspaceLimits();
+  const { isFrozen, hasRestrictedSandboxes } = useWorkspaceLimits();
 
   return (
     <Stack direction="vertical" gap={8}>
+      {hasRestrictedSandboxes && <RestrictedSandboxes />}
       <TopBanner />
+
       <Text
         as="h1"
         css={{

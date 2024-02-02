@@ -90,6 +90,12 @@ export const SandboxesPage = () => {
         </title>
       </Helmet>
 
+      {hasRestrictedSandboxes && (
+        <Element css={{ padding: '0 26px 32px 16px' }}>
+          <RestrictedSandboxes />
+        </Element>
+      )}
+
       <Header
         activeTeam={activeTeam}
         path={currentPath}
@@ -99,12 +105,6 @@ export const SandboxesPage = () => {
         showFilters={!isEmpty && Boolean(currentPath)}
         showSortOptions={!isEmpty && Boolean(currentPath)}
       />
-
-      {hasRestrictedSandboxes && (
-        <Element css={{ padding: '0 26px 16px 16px' }}>
-          <RestrictedSandboxes />
-        </Element>
-      )}
 
       {isEmpty ? (
         <EmptyPage.StyledWrapper>
