@@ -859,8 +859,6 @@ export const addSandboxesToFolder = async (
     dashboardVersion: 2,
   });
 
-  const oldSandboxes = state.dashboard.sandboxes;
-
   const existingCollection = state.dashboard?.allCollections?.find(
     f => f.path === collectionPath
   );
