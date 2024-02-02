@@ -890,6 +890,13 @@ export const addSandboxesToFolder = async (
     } else {
       actions.dashboard.getPage(sandboxesTypes.DRAFTS);
     }
+
+    effects.notificationToast.success(
+      'Successfully moved to ' +
+        (collectionPath === '/'
+          ? "'All sandboxes and devboxes'"
+          : collectionPath)
+    );
   } catch (e) {
     state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem moving your sandbox');
