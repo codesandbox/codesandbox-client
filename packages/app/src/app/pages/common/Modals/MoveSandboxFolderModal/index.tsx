@@ -11,7 +11,6 @@ import {
   Text,
   ThemeProvider,
 } from '@codesandbox/components';
-import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import Modal from 'app/components/Modal';
 
 import { DirectoryPicker } from './DirectoryPicker';
@@ -25,7 +24,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     modals.moveSandboxModal.defaultOpenedPath
   );
   const [teamId, setTeamId] = useState(activeTeam);
-  const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
 
   const handleMove = () => {
     setLoading(true);
