@@ -100,23 +100,17 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                   Cancel
                 </Button>
 
-                <Button
-                  css={css({ width: 'auto' })}
-                  disabled={loading}
-                  onClick={handleMove}
-                >
-                  {loading ? (
-                    'Moving Sandbox...'
-                  ) : (
-                    <>
-                      {`Move to ${
-                        path === null ? 'Drafts' : basename(path) || 'Sandboxes'
-                      }`}
-
-                      <ChevronRight />
-                    </>
-                  )}
-                </Button>
+                {path !== null && (
+                  <Button
+                    css={css({ width: 'auto' })}
+                    disabled={loading}
+                    onClick={handleMove}
+                  >
+                    {loading
+                      ? 'Moving Sandbox...'
+                      : `Move to ${basename(path) || 'root folder'}`}
+                  </Button>
+                )}
               </Stack>
             </Stack>
           </Stack>
