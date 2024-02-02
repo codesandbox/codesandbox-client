@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import { Query } from 'react-apollo';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import { Icon } from '@codesandbox/components';
 import { Container } from './elements';
 import { DropFolderEntry } from './FolderEntry';
 import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';
@@ -13,11 +12,6 @@ import { entryTarget, collectTarget } from './folder-drop-target';
 import getChildCollections from '../utils/get-child-collections';
 
 import { PATHED_SANDBOXES_FOLDER_QUERY } from './queries';
-import {
-  CreateDirectoryContainer as FolderContainer,
-  IconContainer as FolderIconContainer,
-  AnimatedChevron as FolderChevron,
-} from './FolderEntry/elements';
 
 export interface SandboxesItemComponentProps {
   teamId: string | null;
@@ -92,19 +86,6 @@ class SandboxesItemComponent extends React.Component<
 
             return (
               <Container>
-                <FolderContainer
-                  active={currentPath === null && currentTeamId === teamId}
-                  onClick={() => {
-                    onSelect({ path: null, teamId });
-                  }}
-                >
-                  <FolderIconContainer>
-                    <FolderChevron style={{ opacity: 0 }} />
-                    <Icon name="file" />
-                  </FolderIconContainer>
-                  Drafts
-                </FolderContainer>
-
                 <DropFolderEntry
                   basePath={basePath}
                   teamId={teamId}

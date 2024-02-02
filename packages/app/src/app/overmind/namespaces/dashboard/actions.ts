@@ -859,11 +859,6 @@ export const addSandboxesToFolder = async (
     dashboardVersion: 2,
   });
 
-  const oldSandboxes = state.dashboard.sandboxes;
-  if (deleteFromCurrentPath) {
-    actions.dashboard.internal.deleteSandboxesFromState({ ids: sandboxIds });
-  }
-
   const existingCollection = state.dashboard?.allCollections?.find(
     f => f.path === collectionPath
   );
@@ -884,15 +879,33 @@ export const addSandboxesToFolder = async (
       teamId,
     });
 
+    if (deleteFromCurrentPath) {
+      actions.dashboard.internal.deleteSandboxesFromState({ ids: sandboxIds });
+    }
+
     if (collectionPath) {
       // Prefetch that folder
       actions.dashboard.getSandboxesByPath(collectionPath.replace(/^\//, ''));
     } else {
       actions.dashboard.getPage(sandboxesTypes.DRAFTS);
     }
+
+    effects.notificationToast.success(
+      'Successfully moved to ' +
+        (collectionPath === '/'
+          ? "'All sandboxes and devboxes'"
+          : collectionPath)
+    );
   } catch (e) {
-    state.dashboard.sandboxes = { ...oldSandboxes };
-    effects.notificationToast.error('There was a problem moving your sandbox');
+    if (e.message.includes('Sandbox limit exceeded')) {
+      effects.notificationToast.error(
+        'You reached the maximum amount of shareable Sandboxes in this workspace. Upgrade your plan to add more.'
+      );
+    } else {
+      effects.notificationToast.error(
+        'There was a problem moving your sandbox'
+      );
+    }
   }
 };
 

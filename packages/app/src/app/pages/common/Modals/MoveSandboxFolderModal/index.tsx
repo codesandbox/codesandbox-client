@@ -1,6 +1,5 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { basename } from 'path';
-import ChevronRight from 'react-icons/lib/md/chevron-right';
 import React, { FunctionComponent, useState } from 'react';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
@@ -11,7 +10,6 @@ import {
   Text,
   ThemeProvider,
 } from '@codesandbox/components';
-import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import Modal from 'app/components/Modal';
 
 import { DirectoryPicker } from './DirectoryPicker';
@@ -25,7 +23,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     modals.moveSandboxModal.defaultOpenedPath
   );
   const [teamId, setTeamId] = useState(activeTeam);
-  const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
 
   const handleMove = () => {
     setLoading(true);
@@ -74,20 +71,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
             {modals.moveSandboxModal.sandboxIds.length > 1 ? 'items' : 'item'}
           </Text>
           <Stack gap={4} direction="vertical">
-            <Element
-              css={css({
-                height: 10,
-                borderRadius: 4,
-                border: '1px solid',
-                borderColor: 'sideBar.border',
-              })}
-            >
-              <WorkspaceSelect
-                selectedTeamId={teamId}
-                disabled={preventSandboxLeaving}
-                onSelect={setTeamId}
-              />
-            </Element>
             <Stack direction="vertical" gap={4}>
               <Element
                 css={css({
@@ -116,23 +99,17 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                   Cancel
                 </Button>
 
-                <Button
-                  css={css({ width: 'auto' })}
-                  disabled={loading}
-                  onClick={handleMove}
-                >
-                  {loading ? (
-                    'Moving Sandbox...'
-                  ) : (
-                    <>
-                      {`Move to ${
-                        path === null ? 'Drafts' : basename(path) || 'Sandboxes'
-                      }`}
-
-                      <ChevronRight />
-                    </>
-                  )}
-                </Button>
+                {path !== null && (
+                  <Button
+                    css={css({ width: 'auto' })}
+                    disabled={loading}
+                    onClick={handleMove}
+                  >
+                    {loading
+                      ? 'Moving Sandbox...'
+                      : `Move to ${basename(path) || 'root folder'}`}
+                  </Button>
+                )}
               </Stack>
             </Stack>
           </Stack>

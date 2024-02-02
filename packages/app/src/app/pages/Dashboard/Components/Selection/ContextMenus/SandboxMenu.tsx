@@ -23,7 +23,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   setRenaming,
 }) => {
   const actions = useActions();
-  const { user, activeTeam } = useAppState();
+  const { activeTeam } = useAppState();
 
   const { isPro } = useWorkspaceSubscription();
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
@@ -37,48 +37,28 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const { visible, setVisibility, position } = React.useContext(Context);
   const history = useHistory();
   const location = useLocation();
-  const { userRole, isTeamAdmin } = useWorkspaceAuthorization();
+  const { userRole, isTeamAdmin, isTeamViewer } = useWorkspaceAuthorization();
   const { isFrozen } = useWorkspaceLimits();
 
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
   const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
   const folderUrl = getFolderUrl(item, activeTeam);
   const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
+  const isDraft = sandbox.draft;
 
-  const label = isTemplate ? 'template' : boxType;
   const restrictedFork = isFrozen;
 
-  // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
-  // responding with teamId == null for personal templates anymore.
   const hasAccess = React.useMemo(() => {
     if (item.sandbox.teamId === activeTeam) {
-      return true;
-    }
-
-    if (item.sandbox.teamId === null) {
-      if (!item.sandbox.authorId) {
-        return false;
-      }
-
       return true;
     }
 
     return false;
   }, [item, activeTeam]);
 
-  const isOwner = React.useMemo(() => {
-    if (item.type !== 'template') {
-      return item.sandbox.teamId === activeTeam || item.sandbox.teamId === null;
-    }
+  const hasWriteAccess = hasAccess && !isTeamViewer;
 
-    return (
-      item.sandbox.author && item.sandbox.author.username === user.username
-    );
-  }, [item, user, activeTeam]);
-
-  if (location.pathname.includes('deleted')) {
-    if (userRole === 'READ') return null;
-
+  if (location.pathname.includes('deleted') && hasWriteAccess) {
     return (
       <Menu.ContextMenu
         visible={visible}
@@ -106,7 +86,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   }
 
   const preventSandboxExport =
-    userRole === 'READ' || sandbox.permissions.preventSandboxExport;
+    !hasWriteAccess || sandbox.permissions.preventSandboxExport;
 
   // TODO(@CompuIves): refactor this to an array
 
@@ -117,7 +97,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       position={position}
       style={{ width: 200 }}
     >
-      {isTemplate && userRole !== 'READ' ? (
+      {isTemplate && hasWriteAccess ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -139,23 +119,23 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           }
         }}
       >
-        Open {label}
+        Open
       </MenuItem>
       <MenuItem
         onSelect={() => {
-          window.open(`https://codesandbox.io${url}`, '_blank');
+          window.open(url, '_blank');
         }}
       >
-        Open {label} in new tab
+        Open in new tab
       </MenuItem>
       <MenuItem
         onSelect={() => {
-          copyToClipboard(`https://codesandbox.io${url}`);
+          copyToClipboard(`${window.location.origin}${url}`);
         }}
       >
-        Copy {label} link
+        Copy link
       </MenuItem>
-      {isOwner && folderUrl !== location.pathname ? (
+      {hasAccess && location.pathname === '/dashboard/recent' ? (
         <MenuItem
           onSelect={() => {
             history.push(folderUrl, { sandboxId: sandbox.id });
@@ -167,7 +147,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
       <Menu.Divider />
 
-      {!isTemplate && userRole !== 'READ' ? (
+      {hasWriteAccess && !isTemplate ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -178,10 +158,23 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           }}
           disabled={restrictedFork}
         >
-          Fork {boxType}
+          Fork
         </MenuItem>
       ) : null}
-      {isOwner && userRole !== 'READ' ? (
+      {hasWriteAccess && isDraft ? (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.addSandboxesToFolder({
+              sandboxIds: [item.sandbox.id],
+              collectionPath: '/',
+              teamId: activeTeam,
+            });
+          }}
+        >
+          Move out of Drafts
+        </MenuItem>
+      ) : null}
+      {hasWriteAccess ? (
         <MenuItem
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
@@ -199,7 +192,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         <Tooltip
           label={
             preventSandboxExport
-              ? 'You do not have permission to export this sandbox'
+              ? 'You do not have permission to export this Sandbox'
               : null
           }
         >
@@ -211,13 +204,13 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 actions.dashboard.downloadSandboxes([sandbox.id]);
               }}
             >
-              Export {label}
+              Download zip
             </MenuItem>
           </div>
         </Tooltip>
       )}
 
-      {hasAccess && userRole !== 'READ' ? (
+      {hasWriteAccess && !isDraft ? (
         <>
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
@@ -229,7 +222,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 })
               }
             >
-              Make {label} public
+              Make public
             </MenuItem>
           )}
           {sandbox.privacy !== 1 && (
@@ -241,7 +234,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 })
               }
             >
-              Make {label} unlisted
+              Make unlisted
             </MenuItem>
           )}
           {sandbox.privacy !== 2 && (
@@ -253,21 +246,21 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 })
               }
             >
-              Make {label} private
+              Make private
             </MenuItem>
           )}
         </>
       ) : null}
 
-      {hasAccess && userRole !== 'READ' && (
+      {hasWriteAccess && (
         <>
           <Menu.Divider />
-          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+          <MenuItem onSelect={() => setRenaming(true)}>Rename</MenuItem>
         </>
       )}
-      {hasAccess &&
-        userRole !== 'READ' &&
+      {hasWriteAccess &&
         !isTemplate &&
+        !isDraft &&
         (sandbox.isFrozen ? (
           <MenuItem
             onSelect={() => {
@@ -277,7 +270,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Remove {label} protection
+            Remove protection
           </MenuItem>
         ) : (
           <MenuItem
@@ -288,7 +281,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Protect {label}
+            Protect
           </MenuItem>
         ))}
 
@@ -303,6 +296,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       )}
 
       {hasAccess &&
+        !isDraft &&
         (isTemplate ? (
           <MenuItem
             onSelect={() => {
@@ -326,8 +320,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             Convert into a template
           </MenuItem>
         ))}
-      {hasAccess &&
-        isPro &&
+      {isPro &&
         isTeamAdmin &&
         (sandbox.permissions.preventSandboxLeaving ? (
           <MenuItem
@@ -353,7 +346,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
       {!sandbox.isV2 &&
-        hasAccess &&
         isPro &&
         isTeamAdmin &&
         (sandbox.permissions.preventSandboxExport ? (
@@ -379,7 +371,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             Prevent export as .zip
           </MenuItem>
         ))}
-      {hasAccess && userRole !== 'READ' && (
+      {hasWriteAccess && (
         <>
           <Menu.Divider />
           {isTemplate ? (
@@ -393,7 +385,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete template
+              Delete
             </MenuItem>
           ) : (
             <MenuItem
@@ -404,7 +396,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete {boxType}
+              Delete
             </MenuItem>
           )}
         </>

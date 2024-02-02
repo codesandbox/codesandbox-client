@@ -29,7 +29,7 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
           createNewDevbox();
         }}
       >
-        Create new devbox
+        Create devbox
       </MenuItem>
       <MenuItem
         disabled={hasRestrictedSandboxes}
@@ -37,10 +37,10 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
           createNewSandbox();
         }}
       >
-        Create new sandbox
+        Create sandbox
       </MenuItem>
 
-      <MenuItem onSelect={() => createNewFolder()}>Create new folder</MenuItem>
+      <MenuItem onSelect={() => createNewFolder()}>Create folder</MenuItem>
     </Menu.ContextMenu>
   );
 };

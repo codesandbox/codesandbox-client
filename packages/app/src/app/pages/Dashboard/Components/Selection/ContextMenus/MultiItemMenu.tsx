@@ -1,7 +1,8 @@
 import React from 'react';
 import { useEffects, useActions, useAppState } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
-import { SubscriptionType } from 'app/graphql/types';
+import { useLocation } from 'react-router-dom';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Context, MenuItem } from '../ContextMenu';
 import {
   DashboardSandbox,
@@ -33,10 +34,14 @@ type MenuAction =
     };
 
 export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
-  const state = useAppState();
   const actions = useActions();
+  const { activeTeam } = useAppState();
   const { notificationToast } = useEffects();
   const { visible, setVisibility, position } = React.useContext(Context);
+  const location = useLocation();
+  const { isAdmin } = useWorkspaceAuthorization();
+
+  const isInDrafts = location.pathname.includes('/drafts');
 
   /*
     sandbox options - export, make template, delete
@@ -105,6 +110,14 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     });
   };
 
+  const moveOutOfDrafts = () => {
+    actions.dashboard.addSandboxesToFolder({
+      sandboxIds: [...sandboxes].map(s => s.sandbox.id),
+      collectionPath: '/',
+      teamId: activeTeam,
+    });
+  };
+
   const deleteItems = () => {
     folders.forEach(folder =>
       actions.dashboard.deleteFolder({ path: folder.path })
@@ -135,96 +148,94 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const DIVIDER = 'divider' as const;
 
-  const MAKE_PUBLIC = { label: 'Make items public', fn: changeItemPrivacy(0) };
+  const MAKE_PUBLIC = { label: 'Make public', fn: changeItemPrivacy(0) };
   const MAKE_UNLISTED = {
-    label: 'Make items unlisted',
+    label: 'Make unlisted',
     fn: changeItemPrivacy(1),
   };
   const MAKE_PRIVATE = {
-    label: 'Make items private',
+    label: 'Make private',
     fn: changeItemPrivacy(2),
   };
-  const PRIVACY_ITEMS = state.activeTeamInfo?.subscription
-    ? [MAKE_PUBLIC, MAKE_UNLISTED, MAKE_PRIVATE, DIVIDER]
+  const PRIVACY_ITEMS = isInDrafts
+    ? []
+    : [MAKE_PUBLIC, MAKE_UNLISTED, MAKE_PRIVATE, DIVIDER];
+
+  const FROZEN_ITEMS = isInDrafts
+    ? []
+    : [
+        sandboxes.some(s => !s.sandbox.isFrozen) && {
+          label: 'Protect',
+          fn: () => {
+            actions.dashboard.changeSandboxesFrozen({
+              sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+              isFrozen: true,
+            });
+          },
+        },
+        sandboxes.some(s => s.sandbox.isFrozen) && {
+          label: 'Remove protection',
+          fn: () => {
+            actions.dashboard.changeSandboxesFrozen({
+              sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+              isFrozen: false,
+            });
+          },
+        },
+      ].filter(Boolean);
+
+  const PROTECTED_SANDBOXES_ITEMS = isAdmin
+    ? [
+        sandboxes.some(s => !s.sandbox.permissions.preventSandboxLeaving) && {
+          label: 'Prevent leaving workspace',
+          fn: () => {
+            actions.dashboard.setPreventSandboxesLeavingWorkspace({
+              sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+              preventSandboxLeaving: true,
+            });
+          },
+        },
+        sandboxes.some(s => s.sandbox.permissions.preventSandboxLeaving) && {
+          label: 'Allow leaving workspace',
+          fn: () => {
+            actions.dashboard.setPreventSandboxesLeavingWorkspace({
+              sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+              preventSandboxLeaving: false,
+            });
+          },
+        },
+        sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
+          sandboxes.every(s => !s.sandbox.isV2) && {
+            label: 'Prevent export as .zip',
+            fn: () => {
+              actions.dashboard.setPreventSandboxesExport({
+                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                preventSandboxExport: true,
+              });
+            },
+          },
+        sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) &&
+          sandboxes.every(s => !s.sandbox.isV2) && {
+            label: 'Allow export as .zip',
+            fn: () => {
+              actions.dashboard.setPreventSandboxesExport({
+                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                preventSandboxExport: false,
+              });
+            },
+          },
+      ].filter(Boolean)
     : [];
-
-  const FROZEN_ITEMS = [
-    sandboxes.some(s => !s.sandbox.isFrozen) && {
-      label: 'Protect items',
-      fn: () => {
-        actions.dashboard.changeSandboxesFrozen({
-          sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-          isFrozen: true,
-        });
-      },
-    },
-    sandboxes.some(s => s.sandbox.isFrozen) && {
-      label: 'Remove items protection',
-      fn: () => {
-        actions.dashboard.changeSandboxesFrozen({
-          sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-          isFrozen: false,
-        });
-      },
-    },
-  ].filter(Boolean);
-
-  const isTeamPro =
-    state.activeTeamInfo?.subscription?.type === SubscriptionType?.TeamPro;
-
-  const PROTECTED_SANDBOXES_ITEMS =
-    isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'
-      ? [
-          sandboxes.some(s => !s.sandbox.permissions.preventSandboxLeaving) && {
-            label: 'Prevent leaving workspace',
-            fn: () => {
-              actions.dashboard.setPreventSandboxesLeavingWorkspace({
-                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventSandboxLeaving: true,
-              });
-            },
-          },
-          sandboxes.some(s => s.sandbox.permissions.preventSandboxLeaving) && {
-            label: 'Allow leaving workspace',
-            fn: () => {
-              actions.dashboard.setPreventSandboxesLeavingWorkspace({
-                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventSandboxLeaving: false,
-              });
-            },
-          },
-          sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
-            sandboxes.every(s => !s.sandbox.isV2) && {
-              label: 'Prevent export as .zip',
-              fn: () => {
-                actions.dashboard.setPreventSandboxesExport({
-                  sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                  preventSandboxExport: true,
-                });
-              },
-            },
-          sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) &&
-            sandboxes.every(s => !s.sandbox.isV2) && {
-              label: 'Allow export as .zip',
-              fn: () => {
-                actions.dashboard.setPreventSandboxesExport({
-                  sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                  preventSandboxExport: false,
-                });
-              },
-            },
-        ].filter(Boolean)
-      : [];
 
   const EXPORT =
     sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
     sandboxes.every(s => !s.sandbox.isV2)
-      ? [{ label: 'Export Items', fn: exportItems }]
+      ? [{ label: 'Download', fn: exportItems }]
       : [];
 
-  const DELETE = { label: 'Delete items', fn: deleteItems };
+  const DELETE = { label: 'Delete', fn: deleteItems };
   const RECOVER = {
-    label: 'Recover items',
+    label: 'Recover',
     fn: () => {
       actions.dashboard.recoverSandboxes(
         [...sandboxes, ...templates].map(s => s.sandbox.id)
@@ -232,25 +243,38 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     },
   };
   const PERMANENTLY_DELETE = {
-    label: 'Permanently delete items',
+    label: 'Permanently delete',
     fn: () => {
       actions.dashboard.permanentlyDeleteSandboxes(
         [...sandboxes, ...templates].map(s => s.sandbox.id)
       );
     },
   };
-  const CONVERT_TO_TEMPLATE = {
-    label: 'Convert to templates',
-    fn: convertToTemplates,
-  };
+  const CONVERT_TO_TEMPLATE = isInDrafts
+    ? []
+    : [
+        {
+          label: 'Convert to templates',
+          fn: convertToTemplates,
+        },
+      ];
   const CONVERT_TO_SANDBOX = {
     label: 'Convert to sandboxes',
     fn: convertToSandboxes,
   };
-  const MOVE_ITEMS = {
+  const MOVE_TO_FOLDER = {
     label: 'Move to folder',
     fn: moveToFolder,
   };
+
+  const MOVE_OUT_OF_DRAFTS = {
+    label: 'Move out of Drafts',
+    fn: moveOutOfDrafts,
+  };
+
+  const MOVE_ITEMS = isInDrafts
+    ? [MOVE_OUT_OF_DRAFTS, MOVE_TO_FOLDER]
+    : [MOVE_TO_FOLDER];
 
   let options: MenuAction[] = [];
 
@@ -259,12 +283,12 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   } else if (folders.length) {
     options = [DELETE];
   } else if (sandboxes.length && templates.length) {
-    options = [...PRIVACY_ITEMS, ...EXPORT, MOVE_ITEMS, DIVIDER, DELETE];
+    options = [...PRIVACY_ITEMS, ...EXPORT, ...MOVE_ITEMS, DIVIDER, DELETE];
   } else if (templates.length) {
     options = [
       ...PRIVACY_ITEMS,
       ...EXPORT,
-      MOVE_ITEMS,
+      ...MOVE_ITEMS,
       CONVERT_TO_SANDBOX,
       DIVIDER,
       DELETE,
@@ -273,12 +297,10 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     options = [
       ...PRIVACY_ITEMS,
       ...EXPORT,
-      DIVIDER,
-      ...FROZEN_ITEMS,
-      DIVIDER,
-      MOVE_ITEMS,
-      CONVERT_TO_TEMPLATE,
+      ...MOVE_ITEMS,
+      ...CONVERT_TO_TEMPLATE,
       ...PROTECTED_SANDBOXES_ITEMS,
+      ...FROZEN_ITEMS,
       DIVIDER,
       DELETE,
     ];

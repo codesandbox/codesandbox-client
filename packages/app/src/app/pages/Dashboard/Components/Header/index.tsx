@@ -10,7 +10,6 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
-import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
 import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid/constants';
@@ -87,7 +86,7 @@ export const Header = ({
         maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
         margin: '0 auto', // Negative margin top to align visually w/ the sidebar
       }}
-      paddingBottom={7}
+      paddingBottom={4}
     >
       <Stack align="center" gap={2}>
         {loading ? (
@@ -221,12 +220,6 @@ export const Header = ({
         ))}
 
         <Stack gap={4}>
-          {showFilters && (
-            <FilterOptions
-              possibleTemplates={templates}
-              CustomFilters={CustomFilters}
-            />
-          )}
           {showSortOptions && <SortOptions />}
           {showViewOptions && <ViewOptions />}
         </Stack>
