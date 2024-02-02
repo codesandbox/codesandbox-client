@@ -27,7 +27,10 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
   const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
 
   const onWorkspaceSelect = (newTeamId: string) => {
-    track('Dashboard Move Modal - Workspace Select', { teamId: newTeamId });
+    track('Dashboard Move Modal - Workspace Select', {
+      teamId: newTeamId,
+      oldTeamId: teamId,
+    });
     setTeamId(newTeamId);
   };
 
