@@ -15,11 +15,11 @@ import { TopBanner } from './TopBanner';
 
 export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const actions = useActions();
-  const { isFrozen, hasRestrictedSandboxes } = useWorkspaceLimits();
+  const { isFrozen, hasReachedSandboxLimit } = useWorkspaceLimits();
 
   return (
     <Stack direction="vertical" gap={8}>
-      {hasRestrictedSandboxes && <RestrictedSandboxes />}
+      {hasReachedSandboxLimit && <RestrictedSandboxes />}
       <TopBanner />
 
       <Text
