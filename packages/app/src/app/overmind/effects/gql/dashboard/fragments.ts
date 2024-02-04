@@ -125,6 +125,7 @@ export const teamFragmentDashboard = gql`
     avatarUrl
     legacy
     frozen
+    insertedAt
     settings {
       minimumPrivacy
     }
@@ -174,6 +175,7 @@ export const currentTeamInfoFragment = gql`
     avatarUrl
     legacy
     frozen
+    insertedAt
     users {
       id
       avatarUrl
