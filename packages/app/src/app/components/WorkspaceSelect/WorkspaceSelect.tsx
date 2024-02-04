@@ -19,10 +19,11 @@ interface WorkspaceSelectProps {
   disabled?: boolean;
   onSelect: (teamId: string) => void;
   selectedTeamId: string;
+  filterNonPro?: boolean;
 }
 
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
-  ({ disabled, onSelect, selectedTeamId }) => {
+  ({ disabled, onSelect, selectedTeamId, filterNonPro }) => {
     const state = useAppState();
     const history = useHistory();
     const { dashboard } = state;
@@ -114,6 +115,11 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               {workspaces.map(team => {
                 const showPro =
                   team.subscription?.status === SubscriptionStatus.Active;
+
+                if (filterNonPro && team.id !== state.activeTeam && !showPro) {
+                  return null;
+                }
+
                 return (
                   <Stack
                     as={Menu.Item}
