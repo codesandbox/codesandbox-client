@@ -47,13 +47,11 @@ export const COLUMN_MEDIA_THRESHOLD = 1600;
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
   type?: 'devbox' | 'sandbox';
-  hasSecondStep?: boolean;
 };
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
   type = 'devbox',
-  hasSecondStep = true,
   closeModal,
   isModal,
 }) => {
@@ -118,8 +116,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     if (searchQuery) {
       track(`Create ${type} - Search Templates`, {
         query: searchQuery,
-        codesandbox: 'V1',
-        event_source: 'UI',
       });
     }
   }, [searchQuery]);
@@ -140,8 +136,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     const openInVSCode = editor === 'vscode';
 
     track(`Create ${type} - Create`, {
-      codesandbox: 'V1',
-      event_source: 'UI',
       type: 'fork',
       template_name:
         template.sandbox.title || template.sandbox.alias || template.sandbox.id,
@@ -176,27 +170,15 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       return;
     }
 
-    if (hasSecondStep) {
-      setSelectedTemplate(template);
-      setViewState('fromTemplate');
+    setSelectedTemplate(template);
+    setViewState('fromTemplate');
 
-      track(`Create ${type} - Select template`, {
-        codesandbox: 'V1',
-        event_source: 'UI',
-        type: 'fork',
-        tab_name: trackingSource,
-        template_name:
-          template.sandbox.title ||
-          template.sandbox.alias ||
-          template.sandbox.id,
-      });
-    } else {
-      createFromTemplate(template, {
-        createAs: type,
-        permission: 0,
-        editor: 'csb',
-      });
-    }
+    track(`Create ${type} - Select template`, {
+      type: 'fork',
+      tab_name: trackingSource,
+      template_name:
+        template.sandbox.title || template.sandbox.alias || template.sandbox.id,
+    });
   };
 
   const openTemplate = (template: TemplateFragment, trackingSource: string) => {
@@ -205,8 +187,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     window.open(url, '_blank');
 
     track(`Create ${type} - Open template`, {
-      codesandbox: 'V1',
-      event_source: 'UI',
       type: 'open',
       tab_name: trackingSource,
       template_name:
@@ -216,8 +196,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const trackTabClick = (tab: string) => {
     track(`Create ${type} - Click Tab`, {
-      codesandbox: 'V1',
-      event_source: 'UI',
       tab_name: tab,
     });
   };
@@ -384,19 +362,13 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       {type === 'devbox' ? (
                         <DevboxAlternative
                           onClick={() => {
-                            track(`Create ${type} - Open Community Search`, {
-                              codesandbox: 'V1',
-                              event_source: 'UI - Sidebar',
-                            });
+                            track(`Create ${type} - Open Community Search`);
                           }}
                         />
                       ) : (
                         <SandboxAlternative
                           onClick={() => {
-                            track(`Create ${type} - Open Devboxes`, {
-                              codesandbox: 'V1',
-                              event_source: 'UI - Sidebar',
-                            });
+                            track(`Create ${type} - Open Devboxes`);
                             actions.modalOpened({
                               modal: 'createDevbox',
                             });

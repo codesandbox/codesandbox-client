@@ -12,10 +12,9 @@ import {
 import { useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
-import { sandboxes } from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { PATHED_SANDBOXES_FOLDER_QUERY } from 'app/pages/Dashboard/queries';
 import { Query } from 'react-apollo';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
@@ -38,12 +37,19 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
 
   const { activeTeamInfo, activeTeam } = useAppState();
+  const { hasRestrictedSandboxes } = useWorkspaceLimits();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isPro } = useWorkspaceSubscription();
   const isDraft = collectionId === undefined;
   const canSetPrivacy = !isDraft;
+
+  const canCreateDraft = true;
+  const canCreateInFolders = type === 'devbox' || !hasRestrictedSandboxes;
+  const canCreate =
+    (isDraft && canCreateDraft) || (!isDraft && canCreateInFolders);
+
   const miniumPrivacy = canSetPrivacy
     ? ((activeTeamInfo?.settings.minimumPrivacy || 0) as PrivacyLevel)
     : 2;
@@ -110,9 +116,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             margin: 0,
           }}
         >
-          Create {label} {isDraft && '(Draft)'}
+          Create {label}
         </Text>
-        <Stack direction="vertical" gap={1}>
+        <Stack direction="vertical" gap={2}>
           <Text size={3} as="label">
             Name
           </Text>
@@ -129,7 +135,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           />
         </Stack>
 
-        <Stack direction="vertical" gap={1}>
+        <Stack direction="vertical" gap={2}>
           <Text size={3} as="label">
             Folder
           </Text>
@@ -142,7 +148,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             {({ data }) => {
               return (
                 <Select
-                  icon={() => <Icon name="folder" size={12} />}
+                  icon={() => (
+                    <Icon name={isDraft ? 'file' : 'folder'} size={12} />
+                  )}
                   value={collectionId}
                   onChange={({ target: { value } }) =>
                     value === '$CSBDRAFTS'
@@ -151,21 +159,53 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   }
                 >
                   <option value="$CSBDRAFTS">Drafts</option>
+
                   {data?.me?.collections?.map(collection => (
-                    <option value={collection.id}>{collection.path}</option>
+                    <option value={collection.id}>
+                      {collection.path === '/'
+                        ? 'All Devboxes and Sandboxes'
+                        : collection.path.slice(1).split('/').join(' / ')}
+                    </option>
                   ))}
                 </Select>
               );
             }}
           </Query>
+
+          {isDraft && canCreateDraft && (
+            <Stack gap={1} css={{ color: '#A8BFFA' }}>
+              <Icon name="circleBang" />
+              <Text size={3}>Drafts are private and only visible to you.</Text>
+            </Stack>
+          )}
+
+          {isDraft && !canCreateDraft && (
+            <Stack gap={1} css={{ color: '#F5A8A8' }}>
+              <Icon name="circleBang" />
+              <Text size={3}>
+                Your Drafts folder is full. Delete unneeded drafts, or move them
+                to another folder.
+              </Text>
+            </Stack>
+          )}
+
+          {!isDraft && !canCreateInFolders && (
+            <Stack gap={1} css={{ color: '#F5A8A8' }}>
+              <Icon name="circleBang" />
+              <Text size={3}>
+                You reached the maximum amount of shareable Sandboxes in this
+                workspace.
+              </Text>
+            </Stack>
+          )}
         </Stack>
 
-        <Stack direction="vertical" gap={2}>
-          <Text size={3} as="label">
-            Visibility
-          </Text>
+        {!isDraft && canCreate && (
           <Stack direction="vertical" gap={2}>
-            {canSetPrivacy ? (
+            <Text size={3} as="label">
+              Visibility
+            </Text>
+            <Stack direction="vertical" gap={2}>
               <Select
                 icon={PRIVACY_OPTIONS[permission].icon}
                 defaultValue={permission}
@@ -175,33 +215,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 <option value={1}>{PRIVACY_OPTIONS[1].description}</option>
                 <option value={2}>{PRIVACY_OPTIONS[2].description}</option>
               </Select>
-            ) : (
-              <>
-                <Input
-                  css={{ opacity: 0.7, cursor: 'not-allowed' }}
-                  value="Private"
-                  disabled
-                />
-                <Stack gap={1} align="center">
-                  <Icon color="#999" name="circleBang" size={14} />
-                  <Text size={3} variant="muted">
-                    Drafts are private and only visible to you. Move them to the{' '}
-                    <Text
-                      as="a"
-                      target="_blank"
-                      css={{ textDecoration: 'none' }}
-                      variant="active"
-                      href={sandboxes('/', activeTeam)}
-                    >
-                      workspace folder
-                    </Text>{' '}
-                    for more options.
-                  </Text>
-                </Stack>
-              </>
-            )}
+            </Stack>
           </Stack>
-        </Stack>
+        )}
 
         <Stack direction="vertical" gap={2}>
           <Text size={3} as="label">
@@ -210,25 +226,14 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           {type === 'sandbox' ? (
             <>
               <Input
-                css={{ opacity: 0.7, cursor: 'not-allowed' }}
+                css={{ cursor: 'not-allowed' }}
                 value="CodeSandbox Web Editor"
                 disabled
               />
-              <Stack gap={1}>
-                <Icon color="#999" name="circleBang" />
-                <Text size={3} variant="muted">
-                  Sandboxes can only be opened in the web editor.{' '}
-                  <Text
-                    as="a"
-                    css={{ textDecoration: 'none' }}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={docsUrl('/learn/sandboxes/editor-features')}
-                    variant="active"
-                  >
-                    Learn more about sandboxes
-                  </Text>
-                  .
+              <Stack gap={1} css={{ color: '#A8BFFA' }}>
+                <Icon name="circleBang" />
+                <Text size={3}>
+                  Sandboxes can only be opened in the web editor.
                 </Text>
               </Stack>
             </>
@@ -251,15 +256,13 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             Runtime
           </Text>
           <Input
-            css={{ opacity: 0.7, cursor: 'not-allowed' }}
+            css={{ cursor: 'not-allowed' }}
             value={defaultSpecs}
             disabled
           />
-          <Stack gap={1} align="center">
-            <Icon color="#999" name="circleBang" size={14} />
-            <Text size={3} variant="muted">
-              {specsInfo}
-            </Text>
+          <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
+            <Icon name="circleBang" />
+            <Text size={3}>{specsInfo}</Text>
           </Stack>
         </Stack>
       </Stack>
@@ -274,7 +277,12 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           >
             Cancel
           </Button>
-          <Button type="submit" variant="primary" autoWidth>
+          <Button
+            type="submit"
+            disabled={!canCreate}
+            variant="primary"
+            autoWidth
+          >
             Create {label}
           </Button>
         </Stack>
