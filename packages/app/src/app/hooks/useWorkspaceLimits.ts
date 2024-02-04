@@ -6,7 +6,7 @@ const OUT_OF_CREDITS_TRESHOLD = 50; // 50 credits left from the free plan includ
 const SPENDING_LIMIT_WARNING = 0.9; // 90% of the included + ondemand credits used
 
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
-  const { activeTeamInfo } = useAppState();
+  const { activeTeamInfo, user } = useAppState();
   const { isFree, isPro } = useWorkspaceSubscription();
   const { ubbBeta, friendOfCsb } = useWorkspaceFeatureFlags();
 
@@ -18,7 +18,8 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isCloseToSpendingLimit: undefined,
       showUsageLimitBanner: undefined,
       isFrozen: undefined,
-      hasRestrictedSandboxes: undefined,
+      hasReachedSandboxLimit: undefined,
+      hasReachedDraftLimit: undefined,
     };
   }
 
@@ -42,15 +43,21 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     usage.credits / (limits.includedCredits + onDemandCreditsLimit) >
       SPENDING_LIMIT_WARNING;
 
-  const hasRestrictedSandboxes =
+  const hasReachedSandboxLimit =
     applyUbbRestrictions && usage.sandboxes >= limits.includedSandboxes;
+
+  const userDrafts =
+    activeTeamInfo.userAuthorizations.find(ua => ua.userId === user.id)
+      ?.drafts ?? 0;
+  const hasReachedDraftLimit = isFree && userDrafts >= limits.includedDrafts;
 
   return {
     isOutOfCredits,
     isCloseToOutOfCredits,
     isAtSpendingLimit,
     isCloseToSpendingLimit,
-    hasRestrictedSandboxes,
+    hasReachedSandboxLimit,
+    hasReachedDraftLimit,
     showUsageLimitBanner:
       isOutOfCredits ||
       isCloseToOutOfCredits ||
@@ -68,7 +75,8 @@ export type WorkspaceLimitsReturn =
       isCloseToSpendingLimit: undefined;
       showUsageLimitBanner: undefined;
       isFrozen: undefined;
-      hasRestrictedSandboxes: undefined;
+      hasReachedSandboxLimit: undefined;
+      hasReachedDraftLimit: undefined;
     }
   | {
       isOutOfCredits: boolean;
@@ -77,5 +85,6 @@ export type WorkspaceLimitsReturn =
       isCloseToSpendingLimit: boolean;
       showUsageLimitBanner: boolean;
       isFrozen: boolean;
-      hasRestrictedSandboxes: boolean;
+      hasReachedSandboxLimit: boolean;
+      hasReachedDraftLimit: boolean;
     };

@@ -190,6 +190,7 @@ export const currentTeamInfoFragment = gql`
       userId
       authorization
       teamManager
+      drafts
     }
 
     settings {
@@ -227,6 +228,7 @@ export const currentTeamInfoFragment = gql`
     limits {
       includedCredits
       includedSandboxes
+      includedDrafts
       onDemandCreditLimit
     }
 

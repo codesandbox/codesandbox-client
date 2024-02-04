@@ -37,16 +37,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
 
   const { activeTeamInfo, activeTeam } = useAppState();
-  const { hasRestrictedSandboxes } = useWorkspaceLimits();
+  const { hasReachedSandboxLimit, hasReachedDraftLimit } = useWorkspaceLimits();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isPro } = useWorkspaceSubscription();
   const isDraft = collectionId === undefined;
   const canSetPrivacy = !isDraft;
-
-  const canCreateDraft = true;
-  const canCreateInFolders = type === 'devbox' || !hasRestrictedSandboxes;
+  const canCreateDraft = !hasReachedDraftLimit;
+  const canCreateInFolders = type === 'devbox' || !hasReachedSandboxLimit;
   const canCreate =
     (isDraft && canCreateDraft) || (!isDraft && canCreateInFolders);
 
