@@ -14,6 +14,7 @@ export const TopBanner = () => {
   const { isPro, isFree } = useWorkspaceSubscription();
   const { hasVisited } = useDashboardVisit();
   const workspaceCreatedBeforeUBBRelease =
+    activeTeamInfo?.insertedAt &&
     new Date(activeTeamInfo.insertedAt) < new Date('2024-02-01');
 
   const [welcomeBannerDismissed, dismissWelcomeBanner] = useDismissible(
