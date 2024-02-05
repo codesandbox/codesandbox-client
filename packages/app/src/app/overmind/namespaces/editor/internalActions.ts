@@ -16,6 +16,7 @@ import {
   editorUrl,
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { Context } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
@@ -527,11 +528,21 @@ export const forkSandbox = async (
     actions.internal.currentSandboxChanged();
     await actions.getSandboxesLimits();
   } catch (error) {
-    console.error(error);
-    actions.internal.handleError({
-      message: 'We were unable to fork the sandbox',
-      error,
-    });
+    const errorMessage = actions.internal.getErrorMessage({ error });
+
+    if (errorMessage.includes('DRAFT_LIMIT')) {
+      effects.notificationToast.add({
+        title: 'Cannot create draft',
+        message:
+          'Your drafts folder is full. Delete unneeded drafts, or upgrade to Pro for unlimited drafts.',
+        status: NotificationStatus.ERROR,
+      });
+    } else {
+      actions.internal.handleError({
+        message: 'We were unable to fork the sandbox',
+        error,
+      });
+    }
 
     state.editor.isForkingSandbox = false;
     throw error;
