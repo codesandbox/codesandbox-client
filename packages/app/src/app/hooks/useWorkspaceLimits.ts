@@ -49,7 +49,8 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const userDrafts =
     activeTeamInfo.userAuthorizations.find(ua => ua.userId === user.id)
       ?.drafts ?? 0;
-  const hasReachedDraftLimit = isFree && userDrafts >= limits.includedDrafts;
+  const hasReachedDraftLimit =
+    isFree === true && userDrafts >= limits.includedDrafts;
 
   return {
     isOutOfCredits,
