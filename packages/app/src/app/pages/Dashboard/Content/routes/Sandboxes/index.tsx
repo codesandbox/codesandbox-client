@@ -23,7 +23,7 @@ export const SandboxesPage = () => {
   const cleanParam = currentPath.split(' ').join('{}');
   const items = useFilteredItems(currentPath, cleanParam, level);
   const actions = useActions();
-  const { isFrozen, hasRestrictedSandboxes } = useWorkspaceLimits();
+  const { isFrozen, hasReachedSandboxLimit } = useWorkspaceLimits();
   const {
     dashboard: { allCollections, sandboxes },
     activeTeam,
@@ -90,7 +90,7 @@ export const SandboxesPage = () => {
         </title>
       </Helmet>
 
-      {hasRestrictedSandboxes && (
+      {hasReachedSandboxLimit && (
         <Element css={{ padding: '0 26px 32px 16px' }}>
           <RestrictedSandboxes />
         </Element>
@@ -128,7 +128,7 @@ export const SandboxesPage = () => {
             </ActionCard>
             <ActionCard
               icon="boxSandbox"
-              disabled={hasRestrictedSandboxes}
+              disabled={hasReachedSandboxLimit}
               onClick={() => {
                 track('Empty Folder - Create sandbox', {
                   codesandbox: 'V1',

@@ -795,12 +795,21 @@ export const forkExternalSandbox = async (
       });
     }
   } catch (error) {
-    actions.internal.handleError({
-      message: 'We were unable to fork the sandbox',
-      error,
-    });
+    const errorMessage = actions.internal.getErrorMessage({ error });
 
-    throw error;
+    if (errorMessage.includes('DRAFT_LIMIT')) {
+      effects.notificationToast.add({
+        title: 'Cannot create draft',
+        message:
+          'Your drafts folder is full. Delete unneeded drafts, or upgrade to Pro for unlimited drafts.',
+        status: NotificationStatus.ERROR,
+      });
+    } else {
+      actions.internal.handleError({
+        message: 'We were unable to fork the sandbox',
+        error,
+      });
+    }
   }
 };
 

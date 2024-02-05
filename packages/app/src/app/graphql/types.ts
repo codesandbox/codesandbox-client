@@ -365,7 +365,7 @@ export type Team = {
   collections: Array<Collection>;
   creatorId: Maybe<Scalars['UUID4']>;
   description: Maybe<Scalars['String']>;
-  /** Draft sandboxes by everyone on the team */
+  /** Draft sandboxes - always returns the current user's drafts */
   drafts: Array<Sandbox>;
   /** Workspace-based feature flags and whether or not they are active for the current workspace */
   featureFlags: TeamFeatureFlags;
@@ -483,6 +483,11 @@ export type TeamLimits = {
   __typename?: 'TeamLimits';
   /** VM credits included with the team's subscription every month, including add-ons */
   includedCredits: Scalars['Int'];
+  /**
+   * Number of drafts each team member is allowed to have.
+   * Currently this is 10 for free users, and 'unlimited' (aka 10_000) for PRO users.
+   */
+  includedDrafts: Scalars['Int'];
   /** Number of workspace members included with the team's subscription, including add-ons */
   includedMembers: Scalars['Int'];
   /** Number of sandboxes included with the team's subscription, including add-ons */
@@ -1121,6 +1126,7 @@ export type TeamUsage = {
 export type UserAuthorization = {
   __typename?: 'UserAuthorization';
   authorization: TeamMemberAuthorization;
+  drafts: Scalars['Int'];
   teamManager: Scalars['Boolean'];
   userId: Scalars['UUID4'];
 };
@@ -4671,6 +4677,7 @@ export type CurrentTeamInfoFragmentFragment = {
     userId: any;
     authorization: TeamMemberAuthorization;
     teamManager: boolean;
+    drafts: number;
   }>;
   settings: {
     __typename?: 'WorkspaceSandboxSettings';
@@ -4709,6 +4716,7 @@ export type CurrentTeamInfoFragmentFragment = {
     __typename?: 'TeamLimits';
     includedCredits: number;
     includedSandboxes: number;
+    includedDrafts: number;
     onDemandCreditLimit: number | null;
   };
   usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
@@ -6175,6 +6183,7 @@ export type GetTeamQuery = {
         userId: any;
         authorization: TeamMemberAuthorization;
         teamManager: boolean;
+        drafts: number;
       }>;
       settings: {
         __typename?: 'WorkspaceSandboxSettings';
@@ -6213,6 +6222,7 @@ export type GetTeamQuery = {
         __typename?: 'TeamLimits';
         includedCredits: number;
         includedSandboxes: number;
+        includedDrafts: number;
         onDemandCreditLimit: number | null;
       };
       usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };

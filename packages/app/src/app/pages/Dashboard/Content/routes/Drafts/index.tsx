@@ -7,6 +7,8 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { DraftsLimit } from 'app/components/StripeMessages/DraftsLimit';
 import { getPossibleTemplates } from '../../utils';
 
 export const Drafts = () => {
@@ -18,6 +20,7 @@ export const Drafts = () => {
   const {
     dashboard: { getPage },
   } = useActions();
+  const { hasReachedDraftLimit } = useWorkspaceLimits();
 
   React.useEffect(() => {
     getPage(sandboxesTypes.DRAFTS);
@@ -41,6 +44,13 @@ export const Drafts = () => {
       <Helmet>
         <title>My drafts - CodeSandbox</title>
       </Helmet>
+
+      {hasReachedDraftLimit && (
+        <Element css={{ padding: '0 26px 32px 16px' }}>
+          <DraftsLimit />
+        </Element>
+      )}
+
       <Header
         title="My drafts"
         activeTeam={activeTeam}

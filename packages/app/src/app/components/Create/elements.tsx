@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import { Tab as BaseTab, TabList, TabPanel, TabStateReturn } from 'reakit/Tab';
 
 export const Container = styled.div`
-  height: 564px;
+  height: 600px;
   overflow: hidden;
   border-radius: 4px;
   background-color: #151515;

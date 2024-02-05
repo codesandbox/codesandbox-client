@@ -15,7 +15,7 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
   createNewDevbox,
 }) => {
   const { visible, setVisibility, position } = React.useContext(Context);
-  const { hasRestrictedSandboxes } = useWorkspaceLimits();
+  const { hasReachedSandboxLimit } = useWorkspaceLimits();
 
   return (
     <Menu.ContextMenu
@@ -32,7 +32,7 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
         Create devbox
       </MenuItem>
       <MenuItem
-        disabled={hasRestrictedSandboxes}
+        disabled={hasReachedSandboxLimit}
         onSelect={() => {
           createNewSandbox();
         }}
