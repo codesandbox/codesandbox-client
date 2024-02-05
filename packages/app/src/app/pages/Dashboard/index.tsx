@@ -77,6 +77,8 @@ export const Dashboard: FunctionComponent = () => {
       actions.modalOpened({ modal: 'createSandbox' });
     } else if (JSON.parse(searchParams.get('create_devbox'))) {
       actions.modalOpened({ modal: 'createDevbox' });
+    } else if (JSON.parse(searchParams.get('create'))) {
+      actions.modalOpened({ modal: 'genericCreate' });
     } else if (searchParams.get('preferences')) {
       const toToOpen = searchParams.get('preferences');
       actions.preferences.openPreferencesModal(toToOpen);

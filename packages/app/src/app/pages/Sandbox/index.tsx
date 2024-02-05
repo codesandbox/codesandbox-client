@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
+import { Redirect } from 'react-router-dom';
 import { Editor } from './Editor';
 import { OnBoarding } from './OnBoarding';
 
@@ -96,6 +97,10 @@ export const Sandbox = React.memo<Props>(
 
       return 'Loading...';
     };
+
+    if (state.hasLogIn && showNewSandboxModal) {
+      return <Redirect to="/dashboard/recent?create=true" />;
+    }
 
     return (
       <>

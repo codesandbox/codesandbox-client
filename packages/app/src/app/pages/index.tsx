@@ -164,7 +164,7 @@ const RoutesComponent: React.FC = () => {
       <Boundary>
         <Content>
           <Switch>
-            <Route exact path="/" render={() => <Redirect to="/s" />} />
+            <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route
@@ -181,7 +181,6 @@ const RoutesComponent: React.FC = () => {
 
             <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
