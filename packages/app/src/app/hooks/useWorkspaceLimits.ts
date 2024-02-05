@@ -10,7 +10,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const { isFree, isPro } = useWorkspaceSubscription();
   const { ubbBeta, friendOfCsb } = useWorkspaceFeatureFlags();
 
-  if (!activeTeamInfo) {
+  if (!activeTeamInfo || !user) {
     return {
       isOutOfCredits: undefined,
       isCloseToOutOfCredits: undefined,
@@ -25,7 +25,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
 
   const applyUbbRestrictions = !friendOfCsb && ubbBeta;
 
-  const { limits, usage, frozen } = activeTeamInfo;
+  const { limits, usage, frozen, userAuthorizations } = activeTeamInfo;
 
   const isOutOfCredits = applyUbbRestrictions && isFree === true && frozen;
   const isCloseToOutOfCredits =
@@ -47,8 +47,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     applyUbbRestrictions && usage.sandboxes >= limits.includedSandboxes;
 
   const userDrafts =
-    activeTeamInfo.userAuthorizations.find(ua => ua.userId === user.id)
-      ?.drafts ?? 0;
+    userAuthorizations.find(ua => ua.userId === user.id)?.drafts ?? 0;
   const hasReachedDraftLimit =
     isFree === true && userDrafts >= limits.includedDrafts;
 
