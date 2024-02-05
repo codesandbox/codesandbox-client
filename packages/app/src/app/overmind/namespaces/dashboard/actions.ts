@@ -897,7 +897,7 @@ export const addSandboxesToFolder = async (
           : collectionPath)
     );
   } catch (e) {
-    if (e.message.includes('Sandbox limit exceeded')) {
+    if (e.message.includes('SANDBOX_LIMIT')) {
       effects.notificationToast.error(
         'You reached the maximum amount of shareable Sandboxes in this workspace. Upgrade your plan to add more.'
       );
