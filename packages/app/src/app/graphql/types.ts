@@ -378,6 +378,7 @@ export type Team = {
    */
   frozen: Scalars['Boolean'];
   id: Scalars['UUID4'];
+  insertedAt: Scalars['String'];
   invitees: Array<User>;
   inviteToken: Scalars['String'];
   /** @deprecated There's no such thing as a pilot team anymore */
@@ -4602,6 +4603,7 @@ export type TeamFragmentDashboardFragment = {
   avatarUrl: string | null;
   legacy: boolean;
   frozen: boolean;
+  insertedAt: string;
   settings: {
     __typename?: 'WorkspaceSandboxSettings';
     minimumPrivacy: number;
@@ -4651,6 +4653,7 @@ export type CurrentTeamInfoFragmentFragment = {
   avatarUrl: string | null;
   legacy: boolean;
   frozen: boolean;
+  insertedAt: string;
   users: Array<{
     __typename?: 'User';
     id: any;
@@ -4799,6 +4802,7 @@ export type _CreateTeamMutation = {
     avatarUrl: string | null;
     legacy: boolean;
     frozen: boolean;
+    insertedAt: string;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5160,6 +5164,7 @@ export type _AcceptTeamInvitationMutation = {
     avatarUrl: string | null;
     legacy: boolean;
     frozen: boolean;
+    insertedAt: string;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5243,6 +5248,7 @@ export type _SetTeamNameMutation = {
     avatarUrl: string | null;
     legacy: boolean;
     frozen: boolean;
+    insertedAt: string;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
       minimumPrivacy: number;
@@ -5850,6 +5856,7 @@ export type AllTeamsQuery = {
       avatarUrl: string | null;
       legacy: boolean;
       frozen: boolean;
+      insertedAt: string;
       settings: {
         __typename?: 'WorkspaceSandboxSettings';
         minimumPrivacy: number;
@@ -6150,6 +6157,7 @@ export type GetTeamQuery = {
       avatarUrl: string | null;
       legacy: boolean;
       frozen: boolean;
+      insertedAt: string;
       users: Array<{
         __typename?: 'User';
         id: any;
