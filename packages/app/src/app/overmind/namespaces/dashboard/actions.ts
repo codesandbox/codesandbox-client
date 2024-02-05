@@ -475,6 +475,9 @@ export const deleteSandbox = async (
     await effects.gql.mutations.deleteSandboxes({
       sandboxIds: ids,
     });
+
+    // Re-fetch team to get updated usage data
+    actions.getActiveTeamInfo();
   } catch (error) {
     state.dashboard.sandboxes = { ...oldSandboxes };
 
@@ -889,6 +892,9 @@ export const addSandboxesToFolder = async (
     } else {
       actions.dashboard.getPage(sandboxesTypes.DRAFTS);
     }
+
+    // Re-fetch team to get updated usage data
+    actions.getActiveTeamInfo();
 
     effects.notificationToast.success(
       'Successfully moved to ' +
