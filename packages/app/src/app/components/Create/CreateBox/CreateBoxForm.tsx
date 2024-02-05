@@ -8,6 +8,7 @@ import {
   Icon,
   Select,
 } from '@codesandbox/components';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -15,6 +16,8 @@ import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { PATHED_SANDBOXES_FOLDER_QUERY } from 'app/pages/Dashboard/queries';
 import { Query } from 'react-apollo';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { Link } from 'react-router-dom';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
@@ -23,6 +26,7 @@ interface CreateBoxFormProps {
   setCollectionId: (collectionId: string | undefined) => void;
   onCancel: () => void;
   onSubmit: (params: CreateParams) => void;
+  onClose: () => void;
 }
 
 type PrivacyLevel = 0 | 1 | 2;
@@ -33,11 +37,13 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   setCollectionId,
   onCancel,
   onSubmit,
+  onClose,
 }) => {
   const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
 
   const { activeTeamInfo, activeTeam } = useAppState();
   const { hasReachedSandboxLimit, hasReachedDraftLimit } = useWorkspaceLimits();
+  const { isAdmin } = useWorkspaceAuthorization();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -182,8 +188,33 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             <Stack gap={1} css={{ color: '#F5A8A8' }}>
               <Icon name="circleBang" />
               <Text size={3}>
-                Your Drafts folder is full. Delete unneeded drafts, or move them
-                to another folder.
+                Your{' '}
+                <Link
+                  css={{ color: 'inherit' }}
+                  onClick={onClose}
+                  to={dashboard.drafts(activeTeam)}
+                >
+                  Drafts folder
+                </Link>{' '}
+                is full. Delete unneeded drafts, or{' '}
+                {isAdmin ? (
+                  <>
+                    <Link
+                      css={{ color: 'inherit' }}
+                      to={dashboard.upgradeUrl({
+                        workspaceId: activeTeam,
+                        source: 'create_draft_limit',
+                      })}
+                      onClick={onClose}
+                    >
+                      upgrade to Pro
+                    </Link>{' '}
+                    for unlimited drafts
+                  </>
+                ) : (
+                  'ask an admin to upgrade to Pro for unlimited drafts'
+                )}
+                .
               </Text>
             </Stack>
           )}

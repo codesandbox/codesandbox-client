@@ -801,7 +801,7 @@ export const forkExternalSandbox = async (
       effects.notificationToast.add({
         title: 'Cannot create draft',
         message:
-          'Your drafts folder is full. Delete unneeded drafts, or move them to another folder.',
+          'Your drafts folder is full. Delete unneeded drafts, or upgrade to Pro for unlimited drafts.',
         status: NotificationStatus.ERROR,
       });
     } else {

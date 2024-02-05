@@ -18,6 +18,7 @@ import { pluralize } from 'app/utils/pluralize';
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { on } from 'codemirror';
 import {
   Container,
   Tab,
@@ -508,6 +509,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                 onSubmit={params => {
                   createFromTemplate(selectedTemplate, params);
                 }}
+                onClose={() => closeModal()}
               />
             ) : null}
           </ModalContent>
