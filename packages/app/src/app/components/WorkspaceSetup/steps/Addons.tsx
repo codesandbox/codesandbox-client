@@ -179,10 +179,20 @@ const CreditAddonButton = ({ addon }: { addon: CreditAddon }) => {
 
 const SandboxAddonButton = ({ addon }: { addon: SandboxAddon }) => {
   const actions = useActions();
+  const { isPro } = useWorkspaceSubscription();
+  const { pathname } = useLocation();
+  const isUpgrading = pathname.includes('upgrade');
 
   return (
     <StyledAddonButton
-      onClick={() => actions.checkout.addSandboxPackage(addon)}
+      onClick={() => {
+        track('Checkout - Click on addon', {
+          from: isUpgrading ? 'upgrade' : 'create-workspace',
+          currentPlan: isPro ? 'pro' : 'free',
+          addonId: addon.id,
+        });
+        actions.checkout.addSandboxPackage(addon);
+      }}
     >
       <Stack
         css={{

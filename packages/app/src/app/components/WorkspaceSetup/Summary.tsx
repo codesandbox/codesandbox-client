@@ -1,14 +1,20 @@
 import React from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { IconButton, Stack, Text } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import { UBB_PRO_PLAN } from 'app/constants';
 import styled from 'styled-components';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useLocation } from 'react-router-dom';
 import { fadeAnimation } from './elements';
 
 export const Summary: React.FC<{ allowChanges: boolean }> = ({
   allowChanges,
 }) => {
   const actions = useActions();
+  const { isPro } = useWorkspaceSubscription();
+  const { pathname } = useLocation();
+  const isUpgrading = pathname.includes('upgrade');
   const { checkout } = useAppState();
   const {
     basePlan,
@@ -62,12 +68,20 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
               {allowChanges && (
                 <QuantityCounter
                   quantity={item.quantity}
-                  onIncrement={() =>
-                    actions.checkout.addCreditsPackage(item.addon)
-                  }
-                  onDecrement={() =>
-                    actions.checkout.removeCreditsPackage(item.addon.id)
-                  }
+                  onIncrement={() => {
+                    actions.checkout.addCreditsPackage(item.addon);
+                    track('Checkout - Increment Addon Item', {
+                      from: isUpgrading ? 'upgrade' : 'create-workspace',
+                      currentPlan: isPro ? 'pro' : 'free',
+                    });
+                  }}
+                  onDecrement={() => {
+                    actions.checkout.removeCreditsPackage(item.addon.id);
+                    track('Checkout - Decrement Addon Item', {
+                      from: isUpgrading ? 'upgrade' : 'create-workspace',
+                      currentPlan: isPro ? 'pro' : 'free',
+                    });
+                  }}
                 />
               )}
 

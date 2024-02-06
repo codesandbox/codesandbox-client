@@ -54,10 +54,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const trackOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
       const isExpanded = e.currentTarget?.getAttribute('aria-expanded');
       if (JSON.parse(isExpanded) === true) {
-        track('Workspace Selector - open menu', {
-          codesandbox: 'V1',
-          event_source: 'UI',
-        });
+        track('Workspace Selector - open menu');
       }
     };
 
@@ -128,10 +125,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     gap={2}
                     css={{ borderBottom: '1px solid #343434' }}
                     onSelect={() => {
-                      track('Workspace Selector - Change Active Team', {
-                        codesandbox: 'V1',
-                        event_source: 'UI',
-                      });
+                      track('Workspace Selector - Change Active Team');
                       onSelect(team.id);
                     }}
                   >
@@ -164,7 +158,10 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 css={{
                   textAlign: 'left',
                 }}
-                onSelect={() => history.push('/create-workspace')}
+                onSelect={() => {
+                  history.push('/create-workspace');
+                  track('Workspace Selector - Create Workspace');
+                }}
               >
                 <Stack
                   justify="center"
