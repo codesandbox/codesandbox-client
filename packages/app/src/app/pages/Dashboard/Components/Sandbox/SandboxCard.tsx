@@ -85,6 +85,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
                 onDoubleClick={editing ? undefined : onDoubleClick}
                 onBlur={onBlur}
                 onContextMenu={onContextMenu}
+                title={sandboxTitle}
                 {...props}
               >
                 <Text size={13} weight="medium" color="inherit" truncate>
@@ -104,6 +105,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
                   onDoubleClick={editing ? undefined : onDoubleClick}
                   onBlur={onBlur}
                   onContextMenu={onContextMenu}
+                  title={sandboxTitle}
                   {...props}
                 >
                   <Text size={13} weight="medium" color="inherit" truncate>
