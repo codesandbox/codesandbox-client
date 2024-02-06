@@ -294,16 +294,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     });
   }, [preview]);
 
-  if (page === 'liked') {
-    return (
-      <Component
-        {...sandboxProps}
-        {...interactionProps}
-        isScrolling={isScrolling}
-      />
-    );
-  }
-
   return (
     <div {...dragProps} css={{ height: '100%' }}>
       <Component

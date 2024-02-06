@@ -180,10 +180,8 @@ export const RecentContent: React.FC<RecentContentProps> = ({
                 >
                   <ActionCard
                     onClick={evt => {
-                      track('Recent Page - Create new branch', {
-                        codesandbox: 'V1',
-                        event_source: 'UI',
-                      });
+                      track('Recent Page - Create new branch');
+
                       actions.dashboard.createDraftBranch({
                         owner: repo.owner,
                         name: repo.name,
