@@ -9,7 +9,7 @@ import { Editor } from './Editor';
 import { OnBoarding } from './OnBoarding';
 
 interface Props {
-  showNewSandboxModal?: boolean;
+  showModalOnTop?: 'newSandbox' | 'newDevbox' | 'new';
   match?: {
     params: {
       id: string;
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const Sandbox = React.memo<Props>(
-  ({ match, showNewSandboxModal }) => {
+  ({ match, showModalOnTop }) => {
     const state = useAppState();
     const actions = useActions();
     const [hasBetaEditorExperiment] = useBetaSandboxEditor();
@@ -45,7 +45,7 @@ export const Sandbox = React.memo<Props>(
     }, [sandboxPageMounted]);
 
     useEffect(() => {
-      if (!showNewSandboxModal) {
+      if (!showModalOnTop) {
         if (window.screen.availWidth < 800) {
           if (!document.location.search.includes('from-embed')) {
             const addedSign = document.location.search ? '&' : '?';
@@ -72,7 +72,7 @@ export const Sandbox = React.memo<Props>(
       actions.live,
       actions.editor,
       actions.preferences,
-      showNewSandboxModal,
+      showModalOnTop,
       // eslint-disable-next-line react-hooks/exhaustive-deps
       match?.params,
     ]);
@@ -87,8 +87,10 @@ export const Sandbox = React.memo<Props>(
     const sandbox = state.editor.currentSandbox;
 
     const getTitle = () => {
-      if (showNewSandboxModal) {
-        return 'Create a new Sandbox';
+      if (showModalOnTop) {
+        return 'Create ' + showModalOnTop === 'newSandbox'
+          ? 'Sandbox'
+          : 'Devbox';
       }
 
       if (sandbox) {
@@ -98,8 +100,18 @@ export const Sandbox = React.memo<Props>(
       return 'Loading...';
     };
 
-    if (state.hasLogIn && showNewSandboxModal) {
-      return <Redirect to="/dashboard/recent?create=true" />;
+    if (state.hasLogIn) {
+      if (showModalOnTop === 'newSandbox') {
+        return <Redirect to="/dashboard/recent?create_sandbox=true" />;
+      }
+
+      if (showModalOnTop === 'newDevbox') {
+        return <Redirect to="/dashboard/recent?create_devbox=true" />;
+      }
+
+      if (showModalOnTop === 'new') {
+        return <Redirect to="/dashboard/recent?create=true" />;
+      }
     }
 
     return (
@@ -108,7 +120,7 @@ export const Sandbox = React.memo<Props>(
           <title>{getTitle()} - CodeSandbox</title>
         </Helmet>
         <OnBoarding />
-        <Editor showNewSandboxModal={showNewSandboxModal} />
+        <Editor showModalOnTop={showModalOnTop} />
       </>
     );
   },
