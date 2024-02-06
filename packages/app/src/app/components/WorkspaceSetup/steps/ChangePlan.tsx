@@ -1,4 +1,5 @@
 import React from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Button, Text, Icon } from '@codesandbox/components';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
@@ -25,6 +26,7 @@ export const ChangePlan: React.FC<StepProps> = ({
       workspaceId: urlWorkspaceId,
     });
     if (result.success) {
+      track('Checkout - Change Pro Plan');
       window.location.href = dashboardUrls.portalOverview(urlWorkspaceId);
     } else {
       actions.addNotification({

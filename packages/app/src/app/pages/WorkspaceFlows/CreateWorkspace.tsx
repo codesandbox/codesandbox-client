@@ -1,5 +1,6 @@
 import React from 'react';
 import { WorkspaceSetup } from 'app/components/WorkspaceSetup';
+import track from '@codesandbox/common/lib/utils/analytics';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { useActions, useAppState } from 'app/overmind';
@@ -32,6 +33,7 @@ export const CreateWorkspace = () => {
           actions.dashboard.deleteWorkspace();
           clearFreshWorkspaceId();
         }
+        track('Create Workspace Flow - Dismissed');
         window.location.href = dashboardUrls.recent();
       }}
     />

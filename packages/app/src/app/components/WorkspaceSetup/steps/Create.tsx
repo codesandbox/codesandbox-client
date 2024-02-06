@@ -9,6 +9,7 @@ import {
   Icon,
 } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
@@ -63,6 +64,7 @@ export const Create: React.FC<StepProps> = ({
     try {
       if (teamIsAlreadyCreated) {
         actions.dashboard.renameCurrentTeam({ name: teamName });
+        track('Workspace Name Step - Rename Workspace');
       } else {
         const team = await actions.dashboard.createTeam({
           teamName,
@@ -70,6 +72,9 @@ export const Create: React.FC<StepProps> = ({
 
         setQueryParam('workspace', team.id);
         setFreshWorkspaceId(team.id);
+
+        track('Workspace Name Step - Create Workspace');
+
         await actions.dashboard.getTeams();
         await actions.setActiveTeam({ id: team.id });
       }

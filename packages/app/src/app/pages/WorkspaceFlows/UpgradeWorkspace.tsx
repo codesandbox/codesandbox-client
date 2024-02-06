@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { WorkspaceSetup } from 'app/components/WorkspaceSetup';
+import track from '@codesandbox/common/lib/utils/analytics';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { Redirect, useHistory } from 'react-router-dom';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
@@ -77,6 +78,7 @@ export const UpgradeWorkspace = () => {
         }
       }}
       onDismiss={() => {
+        track('Upgrade Workspace Flow - Dismissed');
         history.push(dashboardUrls.recent(workspaceId));
       }}
       startFrom={proPlanPreSelected ? 'addons' : undefined}
