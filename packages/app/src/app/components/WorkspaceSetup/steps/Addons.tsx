@@ -1,20 +1,15 @@
 import React from 'react';
 import { Stack, Button, Text, Element } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useActions } from 'app/overmind';
-import {
-  CREDIT_ADDONS,
-  SANDBOX_ADDONS,
-} from 'app/overmind/namespaces/checkout/constants';
-import {
-  Addon,
-  CreditAddon,
-  SandboxAddon,
-} from 'app/overmind/namespaces/checkout/state';
+import { useActions, useAppState } from 'app/overmind';
 import styled from 'styled-components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useLocation } from 'react-router-dom';
+import {
+  CreditAddon,
+  SandboxAddon,
+} from 'app/overmind/namespaces/checkout/types';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -26,6 +21,9 @@ export const Addons: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
+  const {
+    checkout: { availableCreditAddons, availableSandboxAddons },
+  } = useAppState();
   const { isPro } = useWorkspaceSubscription();
   const { checkout } = useActions();
   const { getQueryParam } = useURLSearchParams();
@@ -91,7 +89,7 @@ export const Addons: React.FC<StepProps> = ({
               },
             }}
           >
-            {CREDIT_ADDONS.map(addon => (
+            {Object.values(availableCreditAddons).map(addon => (
               <CreditAddonButton key={addon.id} addon={addon} />
             ))}
           </Element>
@@ -129,7 +127,7 @@ export const Addons: React.FC<StepProps> = ({
               },
             }}
           >
-            {SANDBOX_ADDONS.map(addon => (
+            {Object.values(availableSandboxAddons).map(addon => (
               <SandboxAddonButton key={addon.id} addon={addon} />
             ))}
           </Element>
@@ -210,7 +208,7 @@ const SandboxAddonButton = ({ addon }: { addon: SandboxAddon }) => {
   );
 };
 
-const StyledPrice = ({ addon }: { addon: Addon }) => (
+const StyledPrice = ({ addon }: { addon: CreditAddon | SandboxAddon }) => (
   <Stack direction="vertical" align="flex-end">
     <Text color="#e5e5e5" css={{ textWrap: 'nowrap' }}>
       {addon.fullPrice && (

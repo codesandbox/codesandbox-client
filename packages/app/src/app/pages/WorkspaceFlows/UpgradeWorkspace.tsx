@@ -9,7 +9,6 @@ import { useActions, useAppState } from 'app/overmind';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { UBB_PRO_PLAN } from 'app/constants';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
 export const UpgradeWorkspace = () => {
@@ -28,8 +27,8 @@ export const UpgradeWorkspace = () => {
   // Cannot upgrade if already on ubb or legacy paddle
   const cannotUpgradeToUbb = (ubbBeta && isPro) || isPaddle;
 
-  if (proPlanPreSelected && !checkout.basePlan) {
-    actions.checkout.selectPlan(UBB_PRO_PLAN);
+  if (proPlanPreSelected && !checkout.selectedPlan) {
+    actions.checkout.selectPlan('flex');
   }
 
   const {
@@ -45,7 +44,7 @@ export const UpgradeWorkspace = () => {
     const initialSteps: WorkspaceSetupStep[] = [
       'plans',
       'addons',
-      'plan-options',
+      'spending-limit',
       'finalize',
     ];
 

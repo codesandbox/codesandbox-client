@@ -1,8 +1,26 @@
-import { PricingPlan } from 'app/constants';
 import { InvoicePreview } from 'app/graphql/types';
+import {
+  CreditAddon,
+  CreditAddonType,
+  PlanType,
+  PricingPlan,
+  SandboxAddon,
+  SandboxAddonType,
+} from './types';
+import {
+  FREE_PLAN,
+  PRO_PLAN,
+  ENTERPRISE_PLAN,
+  ADDON_CREDITS_500,
+  ADDON_CREDITS_4000,
+  ADDON_CREDITS_24000,
+  ADDON_SANDBOXES_100,
+  ADDON_SANDBOXES_400,
+  ADDON_SANDBOXES_1500,
+} from './constants';
 
 export interface State {
-  basePlan: PricingPlan | null;
+  selectedPlan: PlanType | null;
   creditAddons: Array<{ addon: CreditAddon; quantity: number }>;
   sandboxAddons: Array<{ addon: SandboxAddon; quantity: number }>;
   spendingLimit: number;
@@ -10,37 +28,13 @@ export interface State {
   totalSandboxes: number;
   totalPrice: number;
   convertProToUBBCharge: InvoicePreview | null;
+  availableBasePlans: Record<PlanType, PricingPlan>;
+  availableCreditAddons: Record<CreditAddonType, CreditAddon>;
+  availableSandboxAddons: Record<SandboxAddonType, SandboxAddon>;
 }
 
-export type Addon = CreditAddon | SandboxAddon;
-
-export type CreditAddonType = 'credits_500' | 'credits_4000' | 'credits_24000';
-
-export type CreditAddon = {
-  type: 'credits';
-  id: CreditAddonType;
-  credits: number;
-  price: number;
-  fullPrice?: number;
-  discount?: number;
-};
-
-export type SandboxAddonType =
-  | 'sandboxes_100'
-  | 'sandboxes_400'
-  | 'sandboxes_1500';
-
-export type SandboxAddon = {
-  type: 'sandboxes';
-  id: SandboxAddonType;
-  sandboxes: number;
-  price: number;
-  fullPrice?: number;
-  discount?: number;
-};
-
 export const state: State = {
-  basePlan: null,
+  selectedPlan: null,
   creditAddons: [],
   sandboxAddons: [],
   spendingLimit: 100,
@@ -48,4 +42,19 @@ export const state: State = {
   totalSandboxes: 0,
   totalPrice: 0,
   convertProToUBBCharge: null,
+  availableBasePlans: {
+    free: FREE_PLAN,
+    flex: PRO_PLAN,
+    enterprise: ENTERPRISE_PLAN,
+  },
+  availableCreditAddons: {
+    credits_500: ADDON_CREDITS_500,
+    credits_4000: ADDON_CREDITS_4000,
+    credits_24000: ADDON_CREDITS_24000,
+  },
+  availableSandboxAddons: {
+    sandboxes_100: ADDON_SANDBOXES_100,
+    sandboxes_400: ADDON_SANDBOXES_400,
+    sandboxes_1500: ADDON_SANDBOXES_1500,
+  },
 };

@@ -2,7 +2,6 @@ import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { IconButton, Stack, Text } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import { UBB_PRO_PLAN } from 'app/constants';
 import styled from 'styled-components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useLocation } from 'react-router-dom';
@@ -17,14 +16,21 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
   const isUpgrading = pathname.includes('upgrade');
   const { checkout } = useAppState();
   const {
-    basePlan,
+    selectedPlan,
     creditAddons,
     sandboxAddons,
     totalCredits,
     totalPrice,
     totalSandboxes,
     spendingLimit,
+    availableBasePlans,
   } = checkout;
+
+  const basePlan = availableBasePlans[selectedPlan];
+
+  if (!basePlan) {
+    return null;
+  }
 
   return (
     <Stack
@@ -52,7 +58,7 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
             <Text>{basePlan.credits} VM credits</Text>
             <Text>{basePlan.sandboxes} sandboxes</Text>
           </Stack>
-          <Text color="#fff">${UBB_PRO_PLAN.price}</Text>
+          <Text color="#fff">${basePlan.price}</Text>
         </Stack>
 
         {creditAddons.map(item => (

@@ -3,7 +3,7 @@ import { WorkspaceFlowLayout } from './Layout';
 import { StepProps, WorkspaceSetupStep } from './types';
 import { Create } from './steps/Create';
 import { Plans } from './steps/Plans';
-import { PlanOptions } from './steps/PlanOptions';
+import { SpendingLimit } from './steps/SpendingLimit';
 import { SelectWorkspace } from './steps/SelectWorkspace';
 import { Addons } from './steps/Addons';
 import { Finalize } from './steps/Finalize';
@@ -55,13 +55,13 @@ const STEP_COMPONENTS: Record<WorkspaceSetupStep, React.FC<StepProps>> = {
   create: Create,
   'select-workspace': SelectWorkspace,
   plans: Plans,
-  'plan-options': PlanOptions,
+  'spending-limit': SpendingLimit,
   addons: Addons,
   finalize: Finalize,
 };
 
 const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = [
-  'plan-options',
+  'spending-limit',
   'addons',
   'finalize',
 ];
