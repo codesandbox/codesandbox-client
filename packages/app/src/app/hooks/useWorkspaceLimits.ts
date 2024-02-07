@@ -49,7 +49,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const userDrafts =
     userAuthorizations.find(ua => ua.userId === user.id)?.drafts ?? 0;
   const hasReachedDraftLimit =
-    isFree === true && userDrafts >= limits.includedDrafts;
+    applyUbbRestrictions && isFree === true && userDrafts >= limits.includedDrafts;
 
   return {
     isOutOfCredits,
