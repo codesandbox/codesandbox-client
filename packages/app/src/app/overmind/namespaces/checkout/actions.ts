@@ -5,7 +5,6 @@ import {
   SandboxAddon,
   SandboxAddonType,
   PlanType,
-  VMType,
 } from './types';
 
 export const fetchPrices = async ({ state, effects }: Context) => {
