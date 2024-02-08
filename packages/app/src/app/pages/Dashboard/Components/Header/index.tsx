@@ -1,14 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
-import {
-  Stack,
-  Text,
-  Button,
-  Icon,
-  SkeletonText,
-} from '@codesandbox/components';
-import css from '@styled-system/css';
+import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
