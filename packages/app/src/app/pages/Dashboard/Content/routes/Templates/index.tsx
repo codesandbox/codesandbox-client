@@ -10,7 +10,6 @@ import { TemplateFragmentDashboardFragment } from 'app/graphql/types';
 import { Element } from '@codesandbox/components';
 import { RestrictedSandboxes } from 'app/components/StripeMessages/RestrictedSandboxes';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import { getPossibleTemplates } from '../../utils';
 
 export const Templates = () => {
   const {
@@ -23,10 +22,6 @@ export const Templates = () => {
   useEffect(() => {
     getPage(sandboxesTypes.TEMPLATES);
   }, [getPage, activeTeam]);
-
-  const possibleTemplates = sandboxes.TEMPLATES
-    ? getPossibleTemplates(sandboxes.TEMPLATES)
-    : [];
 
   const sandboxIdsToTemplate = new Map<
     string,
@@ -61,9 +56,7 @@ export const Templates = () => {
       <Header
         title="Templates"
         activeTeam={activeTeam}
-        templates={possibleTemplates}
         showViewOptions
-        showFilters
         showSortOptions
       />
       {hasReachedSandboxLimit && (

@@ -50,7 +50,6 @@ export const MyContributionsPage = () => {
         title="My contributions"
         path={param}
         showViewOptions={!isEmpty}
-        showFilters={!isEmpty && Boolean(param)}
         showSortOptions={!isEmpty && Boolean(param)}
       />
       {isEmpty ? (

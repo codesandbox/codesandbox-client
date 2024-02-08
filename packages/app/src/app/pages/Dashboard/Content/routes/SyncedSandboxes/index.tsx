@@ -4,13 +4,8 @@ import { useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
-import {
-  DashboardGridItem,
-  DashboardSyncedRepoSandbox,
-  PageTypes,
-} from 'app/pages/Dashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
 export const SyncedSandboxesPage = () => {
@@ -28,9 +23,6 @@ export const SyncedSandboxesPage = () => {
     const path = home ? null : param;
     actions.dashboard.getReposByPath(path);
   }, [param, actions.dashboard, activeTeam, home]);
-
-  const activeSandboxes =
-    (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
 
   const getItemsToShow = (): DashboardGridItem[] => {
     if (sandboxes.REPOS === null) {
@@ -60,15 +52,6 @@ export const SyncedSandboxesPage = () => {
 
   const itemsToShow = getItemsToShow();
 
-  const possibleTemplates = itemsToShow
-    .filter((s: DashboardSyncedRepoSandbox) => s.sandbox)
-    .map((s: DashboardSyncedRepoSandbox) => s.sandbox);
-
-  const templates =
-    activeSandboxes.length && param && items[0] && items[0].type === 'sandbox'
-      ? getPossibleTemplates(possibleTemplates)
-      : [];
-
   const pageType: PageTypes = 'synced-sandboxes';
 
   return (
@@ -83,9 +66,7 @@ export const SyncedSandboxesPage = () => {
       <Header
         activeTeam={activeTeam}
         path={param}
-        templates={templates}
         showViewOptions
-        showFilters={Boolean(param)}
         showSortOptions={Boolean(param)}
         nestedPageType={pageType}
       />
