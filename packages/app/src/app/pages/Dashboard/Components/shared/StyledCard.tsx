@@ -23,7 +23,7 @@ export const StyledCard = styled(Card)<StyledCardProps>(
       backgroundColor: '#1D1D1D',
     },
 
-    color: '#999999',
+    color: '#e5e5e5',
     height: '100%',
     display: 'flex',
     flexDirection: 'column',

@@ -12,7 +12,6 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { RestrictedSandboxes } from 'app/components/StripeMessages/RestrictedSandboxes';
 import { Element } from '@codesandbox/components';
-import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
 export const SandboxesPage = () => {
@@ -25,7 +24,7 @@ export const SandboxesPage = () => {
   const actions = useActions();
   const { isFrozen, hasReachedSandboxLimit } = useWorkspaceLimits();
   const {
-    dashboard: { allCollections, sandboxes },
+    dashboard: { allCollections },
     activeTeam,
   } = useAppState();
 
@@ -38,7 +37,6 @@ export const SandboxesPage = () => {
     actions.dashboard.getSandboxesByPath(currentPath);
   }, [currentPath, actions.dashboard, activeTeam]);
 
-  const activeSandboxes = sandboxes.ALL && sandboxes.ALL[cleanParam];
   const itemsToShow: DashboardGridItem[] = allCollections
     ? [
         creating && {
@@ -99,10 +97,8 @@ export const SandboxesPage = () => {
       <Header
         activeTeam={activeTeam}
         path={currentPath}
-        templates={getPossibleTemplates(activeSandboxes || [])}
         createNewFolder={() => setCreating(true)}
         showViewOptions={!isEmpty}
-        showFilters={!isEmpty && Boolean(currentPath)}
         showSortOptions={!isEmpty && Boolean(currentPath)}
       />
 

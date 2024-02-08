@@ -34,13 +34,14 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
 
   return (
     <Text block size={6}>
-      <Link
-        to={link}
-        as={LinkBase}
-        variant={path && path.split('/').length ? 'muted' : 'body'}
-      >
-        {prefix} {path && ' / '}
-      </Link>
+      {path ? (
+        <Link to={link} as={LinkBase}>
+          {prefix} {path && ' / '}
+        </Link>
+      ) : (
+        <Text>{prefix}</Text>
+      )}
+
       {path &&
         nestedPageType !== 'repository-branches' &&
         path.split('/').map((currentPath, i, arr) => {
@@ -64,7 +65,6 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
                   ? link
                   : dashboard.sandboxes('/' + partPath, activeTeam)
               }
-              variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
             >
               {currentPath} {i < path.split('/').length - 1 && '/ '}
             </Link>

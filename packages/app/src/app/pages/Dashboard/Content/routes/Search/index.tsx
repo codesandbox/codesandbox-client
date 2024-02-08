@@ -9,7 +9,6 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { PageTypes } from 'app/pages/Dashboard/types';
 
-import { getPossibleTemplates } from '../../utils';
 import { useGetItems } from './searchItems';
 
 export const SearchComponent = () => {
@@ -19,7 +18,7 @@ export const SearchComponent = () => {
   } = useAppState();
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
-  const [items, filteredSandboxes] = useGetItems({
+  const [items] = useGetItems({
     query,
     getFilteredSandboxes,
   });
@@ -38,9 +37,7 @@ export const SearchComponent = () => {
         title={`Search results for '${query}' in Workspace`}
         activeTeam={activeTeam}
         showViewOptions
-        showFilters
         showSortOptions
-        templates={getPossibleTemplates(filteredSandboxes)}
       />
 
       <section style={{ position: 'relative', height: '100%', width: '100%' }}>

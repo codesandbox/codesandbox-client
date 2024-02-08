@@ -9,7 +9,6 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { Loading } from '@codesandbox/components';
-import { getPossibleTemplates } from '../../utils';
 
 const DESCRIPTION =
   'Drag sandboxes or templates to this page to delete them.<br />Any deleted sandboxes or templates will be permanentely excluded after 30 days.';
@@ -74,9 +73,7 @@ export const Deleted = () => {
       <Header
         title="Recently deleted"
         activeTeam={activeTeam}
-        showFilters={pageState === 'ready'}
         showSortOptions={pageState === 'ready'}
-        templates={getPossibleTemplates(sandboxes.DELETED)}
       />
       {pageState === 'loading' && (
         <EmptyPage.StyledWrapper

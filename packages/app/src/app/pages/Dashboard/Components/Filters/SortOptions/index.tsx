@@ -31,7 +31,7 @@ export const SortOptions: FunctionComponent = React.memo(() => {
     <Menu>
       <Stack align="center">
         <Menu.Button>
-          <Text variant="muted">{FIELD_TO_NAME[field]}</Text>
+          <Text>{FIELD_TO_NAME[field]}</Text>
         </Menu.Button>
         <IconButton
           name="arrowDown"
@@ -45,9 +45,7 @@ export const SortOptions: FunctionComponent = React.memo(() => {
       <Menu.List>
         {Object.keys(FIELD_TO_NAME).map(key => (
           <Menu.Item field="title" key={key} onSelect={() => setField(key)}>
-            <Text variant={FIELD_TO_NAME[key] === field ? 'body' : 'muted'}>
-              {FIELD_TO_NAME[key]}
-            </Text>
+            <Text>{FIELD_TO_NAME[key]}</Text>
           </Menu.Item>
         ))}
       </Menu.List>

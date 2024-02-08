@@ -2,13 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { InstantSearch, SearchBox, Configure } from 'react-instantsearch/dom';
-import { connectHits, connectRefinementList } from 'react-instantsearch-dom';
-import { RefinementListProvided } from 'react-instantsearch-core';
+import { connectHits } from 'react-instantsearch-dom';
 import VisuallyHidden from '@reach/visually-hidden';
 
-import getTemplateDefinition, {
-  TemplateType,
-} from '@codesandbox/common/lib/templates';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
@@ -23,17 +19,7 @@ import {
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
 } from '@codesandbox/common/lib/utils/config';
-import {
-  Element,
-  List,
-  ListAction,
-  Checkbox,
-  Input,
-  Stack,
-  Text,
-} from '@codesandbox/components';
-import css from '@styled-system/css';
-import { formatNumber } from '@codesandbox/components/lib/components/Stats';
+import { Element, Stack } from '@codesandbox/components';
 
 /** instantsearch is very specific about it's connect types,
  * so instead of passing props, I created a context here */
@@ -142,116 +128,9 @@ const Results = connectHits(({ hits }) => {
           title={`Search results for '${query}' in Community`}
           activeTeam={activeTeam}
           showViewOptions
-          showFilters
-          CustomFilters={
-            <div style={{ width: 256 }}>
-              <Filters attribute="template" limit={3} operator="or" />
-              <Element
-                as="hr"
-                css={css({
-                  marginY: 0,
-                  marginX: 3,
-                  borderBottom: '1px solid',
-                  borderColor: 'menuList.border',
-                })}
-              />
-              <Filters
-                attribute="npm_dependencies.dependency"
-                limit={3}
-                operator="and"
-              />
-            </div>
-          }
         />
       </Stack>
       <VariableGrid items={items} page={pageType} />
     </SelectionProvider>
   );
 });
-
-type FilterProps = RefinementListProvided & {
-  attribute: string;
-};
-const Filters = connectRefinementList(
-  ({ attribute, items, searchForItems }: FilterProps) => {
-    const prettyAttribute =
-      attribute === 'template' ? 'Environment' : 'Dependencies';
-
-    const inputRef = React.useRef(null);
-    const { setRefinement } = React.useContext(LocalContext);
-
-    return (
-      <Stack direction="vertical" gap={4} marginY={4}>
-        <Stack direction="vertical" gap={4} marginX={3}>
-          <Text size={3}>{prettyAttribute}</Text>
-          <Input
-            type="search"
-            ref={inputRef}
-            placeholder={`Search for ${prettyAttribute}`}
-            onChange={event => searchForItems(event.currentTarget.value)}
-          />
-        </Stack>
-        <List
-          css={{
-            // min height so that it doesn't jump shrink when there are <3 results
-            minHeight: 96,
-          }}
-        >
-          {items.map(item => {
-            const templateName = item.label as TemplateType;
-            const { name, niceName } = getTemplateDefinition(templateName);
-            const label = name === item.label ? niceName : item.label;
-
-            return (
-              <ListAction
-                css={css({
-                  color: 'foreground',
-                  paddingX: 0,
-                  '> div': { width: '100%' },
-                  label: {
-                    display: 'flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    height: 8,
-                    paddingLeft: 9,
-                    paddingRight: 3,
-                  },
-                  'label:before': { left: 3, top: 2 },
-                  // the checkmark is optically centered
-                  'label:after': { left: '15px', top: '13px' },
-                })}
-              >
-                <Checkbox
-                  key={item.label}
-                  checked={item.isRefined}
-                  onChange={() => {
-                    setRefinement(attribute, item.value);
-                    inputRef.current.value = '';
-                  }}
-                  label={
-                    <Stack
-                      justify="space-between"
-                      css={{ flexGrow: 1, width: '100%' }}
-                    >
-                      <Text maxWidth="100%" size={3}>
-                        {label}
-                      </Text>
-                      <Text variant="muted" size={3}>
-                        {formatNumber(item.count)}
-                      </Text>
-                    </Stack>
-                  }
-                />
-              </ListAction>
-            );
-          })}
-          {items.length === 0 && (
-            <Text size={3} variant="muted" marginX={3}>
-              No {prettyAttribute} found
-            </Text>
-          )}
-        </List>
-      </Stack>
-    );
-  }
-);

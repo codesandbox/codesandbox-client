@@ -14,12 +14,12 @@ const LinkElement = styled(Text).attrs(p => ({
   as: ((p as unknown) as { as: string }).as || 'a',
 }))<LinkProps>(
   css({
-    color: '#999',
+    color: '#a6a6a6',
     textDecoration: 'none',
     transition: 'color ease',
     transitionDuration: theme => theme.speeds[2],
     ':hover, :focus': {
-      color: '#C2C2C2',
+      color: '#ffffff',
     },
   })
 );

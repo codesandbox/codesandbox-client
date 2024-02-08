@@ -7,10 +7,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
-import {
-  appendOnboardingTracking,
-  getPossibleTemplates,
-} from 'app/pages/Dashboard/Content/utils';
+import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import { ArticleCard } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 
@@ -45,9 +42,7 @@ export const Shared = () => {
       <Header
         title="Sandboxes shared with me"
         activeTeam={activeTeam}
-        templates={getPossibleTemplates(sandboxes.SHARED)}
         showViewOptions={!isEmpty}
-        showFilters={!isEmpty}
       />
 
       {isEmpty ? (

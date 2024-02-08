@@ -6,7 +6,6 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
-import { getPossibleTemplates } from '../../utils';
 import { EmptyLikes } from './EmptyLikes';
 
 export const Liked = () => {
@@ -40,9 +39,7 @@ export const Liked = () => {
       <Header
         title="Liked sandboxes"
         activeTeam={activeTeam}
-        templates={getPossibleTemplates(sandboxes.LIKED)}
         showViewOptions={!isEmpty}
-        showFilters={!isEmpty}
       />
 
       {isEmpty ? (

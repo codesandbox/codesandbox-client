@@ -193,10 +193,10 @@ export const RecentContent: React.FC<RecentContentProps> = ({
                     disabled={isFrozen}
                   >
                     <Stack gap={1} direction="vertical">
-                      <Text truncate color="#e5e5e5" weight="500">
+                      <Text truncate weight="500">
                         {repo.name}
                       </Text>
-                      <Text>
+                      <Text variant="muted">
                         Create new branch from{' '}
                         <Text color="#e5e5e5" weight="500">
                           {repo.default}

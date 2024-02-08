@@ -9,7 +9,6 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { DraftsLimit } from 'app/components/StripeMessages/DraftsLimit';
-import { getPossibleTemplates } from '../../utils';
 
 export const Drafts = () => {
   const {
@@ -54,9 +53,7 @@ export const Drafts = () => {
       <Header
         title="My drafts"
         activeTeam={activeTeam}
-        templates={getPossibleTemplates(sandboxes.DRAFTS)}
         showViewOptions={!isEmpty}
-        showFilters={!isEmpty}
         showSortOptions={!isEmpty}
       />
 
