@@ -68,6 +68,7 @@ export const SignInModal = () => {
                   margin: 'auto',
                   padding: '24px',
                   width: '100%',
+                  display: 'flex',
 
                   // With tokens
                   boxShadow: '2',
