@@ -12,6 +12,7 @@ export const fetchPrices = async ({ state, effects }: Context) => {
     const result = await effects.api.getPrices('2024-02-01');
 
     const proPricing = result.base.flex;
+    const proAddons = result.addons;
 
     state.checkout.availableBasePlans.flex = {
       ...state.checkout.availableBasePlans.flex,
@@ -20,6 +21,18 @@ export const fetchPrices = async ({ state, effects }: Context) => {
       sandboxes: proPricing.sandboxes,
       storage: proPricing.storage,
     };
+
+    Object.values(state.checkout.availableCreditAddons).forEach(creditAddon => {
+      creditAddon.price = proAddons[creditAddon.id].cost_month / 100;
+      creditAddon.credits = proAddons[creditAddon.id].credits;
+    });
+
+    Object.values(state.checkout.availableSandboxAddons).forEach(
+      sandboxAddon => {
+        sandboxAddon.price = proAddons[sandboxAddon.id].cost_month / 100;
+        sandboxAddon.sandboxes = proAddons[sandboxAddon.id].sandboxes;
+      }
+    );
   } catch {
     // Silent fail as client values can be used as defaults
   }
