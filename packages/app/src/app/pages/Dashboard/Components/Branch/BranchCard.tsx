@@ -6,6 +6,7 @@ import {
   Text,
   InteractiveOverlay,
 } from '@codesandbox/components';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import { BranchProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
 
@@ -18,8 +19,17 @@ export const BranchCard: React.FC<BranchProps> = ({
   showRepo,
   ...props
 }) => {
-  const { name: branchName, project, contribution } = branch;
+  const {
+    name: branchName,
+    project,
+    contribution,
+    connections,
+    pullRequests,
+  } = branch;
   const { repository } = project;
+
+  const pr = pullRequests.length > 0 ? pullRequests[0] : null;
+
   const ariaLabel = `Open branch ${branchName} from ${repository.name} by ${repository.owner} in the editor`;
 
   return (
@@ -57,6 +67,11 @@ export const BranchCard: React.FC<BranchProps> = ({
                   </Text>
                 </InteractiveOverlay.Anchor>
               </Stack>
+              {pr && (
+                <Text size={3} variant="muted">
+                  #{pr.number}: {pr.title}
+                </Text>
+              )}
             </Stack>
             <Stack css={{ height: '16px' }} align="center">
               <IconButton
@@ -74,6 +89,14 @@ export const BranchCard: React.FC<BranchProps> = ({
               />
             </Stack>
           </Stack>
+          {connections.map(c => (
+            <TeamAvatar
+              name={c.user.name}
+              size="small"
+              style={{ borderRadius: '50%', border: `2px solid ${c.color}` }}
+              avatar={c.user.avatarUrl}
+            />
+          ))}
         </Stack>
       </StyledCard>
     </InteractiveOverlay>

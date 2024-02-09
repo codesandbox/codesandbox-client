@@ -251,8 +251,29 @@ export const branchFragment = gql`
     id
     name
     contribution
+    connections {
+      user {
+        avatarUrl
+        name
+      }
+      color
+    }
+    lastCommit {
+      message
+      sha
+      user {
+        avatarUrl
+        name
+      }
+    }
     lastAccessedAt
     upstream
+    pullRequests {
+      additions
+      deletions
+      number
+      title
+    }
     project {
       repository {
         ... on GitHubRepository {

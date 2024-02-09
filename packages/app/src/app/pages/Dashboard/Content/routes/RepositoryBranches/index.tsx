@@ -5,8 +5,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
-import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { Element } from '@codesandbox/components';
+import { Element, Text } from '@codesandbox/components';
 import {
   getProjectUniqueKey,
   sortByLastAccessed,
@@ -14,9 +13,11 @@ import {
 import { BranchFragment } from 'app/graphql/types';
 import { InstallGHAppStripe } from 'app/pages/Dashboard/Components/shared/InstallGHAppStripe';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 
 type MappedBranches = {
   defaultBranch: BranchFragment | null;
+  activePRs: BranchFragment[];
   accessedBranches: BranchFragment[];
   unaccessedBranches: BranchFragment[];
 };
@@ -50,9 +51,15 @@ export const RepositoryBranchesPage = () => {
 
   const pageType: PageTypes = 'repository-branches';
 
-  const getItemsToShow = (): DashboardGridItem[] => {
+  const getItemsToShow = (): {
+    activePRItems?: DashboardGridItem[];
+    branchItems: DashboardGridItem[];
+  } => {
     if (repositoryProject === undefined) {
-      return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
+      return {
+        activePRItems: [],
+        branchItems: [{ type: 'skeleton-row' }, { type: 'skeleton-row' }],
+      };
     }
 
     // Use a reducer to create an object to store the following values:
@@ -62,6 +69,8 @@ export const RepositoryBranchesPage = () => {
       (acc, branch) => {
         if (branch.name === repositoryProject.repository.defaultBranch) {
           acc.defaultBranch = branch;
+        } else if (branch.pullRequests.length > 0) {
+          acc.activePRs.push(branch);
         } else if (branch.lastAccessedAt) {
           acc.accessedBranches.push(branch);
         } else {
@@ -71,6 +80,7 @@ export const RepositoryBranchesPage = () => {
       },
       {
         defaultBranch: null,
+        activePRs: [],
         accessedBranches: [],
         unaccessedBranches: [],
       } as MappedBranches
@@ -84,6 +94,13 @@ export const RepositoryBranchesPage = () => {
     if (branches.defaultBranch) {
       orderedBranches.unshift(branches.defaultBranch);
     }
+
+    const activePRItems: DashboardGridItem[] = branches.activePRs.map(
+      branch => ({
+        type: 'branch',
+        branch,
+      })
+    );
 
     const branchItems: DashboardGridItem[] = orderedBranches.map(branch => ({
       type: 'branch',
@@ -106,18 +123,17 @@ export const RepositoryBranchesPage = () => {
       });
     }
 
-    return branchItems;
+    return {
+      activePRItems,
+      branchItems,
+    };
   };
 
-  const itemsToShow = getItemsToShow();
+  const { branchItems, activePRItems } = getItemsToShow();
   const ownerNamePath = `${owner}/${name}`;
 
   return (
-    <SelectionProvider
-      page={pageType}
-      activeTeamId={activeTeam}
-      items={itemsToShow}
-    >
+    <SelectionProvider page={pageType} activeTeamId={activeTeam} items={[]}>
       <Helmet>
         <title>{ownerNamePath || 'Repositories'} - CodeSandbox</title>
       </Helmet>
@@ -149,7 +165,23 @@ export const RepositoryBranchesPage = () => {
         </Element>
       )}
 
-      <VariableGrid page={pageType} items={itemsToShow} />
+      {activePRItems.length > 0 && (
+        <>
+          <Text size={16} css={{ padding: '16px' }}>
+            Open PRs
+          </Text>
+          <VariableGrid page={pageType} items={activePRItems} />
+        </>
+      )}
+
+      {branchItems.length > 0 && (
+        <>
+          <Text size={16} css={{ padding: '16px' }}>
+            Other branches
+          </Text>
+          <VariableGrid page={pageType} items={branchItems} />
+        </>
+      )}
     </SelectionProvider>
   );
 };

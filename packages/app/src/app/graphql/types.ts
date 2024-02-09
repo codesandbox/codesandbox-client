@@ -4734,6 +4734,32 @@ export type BranchFragment = {
   contribution: boolean;
   lastAccessedAt: string | null;
   upstream: boolean;
+  connections: Array<{
+    __typename?: 'Connection';
+    color: string;
+    user: {
+      __typename?: 'User';
+      avatarUrl: string;
+      name: string | null;
+    } | null;
+  }>;
+  lastCommit: {
+    __typename?: 'LastCommit';
+    message: string | null;
+    sha: string;
+    user: {
+      __typename?: 'User';
+      avatarUrl: string;
+      name: string | null;
+    } | null;
+  } | null;
+  pullRequests: Array<{
+    __typename?: 'PullRequest';
+    additions: number | null;
+    deletions: number | null;
+    number: number;
+    title: string;
+  }>;
   project: {
     __typename?: 'Project';
     repository: {
@@ -4772,6 +4798,32 @@ export type ProjectWithBranchesFragment = {
     contribution: boolean;
     lastAccessedAt: string | null;
     upstream: boolean;
+    connections: Array<{
+      __typename?: 'Connection';
+      color: string;
+      user: {
+        __typename?: 'User';
+        avatarUrl: string;
+        name: string | null;
+      } | null;
+    }>;
+    lastCommit: {
+      __typename?: 'LastCommit';
+      message: string | null;
+      sha: string;
+      user: {
+        __typename?: 'User';
+        avatarUrl: string;
+        name: string | null;
+      } | null;
+    } | null;
+    pullRequests: Array<{
+      __typename?: 'PullRequest';
+      additions: number | null;
+      deletions: number | null;
+      number: number;
+      title: string;
+    }>;
     project: {
       __typename?: 'Project';
       repository: {
@@ -6029,6 +6081,32 @@ export type RecentlyAccessedBranchesQuery = {
       contribution: boolean;
       lastAccessedAt: string | null;
       upstream: boolean;
+      connections: Array<{
+        __typename?: 'Connection';
+        color: string;
+        user: {
+          __typename?: 'User';
+          avatarUrl: string;
+          name: string | null;
+        } | null;
+      }>;
+      lastCommit: {
+        __typename?: 'LastCommit';
+        message: string | null;
+        sha: string;
+        user: {
+          __typename?: 'User';
+          avatarUrl: string;
+          name: string | null;
+        } | null;
+      } | null;
+      pullRequests: Array<{
+        __typename?: 'PullRequest';
+        additions: number | null;
+        deletions: number | null;
+        number: number;
+        title: string;
+      }>;
       project: {
         __typename?: 'Project';
         repository: {
@@ -6368,6 +6446,32 @@ export type ContributionBranchesQuery = {
       contribution: boolean;
       lastAccessedAt: string | null;
       upstream: boolean;
+      connections: Array<{
+        __typename?: 'Connection';
+        color: string;
+        user: {
+          __typename?: 'User';
+          avatarUrl: string;
+          name: string | null;
+        } | null;
+      }>;
+      lastCommit: {
+        __typename?: 'LastCommit';
+        message: string | null;
+        sha: string;
+        user: {
+          __typename?: 'User';
+          avatarUrl: string;
+          name: string | null;
+        } | null;
+      } | null;
+      pullRequests: Array<{
+        __typename?: 'PullRequest';
+        additions: number | null;
+        deletions: number | null;
+        number: number;
+        title: string;
+      }>;
       project: {
         __typename?: 'Project';
         repository: {
@@ -6432,6 +6536,32 @@ export type RepositoryByDetailsQuery = {
       contribution: boolean;
       lastAccessedAt: string | null;
       upstream: boolean;
+      connections: Array<{
+        __typename?: 'Connection';
+        color: string;
+        user: {
+          __typename?: 'User';
+          avatarUrl: string;
+          name: string | null;
+        } | null;
+      }>;
+      lastCommit: {
+        __typename?: 'LastCommit';
+        message: string | null;
+        sha: string;
+        user: {
+          __typename?: 'User';
+          avatarUrl: string;
+          name: string | null;
+        } | null;
+      } | null;
+      pullRequests: Array<{
+        __typename?: 'PullRequest';
+        additions: number | null;
+        deletions: number | null;
+        number: number;
+        title: string;
+      }>;
       project: {
         __typename?: 'Project';
         repository: {
