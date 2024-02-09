@@ -46,7 +46,7 @@ export const RepositoryBranchesPage = () => {
         name,
       });
     }
-  }, [activeTeam]);
+  }, [activeTeam, owner, name]);
 
   const pageType: PageTypes = 'repository-branches';
 
