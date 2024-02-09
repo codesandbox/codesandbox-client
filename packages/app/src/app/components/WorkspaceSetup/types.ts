@@ -3,7 +3,7 @@ export type WorkspaceSetupStep =
   | 'select-workspace'
   | 'plans'
   | 'addons'
-  | 'plan-options'
+  | 'spending-limit'
   | 'finalize';
 
 export interface StepProps {

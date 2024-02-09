@@ -38,6 +38,7 @@ import {
   FinalizeSignUpOptions,
   MetaFeatures,
   VMTier,
+  APIPricingResult,
 } from './types';
 
 let api: Api;
@@ -439,7 +440,9 @@ export default {
   validateUsername(username: string): Promise<{ available: boolean }> {
     return api.get('/users/available/' + username);
   },
-  finalizeSignUp(options: FinalizeSignUpOptions): Promise<{primaryTeamId: string}> {
+  finalizeSignUp(
+    options: FinalizeSignUpOptions
+  ): Promise<{ primaryTeamId: string }> {
     return api.post('/users/finalize', options);
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
@@ -589,7 +592,10 @@ export default {
     }>(`/sandboxes/limits`);
   },
   getPrices(version?: string) {
-    return api.get(`/prices`, undefined, { version: version || '2023-08-15' });
+    return api.get<APIPricingResult>(`/prices`, undefined, {
+      version: version || '2023-08-15',
+      shouldCamelize: false, // ensure addon keys don't get messed up
+    });
   },
   stripeCreateCheckout({
     success_path,

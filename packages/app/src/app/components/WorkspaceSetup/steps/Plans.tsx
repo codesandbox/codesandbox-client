@@ -9,29 +9,24 @@ import {
   Tooltip,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import {
-  CSB_FRIENDS_LINK,
-  ORGANIZATION_CONTACT_LINK,
-  PricingPlan,
-  PricingPlanFeatures,
-  UBB_ENTERPRISE_FEATURES,
-  UBB_ENTERPRISE_PLAN,
-  UBB_PRO_FEATURES,
-  UBB_PRO_PLAN,
-  UBB_FREE_FEATURES,
-  UBB_FREE_PLAN,
-  EXPLAINED_FEATURES,
-} from 'app/constants';
+import { CSB_FRIENDS_LINK, ORGANIZATION_CONTACT_LINK } from 'app/constants';
 import styled from 'styled-components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useLocation } from 'react-router-dom';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { PricingPlan } from 'app/overmind/namespaces/checkout/types';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
 import { FAQ } from './FAQ';
+import {
+  ENTERPRISE_FEATURES,
+  FREE_FEATURES,
+  PRO_FEATURES,
+  PricingPlanFeatures,
+} from './constants';
 
 export const Plans: React.FC<StepProps> = ({
   onNextStep,
@@ -42,7 +37,7 @@ export const Plans: React.FC<StepProps> = ({
   numberOfSteps,
 }) => {
   const { getQueryParam } = useURLSearchParams();
-  const { activeTeam } = useAppState();
+  const { activeTeam, checkout } = useAppState();
 
   const actions = useActions();
   const effects = useEffects();
@@ -51,10 +46,15 @@ export const Plans: React.FC<StepProps> = ({
   const [tiers, setTiers] = useState<VMTier[]>([]);
   const { isFree } = useWorkspaceSubscription();
   const isUpgrading = pathname.includes('upgrade');
-
-  // Until the 30th of Jan existing Pro can see this page
-  // However, they should not see the free plan
   const showFreePlan = isFree;
+
+  const {
+    availableBasePlans: {
+      enterprise: enterprisePlan,
+      flex: proPlan,
+      free: freePlan,
+    },
+  } = checkout;
 
   // For new workspaces
   const freeButtonCTA = isUpgrading
@@ -62,6 +62,7 @@ export const Plans: React.FC<StepProps> = ({
     : 'Get started for free';
 
   useEffect(() => {
+    actions.checkout.fetchPrices();
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
   }, []);
 
@@ -72,7 +73,7 @@ export const Plans: React.FC<StepProps> = ({
   }, [urlWorkspaceId, activeTeam, actions]);
 
   const handleProPlanSelection = async () => {
-    actions.checkout.selectPlan(UBB_PRO_PLAN);
+    actions.checkout.selectPlan('flex');
     track('Checkout - Select Pro Plan', {
       from: isUpgrading ? 'upgrade' : 'create-workspace',
       currentPlan: isFree ? 'free' : 'pro',
@@ -111,10 +112,10 @@ export const Plans: React.FC<StepProps> = ({
                   }}
                 >
                   <Text size={7} fontFamily="everett" weight="medium">
-                    {UBB_FREE_PLAN.name}
+                    {freePlan.name}
                   </Text>
                   <CardHeading>For learning and experimenting</CardHeading>
-                  <PlanPricing plan={UBB_FREE_PLAN} />
+                  <PlanPricing plan={freePlan} />
 
                   <Button
                     css={{
@@ -136,13 +137,13 @@ export const Plans: React.FC<StepProps> = ({
                   <PlanFeatures
                     heading="Usage"
                     secondaryColor="#a6a6a6"
-                    features={UBB_FREE_PLAN.usage}
+                    features={freePlan.usage}
                     includeTooltips
                   />
                   <PlanFeatures
                     heading="Features"
                     secondaryColor="#a6a6a6"
-                    features={UBB_FREE_PLAN.features}
+                    features={freePlan.features}
                   />
                 </StyledCard>
               )}
@@ -153,12 +154,12 @@ export const Plans: React.FC<StepProps> = ({
                 css={{ borderColor: '#9581FF' }}
               >
                 <Text size={7} fontFamily="everett" weight="medium">
-                  {UBB_PRO_PLAN.name}
+                  {proPlan.name}
                 </Text>
                 <CardHeading>
                   Pay as you go with a monthly subscription
                 </CardHeading>
-                <PlanPricing plan={UBB_PRO_PLAN} />
+                <PlanPricing plan={proPlan} />
                 <Button
                   variant="dark"
                   css={{
@@ -172,13 +173,10 @@ export const Plans: React.FC<StepProps> = ({
                 </Button>
                 <PlanFeatures
                   heading="Usage"
-                  features={UBB_PRO_PLAN.usage}
+                  features={proPlan.usage}
                   includeTooltips
                 />
-                <PlanFeatures
-                  heading="Features"
-                  features={UBB_PRO_PLAN.features}
-                />
+                <PlanFeatures heading="Features" features={proPlan.features} />
                 <PlanFeatures
                   itemIcon="plus"
                   heading="Add-ons"
@@ -194,15 +192,12 @@ export const Plans: React.FC<StepProps> = ({
                 }}
               >
                 <Text size={7} fontFamily="everett" weight="medium">
-                  {UBB_ENTERPRISE_PLAN.name}
+                  {enterprisePlan.name}
                 </Text>
                 <CardHeading>
                   The future of Cloud Development Environments
                 </CardHeading>
-                <PlanPricing
-                  plan={UBB_ENTERPRISE_PLAN}
-                  overridePrice="Custom"
-                />
+                <PlanPricing plan={enterprisePlan} overridePrice="Custom" />
                 <Button
                   as="a"
                   href={ORGANIZATION_CONTACT_LINK}
@@ -221,7 +216,7 @@ export const Plans: React.FC<StepProps> = ({
                 </Button>
                 <Stack direction="vertical" gap={4}>
                   <Text>Everything in Pro, plus:</Text>
-                  <PlanFeatures features={UBB_ENTERPRISE_PLAN.features} />
+                  <PlanFeatures features={enterprisePlan.features} />
                 </Stack>
               </StyledCard>
             </Stack>
@@ -229,7 +224,7 @@ export const Plans: React.FC<StepProps> = ({
           <CodeSandboxFriendsCard />
         </Stack>
         <FeaturesComparison
-          plans={[UBB_FREE_FEATURES, UBB_PRO_FEATURES, UBB_ENTERPRISE_FEATURES]}
+          plans={[FREE_FEATURES, PRO_FEATURES, ENTERPRISE_FEATURES]}
         />
         <VMSpecs tiers={tiers} />
 
@@ -390,6 +385,17 @@ const PlanFeatures: React.FC<{
     </Stack>
   </Stack>
 );
+
+export const EXPLAINED_FEATURES: Record<string, string> = {
+  'VM credits':
+    'Credits measure VM runtime and apply to Devboxes and Repositories.',
+  Devboxes:
+    'Devboxes are our Cloud Development Environment, which runs in virtual machines and requires VM credits.',
+  Sandboxes:
+    "Sandboxes are powered by your browser and don't require credits to run.",
+  'personal drafts':
+    'Personal drafts are Sandbox drafts that are not shareable or embeddable.',
+};
 
 const TextWithTooltips = ({ text }: { text: string }) => {
   const explainedKeys = Object.keys(EXPLAINED_FEATURES);

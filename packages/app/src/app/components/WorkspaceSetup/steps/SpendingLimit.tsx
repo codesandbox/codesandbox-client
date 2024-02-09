@@ -10,7 +10,7 @@ import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
 
-export const PlanOptions: React.FC<StepProps> = ({
+export const SpendingLimit: React.FC<StepProps> = ({
   onNextStep,
   onPrevStep,
   onDismiss,

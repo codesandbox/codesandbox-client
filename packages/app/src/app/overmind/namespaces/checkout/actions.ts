@@ -1,15 +1,46 @@
-import { PricingPlan } from 'app/constants';
 import type { Context } from 'app/overmind';
 import {
   CreditAddon,
   CreditAddonType,
   SandboxAddon,
   SandboxAddonType,
-} from './state';
+  PlanType,
+} from './types';
 
-export const selectPlan = ({ state, actions }: Context, plan: PricingPlan) => {
+export const fetchPrices = async ({ state, effects }: Context) => {
+  try {
+    const result = await effects.api.getPrices('2024-02-01');
+
+    const proPricing = result.base.flex;
+    const proAddons = result.addons;
+
+    state.checkout.availableBasePlans.flex = {
+      ...state.checkout.availableBasePlans.flex,
+      credits: proPricing.credits,
+      price: proPricing.cost_month / 100,
+      sandboxes: proPricing.sandboxes,
+      storage: proPricing.storage,
+    };
+
+    Object.values(state.checkout.availableCreditAddons).forEach(creditAddon => {
+      creditAddon.price = proAddons[creditAddon.id].cost_month / 100;
+      creditAddon.credits = proAddons[creditAddon.id].credits;
+    });
+
+    Object.values(state.checkout.availableSandboxAddons).forEach(
+      sandboxAddon => {
+        sandboxAddon.price = proAddons[sandboxAddon.id].cost_month / 100;
+        sandboxAddon.sandboxes = proAddons[sandboxAddon.id].sandboxes;
+      }
+    );
+  } catch {
+    // Silent fail as client values can be used as defaults
+  }
+};
+
+export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
   actions.checkout.clearCheckout();
-  state.checkout.basePlan = plan;
+  state.checkout.selectedPlan = plan;
   actions.checkout.recomputeTotals();
 };
 
@@ -94,51 +125,56 @@ export const removeSandboxPackage = (
 };
 
 export const recomputeTotals = ({ state }: Context) => {
-  if (!state.checkout.basePlan) {
+  if (!state.checkout.selectedPlan) {
     return;
   }
 
-  const totalCreditAddonsPrice = state.checkout.creditAddons.reduce(
+  const {
+    availableBasePlans,
+    selectedPlan,
+    creditAddons,
+    sandboxAddons,
+  } = state.checkout;
+
+  const basePlan = availableBasePlans[selectedPlan];
+
+  const totalCreditAddonsPrice = creditAddons.reduce(
     (acc, item) => acc + item.addon.price * item.quantity,
     0
   );
 
-  const totalSandboxAddonsPrice = state.checkout.sandboxAddons.reduce(
+  const totalSandboxAddonsPrice = sandboxAddons.reduce(
     (acc, item) => acc + item.addon.price * item.quantity,
     0
   );
 
   state.checkout.totalPrice =
-    state.checkout.basePlan.price +
-    totalCreditAddonsPrice +
-    totalSandboxAddonsPrice;
+    basePlan.price + totalCreditAddonsPrice + totalSandboxAddonsPrice;
 
   state.checkout.totalCredits =
-    state.checkout.basePlan.credits +
-    state.checkout.creditAddons.reduce(
+    basePlan.credits +
+    creditAddons.reduce(
       (acc, item) => acc + item.addon.credits * item.quantity,
       0
     );
 
   state.checkout.totalSandboxes =
-    state.checkout.basePlan.sandboxes +
-    state.checkout.sandboxAddons.reduce(
+    basePlan.sandboxes +
+    sandboxAddons.reduce(
       (acc, item) => acc + item.addon.sandboxes * item.quantity,
       0
     );
 };
 
 export const clearCheckout = ({ state }: Context) => {
-  state.checkout = {
-    basePlan: null,
-    creditAddons: [],
-    sandboxAddons: [],
-    totalPrice: 0,
-    totalCredits: 0,
-    totalSandboxes: 0,
-    spendingLimit: 100,
-    convertProToUBBCharge: null,
-  };
+  state.checkout.selectedPlan = null;
+  state.checkout.creditAddons = [];
+  state.checkout.sandboxAddons = [];
+  state.checkout.totalPrice = 0;
+  state.checkout.totalCredits = 0;
+  state.checkout.totalSandboxes = 0;
+  state.checkout.spendingLimit = 100;
+  state.checkout.convertProToUBBCharge = null;
 };
 
 export const setSpendingLimit = async (
@@ -161,11 +197,13 @@ export const calculateConversionCharge = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ) => {
-  const { basePlan } = state.checkout;
+  const { selectedPlan } = state.checkout;
 
-  if (!basePlan) {
+  if (!selectedPlan) {
     return;
   }
+
+  const basePlan = state.checkout.availableBasePlans[selectedPlan];
 
   try {
     const result = await effects.gql.mutations.previewConvertToUsageBilling({
@@ -194,11 +232,13 @@ export const convertToUsageBilling = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ): Promise<{ success: boolean; error?: string }> => {
-  const { basePlan } = state.checkout;
+  const { selectedPlan } = state.checkout;
 
-  if (!basePlan) {
+  if (!selectedPlan) {
     return { success: false, error: 'No plan selected' };
   }
+
+  const basePlan = state.checkout.availableBasePlans[selectedPlan];
 
   try {
     await effects.gql.mutations.convertToUsageBilling({
