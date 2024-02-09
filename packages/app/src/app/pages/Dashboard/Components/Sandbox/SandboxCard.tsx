@@ -143,7 +143,7 @@ type SandboxStatsProps = {
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
   ({ isFrozen, noDrag, lastUpdated, PrivacyIcon, sandbox, restricted }) => {
     const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
-
+    console.log(lastUpdated);
     const lastUpdatedText = (
       <Text key="last-updated" size={12} truncate>
         {shortDistance(lastUpdated)}
