@@ -15,6 +15,7 @@ import { SIDEBAR_WIDTH } from './constants';
 import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
+import { ExpandableReposRowItem } from './ExpandableReposRowItem';
 
 interface SidebarProps {
   visible: boolean;
@@ -36,7 +37,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   React.useEffect(() => {
     // Used to fetch collections
     actions.dashboard.getAllFolders();
-    actions.dashboard.getStarredRepos();
   }, [state.activeTeam]);
 
   React.useEffect(() => {
@@ -194,21 +194,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 />
               )}
 
-              <RowItem
-                name="All repositories"
-                page="repositories"
-                path={dashboardUrls.repositories(activeTeam)}
-                icon="repository"
-              />
-              {dashboard.starredRepos.map(repo => (
-                <RowItem
-                  name={repo.name}
-                  page="repositories"
-                  path={dashboardUrls.repository(repo)}
-                  icon="star"
-                  nestingLevel={1}
-                />
-              ))}
+              <ExpandableReposRowItem />
             </>
           )}
 

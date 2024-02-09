@@ -175,10 +175,18 @@ export const RowItem: React.FC<RowItemProps> = ({
               return false;
             },
           }}
+          truncate
+          title={`Open ${name}`}
         >
           <Stack
             as="span"
-            css={{ width: '36px', paddingLeft: '8px', paddingRight: '4px' }}
+            css={{
+              width: '36px',
+              paddingLeft: '8px',
+              paddingRight: '4px',
+              flexShrink: 0,
+              overflow: 'hidden',
+            }}
             align="center"
             justify="center"
           >

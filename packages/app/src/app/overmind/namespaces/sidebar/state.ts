@@ -7,6 +7,7 @@
 export interface State {
   hasSyncedSandboxes: boolean | null;
   hasTemplates: boolean | null;
+  repositories: Array<{ name: string; owner: string }>;
 }
 
 /**
@@ -15,4 +16,5 @@ export interface State {
 export const state: State = {
   hasSyncedSandboxes: null,
   hasTemplates: null,
+  repositories: [],
 };
