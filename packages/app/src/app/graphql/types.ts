@@ -6587,6 +6587,11 @@ export type SidebarTemplateFragmentFragment = {
   id: any | null;
 };
 
+export type SidebarProjectFragmentFragment = {
+  __typename?: 'Project';
+  repository: { __typename?: 'GitHubRepository'; name: string; owner: string };
+};
+
 export type TeamSidebarDataQueryVariables = Exact<{
   id: Scalars['UUID4'];
 }>;
@@ -6599,6 +6604,14 @@ export type TeamSidebarDataQuery = {
       __typename?: 'Team';
       sandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
       templates: Array<{ __typename?: 'Template'; id: any | null }>;
+      projects: Array<{
+        __typename?: 'Project';
+        repository: {
+          __typename?: 'GitHubRepository';
+          name: string;
+          owner: string;
+        };
+      }>;
     } | null;
   } | null;
 };

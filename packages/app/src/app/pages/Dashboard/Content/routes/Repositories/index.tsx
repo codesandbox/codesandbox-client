@@ -46,7 +46,11 @@ export const RepositoriesPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
-    const repoItems: DashboardGridItem[] = teamRepos.map(repository => ({
+    const orderedRepos = [...teamRepos].sort((a, b) =>
+      a.repository.name.toLowerCase() < b.repository.name.toLowerCase() ? -1 : 1
+    );
+
+    const repoItems: DashboardGridItem[] = orderedRepos.map(repository => ({
       type: 'repository' as const,
       repository,
     }));

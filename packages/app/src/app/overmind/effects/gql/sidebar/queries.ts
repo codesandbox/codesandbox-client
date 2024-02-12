@@ -6,6 +6,7 @@ import {
 } from 'app/graphql/types';
 
 import {
+  sidebarProjectFragment,
   sidebarSyncedSandboxFragment,
   sidebarTemplateFragment,
 } from './fragments';
@@ -23,9 +24,13 @@ export const getTeamSidebarData: Query<
         templates {
           ...sidebarTemplateFragment
         }
+        projects(syncData: false) {
+          ...sidebarProjectFragment
+        }
       }
     }
   }
   ${sidebarSyncedSandboxFragment}
   ${sidebarTemplateFragment}
+  ${sidebarProjectFragment}
 `;

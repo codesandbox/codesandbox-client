@@ -16,6 +16,11 @@ export const getSidebarData = async (
 
     const sandboxes = result.me?.team?.sandboxes || null;
     const templates = result.me?.team?.templates || null;
+    const repositories =
+      result.me?.team?.projects?.map(p => ({
+        owner: p.repository.owner,
+        name: p.repository.name,
+      })) || [];
 
     const hasSyncedSandboxes = sandboxes && sandboxes.length > 0;
     const hasTemplates = templates && templates.length > 0;
@@ -23,6 +28,7 @@ export const getSidebarData = async (
     state.sidebar = {
       hasSyncedSandboxes,
       hasTemplates,
+      repositories,
     };
   } catch {
     effects.notificationToast.error(
