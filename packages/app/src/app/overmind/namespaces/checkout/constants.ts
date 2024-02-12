@@ -121,3 +121,5 @@ export const ADDON_SANDBOXES_1500: SandboxAddon = {
   fullPrice: 136,
   discount: 50,
 };
+
+export const DEFAULT_SPENDING_LIMIT = 0;
