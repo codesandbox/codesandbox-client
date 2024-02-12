@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { AnimatePresence, motion } from 'framer-motion';
 import { orderBy } from 'lodash-es';
