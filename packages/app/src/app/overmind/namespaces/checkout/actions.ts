@@ -6,6 +6,7 @@ import {
   SandboxAddonType,
   PlanType,
 } from './types';
+import { DEFAULT_SPENDING_LIMIT } from './constants';
 
 export const fetchPrices = async ({ state, effects }: Context) => {
   try {
@@ -173,7 +174,7 @@ export const clearCheckout = ({ state }: Context) => {
   state.checkout.totalPrice = 0;
   state.checkout.totalCredits = 0;
   state.checkout.totalSandboxes = 0;
-  state.checkout.spendingLimit = 100;
+  state.checkout.spendingLimit = DEFAULT_SPENDING_LIMIT;
   state.checkout.convertProToUBBCharge = null;
 };
 
@@ -189,7 +190,7 @@ export const setSpendingLimit = async (
       onDemandSpendingLimit: spendingLimit,
     });
   } catch (e) {
-    state.checkout.spendingLimit = 100; // Input value default will be used if mutation fails
+    state.checkout.spendingLimit = DEFAULT_SPENDING_LIMIT; // Input value default will be used if mutation fails
   }
 };
 

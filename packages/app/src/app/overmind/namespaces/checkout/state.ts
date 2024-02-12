@@ -17,6 +17,7 @@ import {
   ADDON_SANDBOXES_100,
   ADDON_SANDBOXES_400,
   ADDON_SANDBOXES_1500,
+  DEFAULT_SPENDING_LIMIT,
 } from './constants';
 
 export interface State {
@@ -37,7 +38,7 @@ export const state: State = {
   selectedPlan: null,
   creditAddons: [],
   sandboxAddons: [],
-  spendingLimit: 100,
+  spendingLimit: DEFAULT_SPENDING_LIMIT,
   totalCredits: 0,
   totalSandboxes: 0,
   totalPrice: 0,
