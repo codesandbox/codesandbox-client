@@ -11,10 +11,14 @@ import {
   Link,
   Stack,
 } from '@codesandbox/components';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { RowItem } from './RowItem';
 
 export const ExpandableReposRowItem = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useGlobalPersistedState(
+    'SIDEBAR_REPOS_EXPANDED',
+    false
+  );
   const { activeTeam, sidebar } = useAppState();
 
   return (
