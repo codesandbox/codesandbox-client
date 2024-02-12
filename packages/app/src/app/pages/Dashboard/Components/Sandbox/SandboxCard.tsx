@@ -138,15 +138,14 @@ type SandboxStatsProps = {
   isFrozen?: boolean;
 } & Pick<
   SandboxItemComponentProps,
-  'noDrag' | 'lastUpdated' | 'PrivacyIcon' | 'sandbox' | 'restricted'
+  'noDrag' | 'timeAgo' | 'PrivacyIcon' | 'sandbox' | 'restricted'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ isFrozen, noDrag, lastUpdated, PrivacyIcon, sandbox, restricted }) => {
+  ({ isFrozen, noDrag, timeAgo, PrivacyIcon, sandbox, restricted }) => {
     const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
-
-    const lastUpdatedText = (
-      <Text key="last-updated" size={12} truncate>
-        {shortDistance(lastUpdated)}
+    const timeAgoText = (
+      <Text size={12} truncate>
+        {shortDistance(timeAgo)}
       </Text>
     );
 
@@ -165,7 +164,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           {isFrozen && (
             <Icon size={16} title={`Protected ${boxType}`} name="frozen" />
           )}
-          {noDrag ? null : lastUpdatedText}
+          {noDrag ? null : timeAgoText}
         </Stack>
         <SandboxBadge sandbox={sandbox} restricted={restricted} />
       </Stack>
@@ -176,7 +175,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
 export const SandboxCard = ({
   sandbox,
   noDrag,
-  lastUpdated,
+  timeAgo,
   PrivacyIcon,
   screenshotUrl,
   restricted,
@@ -283,7 +282,7 @@ export const SandboxCard = ({
           <SandboxTitle brightness={thumbnail.brightness} {...props} />
           <SandboxStats
             noDrag={noDrag}
-            lastUpdated={lastUpdated}
+            timeAgo={timeAgo}
             isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}

@@ -76,9 +76,11 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
   const sandboxLocation = getFolderName(item);
+  const timeStampToUse =
+    page === 'recent' ? sandbox.lastAccessedAt : sandbox.updatedAt;
 
-  const lastUpdated = formatDistanceStrict(
-    zonedTimeToUtc(sandbox.updatedAt, 'Etc/UTC'),
+  const timeAgo = formatDistanceStrict(
+    zonedTimeToUtc(timeStampToUse, 'Etc/UTC'),
     new Date(),
     {
       addSuffix: true,
@@ -262,7 +264,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     noDrag,
     sandboxTitle,
     sandboxLocation,
-    lastUpdated,
+    timeAgo,
     viewCount,
     sandbox,
     TemplateIcon,

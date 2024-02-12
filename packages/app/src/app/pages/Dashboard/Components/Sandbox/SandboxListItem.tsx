@@ -19,7 +19,7 @@ export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
   sandboxLocation,
-  lastUpdated,
+  timeAgo,
   viewCount,
   TemplateIcon,
   PrivacyIcon,
@@ -174,10 +174,7 @@ export const SandboxListItem = ({
               variant={selected ? 'body' : 'muted'}
               maxWidth="100%"
             >
-              <Text css={css({ display: ['none', 'none', 'inline'] })}>
-                updated
-              </Text>{' '}
-              {lastUpdated}
+              {timeAgo}
             </Text>
           )}
         </Column>

@@ -19,6 +19,7 @@ export const BranchListItem = ({
   selected,
   isBeingRemoved,
   onContextMenu,
+  lastAccessed,
 }: BranchProps) => {
   const { name: branchName, project, contribution } = branch;
   const { repository } = project;
@@ -97,9 +98,14 @@ export const BranchListItem = ({
               </Element>
             </Stack>
           </Column>
-          <Column span={[0, 7, 8]} as={Stack} align="center">
+          <Column span={[0, 2, 2]} as={Stack} align="center">
             <Text size={3} variant="muted" maxWidth="100%">
               {repository.owner}/{repository.name}
+            </Text>
+          </Column>
+          <Column span={[0, 5, 6]} as={Stack} align="center">
+            <Text size={3} variant="muted" maxWidth="100%">
+              {lastAccessed}
             </Text>
           </Column>
         </Grid>

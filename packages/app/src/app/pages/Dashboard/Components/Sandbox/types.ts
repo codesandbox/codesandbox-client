@@ -5,7 +5,7 @@ export interface SandboxItemComponentProps {
   sandbox: DashboardSandbox['sandbox'] | DashboardTemplate['sandbox'];
   sandboxTitle: string;
   sandboxLocation?: string;
-  lastUpdated: string;
+  timeAgo: string;
   viewCount: number | string;
   TemplateIcon: React.FC<{
     width: string;

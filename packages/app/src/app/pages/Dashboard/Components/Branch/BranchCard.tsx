@@ -6,6 +6,7 @@ import {
   Text,
   InteractiveOverlay,
 } from '@codesandbox/components';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { BranchProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
 
@@ -16,6 +17,7 @@ export const BranchCard: React.FC<BranchProps> = ({
   selected,
   onContextMenu,
   showRepo,
+  lastAccessed,
   ...props
 }) => {
   const { name: branchName, project, contribution } = branch;
@@ -74,6 +76,11 @@ export const BranchCard: React.FC<BranchProps> = ({
               />
             </Stack>
           </Stack>
+          {lastAccessed && (
+            <Text size={12} variant="muted">
+              {shortDistance(lastAccessed)}
+            </Text>
+          )}
         </Stack>
       </StyledCard>
     </InteractiveOverlay>
