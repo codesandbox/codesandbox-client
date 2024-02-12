@@ -110,10 +110,15 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               }}
             >
               {workspaces.map(team => {
-                const showPro =
+                const isProWorkspace =
                   team.subscription?.status === SubscriptionStatus.Active;
 
-                if (filterNonPro && team.id !== state.activeTeam && !showPro) {
+                const moveNotAllowed =
+                  filterNonPro &&
+                  !isProWorkspace &&
+                  !team.featureFlags.friendOfCsb;
+
+                if (team.id !== state.activeTeam && moveNotAllowed) {
                   return null;
                 }
 
@@ -145,7 +150,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                         {team.name}
                       </Text>
 
-                      {showPro && <Badge variant="pro">Pro</Badge>}
+                      {isProWorkspace && <Badge variant="pro">Pro</Badge>}
                     </Stack>
                   </Stack>
                 );
