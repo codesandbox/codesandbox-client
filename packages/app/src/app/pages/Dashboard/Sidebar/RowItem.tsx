@@ -4,6 +4,7 @@ import {
   SidebarListAction,
   Stack,
   Icon,
+  Text,
 } from '@codesandbox/components';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import React from 'react';
@@ -175,7 +176,6 @@ export const RowItem: React.FC<RowItemProps> = ({
               return false;
             },
           }}
-          truncate
           title={`Open ${name}`}
         >
           <Stack
@@ -192,7 +192,7 @@ export const RowItem: React.FC<RowItemProps> = ({
           >
             <Icon name={icon} />
           </Stack>
-          {name}
+          <Text truncate>{name}</Text>
         </Link>
       )}
     </SidebarListAction>
