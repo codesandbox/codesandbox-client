@@ -1672,7 +1672,7 @@ export const removeRepositoryFromTeam = async (
   { actions, state, effects }: Context,
   { project, page }: RemoveRepositoryParams
 ) => {
-  const { activeTeam, dashboard } = state;
+  const { activeTeam, dashboard, sidebar } = state;
   if (!activeTeam) {
     return;
   }
@@ -1710,6 +1710,7 @@ export const removeRepositoryFromTeam = async (
     // 1. From repositories list
     // 2. From repository with branches cache
     // 3. Branches from recent page
+    // 4. From sidebar list
 
     const teamRepositories = dashboard.repositoriesByTeamId[activeTeam];
     if (teamRepositories) {
@@ -1736,6 +1737,10 @@ export const removeRepositoryFromTeam = async (
 
         return branchRepo.owner === owner && branchRepo.name === name;
       }) ?? [];
+
+    sidebar.repositories = sidebar.repositories.filter(
+      r => r.owner !== owner || r.name !== name
+    );
 
     // Refetch start page data in the background to fill the remaining slots
     if (page === 'recent') {
