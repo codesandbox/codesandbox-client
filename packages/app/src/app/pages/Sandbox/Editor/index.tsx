@@ -23,6 +23,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { CreateBox } from 'app/components/Create/CreateBox';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
@@ -34,7 +35,9 @@ import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
 import { FixedSignInBanner } from './FixedSignInBanner';
 
-type EditorTypes = { showNewSandboxModal?: boolean };
+type EditorTypes = {
+  showModalOnTop?: 'newSandbox' | 'newDevbox' | 'new';
+};
 
 const STATUS_BAR_SIZE = 22;
 
@@ -44,7 +47,7 @@ const StatusBar = styled.div`
   }
 `;
 
-export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
+export const Editor = ({ showModalOnTop }: EditorTypes) => {
   const state = useAppState();
   const actions = useActions();
   const effects = useEffects();
@@ -220,11 +223,11 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               {state.workspace.workspaceHidden ? <div /> : <Workspace />}
               <Content theme={localState.theme} />
             </SplitPane>
-            {showSkeleton || showNewSandboxModal ? (
+            {showSkeleton || showModalOnTop ? (
               <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
                 <ContentSkeleton
                   style={
-                    state.editor.hasLoadedInitialModule && !showNewSandboxModal
+                    state.editor.hasLoadedInitialModule && !showModalOnTop
                       ? {
                           opacity: 0,
                         }
@@ -233,7 +236,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
                         }
                   }
                 />
-                {showNewSandboxModal ? (
+                {showModalOnTop ? (
                   <Element
                     css={css({
                       width: '100vw',
@@ -271,7 +274,15 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
                           },
                         })}
                       >
-                        <GenericCreate />
+                        {showModalOnTop === 'newSandbox' && (
+                          <CreateBox isModal={false} type="sandbox" />
+                        )}
+                        {showModalOnTop === 'newDevbox' && (
+                          <CreateBox isModal={false} type="devbox" />
+                        )}
+                        {showModalOnTop === 'new' && (
+                          <GenericCreate isModal={false} />
+                        )}
                       </Element>
                     </Element>
                   </Element>

@@ -170,12 +170,17 @@ const RoutesComponent: React.FC = () => {
             <Route
               exact
               path="/s"
-              component={() => <Sandbox showNewSandboxModal />}
+              component={() => <Sandbox showModalOnTop="newSandbox" />}
             />
             <Route
               exact
-              path="/s2"
-              component={() => <Sandbox showNewSandboxModal />}
+              path="/d"
+              component={() => <Sandbox showModalOnTop="newDevbox" />}
+            />
+            <Route
+              exact
+              path="/new"
+              component={() => <Sandbox showModalOnTop="new" />}
             />
             <Route path="/invite/:token" component={TeamInvitation} />
 
