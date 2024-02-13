@@ -1882,6 +1882,8 @@ export const createDraftBranch = async (
       title: 'Failed to create branch',
       status: NotificationStatus.ERROR,
     });
+  } finally {
+    state.dashboard.creatingBranch = false;
   }
 };
 
