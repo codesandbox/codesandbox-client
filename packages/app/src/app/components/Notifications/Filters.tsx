@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppState, useActions } from 'app/overmind';
-import { Stack, Menu, Checkbox } from '@codesandbox/components';
+import { Stack, Menu, Checkbox, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const Filters = () => {
@@ -22,30 +22,23 @@ export const Filters = () => {
     sandbox_invitation: 'Sandbox Invites',
   };
 
-  const iconColor =
-    userNotifications.activeFilters.length > 0
-      ? 'button.background'
-      : 'inherit';
-
   return (
     <Stack gap={2}>
       <Menu>
         <Menu.IconButton
           className="icon-button"
+          variant="square"
+          title="Filter notifications"
+          css={{
+            color:
+              userNotifications.activeFilters.length > 0
+                ? '#EDFFA5'
+                : '#e5e5e5',
+          }}
           name="filter"
-          title="Filter Notifications"
-          size={12}
-          css={css({
-            color: iconColor,
-            ':hover:not(:disabled)': {
-              color: iconColor,
-            },
-            ':focus:not(:disabled)': {
-              color: iconColor,
-              backgroundColor: 'transparent',
-            },
-          })}
+          size={16}
         />
+
         <Menu.List>
           {Object.entries(options).map(([key, label]) => (
             <Menu.Item key={key} onSelect={() => filterNotifications(key)}>
@@ -61,9 +54,10 @@ export const Filters = () => {
       <Menu>
         <Menu.IconButton
           className="icon-button"
-          name="more"
+          variant="square"
           title="Notification actions"
-          size={12}
+          size={16}
+          name="more"
         />
         <Menu.List>
           <Menu.Item onSelect={() => openPreferencesModal('notifications')}>

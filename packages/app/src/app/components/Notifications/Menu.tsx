@@ -1,6 +1,5 @@
 import React from 'react';
-import { Menu as BaseMenu, Element } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { Menu as BaseMenu, Icon } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
 
 export const Menu = ({ read, id }) => {
@@ -11,26 +10,13 @@ export const Menu = ({ read, id }) => {
 
   return (
     <BaseMenu>
-      <Element
-        css={css({
-          '.icon-button:hover': {
-            backgroundColor: 'grays.500',
-          },
-        })}
+      <BaseMenu.Button
+        css={{ width: 24, height: 24, padding: 4 }}
+        className="notification-menu"
+        title="Notification actions"
       >
-        <BaseMenu.IconButton
-          className="icon-button"
-          name="more"
-          title="Notification actions"
-          size={12}
-          css={css({
-            display: 'flex',
-            justifyContent: 'flex-end',
-            transition: 'all 100ms ease',
-            svg: { transform: 'rotate(90deg) translateY(7px);' },
-          })}
-        />
-      </Element>
+        <Icon name="more" size={16} />
+      </BaseMenu.Button>
       <BaseMenu.List>
         <BaseMenu.Item
           className="no-click"
