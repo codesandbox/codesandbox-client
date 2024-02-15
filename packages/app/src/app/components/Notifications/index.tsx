@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
 
-import { Button, Icon, Element, Stack, Tooltip } from '@codesandbox/components';
+import { Button, Icon, Element, Tooltip } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Overlay } from 'app/components/Overlay';
 import { NotificationsContent } from './Content';
