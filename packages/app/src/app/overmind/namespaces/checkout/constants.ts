@@ -22,7 +22,6 @@ export const FREE_PLAN: PricingPlan = {
   ],
   features: [
     'Private Sandboxes, Devboxes & repos',
-    'Codeium AI code-completion',
     'Live collaboration',
     'VS Code extension',
     'Instant environment resume',
@@ -50,6 +49,7 @@ export const PRO_PLAN: PricingPlan = {
     'Unlimited personal drafts',
     '20 members',
     'Access on-demand VM credits for $0.18 per hour',
+    'Codeium AI code-completion',
   ],
 };
 
