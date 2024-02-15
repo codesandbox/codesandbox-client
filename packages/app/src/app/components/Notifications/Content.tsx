@@ -80,7 +80,8 @@ const getNotificationComponent = (
           );
         }}
       >
-        {reviewerName} {reviewStateText} your pull request #{pullRequestNumber}.
+        <Text weight="500">{reviewerName}</Text> {reviewStateText} your pull
+        request #{pullRequestNumber} in <Text weight="500">{repo}</Text>.
       </NotificationItem>
     );
   }
@@ -113,8 +114,8 @@ const getNotificationComponent = (
           );
         }}
       >
-        {requesterName} requested your review on pull request #
-        {pullRequestNumber} in {owner}/{repo}.
+        <Text weight="500">{requesterName}</Text> requested your review on pull
+        request #{pullRequestNumber} in <Text weight="500">{repo}</Text>.
       </NotificationItem>
     );
   }
@@ -142,7 +143,8 @@ const getNotificationComponent = (
           });
         }}
       >
-        {inviterName} invites you to join their workspace {teamName}
+        <Text weight="500">{inviterName}</Text> invites you to join their
+        workspace <Text weight="500">{teamName}</Text>.
       </NotificationItem>
     );
   }
@@ -166,7 +168,8 @@ const getNotificationComponent = (
           history.push(teamSettingsUrl() + `?invite_email=${requesterEmail}`);
         }}
       >
-        {requesterName} requested to join your workspace {teamName}
+        <Text weight="500">{requesterName}</Text> requested to join your
+        workspace <Text weight="500">{teamName}</Text>.
       </NotificationItem>
     );
   }
@@ -186,7 +189,8 @@ const getNotificationComponent = (
         avatarUrl={userAvatar}
         avatarName={userName}
       >
-        {userName} accepted your invitation to join {teamName}
+        <Text weight="500">{userName}</Text> accepted your invitation to join{' '}
+        <Text weight="500">{teamName}</Text>
       </NotificationItem>
     );
   }
@@ -225,7 +229,8 @@ const getNotificationComponent = (
           );
         }}
       >
-        {inviterName} invites you to {nicePermissionName} {niceSandboxTitle}
+        <Text weight="500">{inviterName}</Text> invites you to{' '}
+        {nicePermissionName} <Text weight="500">{niceSandboxTitle}</Text>.
       </NotificationItem>
     );
   }
