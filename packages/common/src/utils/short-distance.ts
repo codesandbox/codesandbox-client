@@ -9,7 +9,7 @@ export const shortDistance = distance =>
     .replace(' day', 'd')
     .replace(' hours', 'h')
     .replace(' hour', 'h')
-    .replace(' minutes', 'min')
-    .replace(' minute', 'min')
+    .replace(' minutes', 'm')
+    .replace(' minute', 'm')
     .replace(' seconds', 's')
     .replace(' second', 's');

@@ -1,12 +1,16 @@
 import { useAppState, useActions } from 'app/overmind';
 import React, { useEffect } from 'react';
-import { Element, Text, List } from '@codesandbox/components';
+import { Element, Text, List, Stack } from '@codesandbox/components';
 import { mapKeys, camelCase } from 'lodash-es';
 import css from '@styled-system/css';
+import { Authorization, RecentNotificationFragment } from 'app/graphql/types';
+import {
+  sandboxUrl,
+  dashboard,
+  v2BranchUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { Skeleton } from './Skeleton';
 import {
-  CommentData,
-  MentionData,
   PullRequestReviewReceivedData,
   PullRequestReviewRequestData,
   TeamInviteData,
@@ -15,105 +19,220 @@ import {
   SandboxInvitationData,
 } from './types';
 
-import { PullRequestReviewReceived } from './notifications/PullRequestReviewReceived';
-import { PullRequestReviewRequest } from './notifications/PullRequestReviewRequest';
-import { SandboxInvitation } from './notifications/SandboxInvitation';
-import { TeamInviteRequest } from './notifications/TeamInviteRequest';
-import { TeamAccepted } from './notifications/TeamAccepted';
-import { TeamInvite } from './notifications/TeamInvite';
-import { Mention } from './notifications/Mention';
-import { Comment } from './notifications/Comment';
 import { Filters } from './Filters';
+import { NotificationItem } from './NotificationItem';
 
-const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
+const getNotificationComponent = (
+  { id, type, data, read, insertedAt }: RecentNotificationFragment,
+  openTeamAcceptModal: (params: {
+    teamName: string;
+    teamId: string;
+    userAvatar: string;
+  }) => void
+) => {
   const parsedData = JSON.parse(data);
   const camelCaseData = mapKeys(parsedData, (v, k) => camelCase(k));
 
-  if (type === 'mention') {
-    return (
-      <Mention
-        insertedAt={insertedAt}
-        id={id}
-        read={read}
-        {...(camelCaseData as MentionData)}
-      />
-    );
-  }
-
-  if (type === 'comment') {
-    return (
-      <Comment
-        insertedAt={insertedAt}
-        id={id}
-        read={read}
-        {...(camelCaseData as CommentData)}
-      />
-    );
-  }
-
   if (type === 'pull_request_review_received') {
+    const {
+      reviewState,
+      reviewerAvatar,
+      reviewerName,
+      owner,
+      repo,
+      branch,
+      teamId,
+      pullRequestNumber,
+    } = camelCaseData as PullRequestReviewReceivedData;
+
+    let reviewStateText: string;
+    switch (reviewState) {
+      case 'approved':
+        reviewStateText = 'approved';
+        break;
+      case 'commented':
+        reviewStateText = 'commented on';
+        break;
+      case 'changes_requested':
+        reviewStateText = 'requested changes to';
+        break;
+      default:
+        reviewStateText = 'left a review on';
+        break;
+    }
+
+    const url =
+      v2BranchUrl({
+        owner,
+        repoName: repo,
+        branchName: branch,
+        workspaceId: teamId,
+      }) + '&mode=review';
+
     return (
-      <PullRequestReviewReceived
-        insertedAt={insertedAt}
+      <NotificationItem
         id={id}
+        key={id}
         read={read}
-        {...(camelCaseData as PullRequestReviewReceivedData)}
-      />
+        insertedAt={insertedAt}
+        avatarUrl={reviewerAvatar}
+        avatarName={reviewerName}
+        url={url}
+      >
+        <Text weight="500">{reviewerName}</Text> {reviewStateText} your pull
+        request #{pullRequestNumber} in <Text weight="500">{repo}</Text>.
+      </NotificationItem>
     );
   }
 
   if (type === 'pull_request_review_requested') {
+    const {
+      requesterName,
+      requesterAvatar,
+      pullRequestNumber,
+      owner,
+      repo,
+      branch,
+      teamId,
+    } = camelCaseData as PullRequestReviewRequestData;
     return (
-      <PullRequestReviewRequest
-        insertedAt={insertedAt}
+      <NotificationItem
         id={id}
+        key={id}
         read={read}
-        {...(camelCaseData as PullRequestReviewRequestData)}
-      />
+        insertedAt={insertedAt}
+        avatarUrl={requesterAvatar}
+        avatarName={requesterName}
+        url={
+          v2BranchUrl({
+            owner,
+            repoName: repo,
+            branchName: branch,
+            workspaceId: teamId,
+          }) + '&mode=review'
+        }
+      >
+        <Text weight="500">{requesterName}</Text> requested your review on pull
+        request #{pullRequestNumber} in <Text weight="500">{repo}</Text>.
+      </NotificationItem>
     );
   }
 
   if (type === 'team_invite') {
+    const {
+      inviterName,
+      inviterAvatar,
+      teamName,
+      teamId,
+    } = camelCaseData as TeamInviteData;
+
     return (
-      <TeamInvite
-        insertedAt={insertedAt}
+      <NotificationItem
         id={id}
+        key={id}
         read={read}
-        {...(camelCaseData as TeamInviteData)}
-      />
+        insertedAt={insertedAt}
+        avatarUrl={inviterAvatar}
+        avatarName={inviterName}
+        onClick={async () => {
+          openTeamAcceptModal({
+            teamName,
+            teamId,
+            userAvatar: inviterName,
+          });
+        }}
+      >
+        <Text weight="500">{inviterName}</Text> invites you to join their
+        workspace <Text weight="500">{teamName}</Text>.
+      </NotificationItem>
     );
   }
 
   if (type === 'team_invite_requested') {
+    const {
+      requesterAvatar,
+      requesterName,
+      requesterEmail,
+      teamName,
+      teamId,
+    } = camelCaseData as TeamInviteRequestData;
+
     return (
-      <TeamInviteRequest
-        insertedAt={insertedAt}
+      <NotificationItem
         id={id}
+        key={id}
         read={read}
-        {...(camelCaseData as TeamInviteRequestData)}
-      />
+        insertedAt={insertedAt}
+        avatarUrl={requesterAvatar}
+        avatarName={requesterName}
+        url={dashboard.portalOverview(teamId, {
+          invite_email: requesterEmail,
+        })}
+      >
+        <Text weight="500">{requesterName}</Text> requested to join your
+        workspace <Text weight="500">{teamName}</Text>.
+      </NotificationItem>
     );
   }
 
   if (type === 'team_accepted') {
+    const {
+      userAvatar,
+      userName,
+      teamName,
+      teamId,
+    } = camelCaseData as TeamAcceptedData;
+
     return (
-      <TeamAccepted
-        insertedAt={insertedAt}
+      <NotificationItem
         id={id}
+        key={id}
         read={read}
-        {...(camelCaseData as TeamAcceptedData)}
-      />
+        insertedAt={insertedAt}
+        avatarUrl={userAvatar}
+        avatarName={userName}
+        url={dashboard.recent(teamId)}
+      >
+        <Text weight="500">{userName}</Text> accepted your invitation to join{' '}
+        <Text weight="500">{teamName}</Text>
+      </NotificationItem>
     );
   }
   if (type === 'sandbox_invitation') {
+    const {
+      inviterAvatar,
+      inviterName,
+      sandboxTitle,
+      sandboxAlias,
+      sandboxId,
+    } = camelCaseData as SandboxInvitationData;
+
+    const authorization = parsedData.authorization.toUpperCase();
+    const niceSandboxTitle = sandboxTitle || sandboxAlias || sandboxId;
+
+    let nicePermissionName = 'view';
+    if (authorization === Authorization.Comment) {
+      nicePermissionName = 'comment on';
+    } else if (authorization === Authorization.WriteCode) {
+      nicePermissionName = 'edit';
+    }
+
     return (
-      <SandboxInvitation
-        insertedAt={insertedAt}
+      <NotificationItem
         id={id}
+        key={id}
         read={read}
-        {...(camelCaseData as SandboxInvitationData)}
-        authorization={parsedData.authorization.toUpperCase()}
-      />
+        insertedAt={insertedAt}
+        avatarUrl={inviterAvatar}
+        avatarName={inviterName}
+        url={sandboxUrl({
+          id: sandboxId,
+          alias: sandboxAlias,
+        })}
+      >
+        <Text weight="500">{inviterName}</Text> invites you to{' '}
+        {nicePermissionName} <Text weight="500">{niceSandboxTitle}</Text>.
+      </NotificationItem>
     );
   }
 
@@ -122,7 +241,10 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
 
 export const NotificationsContent = props => {
   const { userNotifications } = useAppState();
-  const { getNotifications } = useActions().userNotifications;
+  const {
+    getNotifications,
+    openTeamAcceptModal,
+  } = useActions().userNotifications;
 
   useEffect(() => {
     getNotifications();
@@ -135,44 +257,38 @@ export const NotificationsContent = props => {
 
     if (userNotifications.notifications.length === 0) {
       return (
-        <Element padding={6}>
+        <Element padding={4}>
           {userNotifications.activeFilters.length ? (
-            <Text align="center">No notifications match your search</Text>
+            <Text size={3}>No notifications match your search</Text>
           ) : (
-            <Text align="center">You don{"'"}t have any notifications</Text>
+            <Text size={3}>You don{"'"}t have any notifications</Text>
           )}
         </Element>
       );
     }
 
     return userNotifications.notifications.map(notification =>
-      getNotificationComponent(notification)
+      getNotificationComponent(notification, openTeamAcceptModal)
     );
   };
 
   return (
     <Element
-      css={css({
-        backgroundColor: 'menuList.background',
-        fontFamily: 'Inter',
+      css={{
+        backgroundColor: '#333333',
         width: 321,
-      })}
+      }}
       {...props}
     >
-      <Element
-        padding={4}
-        css={css({
-          display: 'grid',
-          gridTemplateColumns: '1fr 60px',
-        })}
+      <Stack
+        css={{ padding: '12px 16px' }}
+        align="center"
+        justify="space-between"
       >
-        <Text weight="regular" size={4}>
-          Notifications
-        </Text>
-        <Element>
-          {userNotifications.notifications ? <Filters /> : null}
-        </Element>
-      </Element>
+        <Text color="#e5e5e5">Notifications</Text>
+
+        {userNotifications.notifications ? <Filters /> : null}
+      </Stack>
       <List css={css({ maxHeight: 400, overflow: 'auto' })}>
         {getContent()}
       </List>
