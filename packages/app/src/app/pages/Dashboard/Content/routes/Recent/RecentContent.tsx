@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Element, Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions, useAppState } from 'app/overmind';
-import { ViewOptions } from 'app/pages/Dashboard/Components/Filters/ViewOptions';
 import { Sandbox } from 'app/pages/Dashboard/Components/Sandbox';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
@@ -169,7 +168,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
             Create a new branch
           </Text>
 
-          <StyledItemsWrapper as="ul" viewMode={viewMode}>
+          <StyledItemsWrapper as="ul" viewMode="grid">
             {uniqueRecentRepos.map(repo => {
               return (
                 <Stack
@@ -215,7 +214,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
             Pick up where you left off
           </Text>
-          <ViewOptions />
         </Stack>
 
         <SelectionProvider
@@ -223,7 +221,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           page={page}
           items={recentItems}
         >
-          <StyledItemsWrapper as="ul" viewMode={viewMode}>
+          <StyledItemsWrapper as="ul" viewMode="grid">
             {recentItems.map(item => {
               const itemId =
                 item.type === 'branch' ? item.branch.id : item.sandbox.id;

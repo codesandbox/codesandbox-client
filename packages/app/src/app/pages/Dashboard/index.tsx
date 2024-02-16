@@ -159,7 +159,7 @@ export const Dashboard: FunctionComponent = () => {
               width: '100%',
               // 100vh - (topbar height - gap between topbar and content) - (banner height or 0)
               height: `calc(100vh - 32px - ${hasTopBarBanner ? '44' : '0'}px)`,
-              paddingLeft: [0, 0, SIDEBAR_WIDTH],
+              paddingLeft: [0, 0, SIDEBAR_WIDTH + 8],
             })}
           >
             <Content />
