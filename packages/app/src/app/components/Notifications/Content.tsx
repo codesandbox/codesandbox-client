@@ -3,11 +3,10 @@ import React, { useEffect } from 'react';
 import { Element, Text, List, Stack } from '@codesandbox/components';
 import { mapKeys, camelCase } from 'lodash-es';
 import css from '@styled-system/css';
-import history from 'app/utils/history';
 import { Authorization, RecentNotificationFragment } from 'app/graphql/types';
 import {
   sandboxUrl,
-  teamSettingsUrl,
+  dashboard,
   v2BranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Skeleton } from './Skeleton';
@@ -62,23 +61,23 @@ const getNotificationComponent = (
         break;
     }
 
+    const url =
+      v2BranchUrl({
+        owner,
+        repoName: repo,
+        branchName: branch,
+        workspaceId: teamId,
+      }) + '&mode=review';
+
     return (
       <NotificationItem
         id={id}
+        key={id}
         read={read}
         insertedAt={insertedAt}
         avatarUrl={reviewerAvatar}
         avatarName={reviewerName}
-        onClick={() => {
-          history.push(
-            v2BranchUrl({
-              owner,
-              repoName: repo,
-              branchName: branch,
-              workspaceId: teamId,
-            }) + '&mode=review'
-          );
-        }}
+        url={url}
       >
         <Text weight="500">{reviewerName}</Text> {reviewStateText} your pull
         request #{pullRequestNumber} in <Text weight="500">{repo}</Text>.
@@ -99,20 +98,19 @@ const getNotificationComponent = (
     return (
       <NotificationItem
         id={id}
+        key={id}
         read={read}
         insertedAt={insertedAt}
         avatarUrl={requesterAvatar}
         avatarName={requesterName}
-        onClick={() => {
-          history.push(
-            v2BranchUrl({
-              owner,
-              repoName: repo,
-              branchName: branch,
-              workspaceId: teamId,
-            }) + '&mode=review'
-          );
-        }}
+        url={
+          v2BranchUrl({
+            owner,
+            repoName: repo,
+            branchName: branch,
+            workspaceId: teamId,
+          }) + '&mode=review'
+        }
       >
         <Text weight="500">{requesterName}</Text> requested your review on pull
         request #{pullRequestNumber} in <Text weight="500">{repo}</Text>.
@@ -131,6 +129,7 @@ const getNotificationComponent = (
     return (
       <NotificationItem
         id={id}
+        key={id}
         read={read}
         insertedAt={insertedAt}
         avatarUrl={inviterAvatar}
@@ -155,18 +154,20 @@ const getNotificationComponent = (
       requesterName,
       requesterEmail,
       teamName,
+      teamId,
     } = camelCaseData as TeamInviteRequestData;
 
     return (
       <NotificationItem
         id={id}
+        key={id}
         read={read}
         insertedAt={insertedAt}
         avatarUrl={requesterAvatar}
         avatarName={requesterName}
-        onClick={() => {
-          history.push(teamSettingsUrl() + `?invite_email=${requesterEmail}`);
-        }}
+        url={dashboard.portalOverview(teamId, {
+          invite_email: requesterEmail,
+        })}
       >
         <Text weight="500">{requesterName}</Text> requested to join your
         workspace <Text weight="500">{teamName}</Text>.
@@ -179,15 +180,18 @@ const getNotificationComponent = (
       userAvatar,
       userName,
       teamName,
+      teamId,
     } = camelCaseData as TeamAcceptedData;
 
     return (
       <NotificationItem
         id={id}
+        key={id}
         read={read}
         insertedAt={insertedAt}
         avatarUrl={userAvatar}
         avatarName={userName}
+        url={dashboard.recent(teamId)}
       >
         <Text weight="500">{userName}</Text> accepted your invitation to join{' '}
         <Text weight="500">{teamName}</Text>
@@ -216,18 +220,15 @@ const getNotificationComponent = (
     return (
       <NotificationItem
         id={id}
+        key={id}
         read={read}
         insertedAt={insertedAt}
         avatarUrl={inviterAvatar}
         avatarName={inviterName}
-        onClick={() => {
-          history.push(
-            sandboxUrl({
-              id: sandboxId,
-              alias: sandboxAlias,
-            })
-          );
-        }}
+        url={sandboxUrl({
+          id: sandboxId,
+          alias: sandboxAlias,
+        })}
       >
         <Text weight="500">{inviterName}</Text> invites you to{' '}
         {nicePermissionName} <Text weight="500">{niceSandboxTitle}</Text>.

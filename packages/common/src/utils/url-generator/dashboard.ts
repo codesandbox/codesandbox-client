@@ -89,8 +89,18 @@ const portalBaseUrl = () => {
   return `${origin}/t`;
 };
 
-export const portalOverview = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${portalBaseUrl()}/overview`, teamId);
+export const portalOverview = (
+  teamId?: string | null,
+  params?: Record<string, string>
+) => {
+  if (!teamId) {
+    return `${portalBaseUrl()}/overview`;
+  }
+
+  const url = appendTeamIdQueryParam(`${portalBaseUrl()}/overview`, teamId);
+  const searchParams = new URLSearchParams(params);
+  return `${url}&${searchParams.toString()}`;
+};
 
 export const portalRegistry = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${portalBaseUrl()}/registry`, teamId);

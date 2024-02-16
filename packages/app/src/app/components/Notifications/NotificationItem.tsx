@@ -4,31 +4,34 @@ import {
   Element,
   Text,
   ListAction,
-  isMenuClicked,
   Icon,
   Button,
+  Tooltip,
 } from '@codesandbox/components';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { useActions } from 'app/overmind';
 import { formatDistanceStrict } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
+import { formatKey } from '@codesandbox/common/lib/utils/keybindings';
 
 type NotificationItemProps = {
   id: string;
   avatarUrl: string;
   avatarName: string;
-  onClick?: () => void;
   insertedAt: string;
   read: boolean;
+  url?: string;
+  onClick?: () => void;
 };
 
 export const NotificationItem: React.FC<NotificationItemProps> = ({
   id,
   avatarUrl,
   avatarName,
-  onClick,
   read,
   insertedAt,
+  url,
+  onClick,
   children,
 }) => {
   const {
@@ -36,17 +39,26 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
     archiveNotification,
   } = useActions().userNotifications;
 
+  const handleOpenNotification = async (openInNewTab: boolean) => {
+    if (!read) {
+      await updateReadStatus(id);
+    }
+
+    if (!url && onClick) {
+      onClick();
+      return;
+    }
+
+    if (openInNewTab) {
+      window.open(url, '_blank');
+    } else {
+      window.location.href = url;
+    }
+  };
+
   return (
     <ListAction
-      onClick={async event => {
-        if (isMenuClicked(event)) return;
-        if (!read) {
-          await updateReadStatus(id);
-        }
-        if (onClick) {
-          onClick();
-        }
-      }}
+      onClick={ev => handleOpenNotification(ev.metaKey || ev.ctrlKey)}
       css={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -54,9 +66,10 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
         gap: '8px',
         scrollbarGutter: 'stable',
         padding: '8px 10px 8px 16px', // 10px to take the scroll into account
+        minHeight: '64px',
         transition: 'background-color 125ms ease-in-out',
 
-        '.clear-notification': {
+        '.notification-actions': {
           display: 'none',
         },
         '&:hover, &:focus-visible': {
@@ -70,14 +83,19 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
             display: 'none',
           },
 
-          '.clear-notification': {
-            display: 'block',
-            animation: 'fadeAnimation',
+          '.notification-actions': {
+            display: 'flex',
           },
         },
       }}
     >
-      <Stack gap={4} align="flex-start" css={{ opacity: read ? 0.7 : 1 }}>
+      <Stack
+        gap={4}
+        align="flex-start"
+        css={{
+          opacity: read ? 0.7 : 1,
+        }}
+      >
         <Element css={{ position: 'relative' }}>
           <Element
             as="img"
@@ -113,20 +131,38 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
         </Text>
       </Stack>
 
-      <Button
-        css={{ width: 24, height: 24, padding: 6 }}
-        className="clear-notification"
-        title="Clear notification"
-        variant="ghost"
-        onClick={() => archiveNotification(id)}
-      >
-        <Icon name="cross" size={12} />
-      </Button>
+      <Stack direction="vertical" className="notification-actions">
+        <Tooltip label={`Open in new tab (${formatKey('Meta')} + click)`}>
+          <Button
+            css={{ width: 24, height: 24, padding: 6 }}
+            variant="ghost"
+            onClick={ev => {
+              ev.stopPropagation();
+              handleOpenNotification(true);
+            }}
+          >
+            <Icon name="external" size={12} />
+          </Button>
+        </Tooltip>
+        <Tooltip label="Clear notification">
+          <Button
+            css={{ width: 24, height: 24, padding: 6 }}
+            variant="ghost"
+            onClick={ev => {
+              ev.stopPropagation();
+              archiveNotification(id);
+            }}
+          >
+            <Icon name="cross" size={12} />
+          </Button>
+        </Tooltip>
+      </Stack>
 
       <Text
         className="timestamp"
         css={{ minWidth: 24 }}
         size={3}
+        color="#e5e5e5"
         align="center"
       >
         {shortDistance(
