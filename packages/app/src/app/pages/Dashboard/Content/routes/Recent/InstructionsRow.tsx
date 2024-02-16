@@ -41,6 +41,14 @@ const DOCS: DocsItem[] = [
     url: 'https://www.youtube.com/watch?v=dRkpuUMHCNQ',
     thumbnail: '/static/img/thumbnails/video_code-reviews.png',
   },
+  {
+    label: 'video_postgres',
+    title: 'Adding a Postgres Database in CodeSandbox',
+    duration: '9:02',
+    durationLabel: '9 minutes, 2 seconds',
+    url: 'https://www.youtube.com/watch?v=1ZHrwJHoKOw',
+    thumbnail: '/static/img/thumbnails/video_postgres-tutorial.jpg',
+  },
 ];
 
 export const InstructionsRow: React.FC = () => {
