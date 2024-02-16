@@ -131,7 +131,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
   const {
     activeTeam,
     environment: { isOnPrem },
-    dashboard: { viewMode },
   } = useAppState();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
