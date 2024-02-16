@@ -22,7 +22,7 @@ export const FREE_PLAN: PricingPlan = {
   ],
   features: [
     'Private Sandboxes, Devboxes & repos',
-    'Codeium AI code-completion',
+    '100 Codeium AI code completions',
     'Live collaboration',
     'VS Code extension',
     'Instant environment resume',
@@ -40,7 +40,7 @@ export const PRO_PLAN: PricingPlan = {
     'Ideal to get started with cloud development and understand your usage needs.',
   sandboxes: 100,
   storage: 50,
-  features: ['All free features'],
+  features: ['All free features', 'Unlimited Codeium AI code completions'],
   usage: [
     'Start from 100 hours worth of VM credits per month',
     '50 GB storage per VM',
