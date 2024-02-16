@@ -31,12 +31,12 @@ import { RecentHeader } from './RecentHeader';
 const StyledWrapper = styled(Stack)`
   width: 100%;
   max-width: ${GRID_MAX_WIDTH}px;
-  padding: 0 calc(2 * ${GUTTER}px) 64px;
+  padding: 0 ${GUTTER}px 64px;
   overflow: auto;
+  scrollbar-gutter: stable;
   margin: 28px auto 0;
   flex-direction: column;
   gap: 32px;
-  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     width: 0;

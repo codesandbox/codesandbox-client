@@ -98,7 +98,7 @@ const Details: React.FC = () => {
   }
 
   return (
-    <Stack css={{ flex: 1 }} direction="vertical" gap={6}>
+    <Stack css={{ flex: 1 }} direction="vertical" gap={4}>
       <Stack justify="space-between" align="center">
         <Stack direction="vertical" gap={0}>
           <Text size={3} color="#adadad">
