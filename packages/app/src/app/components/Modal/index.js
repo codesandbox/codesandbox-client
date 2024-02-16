@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
-import { Text } from '@codesandbox/components';
+import { Text, Element, IconButton } from '@codesandbox/components';
 
 const CLOSE_TIMEOUT_MS = 300;
 
@@ -126,14 +126,24 @@ class ModalComponent extends React.Component {
           htmlOpenClassName="ReactModal__Html--open"
           {...props}
         >
-          <div>
+          <Element css={{ position: 'relative' }}>
             {title && (
               <Text weight="bold" block size={4} paddingBottom={2}>
                 {title}
               </Text>
             )}
+            <IconButton
+              onClick={() => {
+                onClose();
+              }}
+              css={{ position: 'absolute', right: '12px', top: '12px' }}
+              name="cross"
+              title="Close"
+              size={16}
+              variant="square"
+            />
             <div>{children}</div>
-          </div>
+          </Element>
         </Modal>
       </>
     );

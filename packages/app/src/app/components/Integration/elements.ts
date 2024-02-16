@@ -29,7 +29,7 @@ export const IntegrationBlock = styled(Stack)`
   flex: 1;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 8px;
   background: #000000;
   color: white;
 `;

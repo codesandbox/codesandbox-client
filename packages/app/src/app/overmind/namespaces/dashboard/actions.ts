@@ -1871,19 +1871,20 @@ export const createDraftBranch = async (
       branchName,
     });
 
+    state.dashboard.creatingBranch = false;
+
     if (openInNewTab) {
       window.open(branchUrl);
     } else {
       window.location.href = branchUrl;
     }
   } catch (error) {
+    state.dashboard.creatingBranch = false;
     notificationState.addNotification({
       message: JSON.stringify(error),
       title: 'Failed to create branch',
       status: NotificationStatus.ERROR,
     });
-  } finally {
-    state.dashboard.creatingBranch = false;
   }
 };
 

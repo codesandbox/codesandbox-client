@@ -1,12 +1,6 @@
 import React, { useEffect } from 'react';
 
-import {
-  Stack,
-  Text,
-  IconButton,
-  Element,
-  Button,
-} from '@codesandbox/components';
+import { Stack, Text, Element, Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions } from 'app/overmind';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
@@ -58,17 +52,6 @@ export const GenericCreate: React.FC<{
             Create
           </Text>
         </HeaderInformation>
-
-        {/* isModal is undefined on /s/ page */}
-        {isModal ? (
-          <IconButton
-            name="cross"
-            variant="square"
-            size={16}
-            title="Close modal"
-            onClick={() => closeModal()}
-          />
-        ) : null}
       </Stack>
 
       <Element

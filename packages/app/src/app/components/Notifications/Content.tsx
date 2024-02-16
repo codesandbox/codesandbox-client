@@ -257,11 +257,15 @@ export const NotificationsContent = props => {
 
     if (userNotifications.notifications.length === 0) {
       return (
-        <Element padding={4}>
+        <Element padding={4} paddingTop={0}>
           {userNotifications.activeFilters.length ? (
-            <Text size={3}>No notifications match your search</Text>
+            <Text color="#e5e5e5" size={3}>
+              No notifications match your search
+            </Text>
           ) : (
-            <Text size={3}>You don{"'"}t have any notifications</Text>
+            <Text color="#e5e5e5" size={3}>
+              You don{"'"}t have any notifications
+            </Text>
           )}
         </Element>
       );

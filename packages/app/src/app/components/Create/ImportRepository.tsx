@@ -21,10 +21,7 @@ import { ForkRepoForm } from './ImportRepository/ForkRepoForm';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
-export const ImportRepository: React.FC<ModalContentProps> = ({
-  isModal,
-  closeModal,
-}) => {
+export const ImportRepository: React.FC<ModalContentProps> = () => {
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
@@ -72,18 +69,6 @@ export const ImportRepository: React.FC<ModalContentProps> = ({
               />
             )}
           </HeaderInformation>
-
-          {/* isModal is undefined on /s/ page */}
-          {isModal ? (
-            // TODO: IconButton doesn't have aria label or visuallyhidden text (reads floating label too late)
-            <IconButton
-              name="cross"
-              variant="square"
-              size={16}
-              title="Close modal"
-              onClick={() => closeModal()}
-            />
-          ) : null}
         </Stack>
 
         <ModalBody>
