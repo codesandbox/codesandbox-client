@@ -6,13 +6,7 @@ import {
   ACCEPT_TEAM_INVITATION,
 } from 'app/pages/Dashboard/queries';
 import history from 'app/utils/history';
-import {
-  Element,
-  Button,
-  Text,
-  Stack,
-  IconButton,
-} from '@codesandbox/components';
+import { Element, Button, Text, Stack } from '@codesandbox/components';
 import { useMutation } from '@apollo/react-hooks';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 
@@ -54,15 +48,7 @@ export const TeamInviteModal = () => {
   });
 
   return (
-    <Element css={{ position: 'relative', padding: '16px' }}>
-      <IconButton
-        css={{ position: 'absolute', right: 8, top: 8 }}
-        onClick={modalClosed}
-        variant="square"
-        title="Close"
-        name="cross"
-        size={16}
-      />
+    <Element css={{ padding: '16px' }}>
       <Stack direction="vertical" gap={4}>
         <Stack gap={4}>
           <TeamAvatar

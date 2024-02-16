@@ -26,6 +26,7 @@ export const Heading = styled.div`
 
 export const Info = styled.div`
   font-weight: 400;
+  font-size: 0.75rem;
 `;
 
 export const Action = styled.div<{ red: boolean }>`

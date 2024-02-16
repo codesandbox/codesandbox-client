@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Element, Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions, useAppState } from 'app/overmind';
-import { ViewOptions } from 'app/pages/Dashboard/Components/Filters/ViewOptions';
 import { Sandbox } from 'app/pages/Dashboard/Components/Sandbox';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
@@ -31,12 +30,12 @@ import { RecentHeader } from './RecentHeader';
 const StyledWrapper = styled(Stack)`
   width: 100%;
   max-width: ${GRID_MAX_WIDTH}px;
-  padding: 0 calc(2 * ${GUTTER}px) 64px;
+  padding: 0 ${GUTTER}px 64px;
   overflow: auto;
+  scrollbar-gutter: stable;
   margin: 28px auto 0;
   flex-direction: column;
   gap: 32px;
-  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -132,7 +131,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
   const {
     activeTeam,
     environment: { isOnPrem },
-    dashboard: { viewMode },
   } = useAppState();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
@@ -169,7 +167,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
             Create a new branch
           </Text>
 
-          <StyledItemsWrapper as="ul" viewMode={viewMode}>
+          <StyledItemsWrapper as="ul" viewMode="grid">
             {uniqueRecentRepos.map(repo => {
               return (
                 <Stack
@@ -215,7 +213,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
             Pick up where you left off
           </Text>
-          <ViewOptions />
         </Stack>
 
         <SelectionProvider
@@ -223,7 +220,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           page={page}
           items={recentItems}
         >
-          <StyledItemsWrapper as="ul" viewMode={viewMode}>
+          <StyledItemsWrapper as="ul" viewMode="grid">
             {recentItems.map(item => {
               const itemId =
                 item.type === 'branch' ? item.branch.id : item.sandbox.id;

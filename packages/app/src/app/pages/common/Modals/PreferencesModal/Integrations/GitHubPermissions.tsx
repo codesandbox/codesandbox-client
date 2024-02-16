@@ -6,6 +6,7 @@ import {
   Element,
   Icon,
   Text,
+  IconButton,
 } from '@codesandbox/components';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { useActions } from 'app/overmind';
@@ -28,14 +29,10 @@ const GitHubScope: React.FC<{
 
   return (
     <Stack as="li" gap={3}>
-      <Element css={{ color: '#B3FBB4', marginTop: '2px' }}>
+      <Element css={{ color: '#B3FBB4' }}>
         <Icon name="simpleCheck" />
       </Element>
-      <Text
-        css={{
-          color: '#C5C5C5',
-        }}
-      >
+      <Text size={3} color="#adadad">
         {scopeDescription ?? scope}
       </Text>
     </Stack>
@@ -101,44 +98,22 @@ const Details: React.FC = () => {
   }
 
   return (
-    <Stack css={{ flex: 1 }} direction="vertical" gap={6}>
-      <Stack justify="space-between">
+    <Stack css={{ flex: 1 }} direction="vertical" gap={4}>
+      <Stack justify="space-between" align="center">
         <Stack direction="vertical" gap={0}>
-          <Text
-            css={{
-              color: 'rgba(255, 255, 255, 0.5)',
-              fontSize: '12px',
-            }}
-          >
-            Signed in as
+          <Text size={3} color="#adadad">
+            Signed in as{' '}
+            <Text size={3} color="#fff">
+              {profile?.email}
+            </Text>
           </Text>
-          <Text>{profile?.email}</Text>
         </Stack>
-        <Button
-          aria-label="Sign out"
-          css={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '24px',
-            height: '24px',
-            border: '1px solid rgba(255, 0, 0, 0.4)',
-            borderRadius: '4px',
-            backgroundColor: 'transparent',
-            color: 'rgba(255, 0, 0, 0.6)',
-            opacity: '0.8',
-            transition: '0.3s ease opacity',
-            cursor: 'pointer',
-
-            '&:hover:not(:disabled)': {
-              color: 'rgba(255, 0, 0, 0.6)',
-              backgroundColor: 'transparent',
-              opacity: 1,
-            },
-          }}
+        <IconButton
+          variant="square"
+          name="trash"
+          title="Remove integration"
           onClick={signOutGithubIntegration}
-        >
-          <Icon name="cross" size={12} />
-        </Button>
+        />
       </Stack>
       <Stack
         as="ul"
@@ -147,7 +122,7 @@ const Details: React.FC = () => {
           padding: 0,
         }}
         direction="vertical"
-        gap={3}
+        gap={2}
       >
         <GitHubScope scope="public_repos" />
         {profile.scopes.map(s => (
@@ -180,7 +155,7 @@ export const GitHubPermissions: React.FC = () => {
       <Stack
         align="center"
         justify="center"
-        gap={4}
+        gap={2}
         css={{
           flex: 1,
           background: '#000000',
@@ -202,7 +177,7 @@ export const GitHubPermissions: React.FC = () => {
       <Stack
         css={{
           flex: 3,
-          padding: '32px',
+          padding: '24px 16px 24px 32px',
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
         }}
         gap={4}

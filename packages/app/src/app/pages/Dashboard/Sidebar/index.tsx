@@ -131,6 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               height: '36px',
               width: '36px',
               display: 'flex',
+              flexShrink: 0,
               alignItems: 'center',
               justifyContent: 'center',
               color: '#C2C2C2',

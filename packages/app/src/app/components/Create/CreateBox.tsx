@@ -53,7 +53,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
   type = 'devbox',
   closeModal,
-  isModal,
 }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const actions = useActions();
@@ -243,17 +242,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                 tabState.select('all');
                 setSearchQuery(query);
               }}
-            />
-          ) : null}
-
-          {/* isModal is undefined on /s/ page */}
-          {isModal && closeModal ? (
-            <IconButton
-              name="cross"
-              variant="square"
-              size={16}
-              title="Close modal"
-              onClick={() => closeModal()}
             />
           ) : null}
         </Stack>
