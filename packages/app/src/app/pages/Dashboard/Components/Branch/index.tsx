@@ -21,11 +21,15 @@ type BranchProps = DashboardBranch & {
   page: PageTypes;
 };
 export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
-  const {
-    dashboard: { removingBranch, removingRepository, viewMode },
-  } = useAppState();
+  const { dashboard } = useAppState();
   const { selectedIds, onRightClick, onMenuEvent } = useSelection();
   const { name, project } = branch;
+  const { removingBranch, removingRepository } = dashboard;
+  let viewMode = dashboard.viewMode;
+
+  if (page === 'recent') {
+    viewMode = 'grid';
+  }
 
   const branchUrl = v2BranchUrl({
     owner: project.repository.owner,

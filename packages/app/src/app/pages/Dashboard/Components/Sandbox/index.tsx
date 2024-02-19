@@ -124,6 +124,10 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     viewMode = 'list';
   }
 
+  if (page === 'recent') {
+    viewMode = 'grid';
+  }
+
   const Component: React.FC<SandboxItemComponentProps> =
     viewMode === 'list' ? SandboxListItem : SandboxCard;
 
