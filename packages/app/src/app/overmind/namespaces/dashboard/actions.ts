@@ -1,5 +1,4 @@
 import { compareDesc, parseISO } from 'date-fns';
-import { json } from 'overmind';
 import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
@@ -8,7 +7,6 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
-  CuratedAlbumByIdQueryVariables,
   ProjectFragment,
 } from 'app/graphql/types';
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -831,13 +829,6 @@ export const getPage = async (
     case sandboxesTypes.SHARED:
       dashboard.getSharedSandboxes();
       break;
-    case sandboxesTypes.LIKED:
-      dashboard.getLikedSandboxes();
-      break;
-
-    case sandboxesTypes.DISCOVER:
-      dashboard.getCuratedAlbums();
-      break;
 
     default:
       break;
@@ -1279,166 +1270,6 @@ export const getSharedSandboxes = async ({ state, effects }: Context) => {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you'
     );
-  }
-};
-
-export const getLikedSandboxes = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
-  try {
-    const data = await effects.gql.queries.likedSandboxes({});
-
-    if (!data.me?.likedSandboxes) {
-      return;
-    }
-
-    dashboard.sandboxes[sandboxesTypes.LIKED] = data.me?.likedSandboxes;
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem getting liked Sandboxes'
-    );
-  }
-};
-
-export const unlikeSandbox = async (
-  { state, effects }: Context,
-  id: string
-) => {
-  const all = state.dashboard.sandboxes[sandboxesTypes.LIKED];
-  if (!all) return;
-  try {
-    state.dashboard.sandboxes[sandboxesTypes.LIKED] = all.filter(
-      sandbox => sandbox.id !== id
-    );
-    await effects.api.unlikeSandbox(id);
-  } catch (e) {
-    state.dashboard.sandboxes[sandboxesTypes.LIKED] = json(all);
-    effects.notificationToast.error('There was a problem removing your like');
-  }
-};
-
-export const likeCommunitySandbox = async (
-  { actions, effects }: Context,
-  id: string
-) => {
-  try {
-    // we don't have optimistic updates because the shape of
-    // a liked sandbox is not the same as a community sandbox
-    // so we refetch liked sandboxes from the api
-    await effects.api.likeSandbox(id);
-    actions.dashboard.getLikedSandboxes();
-  } catch (e) {
-    effects.notificationToast.error('There was a problem liking the sandbox');
-  }
-};
-
-export const getCuratedAlbums = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
-  try {
-    const data = await effects.gql.queries.curatedAlbums({});
-    dashboard.curatedAlbums = data.curatedAlbums;
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem getting curated collections'
-    );
-  }
-};
-
-export const getCuratedAlbumById = async (
-  { state, effects }: Context,
-  params: CuratedAlbumByIdQueryVariables
-) => {
-  const { dashboard } = state;
-  const _curatedAlbumsById = dashboard.curatedAlbumsById ?? {};
-  try {
-    dashboard.curatedAlbumsById = {
-      ..._curatedAlbumsById,
-      [params.albumId]: null,
-    };
-
-    const data = await effects.gql.queries.curatedAlbumById(params);
-
-    if (!data.album) {
-      throw new Error('Unable to find the requested collection');
-    }
-
-    dashboard.curatedAlbumsById = {
-      ..._curatedAlbumsById,
-      [params.albumId]: data.album,
-    };
-  } catch (error) {
-    /**
-     * Adds fake album to the state because we don't differentiate
-     * between error and empty.
-     */
-    dashboard.curatedAlbumsById = {
-      ..._curatedAlbumsById,
-      [params.albumId]: { id: params.albumId, title: '', sandboxes: [] },
-    };
-
-    effects.notificationToast.error(
-      'There was a problem getting the requested collection'
-    );
-  }
-};
-
-export const addSandboxesToAlbum = async (
-  { actions, effects }: Context,
-  { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
-) => {
-  try {
-    await effects.gql.mutations.addSandboxesToAlbum({
-      albumId,
-      sandboxIds,
-    });
-    actions.dashboard.getCuratedAlbums();
-  } catch (error) {
-    effects.notificationToast.error('There was a problem updating albums');
-  }
-};
-
-export const removeSandboxesFromAlbum = async (
-  { actions, effects }: Context,
-  { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
-) => {
-  try {
-    await effects.gql.mutations.removeSandboxesFromAlbum({
-      albumId,
-      sandboxIds,
-    });
-    actions.dashboard.getCuratedAlbums();
-  } catch (error) {
-    effects.notificationToast.error('There was a problem updating albums');
-  }
-};
-
-export const createAlbum = async (
-  { state, effects }: Context,
-  { title }: { title: string }
-) => {
-  try {
-    const data = await effects.gql.mutations.createAlbum({ title });
-    state.dashboard.curatedAlbums.push({
-      id: data.createAlbum.id,
-      title: data.createAlbum.title,
-      sandboxes: [],
-    });
-  } catch (error) {
-    effects.notificationToast.error('There was a problem updating album');
-  }
-};
-
-export const updateAlbum = async (
-  { state, effects }: Context,
-  { id, title }: { id: string; title: string }
-) => {
-  try {
-    await effects.gql.mutations.updateAlbum({ id, title });
-    state.dashboard.curatedAlbums = state.dashboard.curatedAlbums.map(album => {
-      if (album.id === id) album.title = title;
-      return album;
-    });
-  } catch (error) {
-    effects.notificationToast.error('There was a problem updating album');
   }
 };
 

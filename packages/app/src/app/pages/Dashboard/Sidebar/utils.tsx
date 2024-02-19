@@ -15,9 +15,7 @@ export const MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE: Partial<Record<
   sandboxes: 'Dashboard - View Sandboxes',
   'synced-sandboxes': 'Dashboard - View Synced Sandboxes',
   deleted: 'Dashboard - View Recently deleted',
-  discover: 'Dashboard - View Discover',
   shared: 'Dashboard - View Shared',
-  liked: 'Dashboard - View Liked',
 };
 
 export const linkStyles = {

@@ -4,8 +4,6 @@ import {
   RecentlyDeletedTeamSandboxesQuery,
   RecentlyDeletedTeamSandboxesQueryVariables,
   SandboxesByPathQuery,
-  LikedSandboxesQuery,
-  LikedSandboxesQueryVariables,
   SandboxesByPathQueryVariables,
   AllTeamsQuery,
   AllTeamsQueryVariables,
@@ -23,8 +21,6 @@ import {
   GetTeamReposQuery,
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables,
-  CuratedAlbumsQuery,
-  CuratedAlbumsQueryVariables,
   RecentlyAccessedBranchesQuery,
   RecentlyAccessedBranchesQueryVariables,
   ContributionBranchesQuery,
@@ -224,20 +220,6 @@ export const sharedWithmeSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
-export const likedSandboxes: Query<
-  LikedSandboxesQuery,
-  LikedSandboxesQueryVariables
-> = gql`
-  query LikedSandboxes {
-    me {
-      likedSandboxes {
-        ...sandboxFragmentDashboard
-      }
-    }
-  }
-  ${sandboxFragmentDashboard}
-`;
-
 export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
   query getTeam($teamId: UUID4!) {
     me {
@@ -247,47 +229,6 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
     }
   }
   ${currentTeamInfoFragment}
-`;
-
-export const curatedAlbums: Query<
-  CuratedAlbumsQuery,
-  CuratedAlbumsQueryVariables
-> = gql`
-  query CuratedAlbums {
-    curatedAlbums {
-      id
-      title
-      sandboxes {
-        ...sandboxFragmentDashboard
-        forkCount
-        likeCount
-        author {
-          username
-          avatarUrl
-        }
-      }
-    }
-  }
-  ${sandboxFragmentDashboard}
-`;
-
-export const curatedAlbumById = gql`
-  query CuratedAlbumById($albumId: ID!) {
-    album(albumId: $albumId) {
-      id
-      title
-      sandboxes {
-        ...sandboxFragmentDashboard
-        forkCount
-        likeCount
-        author {
-          username
-          avatarUrl
-        }
-      }
-    }
-  }
-  ${sandboxFragmentDashboard}
 `;
 
 export const getContributionBranches: Query<

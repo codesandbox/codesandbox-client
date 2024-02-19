@@ -22,7 +22,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
       'repository-branches': dashboard.repositories(activeTeam),
       'synced-sandboxes': dashboard.syncedSandboxes(activeTeam),
     }[nestedPageType];
-  } else if (albumId) link = dashboard.discover(activeTeam);
+  }
 
   let prefix = 'All devboxes and sandboxes';
   if (nestedPageType) {
@@ -30,7 +30,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
       'synced-sandboxes': 'Imported templates',
       'repository-branches': 'All repositories',
     }[nestedPageType];
-  } else if (albumId) prefix = 'Discover';
+  }
 
   return (
     <Text block size={6}>

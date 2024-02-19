@@ -43,14 +43,6 @@ import {
   CancelDeleteCurrentUserMutationVariables,
   UpdateCurrentUserMutation,
   UpdateCurrentUserMutationVariables,
-  AddSandboxesToAlbumMutation,
-  AddSandboxesToAlbumMutationVariables,
-  RemoveSandboxesFromAlbumMutation,
-  RemoveSandboxesFromAlbumMutationVariables,
-  UpdateAlbumMutation,
-  UpdateAlbumMutationVariables,
-  CreateAlbumMutation,
-  CreateAlbumMutationVariables,
   ImportProjectMutation,
   ImportProjectMutationVariables,
   DeleteProjectMutation,
@@ -370,51 +362,6 @@ export const updateCurrentUser: Query<
   }
 `;
 
-export const addSandboxesToAlbum: Query<
-  AddSandboxesToAlbumMutation,
-  AddSandboxesToAlbumMutationVariables
-> = gql`
-  mutation addSandboxesToAlbum($albumId: ID!, $sandboxIds: [ID!]!) {
-    addSandboxesToAlbum(albumId: $albumId, sandboxIds: $sandboxIds) {
-      id
-    }
-  }
-`;
-
-export const removeSandboxesFromAlbum: Query<
-  RemoveSandboxesFromAlbumMutation,
-  RemoveSandboxesFromAlbumMutationVariables
-> = gql`
-  mutation removeSandboxesFromAlbum($albumId: ID!, $sandboxIds: [ID!]!) {
-    removeSandboxesFromAlbum(albumId: $albumId, sandboxIds: $sandboxIds) {
-      id
-    }
-  }
-`;
-
-export const createAlbum: Query<
-  CreateAlbumMutation,
-  CreateAlbumMutationVariables
-> = gql`
-  mutation createAlbum($title: String!) {
-    createAlbum(title: $title) {
-      id
-      title
-    }
-  }
-`;
-
-export const updateAlbum: Query<
-  UpdateAlbumMutation,
-  UpdateAlbumMutationVariables
-> = gql`
-  mutation updateAlbum($id: ID!, $title: String!) {
-    updateAlbum(id: $id, title: $title) {
-      id
-    }
-  }
-`;
-
 export const importProject: Query<
   ImportProjectMutation,
   ImportProjectMutationVariables
@@ -468,12 +415,6 @@ export const setTeamLimits: Query<
       teamId: $teamId
       onDemandSpendingLimit: $onDemandSpendingLimit
     )
-  }
-`;
-
-export const joinUsageBillingBeta = gql`
-  mutation JoinUsageBillingBeta($teamId: UUID4!) {
-    joinUsageBillingBeta(teamId: $teamId)
   }
 `;
 

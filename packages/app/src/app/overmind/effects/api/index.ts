@@ -182,6 +182,7 @@ export default {
       data: {
         id: sandboxId,
       },
+      f,
     });
   },
   likeSandbox(sandboxId: string) {

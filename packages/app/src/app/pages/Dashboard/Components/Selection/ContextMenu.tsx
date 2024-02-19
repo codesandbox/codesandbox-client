@@ -5,7 +5,6 @@ import {
   DashboardTemplate,
   DashboardFolder,
   DashboardSyncedRepo,
-  DashboardCommunitySandbox,
   PageTypes,
   DashboardBranch,
   DashboardRepository,
@@ -15,7 +14,6 @@ import {
   SandboxMenu,
   FolderMenu,
   ContainerMenu,
-  CommunitySandboxMenu,
 } from './ContextMenus';
 import { BranchMenu } from './ContextMenus/BranchMenu';
 import { RepositoryMenu } from './ContextMenus/RepositoryMenu';
@@ -69,7 +67,6 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     | DashboardSandbox
     | DashboardTemplate
     | DashboardSyncedRepo
-    | DashboardCommunitySandbox
     | DashboardBranch
     | DashboardRepository
   > = selectedIds.map(id => {
@@ -125,10 +122,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
         page={page}
         selectedItems={
           selectedItems as Array<
-            | DashboardFolder
-            | DashboardSandbox
-            | DashboardTemplate
-            | DashboardCommunitySandbox
+            DashboardFolder | DashboardSandbox | DashboardTemplate
           >
         }
       />
@@ -141,8 +135,6 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
-  } else if (selectedItems[0].type === 'community-sandbox') {
-    menu = <CommunitySandboxMenu item={selectedItems[0]} />;
   }
 
   return (

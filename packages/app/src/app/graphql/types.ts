@@ -494,6 +494,8 @@ export type TeamLimits = {
   includedSandboxes: Scalars['Int'];
   /** Storage (in GB) included with the team's subscription, including add-ons */
   includedStorage: Scalars['Int'];
+  /** The maximum VM tier this team can use */
+  includedVmTier: Scalars['Int'];
   /** @deprecated Will be removed in a future release */
   maxEditors: Maybe<Scalars['Int']>;
   /** @deprecated Will be removed in a future release */
@@ -5378,45 +5380,6 @@ export type UpdateCurrentUserMutation = {
   };
 };
 
-export type AddSandboxesToAlbumMutationVariables = Exact<{
-  albumId: Scalars['ID'];
-  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
-}>;
-
-export type AddSandboxesToAlbumMutation = {
-  __typename?: 'RootMutationType';
-  addSandboxesToAlbum: { __typename?: 'Album'; id: string } | null;
-};
-
-export type RemoveSandboxesFromAlbumMutationVariables = Exact<{
-  albumId: Scalars['ID'];
-  sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
-}>;
-
-export type RemoveSandboxesFromAlbumMutation = {
-  __typename?: 'RootMutationType';
-  removeSandboxesFromAlbum: { __typename?: 'Album'; id: string } | null;
-};
-
-export type CreateAlbumMutationVariables = Exact<{
-  title: Scalars['String'];
-}>;
-
-export type CreateAlbumMutation = {
-  __typename?: 'RootMutationType';
-  createAlbum: { __typename?: 'Album'; id: string; title: string | null };
-};
-
-export type UpdateAlbumMutationVariables = Exact<{
-  id: Scalars['ID'];
-  title: Scalars['String'];
-}>;
-
-export type UpdateAlbumMutation = {
-  __typename?: 'RootMutationType';
-  updateAlbum: { __typename?: 'Album'; id: string };
-};
-
 export type ImportProjectMutationVariables = Exact<{
   owner: Scalars['String'];
   name: Scalars['String'];
@@ -5471,15 +5434,6 @@ export type SetTeamLimitsMutationVariables = Exact<{
 export type SetTeamLimitsMutation = {
   __typename?: 'RootMutationType';
   setTeamLimits: string;
-};
-
-export type JoinUsageBillingBetaMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-}>;
-
-export type JoinUsageBillingBetaMutation = {
-  __typename?: 'RootMutationType';
-  joinUsageBillingBeta: boolean;
 };
 
 export type PreviewConvertToUsageBillingMutationVariables = Exact<{
@@ -6096,56 +6050,6 @@ export type SharedWithMeSandboxesQuery = {
   } | null;
 };
 
-export type LikedSandboxesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type LikedSandboxesQuery = {
-  __typename?: 'RootQueryType';
-  me: {
-    __typename?: 'CurrentUser';
-    likedSandboxes: Array<{
-      __typename?: 'Sandbox';
-      id: string;
-      alias: string | null;
-      title: string | null;
-      description: string | null;
-      lastAccessedAt: any;
-      insertedAt: string;
-      updatedAt: string;
-      removedAt: string | null;
-      privacy: number;
-      isFrozen: boolean;
-      isSse: boolean | null;
-      screenshotUrl: string | null;
-      screenshotOutdated: boolean;
-      viewCount: number;
-      likeCount: number;
-      isV2: boolean;
-      draft: boolean;
-      restricted: boolean;
-      authorId: any | null;
-      teamId: any | null;
-      source: { __typename?: 'Source'; template: string | null };
-      customTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        iconUrl: string | null;
-      } | null;
-      forkedTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        color: string | null;
-        iconUrl: string | null;
-      } | null;
-      collection: { __typename?: 'Collection'; path: string } | null;
-      permissions: {
-        __typename?: 'SandboxProtectionSettings';
-        preventSandboxLeaving: boolean;
-        preventSandboxExport: boolean;
-      } | null;
-    }>;
-  } | null;
-};
-
 export type GetTeamQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -6232,124 +6136,6 @@ export type GetTeamQuery = {
         friendOfCsb: boolean;
       };
     } | null;
-  } | null;
-};
-
-export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type CuratedAlbumsQuery = {
-  __typename?: 'RootQueryType';
-  curatedAlbums: Array<{
-    __typename?: 'Album';
-    id: string;
-    title: string | null;
-    sandboxes: Array<{
-      __typename?: 'Sandbox';
-      forkCount: number;
-      likeCount: number;
-      id: string;
-      alias: string | null;
-      title: string | null;
-      description: string | null;
-      lastAccessedAt: any;
-      insertedAt: string;
-      updatedAt: string;
-      removedAt: string | null;
-      privacy: number;
-      isFrozen: boolean;
-      isSse: boolean | null;
-      screenshotUrl: string | null;
-      screenshotOutdated: boolean;
-      viewCount: number;
-      isV2: boolean;
-      draft: boolean;
-      restricted: boolean;
-      authorId: any | null;
-      teamId: any | null;
-      author: {
-        __typename?: 'User';
-        username: string;
-        avatarUrl: string;
-      } | null;
-      source: { __typename?: 'Source'; template: string | null };
-      customTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        iconUrl: string | null;
-      } | null;
-      forkedTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        color: string | null;
-        iconUrl: string | null;
-      } | null;
-      collection: { __typename?: 'Collection'; path: string } | null;
-      permissions: {
-        __typename?: 'SandboxProtectionSettings';
-        preventSandboxLeaving: boolean;
-        preventSandboxExport: boolean;
-      } | null;
-    }>;
-  }>;
-};
-
-export type CuratedAlbumByIdQueryVariables = Exact<{
-  albumId: Scalars['ID'];
-}>;
-
-export type CuratedAlbumByIdQuery = {
-  __typename?: 'RootQueryType';
-  album: {
-    __typename?: 'Album';
-    id: string;
-    title: string | null;
-    sandboxes: Array<{
-      __typename?: 'Sandbox';
-      forkCount: number;
-      likeCount: number;
-      id: string;
-      alias: string | null;
-      title: string | null;
-      description: string | null;
-      lastAccessedAt: any;
-      insertedAt: string;
-      updatedAt: string;
-      removedAt: string | null;
-      privacy: number;
-      isFrozen: boolean;
-      isSse: boolean | null;
-      screenshotUrl: string | null;
-      screenshotOutdated: boolean;
-      viewCount: number;
-      isV2: boolean;
-      draft: boolean;
-      restricted: boolean;
-      authorId: any | null;
-      teamId: any | null;
-      author: {
-        __typename?: 'User';
-        username: string;
-        avatarUrl: string;
-      } | null;
-      source: { __typename?: 'Source'; template: string | null };
-      customTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        iconUrl: string | null;
-      } | null;
-      forkedTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        color: string | null;
-        iconUrl: string | null;
-      } | null;
-      collection: { __typename?: 'Collection'; path: string } | null;
-      permissions: {
-        __typename?: 'SandboxProtectionSettings';
-        preventSandboxLeaving: boolean;
-        preventSandboxExport: boolean;
-      } | null;
-    }>;
   } | null;
 };
 

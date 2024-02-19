@@ -9,17 +9,12 @@ import {
   DashboardTemplate,
   DashboardFolder,
   DashboardSyncedRepo,
-  DashboardCommunitySandbox,
   PageTypes,
 } from '../../../types';
 
 interface IMultiMenuProps {
   selectedItems: Array<
-    | DashboardSandbox
-    | DashboardTemplate
-    | DashboardFolder
-    | DashboardSyncedRepo
-    | DashboardCommunitySandbox
+    DashboardSandbox | DashboardTemplate | DashboardFolder | DashboardSyncedRepo
   >;
   page: PageTypes;
 }

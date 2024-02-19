@@ -4,10 +4,6 @@ import {
   RepoFragmentDashboardFragment,
   BranchFragment as Branch,
   ProjectFragment as Repository,
-  Sandbox,
-  Album,
-  User,
-  Maybe,
 } from 'app/graphql/types';
 import { Context } from 'app/overmind';
 import {
@@ -106,26 +102,6 @@ export type DashboardSkeleton = {
   viewMode: ViewMode;
 };
 
-export type DashboardCommunitySandbox = {
-  type: 'community-sandbox';
-  noDrag: true;
-  sandbox: Pick<
-    DashboardSandbox['sandbox'],
-    'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'
-  > & {
-    author: Maybe<Pick<User, 'username' | 'avatarUrl'>>;
-    liked?: boolean;
-  } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
-};
-
-export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
-  sandboxes: Array<
-    SandboxFragmentDashboardFragment & {
-      author: Maybe<Pick<User, 'username' | 'avatarUrl'>>;
-    } & Pick<Sandbox, 'forkCount' | 'likeCount'>
-  >;
-};
-
 export type DashboardBranch = {
   type: 'branch';
   branch: Branch;
@@ -174,7 +150,6 @@ export type DashboardGridItem =
   | DashboardSyncedRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton
-  | DashboardCommunitySandbox
   | DashboardBranch
   | DashboardNewBranch
   | DashboardRepository
