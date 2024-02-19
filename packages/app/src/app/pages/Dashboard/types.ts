@@ -67,15 +67,6 @@ export type DashboardSyncedRepoSandbox = {
   sandbox: RepoFragmentDashboardFragment;
 };
 
-export type DashboardSyncedRepoDefaultBranch = {
-  type: 'synced-sandbox-default-branch';
-  repo: {
-    owner: string;
-    name: string;
-    branch: string;
-  };
-};
-
 export type DashboardNewFolder = {
   type: 'new-folder';
   basePath: string;
@@ -178,7 +169,6 @@ export type DashboardGridItem =
   | DashboardHeaderLink
   | DashboardNewFolder
   | DashboardSkeletonRow
-  | DashboardSyncedRepoDefaultBranch
   | DashboardBlank
   | DashboardSyncedRepo
   | DashboardSyncedRepoSandbox
