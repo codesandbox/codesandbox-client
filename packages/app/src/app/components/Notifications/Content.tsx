@@ -285,7 +285,7 @@ export const NotificationsContent = props => {
       {...props}
     >
       <Stack
-        css={{ padding: '12px 16px' }}
+        css={{ padding: '12px 10px 12px 16px' }}
         align="center"
         justify="space-between"
       >
