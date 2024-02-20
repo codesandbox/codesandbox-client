@@ -2,9 +2,14 @@ import React from 'react';
 
 import { Stack, Text, Icon, Button, Element } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const AuthorizeForSuggested = () => {
   const { signInGithubClicked } = useActions();
+
+  React.useEffect(() => {
+    track('Import Repo - Ask for private repo access');
+  }, []);
 
   return (
     <Stack gap={2} align="center">

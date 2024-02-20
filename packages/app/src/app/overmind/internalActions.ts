@@ -75,6 +75,7 @@ export const signIn = async (
 ) => {
   effects.analytics.track('Sign In', {
     provider: options.provider,
+    scope: options.provider === 'github' ? options.includedScopes : '',
   });
   try {
     await actions.internal.runProviderAuth(options);
