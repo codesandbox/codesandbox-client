@@ -70,44 +70,6 @@ export const orderByChanged = ({ state }: Context, orderBy: OrderBy) => {
   state.dashboard.orderBy = orderBy;
 };
 
-export const blacklistedTemplateAdded = (
-  { state }: Context,
-  template: string
-) => {
-  state.dashboard.filters.blacklistedTemplates = state.dashboard.filters.blacklistedTemplates.concat(
-    template
-  );
-};
-
-export const blacklistedTemplateRemoved = (
-  { state }: Context,
-  template: string
-) => {
-  state.dashboard.filters.blacklistedTemplates = state.dashboard.filters.blacklistedTemplates.filter(
-    currentTemplate => currentTemplate !== template
-  );
-};
-
-export const blacklistedTemplatesCleared = ({ state }: Context) => {
-  if (state.dashboard.filters.blacklistedTemplates.length) {
-    state.dashboard.filters.blacklistedTemplates = [];
-  }
-};
-
-export const blacklistedTemplatesChanged = (
-  { state }: Context,
-  templates: string[]
-) => {
-  state.dashboard.filters.blacklistedTemplates = templates;
-};
-
-export const searchChanged = (
-  { state }: Context,
-  { search }: { search: string }
-) => {
-  state.dashboard.filters.search = search;
-};
-
 export const viewModeChanged = (
   { state, effects }: Context,
   { mode }: { mode: 'grid' | 'list' }

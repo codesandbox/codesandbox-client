@@ -46,11 +46,6 @@ export type State = {
   isDragging: boolean;
   viewMode: 'grid' | 'list';
   orderBy: OrderBy;
-  filters: {
-    blacklistedTemplates: string[];
-    search: string;
-  };
-  isTemplateSelected: (templateName: string) => boolean;
   getFilteredSandboxes: (
     sandboxes: Array<Sandbox | Repo | Template['sandbox']>
   ) => Sandbox[];
@@ -140,25 +135,17 @@ export const state: State = {
     order: 'desc',
     field: 'updatedAt',
   },
-  filters: {
-    blacklistedTemplates: [],
-    search: '',
-  },
-  isTemplateSelected: derived(({ filters }: State) => (templateName: string) =>
-    !filters.blacklistedTemplates.includes(templateName)
-  ),
   getFilteredSandboxes: derived(
-    ({ orderBy, filters }: State) => (
+    ({ orderBy }: State) => (
       sandboxes: Array<Sandbox | Template['sandbox']>
     ) => {
       const orderField = orderBy.field;
       const orderOrder = orderBy.order;
-      const { blacklistedTemplates } = filters;
 
       const isDateField =
         orderField === 'insertedAt' || orderField === 'updatedAt';
 
-      let orderedSandboxes = (sortBy(sandboxes, s => {
+      let orderedSandboxes = sortBy(sandboxes, s => {
         const sandbox = s!;
         if (isDateField) {
           return +zonedTimeToUtc(sandbox[orderField], 'Etc/UTC');
@@ -174,12 +161,7 @@ export const state: State = {
         }
 
         return sandbox[orderField];
-      }) as Sandbox[]).filter(
-        x =>
-          x.source &&
-          x.source.template &&
-          blacklistedTemplates.indexOf(x.source.template) === -1
-      );
+      }) as Sandbox[];
 
       if (orderOrder === 'desc') {
         orderedSandboxes = orderedSandboxes.reverse();

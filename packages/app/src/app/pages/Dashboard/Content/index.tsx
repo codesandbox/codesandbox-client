@@ -39,7 +39,6 @@ export const Content = withRouter(({ history }) => {
 
   useEffect(() => {
     const removeListener = history.listen(() => {
-      dashboard.blacklistedTemplatesCleared();
       dashboard.orderByReset();
     });
 
