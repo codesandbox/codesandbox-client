@@ -1,11 +1,10 @@
 import React from 'react';
-import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { recent } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useAppState, useActions } from 'app/overmind';
 import {
   REJECT_TEAM_INVITATION,
   ACCEPT_TEAM_INVITATION,
 } from 'app/pages/Dashboard/queries';
-import history from 'app/utils/history';
 import { Element, Button, Text, Stack } from '@codesandbox/components';
 import { useMutation } from '@apollo/react-hooks';
 import { TeamAvatar } from 'app/components/TeamAvatar';
@@ -29,8 +28,7 @@ export const TeamInviteModal = () => {
     },
     onCompleted: () => {
       acceptTeamInvitation({ teamName, teamId });
-      modalClosed();
-      history.push(teamOverviewUrl(teamId));
+      window.location.href = recent(teamId, { new_join: 'true' });
     },
   });
   const [

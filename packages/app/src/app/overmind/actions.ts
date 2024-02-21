@@ -502,8 +502,6 @@ export const acceptTeamInvitation = (
   effects.analytics.track('Team - Invitation Accepted', {});
 
   actions.internal.trackCurrentTeams();
-
-  effects.notificationToast.success(`Accepted invitation to ${teamName}`);
 };
 
 export const rejectTeamInvitation = (
