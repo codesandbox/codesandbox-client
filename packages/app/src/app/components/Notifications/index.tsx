@@ -36,32 +36,25 @@ export const Notifications = ({ dashboard }: { dashboard?: boolean }) => {
         >
           <Button
             variant={dashboard ? 'ghost' : 'secondary'}
-            css={css({
-              ':hover .border-for-bell': {
-                background: theme =>
-                  theme.colors.secondaryButton.hoverBackground,
-              },
-            })}
+            css={{ position: 'relative' }}
             onClick={open}
           >
-            <Element css={{ position: 'relative' }}>
-              <Icon name="bell" size={16} title="Notifications" />
-              {unreadCount > 0 ? (
-                <Element
-                  css={css({
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    backgroundColor: '#E4FC82',
-                    position: 'absolute',
-                    zIndex: 10,
-                    color: '#000',
-                    top: '-3px',
-                    right: '-6px',
-                  })}
-                />
-              ) : null}
-            </Element>
+            <Icon name="bell" size={16} title="Notifications" />
+            {unreadCount > 0 ? (
+              <Element
+                css={css({
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#E4FC82',
+                  position: 'absolute',
+                  zIndex: 10,
+                  color: '#000',
+                  top: '3px',
+                  right: '3px',
+                })}
+              />
+            ) : null}
           </Button>
         </Tooltip>
       )}
