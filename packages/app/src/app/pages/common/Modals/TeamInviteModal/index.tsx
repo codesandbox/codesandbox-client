@@ -5,7 +5,6 @@ import {
   REJECT_TEAM_INVITATION,
   ACCEPT_TEAM_INVITATION,
 } from 'app/pages/Dashboard/queries';
-import history from 'app/utils/history';
 import { Element, Button, Text, Stack } from '@codesandbox/components';
 import { useMutation } from '@apollo/react-hooks';
 import { TeamAvatar } from 'app/components/TeamAvatar';
