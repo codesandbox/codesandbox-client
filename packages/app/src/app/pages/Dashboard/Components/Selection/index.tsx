@@ -28,7 +28,6 @@ import {
   DashboardFolder,
   DashboardGridItem,
   DashboardSyncedRepo,
-  DashboardCommunitySandbox,
   PageTypes,
   DashboardBranch,
   DashboardRepository,
@@ -113,14 +112,12 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'template' ||
       item.type === 'folder' ||
       item.type === 'synced-sandbox-repo' ||
-      item.type === 'community-sandbox' ||
       item.type === 'branch'
   ) as Array<
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
     | DashboardSyncedRepo
-    | DashboardCommunitySandbox
     | DashboardBranch
     | DashboardRepository
   >;
@@ -140,10 +137,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     item => item.type === 'folder'
   ) as DashboardFolder[];
   const sandboxes = (items || []).filter(
-    item =>
-      item.type === 'sandbox' ||
-      item.type === 'template' ||
-      item.type === 'community-sandbox'
+    item => item.type === 'sandbox' || item.type === 'template'
   ) as Array<DashboardSandbox | DashboardTemplate>;
   const branches = (items || []).filter(
     item => item.type === 'branch'

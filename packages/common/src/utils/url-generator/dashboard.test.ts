@@ -26,16 +26,4 @@ describe('dashboard url generator', () => {
       '/dashboard/search?workspace=foo-bar-123&query=foo'
     );
   });
-
-  test('discover', () => {
-    expect(dashboard.discover(teamId, 'album-1')).toBe(
-      '/dashboard/discover/album-1?workspace=foo-bar-123'
-    );
-  });
-
-  test('discoverSearch', () => {
-    expect(dashboard.discoverSearch('foo', teamId)).toBe(
-      '/dashboard/discover/search?workspace=foo-bar-123&query=foo'
-    );
-  });
 });

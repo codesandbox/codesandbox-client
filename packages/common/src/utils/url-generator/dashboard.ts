@@ -132,31 +132,6 @@ export const search = (query: string, teamId?: string | null) => {
   return searchUrl;
 };
 
-export const discover = (teamId?: string | null, albumId?: string) => {
-  if (albumId) {
-    return appendTeamIdQueryParam(
-      `${DASHBOARD_URL_PREFIX}/discover/${albumId}`,
-      teamId
-    );
-  }
-
-  return appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/discover`, teamId);
-};
-
-export const discoverSearch = (query: string, teamId?: string | null) => {
-  let searchUrl = appendTeamIdQueryParam(
-    `${DASHBOARD_URL_PREFIX}/discover/search`,
-    teamId
-  );
-
-  if (searchUrl.includes('?')) searchUrl += '&';
-  else searchUrl += '?';
-
-  searchUrl += `query=${query}`;
-
-  return searchUrl;
-};
-
 type UpgradeParams = {
   workspaceId?: string;
   source?: string;

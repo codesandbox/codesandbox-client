@@ -34,17 +34,7 @@ export const SyncedSandboxesPage = () => {
     }
 
     if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {
-      return [
-        {
-          type: 'synced-sandbox-default-branch',
-          repo: {
-            owner: sandboxes.REPOS[param].owner,
-            name: sandboxes.REPOS[param].name,
-            branch: sandboxes.REPOS[param].branch,
-          },
-        },
-        ...items,
-      ];
+      return items;
     }
 
     return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];

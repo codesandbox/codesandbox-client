@@ -12,7 +12,6 @@ export const useFilteredItems = (params: Params) => {
   const {
     getFilteredSandboxes,
     sandboxes,
-    filters,
     orderBy: sandboxesOrder,
   } = useAppState().dashboard;
   const [items, setItems] = useState<Array<DashboardGridItem>>([]);
@@ -45,14 +44,7 @@ export const useFilteredItems = (params: Params) => {
     }
 
     // eslint-disable-next-line
-  }, [
-    sandboxes.REPOS,
-    param,
-    params,
-    filters.blacklistedTemplates,
-    getFilteredSandboxes,
-    sandboxesOrder,
-  ]);
+  }, [sandboxes.REPOS, param, params, getFilteredSandboxes, sandboxesOrder]);
 
   return items;
 };

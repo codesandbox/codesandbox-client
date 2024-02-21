@@ -21,7 +21,6 @@ export const useFilteredItems = (
     allCollections,
     getFilteredSandboxes,
     sandboxes,
-    filters,
     orderBy: sandboxesOrder,
   } = useAppState().dashboard;
   const [items, setItems] = useState<
@@ -66,7 +65,6 @@ export const useFilteredItems = (
     cleanPath,
     path,
     level,
-    filters.blacklistedTemplates,
     getFilteredSandboxes,
     sandboxesOrder,
     folderSandboxes,

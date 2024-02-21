@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory, useLocation } from 'react-router-dom';
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from '@reach/combobox';
+import { Combobox, ComboboxInput } from '@reach/combobox';
 
 import { useAppState, useActions } from 'app/overmind';
 import {
@@ -16,8 +10,6 @@ import {
   Button,
   Icon,
   IconButton,
-  List,
-  Text,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
@@ -30,9 +22,6 @@ import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 interface HeaderProps {
   onSidebarToggle: () => void;
 }
-
-/** poor man's feature flag - to ship the unfinished version */
-const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
@@ -161,16 +150,8 @@ const SearchInputGroup = () => {
     new URLSearchParams(window.location.search).get('query') || ''
   );
 
-  const searchType = location.pathname.includes('/discover')
-    ? 'COMMUNITY'
-    : 'WORKSPACE';
-
   const search = (queryString: string) => {
-    if (searchType === 'COMMUNITY') {
-      history.push(dashboardUrls.discoverSearch(queryString, activeTeam));
-    } else {
-      history.push(dashboardUrls.search(queryString, activeTeam));
-    }
+    history.push(dashboardUrls.search(queryString, activeTeam));
   };
   const [debouncedSearch] = useDebouncedCallback(search, 100);
 
@@ -205,12 +186,7 @@ const SearchInputGroup = () => {
       <Combobox
         openOnFocus
         onSelect={() => {
-          // switch to the other search
-          if (searchType === 'COMMUNITY') {
-            history.push(dashboardUrls.search(query, activeTeam));
-          } else {
-            history.push(dashboardUrls.discoverSearch(query, activeTeam));
-          }
+          history.push(dashboardUrls.search(query, activeTeam));
         }}
       >
         <Stack
@@ -264,63 +240,6 @@ const SearchInputGroup = () => {
               },
             })}
           />
-          {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
-            <ComboboxPopover
-              css={css({
-                zIndex: 4,
-                fontFamily: 'Inter, sans-serif',
-                fontSize: 3,
-              })}
-            >
-              <ComboboxList
-                as={List}
-                css={css({
-                  backgroundColor: 'menuList.background',
-                  borderRadius: 3,
-                  boxShadow: 2,
-                  border: '1px solid',
-                  borderColor: 'menuList.border',
-                })}
-              >
-                <ComboboxOption
-                  value={query}
-                  justify="space-between"
-                  css={css({
-                    outline: 'none',
-                    height: 7,
-                    paddingX: 2,
-                    color: 'list.foreground',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    ':hover, &[aria-selected="true"]': {
-                      color: 'list.hoverForeground',
-                      backgroundColor: 'list.hoverBackground',
-                      cursor: 'pointer',
-                    },
-                  })}
-                >
-                  <span>{query}</span>
-                  <span>
-                    {searchType === 'COMMUNITY' ? 'Workspace' : 'Community'} ⏎
-                  </span>
-                </ComboboxOption>
-              </ComboboxList>
-              <Text
-                size={3}
-                variant="muted"
-                css={css({
-                  position: 'absolute',
-                  width: 'fit-content',
-                  top: -5,
-                  right: 0,
-                  paddingX: 2,
-                })}
-              >
-                {searchType === 'COMMUNITY' ? 'in community' : 'in workspace'} ⏎
-              </Text>
-            </ComboboxPopover>
-          )}
         </Stack>
       </Combobox>
     </Stack>

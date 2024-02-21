@@ -4,10 +4,6 @@ import {
   RepoFragmentDashboardFragment,
   BranchFragment as Branch,
   ProjectFragment as Repository,
-  Sandbox,
-  Album,
-  User,
-  Maybe,
 } from 'app/graphql/types';
 import { Context } from 'app/overmind';
 import {
@@ -67,15 +63,6 @@ export type DashboardSyncedRepoSandbox = {
   sandbox: RepoFragmentDashboardFragment;
 };
 
-export type DashboardSyncedRepoDefaultBranch = {
-  type: 'synced-sandbox-default-branch';
-  repo: {
-    owner: string;
-    name: string;
-    branch: string;
-  };
-};
-
 export type DashboardNewFolder = {
   type: 'new-folder';
   basePath: string;
@@ -113,26 +100,6 @@ type DashboardBlankRowFill = {
 export type DashboardSkeleton = {
   type: 'solid-skeleton';
   viewMode: ViewMode;
-};
-
-export type DashboardCommunitySandbox = {
-  type: 'community-sandbox';
-  noDrag: true;
-  sandbox: Pick<
-    DashboardSandbox['sandbox'],
-    'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'
-  > & {
-    author: Maybe<Pick<User, 'username' | 'avatarUrl'>>;
-    liked?: boolean;
-  } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
-};
-
-export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
-  sandboxes: Array<
-    SandboxFragmentDashboardFragment & {
-      author: Maybe<Pick<User, 'username' | 'avatarUrl'>>;
-    } & Pick<Sandbox, 'forkCount' | 'likeCount'>
-  >;
 };
 
 export type DashboardBranch = {
@@ -178,13 +145,11 @@ export type DashboardGridItem =
   | DashboardHeaderLink
   | DashboardNewFolder
   | DashboardSkeletonRow
-  | DashboardSyncedRepoDefaultBranch
   | DashboardBlank
   | DashboardSyncedRepo
   | DashboardSyncedRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton
-  | DashboardCommunitySandbox
   | DashboardBranch
   | DashboardNewBranch
   | DashboardRepository

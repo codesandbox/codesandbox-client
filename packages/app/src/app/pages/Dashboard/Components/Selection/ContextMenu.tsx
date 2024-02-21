@@ -5,8 +5,6 @@ import {
   DashboardTemplate,
   DashboardFolder,
   DashboardSyncedRepo,
-  DashboardSyncedRepoDefaultBranch,
-  DashboardCommunitySandbox,
   PageTypes,
   DashboardBranch,
   DashboardRepository,
@@ -15,9 +13,7 @@ import {
   MultiMenu,
   SandboxMenu,
   FolderMenu,
-  MasterMenu,
   ContainerMenu,
-  CommunitySandboxMenu,
 } from './ContextMenus';
 import { BranchMenu } from './ContextMenus/BranchMenu';
 import { RepositoryMenu } from './ContextMenus/RepositoryMenu';
@@ -71,8 +67,6 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     | DashboardSandbox
     | DashboardTemplate
     | DashboardSyncedRepo
-    | DashboardSyncedRepoDefaultBranch
-    | DashboardCommunitySandbox
     | DashboardBranch
     | DashboardRepository
   > = selectedIds.map(id => {
@@ -80,18 +74,6 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
       if (repos && repos.length) {
         const repo = repos.find(f => '/' + f.name === id);
         return { type: 'synced-sandbox-repo', ...repo };
-      }
-
-      if (id.startsWith('/github')) {
-        const all = id.split(`/`);
-        return {
-          type: 'synced-sandbox-default-branch',
-          repo: {
-            owner: all[all.length - 2],
-            name: all[all.length - 1],
-            branch: 'master',
-          },
-        };
       }
 
       const folder = folders.find(f => f.path === id);
@@ -140,10 +122,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
         page={page}
         selectedItems={
           selectedItems as Array<
-            | DashboardFolder
-            | DashboardSandbox
-            | DashboardTemplate
-            | DashboardCommunitySandbox
+            DashboardFolder | DashboardSandbox | DashboardTemplate
           >
         }
       />
@@ -156,10 +135,6 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
-  } else if (selectedItems[0].type === 'synced-sandbox-default-branch') {
-    menu = <MasterMenu repo={selectedItems[0].repo} />;
-  } else if (selectedItems[0].type === 'community-sandbox') {
-    menu = <CommunitySandboxMenu item={selectedItems[0]} />;
   }
 
   return (

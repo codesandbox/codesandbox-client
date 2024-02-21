@@ -6,10 +6,8 @@ import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox } from '../Sandbox';
-import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
 import { SyncedSandbox } from '../SyncedSandbox';
-import { CommunitySandbox } from '../CommunitySandbox';
 import {
   DashboardGridItem,
   DashboardSandbox,
@@ -21,8 +19,6 @@ import {
   DashboardSkeleton,
   DashboardNewFolder,
   DashboardSyncedRepo,
-  DashboardSyncedRepoDefaultBranch,
-  DashboardCommunitySandbox,
   DashboardBranch,
   DashboardRepository,
   DashboardNewBranch,
@@ -74,14 +70,10 @@ interface IComponentForTypes {
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
   'synced-sandbox-repo': React.FC<DecoratedItemProps<DashboardSyncedRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
-  'synced-sandbox-default-branch': React.FC<
-    DecoratedItemProps<DashboardSyncedRepoDefaultBranch>
-  >;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   'solid-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
-  'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
   branch: React.FC<DecoratedItemProps<DashboardBranch>>;
   'new-branch': React.FC<DecoratedItemProps<DashboardNewBranch>>;
   repository: React.FC<DecoratedItemProps<DashboardRepository>>;
@@ -110,9 +102,6 @@ const ComponentForTypes: IComponentForTypes = {
     <SyncedSandbox {...props.item} isScrolling={props.isScrolling} />
   ),
   'new-folder': props => <CreateFolder {...props.item} />,
-  'synced-sandbox-default-branch': props => (
-    <NewMasterSandbox {...props.item} />
-  ),
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
       <Text block weight="regular" css={css({ userSelect: 'none' })}>
@@ -144,9 +133,6 @@ const ComponentForTypes: IComponentForTypes = {
   ),
   blank: () => <div />,
   'solid-skeleton': ({ item }) => <SolidSkeleton viewMode={item.viewMode} />,
-  'community-sandbox': React.memo(props => (
-    <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
-  )),
   branch: ({ item, page }) => <Branch page={page} {...item} />,
   repository: ({ item }) => <Repository {...item} />,
   'new-branch': ({ item }) => (

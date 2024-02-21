@@ -7,7 +7,6 @@ import {
   ProjectFragment as Repository,
   ProjectWithBranchesFragment as RepositoryWithBranches,
 } from 'app/graphql/types';
-import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -24,7 +23,6 @@ export type DashboardSandboxStructure = {
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
   SHARED: Sandbox[] | null;
-  LIKED: Sandbox[] | null;
   ALL: {
     [path: string]: Sandbox[];
   } | null;
@@ -48,11 +46,6 @@ export type State = {
   isDragging: boolean;
   viewMode: 'grid' | 'list';
   orderBy: OrderBy;
-  filters: {
-    blacklistedTemplates: string[];
-    search: string;
-  };
-  isTemplateSelected: (templateName: string) => boolean;
   getFilteredSandboxes: (
     sandboxes: Array<Sandbox | Repo | Template['sandbox']>
   ) => Sandbox[];
@@ -60,13 +53,6 @@ export type State = {
     week: Sandbox[];
     older: Sandbox[];
   };
-  curatedAlbums: DashboardAlbum[];
-  /**
-   * This is populated when we need a specific album, it's
-   * currently used by the "Liked sandboxes" page when it's
-   * empty.
-   */
-  curatedAlbumsById: Record<string, DashboardAlbum | null> | null;
   contributions: Branch[] | null;
   /**
    * v2 repositories (formerly projects)
@@ -98,7 +84,6 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   TEMPLATES: null,
   DELETED: null,
   SHARED: null,
-  LIKED: null,
   RECENT_BRANCHES: null,
   RECENT_SANDBOXES: null,
   SEARCH: null,
@@ -112,8 +97,6 @@ export const state: State = {
   viewMode: 'grid',
   allCollections: null,
   teams: [],
-  curatedAlbums: [],
-  curatedAlbumsById: null,
   deletedSandboxesByTime: derived(({ sandboxes }: State) => {
     const deletedSandboxes = sandboxes.DELETED;
     if (!deletedSandboxes)
@@ -152,25 +135,17 @@ export const state: State = {
     order: 'desc',
     field: 'updatedAt',
   },
-  filters: {
-    blacklistedTemplates: [],
-    search: '',
-  },
-  isTemplateSelected: derived(({ filters }: State) => (templateName: string) =>
-    !filters.blacklistedTemplates.includes(templateName)
-  ),
   getFilteredSandboxes: derived(
-    ({ orderBy, filters }: State) => (
+    ({ orderBy }: State) => (
       sandboxes: Array<Sandbox | Template['sandbox']>
     ) => {
       const orderField = orderBy.field;
       const orderOrder = orderBy.order;
-      const { blacklistedTemplates } = filters;
 
       const isDateField =
         orderField === 'insertedAt' || orderField === 'updatedAt';
 
-      let orderedSandboxes = (sortBy(sandboxes, s => {
+      let orderedSandboxes = sortBy(sandboxes, s => {
         const sandbox = s!;
         if (isDateField) {
           return +zonedTimeToUtc(sandbox[orderField], 'Etc/UTC');
@@ -186,12 +161,7 @@ export const state: State = {
         }
 
         return sandbox[orderField];
-      }) as Sandbox[]).filter(
-        x =>
-          x.source &&
-          x.source.template &&
-          blacklistedTemplates.indexOf(x.source.template) === -1
-      );
+      }) as Sandbox[];
 
       if (orderOrder === 'desc') {
         orderedSandboxes = orderedSandboxes.reverse();
