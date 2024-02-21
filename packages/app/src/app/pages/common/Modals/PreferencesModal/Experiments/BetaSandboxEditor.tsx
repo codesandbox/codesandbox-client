@@ -62,8 +62,8 @@ export const BetaSandboxEditor = () => {
 
           setBetaSandboxEditor(!betaSandboxEditor);
         }}
-        title="Sandbox beta editor"
-        tooltip="Use beta editor"
+        title="Unified Platform Editor"
+        tooltip="Use Unified Platform Editor"
         type="boolean"
         value={betaSandboxEditor}
       />
