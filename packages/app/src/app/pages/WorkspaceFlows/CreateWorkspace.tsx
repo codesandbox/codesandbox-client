@@ -9,6 +9,7 @@ import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 export const CreateWorkspace = () => {
   const actions = useActions();
+  const { activeTeam } = useAppState();
   const [freshWorkspaceId, , clearFreshWorkspaceId] = useGlobalPersistedState<
     string
   >('FRESH_WORKSPACE_ID', undefined);
@@ -26,7 +27,9 @@ export const CreateWorkspace = () => {
       steps={['create', 'plans', 'addons', 'spending-limit', 'finalize']}
       onComplete={() => {
         clearFreshWorkspaceId();
-        window.location.href = dashboardUrls.recent();
+        window.location.href = dashboardUrls.recent(activeTeam, {
+          new_workspace: 'true',
+        });
       }}
       onDismiss={() => {
         if (freshWorkspaceId) {

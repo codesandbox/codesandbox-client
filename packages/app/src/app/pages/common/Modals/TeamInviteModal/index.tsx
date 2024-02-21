@@ -1,5 +1,5 @@
 import React from 'react';
-import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { recent } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useAppState, useActions } from 'app/overmind';
 import {
   REJECT_TEAM_INVITATION,
@@ -29,8 +29,7 @@ export const TeamInviteModal = () => {
     },
     onCompleted: () => {
       acceptTeamInvitation({ teamName, teamId });
-      modalClosed();
-      history.push(teamOverviewUrl(teamId));
+      window.location.href = recent(teamId, { new_join: 'true' });
     },
   });
   const [

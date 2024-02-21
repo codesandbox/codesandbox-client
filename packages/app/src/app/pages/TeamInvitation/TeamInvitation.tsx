@@ -109,7 +109,7 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
         <title>
           {data
             ? `Join ${data.teamByToken.name} on CodeSandbox`
-            : 'Join team on CodeSandbox'}
+            : 'Join workspace on CodeSandbox'}
         </title>
       </Helmet>
 
@@ -165,11 +165,11 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
   }
 
   if (loading || !team?.id) {
-    return <Text size={6}>Joining Team...</Text>;
+    return <Text size={6}>Joining workspace...</Text>;
   }
 
   // Ensure all endpoints for new team are fetched
-  window.location.href = dashboard.recent(team.id);
+  window.location.href = dashboard.recent(team.id, { new_join: 'true' });
   return null;
 };
 
