@@ -678,4 +678,9 @@ export default {
     // version null ensures no /v1 is in the URL
     return api.get('/vm_tiers', undefined, { version: null });
   },
+  setVMSpecs(sandboxId: string, vmTier: number) {
+    return api.patch(`/sandboxes/${sandboxId}/vm_tier`, {
+      vmTier,
+    });
+  },
 };

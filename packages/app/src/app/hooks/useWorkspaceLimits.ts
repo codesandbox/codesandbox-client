@@ -20,6 +20,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isFrozen: undefined,
       hasReachedSandboxLimit: undefined,
       hasReachedDraftLimit: undefined,
+      highestAllowedVMTier: undefined,
     };
   }
 
@@ -49,7 +50,11 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const userDrafts =
     userAuthorizations.find(ua => ua.userId === user.id)?.drafts ?? 0;
   const hasReachedDraftLimit =
-    applyUbbRestrictions && isFree === true && userDrafts >= limits.includedDrafts;
+    applyUbbRestrictions &&
+    isFree === true &&
+    userDrafts >= limits.includedDrafts;
+
+  const highestAllowedVMTier = limits.includedVmTier;
 
   return {
     isOutOfCredits,
@@ -64,6 +69,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isAtSpendingLimit ||
       isCloseToSpendingLimit,
     isFrozen: applyUbbRestrictions && frozen,
+    highestAllowedVMTier,
   };
 };
 
@@ -77,6 +83,7 @@ export type WorkspaceLimitsReturn =
       isFrozen: undefined;
       hasReachedSandboxLimit: undefined;
       hasReachedDraftLimit: undefined;
+      highestAllowedVMTier: undefined;
     }
   | {
       isOutOfCredits: boolean;
@@ -87,4 +94,5 @@ export type WorkspaceLimitsReturn =
       isFrozen: boolean;
       hasReachedSandboxLimit: boolean;
       hasReachedDraftLimit: boolean;
+      highestAllowedVMTier: number;
     };
