@@ -92,7 +92,7 @@ function getMeta(
 
 const downloadedAllDependencies = new Set<string>();
 /**
- * If the protocol supports it, download all all files of the dependency
+ * If the protocol supports it, download all files of the dependency
  * at once. It's an optimization.
  */
 export async function downloadAllDependencyFiles(
@@ -117,11 +117,15 @@ export async function downloadAllDependencyFiles(
   return null;
 }
 
-export function downloadDependency(
+const DOWNLOAD_CACHE = new Map<string, Promise<Module>>();
+
+function _downloadDependency(
   name: string,
   version: string,
   path: string
 ): Promise<Module> {
+  console.log('downloadDependency', name, version, path);
+
   const [depName, depVersion] = resolveNPMAlias(name, version);
   const id = depName + depVersion + path;
   const foundPkg = packages.get(id);
@@ -160,6 +164,18 @@ export function downloadDependency(
   return newPkg;
 }
 
+export function downloadDependency(
+  name: string,
+  version: string,
+  path: string
+): Promise<Module> {
+  const key = `${name}@${version}#${path}`;
+  if (!DOWNLOAD_CACHE.has(key)) {
+    DOWNLOAD_CACHE.set(key, _downloadDependency(name, version, path));
+  }
+  return DOWNLOAD_CACHE.get(key)!;
+}
+
 function resolvePath(
   path: string,
   currentTModule: TranspiledModule,
@@ -168,6 +184,8 @@ function resolvePath(
   meta: Meta = {},
   ignoreDepNameVersion: string = ''
 ): Promise<string> {
+  console.log('resolvePath', path);
+
   const currentPath = currentTModule.module.path;
 
   const isFile = gensync({
@@ -233,6 +251,7 @@ function resolvePath(
   });
 
   return resolveAsync(path, {
+    // resolverCache: manager.resolverCache,
     filename: currentPath,
     extensions: defaultExtensions.map(ext => '.' + ext),
     moduleDirectories: ['node_modules', manager.envVariables.NODE_PATH].filter(
@@ -264,6 +283,8 @@ async function getDependencyVersion(
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
+
+  console.log('getDependencyVersion', dependencyName);
 
   try {
     const filepath = pathUtils.join(dependencyName, 'package.json');
@@ -349,11 +370,13 @@ async function getDependencyVersion(
   return null;
 }
 
-export default async function fetchModule(
+const FETCH_MODULE_CACHE = new Map<string, Promise<Module>>();
+
+async function _fetchModule(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
+  defaultExtensions: Array<string>
 ): Promise<Module> {
   const currentPath = currentTModule.module.path;
 
@@ -425,4 +448,18 @@ export default async function fetchModule(
   }
 
   return downloadDependency(dependencyName, version, foundPath);
+}
+
+export default function fetchModule(
+  path: string,
+  currentTModule: TranspiledModule,
+  manager: Manager,
+  defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
+): Promise<Module> {
+  const foundPathPromise =
+    FETCH_MODULE_CACHE.get(path) ??
+    _fetchModule(path, currentTModule, manager, defaultExtensions);
+  FETCH_MODULE_CACHE.set(path, foundPathPromise);
+
+  return foundPathPromise;
 }
