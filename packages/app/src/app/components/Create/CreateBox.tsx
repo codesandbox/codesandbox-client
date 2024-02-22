@@ -129,16 +129,18 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const createFromTemplate = (
     template: TemplateFragment,
-    { name, createAs, permission, editor }: CreateParams
+    { name, createAs, permission, editor, customVMTier }: CreateParams
   ) => {
     const { sandbox } = template;
     const openInVSCode = editor === 'vscode';
 
     track(`Create ${type} - Create`, {
       type: 'fork',
+      title: name,
       template_name:
         template.sandbox.title || template.sandbox.alias || template.sandbox.id,
       open_in_editor: editor,
+      ...(customVMTier ? { vm_tier: customVMTier } : {}),
     });
 
     actions.editor.forkExternalSandbox({
@@ -147,6 +149,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       openInVSCode,
       autoLaunchVSCode,
       hasBetaEditorExperiment,
+      customVMTier,
       body: {
         title: name,
         collectionId,

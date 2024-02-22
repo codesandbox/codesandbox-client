@@ -5,6 +5,7 @@ export type CreateParams = {
   createAs: 'devbox' | 'sandbox';
   permission: 0 | 1 | 2;
   editor: 'csb' | 'vscode';
+  customVMTier?: number;
 };
 
 export interface TemplateCollection {

@@ -17,17 +17,13 @@ export const fuzzyMatchGithubToCsb = (
 
   if (bestMatch) {
     track('Match GH to CSB - success', {
-      codesandbox: 'V1',
-      event_source: 'UI',
+      match: bestMatch.login,
     });
 
     return bestMatch;
   }
 
-  track('Match GH to CSB - fail', {
-    codesandbox: 'V1',
-    event_source: 'UI',
-  });
+  track('Match GH to CSB - fail');
 
   return accounts[0];
 };
