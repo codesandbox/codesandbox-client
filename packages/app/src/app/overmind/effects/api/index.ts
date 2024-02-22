@@ -679,9 +679,6 @@ export default {
     return api.get('/vm_tiers', undefined, { version: null });
   },
   setVMSpecs(sandboxId: string, vmTier: number) {
-    console.log('vm_tier', vmTier);
-    console.log('type', typeof vmTier);
-
     return api.patch(`/sandboxes/${sandboxId}/vm_tier`, {
       vmTier,
     });
