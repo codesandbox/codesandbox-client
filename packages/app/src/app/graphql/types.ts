@@ -2059,6 +2059,12 @@ export type RootMutationType = {
    */
   updateProjectSettings: ProjectSettings;
   /**
+   * Update the VM tier of a project. All branches will start using this new VM tier as soon as the user connects
+   * to the branch (also for running branches). To optimistically update a branch without reload/reconnect,
+   * you can pass a branch ID as well that we'll update immediately.
+   */
+  updateProjectVmTier: Resources;
+  /**
    * Update the settings for a sandbox. All settings are nullable.
    * Not passing a specific argument will leave it unchanged, explicitly passing `null` will revert it to the default.
    */
@@ -2621,6 +2627,12 @@ export type RootMutationTypeUpdateNotificationReadStatusArgs = {
 export type RootMutationTypeUpdateProjectSettingsArgs = {
   aiConsent: InputMaybe<Scalars['Boolean']>;
   projectId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeUpdateProjectVmTierArgs = {
+  branchId: InputMaybe<Scalars['String']>;
+  projectId: Scalars['UUID4'];
+  vmTier: Scalars['Int'];
 };
 
 export type RootMutationTypeUpdateSandboxSettingsArgs = {
@@ -4719,6 +4731,7 @@ export type CurrentTeamInfoFragmentFragment = {
     includedCredits: number;
     includedSandboxes: number;
     includedDrafts: number;
+    includedVmTier: number;
     onDemandCreditLimit: number | null;
   };
   usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
@@ -6127,6 +6140,7 @@ export type GetTeamQuery = {
         includedCredits: number;
         includedSandboxes: number;
         includedDrafts: number;
+        includedVmTier: number;
         onDemandCreditLimit: number | null;
       };
       usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };

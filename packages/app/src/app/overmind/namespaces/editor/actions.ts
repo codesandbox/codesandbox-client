@@ -754,6 +754,7 @@ export const forkExternalSandbox = async (
     openInVSCode,
     autoLaunchVSCode,
     hasBetaEditorExperiment,
+    customVMTier,
     body,
   }: {
     sandboxId: string;
@@ -761,6 +762,7 @@ export const forkExternalSandbox = async (
     openInVSCode?: boolean;
     autoLaunchVSCode?: boolean;
     hasBetaEditorExperiment?: boolean;
+    customVMTier?: number;
     body?: {
       collectionId: string;
       alias?: string;
@@ -780,6 +782,11 @@ export const forkExternalSandbox = async (
 
   try {
     const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
+
+    if (customVMTier) {
+      await effects.api.setVMSpecs(forkedSandbox.id, customVMTier);
+    }
+
     if (openInVSCode) {
       if (autoLaunchVSCode) {
         window.open(vsCodeUrl(forkedSandbox.id));

@@ -18,6 +18,7 @@ import { Query } from 'react-apollo';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Link } from 'react-router-dom';
+import { VMTier } from 'app/overmind/effects/api/types';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
@@ -42,12 +43,16 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
 
   const { activeTeamInfo, activeTeam } = useAppState();
-  const { hasReachedSandboxLimit, hasReachedDraftLimit } = useWorkspaceLimits();
+  const {
+    hasReachedSandboxLimit,
+    hasReachedDraftLimit,
+    highestAllowedVMTier,
+  } = useWorkspaceLimits();
   const { isAdmin } = useWorkspaceAuthorization();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
-  const { isPro } = useWorkspaceSubscription();
+  const { isFree } = useWorkspaceSubscription();
   const isDraft = collectionId === undefined;
   const canSetPrivacy = !isDraft;
   const canCreateDraft = !hasReachedDraftLimit;
@@ -65,21 +70,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
     'csb'
   );
 
-  const defaultSpecs =
-    // eslint-disable-next-line no-nested-ternary
-    type === 'sandbox'
-      ? 'Browser'
-      : isPro
-      ? '4 vCPUs - 8GiB RAM - 12GB disk'
-      : '2 vCPUs - 2GiB RAM - 6GB disk';
-
-  const specsInfo =
-    // eslint-disable-next-line no-nested-ternary
-    type === 'sandbox'
-      ? 'Sandboxes run in your browser.'
-      : isPro
-      ? 'VM specs are currently tied to your Pro subscription.'
-      : 'Better specs are available for Pro workspaces';
+  const defaultTier = isFree ? 1 : 2;
+  const [selectedTier, setSelectedTier] = useState<number>(defaultTier);
+  const [availableTiers, setAvailableTiers] = useState<VMTier[]>([]);
 
   useEffect(() => {
     effects.api.getSandboxTitle().then(({ title }) => {
@@ -89,6 +82,13 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         nameInputRef.current.select();
       }
     });
+    if (type === 'devbox') {
+      effects.api.getVMSpecs().then(res => {
+        setAvailableTiers(
+          res.vmTiers.filter(t => t.tier <= highestAllowedVMTier)
+        );
+      });
+    }
   }, []);
 
   return (
@@ -109,6 +109,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           createAs: type,
           permission,
           editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
+          customVMTier:
+            // Only pass customVMTier if user selects something else than the default
+            availableTiers.length > 0 && selectedTier !== defaultTier
+              ? selectedTier
+              : undefined,
         });
       }}
     >
@@ -285,15 +290,38 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           <Text size={3} as="label">
             Runtime
           </Text>
-          <Input
-            css={{ cursor: 'not-allowed' }}
-            value={defaultSpecs}
-            disabled
-          />
-          <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
-            <Icon name="circleBang" />
-            <Text size={3}>{specsInfo}</Text>
-          </Stack>
+          {type === 'sandbox' ? (
+            <>
+              <Input css={{ cursor: 'not-allowed' }} value="Browser" disabled />
+              <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
+                <Icon name="circleBang" />
+                <Text size={3}>Sandboxes run in your browser.</Text>
+              </Stack>
+            </>
+          ) : (
+            <>
+              <Select
+                value={selectedTier}
+                disabled={availableTiers.length === 0}
+                onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
+              >
+                {availableTiers.map(t => (
+                  <option key={t.shortid} value={t.tier}>
+                    {t.name} ({t.cpu} vCPUs, {t.memory} GiB RAM, {t.storage} GB
+                    Disk for {t.creditBasis} credits/hour)
+                  </option>
+                ))}
+              </Select>
+              {isFree && (
+                <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
+                  <Icon name="circleBang" />
+                  <Text size={3}>
+                    Better specs are available for Pro workspaces.
+                  </Text>
+                </Stack>
+              )}
+            </>
+          )}
         </Stack>
       </Stack>
 

@@ -231,6 +231,7 @@ export const currentTeamInfoFragment = gql`
       includedCredits
       includedSandboxes
       includedDrafts
+      includedVmTier
       onDemandCreditLimit
     }
 

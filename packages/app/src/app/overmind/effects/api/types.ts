@@ -63,6 +63,7 @@ export type VMTier = {
   memory: number;
   storage: number;
   creditBasis: number;
+  tier: number;
 };
 
 export type APIPricingResult = {
