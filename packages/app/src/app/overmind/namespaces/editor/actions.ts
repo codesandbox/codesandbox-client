@@ -772,7 +772,7 @@ export const forkExternalSandbox = async (
     };
   }
 ) => {
-  effects.analytics.track('Fork Sandbox', { type: 'external' });
+  effects.analytics.track('Fork Sandbox', { type: 'external', sandboxId });
 
   const usedBody: ForkSandboxBody = body || {};
 
