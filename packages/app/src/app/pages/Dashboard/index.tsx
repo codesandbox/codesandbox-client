@@ -62,7 +62,7 @@ export const Dashboard: FunctionComponent = () => {
 
   const hasPaymentProblems =
     subscription?.status === SubscriptionStatus.Unpaid ||
-    subscription?.status === SubscriptionStatus.IncompleteExpired;
+    subscription?.status === SubscriptionStatus.Incomplete;
   const hasTopBarBanner = hasPaymentProblems || showUsageLimitBanner;
 
   useEffect(() => {
