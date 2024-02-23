@@ -100,7 +100,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {isTemplate && hasWriteAccess ? (
         <MenuItem
           onSelect={() => {
-            actions.editor.forkExternalSandbox({
+            actions.dashboard.forkSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
               hasBetaEditorExperiment,
@@ -150,7 +150,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {hasWriteAccess && !isTemplate ? (
         <MenuItem
           onSelect={() => {
-            actions.editor.forkExternalSandbox({
+            actions.dashboard.forkSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
               hasBetaEditorExperiment,

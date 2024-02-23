@@ -7,6 +7,8 @@ import {
   Input,
   Icon,
   Select,
+  Switch,
+  Tooltip,
 } from '@codesandbox/components';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
@@ -19,14 +21,16 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Link } from 'react-router-dom';
 import { VMTier } from 'app/overmind/effects/api/types';
-import { CreateParams } from '../utils/types';
+import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+import { CreateBoxParams, CreateRepoParams } from '../utils/types';
 
 interface CreateBoxFormProps {
   type: 'sandbox' | 'devbox';
   collectionId: string | undefined;
   setCollectionId: (collectionId: string | undefined) => void;
   onCancel: () => void;
-  onSubmit: (params: CreateParams) => void;
+  onCreateBox: (params: CreateBoxParams) => void;
+  onCreateRepository: (params: CreateRepoParams) => void;
   onClose: () => void;
 }
 
@@ -37,11 +41,10 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   collectionId,
   setCollectionId,
   onCancel,
-  onSubmit,
+  onCreateBox,
+  onCreateRepository,
   onClose,
 }) => {
-  const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
-
   const { activeTeamInfo, activeTeam } = useAppState();
   const {
     hasReachedSandboxLimit,
@@ -50,10 +53,23 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   } = useWorkspaceLimits();
   const { isAdmin } = useWorkspaceAuthorization();
   const [name, setName] = useState<string>();
+  const [createRepo, setCreateRepo] = useState<boolean>(false);
+  const [privateRepo, setPrivateRepo] = useState<boolean>(true);
+  const githubAccounts = useGithubAccounts();
+  const userOrganization = githubAccounts?.data?.personal.login;
+
+  // eslint-disable-next-line no-nested-ternary
+  const label = createRepo
+    ? 'Repository'
+    : type === 'sandbox'
+    ? 'Sandbox'
+    : 'Devbox';
+
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isFree } = useWorkspaceSubscription();
   const isDraft = collectionId === undefined;
+
   const canSetPrivacy = !isDraft;
   const canCreateDraft = !hasReachedDraftLimit;
   const canCreateInFolders = type === 'devbox' || !hasReachedSandboxLimit;
@@ -104,33 +120,68 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
       }}
       onSubmit={e => {
         e.preventDefault();
-        onSubmit({
-          name,
-          createAs: type,
-          permission,
-          editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
-          customVMTier:
-            // Only pass customVMTier if user selects something else than the default
-            availableTiers.length > 0 && selectedTier !== defaultTier
-              ? selectedTier
-              : undefined,
-        });
+        // Only pass customVMTier if user selects something else than the default
+        const customVMTier =
+          availableTiers.length > 0 && selectedTier !== defaultTier
+            ? selectedTier
+            : undefined;
+
+        // ensure 'csb' is always passed when creating a sandbox
+        const openInEditor = type === 'sandbox' ? 'csb' : editor;
+
+        if (createRepo) {
+          onCreateRepository({
+            name,
+            owner: userOrganization,
+            isPrivate: privateRepo,
+            customVMTier,
+            editor: openInEditor,
+          });
+        } else {
+          onCreateBox({
+            name,
+            createAs: type,
+            permission,
+            editor: openInEditor,
+            customVMTier,
+          });
+        }
       }}
     >
       <Stack direction="vertical" gap={6}>
-        <Text
-          as="h2"
-          css={{
-            fontSize: '16px',
-            fontWeight: 500,
-            margin: 0,
-          }}
-        >
-          Create {label}
-        </Text>
+        <Stack justify="space-between">
+          <Text
+            as="h2"
+            css={{
+              fontSize: '16px',
+              fontWeight: 500,
+              margin: 0,
+            }}
+          >
+            Create {label}
+          </Text>
+
+          {/** If workspace is at any limit and user cannot create something new, don't allow repos as an escape hatch */}
+          {canCreate && (
+            <Tooltip label="Use this template to start a new repository on GitHub">
+              <Stack
+                as="label"
+                align="center"
+                gap={1}
+                css={{ cursor: 'pointer' }}
+              >
+                <Text size={3}>Create repository</Text>
+                <Switch
+                  on={createRepo}
+                  onChange={() => setCreateRepo(!createRepo)}
+                />
+              </Stack>
+            </Tooltip>
+          )}
+        </Stack>
         <Stack direction="vertical" gap={2}>
           <Text size={3} as="label">
-            Name
+            {label} Name
           </Text>
           <Input
             autoFocus
@@ -143,56 +194,60 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             aria-describedby="name-desc"
             ref={nameInputRef}
           />
+          {createRepo && (
+            <InputExplanation variant="info">
+              The repository will be created inside your personal account (
+              {userOrganization}).
+            </InputExplanation>
+          )}
         </Stack>
 
-        <Stack direction="vertical" gap={2}>
-          <Text size={3} as="label">
-            Folder
-          </Text>
+        {!createRepo && (
+          <Stack direction="vertical" gap={2}>
+            <Text size={3} as="label">
+              Folder
+            </Text>
 
-          <Query
-            variables={{ teamId: activeTeam }}
-            query={PATHED_SANDBOXES_FOLDER_QUERY}
-            fetchPolicy="network-only"
-          >
-            {({ data }) => {
-              return (
-                <Select
-                  icon={() => (
-                    <Icon name={isDraft ? 'file' : 'folder'} size={12} />
-                  )}
-                  value={collectionId}
-                  onChange={({ target: { value } }) =>
-                    value === '$CSBDRAFTS'
-                      ? setCollectionId(undefined)
-                      : setCollectionId(value)
-                  }
-                >
-                  <option value="$CSBDRAFTS">Drafts</option>
+            <Query
+              variables={{ teamId: activeTeam }}
+              query={PATHED_SANDBOXES_FOLDER_QUERY}
+              fetchPolicy="network-only"
+            >
+              {({ data }) => {
+                return (
+                  <Select
+                    icon={() => (
+                      <Icon name={isDraft ? 'file' : 'folder'} size={12} />
+                    )}
+                    value={collectionId}
+                    onChange={({ target: { value } }) =>
+                      value === '$CSBDRAFTS'
+                        ? setCollectionId(undefined)
+                        : setCollectionId(value)
+                    }
+                  >
+                    <option value="$CSBDRAFTS">Drafts</option>
 
-                  {data?.me?.collections?.map(collection => (
-                    <option value={collection.id}>
-                      {collection.path === '/'
-                        ? 'All Devboxes and Sandboxes'
-                        : collection.path.slice(1).split('/').join(' / ')}
-                    </option>
-                  ))}
-                </Select>
-              );
-            }}
-          </Query>
+                    {data?.me?.collections?.map(collection => (
+                      <option value={collection.id}>
+                        {collection.path === '/'
+                          ? 'All Devboxes and Sandboxes'
+                          : collection.path.slice(1).split('/').join(' / ')}
+                      </option>
+                    ))}
+                  </Select>
+                );
+              }}
+            </Query>
 
-          {isDraft && canCreateDraft && (
-            <Stack gap={1} css={{ color: '#A8BFFA' }}>
-              <Icon name="circleBang" />
-              <Text size={3}>Drafts are private and only visible to you.</Text>
-            </Stack>
-          )}
+            {isDraft && canCreateDraft && (
+              <InputExplanation variant="info">
+                Drafts are private and only visible to you.
+              </InputExplanation>
+            )}
 
-          {isDraft && !canCreateDraft && (
-            <Stack gap={1} css={{ color: '#F5A8A8' }}>
-              <Icon name="circleBang" />
-              <Text size={3}>
+            {isDraft && !canCreateDraft && (
+              <InputExplanation variant="error">
                 Your{' '}
                 <Link
                   css={{ color: 'inherit' }}
@@ -220,27 +275,51 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   'ask an admin to upgrade to Pro for unlimited drafts'
                 )}
                 .
-              </Text>
-            </Stack>
-          )}
+              </InputExplanation>
+            )}
 
-          {!isDraft && !canCreateInFolders && (
-            <Stack gap={1} css={{ color: '#F5A8A8' }}>
-              <Icon name="circleBang" />
-              <Text size={3}>
+            {!isDraft && !canCreateInFolders && (
+              <InputExplanation variant="error">
                 You reached the maximum amount of shareable Sandboxes in this
                 workspace.
-              </Text>
-            </Stack>
-          )}
-        </Stack>
+              </InputExplanation>
+            )}
+          </Stack>
+        )}
 
-        {!isDraft && canCreate && (
+        {createRepo ? (
           <Stack direction="vertical" gap={2}>
             <Text size={3} as="label">
-              Visibility
+              Privacy
             </Text>
             <Stack direction="vertical" gap={2}>
+              <Select
+                icon={() => (
+                  <Icon size={12} name={privateRepo ? 'lock' : 'globe'} />
+                )}
+                defaultValue="private"
+                onChange={e => {
+                  setPrivateRepo(e.target.value === 'private');
+                }}
+              >
+                <option value="private">
+                  Private - You choose who can see and commit to this
+                  repository.
+                </option>
+                <option value="public">
+                  Public - Anyone on the internet can see this repository. You
+                  choose who can commit.
+                </option>
+              </Select>
+            </Stack>
+          </Stack>
+        ) : (
+          !isDraft &&
+          canCreate && (
+            <Stack direction="vertical" gap={2}>
+              <Text size={3} as="label">
+                Privacy
+              </Text>
               <Select
                 icon={PRIVACY_OPTIONS[permission].icon}
                 defaultValue={permission}
@@ -251,7 +330,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 <option value={2}>{PRIVACY_OPTIONS[2].description}</option>
               </Select>
             </Stack>
-          </Stack>
+          )
         )}
 
         <Stack direction="vertical" gap={2}>
@@ -265,12 +344,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 value="CodeSandbox Web Editor"
                 disabled
               />
-              <Stack gap={1} css={{ color: '#A8BFFA' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>
-                  Sandboxes can only be opened in the web editor.
-                </Text>
-              </Stack>
+              <InputExplanation variant="info">
+                Sandboxes can only be opened in the web editor.
+              </InputExplanation>
             </>
           ) : (
             <Select
@@ -293,10 +369,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           {type === 'sandbox' ? (
             <>
               <Input css={{ cursor: 'not-allowed' }} value="Browser" disabled />
-              <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>Sandboxes run in your browser.</Text>
-              </Stack>
+              <InputExplanation variant="info">
+                Sandboxes run in your browser.
+              </InputExplanation>
             </>
           ) : (
             <>
@@ -313,12 +388,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 ))}
               </Select>
               {isFree && (
-                <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
-                  <Icon name="circleBang" />
-                  <Text size={3}>
-                    Better specs are available for Pro workspaces.
-                  </Text>
-                </Stack>
+                <InputExplanation variant="info">
+                  Better specs are available for Pro workspaces.
+                </InputExplanation>
               )}
             </>
           )}
@@ -367,4 +439,21 @@ const PRIVACY_OPTIONS = {
 const EDITOR_ICONS = {
   csb: () => <Icon size={12} name="cloud" />,
   vscode: () => <Icon size={12} name="vscode" />,
+};
+
+const InputExplanation: React.FC<{ variant: 'info' | 'error' }> = ({
+  children,
+  variant = 'info',
+}) => {
+  const COLOR_MAP = {
+    info: '#A8BFFA',
+    error: '#F5A8A8',
+  };
+
+  return (
+    <Stack gap={1} css={{ color: COLOR_MAP[variant] }}>
+      <Icon name="circleBang" />
+      <Text size={3}>{children}</Text>
+    </Stack>
+  );
 };

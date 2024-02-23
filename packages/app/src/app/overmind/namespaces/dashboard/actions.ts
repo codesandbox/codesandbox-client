@@ -9,9 +9,14 @@ import {
   RepoFragmentDashboardFragment,
   ProjectFragment,
 } from 'app/graphql/types';
-import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  v2BranchUrl,
+  vsCodeLauncherUrl,
+  vsCodeUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { ForkSandboxBody } from '@codesandbox/common/lib/types';
 import {
   getDecoratedCollection,
   getProjectUniqueKey,
@@ -1630,6 +1635,124 @@ export const forkGitHubRepository = async (
       message: JSON.stringify(error),
       title: 'Failed to fork repository',
       status: NotificationStatus.ERROR,
+    });
+  }
+};
+
+export const forkSandbox = async (
+  { effects, state, actions }: Context,
+  {
+    sandboxId,
+    openInNewWindow,
+    openInVSCode,
+    autoLaunchVSCode,
+    hasBetaEditorExperiment,
+    customVMTier,
+    body,
+  }: {
+    sandboxId: string;
+    openInNewWindow?: boolean;
+    openInVSCode?: boolean;
+    autoLaunchVSCode?: boolean;
+    hasBetaEditorExperiment?: boolean;
+    customVMTier?: number;
+    body?: {
+      collectionId: string;
+      alias?: string;
+      v2?: boolean;
+      title?: string;
+      privacy?: 0 | 1 | 2;
+    };
+  }
+) => {
+  effects.analytics.track('Fork Sandbox', { type: 'external', sandboxId });
+
+  const usedBody: ForkSandboxBody = body || {};
+
+  if (state.activeTeam) {
+    usedBody.teamId = state.activeTeam;
+  }
+
+  try {
+    const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
+
+    if (customVMTier) {
+      await effects.api.setVMSpecs(forkedSandbox.id, customVMTier);
+    }
+
+    if (openInVSCode) {
+      if (autoLaunchVSCode) {
+        window.open(vsCodeUrl(forkedSandbox.id));
+      } else {
+        window.open(vsCodeLauncherUrl(forkedSandbox.id));
+      }
+    } else {
+      state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
+
+      effects.router.updateSandboxUrl(forkedSandbox, {
+        openInNewWindow,
+        hasBetaEditorExperiment,
+      });
+    }
+  } catch (error) {
+    const errorMessage = actions.internal.getErrorMessage({ error });
+
+    if (errorMessage.includes('DRAFT_LIMIT')) {
+      effects.notificationToast.add({
+        title: 'Cannot create draft',
+        message:
+          'Your drafts folder is full. Delete unneeded drafts, or upgrade to Pro for unlimited drafts.',
+        status: NotificationStatus.ERROR,
+      });
+    } else {
+      actions.internal.handleError({
+        message: 'We were unable to fork the sandbox',
+        error,
+      });
+    }
+  }
+};
+
+export const createRepoFromTemplate = async (
+  { effects, state, actions }: Context,
+  {
+    sandboxId,
+    openInVSCode,
+    autoLaunchVSCode,
+    customVMTier,
+    name,
+    owner,
+    isPrivate,
+  }: {
+    sandboxId: string;
+    openInVSCode?: boolean;
+    autoLaunchVSCode?: boolean;
+    customVMTier?: number;
+    name: string;
+    owner: string;
+    isPrivate: boolean;
+  }
+) => {
+
+  try {
+    // if (customVMTier) {
+    //   await effects.api.setVMSpecs(forkedSandbox.id, customVMTier);
+    // }
+
+    // if (openInVSCode) {
+    //   if (autoLaunchVSCode) {
+    //     window.open(vsCodeUrl(forkedSandbox.id));
+    //   } else {
+    //     window.open(vsCodeLauncherUrl(forkedSandbox.id));
+    //   }
+    // } else {
+    //   window.location.href = v2BranchUrl({
+    //   });
+    // }
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'We were unable to create the repository',
+      error,
     });
   }
 };

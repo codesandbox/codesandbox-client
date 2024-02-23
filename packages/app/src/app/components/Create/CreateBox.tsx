@@ -34,7 +34,7 @@ import { TemplateList } from './TemplateList';
 import { useTemplateCollections } from './hooks/useTemplateCollections';
 import { useOfficialTemplates } from './hooks/useOfficialTemplates';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
-import { CreateParams } from './utils/types';
+import { CreateBoxParams, CreateRepoParams } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
 import { CreateBoxForm } from './CreateBox/CreateBoxForm';
@@ -127,9 +127,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
 
-  const createFromTemplate = (
+  const createBoxFromTemplate = (
     template: TemplateFragment,
-    { name, createAs, permission, editor, customVMTier }: CreateParams
+    { name, createAs, permission, editor, customVMTier }: CreateBoxParams
   ) => {
     const { sandbox } = template;
     const openInVSCode = editor === 'vscode';
@@ -143,7 +143,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       ...(customVMTier ? { vm_tier: customVMTier } : {}),
     });
 
-    actions.editor.forkExternalSandbox({
+    actions.dashboard.forkSandbox({
       sandboxId: sandbox.id,
       openInNewWindow: false,
       openInVSCode,
@@ -159,6 +159,20 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     });
 
     closeModal();
+  };
+
+  const createRepoFromTemplate = (
+    template: TemplateFragment,
+    { name, owner, isPrivate, editor, customVMTier }: CreateRepoParams
+  ) => {
+    track(`Create devbox - Create repo from template`, {
+      name: `${owner}/${name}`,
+      isPrivate,
+      template_name:
+        template.sandbox.title || template.sandbox.alias || template.sandbox.id,
+      open_in_editor: editor,
+      ...(customVMTier ? { vm_tier: customVMTier } : {}),
+    });
   };
 
   const selectTemplate = (
@@ -496,8 +510,11 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                 onCancel={() => {
                   setViewState('initial');
                 }}
-                onSubmit={params => {
-                  createFromTemplate(selectedTemplate, params);
+                onCreateBox={params => {
+                  createBoxFromTemplate(selectedTemplate, params);
+                }}
+                onCreateRepository={params => {
+                  createRepoFromTemplate(selectedTemplate, params);
                 }}
                 onClose={() => closeModal()}
               />
