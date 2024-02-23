@@ -160,9 +160,10 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
             {!state.hasLogIn && <FixedSignInBanner />}
 
-            {subscription?.status === SubscriptionStatus.Unpaid && (
-              <PaymentPending />
-            )}
+            {subscription?.status === SubscriptionStatus.Unpaid ||
+              (subscription?.status === SubscriptionStatus.Incomplete && (
+                <PaymentPending status={subscription?.status} />
+              ))}
 
             {showRestrictedBanner ? <RestrictedSandbox /> : null}
             {showCloudSandboxConvert ? <UpgradeSSEToV2Stripe /> : null}
