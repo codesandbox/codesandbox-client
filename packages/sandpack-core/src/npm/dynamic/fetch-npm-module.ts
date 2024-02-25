@@ -133,8 +133,6 @@ export function downloadDependency(
   version: string,
   path: string
 ): Promise<Module> {
-  console.log('downloadDependency', name, version, path);
-
   const [depName, depVersion] = resolveNPMAlias(name, version);
   const id = depName + depVersion + path;
   const foundPkg = packages.get(id);
@@ -184,8 +182,6 @@ function resolvePath(
   ignoreDepNameVersion: string = ''
 ): Promise<string> {
   invalidatePendingPackages(manager);
-
-  console.log('resolvePath', path);
 
   const currentPath = currentTModule.module.path;
 
@@ -290,8 +286,6 @@ async function getDependencyVersion(
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
-
-  console.log('getDependencyVersion', dependencyName);
 
   try {
     const filepath = pathUtils.join(dependencyName, 'package.json');
