@@ -15,6 +15,18 @@ import {
 
 export type ResolverCache = Map<string, any>;
 
+export function invalidatePackageFromCache(
+  pkgName: string,
+  cache: ResolverCache
+): void {
+  const lowerPkgName = pkgName.toLowerCase();
+  for (const [key] of cache) {
+    if (key.toLowerCase().includes(lowerPkgName)) {
+      cache.delete(key);
+    }
+  }
+}
+
 export interface IResolveOptionsInput {
   filename: string;
   extensions: string[];

@@ -9,7 +9,10 @@ import { getFetchProtocol } from './fetch-protocols';
 import { getDependencyName } from '../../utils/get-dependency-name';
 import { TranspiledModule } from '../../transpiled-module';
 import { DEFAULT_EXTENSIONS } from '../../utils/extensions';
-import { resolveAsync } from '../../resolver/resolver';
+import {
+  invalidatePackageFromCache,
+  resolveAsync,
+} from '../../resolver/resolver';
 
 export type Meta = {
   [path: string]: true;
@@ -117,9 +120,15 @@ export async function downloadAllDependencyFiles(
   return null;
 }
 
-const DOWNLOAD_CACHE = new Map<string, Promise<Module>>();
+const packagesToInvalidate = new Set<string>();
+function invalidatePendingPackages(manager: Manager) {
+  for (const pkgName of packagesToInvalidate) {
+    invalidatePackageFromCache(pkgName, manager.resolverCache);
+    packagesToInvalidate.delete(pkgName);
+  }
+}
 
-function _downloadDependency(
+export function downloadDependency(
   name: string,
   version: string,
   path: string
@@ -132,6 +141,8 @@ function _downloadDependency(
   if (foundPkg) {
     return foundPkg;
   }
+
+  packagesToInvalidate.add(depName);
 
   const relativePath = path
     .replace(
@@ -164,18 +175,6 @@ function _downloadDependency(
   return newPkg;
 }
 
-export function downloadDependency(
-  name: string,
-  version: string,
-  path: string
-): Promise<Module> {
-  const key = `${name}@${version}#${path}`;
-  if (!DOWNLOAD_CACHE.has(key)) {
-    DOWNLOAD_CACHE.set(key, _downloadDependency(name, version, path));
-  }
-  return DOWNLOAD_CACHE.get(key)!;
-}
-
 function resolvePath(
   path: string,
   currentTModule: TranspiledModule,
@@ -184,6 +183,8 @@ function resolvePath(
   meta: Meta = {},
   ignoreDepNameVersion: string = ''
 ): Promise<string> {
+  invalidatePendingPackages(manager);
+
   console.log('resolvePath', path);
 
   const currentPath = currentTModule.module.path;
@@ -229,7 +230,13 @@ function resolvePath(
         if (subDepVersionVersionInfo) {
           const { version: subDepVersion } = subDepVersionVersionInfo;
           try {
-            const module = await downloadDependency(depName, subDepVersion, p);
+            const module = await downloadDependency(
+              depName,
+              subDepVersion,
+              p
+            ).finally(() => {
+              invalidatePendingPackages(manager);
+            });
 
             if (module) {
               manager.addModule(module);
@@ -251,7 +258,7 @@ function resolvePath(
   });
 
   return resolveAsync(path, {
-    // resolverCache: manager.resolverCache,
+    resolverCache: manager.resolverCache,
     filename: currentPath,
     extensions: defaultExtensions.map(ext => '.' + ext),
     moduleDirectories: ['node_modules', manager.envVariables.NODE_PATH].filter(
@@ -370,14 +377,14 @@ async function getDependencyVersion(
   return null;
 }
 
-const FETCH_MODULE_CACHE = new Map<string, Promise<Module>>();
-
-async function _fetchModule(
+export async function fetchModule(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string>
+  defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
 ): Promise<Module> {
+  invalidatePendingPackages(manager);
+
   const currentPath = currentTModule.module.path;
 
   // Get the last part of the path as dependency name for paths like
@@ -447,19 +454,7 @@ async function _fetchModule(
     };
   }
 
-  return downloadDependency(dependencyName, version, foundPath);
-}
-
-export default function fetchModule(
-  path: string,
-  currentTModule: TranspiledModule,
-  manager: Manager,
-  defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
-): Promise<Module> {
-  const foundPathPromise =
-    FETCH_MODULE_CACHE.get(path) ??
-    _fetchModule(path, currentTModule, manager, defaultExtensions);
-  FETCH_MODULE_CACHE.set(path, foundPathPromise);
-
-  return foundPathPromise;
+  return downloadDependency(dependencyName, version, foundPath).finally(() => {
+    invalidatePendingPackages(manager);
+  });
 }
