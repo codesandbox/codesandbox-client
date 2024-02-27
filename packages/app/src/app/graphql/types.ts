@@ -1095,6 +1095,7 @@ export enum SubscriptionPaymentProvider {
 export enum SubscriptionStatus {
   Active = 'ACTIVE',
   Cancelled = 'CANCELLED',
+  Incomplete = 'INCOMPLETE',
   IncompleteExpired = 'INCOMPLETE_EXPIRED',
   Paused = 'PAUSED',
   Trialing = 'TRIALING',
