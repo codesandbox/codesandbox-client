@@ -5,33 +5,64 @@ import {
   ThemeProvider,
 } from '@codesandbox/components';
 import React, { useState } from 'react';
+import { useTabState } from 'reakit/Tab';
 
 import { ModalContentProps } from 'app/pages/common/Modals';
+import { SignIn } from 'app/pages/SignIn/SignIn';
+import { useAppState } from 'app/overmind';
+import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import {
+  Tab,
+  Tabs,
+  Panel,
   Container,
   HeaderInformation,
   ModalContent,
   ModalSidebar,
   ModalBody,
 } from './elements';
-import { Import } from './ImportRepository/Import';
-import { GithubRepoToImport } from './ImportRepository/types';
-import { ImportInfo } from './ImportRepository/ImportInfo';
-import { ForkRepoForm } from './ImportRepository/ForkRepoForm';
 
-export const COLUMN_MEDIA_THRESHOLD = 1600;
+import { GithubRepoToImport } from './utils/types';
+import { RepoInfo } from './ImportRepository/components/RepoInfo';
+import { RestrictedPrivateReposInfo } from './ImportRepository/components/RestrictedPrivateReposInfo';
+import { AuthorizeGitHubPermissions } from './ImportRepository/steps/AuthorizeGitHubPermissions';
+import { SelectRepo } from './ImportRepository/steps/SelectRepo';
+import { ConfigureRepoForm } from './ImportRepository/steps/ConfigureRepoForm';
+
+type View = 'signin' | 'permissions' | 'select' | 'config';
 
 export const ImportRepository: React.FC<ModalContentProps> = () => {
+  const { hasLogIn } = useAppState();
+  const {
+    restrictsPublicRepos,
+    restrictsPrivateRepos,
+  } = useGitHubPermissions();
+
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
-  const [viewState, setViewState] = useState<'initial' | 'fork'>('initial');
+  const tabState = useTabState({
+    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
+    selectedId: 'import',
+  });
+
+  const [viewState, setViewState] = useState<View>(() => {
+    if (!hasLogIn) {
+      return 'signin';
+    }
+
+    if (restrictsPublicRepos) {
+      return 'permissions';
+    }
+
+    return 'select';
+  });
 
   const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>();
 
   const selectGithubRepo = (repo: GithubRepoToImport) => {
     setSelectedRepo(repo);
-    setViewState('fork');
+    setViewState('config');
   };
 
   return (
@@ -46,17 +77,16 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
           }}
         >
           <HeaderInformation>
-            {viewState === 'initial' ? (
-              <Text size={4} variant="muted">
-                Import repository
-              </Text>
-            ) : (
-              // TODO: add aria-label based on title to IconButton?
+            {viewState === 'permissions' && (
+              <Text size={4}>Connect to GitHub</Text>
+            )}
+            {viewState === 'select' && <Text size={4}>New repository</Text>}
+            {viewState === 'config' && (
               <IconButton
                 name="arrowDown"
                 variant="square"
                 size={16}
-                title="Back to overview"
+                title="Back to selection"
                 css={{
                   transform: 'rotate(90deg)',
                   '&:active:not(:disabled)': {
@@ -64,7 +94,7 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
                   },
                 }}
                 onClick={() => {
-                  setViewState('initial');
+                  setViewState('select');
                 }}
               />
             )}
@@ -72,27 +102,57 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
         </Stack>
 
         <ModalBody>
-          {viewState === 'initial' ? (
+          {viewState === 'signin' && <SignIn />}
+          {viewState === 'permissions' && (
             <ModalContent>
-              <Import onRepoSelect={selectGithubRepo} />
+              <AuthorizeGitHubPermissions />
             </ModalContent>
-          ) : null}
-          {viewState === 'fork' ? (
+          )}
+          {viewState === 'select' && (
             <>
               <ModalSidebar>
-                <ImportInfo githubRepo={selectedRepo} />
+                <Tabs {...tabState} aria-label="Create new">
+                  <Tab
+                    {...tabState}
+                    // onClick={() => trackTabClick('import')}
+                    stopId="import"
+                  >
+                    Import
+                  </Tab>
+
+                  <Tab
+                    {...tabState}
+                    // onClick={() => trackTabClick('official')}
+                    stopId="fork"
+                  >
+                    Fork
+                  </Tab>
+                </Tabs>
+                {restrictsPrivateRepos && <RestrictedPrivateReposInfo />}
+              </ModalSidebar>
+              <ModalContent>
+                <Panel tab={tabState} id="import">
+                  <SelectRepo onSelected={selectGithubRepo} />
+                </Panel>
+              </ModalContent>
+            </>
+          )}
+          {viewState === 'config' && (
+            <>
+              <ModalSidebar>
+                <RepoInfo githubRepo={selectedRepo} />
               </ModalSidebar>
 
               <ModalContent>
-                <ForkRepoForm
+                <ConfigureRepoForm
                   repository={selectedRepo}
                   onCancel={() => {
-                    setViewState('initial');
+                    setViewState('select');
                   }}
                 />
               </ModalContent>
             </>
-          ) : null}
+          )}
         </ModalBody>
       </Container>
     </ThemeProvider>

@@ -40,7 +40,7 @@ export const useGitHubAccountRepositories = ({
   >(GET_GITHUB_ACCOUNT_REPOS, {
     skip: skipLoadingPersonal,
     variables: {
-      perPage: 10, // TODO determine how much repos
+      perPage: 1000, // TODO determine how much repos
       page: 1,
     },
     // Apollo (version 2.5.6) has weird caching issues where fetching anything from "me" with apollo overrides
@@ -63,7 +63,7 @@ export const useGitHubAccountRepositories = ({
       // The name can be null, but if it is we skip. Typescript doesn't know this and expects a string, so we
       // satisfy TypeScript by defaulting to an empty string.
       organization: name || '',
-      perPage: 10, // TODO determine how much repos
+      perPage: 1000, // TODO determine how much repos
       page: 1,
     },
   });

@@ -14,20 +14,20 @@ import {
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
-import { GithubRepoToImport } from './types';
-import { useValidateRepoDestination } from './useValidateRepoDestination';
+import { GithubRepoToImport } from '../../utils/types';
+import { useValidateRepoDestination } from '../../hooks/useValidateRepoDestination';
 
 const COLORS = {
   INVALID: '#ED6C6C',
   VALID: '#2ECC71',
 };
 
-type ForkRepoFormProps = {
+type ConfigureRepoFormProps = {
   repository: GithubRepoToImport;
   onCancel: () => void;
 };
 
-export const ForkRepoForm: React.FC<ForkRepoFormProps> = ({
+export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
   repository,
   onCancel,
 }) => {

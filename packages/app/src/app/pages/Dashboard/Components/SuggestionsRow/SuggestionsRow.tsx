@@ -16,12 +16,10 @@ import { useActions, useAppState } from 'app/overmind';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
-import { AccountSelect } from 'app/components/Create/ImportRepository/AccountSelect';
+import { AccountSelect } from 'app/components/Create/ImportRepository/components/AccountSelect';
 import { StyledCard } from 'app/pages/Dashboard/Components/shared/StyledCard';
 import { SolidSkeleton } from 'app/pages/Dashboard/Components/Skeleton';
 import { ProjectFragment as Repository } from 'app/graphql/types';
-import { AuthorizeForSuggested } from 'app/components/Create/ImportRepository/AuthorizeForSuggested';
-import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 
 import { EmptyPage } from '../EmptyPage';
 
@@ -31,7 +29,6 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const [isImporting, setIsImporting] = useState<boolean>(false);
   const githubAccounts = useGithubAccounts();
-  const { restrictsPrivateRepos } = useGitHubPermissions();
 
   const selectOptions = useMemo(
     () =>
@@ -173,8 +170,6 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
       {githubRepos.state === 'ready' && githubRepos.data.length === 0 ? (
         <Text>No GitHub repositories found to import.</Text>
       ) : null}
-
-      {restrictsPrivateRepos ? <AuthorizeForSuggested /> : null}
     </EmptyPage.StyledGridWrapper>
   );
 };

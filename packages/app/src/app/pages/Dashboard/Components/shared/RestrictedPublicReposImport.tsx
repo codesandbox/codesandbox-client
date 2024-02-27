@@ -1,4 +1,4 @@
-import { MessageStripe } from '@codesandbox/components';
+import { MessageStripe, ComboButton } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -20,18 +20,27 @@ export const RestrictedPublicReposImport: React.FC<{
       variant="warning"
     >
       Adjust your GitHub permissions to access your repositories.
-      <MessageStripe.Action
+      <ComboButton
+        variant="dark"
         disabled={isLoadingGithub}
-        onClick={() => signInGithubClicked('public_repos')}
-      >
-        Allow public repositories
-      </MessageStripe.Action>
-      <MessageStripe.Action
         onClick={() => signInGithubClicked('private_repos')}
-        disabled={isLoadingGithub}
+        options={
+          <>
+            <ComboButton.Item
+              onSelect={() => signInGithubClicked('private_repos')}
+            >
+              Authorize access to all repositories{' '}
+            </ComboButton.Item>
+            <ComboButton.Item
+              onSelect={() => signInGithubClicked('public_repos')}
+            >
+              Authorize access only to public repositories{' '}
+            </ComboButton.Item>
+          </>
+        }
       >
-        Allow all repositories
-      </MessageStripe.Action>
+        Authorize access to all repositories{' '}
+      </ComboButton>
     </MessageStripe>
   );
 };

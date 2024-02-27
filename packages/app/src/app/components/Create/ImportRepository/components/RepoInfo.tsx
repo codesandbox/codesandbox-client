@@ -4,9 +4,9 @@ import {
   v2DefaultBranchUrl,
   docsUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { GithubRepoToImport } from './types';
+import { GithubRepoToImport } from '../../utils/types';
 
-export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
+export const RepoInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
   githubRepo,
 }) => {
   return (
