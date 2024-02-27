@@ -10,7 +10,7 @@ const FEATURED_IDS = [
   'wmhfhw', // javascript-devbox
   'kcd5jq', // html-css-devbox
   'fxis37', // next
-  'prp60l', // remix
+  'k5hn76', // next.js + postgres
   'pb6sit', // vue
   'angular', // angular
   'hsd8ke', // docker
