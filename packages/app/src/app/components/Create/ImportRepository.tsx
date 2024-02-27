@@ -111,24 +111,38 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
           {viewState === 'select' && (
             <>
               <ModalSidebar>
-                <Tabs {...tabState} aria-label="Create new">
-                  <Tab
-                    {...tabState}
-                    // onClick={() => trackTabClick('import')}
-                    stopId="import"
-                  >
-                    Import
-                  </Tab>
+                <Stack
+                  direction="vertical"
+                  justify="space-between"
+                  css={{ height: '100%', paddingBottom: '24px' }}
+                >
+                  <Tabs {...tabState} aria-label="Create new">
+                    <Tab
+                      {...tabState}
+                      // onClick={() => trackTabClick('import')}
+                      stopId="import"
+                    >
+                      Import from GitHub
+                    </Tab>
 
-                  <Tab
-                    {...tabState}
-                    // onClick={() => trackTabClick('official')}
-                    stopId="fork"
-                  >
-                    Fork
-                  </Tab>
-                </Tabs>
-                {restrictsPrivateRepos && <RestrictedPrivateReposInfo />}
+                    <Tab
+                      {...tabState}
+                      // onClick={() => trackTabClick('official')}
+                      stopId="fork"
+                    >
+                      Explore GitHub
+                    </Tab>
+
+                    <Tab
+                      {...tabState}
+                      // onClick={() => trackTabClick('official')}
+                      stopId="template"
+                    >
+                      Start from a template
+                    </Tab>
+                  </Tabs>
+                  {restrictsPrivateRepos && <RestrictedPrivateReposInfo />}
+                </Stack>
               </ModalSidebar>
               <ModalContent>
                 <Panel tab={tabState} id="import">

@@ -6,9 +6,8 @@ export const RestrictedPrivateReposInfo: React.FC = () => {
   const { modalOpened } = useActions();
 
   return (
-    <Stack gap={1} css={{ color: '#A8BFFA', alignItems: 'center' }}>
-      <Icon name="circleBang" />
-      <Text size={3}>Looking for a private repository?</Text>
+    <Stack gap={1} direction="vertical" css={{ color: '#A8BFFA' }}>
+      <Text size={3}>Looking for a private repo?</Text>
       <Text
         size={3}
         as="button"
@@ -27,7 +26,7 @@ export const RestrictedPrivateReposInfo: React.FC = () => {
           modalOpened({ modal: 'preferences', itemId: 'integrations' })
         }
       >
-        Update your GitHub permissions.
+        Update GitHub permissions
       </Text>
     </Stack>
   );

@@ -12,7 +12,6 @@ import {
 } from '@codesandbox/components';
 
 import { useAppState } from 'app/overmind';
-import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
@@ -28,8 +27,6 @@ type SelectRepoProps = {
   onSelected: (repo: GithubRepoToImport) => void;
 };
 export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
-  const { restrictsPrivateRepos } = useGitHubPermissions();
-
   const { activeTeamInfo } = useAppState();
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
@@ -93,33 +90,41 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
 
   return (
     <Stack direction="vertical" gap={4}>
-      <Text size={4}>Select repository</Text>
-      <Text size={3}>
-        Directly work on your GitHub repository in CodeSandbox.
-      </Text>
+      <Text size={4}>Select a repository in your GitHub organizations</Text>
 
-      <AccountSelect
-        options={selectOptions}
-        value={selectedAccount}
-        onChange={(account: string) => {
-          track('Import repo - Select - Change GH Org');
+      <Stack gap={2}>
+        <AccountSelect
+          options={selectOptions}
+          value={selectedAccount}
+          onChange={(account: string) => {
+            track('Import repo - Select - Change GH Org');
 
-          setSelectedAccount(account);
-        }}
-      />
+            setSelectedAccount(account);
+          }}
+        />
 
-      <Input
-        placeholder="Search"
-        type="text"
-        onChange={handleInputChange}
-        required
-      />
+        <Input
+          css={{
+            height: '32px',
+          }}
+          placeholder="Search"
+          type="text"
+          onChange={handleInputChange}
+          required
+        />
+      </Stack>
 
       {resultsListLoading && (
         <StyledList direction="vertical" gap={1}>
-          <SkeletonText css={{ height: '64px', width: '100%' }} />
-          <SkeletonText css={{ height: '64px', width: '100%' }} />
-          <SkeletonText css={{ height: '64px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
         </StyledList>
       )}
 
@@ -129,8 +134,8 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
             return (
               <InteractiveOverlay key={repo.id}>
                 <StyledItem>
-                  <Stack gap={4} align="center">
-                    <Icon name="repository" color="#999999B3" />
+                  <Stack gap={2} align="center">
+                    <Icon name="github" />
                     <InteractiveOverlay.Button
                       onClick={() => {
                         onSelected(repo);
@@ -178,7 +183,7 @@ const StyledList = styled(Stack)`
 const StyledItem = styled.li`
   display: flex;
   justify-content: space-between;
-  padding: 16px;
+  padding: 8px 16px;
   background-color: #1d1d1d;
   border-radius: 4px;
   height: 32px;
