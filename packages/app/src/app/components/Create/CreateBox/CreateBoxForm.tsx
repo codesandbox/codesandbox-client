@@ -19,6 +19,7 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Link } from 'react-router-dom';
 import { VMTier } from 'app/overmind/effects/api/types';
+import { ROOT_COLLECTION_NAME } from 'app/pages/Dashboard/Sidebar';
 import { CreateParams } from '../utils/types';
 
 interface CreateBoxFormProps {
@@ -173,7 +174,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   {data?.me?.collections?.map(collection => (
                     <option value={collection.id}>
                       {collection.path === '/'
-                        ? 'All Devboxes and Sandboxes'
+                        ? ROOT_COLLECTION_NAME
                         : collection.path.slice(1).split('/').join(' / ')}
                     </option>
                   ))}

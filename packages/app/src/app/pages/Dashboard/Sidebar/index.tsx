@@ -23,6 +23,8 @@ interface SidebarProps {
   onSidebarToggle: () => void;
 }
 
+export const ROOT_COLLECTION_NAME = 'All collections';
+
 export const Sidebar: React.FC<SidebarProps> = ({
   visible,
   hasTopBarBanner,
@@ -206,14 +208,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
               size={2}
               css={css({ color: 'sideBarSectionHeader.foreground' })}
             >
-              Sandboxes
+              All devboxes and sandboxes
             </Text>
           </Element>
           <RowItem
-            name="My drafts"
+            name="Drafts"
             page="drafts"
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
+          />
+
+          <NestableRowItem
+            name={ROOT_COLLECTION_NAME}
+            path={dashboardUrls.sandboxes('/', activeTeam)}
+            page="sandboxes"
+            folderPath="/"
+            folders={[
+              ...folders,
+              ...(newFolderPath
+                ? [{ path: newFolderPath, name: '', parent: null }]
+                : []),
+            ]}
           />
 
           {state.sidebar.hasTemplates ? (
@@ -233,19 +248,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="sync"
             />
           ) : null}
-
-          <NestableRowItem
-            name="All devboxes and sandboxes"
-            path={dashboardUrls.sandboxes('/', activeTeam)}
-            page="sandboxes"
-            folderPath="/"
-            folders={[
-              ...folders,
-              ...(newFolderPath
-                ? [{ path: newFolderPath, name: '', parent: null }]
-                : []),
-            ]}
-          />
 
           <RowItem
             name="Recently deleted"
