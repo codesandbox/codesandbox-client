@@ -22,7 +22,9 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({
   onSelected,
   onFindByURLClicked,
 }) => {
-  const { activeTeamInfo } = useAppState();
+  const { activeTeamInfo, sidebar } = useAppState();
+
+  const workspaceRepos = sidebar.repositories;
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
@@ -64,7 +66,6 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({
   const githubRepos = useGitHubAccountRepositories({
     name: selectedAccount,
     accountType: selectedAccountType,
-    teamRepos: [],
   });
 
   const [queryString, setQueryString] = React.useState<string>('');

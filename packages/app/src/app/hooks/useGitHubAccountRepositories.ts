@@ -4,7 +4,6 @@ import {
   GetGitHubAccountReposQueryVariables,
   GetGitHubOrganizationReposQuery,
   GetGitHubOrganizationReposQueryVariables,
-  ProjectFragment,
   UserRepoSort,
 } from 'app/graphql/types';
 import {
@@ -18,20 +17,14 @@ import {
 type UseGitHubAccountRepositoriesOptions = {
   name?: string;
   accountType?: 'personal' | 'organization';
-  teamRepos?: ProjectFragment[];
 };
 
 export const useGitHubAccountRepositories = ({
   name,
   accountType,
-  teamRepos,
 }: UseGitHubAccountRepositoriesOptions) => {
   const skipLoadingPersonal = accountType === 'organization' || !name;
   const skipLoadingOrganization = accountType === 'personal' || !name;
-
-  const currentAccountRepos = teamRepos?.map(
-    ({ repository }) => `${repository.owner}/${repository.name}`
-  );
 
   // Query the personal repositories unless the selected github account
   // is an organization
@@ -45,13 +38,6 @@ export const useGitHubAccountRepositories = ({
       page: 1,
       sort: UserRepoSort.Pushed,
     },
-    // Apollo (version 2.5.6) has weird caching issues where fetching anything from "me" with apollo overrides
-    // the previous result. In this case the githubProfile is overridden and the values are gone. Adding
-    // fetchPolicy: 'no-cache' fixes this. More info:
-    // https://stackoverflow.com/questions/52381150/queries-overwriting-with-missing-fields-in-the-apollo-cache
-    // https://github.com/apollographql/apollo-client/issues/3234
-    // https://kamranicus.com/graphql-apollo-object-caching/
-    fetchPolicy: 'no-cache',
   });
 
   // Query the organization repositories unless the selected github account
@@ -80,7 +66,9 @@ export const useGitHubAccountRepositories = ({
   }
 
   const accountData = account?.data?.me?.githubRepos;
-  const organizationData = organization?.data?.githubOrganizationRepos;
+  const organizationData = organization?.data?.githubOrganizationRepos.sort(
+    (a, b) => (a.pushedAt > b.pushedAt ? -1 : 1) // Sort by last pushed
+  );
   const isLoading = account.loading || organization.loading;
 
   if (
@@ -95,11 +83,8 @@ export const useGitHubAccountRepositories = ({
 
   return {
     state: 'ready',
-    data: (accountData || organizationData)?.filter(repository => {
-      return (
-        repository.owner.login === name &&
-        !currentAccountRepos?.includes(repository.fullName)
-      );
-    }),
+    data: (accountData || organizationData)?.filter(
+      repository => repository.owner.login === name
+    ),
   };
 };

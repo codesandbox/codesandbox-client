@@ -122,7 +122,6 @@ export const GET_GITHUB_ACCOUNT_REPOS = gql`
   }
 `;
 
-// TODO: Remove unnecessary fields
 export const GET_GITHUB_ORGANIZATION_REPOS = gql`
   query GetGitHubOrganizationRepos(
     $organization: String!
