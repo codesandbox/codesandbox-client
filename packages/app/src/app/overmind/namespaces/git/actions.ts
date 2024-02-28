@@ -5,6 +5,7 @@ import {
   GitInfo,
   Module,
   SandboxGitState,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -119,6 +120,10 @@ export const loadGitSource = async ({ state, actions, effects }: Context) => {
 
   actions.git._setGitChanges();
   state.git.isFetching = false;
+};
+
+export const createRepoFiles = ({ effects }: Context, sandbox: Sandbox) => {
+  return effects.git.export(sandbox);
 };
 
 export const createRepoClicked = async ({
