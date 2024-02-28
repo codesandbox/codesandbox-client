@@ -208,7 +208,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               size={2}
               css={css({ color: 'sideBarSectionHeader.foreground' })}
             >
-              All devboxes and sandboxes
+              Devboxes and Sandboxes
             </Text>
           </Element>
           <RowItem
