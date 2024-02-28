@@ -5,6 +5,7 @@ import {
   GitInfo,
   Module,
   SandboxGitState,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -17,7 +18,6 @@ import { Context } from 'app/overmind';
 import { debounce, pipe } from 'overmind';
 import { CSBProjectGitHubRepository } from '@codesandbox/common/lib/utils/url-generator';
 
-import { Sandbox } from 'app/graphql/types';
 import * as internalActions from './internalActions';
 import { createDiff } from './utils';
 

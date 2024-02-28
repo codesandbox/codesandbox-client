@@ -1,4 +1,3 @@
-import { Sandbox } from 'app/graphql/types';
 import { useActions } from 'app/overmind';
 import { useEffect } from 'react';
 
