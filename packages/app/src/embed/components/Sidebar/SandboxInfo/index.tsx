@@ -17,9 +17,11 @@ export const SandboxInfo: FunctionComponent<Props> = ({ sandbox }) => {
     <Container>
       <Title title={title}>{title}</Title>
       {sandbox.description && <Description>{sandbox.description}</Description>}
+
       {sandbox.author && (
         <AvatarBlock
-          url={sandbox.author.avatarUrl}
+          teamName={sandbox.team?.name}
+          url={sandbox.team?.avatarUrl}
           name={sandbox.author.username}
         />
       )}
