@@ -83,7 +83,7 @@ export const AccountSelect = ({ options, value, onChange }) => {
 
 const StyledMenuButton = styled(MenuDisclosure)`
   all: unset;
-  color: #cccccc;
+  color: #e5e5e5;
   cursor: pointer;
   box-sizing: border-box;
   height: 32px;
@@ -95,7 +95,6 @@ const StyledMenuButton = styled(MenuDisclosure)`
   &:focus,
   &:hover {
     background: #e5e5e51a;
-    color: #ffffff;
   }
 
   &:focus-visible {

@@ -16,7 +16,7 @@ export const RepoListItem = ({ repo, onClicked }) => {
     <InteractiveOverlay key={repo.id}>
       <StyledItem>
         <Stack gap={2} align="center">
-          <Icon name="github" />
+          <Icon name="repository" />
           <InteractiveOverlay.Button
             onClick={() => {
               onClicked();

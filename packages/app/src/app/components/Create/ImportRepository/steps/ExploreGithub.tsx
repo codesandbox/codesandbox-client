@@ -41,7 +41,6 @@ export const ExploreGithub = ({ onSelected }) => {
 
   return (
     <Stack direction="vertical" gap={4}>
-      <Text size={4}>Open public URL</Text>
       <Text size={3}>
         Paste a link or type an owner/name combination to find a public GitHub
         repository.

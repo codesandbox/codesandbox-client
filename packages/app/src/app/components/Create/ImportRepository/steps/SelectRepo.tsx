@@ -80,9 +80,8 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
 
   return (
     <Stack direction="vertical" gap={4}>
-      <Text size={4}>Select from your GitHub organizations</Text>
-
-      <Stack gap={2}>
+      <Text size={3}>Import from your GitHub organizations</Text>
+      <Stack gap={1} align="center">
         <AccountSelect
           options={selectOptions}
           value={selectedAccount}
@@ -93,10 +92,12 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
           }}
         />
 
+        <Text color="#e5e5e5">/</Text>
+
         <Input
           css={{ height: '32px' }}
           autoFocus
-          placeholder="Repository name"
+          placeholder="Search by name"
           type="text"
           onChange={handleInputChange}
           required

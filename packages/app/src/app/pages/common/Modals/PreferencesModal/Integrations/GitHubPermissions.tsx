@@ -59,19 +59,20 @@ const Details: React.FC = () => {
           >
             Enables
           </Text>
-          <Text>Repositories &amp; Workflow</Text>
+          <Text>Repositories</Text>
         </Stack>
 
         <Stack
           css={{
-            color: '#F9D685',
+            color: '#A8BFFA',
           }}
+          align="center"
           gap={2}
         >
-          <Icon name="info" size={12} />
-          <Text lineHeight="16px" size={12}>
-            CodeSandbox needs access to your repositories in order to link
-            and/or export a sandbox.
+          <Icon name="circleBang" size={16} />
+          <Text lineHeight="16px" size={13}>
+            CodeSandbox needs access to your repositories in order to create
+            branches, commits and pull requests.
           </Text>
         </Stack>
         <ComboButton

@@ -78,9 +78,6 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
           }}
         >
           <HeaderInformation>
-            {viewState === 'permissions' && (
-              <Text size={4}>Connect to GitHub</Text>
-            )}
             {viewState === 'select' && <Text size={4}>New repository</Text>}
             {viewState === 'config' && (
               <IconButton
@@ -104,11 +101,7 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
 
         <ModalBody>
           {viewState === 'signin' && <SignIn />}
-          {viewState === 'permissions' && (
-            <ModalContent>
-              <AuthorizeGitHubPermissions />
-            </ModalContent>
-          )}
+          {viewState === 'permissions' && <AuthorizeGitHubPermissions />}
           {viewState === 'select' && (
             <>
               <ModalSidebar>

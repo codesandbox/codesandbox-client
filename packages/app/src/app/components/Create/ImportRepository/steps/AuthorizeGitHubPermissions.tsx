@@ -1,39 +1,40 @@
 import React from 'react';
-import { ComboButton, Stack, Text } from '@codesandbox/components';
-import { useActions, useAppState } from 'app/overmind';
+import { Button, Icon, Stack, Text } from '@codesandbox/components';
+import { useActions } from 'app/overmind';
 
 export const AuthorizeGitHubPermissions = () => {
   const { signInGithubClicked } = useActions();
-  const { isLoadingGithub } = useAppState();
 
   return (
-    <Stack direction="vertical" gap={8}>
+    <Stack
+      direction="vertical"
+      gap={8}
+      css={{ width: '100%', paddingTop: '64px' }}
+      align="center"
+    >
+      <Icon size={64} name="github" />
+      <Text size={48} css={{ fontFamily: 'Everett', fontWeight: '500' }}>
+        Authorize GitHub
+      </Text>
+      <Text>
+        CodeSandbox needs access to your repositories in order to create
+        branches and commits.
+      </Text>
       <Stack direction="vertical" gap={4}>
-        <Text size={3}>
-          To create commits and branches on your GitHub repositories, <br />
-          you must grant CodeSandbox permissions to access those repositories.
-        </Text>
-        <ComboButton
+        <Button
           variant="primary"
-          disabled={isLoadingGithub}
+          size="large"
           onClick={() => signInGithubClicked('private_repos')}
-          options={
-            <>
-              <ComboButton.Item
-                onSelect={() => signInGithubClicked('private_repos')}
-              >
-                Authorize access to all repositories{' '}
-              </ComboButton.Item>
-              <ComboButton.Item
-                onSelect={() => signInGithubClicked('public_repos')}
-              >
-                Authorize access only to public repositories{' '}
-              </ComboButton.Item>
-            </>
-          }
         >
-          Authorize access to all repositories{' '}
-        </ComboButton>
+          Authorize access to public and private repositories
+        </Button>
+        <Button
+          variant="secondary"
+          size="large"
+          onClick={() => signInGithubClicked('public_repos')}
+        >
+          Authorize access to public repositories only
+        </Button>
       </Stack>
     </Stack>
   );
