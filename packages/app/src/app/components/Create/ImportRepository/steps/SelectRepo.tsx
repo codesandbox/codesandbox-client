@@ -1,27 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import VisuallyHidden from '@reach/visually-hidden';
 
 import track from '@codesandbox/common/lib/utils/analytics';
-import {
-  Icon,
-  Input,
-  SkeletonText,
-  Stack,
-  Text,
-  InteractiveOverlay,
-} from '@codesandbox/components';
+import { Input, SkeletonText, Stack, Text } from '@codesandbox/components';
 
 import { useAppState } from 'app/overmind';
 
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
-import { formatDistanceStrict } from 'date-fns';
-import { zonedTimeToUtc } from 'date-fns-tz';
 import styled from 'styled-components';
 import { GithubRepoToImport } from '../../utils/types';
-import { getOwnerAndNameFromInput } from '../utils';
 import { AccountSelect } from '../components/AccountSelect';
+import { RepoListItem } from '../components/RepoListItem';
 
 type SelectRepoProps = {
   onSelected: (repo: GithubRepoToImport) => void;
@@ -90,7 +80,7 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
 
   return (
     <Stack direction="vertical" gap={4}>
-      <Text size={4}>Select a repository in your GitHub organizations</Text>
+      <Text size={4}>Select from your GitHub organizations</Text>
 
       <Stack gap={2}>
         <AccountSelect
@@ -104,10 +94,9 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
         />
 
         <Input
-          css={{
-            height: '32px',
-          }}
-          placeholder="Search"
+          css={{ height: '32px' }}
+          autoFocus
+          placeholder="Repository name"
           type="text"
           onChange={handleInputChange}
           required
@@ -130,44 +119,14 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
 
       {filteredResults !== null && (
         <StyledList as="ul" direction="vertical" gap={1}>
-          {filteredResults.map(repo => {
-            return (
-              <InteractiveOverlay key={repo.id}>
-                <StyledItem>
-                  <Stack gap={2} align="center">
-                    <Icon name="github" />
-                    <InteractiveOverlay.Button
-                      onClick={() => {
-                        onSelected(repo);
-                      }}
-                    >
-                      <VisuallyHidden>Import</VisuallyHidden>
-                      <Text size={13}>{repo.name}</Text>
-                    </InteractiveOverlay.Button>
-
-                    {repo.private ? (
-                      <>
-                        <VisuallyHidden>Private repository</VisuallyHidden>
-                        <Icon name="lock" color="#999999" />
-                      </>
-                    ) : null}
-                    {repo.pushedAt ? (
-                      <Text size={13} color="#999999B3">
-                        <VisuallyHidden>Last updated</VisuallyHidden>
-                        {formatDistanceStrict(
-                          zonedTimeToUtc(repo.pushedAt, 'Etc/UTC'),
-                          new Date(),
-                          {
-                            addSuffix: true,
-                          }
-                        )}
-                      </Text>
-                    ) : null}
-                  </Stack>
-                </StyledItem>
-              </InteractiveOverlay>
-            );
-          })}
+          {filteredResults.map(repo => (
+            <RepoListItem
+              repo={repo}
+              onClicked={() => {
+                onSelected(repo);
+              }}
+            />
+          ))}
         </StyledList>
       )}
     </Stack>
@@ -178,19 +137,4 @@ const StyledList = styled(Stack)`
   margin: 0;
   padding: 0;
   list-style: none;
-`;
-
-const StyledItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 16px;
-  background-color: #1d1d1d;
-  border-radius: 4px;
-  height: 32px;
-  align-items: center;
-
-  &:hover,
-  &:focus-within {
-    background-color: #252525;
-  }
 `;

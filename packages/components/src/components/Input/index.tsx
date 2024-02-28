@@ -6,6 +6,7 @@ import { Element } from '../Element';
 const placeholderStyles = {
   color: 'input.placeholderForeground',
   fontSize: 3,
+  fontStyle: 'italic',
 };
 
 export interface IInputProps

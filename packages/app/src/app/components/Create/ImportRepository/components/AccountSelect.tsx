@@ -90,6 +90,7 @@ const StyledMenuButton = styled(MenuDisclosure)`
   padding: 0 8px;
   border-radius: 4px;
   font-size: 13px;
+  transition: all 0.125s ease-out;
 
   &:focus,
   &:hover {

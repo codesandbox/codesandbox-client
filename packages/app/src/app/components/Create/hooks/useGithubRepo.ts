@@ -4,7 +4,7 @@ import {
   GetGithubRepoQueryVariables,
 } from 'app/graphql/types';
 import { GET_GITHUB_REPO } from '../utils/queries';
-import { GithubRepoToImport } from './types';
+import { GithubRepoToImport } from '../utils/types';
 
 type State =
   | { state: 'idle' }

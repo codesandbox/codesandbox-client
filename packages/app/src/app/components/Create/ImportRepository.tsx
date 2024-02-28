@@ -28,6 +28,7 @@ import { RestrictedPrivateReposInfo } from './ImportRepository/components/Restri
 import { AuthorizeGitHubPermissions } from './ImportRepository/steps/AuthorizeGitHubPermissions';
 import { SelectRepo } from './ImportRepository/steps/SelectRepo';
 import { ConfigureRepoForm } from './ImportRepository/steps/ConfigureRepoForm';
+import { ExploreGithub } from './ImportRepository/steps/ExploreGithub';
 
 type View = 'signin' | 'permissions' | 'select' | 'config';
 
@@ -122,15 +123,15 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
                       // onClick={() => trackTabClick('import')}
                       stopId="import"
                     >
-                      Import from GitHub
+                      Search in organizations
                     </Tab>
 
                     <Tab
                       {...tabState}
                       // onClick={() => trackTabClick('official')}
-                      stopId="fork"
+                      stopId="explore"
                     >
-                      Explore GitHub
+                      Find by URL
                     </Tab>
 
                     <Tab
@@ -147,6 +148,9 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
               <ModalContent>
                 <Panel tab={tabState} id="import">
                   <SelectRepo onSelected={selectGithubRepo} />
+                </Panel>
+                <Panel tab={tabState} id="explore">
+                  <ExploreGithub onSelected={selectGithubRepo} />
                 </Panel>
               </ModalContent>
             </>
