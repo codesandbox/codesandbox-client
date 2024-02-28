@@ -154,7 +154,7 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
           {viewState === 'config' && (
             <>
               <ModalSidebar>
-                <RepoInfo githubRepo={selectedRepo} />
+                <RepoInfo repository={selectedRepo} />
               </ModalSidebar>
 
               <ModalContent>

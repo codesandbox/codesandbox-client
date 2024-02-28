@@ -73,7 +73,6 @@ const PROFILE_FRAGMENT = gql`
   fragment Profile on GithubProfile {
     id
     login
-    name
   }
 `;
 
@@ -143,6 +142,7 @@ export const GET_GITHUB_ORGANIZATION_REPOS = gql`
       owner {
         id
         login
+        avatarUrl
       }
     }
   }

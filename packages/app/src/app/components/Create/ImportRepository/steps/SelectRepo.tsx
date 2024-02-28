@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Input, SkeletonText, Stack, Text } from '@codesandbox/components';
@@ -9,10 +9,12 @@ import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
 import styled from 'styled-components';
+import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { GithubRepoToImport } from '../../utils/types';
 import { AccountSelect } from '../components/AccountSelect';
 import { RepoListItem } from '../components/RepoListItem';
 import { UnstyledButtonLink } from '../../elements';
+import { getOwnerAndNameFromInput } from '../utils';
 
 type SelectRepoProps = {
   onSelected: (repo: GithubRepoToImport) => void;
@@ -29,39 +31,28 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
 
-  const selectOptions = useMemo(
-    () =>
-      githubAccounts.data && githubAccounts.data.personal
-        ? [
-            githubAccounts.data.personal,
-            ...(githubAccounts.data.organizations || []),
-          ]
-        : undefined,
-    [githubAccounts.data]
-  );
-
   useEffect(() => {
     // Set initially selected account bazed on fuzzy matching
     if (
       githubAccounts.state === 'ready' &&
-      // Adding selectOptions to this if statement to satisfy TypeScript, because it does not
-      // know that when githubAccounts.state !== 'ready' the fuzzy functions isn't executed.
-      selectOptions &&
       activeTeamInfo?.name &&
       selectedAccount === undefined
     ) {
-      const match = fuzzyMatchGithubToCsb(activeTeamInfo.name, selectOptions);
-
+      const match = fuzzyMatchGithubToCsb(
+        activeTeamInfo.name,
+        githubAccounts.all
+      );
       setSelectedAccount(match.login);
     }
-  }, [githubAccounts.state, selectedAccount, activeTeamInfo, selectOptions]);
+  }, [githubAccounts, selectedAccount, activeTeamInfo]);
 
-  // eslint-disable-next-line no-nested-ternary
-  const selectedAccountType = selectedAccount
-    ? selectedAccount === githubAccounts?.data?.personal?.login
-      ? 'personal'
-      : 'organization'
-    : undefined;
+  const selectedAccountType =
+    // eslint-disable-next-line no-nested-ternary
+    githubAccounts.state === 'ready' && selectedAccount
+      ? selectedAccount === githubAccounts.personal.login
+        ? 'personal'
+        : 'organization'
+      : undefined;
 
   const githubRepos = useGitHubAccountRepositories({
     name: selectedAccount,
@@ -78,26 +69,37 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({
         )
       : null;
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // const parsedInput = getOwnerAndNameFromInput(value);
-
-    setQueryString(event.target.value);
-  };
-
   const hasResults = filteredResults && filteredResults.length > 0;
   const noResults = filteredResults && filteredResults.length === 0;
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+
+    const parsedInput = getOwnerAndNameFromInput(value);
+    if (parsedInput && githubAccounts.state === 'ready') {
+      const existingGHAccount = githubAccounts.all.find(
+        org => org.login === parsedInput.owner
+      );
+      if (existingGHAccount) {
+        setSelectedAccount(parsedInput.owner);
+        setQueryString(parsedInput.name);
+        return;
+      }
+    }
+
+    setQueryString(value);
+  };
 
   return (
     <Stack direction="vertical" gap={4}>
       <Text size={3}>Import from your GitHub organizations</Text>
       <Stack gap={1} align="center">
-        {selectOptions ? (
+        {githubAccounts.state === 'ready' ? (
           <AccountSelect
-            options={selectOptions}
+            options={githubAccounts.all}
             value={selectedAccount}
             onChange={(account: string) => {
               track('Import repo - Select - Change GH Org');
-
               setSelectedAccount(account);
             }}
           />
@@ -113,7 +115,7 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({
           placeholder="Search by name"
           type="text"
           onChange={handleInputChange}
-          required
+          value={queryString}
         />
       </Stack>
 
@@ -133,14 +135,29 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({
 
       {hasResults && (
         <StyledList as="ul" direction="vertical" gap={1}>
-          {filteredResults.map(repo => (
-            <RepoListItem
-              repo={repo}
-              onClicked={() => {
-                onSelected(repo);
-              }}
-            />
-          ))}
+          {filteredResults.map(repo => {
+            const isImported = workspaceRepos.find(
+              wr => wr.owner === repo.owner.login && wr.name === repo.name
+            );
+
+            return (
+              <RepoListItem
+                repo={repo}
+                onClicked={() => {
+                  if (isImported) {
+                    window.location.href = v2DefaultBranchUrl({
+                      owner: repo.owner.login,
+                      repoName: repo.name,
+                      workspaceId: activeTeamInfo?.id,
+                    });
+                  } else {
+                    onSelected(repo);
+                  }
+                }}
+                isImported={isImported}
+              />
+            );
+          })}
         </StyledList>
       )}
 

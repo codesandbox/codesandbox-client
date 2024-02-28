@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -30,39 +30,29 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
   const [isImporting, setIsImporting] = useState<boolean>(false);
   const githubAccounts = useGithubAccounts();
 
-  const selectOptions = useMemo(
-    () =>
-      githubAccounts.data && githubAccounts.data.personal
-        ? [
-            githubAccounts.data.personal,
-            ...(githubAccounts.data.organizations || []),
-          ]
-        : undefined,
-    [githubAccounts.data]
-  );
-
   useEffect(() => {
     // Set initially selected account bazed on fuzzy matching
     if (
       githubAccounts.state === 'ready' &&
-      // Adding selectOptions to this if statement to satisfy TypeScript, because it does not
-      // know that when githubAccounts.state !== 'ready' the fuzzy functions isn't executed.
-      selectOptions &&
       activeTeamInfo?.name &&
       selectedAccount === undefined
     ) {
-      const match = fuzzyMatchGithubToCsb(activeTeamInfo.name, selectOptions);
+      const match = fuzzyMatchGithubToCsb(
+        activeTeamInfo.name,
+        githubAccounts.all
+      );
 
       setSelectedAccount(match.login);
     }
-  }, [githubAccounts.state, selectedAccount, activeTeamInfo, selectOptions]);
+  }, [githubAccounts, selectedAccount, activeTeamInfo]);
 
-  // eslint-disable-next-line no-nested-ternary
-  const selectedAccountType = selectedAccount
-    ? selectedAccount === githubAccounts?.data?.personal?.login
-      ? 'personal'
-      : 'organization'
-    : undefined;
+  const selectedAccountType =
+    // eslint-disable-next-line no-nested-ternary
+    githubAccounts.state === 'ready' && selectedAccount
+      ? selectedAccount === githubAccounts.personal.login
+        ? 'personal'
+        : 'organization'
+      : undefined;
 
   const githubRepos = useGitHubAccountRepositories({
     name: selectedAccount,
@@ -75,7 +65,8 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
     setIsImporting(true);
 
     const isPersonalRepository =
-      repo.owner === githubAccounts?.data?.personal?.login;
+      githubAccounts.state === 'ready' &&
+      repo.owner === githubAccounts.personal.login;
 
     if (isPersonalRepository) {
       track(
@@ -108,7 +99,7 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
 
         {githubAccounts.state === 'ready' && selectedAccount ? (
           <AccountSelect
-            options={selectOptions}
+            options={githubAccounts.all}
             value={selectedAccount}
             onChange={(account: string) => {
               track('Suggested repos - change account', {

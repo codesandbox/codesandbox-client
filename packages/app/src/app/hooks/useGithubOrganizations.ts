@@ -7,18 +7,27 @@ import {
 } from 'app/graphql/types';
 import { GET_GITHUB_ACCOUNTS } from '../components/Create/utils/queries';
 
-export const useGithubAccounts = (): {
-  state: 'error' | 'loading' | 'ready';
-  error?: string;
-  data?: {
-    personal?: ProfileFragment | null;
-    organizations?: OrganizationFragment[] | null;
-  };
-} => {
-  const { data, error } = useQuery<
+type GithubAccountsReturnType =
+  | { state: 'error'; error: string }
+  | { state: 'loading' }
+  | {
+      state: 'ready';
+      personal: ProfileFragment;
+      all: OrganizationFragment[];
+      inferred?: OrganizationFragment;
+    };
+
+export const useGithubAccounts = (): GithubAccountsReturnType => {
+  const { data, error, loading } = useQuery<
     GetGithubAccountsQuery,
     GetGithubAccountsQueryVariables
   >(GET_GITHUB_ACCOUNTS);
+
+  if (loading) {
+    return {
+      state: 'loading',
+    };
+  }
 
   if (error) {
     return {
@@ -27,17 +36,15 @@ export const useGithubAccounts = (): {
     };
   }
 
-  if (typeof data?.me === 'undefined') {
-    return {
-      state: 'loading',
-    };
-  }
+  // Convert PersonalOrg fragment to generic org
+  const personalOrg: OrganizationFragment = {
+    id: data.me.githubProfile.id,
+    login: data.me.githubProfile.login,
+  };
 
   return {
     state: 'ready',
-    data: {
-      personal: data.me?.githubProfile,
-      organizations: data.me?.githubOrganizations,
-    },
+    personal: data.me.githubProfile,
+    all: [personalOrg, ...data.me.githubOrganizations],
   };
 };

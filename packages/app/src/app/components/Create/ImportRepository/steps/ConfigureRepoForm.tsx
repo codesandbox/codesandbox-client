@@ -1,25 +1,29 @@
-import { useActions, useAppState } from 'app/overmind';
-import React, { useEffect } from 'react';
+import { useActions, useAppState, useEffects } from 'app/overmind';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Element,
   Icon,
   Input,
-  Label,
   Stack,
-  Select,
   SkeletonText,
   Text,
+  Select,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
+import { GithubRepoAuthorization } from 'app/graphql/types';
+import { VMTier } from 'app/overmind/effects/api/types';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { GithubRepoToImport } from '../../utils/types';
 import { useValidateRepoDestination } from '../../hooks/useValidateRepoDestination';
+import { AccountSelect } from '../components/AccountSelect';
 
 const COLORS = {
-  INVALID: '#ED6C6C',
-  VALID: '#2ECC71',
+  INVALID: '#F5A8A8',
+  VALID: '#A3EC98',
 };
 
 type ConfigureRepoFormProps = {
@@ -32,10 +36,20 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
   onCancel,
 }) => {
   const { activeTeamInfo, user } = useAppState();
+  const effects = useEffects();
   const { dashboard } = useActions();
-  const githubAccounts = useGithubAccounts();
+  const { isFree } = useWorkspaceSubscription();
+  const { highestAllowedVMTier } = useWorkspaceLimits();
 
-  const [isForking, setIsForking] = React.useState<boolean>(false);
+  const defaultTier = isFree ? 1 : 2;
+  const [selectedTier, setSelectedTier] = useState<number>(defaultTier);
+  const [availableTiers, setAvailableTiers] = useState<VMTier[]>([]);
+
+  const forkMode = repository.authorization === GithubRepoAuthorization.Read;
+
+  // Fork related fields
+  const githubAccounts = useGithubAccounts();
+  const [isImporting, setIsImporting] = React.useState<boolean>(false);
   const [repoName, setRepoName] = React.useState<string>(repository.name);
   const [selectedOrg, setSelectedOrg] = React.useState<string>('');
 
@@ -44,19 +58,24 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
     repoName
   );
 
+  useEffect(() => {
+    effects.api.getVMSpecs().then(res => {
+      setAvailableTiers(
+        res.vmTiers.filter(t => t.tier <= highestAllowedVMTier)
+      );
+    });
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (destinationValidation.state !== 'valid' || isForking) {
+    if (destinationValidation.state !== 'valid' || isImporting) {
       return;
     }
 
-    track('Import repository - Create fork', {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
+    track('Import repository - Create fork');
 
-    setIsForking(true);
+    setIsImporting(true);
 
     await dashboard.forkGitHubRepository({
       source: { owner: repository.owner.login, name: repository.name },
@@ -69,31 +88,22 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
         name: destinationValidation.name,
       },
     });
-    setIsForking(false);
+    setIsImporting(false);
   };
 
   useEffect(() => {
-    track('Import repository - View create fork', {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
+    track('Import repository - View create fork');
   }, []);
 
-  const accountOptions = githubAccounts?.data
-    ? [githubAccounts.data.personal, ...githubAccounts.data.organizations]
-    : [];
-
   useEffect(() => {
-    if (!activeTeamInfo) {
+    if (!activeTeamInfo || !forkMode || githubAccounts.state !== 'ready') {
       return;
     }
 
     setSelectedOrg(
-      'data' in githubAccounts
-        ? fuzzyMatchGithubToCsb(activeTeamInfo.name, accountOptions).login
-        : ''
+      fuzzyMatchGithubToCsb(activeTeamInfo.name, githubAccounts.all).login
     );
-  }, [activeTeamInfo, githubAccounts.state]);
+  }, [activeTeamInfo, githubAccounts, forkMode]);
 
   return (
     <Element
@@ -117,110 +127,149 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
             margin: 0,
           }}
         >
-          Create new fork
+          {forkMode ? 'Fork repository' : 'Import repository'}
         </Text>
-        <Stack direction="vertical" gap={1}>
-          <Text size={3} as="label">
-            Name
-          </Text>
-          <Element
-            css={{
-              position: 'relative',
-            }}
-          >
+        {forkMode ? (
+          <Stack direction="vertical" gap={2}>
+            <Text size={3} as="label">
+              Destination
+            </Text>
+            <Stack gap={1} align="center">
+              {githubAccounts.state === 'ready' ? (
+                <AccountSelect
+                  options={githubAccounts.all}
+                  value={selectedOrg}
+                  onChange={(account: string) => {
+                    track('Import repo - Select - Change GH Org');
+                    setSelectedOrg(account);
+                  }}
+                />
+              ) : (
+                <SkeletonText css={{ height: '32px', width: '100px' }} />
+              )}
+
+              <Text color="#e5e5e5">/</Text>
+              <Element
+                css={{
+                  position: 'relative',
+                  flex: 1,
+                }}
+              >
+                <Input
+                  aria-invalid={destinationValidation.state === 'invalid'}
+                  autoFocus
+                  css={{ height: '32px' }}
+                  id="repo-name"
+                  type="text"
+                  aria-label="Repository name"
+                  placeholder="Repository name"
+                  disabled={!forkMode}
+                  value={repoName}
+                  onChange={e => setRepoName(e.target.value)}
+                  required
+                />
+
+                {destinationValidation.state !== 'idle' ? (
+                  <Element
+                    css={{
+                      position: 'absolute',
+                      right: '8px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      display: 'flex',
+                      color: {
+                        valid: COLORS.VALID,
+                        invalid: COLORS.INVALID,
+                        validating: '#E5E5E5',
+                      }[destinationValidation.state],
+                    }}
+                  >
+                    {destinationValidation.state === 'valid' ? (
+                      <Icon size={16} name="simpleCheck" />
+                    ) : null}
+                    {destinationValidation.state === 'invalid' ? (
+                      <Icon size={16} name="cross" />
+                    ) : null}
+                    {destinationValidation.state === 'validating' ? (
+                      <Icon size={16} name="spinner" />
+                    ) : null}
+                  </Element>
+                ) : null}
+              </Element>
+            </Stack>
+            {destinationValidation.state === 'invalid' ? (
+              <Text size={3} color={COLORS.INVALID}>
+                {destinationValidation.error}
+              </Text>
+            ) : null}
+          </Stack>
+        ) : (
+          <Stack direction="vertical" gap={2}>
+            <Text size={3} as="label">
+              Name
+            </Text>
+
             <Input
-              aria-invalid={destinationValidation.state === 'invalid'}
-              autoFocus
+              css={{ height: '32px' }}
               id="repo-name"
               type="text"
               aria-label="Repository name"
               placeholder="Repository name"
-              value={repoName}
-              onChange={e => setRepoName(e.target.value)}
-              required
+              disabled
+              value={repository.fullName}
             />
+          </Stack>
+        )}
 
-            {destinationValidation.state !== 'idle' ? (
-              <Element
-                css={{
-                  position: 'absolute',
-                  right: '8px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  display: 'flex',
-                  color: {
-                    valid: COLORS.VALID,
-                    invalid: COLORS.INVALID,
-                    validating: '#E5E5E5',
-                  }[destinationValidation.state],
-                }}
-              >
-                {destinationValidation.state === 'valid' ? (
-                  <Icon size={16} name="simpleCheck" />
-                ) : null}
-                {destinationValidation.state === 'invalid' ? (
-                  <Icon size={16} name="warning" />
-                ) : null}
-                {destinationValidation.state === 'validating' ? (
-                  <Icon size={16} name="spinner" />
-                ) : null}
-              </Element>
-            ) : null}
-          </Element>
-          {destinationValidation.state === 'invalid' ? (
-            <Text size={3} variant="muted">
-              {destinationValidation.error}
-            </Text>
-          ) : null}
-        </Stack>
-
-        <Label css={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <Text as="span" size={3}>
-            Personal or organization GitHub account
+        <Stack direction="vertical" align="flex-start" gap={2}>
+          <Text size={3} as="label">
+            Runtime
           </Text>
-          {githubAccounts.state === 'loading' ? (
-            <SkeletonText
-              css={{
-                height: '28px',
-                width: '100%',
-              }}
-            />
-          ) : null}
-          {githubAccounts.state === 'ready' ? (
-            <Select
-              icon={() => <Icon size={12} name="github" />}
-              onChange={e => {
-                setSelectedOrg(e.target.value);
-              }}
-              value={selectedOrg}
-            >
-              {accountOptions?.map(account => (
-                <option key={account.id} value={account.login}>
-                  {account.login}
-                </option>
-              ))}
-            </Select>
-          ) : null}
-        </Label>
+
+          <Select
+            css={{ height: '32px' }}
+            value={selectedTier}
+            disabled={availableTiers.length === 0}
+            onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
+          >
+            {availableTiers.map(t => (
+              <option key={t.shortid} value={t.tier}>
+                {t.name} ({t.cpu} vCPUs, {t.memory} GiB RAM, {t.storage} GB Disk
+                for {t.creditBasis} credits/hour)
+              </option>
+            ))}
+          </Select>
+          {isFree && (
+            <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
+              <Icon name="circleBang" />
+              <Text size={3}>
+                Better specs are available for Pro workspaces.
+              </Text>
+            </Stack>
+          )}
+        </Stack>
       </Stack>
 
       <Stack css={{ justifyContent: 'flex-end' }}>
         <Stack gap={2}>
+          {!repository.private && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onCancel}
+              css={{ width: 'auto' }}
+            >
+              Open readonly
+            </Button>
+          )}
           <Button
-            type="button"
-            variant="secondary"
-            onClick={onCancel}
-            css={{ width: 'auto' }}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={destinationValidation.state !== 'valid' || isForking}
+            disabled={(forkMode && destinationValidation.state !== 'valid') || isImporting}
+            loading={isImporting}
             type="submit"
             variant="primary"
             css={{ width: 'auto' }}
           >
-            {isForking ? 'Forking' : 'Fork repository'}
+            {forkMode ? 'Fork & Import' : 'Import repository'}
           </Button>
         </Stack>
       </Stack>

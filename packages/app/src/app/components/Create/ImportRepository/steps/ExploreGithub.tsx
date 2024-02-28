@@ -52,6 +52,7 @@ export const ExploreGithub = ({ onSelected }) => {
           id="repo-url"
           placeholder="GitHub URL or owner/name"
           type="text"
+          autoFocus
           autoComplete="off"
           onChange={handleInputChange}
           css={{ height: '32px' }}

@@ -43,7 +43,8 @@ export const Input = styled(Element).attrs(p => ({
       outline: 'none !important',
     },
     ':disabled': {
-      opacity: 0.4,
+      color: '#999999',
+      cursor: 'not-allowed',
       borderColor: 'input.border', // (default border)
     },
   })

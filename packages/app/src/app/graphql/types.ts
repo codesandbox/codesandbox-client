@@ -3231,7 +3231,12 @@ export type GetGitHubOrganizationReposQuery = {
     private: boolean;
     updatedAt: string;
     pushedAt: string | null;
-    owner: { __typename?: 'GithubOrganization'; id: string; login: string };
+    owner: {
+      __typename?: 'GithubOrganization';
+      id: string;
+      login: string;
+      avatarUrl: string;
+    };
   }> | null;
 };
 
