@@ -122,14 +122,7 @@ export const loadGitSource = async ({ state, actions, effects }: Context) => {
   state.git.isFetching = false;
 };
 
-export const createRepoFiles = async (
-  { effects }: Context,
-  sandbox: Sandbox
-) => {
-  if (!sandbox) {
-    return;
-  }
-
+export const createRepoFiles = ({ effects }: Context, sandbox: Sandbox) => {
   return effects.git.export(sandbox);
 };
 
