@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  Element,
-  Stack,
-  Text,
-  Input,
-  Icon,
-} from '@codesandbox/components';
+import { Element, Stack, Text, Input, Icon } from '@codesandbox/components';
 
 import { useGithubRepo } from '../../hooks/useGithubRepo';
 import { getOwnerAndNameFromInput } from '../utils';
