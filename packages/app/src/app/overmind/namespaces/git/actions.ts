@@ -17,6 +17,7 @@ import { Context } from 'app/overmind';
 import { debounce, pipe } from 'overmind';
 import { CSBProjectGitHubRepository } from '@codesandbox/common/lib/utils/url-generator';
 
+import { Sandbox } from 'app/graphql/types';
 import * as internalActions from './internalActions';
 import { createDiff } from './utils';
 
@@ -119,6 +120,17 @@ export const loadGitSource = async ({ state, actions, effects }: Context) => {
 
   actions.git._setGitChanges();
   state.git.isFetching = false;
+};
+
+export const createRepoFiles = async (
+  { effects }: Context,
+  sandbox: Sandbox
+) => {
+  if (!sandbox) {
+    return;
+  }
+
+  return effects.git.export(sandbox);
 };
 
 export const createRepoClicked = async ({
