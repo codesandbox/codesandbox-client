@@ -140,7 +140,10 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
               </ModalSidebar>
               <ModalContent>
                 <Panel tab={tabState} id="import">
-                  <SelectRepo onSelected={selectGithubRepo} />
+                  <SelectRepo
+                    onSelected={selectGithubRepo}
+                    onFindByURLClicked={() => tabState.select('explore')}
+                  />
                 </Panel>
                 <Panel tab={tabState} id="explore">
                   <ExploreGithub onSelected={selectGithubRepo} />

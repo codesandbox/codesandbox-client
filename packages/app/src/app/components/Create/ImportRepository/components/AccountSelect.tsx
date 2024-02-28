@@ -86,6 +86,7 @@ const StyledMenuButton = styled(MenuDisclosure)`
   color: #e5e5e5;
   cursor: pointer;
   box-sizing: border-box;
+  background: #252525;
   height: 32px;
   padding: 0 8px;
   border-radius: 4px;

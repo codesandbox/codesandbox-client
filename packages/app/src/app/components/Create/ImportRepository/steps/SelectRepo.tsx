@@ -12,11 +12,16 @@ import styled from 'styled-components';
 import { GithubRepoToImport } from '../../utils/types';
 import { AccountSelect } from '../components/AccountSelect';
 import { RepoListItem } from '../components/RepoListItem';
+import { UnstyledButtonLink } from '../../elements';
 
 type SelectRepoProps = {
   onSelected: (repo: GithubRepoToImport) => void;
+  onFindByURLClicked: () => void;
 };
-export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
+export const SelectRepo: React.FC<SelectRepoProps> = ({
+  onSelected,
+  onFindByURLClicked,
+}) => {
   const { activeTeamInfo } = useAppState();
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
@@ -68,7 +73,7 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
   const filteredResults =
     githubRepos.state === 'ready'
       ? githubRepos.data.filter(r =>
-          r.fullName.toLowerCase().includes(queryString.toLowerCase())
+          r.name.toLowerCase().includes(queryString.toLowerCase())
         )
       : null;
 
@@ -78,19 +83,26 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
     setQueryString(event.target.value);
   };
 
+  const hasResults = filteredResults && filteredResults.length > 0;
+  const noResults = filteredResults && filteredResults.length === 0;
+
   return (
     <Stack direction="vertical" gap={4}>
       <Text size={3}>Import from your GitHub organizations</Text>
       <Stack gap={1} align="center">
-        <AccountSelect
-          options={selectOptions}
-          value={selectedAccount}
-          onChange={(account: string) => {
-            track('Import repo - Select - Change GH Org');
+        {selectOptions ? (
+          <AccountSelect
+            options={selectOptions}
+            value={selectedAccount}
+            onChange={(account: string) => {
+              track('Import repo - Select - Change GH Org');
 
-            setSelectedAccount(account);
-          }}
-        />
+              setSelectedAccount(account);
+            }}
+          />
+        ) : (
+          <SkeletonText css={{ height: '32px', width: '100px' }} />
+        )}
 
         <Text color="#e5e5e5">/</Text>
 
@@ -118,7 +130,7 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
         </StyledList>
       )}
 
-      {filteredResults !== null && (
+      {hasResults && (
         <StyledList as="ul" direction="vertical" gap={1}>
           {filteredResults.map(repo => (
             <RepoListItem
@@ -129,6 +141,20 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({ onSelected }) => {
             />
           ))}
         </StyledList>
+      )}
+
+      {noResults && (
+        <Text size={3}>
+          No repository matching the search. Please double check the repository
+          name or try the{' '}
+          <UnstyledButtonLink
+            css={{ color: 'inherit', textDecoration: 'underline' }}
+            onClick={onFindByURLClicked}
+          >
+            Find by URL
+          </UnstyledButtonLink>{' '}
+          option.
+        </Text>
       )}
     </Stack>
   );

@@ -5,6 +5,7 @@ import {
   GetGitHubOrganizationReposQuery,
   GetGitHubOrganizationReposQueryVariables,
   ProjectFragment,
+  UserRepoSort,
 } from 'app/graphql/types';
 import {
   GET_GITHUB_ACCOUNT_REPOS,
@@ -42,6 +43,7 @@ export const useGitHubAccountRepositories = ({
     variables: {
       perPage: 1000, // TODO determine how much repos
       page: 1,
+      sort: UserRepoSort.Pushed,
     },
     // Apollo (version 2.5.6) has weird caching issues where fetching anything from "me" with apollo overrides
     // the previous result. In this case the githubProfile is overridden and the values are gone. Adding
@@ -94,7 +96,10 @@ export const useGitHubAccountRepositories = ({
   return {
     state: 'ready',
     data: (accountData || organizationData)?.filter(repository => {
-      return !currentAccountRepos?.includes(repository.fullName);
+      return (
+        repository.owner.login === name &&
+        !currentAccountRepos?.includes(repository.fullName)
+      );
     }),
   };
 };

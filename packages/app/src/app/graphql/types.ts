@@ -1095,6 +1095,7 @@ export enum SubscriptionPaymentProvider {
 export enum SubscriptionStatus {
   Active = 'ACTIVE',
   Cancelled = 'CANCELLED',
+  Incomplete = 'INCOMPLETE',
   IncompleteExpired = 'INCOMPLETE_EXPIRED',
   Paused = 'PAUSED',
   Trialing = 'TRIALING',
@@ -1398,6 +1399,10 @@ export type CurrentUser = {
    * If either `page` or `perPage` are specified, then a single page of results will be returned.
    * If neither argument is given, then all results will be returned. Note that this still requires
    * paginated requests to the GitHub API, but the server will concatenate the results.
+   *
+   * Defaults to sorting by repository name (`sort` value `FULL_NAME`). In this case, repositories
+   * are returned in ascending order. If any other value is given, repositories are returned in
+   * descending order (ex. most recently pushed first).
    */
   githubRepos: Array<GithubRepo>;
   id: Scalars['UUID4'];
@@ -1433,6 +1438,7 @@ export type CurrentUserGithubReposArgs = {
   affiliation?: InputMaybe<Array<UserRepoAffiliation>>;
   page: InputMaybe<Scalars['Int']>;
   perPage: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<UserRepoSort>;
 };
 
 export type CurrentUserNotificationsArgs = {
@@ -1507,6 +1513,14 @@ export enum UserRepoAffiliation {
   Collaborator = 'COLLABORATOR',
   OrganizationMember = 'ORGANIZATION_MEMBER',
   Owner = 'OWNER',
+}
+
+/** Sorting key for repositories */
+export enum UserRepoSort {
+  Created = 'CREATED',
+  FullName = 'FULL_NAME',
+  Pushed = 'PUSHED',
+  Updated = 'UPDATED',
 }
 
 export type NotificationPreferences = {
@@ -3173,6 +3187,7 @@ export type GetGithubAccountsQuery = {
 export type GetGitHubAccountReposQueryVariables = Exact<{
   perPage: InputMaybe<Scalars['Int']>;
   page: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<UserRepoSort>;
 }>;
 
 export type GetGitHubAccountReposQuery = {

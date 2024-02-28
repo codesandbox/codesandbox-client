@@ -100,12 +100,11 @@ export const GET_GITHUB_ACCOUNTS = gql`
   ${ORGANIZATION_FRAGMENT}
 `;
 
-// TODO: Remove unnecessary fields
 export const GET_GITHUB_ACCOUNT_REPOS = gql`
-  query GetGitHubAccountRepos($perPage: Int, $page: Int) {
+  query GetGitHubAccountRepos($perPage: Int, $page: Int, $sort: UserRepoSort) {
     me {
       id
-      githubRepos(perPage: $perPage, page: $page) {
+      githubRepos(perPage: $perPage, page: $page, sort: $sort) {
         id
         authorization
         fullName
