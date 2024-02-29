@@ -40,9 +40,14 @@ export const ExpandableReposRowItem = () => {
                 event.stopPropagation();
               }}
               css={{
-                width: '16px',
+                width: '24px',
                 height: '100%',
                 borderRadius: 0,
+                '&:focus-visible': {
+                  boxShadow: 'none',
+                  outlineOffset: '-1px',
+                  outline: '1px solid #ac9cff',
+                },
                 svg: {
                   transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
                   transition: 'transform 100ms ease-in-out',
@@ -50,7 +55,7 @@ export const ExpandableReposRowItem = () => {
               }}
             />
           ) : (
-            <Element as="span" css={{ width: '16px', flexShrink: 0 }} />
+            <Element as="span" css={{ width: '24px', flexShrink: 0 }} />
           )}
           <Link
             as={RouterLink}
@@ -61,6 +66,10 @@ export const ExpandableReposRowItem = () => {
               lineHeight: '16px',
               textDecoration: 'none',
               color: 'inherit',
+              '&:focus-visible': {
+                outlineOffset: '-1px',
+                outline: '1px solid #ac9cff',
+              },
             }}
             to={dashboardUrls.repositories(activeTeam)}
           >

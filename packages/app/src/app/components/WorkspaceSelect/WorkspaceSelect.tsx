@@ -59,133 +59,135 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     };
 
     return (
-      <Tooltip
-        label={
-          disabled
-            ? 'Selected sandbox(es) can not be forked outside of the workspace'
-            : null
-        }
-      >
-        <Stack css={{ flex: 1, height: '100%' }}>
-          <Menu>
-            <Stack
-              as={Menu.Button}
-              disabled={disabled}
-              justify="space-between"
-              align="center"
-              css={{
-                width: '100%',
-                cursor: 'pointer',
-                color: '#C2C2C2',
-                paddingLeft: '28px',
-                height: '36px',
-                borderRadius: '2px 0 0 2px',
-                '&:hover': {
-                  backgroundColor: '#242424',
-                },
-              }}
-              onClick={trackOpen}
+      <Menu>
+        <Stack
+          as={Menu.Button}
+          disabled={disabled}
+          justify="space-between"
+          align="center"
+          css={{
+            width: '100%',
+            cursor: 'pointer',
+            color: '#cccccc',
+            paddingLeft: '28px',
+            paddingRight: '12px',
+            borderRadius: 0,
+            height: '36px',
+            transition: 'none',
+            '.chevron': {
+              translate: 0,
+              transition: 'translate 0.125s ease-out',
+            },
+
+            '&:hover': {
+              backgroundColor: '#242424',
+              '.chevron': {
+                translate: '0 3px',
+              },
+            },
+          }}
+          onClick={trackOpen}
+        >
+          <Stack align="center" gap={2}>
+            <Text
+              size={16}
+              maxWidth={
+                selectedTeam?.subscription?.status === SubscriptionStatus.Active
+                  ? 170
+                  : 210
+              }
             >
-              <Stack align="center" gap={1} css={{ paddingRight: 4 }}>
-                <Text
-                  size={16}
-                  maxWidth={selectedTeam?.subscription ? 163 : 123}
-                >
-                  {selectedTeam?.name}
-                </Text>
+              {selectedTeam?.name}
+            </Text>
 
-                {isPro && <Badge variant="pro">Pro</Badge>}
-              </Stack>
+            {isPro && <Badge variant="pro">Pro</Badge>}
+          </Stack>
 
-              <Icon name="chevronDown" size={8} />
-            </Stack>
+          <Icon className="chevron" name="chevronDown" size={8} />
+        </Stack>
 
-            <Menu.List
-              css={{
-                width: '100%',
-                marginLeft: 7,
-                marginTop: 4,
-                borderRadius: '2px',
-                backgroundColor: '#242424',
-              }}
-            >
-              {workspaces.map(team => {
-                const isProWorkspace =
-                  team.subscription?.status === SubscriptionStatus.Active;
+        <Menu.List
+          css={{
+            width: '100%',
+            marginLeft: 7,
+            marginTop: 4,
+            borderRadius: '2px',
+            backgroundColor: '#242424',
+          }}
+        >
+          {workspaces.map(team => {
+            const isProWorkspace =
+              team.subscription?.status === SubscriptionStatus.Active;
 
-                const moveNotAllowed =
-                  filterNonPro &&
-                  !isProWorkspace &&
-                  !team.featureFlags.friendOfCsb;
+            const moveNotAllowed =
+              filterNonPro && !isProWorkspace && !team.featureFlags.friendOfCsb;
 
-                if (team.id !== state.activeTeam && moveNotAllowed) {
-                  return null;
-                }
+            if (team.id !== state.activeTeam && moveNotAllowed) {
+              return null;
+            }
 
-                return (
-                  <Stack
-                    as={Menu.Item}
-                    key={team.id}
-                    align="center"
-                    gap={2}
-                    css={{ borderBottom: '1px solid #343434' }}
-                    onSelect={() => {
-                      track('Workspace Selector - Change Active Team');
-                      onSelect(team.id);
-                    }}
-                  >
-                    <TeamAvatar
-                      avatar={team.avatarUrl}
-                      name={team.name}
-                      size="small"
-                      style={{ overflow: 'hidden' }}
-                    />
-                    <Stack
-                      align="center"
-                      justify="space-between"
-                      css={{ flex: 1 }}
-                      gap={1}
-                    >
-                      <Text css={{ width: '100%' }} size={3}>
-                        {team.name}
-                      </Text>
-
-                      {isProWorkspace && <Badge variant="pro">Pro</Badge>}
-                    </Stack>
-                  </Stack>
-                );
-              })}
-
+            return (
               <Stack
                 as={Menu.Item}
+                key={team.id}
                 align="center"
                 gap={2}
-                css={{
-                  textAlign: 'left',
-                }}
+                css={{ borderBottom: '1px solid #343434' }}
                 onSelect={() => {
-                  history.push('/create-workspace');
-                  track('Workspace Selector - Create Workspace');
+                  track('Workspace Selector - Change Active Team');
+                  onSelect(team.id);
                 }}
               >
+                <TeamAvatar
+                  avatar={team.avatarUrl}
+                  name={team.name}
+                  size="small"
+                  style={{ overflow: 'hidden' }}
+                />
                 <Stack
-                  justify="center"
                   align="center"
-                  css={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: '2px',
-                    border: '1px solid #999',
-                  }}
+                  justify="space-between"
+                  css={{ flex: 1 }}
+                  gap={1}
                 >
-                  <Icon name="plus" size={10} />
+                  <Text css={{ width: '100%' }} size={3}>
+                    {team.name}
+                  </Text>
+
+                  {isProWorkspace && <Badge variant="pro">Pro</Badge>}
                 </Stack>
-                <Text size={3}>Create workspace</Text>
               </Stack>
-            </Menu.List>
-          </Menu>
-        </Stack>
-      </Tooltip>
+            );
+          })}
+
+          <Stack
+            as={Menu.Item}
+            align="center"
+            gap={2}
+            css={{
+              textAlign: 'left',
+            }}
+            onSelect={() => {
+              history.push('/create-workspace');
+              track('Workspace Selector - Create Workspace');
+            }}
+          >
+            <Stack
+              justify="center"
+              align="center"
+              css={{
+                width: 24,
+                height: 24,
+                borderRadius: '2px',
+                border: '1px solid #999',
+              }}
+            >
+              <Icon name="plus" size={10} />
+            </Stack>
+            <Text size={3}>Create workspace</Text>
+          </Stack>
+        </Menu.List>
+      </Menu>
     );
   }
 );

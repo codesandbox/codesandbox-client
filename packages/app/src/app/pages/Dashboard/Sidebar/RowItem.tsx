@@ -136,30 +136,23 @@ export const RowItem: React.FC<RowItemProps> = ({
         opacity: isDragging && !canDrop ? 0.25 : 1,
         display: 'flex',
         flexDirection: 'column',
-        color:
-          isCurrentLink || (isDragging && canDrop)
-            ? 'sideBar.foreground'
-            : 'sideBarTitle.foreground',
+        color: isCurrentLink ? 'sideBar.foreground' : 'sideBarTitle.foreground',
         backgroundColor:
           canDrop && isOver ? 'list.hoverBackground' : 'transparent',
-        transition: 'all ease-in',
-        transitionDuration: theme => theme.speeds[1],
-        a: {
-          ':focus': {
-            // focus state is handled by SidebarListAction:focus-within
-            outline: 'none',
-          },
-        },
       })}
     >
       {props.children || (
         <Link
           {...{
-            ...(page === 'external'
-              ? { href: linkTo, target: '_blank' }
-              : { to: linkTo }),
+            ...(page === 'external' ? { href: linkTo } : { to: linkTo }),
             as: page === 'external' ? 'a' : RouterLink,
             style: linkStyles,
+            css: {
+              '&:focus-visible': {
+                outlineOffset: '-1px',
+                outline: '1px solid #ac9cff',
+              },
+            },
             onKeyDown: event => {
               if (event.keyCode === ENTER) {
                 history.push(linkTo, { focus: 'FIRST_ITEM' });
@@ -181,8 +174,8 @@ export const RowItem: React.FC<RowItemProps> = ({
           <Stack
             as="span"
             css={{
-              width: '36px',
-              paddingLeft: '8px',
+              width: '42px',
+              paddingLeft: '16px',
               paddingRight: '4px',
               flexShrink: 0,
               overflow: 'hidden',
