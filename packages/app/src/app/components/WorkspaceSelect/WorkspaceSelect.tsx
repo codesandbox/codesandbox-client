@@ -1,13 +1,6 @@
 import React from 'react';
 import { useAppState } from 'app/overmind';
-import {
-  Badge,
-  Text,
-  Menu,
-  Stack,
-  Icon,
-  Tooltip,
-} from '@codesandbox/components';
+import { Badge, Text, Menu, Stack, Icon } from '@codesandbox/components';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
