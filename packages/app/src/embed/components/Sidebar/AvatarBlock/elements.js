@@ -35,17 +35,8 @@ export const AvatarPlaceholder = styled.div(
 export const PrimaryName = styled.span(
   css({
     display: 'inline-block',
-    fontSize: 3,
-    marginLeft: 2,
-    marginBottom: '1px',
-  })
-);
-
-export const AuthorName = styled.span(
-  css({
-    display: 'inline-block',
     fontSize: 2,
     marginLeft: 2,
-    color: 'grays.400',
+    marginBottom: '1px',
   })
 );

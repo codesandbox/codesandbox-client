@@ -1,29 +1,14 @@
 import React from 'react';
-import {
-  Container,
-  Avatar,
-  PrimaryName,
-  AuthorName,
-  AvatarPlaceholder,
-} from './elements';
+import { Container, Avatar, PrimaryName, AvatarPlaceholder } from './elements';
 
-const AvatarBlock = ({ url, name, teamName }) => (
+const AvatarBlock = ({ url, name }) => (
   <Container>
     {url ? (
       <Avatar src={url} />
     ) : (
-      <AvatarPlaceholder>{teamName.charAt(0).toUpperCase()}</AvatarPlaceholder>
+      <AvatarPlaceholder>{name.charAt(0).toUpperCase()}</AvatarPlaceholder>
     )}
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {teamName && teamName !== name ? (
-        <>
-          <PrimaryName>{teamName}</PrimaryName>
-          <AuthorName>{name}</AuthorName>
-        </>
-      ) : (
-        <PrimaryName>{name}</PrimaryName>
-      )}
-    </div>
+    <PrimaryName>{name}</PrimaryName>
   </Container>
 );
 
