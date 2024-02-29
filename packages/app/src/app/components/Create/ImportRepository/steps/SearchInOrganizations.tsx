@@ -16,11 +16,11 @@ import { RepoListItem } from '../components/RepoListItem';
 import { UnstyledButtonLink } from '../../elements';
 import { getOwnerAndNameFromInput } from '../utils';
 
-type SelectRepoProps = {
+type SearchInOrganizationsProps = {
   onSelected: (repo: GithubRepoToImport) => void;
   onFindByURLClicked: () => void;
 };
-export const SelectRepo: React.FC<SelectRepoProps> = ({
+export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
   onSelected,
   onFindByURLClicked,
 }) => {
@@ -142,6 +142,7 @@ export const SelectRepo: React.FC<SelectRepoProps> = ({
 
             return (
               <RepoListItem
+                key={repo.owner.login + '/' + repo.name}
                 repo={repo}
                 onClicked={() => {
                   if (isImported) {

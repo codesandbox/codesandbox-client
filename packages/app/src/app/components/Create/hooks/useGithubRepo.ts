@@ -15,28 +15,23 @@ type State =
     }
   | {
       state: 'error';
-      error: string;
-      code?: string;
     };
 export const useGithubRepo = ({
   owner,
   name,
-  onCompleted,
   shouldFetch,
 }: {
   owner?: string;
   name?: string;
   shouldFetch: boolean;
-  onCompleted: (data: GithubRepoToImport) => void;
 }): State => {
-  const { data, error } = useQuery<
+  const { data, error, loading } = useQuery<
     GetGithubRepoQuery,
     GetGithubRepoQueryVariables
   >(GET_GITHUB_REPO, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
     variables: { owner, name },
     skip: !shouldFetch,
-    onCompleted: response => onCompleted(response.githubRepo),
   });
 
   if (!shouldFetch) {
@@ -45,19 +40,15 @@ export const useGithubRepo = ({
     };
   }
 
-  if (error) {
-    const _error = error.graphQLErrors[0];
-
+  if (loading) {
     return {
-      state: 'error',
-      error: _error.message,
-      code: (_error as any)?.code,
+      state: 'loading',
     };
   }
 
-  if (typeof data?.githubRepo === 'undefined') {
+  if (error || !data.githubRepo) {
     return {
-      state: 'loading',
+      state: 'error',
     };
   }
 

@@ -33,13 +33,12 @@ const COLORS = {
   VALID: '#A3EC98',
 };
 
-type ConfigureRepoFormProps = {
+type ConfigureRepoProps = {
   repository: GithubRepoToImport;
   onCancel: () => void;
 };
 
-// TODO: Consider splitting in two components
-export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
+export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
   repository,
   onCancel,
 }) => {
@@ -52,8 +51,6 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
   const defaultTier = isFree ? 1 : 2;
   const [selectedTier, setSelectedTier] = useState<number>(defaultTier);
   const [availableTiers, setAvailableTiers] = useState<VMTier[]>([]);
-
-  const forkMode = repository.authorization === GithubRepoAuthorization.Read;
 
   // Import related fields
   const repositoryWorkspaces = useRepositoryWorkspaces(
@@ -71,6 +68,11 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
     selectedOrg,
     repoName
   );
+
+  const forkMode =
+    githubAccounts.state === 'ready' &&
+    githubAccounts.personal.login !== repository.owner.login &&
+    repository.authorization === GithubRepoAuthorization.Read;
 
   useEffect(() => {
     effects.api.getVMSpecs().then(res => {

@@ -7,6 +7,8 @@ import {
 import React, { useState } from 'react';
 import { useTabState } from 'reakit/Tab';
 
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { SignIn } from 'app/pages/SignIn/SignIn';
 import { useAppState } from 'app/overmind';
@@ -26,9 +28,10 @@ import { GithubRepoToImport } from './utils/types';
 import { RepoInfo } from './ImportRepository/components/RepoInfo';
 import { RestrictedPrivateReposInfo } from './ImportRepository/components/RestrictedPrivateReposInfo';
 import { AuthorizeGitHubPermissions } from './ImportRepository/steps/AuthorizeGitHubPermissions';
-import { SelectRepo } from './ImportRepository/steps/SelectRepo';
-import { ConfigureRepoForm } from './ImportRepository/steps/ConfigureRepoForm';
-import { ExploreGithub } from './ImportRepository/steps/ExploreGithub';
+import { SearchInOrganizations } from './ImportRepository/steps/SearchInOrganizations';
+import { ConfigureRepo } from './ImportRepository/steps/ConfigureRepo';
+import { FindByURL } from './ImportRepository/steps/FindByURL';
+import { StartFromTemplate } from './ImportRepository/steps/StartFromTemplate';
 
 type View = 'signin' | 'permissions' | 'select' | 'config';
 
@@ -44,7 +47,7 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
 
   const tabState = useTabState({
     orientation: mobileScreenSize ? 'horizontal' : 'vertical',
-    selectedId: 'import',
+    selectedId: 'search-in-org',
   });
 
   const [viewState, setViewState] = useState<View>(() => {
@@ -64,6 +67,12 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
   const selectGithubRepo = (repo: GithubRepoToImport) => {
     setSelectedRepo(repo);
     setViewState('config');
+  };
+
+  const trackTabClick = (tab: string) => {
+    track(`Import repository - Select - Click Tab`, {
+      tab_name: tab,
+    });
   };
 
   return (
@@ -113,24 +122,24 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
                   <Tabs {...tabState} aria-label="Create new">
                     <Tab
                       {...tabState}
-                      // onClick={() => trackTabClick('import')}
-                      stopId="import"
+                      onClick={() => trackTabClick('search-in-org')}
+                      stopId="search-in-org"
                     >
                       Search in organizations
                     </Tab>
 
                     <Tab
                       {...tabState}
-                      // onClick={() => trackTabClick('official')}
-                      stopId="explore"
+                      onClick={() => trackTabClick('find-by-url')}
+                      stopId="find-by-url"
                     >
                       Find by URL
                     </Tab>
 
                     <Tab
                       {...tabState}
-                      // onClick={() => trackTabClick('official')}
-                      stopId="template"
+                      onClick={() => trackTabClick('from-template')}
+                      stopId="from-template"
                     >
                       Start from a template
                     </Tab>
@@ -139,14 +148,17 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
                 </Stack>
               </ModalSidebar>
               <ModalContent>
-                <Panel tab={tabState} id="import">
-                  <SelectRepo
+                <Panel tab={tabState} id="search-in-org">
+                  <SearchInOrganizations
                     onSelected={selectGithubRepo}
-                    onFindByURLClicked={() => tabState.select('explore')}
+                    onFindByURLClicked={() => tabState.select('find-by-url')}
                   />
                 </Panel>
-                <Panel tab={tabState} id="explore">
-                  <ExploreGithub onSelected={selectGithubRepo} />
+                <Panel tab={tabState} id="find-by-url">
+                  <FindByURL onSelected={selectGithubRepo} />
+                </Panel>
+                <Panel tab={tabState} id="from-template">
+                  <StartFromTemplate />
                 </Panel>
               </ModalContent>
             </>
@@ -158,7 +170,7 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
               </ModalSidebar>
 
               <ModalContent>
-                <ConfigureRepoForm
+                <ConfigureRepo
                   repository={selectedRepo}
                   onCancel={() => {
                     setViewState('select');

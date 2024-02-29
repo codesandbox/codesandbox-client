@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Element, Stack, Text, Input, Icon } from '@codesandbox/components';
 
+import { useAppState } from 'app/overmind';
 import { useGithubRepo } from '../../hooks/useGithubRepo';
 import { getOwnerAndNameFromInput } from '../utils';
 import { RepoListItem } from '../components/RepoListItem';
@@ -8,22 +9,24 @@ import { GithubRepoToImport } from '../../utils/types';
 
 let timeoutHook: NodeJS.Timeout | null = null;
 
-export type ExploreGithubProps = {
+export type FindByURLProps = {
   onSelected: (repo: GithubRepoToImport) => void;
 };
 
-export const ExploreGithub = ({ onSelected }) => {
+export const FindByURL: React.FC<FindByURLProps> = ({ onSelected }) => {
   const [parsedInput, setParsedInput] = useState<{
     owner: string;
     name: string;
   } | null>(null);
   const [shouldValidateRepo, setShouldValidateRepo] = useState(false);
+  const { sidebar } = useAppState();
+
+  const workspaceRepos = sidebar.repositories;
 
   const githubRepo = useGithubRepo({
     owner: parsedInput?.owner,
     name: parsedInput?.name,
     shouldFetch: !!parsedInput && shouldValidateRepo,
-    onCompleted: () => {},
   });
 
   const handleInputChange = ev => {
@@ -57,7 +60,7 @@ export const ExploreGithub = ({ onSelected }) => {
           onChange={handleInputChange}
           css={{ height: '32px' }}
         />
-        <Element css={{ position: 'absolute', right: 8, top: 6 }}>
+        <Element css={{ position: 'absolute', right: 8, top: 8 }}>
           {githubRepo.state === 'loading' && <Icon size={16} name="spinner" />}
           {githubRepo.state === 'ready' && (
             <Icon size={16} color="#A3EC98" name="simpleCheck" />
@@ -70,6 +73,11 @@ export const ExploreGithub = ({ onSelected }) => {
       {githubRepo.state === 'ready' && (
         <RepoListItem
           repo={githubRepo.data}
+          isImported={workspaceRepos.find(
+            r =>
+              r.owner === githubRepo.data.owner.login &&
+              r.name === githubRepo.data.name
+          )}
           onClicked={() => {
             onSelected(githubRepo.data);
           }}
