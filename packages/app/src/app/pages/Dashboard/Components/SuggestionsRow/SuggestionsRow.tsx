@@ -25,9 +25,8 @@ import { EmptyPage } from '../EmptyPage';
 
 export const SuggestionsRow = ({ page }: { page: string }) => {
   const { activeTeamInfo } = useAppState();
-  const { dashboard: dashboardActions } = useActions();
+  const actions = useActions();
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
-  const [isImporting, setIsImporting] = useState<boolean>(false);
   const githubAccounts = useGithubAccounts();
 
   useEffect(() => {
@@ -57,41 +56,20 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
   const githubRepos = useGitHubAccountRepositories({
     name: selectedAccount,
     accountType: selectedAccountType,
+    limit: 12,
   });
 
-  const handleImport = async (
+  const handleClick = async (
     repo: Pick<Repository['repository'], 'owner' | 'name'>
   ) => {
-    setIsImporting(true);
+    track(`Suggested repos ${page} page - Select repository to import`);
 
-    const isPersonalRepository =
-      githubAccounts.state === 'ready' &&
-      repo.owner === githubAccounts.personal.login;
-
-    if (isPersonalRepository) {
-      track(
-        `Suggested repos ${page} page - Imported personal repository into team space`,
-        {
-          codesandbox: 'V1',
-          event_source: 'UI',
-        }
-      );
-    } else {
-      track(
-        `Suggested repos ${page} page - Imported organization repository into team space`,
-        {
-          codesandbox: 'V1',
-          event_source: 'UI',
-        }
-      );
-    }
-
-    await dashboardActions.importGitHubRepository(repo);
+    actions.modalOpened({ modal: 'importRepository' });
   };
 
   return (
     <EmptyPage.StyledGridWrapper>
-      <Stack gap={2}>
+      <Stack gap={2} align="center">
         <Text size={16}>
           {page === 'empty repositories' ? 'Start by importing' : 'Import'} from{' '}
         </Text>
@@ -102,10 +80,7 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
             options={githubAccounts.all}
             value={selectedAccount}
             onChange={(account: string) => {
-              track('Suggested repos - change account', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
+              track('Suggested repos - change account');
 
               setSelectedAccount(account);
             }}
@@ -122,10 +97,7 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
       ) : null}
 
       {githubRepos.state === 'ready' && githubRepos.data.length > 0 ? (
-        <EmptyPage.StyledGrid
-          as="ul"
-          css={{ opacity: isImporting ? '0.8' : 1 }}
-        >
+        <EmptyPage.StyledGrid as="ul">
           {githubRepos.data.map(repo => {
             const updatedAt = formatDistanceStrict(
               zonedTimeToUtc(repo.updatedAt, 'Etc/UTC'),
@@ -142,16 +114,12 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
                 name={repo.name}
                 isPrivate={repo.private}
                 updatedAt={updatedAt}
-                onClick={
-                  isImporting
-                    ? undefined
-                    : () => {
-                        handleImport({
-                          owner: repo.owner.login,
-                          name: repo.name,
-                        });
-                      }
-                }
+                onClick={() => {
+                  handleClick({
+                    owner: repo.owner.login,
+                    name: repo.name,
+                  });
+                }}
               />
             );
           })}

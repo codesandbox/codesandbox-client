@@ -103,7 +103,12 @@ export const GET_GITHUB_ACCOUNT_REPOS = gql`
   query GetGitHubAccountRepos($perPage: Int, $page: Int, $sort: UserRepoSort) {
     me {
       id
-      githubRepos(perPage: $perPage, page: $page, sort: $sort) {
+      githubRepos(
+        perPage: $perPage
+        page: $page
+        sort: $sort
+        affiliation: OWNER
+      ) {
         id
         authorization
         fullName

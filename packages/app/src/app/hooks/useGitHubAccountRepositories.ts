@@ -17,11 +17,13 @@ import {
 type UseGitHubAccountRepositoriesOptions = {
   name?: string;
   accountType?: 'personal' | 'organization';
+  limit?: number;
 };
 
 export const useGitHubAccountRepositories = ({
   name,
   accountType,
+  limit,
 }: UseGitHubAccountRepositoriesOptions) => {
   const skipLoadingPersonal = accountType === 'organization' || !name;
   const skipLoadingOrganization = accountType === 'personal' || !name;
@@ -34,7 +36,7 @@ export const useGitHubAccountRepositories = ({
   >(GET_GITHUB_ACCOUNT_REPOS, {
     skip: skipLoadingPersonal,
     variables: {
-      perPage: 1000, // TODO determine how much repos
+      perPage: limit ?? 100,
       page: 1,
       sort: UserRepoSort.Pushed,
     },
@@ -51,7 +53,7 @@ export const useGitHubAccountRepositories = ({
       // The name can be null, but if it is we skip. Typescript doesn't know this and expects a string, so we
       // satisfy TypeScript by defaulting to an empty string.
       organization: name || '',
-      perPage: 1000, // TODO determine how much repos
+      perPage: limit ?? 100,
       page: 1,
     },
   });

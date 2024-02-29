@@ -27,7 +27,7 @@ export const AccountSelect = ({ options, value, onChange }) => {
             <Text>
               {value} <VisuallyHidden>is currently selected</VisuallyHidden>
             </Text>
-            <Icon name="chevronDown" size={8} />
+            <Icon className="chevron" name="chevronDown" size={8} />
           </Stack>
         </Stack>
       </StyledMenuButton>
@@ -91,11 +91,16 @@ const StyledMenuButton = styled(MenuDisclosure)`
   padding: 0 8px;
   border-radius: 4px;
   font-size: 13px;
-  transition: all 0.125s ease-out;
+  .chevron {
+    translate: 0 1px;
+    transition: all 0.125s ease-out;
+  }
 
-  &:focus,
   &:hover {
     background: #e5e5e51a;
+    .chevron {
+      translate: 0 3px;
+    }
   }
 
   &:focus-visible {
