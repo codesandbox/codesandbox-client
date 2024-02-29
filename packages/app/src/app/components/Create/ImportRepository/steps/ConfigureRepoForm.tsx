@@ -9,8 +9,13 @@ import {
   SkeletonText,
   Text,
   Select,
+  Tooltip,
 } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import {
+  v2BranchUrl,
+  v2DefaultBranchUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 import { GithubRepoAuthorization } from 'app/graphql/types';
@@ -20,6 +25,8 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { GithubRepoToImport } from '../../utils/types';
 import { useValidateRepoDestination } from '../../hooks/useValidateRepoDestination';
 import { AccountSelect } from '../components/AccountSelect';
+import { useRepositoryWorkspaces } from '../../hooks/useRepositoryWorkspaces';
+import { InputExplanation } from '../components/InputExplanation';
 
 const COLORS = {
   INVALID: '#F5A8A8',
@@ -31,6 +38,7 @@ type ConfigureRepoFormProps = {
   onCancel: () => void;
 };
 
+// TODO: Consider splitting in two components
 export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
   repository,
   onCancel,
@@ -46,6 +54,12 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
   const [availableTiers, setAvailableTiers] = useState<VMTier[]>([]);
 
   const forkMode = repository.authorization === GithubRepoAuthorization.Read;
+
+  // Import related fields
+  const repositoryWorkspaces = useRepositoryWorkspaces(
+    repository.owner.login,
+    repository.name
+  );
 
   // Fork related fields
   const githubAccounts = useGithubAccounts();
@@ -66,18 +80,52 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
     });
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleImport = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (isImporting) {
+      return;
+    }
+
+    setIsImporting(true);
+    track('Import repository - Configure - Click import', {
+      vmTier: selectedTier,
+    });
+
+    const result = await dashboard.importGitHubRepository({
+      name: repository.name,
+      owner: repository.owner.login,
+      vmTier: selectedTier,
+    });
+
+    if (result.success) {
+      track('Import repository - Configure - Import successful');
+
+      window.location.href = v2BranchUrl({
+        owner: repository.owner.login,
+        repoName: repository.name,
+        branchName: result.defaultBranch,
+        workspaceId: activeTeamInfo?.id,
+        importFlag: true,
+      });
+    }
+
+    setIsImporting(false);
+  };
+
+  const handleFork = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (destinationValidation.state !== 'valid' || isImporting) {
       return;
     }
 
-    track('Import repository - Create fork');
-
     setIsImporting(true);
+    track('Import repository - Configure - Click fork', {
+      vmTier: selectedTier,
+    });
 
-    await dashboard.forkGitHubRepository({
+    const result = await dashboard.forkGitHubRepository({
       source: { owner: repository.owner.login, name: repository.name },
       destination: {
         teamId: activeTeamInfo.id,
@@ -87,16 +135,31 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
             : undefined,
         name: destinationValidation.name,
       },
+      vmTier: selectedTier,
     });
+
+    if (result.success) {
+      track('Import repository - Configure - Fork successful');
+
+      window.location.href = v2BranchUrl({
+        workspaceId: activeTeamInfo?.id,
+        importFlag: true,
+        owner: destinationValidation.owner,
+        repoName: destinationValidation.name,
+        branchName: result.defaultBranch,
+      });
+    }
+
     setIsImporting(false);
   };
 
   useEffect(() => {
-    track('Import repository - View create fork');
-  }, []);
-
-  useEffect(() => {
-    if (!activeTeamInfo || !forkMode || githubAccounts.state !== 'ready') {
+    if (
+      !activeTeamInfo ||
+      selectedOrg ||
+      !forkMode ||
+      githubAccounts.state !== 'ready'
+    ) {
       return;
     }
 
@@ -116,7 +179,7 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
         paddingBottom: '16px',
         justifyContent: 'space-between',
       }}
-      onSubmit={handleSubmit}
+      onSubmit={forkMode ? handleFork : handleImport}
     >
       <Stack direction="vertical" gap={6}>
         <Text
@@ -140,7 +203,7 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
                   options={githubAccounts.all}
                   value={selectedOrg}
                   onChange={(account: string) => {
-                    track('Import repo - Select - Change GH Org');
+                    track('Import repository - Configure - Change GH Org');
                     setSelectedOrg(account);
                   }}
                 />
@@ -218,6 +281,38 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
               disabled
               value={repository.fullName}
             />
+
+            {repositoryWorkspaces.length > 0 && (
+              <InputExplanation variant="info">
+                This repository has already been imported into{' '}
+                {repositoryWorkspaces.length === 1 ? 'one' : 'some'} of your
+                workspaces, open it on:{' '}
+                {repositoryWorkspaces.map((team, teamIndex) => (
+                  <>
+                    <Button
+                      key={team.id}
+                      as="a"
+                      css={{
+                        display: 'inline-flex',
+                        color: 'inherit',
+                        fontWeight: 500,
+                        textDecoration: 'underline',
+                      }}
+                      href={v2DefaultBranchUrl({
+                        owner: repository.owner.login,
+                        repoName: repository.name,
+                        workspaceId: team.id,
+                      })}
+                    >
+                      {team.name}
+                    </Button>
+                    {repositoryWorkspaces.length > 1 &&
+                      teamIndex !== repositoryWorkspaces.length - 1 &&
+                      ', '}
+                  </>
+                ))}
+              </InputExplanation>
+            )}
           </Stack>
         )}
 
@@ -253,23 +348,34 @@ export const ConfigureRepoForm: React.FC<ConfigureRepoFormProps> = ({
       <Stack css={{ justifyContent: 'flex-end' }}>
         <Stack gap={2}>
           {!repository.private && (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={onCancel}
-              css={{ width: 'auto' }}
-            >
-              Open readonly
-            </Button>
+            <Tooltip label="Opens the readonly version of this repository without forking or importing it into your workspace">
+              <Button
+                as="a"
+                href={v2DefaultBranchUrl({
+                  owner: repository.owner.login,
+                  repoName: repository.name,
+                })}
+                variant="secondary"
+                onClick={() => {
+                  track('Import repository - Configure - Open readonly');
+                }}
+                autoWidth
+              >
+                Open readonly
+              </Button>
+            </Tooltip>
           )}
           <Button
-            disabled={(forkMode && destinationValidation.state !== 'valid') || isImporting}
+            disabled={
+              (forkMode && destinationValidation.state !== 'valid') ||
+              isImporting
+            }
             loading={isImporting}
             type="submit"
             variant="primary"
-            css={{ width: 'auto' }}
+            autoWidth
           >
-            {forkMode ? 'Fork & Import' : 'Import repository'}
+            {forkMode ? 'Fork repository' : 'Import repository'}
           </Button>
         </Stack>
       </Stack>

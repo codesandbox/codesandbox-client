@@ -3155,7 +3155,6 @@ export type ProfileFragment = {
   __typename?: 'GithubProfile';
   id: string;
   login: string;
-  name: string | null;
 };
 
 export type OrganizationFragment = {
@@ -3174,7 +3173,6 @@ export type GetGithubAccountsQuery = {
       __typename?: 'GithubProfile';
       id: string;
       login: string;
-      name: string | null;
     } | null;
     githubOrganizations: Array<{
       __typename?: 'GithubOrganization';
@@ -5493,6 +5491,21 @@ export type ConvertToUsageBillingMutationVariables = Exact<{
 export type ConvertToUsageBillingMutation = {
   __typename?: 'RootMutationType';
   convertToUsageBilling: boolean;
+};
+
+export type UpdateProjectVmTierMutationVariables = Exact<{
+  projectId: Scalars['UUID4'];
+  vmTier: Scalars['Int'];
+}>;
+
+export type UpdateProjectVmTierMutation = {
+  __typename?: 'RootMutationType';
+  updateProjectVmTier: {
+    __typename?: 'Resources';
+    cpu: number;
+    memory: number;
+    storage: number;
+  };
 };
 
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{

@@ -1553,14 +1553,14 @@ export const removeRepositoryFromTeam = async (
   }
 };
 
+type ImportResult =
+  | { success: true; id: string; defaultBranch: string }
+  | { success: false };
+
 export const importGitHubRepository = async (
   { state, effects }: Context,
-  {
-    owner,
-    name,
-    redirect = true,
-  }: { owner: string; name: string; redirect?: boolean }
-) => {
+  { owner, name, vmTier }: { owner: string; name: string; vmTier: number }
+): Promise<ImportResult> => {
   const { activeTeam } = state;
 
   if (!activeTeam) {
@@ -1574,17 +1574,16 @@ export const importGitHubRepository = async (
       teamId: activeTeam,
     });
 
-    if (redirect) {
-      window.location.href = v2BranchUrl({
-        owner,
-        repoName: name,
-        branchName: result.importProject.defaultBranch.name,
-        workspaceId: activeTeam,
-        importFlag: true,
-      });
-    } else {
-      return result;
-    }
+    await effects.gql.mutations.updateProjectVmTier({
+      projectId: result.importProject.id,
+      vmTier,
+    });
+
+    return {
+      success: true,
+      id: result.importProject.id,
+      defaultBranch: result.importProject.defaultBranch.name,
+    };
   } catch (error) {
     notificationState.addNotification({
       message: JSON.stringify(error),
@@ -1593,7 +1592,7 @@ export const importGitHubRepository = async (
     });
   }
 
-  return undefined;
+  return { success: false };
 };
 
 export type ForkSource = {
@@ -1605,26 +1604,25 @@ export type ForkDestination = {
   name: string;
   teamId: string;
 };
+type ForkResult = { success: true; defaultBranch: string } | { success: false };
 
 export const forkGitHubRepository = async (
   { effects }: Context,
   params: {
     source: ForkSource;
     destination: ForkDestination;
+    vmTier: number;
   }
-) => {
+): Promise<ForkResult> => {
   try {
-    const response = await effects.api.forkRepository(
+    const { branch } = await effects.api.forkRepository(
       params.source,
       params.destination
     );
-    window.location.href = v2BranchUrl({
-      workspaceId: params.destination.teamId,
-      importFlag: true,
-      owner: response.owner,
-      repoName: response.repo,
-      branchName: response.branch,
-    });
+    return {
+      success: true,
+      defaultBranch: branch,
+    };
   } catch (error) {
     notificationState.addNotification({
       message: JSON.stringify(error),
@@ -1632,6 +1630,8 @@ export const forkGitHubRepository = async (
       status: NotificationStatus.ERROR,
     });
   }
+
+  return { success: false };
 };
 
 export const createDraftBranch = async (
