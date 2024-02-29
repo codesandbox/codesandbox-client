@@ -155,7 +155,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             name="Invite members"
             page="external"
             path={dashboardUrls.portalOverview(activeTeam)}
-            icon="addMember"
+            icon="people"
           />
           <RowItem
             name="Usage"
