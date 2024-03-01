@@ -94,6 +94,7 @@ export const ExpandableReposRowItem = () => {
             ).map(repo => (
               <RowItem
                 name={repo.name}
+                key={`${repo.owner}/${repo.name}`}
                 page="repositories"
                 path={dashboardUrls.repository(repo)}
                 icon="branch"
