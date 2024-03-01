@@ -39,11 +39,14 @@ const absintheAfterware = new ApolloLink((operation, forward) =>
 
 const errorHandler = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
-    graphQLErrors.forEach(({ message }) => {
-      notificationState.addNotification({
-        message,
-        status: NotificationStatus.ERROR,
-      });
+    graphQLErrors.forEach(({ message, path }) => {
+      // Only way I could find to ignore not found errors on github repo checks
+      if (path?.[0] !== 'githubRepo') {
+        notificationState.addNotification({
+          message,
+          status: NotificationStatus.ERROR,
+        });
+      }
     });
   }
 
