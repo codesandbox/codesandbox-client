@@ -1,5 +1,5 @@
 import { useActions, useAppState, useEffects } from 'app/overmind';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   Button,
   Element,
@@ -290,9 +290,8 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
                 {repositoryWorkspaces.length === 1 ? 'one' : 'some'} of your
                 workspaces, open it on:{' '}
                 {repositoryWorkspaces.map((team, teamIndex) => (
-                  <>
+                  <Fragment key={team.id}>
                     <Button
-                      key={team.id}
                       as="a"
                       css={{
                         display: 'inline-flex',
@@ -311,7 +310,7 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
                     {repositoryWorkspaces.length > 1 &&
                       teamIndex !== repositoryWorkspaces.length - 1 &&
                       ', '}
-                  </>
+                  </Fragment>
                 ))}
               </InputExplanation>
             )}

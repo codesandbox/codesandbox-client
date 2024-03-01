@@ -14,12 +14,20 @@ import { Stack, Text, Icon, Element } from '@codesandbox/components';
 // In the new codebase this should be a Radix dropdown menu
 // https://www.radix-ui.com/docs/primitives/components/dropdown-menu
 // also, more composable if it were a design system component
-export const AccountSelect = ({ options, value, onChange }) => {
+export const AccountSelect = ({
+  options,
+  value,
+  onChange,
+  variant = 'ghost',
+}) => {
   const menu = useMenuState();
 
   return (
     <>
-      <StyledMenuButton {...menu}>
+      <StyledMenuButton
+        {...menu}
+        css={{ background: variant === 'ghost' ? 'transparent' : '#252525' }}
+      >
         <Stack gap={2} align="center">
           <Icon name="github" />
           <Stack gap={2} align="center">

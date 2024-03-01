@@ -6,6 +6,7 @@ import {
 } from '@codesandbox/common/lib/utils/notifications';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
+import { GithubRepoToImport } from 'app/components/Create/utils/types';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
@@ -272,6 +273,7 @@ export const modalOpened = (
     modal: ModalName;
     message?: string;
     itemId?: string;
+    repoToImport?: GithubRepoToImport;
   }
 ) => {
   effects.analytics.track('Open Modal', { modal: props.modal });
@@ -284,10 +286,16 @@ export const modalOpened = (
   } else {
     state.currentModalMessage = props.message || null;
   }
+
+  if (props.modal === 'importRepository') {
+    state.repoToImport = props.repoToImport;
+  }
 };
 
 export const modalClosed = ({ state }: Context) => {
   state.currentModal = null;
+  state.currentModalMessage = null;
+  state.repoToImport = null;
 };
 
 export const signInClicked = (

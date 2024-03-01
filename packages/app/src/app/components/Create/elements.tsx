@@ -45,7 +45,7 @@ export const ModalSidebar = styled.div`
 
   @media screen and (max-width: 950px) {
     width: auto;
-    padding: 8px 8px 0;
+    padding: 0 16px;
   }
 `;
 

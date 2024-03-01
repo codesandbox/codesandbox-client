@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Element, Stack, Text, Input, Icon } from '@codesandbox/components';
-
+import track from '@codesandbox/common/lib/utils/analytics';
+import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useAppState } from 'app/overmind';
 import { useGithubRepo } from '../../hooks/useGithubRepo';
 import { getOwnerAndNameFromInput } from '../utils';
@@ -19,7 +20,7 @@ export const FindByURL: React.FC<FindByURLProps> = ({ onSelected }) => {
     name: string;
   } | null>(null);
   const [shouldValidateRepo, setShouldValidateRepo] = useState(false);
-  const { sidebar } = useAppState();
+  const { sidebar, activeTeam } = useAppState();
 
   const workspaceRepos = sidebar.repositories;
 
@@ -41,6 +42,14 @@ export const FindByURL: React.FC<FindByURLProps> = ({ onSelected }) => {
       }, 200);
     }
   };
+
+  const isImported =
+    githubRepo.state === 'ready' &&
+    workspaceRepos.find(
+      r =>
+        r.owner === githubRepo.data.owner.login &&
+        r.name === githubRepo.data.name
+    );
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -73,13 +82,19 @@ export const FindByURL: React.FC<FindByURLProps> = ({ onSelected }) => {
       {githubRepo.state === 'ready' && (
         <RepoListItem
           repo={githubRepo.data}
-          isImported={workspaceRepos.find(
-            r =>
-              r.owner === githubRepo.data.owner.login &&
-              r.name === githubRepo.data.name
-          )}
+          isImported={isImported}
           onClicked={() => {
-            onSelected(githubRepo.data);
+            if (isImported) {
+              track('Import repo - Find by URL - Open already imported');
+              window.location.href = v2DefaultBranchUrl({
+                owner: githubRepo.data.owner.login,
+                repoName: githubRepo.data.name,
+                workspaceId: activeTeam,
+              });
+            } else {
+              track('Import repo - Find by URL - Import repo clicked');
+              onSelected(githubRepo.data);
+            }
           }}
         />
       )}

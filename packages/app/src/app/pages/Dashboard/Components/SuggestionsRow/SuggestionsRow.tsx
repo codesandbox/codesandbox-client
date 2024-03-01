@@ -21,6 +21,7 @@ import { StyledCard } from 'app/pages/Dashboard/Components/shared/StyledCard';
 import { SolidSkeleton } from 'app/pages/Dashboard/Components/Skeleton';
 import { ProjectFragment as Repository } from 'app/graphql/types';
 
+import { GithubRepoToImport } from 'app/components/Create/utils/types';
 import { EmptyPage } from '../EmptyPage';
 
 export const SuggestionsRow = ({ page }: { page: string }) => {
@@ -59,12 +60,9 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
     limit: 12,
   });
 
-  const handleClick = async (
-    repo: Pick<Repository['repository'], 'owner' | 'name'>
-  ) => {
-    track(`Suggested repos ${page} page - Select repository to import`);
-
-    actions.modalOpened({ modal: 'importRepository' });
+  const handleClick = (repo: GithubRepoToImport) => {
+    track(`Suggested repos - Select repository to import`);
+    actions.modalOpened({ modal: 'importRepository', repoToImport: repo });
   };
 
   return (
@@ -99,8 +97,8 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
       {githubRepos.state === 'ready' && githubRepos.data.length > 0 ? (
         <EmptyPage.StyledGrid as="ul">
           {githubRepos.data.map(repo => {
-            const updatedAt = formatDistanceStrict(
-              zonedTimeToUtc(repo.updatedAt, 'Etc/UTC'),
+            const pushedAt = formatDistanceStrict(
+              zonedTimeToUtc(repo.pushedAt, 'Etc/UTC'),
               new Date(),
               {
                 addSuffix: true,
@@ -113,12 +111,9 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
                 owner={repo.owner.login}
                 name={repo.name}
                 isPrivate={repo.private}
-                updatedAt={updatedAt}
+                pushedAt={pushedAt}
                 onClick={() => {
-                  handleClick({
-                    owner: repo.owner.login,
-                    name: repo.name,
-                  });
+                  handleClick(repo);
                 }}
               />
             );
@@ -135,7 +130,7 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
 
 type SuggestionCardProps = Pick<Repository['repository'], 'owner' | 'name'> & {
   isPrivate?: boolean;
-  updatedAt?: string;
+  pushedAt?: string;
   onClick?: () => void;
 };
 
@@ -143,7 +138,7 @@ const SuggestionCard = ({
   owner,
   name,
   isPrivate,
-  updatedAt,
+  pushedAt,
   onClick,
 }: SuggestionCardProps) => {
   return (
@@ -167,7 +162,7 @@ const SuggestionCard = ({
           </Stack>
           <Stack gap={3} align="center">
             {isPrivate ? <Icon color="#999" name="lock" size={12} /> : null}
-            {updatedAt ? <Text size={12}>{updatedAt}</Text> : null}
+            {pushedAt ? <Text size={12}>{pushedAt}</Text> : null}
           </Stack>
         </Stack>
       </StyledCard>

@@ -10,6 +10,7 @@ import {
 } from 'app/graphql/types';
 import { derived } from 'overmind';
 import { hasLogIn } from '@codesandbox/common/lib/utils/user';
+import { GithubRepoToImport } from 'app/components/Create/utils/types';
 import { MetaFeatures } from './effects/api/types';
 
 export type PendingUserType = {
@@ -54,6 +55,7 @@ type State = {
   currentModal: string | null;
   currentModalMessage: string | null;
   currentModalItemId?: string; // Used for passing collection id for create modals
+  repoToImport: GithubRepoToImport | null;
   uploadedFiles: UploadFile[] | null;
   maxStorage: number;
   usedStorage: number;
@@ -147,6 +149,7 @@ export const state: State = {
   },
   currentModal: null,
   currentModalMessage: null,
+  repoToImport: null,
   uploadedFiles: null,
   maxStorage: 0,
   usedStorage: 0,

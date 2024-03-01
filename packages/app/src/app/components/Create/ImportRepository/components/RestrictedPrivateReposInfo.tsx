@@ -1,5 +1,7 @@
-import { Stack, Text, Icon } from '@codesandbox/components';
+import { Stack, Text } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import React from 'react';
 
 export const RestrictedPrivateReposInfo: React.FC = () => {
@@ -22,9 +24,10 @@ export const RestrictedPrivateReposInfo: React.FC = () => {
           cursor: 'pointer',
           textDecoration: 'underline',
         }}
-        onClick={() =>
-          modalOpened({ modal: 'preferences', itemId: 'integrations' })
-        }
+        onClick={() => {
+          modalOpened({ modal: 'preferences', itemId: 'integrations' });
+          track('Import repo - Restricted private repos info clicked');
+        }}
       >
         Update GitHub permissions
       </Text>

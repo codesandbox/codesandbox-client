@@ -35,7 +35,9 @@ import { StartFromTemplate } from './ImportRepository/steps/StartFromTemplate';
 
 type View = 'signin' | 'permissions' | 'select' | 'config';
 
-export const ImportRepository: React.FC<ModalContentProps> = () => {
+export const ImportRepository: React.FC<
+  ModalContentProps & { repoToImport: GithubRepoToImport }
+> = ({ repoToImport }) => {
   const { hasLogIn } = useAppState();
   const {
     restrictsPublicRepos,
@@ -59,10 +61,16 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
       return 'permissions';
     }
 
+    if (repoToImport) {
+      return 'config';
+    }
+
     return 'select';
   });
 
-  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>();
+  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>(
+    repoToImport
+  );
 
   const selectGithubRepo = (repo: GithubRepoToImport) => {
     setSelectedRepo(repo);
@@ -88,7 +96,9 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
         >
           <HeaderInformation>
             {viewState === 'select' && <Text size={4}>New repository</Text>}
-            {viewState === 'config' && (
+
+            {/** Checks for repoToImport to not show the back button if you didn't pass through selection */}
+            {viewState === 'config' && !repoToImport && (
               <IconButton
                 name="arrowDown"
                 variant="square"
@@ -117,7 +127,10 @@ export const ImportRepository: React.FC<ModalContentProps> = () => {
                 <Stack
                   direction="vertical"
                   justify="space-between"
-                  css={{ height: '100%', paddingBottom: '24px' }}
+                  css={{
+                    height: '100%',
+                    paddingBottom: mobileScreenSize ? 0 : '24px',
+                  }}
                 >
                   <Tabs {...tabState} aria-label="Create new">
                     <Tab
