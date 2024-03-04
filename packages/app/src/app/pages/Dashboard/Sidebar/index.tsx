@@ -4,7 +4,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
-import { Element, List, Text, Stack, Icon } from '@codesandbox/components';
+import { Element, List, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -22,6 +22,8 @@ interface SidebarProps {
   hasTopBarBanner?: boolean;
   onSidebarToggle: () => void;
 }
+
+export const ROOT_COLLECTION_NAME = 'All folders';
 
 export const Sidebar: React.FC<SidebarProps> = ({
   visible,
@@ -125,28 +127,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               />
             </Stack>
           )}
-          <Element
-            as="a"
-            css={{
-              height: '36px',
-              width: '36px',
-              display: 'flex',
-              flexShrink: 0,
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#C2C2C2',
-              transition: 'all 0.1s ease-in',
-              borderRadius: '0 2px 2px 0',
-              '&:hover': {
-                background: '#242424',
-                color: '#fff',
-              },
-            }}
-            href={dashboardUrls.portalOverview(state.activeTeam)}
-            title="Settings"
-          >
-            <Icon name="gear" size={16} />
-          </Element>
         </Stack>
 
         <List
@@ -165,12 +145,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.recent(activeTeam)}
             icon="clock"
           />
-
           <RowItem
-            name="Shared with me"
-            page="shared"
-            path={dashboardUrls.shared(activeTeam)}
-            icon="sharing"
+            name="Settings"
+            page="external"
+            path={dashboardUrls.portalOverview(activeTeam)}
+            icon="gear"
+          />
+          <RowItem
+            name="Invite members"
+            page="external"
+            path={dashboardUrls.portalOverview(activeTeam)}
+            icon="people"
+          />
+          <RowItem
+            name="Usage"
+            page="external"
+            path={dashboardUrls.portalVMUsage(activeTeam)}
+            icon="coins"
           />
 
           {showRespositories && (
@@ -186,6 +177,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </Text>
               </Element>
 
+              <ExpandableReposRowItem />
+
               {isPrimarySpace && (
                 <RowItem
                   name="My contributions"
@@ -194,8 +187,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   icon="contribution"
                 />
               )}
-
-              <ExpandableReposRowItem />
             </>
           )}
 
@@ -206,14 +197,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
               size={2}
               css={css({ color: 'sideBarSectionHeader.foreground' })}
             >
-              Sandboxes
+              Devboxes and Sandboxes
             </Text>
           </Element>
           <RowItem
-            name="My drafts"
+            name="Drafts"
             page="drafts"
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
+          />
+
+          <NestableRowItem
+            name={ROOT_COLLECTION_NAME}
+            path={dashboardUrls.sandboxes('/', activeTeam)}
+            page="sandboxes"
+            folderPath="/"
+            folders={[
+              ...folders,
+              ...(newFolderPath
+                ? [{ path: newFolderPath, name: '', parent: null }]
+                : []),
+            ]}
           />
 
           {state.sidebar.hasTemplates ? (
@@ -234,26 +238,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           ) : null}
 
-          <NestableRowItem
-            name="All devboxes and sandboxes"
-            path={dashboardUrls.sandboxes('/', activeTeam)}
-            page="sandboxes"
-            folderPath="/"
-            folders={[
-              ...folders,
-              ...(newFolderPath
-                ? [{ path: newFolderPath, name: '', parent: null }]
-                : []),
-            ]}
-          />
-
           <RowItem
             name="Recently deleted"
             page="deleted"
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
-          <Element marginTop={3} />
+          <Element marginTop={4} />
+          <RowItem
+            name="Shared with me"
+            page="shared"
+            path={dashboardUrls.shared(activeTeam)}
+            icon="sharing"
+          />
         </List>
       </Stack>
 

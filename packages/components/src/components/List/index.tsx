@@ -48,10 +48,9 @@ export const SidebarListItem = styled(Stack).attrs({
 })(
   css({
     minHeight: 8,
-    marginLeft: 2,
     color: 'list.foreground',
-    borderRadius: 2,
     fontSize: 14,
+    overflow: 'hidden',
   })
 );
 
@@ -60,10 +59,6 @@ export const SidebarListAction = styled(SidebarListItem)<ListActionProps>(
     css({
       ':hover, &[aria-selected="true"]': {
         cursor: !disabled ? 'pointer' : 'not-allowed',
-        color: !disabled ? 'list.hoverForeground' : 'inherit',
-        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
-      },
-      ':focus-within': {
         color: !disabled ? 'list.hoverForeground' : 'inherit',
         backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
       },

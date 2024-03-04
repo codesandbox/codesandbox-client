@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, Link } from '@codesandbox/components';
 import { Link as LinkBase } from 'react-router-dom';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { ROOT_COLLECTION_NAME } from '../../Sidebar';
 
 export interface BreadcrumbProps {
   path: string;
@@ -24,7 +25,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     }[nestedPageType];
   }
 
-  let prefix = 'All devboxes and sandboxes';
+  let prefix = ROOT_COLLECTION_NAME;
   if (nestedPageType) {
     prefix = {
       'synced-sandboxes': 'Imported templates',

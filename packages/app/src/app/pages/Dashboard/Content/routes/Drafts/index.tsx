@@ -51,7 +51,7 @@ export const Drafts = () => {
       )}
 
       <Header
-        title="My drafts"
+        title="Drafts"
         activeTeam={activeTeam}
         showViewOptions={!isEmpty}
         showSortOptions={!isEmpty}
