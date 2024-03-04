@@ -185,7 +185,9 @@ export const RowItem: React.FC<RowItemProps> = ({
           >
             <Icon name={icon} />
           </Stack>
-          <Text truncate>{name}</Text>
+          <Text truncate lineHeight="16px">
+            {name}
+          </Text>
         </Link>
       )}
     </SidebarListAction>
