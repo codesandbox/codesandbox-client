@@ -60,6 +60,7 @@ export const GET_GITHUB_REPO = gql`
       pushedAt
       authorization
       private
+      appInstalled
       owner {
         id
         login

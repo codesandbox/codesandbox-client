@@ -1326,11 +1326,13 @@ export type LiveSessionHost = {
 /** Details about a repository as it appears on GitHub (Open API `repository`) */
 export type GithubRepo = {
   __typename?: 'GithubRepo';
+  /** Whether the GitHub App is installed for the repository */
+  appInstalled: Scalars['Boolean'];
   /** Current users's access to the GitHub repo */
   authorization: GithubRepoAuthorization;
   /** Full repository name, e.g. owner/name */
   fullName: Scalars['String'];
-  /** Integer ID */
+  /** Integer ID from GitHub */
   id: Scalars['ID'];
   /** Short repository name */
   name: Scalars['String'];
@@ -3142,6 +3144,7 @@ export type GetGithubRepoQuery = {
     pushedAt: string | null;
     authorization: GithubRepoAuthorization;
     private: boolean;
+    appInstalled: boolean;
     owner: {
       __typename?: 'GithubOrganization';
       id: string;

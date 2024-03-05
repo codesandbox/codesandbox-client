@@ -15,12 +15,16 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import {
   v2BranchUrl,
   v2DefaultBranchUrl,
+  githubAppInstallLink,
 } from '@codesandbox/common/lib/utils/url-generator';
+
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import styled from 'styled-components';
+import { useNewControlledWindow } from 'app/hooks/useNewControlledWindow';
 import { GithubRepoToImport } from '../../utils/types';
 import { useValidateRepoDestination } from '../../hooks/useValidateRepoDestination';
 import { AccountSelect } from '../components/AccountSelect';
@@ -75,6 +79,14 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
       );
     });
   }, []);
+
+  const { openNewWindow: openGHAppInstallWindow } = useNewControlledWindow({
+    url: githubAppInstallLink(),
+    trackEvents: {
+      open: 'Import repository - Configure - Click Install GH App',
+      close: 'Import repository - Configure - Close GH App Window',
+    },
+  });
 
   const handleImport = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -177,7 +189,7 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
       }}
       onSubmit={forkMode ? handleFork : handleImport}
     >
-      <Stack direction="vertical" gap={6}>
+      <Stack direction="vertical" gap={8}>
         <Text
           as="h2"
           css={{
@@ -339,6 +351,35 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
             </Stack>
           )}
         </Stack>
+
+        {repository.appInstalled ? (
+          <StyledGHAppCard gap={4}>
+            <Icon size={24} name="simpleCheck" color="#A3EC98" />
+            <Stack gap={1} direction="vertical">
+              <Text size={3}>GitHub App is installed</Text>
+              <Text size={3} color="#a6a6a6">
+                Each pull request on this repository gets an instant CodeSandbox
+                link.
+              </Text>
+            </Stack>
+          </StyledGHAppCard>
+        ) : (
+          <StyledGHAppInteractiveCard
+            gap={4}
+            as="button"
+            type="button"
+            onClick={openGHAppInstallWindow}
+          >
+            <Icon size={24} name="github" />
+            <Stack gap={1} direction="vertical">
+              <Text size={3}>Setup PR previews</Text>
+              <Text size={3} color="#a6a6a6">
+                Install our GitHub App to get CodeSandbox links on each pull
+                request.
+              </Text>
+            </Stack>
+          </StyledGHAppInteractiveCard>
+        )}
       </Stack>
 
       <Stack css={{ justifyContent: 'flex-end' }}>
@@ -378,3 +419,22 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
     </Element>
   );
 };
+
+const StyledGHAppCard = styled(Stack)`
+  background: #242424;
+  color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 4px;
+  border: 1px solid #242424;
+  max-width: 330px;
+  align-items: center;
+`;
+
+const StyledGHAppInteractiveCard = styled(StyledGHAppCard)`
+  cursor: pointer;
+  transition: background 0.125s ease-out;
+  border: 1px solid #343434;
+  &:hover {
+    background: #343434;
+  }
+`;
