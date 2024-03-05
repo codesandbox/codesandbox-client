@@ -202,6 +202,7 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
                     track('Import repository - Configure - Change GH Org');
                     setSelectedOrg(account);
                   }}
+                  variant="secondary"
                 />
               ) : (
                 <SkeletonText css={{ height: '32px', width: '100px' }} />
