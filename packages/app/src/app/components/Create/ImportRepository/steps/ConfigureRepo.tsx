@@ -18,7 +18,6 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
-import { GithubRepoAuthorization } from 'app/graphql/types';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
@@ -35,12 +34,12 @@ const COLORS = {
 
 type ConfigureRepoProps = {
   repository: GithubRepoToImport;
-  onCancel: () => void;
+  forkMode: boolean;
 };
 
 export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
   repository,
-  onCancel,
+  forkMode,
 }) => {
   const { activeTeamInfo, user } = useAppState();
   const effects = useEffects();
@@ -68,11 +67,6 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
     selectedOrg,
     repoName
   );
-
-  const forkMode =
-    githubAccounts.state === 'ready' &&
-    githubAccounts.personal.login !== repository.owner.login &&
-    repository.authorization === GithubRepoAuthorization.Read;
 
   useEffect(() => {
     effects.api.getVMSpecs().then(res => {

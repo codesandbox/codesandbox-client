@@ -62,7 +62,10 @@ export const SuggestionsRow = ({ page }: { page: string }) => {
 
   const handleClick = (repo: GithubRepoToImport) => {
     track(`Suggested repos - Select repository to import`);
-    actions.modalOpened({ modal: 'importRepository', repoToImport: repo });
+    actions.modalOpened({
+      modal: 'importRepository',
+      repoToImport: { owner: repo.owner.login, name: repo.name },
+    });
   };
 
   return (

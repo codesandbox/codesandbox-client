@@ -1,19 +1,12 @@
 import React from 'react';
 import { Element, Icon, Stack, Text } from '@codesandbox/components';
-import { GithubRepoAuthorization } from 'app/graphql/types';
-import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+
 import { GithubRepoToImport } from '../../utils/types';
 
-export const RepoInfo: React.FC<{ repository: GithubRepoToImport }> = ({
-  repository,
-}) => {
-  const githubAccounts = useGithubAccounts();
-
-  const forkMode =
-    githubAccounts.state === 'ready' &&
-    githubAccounts.personal.login !== repository.owner.login &&
-    repository.authorization === GithubRepoAuthorization.Read;
-
+export const RepoInfo: React.FC<{
+  repository: GithubRepoToImport;
+  forkMode: boolean;
+}> = ({ repository, forkMode }) => {
   return (
     <Stack direction="vertical" gap={6}>
       <Element

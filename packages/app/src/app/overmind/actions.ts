@@ -273,7 +273,7 @@ export const modalOpened = (
     modal: ModalName;
     message?: string;
     itemId?: string;
-    repoToImport?: GithubRepoToImport;
+    repoToImport?: { owner: string; name: string };
   }
 ) => {
   effects.analytics.track('Open Modal', { modal: props.modal });
@@ -288,7 +288,7 @@ export const modalOpened = (
   }
 
   if (props.modal === 'importRepository') {
-    state.repoToImport = props.repoToImport;
+    state.repoToImport = props.repoToImport || null;
   }
 };
 

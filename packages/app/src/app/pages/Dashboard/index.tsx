@@ -71,8 +71,12 @@ export const Dashboard: FunctionComponent = () => {
 
     const searchParams = new URLSearchParams(location.search);
 
-    if (JSON.parse(searchParams.get('import_repo'))) {
-      actions.modalOpened({ modal: 'importRepository' });
+    if (searchParams.get('import_repo')) {
+      const [owner, name] = searchParams.get('import_repo').split('/');
+      actions.modalOpened({
+        modal: 'importRepository',
+        repoToImport: owner && name ? { owner, name } : undefined,
+      });
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {
       actions.modalOpened({ modal: 'createSandbox' });
     } else if (JSON.parse(searchParams.get('create_devbox'))) {

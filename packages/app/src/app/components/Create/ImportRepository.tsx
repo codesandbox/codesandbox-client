@@ -1,10 +1,11 @@
 import {
   Text,
   Stack,
+  Loading,
   IconButton,
   ThemeProvider,
 } from '@codesandbox/components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTabState } from 'reakit/Tab';
 
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -13,6 +14,7 @@ import { ModalContentProps } from 'app/pages/common/Modals';
 import { SignIn } from 'app/pages/SignIn/SignIn';
 import { useAppState } from 'app/overmind';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
+import { GithubRepoAuthorization } from 'app/graphql/types';
 import {
   Tab,
   Tabs,
@@ -32,12 +34,13 @@ import { SearchInOrganizations } from './ImportRepository/steps/SearchInOrganiza
 import { ConfigureRepo } from './ImportRepository/steps/ConfigureRepo';
 import { FindByURL } from './ImportRepository/steps/FindByURL';
 import { StartFromTemplate } from './ImportRepository/steps/StartFromTemplate';
+import { useGithubRepo } from './hooks/useGithubRepo';
 
-type View = 'signin' | 'permissions' | 'select' | 'config';
+type View = 'signin' | 'permissions' | 'select' | 'fetching' | 'config';
 
 export const ImportRepository: React.FC<
-  ModalContentProps & { repoToImport: GithubRepoToImport }
-> = ({ repoToImport }) => {
+  ModalContentProps & { preSelectedRepo?: { owner: string; name: string } }
+> = ({ preSelectedRepo }) => {
   const { hasLogIn } = useAppState();
   const {
     restrictsPublicRepos,
@@ -52,6 +55,18 @@ export const ImportRepository: React.FC<
     selectedId: 'search-in-org',
   });
 
+  const prefetchedGithubRepo = useGithubRepo({
+    owner: preSelectedRepo?.owner,
+    name: preSelectedRepo?.name,
+    shouldFetch: !!preSelectedRepo,
+  });
+
+  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>(
+    prefetchedGithubRepo.state === 'ready'
+      ? prefetchedGithubRepo.data
+      : undefined
+  );
+
   const [viewState, setViewState] = useState<View>(() => {
     if (!hasLogIn) {
       return 'signin';
@@ -61,16 +76,33 @@ export const ImportRepository: React.FC<
       return 'permissions';
     }
 
-    if (repoToImport) {
+    if (preSelectedRepo) {
+      if (!selectedRepo) {
+        // If the repo was not yet fetched, there should be a brief loading state before the final step
+        return 'fetching';
+      }
       return 'config';
     }
 
     return 'select';
   });
 
-  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>(
-    repoToImport
-  );
+  const forkMode =
+    viewState === 'config' &&
+    selectedRepo.authorization === GithubRepoAuthorization.Read;
+
+  useEffect(() => {
+    if (prefetchedGithubRepo.state === 'ready') {
+      setSelectedRepo(prefetchedGithubRepo.data);
+      setViewState('config');
+      return;
+    }
+
+    if (prefetchedGithubRepo.state === 'error') {
+      setSelectedRepo(undefined);
+      setViewState('select');
+    }
+  }, [prefetchedGithubRepo]);
 
   const selectGithubRepo = (repo: GithubRepoToImport) => {
     setSelectedRepo(repo);
@@ -98,7 +130,7 @@ export const ImportRepository: React.FC<
             {viewState === 'select' && <Text size={4}>New repository</Text>}
 
             {/** Checks for repoToImport to not show the back button if you didn't pass through selection */}
-            {viewState === 'config' && !repoToImport && (
+            {viewState === 'config' && !preSelectedRepo && (
               <IconButton
                 name="arrowDown"
                 variant="square"
@@ -176,19 +208,19 @@ export const ImportRepository: React.FC<
               </ModalContent>
             </>
           )}
+          {viewState === 'fetching' && (
+            <Stack css={{ width: '100%' }} align="center" justify="center">
+              <Loading size={12} />
+            </Stack>
+          )}
           {viewState === 'config' && (
             <>
               <ModalSidebar>
-                <RepoInfo repository={selectedRepo} />
+                <RepoInfo repository={selectedRepo} forkMode={forkMode} />
               </ModalSidebar>
 
               <ModalContent>
-                <ConfigureRepo
-                  repository={selectedRepo}
-                  onCancel={() => {
-                    setViewState('select');
-                  }}
-                />
+                <ConfigureRepo repository={selectedRepo} forkMode={forkMode} />
               </ModalContent>
             </>
           )}

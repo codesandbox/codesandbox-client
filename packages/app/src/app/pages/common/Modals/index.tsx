@@ -264,7 +264,7 @@ const Modals: FunctionComponent = () => {
   if (currentModal === 'importRepository') {
     modal.props = {
       ...modal.props,
-      repoToImport,
+      preSelectedRepo: repoToImport,
     };
   }
 
