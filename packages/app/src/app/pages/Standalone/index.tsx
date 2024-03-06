@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 import { CreateBox } from 'app/components/Create/CreateBox';
 import { ImportRepository } from 'app/components/Create/ImportRepository';
 import { GenericCreate } from 'app/components/Create/GenericCreate';
+
+import { CreateRepoFiles } from 'app/components/Create/CreateRepoFiles';
 import { Preferences } from '../common/Modals/PreferencesModal';
 import { NotFound } from '../common/NotFound';
 
@@ -15,6 +17,7 @@ const COMPONENT_MAP = {
   createSandbox: () => <CreateBox type="sandbox" isModal={false} />,
   createDevbox: () => <CreateBox type="devbox" isModal={false} />,
   import: ImportRepository,
+  'create-repo-files': CreateRepoFiles,
 };
 
 export const StandalonePage = withTheme(({ theme }) => {

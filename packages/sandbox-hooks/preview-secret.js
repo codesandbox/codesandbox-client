@@ -22,7 +22,7 @@ export const setPreviewSecret = secret => {
     cookieValue !== secret
   ) {
     if (secret) {
-      document.cookie = `${PREVIEW_SECRET_COOKIE_NAME}=${secret};samesite=none;secure;`;
+      document.cookie = `${PREVIEW_SECRET_COOKIE_NAME}=${secret};samesite=none;secure;partitioned;`;
 
       setTimeout(() => {
         location.reload();

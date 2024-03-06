@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import { Query } from 'react-apollo';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
+import { ROOT_COLLECTION_NAME } from 'app/pages/Dashboard/Sidebar';
 import { Container } from './elements';
 import { DropFolderEntry } from './FolderEntry';
 import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';
@@ -93,7 +94,7 @@ class SandboxesItemComponent extends React.Component<
                   url="/"
                   folders={folders}
                   foldersByPath={foldersByPath}
-                  name="All devboxes and sandboxes"
+                  name={ROOT_COLLECTION_NAME}
                   disabled={disabledMessage}
                   open
                   onSelect={onSelect}

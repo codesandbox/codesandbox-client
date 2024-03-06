@@ -1,10 +1,14 @@
 import React from 'react';
-import { Container, Avatar, Name } from './elements';
+import { Container, Avatar, PrimaryName, AvatarPlaceholder } from './elements';
 
 const AvatarBlock = ({ url, name }) => (
   <Container>
-    <Avatar src={url} />
-    <Name>{name}</Name>
+    {url ? (
+      <Avatar src={url} />
+    ) : (
+      <AvatarPlaceholder>{name.charAt(0).toUpperCase()}</AvatarPlaceholder>
+    )}
+    <PrimaryName>{name}</PrimaryName>
   </Container>
 );
 

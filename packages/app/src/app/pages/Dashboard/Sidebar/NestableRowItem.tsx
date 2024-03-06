@@ -202,7 +202,7 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
         path={path}
         folderPath={folderPath}
         page="sandboxes"
-        icon={nestingLevel === 0 ? 'sandbox' : 'folder'}
+        icon="folder"
         nestingLevel={nestingLevel}
         setFoldersVisibility={setFoldersVisibility}
       >
@@ -232,6 +232,12 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
             ...linkStyles,
             paddingLeft: nestingLevel * 16,
           }}
+          css={{
+            '&:focus-visible': {
+              outlineOffset: '-1px',
+              outline: '1px solid #ac9cff',
+            },
+          }}
         >
           {subFolders.length ? (
             <IconButton
@@ -243,8 +249,8 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 event.stopPropagation();
               }}
               css={{
-                width: '16px',
-                height: '100%',
+                width: '24px',
+                height: nestingLevel === 0 ? '36px' : '32px',
                 borderRadius: 0,
                 svg: {
                   transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
@@ -253,19 +259,10 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
               }}
             />
           ) : (
-            <Element as="span" css={{ width: '16px', flexShrink: 0 }} />
+            <Element as="span" css={{ width: '24px', flexShrink: 0 }} />
           )}
 
-          <Stack
-            align="center"
-            gap={1}
-            css={{
-              paddingLeft: 0,
-              paddingRight: 0,
-              marginRight: '0',
-              width: '96%',
-            }}
-          >
+          <Stack align="center" gap={1} css={{ maxWidth: '96%' }}>
             <Stack
               justify="center"
               align="center"
@@ -274,10 +271,7 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 marginRight: '8px',
               }}
             >
-              <Icon
-                name={nestingLevel === 0 ? 'sandbox' : 'folder'}
-                size={16}
-              />
+              <Icon name="folder" size={16} />
             </Stack>
 
             {isRenaming || isNewFolder ? (

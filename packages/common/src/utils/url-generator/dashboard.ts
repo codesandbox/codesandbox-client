@@ -111,6 +111,9 @@ export const portalPermissions = (teamId?: string | null) =>
 export const portalVMSettings = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${portalBaseUrl()}/vm_settings`, teamId);
 
+export const portalVMUsage = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${portalBaseUrl()}/usage`, teamId);
+
 // This is used separately for checkout endpoints where the success/cancel paths need to be relative
 export const portalRelativePath = (teamId?: string | null) =>
   appendTeamIdQueryParam(`/t/overview`, teamId);

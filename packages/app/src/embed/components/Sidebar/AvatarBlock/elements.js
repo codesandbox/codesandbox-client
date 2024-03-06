@@ -6,22 +6,37 @@ export const Container = styled.div(
     display: 'flex',
     alignItems: 'center',
     marginBottom: 4,
+    marginTop: 2,
   })
 );
 
 export const Avatar = styled.img(
   css({
     size: '24px',
-    borderRadius: '2px',
+    borderRadius: '50%',
     border: '1px solid',
     borderColor: 'grays.400',
   })
 );
 
-export const Name = styled.span(
+export const AvatarPlaceholder = styled.div(
+  css({
+    width: 24,
+    height: 24,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'medium',
+    borderRadius: '50%',
+    backgroundColor: 'grays.600',
+  })
+);
+
+export const PrimaryName = styled.span(
   css({
     display: 'inline-block',
     fontSize: 2,
     marginLeft: 2,
+    marginBottom: '1px',
   })
 );

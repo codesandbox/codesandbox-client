@@ -49,6 +49,7 @@ export const Header = ({
       justify="space-between"
       css={{
         width: `calc(100% - ${2 * GUTTER}px)`,
+        paddingRight: GUTTER / 2,
         maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
         margin: '0 auto', // Negative margin top to align visually w/ the sidebar
       }}
@@ -66,7 +67,7 @@ export const Header = ({
           />
         )}
       </Stack>
-      <Stack gap={4} align="center">
+      <Stack gap={1} align="center">
         {location.pathname.includes('/sandboxes') && (
           <Button onClick={createNewFolder} variant="ghost" autoWidth>
             <Icon
@@ -122,7 +123,7 @@ export const Header = ({
             </Button>
           )}
 
-        <Stack gap={4}>
+        <Stack gap={1}>
           {showSortOptions && <SortOptions />}
           {showViewOptions && <ViewOptions />}
         </Stack>
