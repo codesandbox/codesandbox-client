@@ -57,7 +57,6 @@ import {
   PreviewConvertToUsageBillingMutationVariables,
   ConvertToUsageBillingMutation,
   ConvertToUsageBillingMutationVariables,
-  RootMutationTypeUpdateProjectVmTierArgs,
   UpdateProjectVmTierMutationVariables,
   UpdateProjectVmTierMutation,
 } from 'app/graphql/types';

@@ -1564,7 +1564,7 @@ export const importGitHubRepository = async (
   const { activeTeam } = state;
 
   if (!activeTeam) {
-    return undefined;
+    return { success: false };
   }
 
   try {

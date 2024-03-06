@@ -29,7 +29,7 @@ export const useGithubAccounts = (): GithubAccountsReturnType => {
     };
   }
 
-  if (error) {
+  if (error || !data?.me) {
     return {
       state: 'error',
       error: error.message,
