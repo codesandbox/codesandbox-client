@@ -91,6 +91,15 @@ export const setGroup = async (group: string, value: string | string[]) => {
   debug('[Amplitude] Grouping', group, value);
 };
 
+export const setOptOut = (optOut: boolean) => {
+  if (!amplitudeInitialized) {
+    return;
+  }
+
+  amplitude.setOptOut(optOut);
+  debug('[Amplitude] setOptOut', optOut);
+};
+
 const getLastTimeEventSent = () => {
   try {
     const lastTime = localStorage.getItem('csb-last-event-sent');

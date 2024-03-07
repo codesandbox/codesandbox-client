@@ -8,6 +8,7 @@ import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { Debug } from 'app/components/Debug';
+import { useCookieConsent } from '../hooks/useCookieConsent';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
@@ -138,6 +139,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const { appUnmounted } = useActions();
   const { modals, activeTeamInfo, environment } = useAppState();
+  useCookieConsent(environment.amplitudeKey);
 
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
