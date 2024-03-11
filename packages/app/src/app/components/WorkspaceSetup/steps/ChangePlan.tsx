@@ -56,7 +56,6 @@ export const ChangePlan: React.FC<StepProps> = ({
               Pro plan
             </Text>
             <Text>{checkout.totalCredits} VM credits</Text>
-            <Text>{checkout.totalSandboxes} Sandboxes</Text>
           </Stack>
           <Text size={6} color="#e5e5e5">
             ${checkout.totalPrice} / month

@@ -180,7 +180,7 @@ export const Plans: React.FC<StepProps> = ({
                 <PlanFeatures
                   itemIcon="plus"
                   heading="Add-ons"
-                  features={['More VM credits', 'More Sandboxes']}
+                  features={['More VM credits']}
                 />
               </StyledCard>
               <StyledCard

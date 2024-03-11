@@ -6,10 +6,7 @@ import styled from 'styled-components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useLocation } from 'react-router-dom';
-import {
-  CreditAddon,
-  SandboxAddon,
-} from 'app/overmind/namespaces/checkout/types';
+import { CreditAddon } from 'app/overmind/namespaces/checkout/types';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -22,7 +19,7 @@ export const Addons: React.FC<StepProps> = ({
   numberOfSteps,
 }) => {
   const {
-    checkout: { availableCreditAddons, availableSandboxAddons },
+    checkout: { availableCreditAddons },
   } = useAppState();
   const { isPro } = useWorkspaceSubscription();
   const { checkout } = useActions();
@@ -95,44 +92,6 @@ export const Addons: React.FC<StepProps> = ({
           </Element>
         </Stack>
 
-        <Stack direction="vertical" gap={8}>
-          <Stack direction="vertical" gap={2}>
-            <Text color="#e5e5e5" size={6}>
-              Would you like to add more Sandboxes to your plan?
-            </Text>
-            <Text>
-              Sandboxes are powered by your browser and don&apos;t require
-              credits to run.{' '}
-              <Text
-                css={{ textDecoration: 'none', color: '#DCF76E' }}
-                as="a"
-                target="_blank"
-                href="https://codesandbox.io/docs/learn/plans/ubb"
-              >
-                Learn more
-              </Text>
-            </Text>
-          </Stack>
-          <Element
-            css={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              width: '100%',
-              gap: '16px',
-              '@media (max-width: 1460px)': {
-                gridTemplateColumns: '1fr 1fr',
-              },
-              '@media (max-width: 1170px)': {
-                gridTemplateColumns: '1fr',
-              },
-            }}
-          >
-            {Object.values(availableSandboxAddons).map(addon => (
-              <SandboxAddonButton key={addon.id} addon={addon} />
-            ))}
-          </Element>
-        </Stack>
-
         <Button autoWidth size="large" onClick={handleSubmit}>
           Next
         </Button>
@@ -175,40 +134,7 @@ const CreditAddonButton = ({ addon }: { addon: CreditAddon }) => {
   );
 };
 
-const SandboxAddonButton = ({ addon }: { addon: SandboxAddon }) => {
-  const actions = useActions();
-  const { isPro } = useWorkspaceSubscription();
-  const { pathname } = useLocation();
-  const isUpgrading = pathname.includes('upgrade');
-
-  return (
-    <StyledAddonButton
-      onClick={() => {
-        track('Checkout - Click on addon', {
-          from: isUpgrading ? 'upgrade' : 'create-workspace',
-          currentPlan: isPro ? 'pro' : 'free',
-          addonId: addon.id,
-        });
-        actions.checkout.addSandboxPackage(addon);
-      }}
-    >
-      <Stack
-        css={{
-          width: '100%',
-          justifyContent: 'space-between',
-        }}
-        gap={4}
-      >
-        <Stack direction="vertical">
-          <Text color="#e5e5e5">{addon.sandboxes} Sandboxes</Text>
-        </Stack>
-        <StyledPrice addon={addon} />
-      </Stack>
-    </StyledAddonButton>
-  );
-};
-
-const StyledPrice = ({ addon }: { addon: CreditAddon | SandboxAddon }) => (
+const StyledPrice = ({ addon }: { addon: CreditAddon }) => (
   <Stack direction="vertical" align="flex-end">
     <Text color="#e5e5e5" css={{ textWrap: 'nowrap' }}>
       {addon.fullPrice && (
