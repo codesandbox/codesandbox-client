@@ -18,10 +18,8 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
   const {
     selectedPlan,
     creditAddons,
-    sandboxAddons,
     totalCredits,
     totalPrice,
-    totalSandboxes,
     spendingLimit,
     availableBasePlans,
   } = checkout;
@@ -56,7 +54,6 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
           <Stack direction="vertical">
             <Text color="#fff">{basePlan.name} plan base</Text>
             <Text>{basePlan.credits} VM credits</Text>
-            <Text>{basePlan.sandboxes} sandboxes</Text>
           </Stack>
           <Text color="#fff">${basePlan.price}</Text>
         </Stack>
@@ -97,42 +94,12 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
             </Stack>
           </AnimatedLineItem>
         ))}
-
-        {sandboxAddons.map(item => (
-          <AnimatedLineItem
-            direction="horizontal"
-            key={item.addon.id}
-            align="center"
-            justify="space-between"
-            gap={2}
-          >
-            <Text color="#fff">{item.addon.sandboxes} sandboxes</Text>
-            <Stack align="center">
-              {allowChanges && (
-                <QuantityCounter
-                  quantity={item.quantity}
-                  onIncrement={() =>
-                    actions.checkout.addSandboxPackage(item.addon)
-                  }
-                  onDecrement={() =>
-                    actions.checkout.removeSandboxPackage(item.addon.id)
-                  }
-                />
-              )}
-
-              <Text color="#fff" css={{ width: '48px', textAlign: 'right' }}>
-                ${item.quantity * item.addon.price}
-              </Text>
-            </Stack>
-          </AnimatedLineItem>
-        ))}
       </Stack>
 
       <Stack justify="space-between">
         <Stack direction="vertical">
           <Text color="#fff">Total cost per month</Text>
           <Text>{totalCredits} VM credits</Text>
-          <Text>{totalSandboxes} sandboxes</Text>
         </Stack>
 
         <Text color="#fff">${totalPrice}</Text>

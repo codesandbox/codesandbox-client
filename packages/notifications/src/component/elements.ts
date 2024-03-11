@@ -11,12 +11,15 @@ export const NotificationContainer = styled.div`
 
 export const StyledCrossIcon = styled(CrossIcon)`
   ${({ theme }) => css`
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     transition: 0.3s ease color;
     cursor: pointer;
-    color: ${theme.colors.grays[500]};
+    color: ${theme.colors.grays[400]};
 
     &:hover {
-      color: ${theme.colors.grays[400]};
+      color: ${theme.colors.grays[300]};
     }
   `}
 `;

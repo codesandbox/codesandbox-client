@@ -11,7 +11,11 @@ import { RowItem } from './RowItem';
 export const ExpandableReposRowItem = () => {
   const { activeTeam, sidebar } = useAppState();
 
-  if (sidebar.repositories.length === 0) {
+  if (
+    !activeTeam ||
+    !sidebar[activeTeam] ||
+    sidebar[activeTeam].repositories.length === 0
+  ) {
     return (
       <RowItem
         name="All repositories"
@@ -26,7 +30,7 @@ export const ExpandableReposRowItem = () => {
     <RowItemWithExpandableRepos
       key={activeTeam} // Remount component on active workspace change to reset expanded state
       activeTeam={activeTeam}
-      repositories={sidebar.repositories}
+      repositories={sidebar[activeTeam].repositories}
     />
   );
 };
