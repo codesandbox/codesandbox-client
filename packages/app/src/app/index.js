@@ -3,16 +3,19 @@ import '@codesandbox/common/lib/global.css';
 import 'normalize.css';
 
 import './split-pane.css';
+import './utils/cookieConsent/cookieConsentTheme.css';
+import 'vanilla-cookieconsent/dist/cookieconsent.css';
 
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import theme from '@codesandbox/common/lib/theme';
+import { logError } from '@codesandbox/common/lib/utils/analytics';
 import {
-  initializeAnalytics,
-  logError,
-} from '@codesandbox/common/lib/utils/analytics';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+  initialize as initializeSentry,
+  logBreadcrumb,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
+
 import _debug from '@codesandbox/common/lib/utils/debug';
 import {
   convertTypeToStatus,
@@ -94,10 +97,7 @@ if (process.env.NODE_ENV === 'production') {
   ];
 
   try {
-    initializeAnalytics({
-      sentryDSN: window._env_?.SENTRY_DSN,
-      amplitudeApiKey: window._env_?.AMPLITUDE_API_KEY,
-    });
+    initializeSentry(window._env_?.SENTRY_DSN);
 
     overmind.eventHub.on('action:start', event => {
       if (ignoredOvermindActions.includes(event.actionName)) {

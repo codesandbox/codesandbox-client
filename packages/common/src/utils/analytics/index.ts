@@ -18,11 +18,6 @@ export async function logError(err: Error) {
   if (window.console && console.error) console.error(err);
 }
 
-export async function initializeAnalytics({ sentryDSN, amplitudeApiKey }) {
-  sentry.initialize(sentryDSN);
-  amplitude.init(amplitudeApiKey);
-}
-
 // Used to configure stuff?
 export async function identify(key: string, value: any) {
   if (!DO_NOT_TRACK_ENABLED) {
