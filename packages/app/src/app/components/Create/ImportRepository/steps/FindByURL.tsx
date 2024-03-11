@@ -22,7 +22,7 @@ export const FindByURL: React.FC<FindByURLProps> = ({ onSelected }) => {
   const [shouldValidateRepo, setShouldValidateRepo] = useState(false);
   const { sidebar, activeTeam } = useAppState();
 
-  const workspaceRepos = sidebar.repositories;
+  const workspaceRepos = sidebar[activeTeam]?.repositories || [];
 
   const githubRepo = useGithubRepo({
     owner: parsedInput?.owner,

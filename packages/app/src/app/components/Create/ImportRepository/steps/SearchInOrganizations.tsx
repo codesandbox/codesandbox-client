@@ -24,9 +24,9 @@ export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
   onSelected,
   onFindByURLClicked,
 }) => {
-  const { activeTeamInfo, sidebar } = useAppState();
+  const { activeTeamInfo, sidebar, activeTeam } = useAppState();
 
-  const workspaceRepos = sidebar.repositories;
+  const workspaceRepos = sidebar[activeTeam]?.repositories || [];
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
   const githubAccounts = useGithubAccounts();
