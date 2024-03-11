@@ -82,6 +82,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const { isPrimarySpace } = useWorkspaceAuthorization();
 
+  const showTemplates = state.activeTeam
+    ? state.sidebar[state.activeTeam]?.hasTemplates
+    : false;
+  const showSyncedSandboxes = state.activeTeam
+    ? state.sidebar[state.activeTeam]?.hasSyncedSandboxes
+    : false;
+
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
       <Stack
@@ -220,7 +227,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             ]}
           />
 
-          {state.sidebar.hasTemplates ? (
+          {showTemplates ? (
             <RowItem
               name="Templates"
               page="templates"
@@ -229,7 +236,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           ) : null}
 
-          {state.sidebar.hasSyncedSandboxes ? (
+          {showSyncedSandboxes ? (
             <RowItem
               name="Imported templates"
               page="synced-sandboxes"

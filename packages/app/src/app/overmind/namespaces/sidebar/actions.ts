@@ -25,7 +25,7 @@ export const getSidebarData = async (
     const hasSyncedSandboxes = sandboxes && sandboxes.length > 0;
     const hasTemplates = templates && templates.length > 0;
 
-    state.sidebar = {
+    state.sidebar[teamId] = {
       hasSyncedSandboxes,
       hasTemplates,
       repositories,

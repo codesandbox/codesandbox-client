@@ -625,6 +625,10 @@ export const makeTemplates = async (
     isOnRecentPage?: boolean;
   }
 ) => {
+  if (!state.activeTeam) {
+    return;
+  }
+
   effects.analytics.track('Dashboard - Make Template', {
     dashboardVersion: 2,
   });
@@ -642,7 +646,8 @@ export const makeTemplates = async (
       actions.dashboard.internal.deleteSandboxesFromState({ ids });
     }
 
-    const hadTemplatesBeforeFetching = state.sidebar.hasTemplates;
+    const hadTemplatesBeforeFetching =
+      state.sidebar[state.activeTeam]?.hasTemplates || false;
     await actions.sidebar.getSidebarData(state.activeTeam || undefined);
 
     if (!hadTemplatesBeforeFetching) {
@@ -1531,9 +1536,11 @@ export const removeRepositoryFromTeam = async (
         return branchRepo.owner === owner && branchRepo.name === name;
       }) ?? [];
 
-    sidebar.repositories = sidebar.repositories.filter(
-      r => r.owner !== owner || r.name !== name
-    );
+    if (state.sidebar[activeTeam]) {
+      sidebar[activeTeam].repositories = sidebar[
+        activeTeam
+      ].repositories.filter(r => r.owner !== owner || r.name !== name);
+    }
 
     // Refetch start page data in the background to fill the remaining slots
     if (page === 'recent') {
