@@ -42,6 +42,7 @@ export const initializeNewUser = async ({
   }
 
   actions.internal.showUserSurveyIfNeeded();
+  actions.internal.showUpdatedToSIfNeeded();
   await effects.live.getSocket();
   actions.userNotifications.internal.initialize();
   actions.internal.setStoredSettings();
@@ -144,6 +145,41 @@ export const showUserSurveyIfNeeded = ({
       },
     });
   }
+};
+
+export const showUpdatedToSIfNeeded = ({ state, effects }: Context) => {
+  const registrationDate = state.user?.insertedAt
+    ? new Date(state.user.insertedAt)
+    : new Date();
+
+  if (registrationDate >= new Date('2024-03-10')) {
+    // This means that the user has registered before we updated the ToS, and we need to notify
+    // them that the ToS has changed.
+    return;
+  }
+
+  const hasShownToS = effects.browser.storage.get('TOS_1_SHOWN');
+  if (hasShownToS) {
+    return;
+  }
+
+  effects.browser.storage.set('TOS_1_SHOWN', true);
+
+  effects.notificationToast.add({
+    title: 'Terms of Service Updated',
+    message: "We've updated our Terms of Service.",
+    status: NotificationStatus.NOTICE,
+    sticky: true,
+
+    actions: {
+      primary: {
+        label: 'Open Terms of Service',
+        run: () => {
+          window.open('https://codesandbox.io/legal/terms', '_blank');
+        },
+      },
+    },
+  });
 };
 
 /**
