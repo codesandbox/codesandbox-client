@@ -1,7 +1,6 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
 import {
   CreditAddonType,
-  SandboxAddonType,
   VMType,
 } from 'app/overmind/namespaces/checkout/types';
 
@@ -68,7 +67,7 @@ export type VMTier = {
 
 export type APIPricingResult = {
   addons: Record<
-    CreditAddonType | SandboxAddonType,
+    CreditAddonType,
     { credits: number; cost_month: number; sandboxes: number }
   >;
   base: {
