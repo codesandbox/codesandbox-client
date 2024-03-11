@@ -44,7 +44,7 @@ export const PRO_PLAN: PricingPlan = {
     '50 GB storage per VM',
     'VMs up to 16 vCPUs + 32 GB RAM',
     'Unlimited Devboxes and repositories',
-    'Unlimited shareable Sandboxes',
+    'Unlimited Sandboxes',
     'Unlimited personal drafts',
     '20 members',
     'Access on-demand VM credits for $0.18 per hour',
