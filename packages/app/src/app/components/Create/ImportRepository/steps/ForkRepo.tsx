@@ -224,7 +224,7 @@ export const ForkRepo: React.FC<ForkRepoProps> = ({
           <Select
             css={{ height: '32px' }}
             value={selectedTier}
-            disabled={availableTiers.length === 0}
+            disabled
             onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
           >
             {availableTiers.map(t => (
@@ -234,14 +234,13 @@ export const ForkRepo: React.FC<ForkRepoProps> = ({
               </option>
             ))}
           </Select>
-          {isFree && (
-            <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
-              <Icon name="circleBang" />
-              <Text size={3}>
-                Better specs are available for Pro workspaces.
-              </Text>
-            </Stack>
-          )}
+          <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
+            <Icon name="circleBang" />
+            <Text size={3}>
+              You can only change the specs after the fork is completed, from
+              within the editor.
+            </Text>
+          </Stack>
         </Stack>
       </Stack>
 
