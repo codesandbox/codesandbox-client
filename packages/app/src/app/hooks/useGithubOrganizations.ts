@@ -7,7 +7,7 @@ import {
 } from 'app/graphql/types';
 import { GET_GITHUB_ACCOUNTS } from '../components/Create/utils/queries';
 
-type GithubAccountsReturnType =
+export type GithubAccounts =
   | { state: 'error'; error: string }
   | { state: 'loading' }
   | {
@@ -17,7 +17,7 @@ type GithubAccountsReturnType =
       inferred?: OrganizationFragment;
     };
 
-export const useGithubAccounts = (): GithubAccountsReturnType => {
+export const useGithubAccounts = (): GithubAccounts => {
   const { data, error, loading } = useQuery<
     GetGithubAccountsQuery,
     GetGithubAccountsQueryVariables

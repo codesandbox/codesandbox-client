@@ -115,6 +115,7 @@ export const GET_GITHUB_ACCOUNT_REPOS = gql`
         fullName
         name
         private
+        appInstalled
         updatedAt
         pushedAt
         owner {
@@ -143,6 +144,7 @@ export const GET_GITHUB_ORGANIZATION_REPOS = gql`
       fullName
       name
       private
+      appInstalled
       updatedAt
       pushedAt
       owner {

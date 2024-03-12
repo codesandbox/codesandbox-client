@@ -12,9 +12,10 @@ import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { SignIn } from 'app/pages/SignIn/SignIn';
-import { useAppState } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { GithubRepoAuthorization } from 'app/graphql/types';
+import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import {
   Tab,
   Tabs,
@@ -34,7 +35,6 @@ import { SearchInOrganizations } from './ImportRepository/steps/SearchInOrganiza
 import { ConfigureRepo } from './ImportRepository/steps/ConfigureRepo';
 import { FindByURL } from './ImportRepository/steps/FindByURL';
 import { StartFromTemplate } from './ImportRepository/steps/StartFromTemplate';
-import { useGithubRepo } from './hooks/useGithubRepo';
 
 type View = 'signin' | 'permissions' | 'select' | 'fetching' | 'config';
 
@@ -42,10 +42,12 @@ export const ImportRepository: React.FC<
   ModalContentProps & { preSelectedRepo?: { owner: string; name: string } }
 > = ({ preSelectedRepo }) => {
   const { hasLogIn } = useAppState();
+  const effects = useEffects();
   const {
     restrictsPublicRepos,
     restrictsPrivateRepos,
   } = useGitHubPermissions();
+  const githubAccounts = useGithubAccounts();
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
@@ -55,16 +57,8 @@ export const ImportRepository: React.FC<
     selectedId: 'search-in-org',
   });
 
-  const prefetchedGithubRepo = useGithubRepo({
-    owner: preSelectedRepo?.owner,
-    name: preSelectedRepo?.name,
-    shouldFetch: !!preSelectedRepo,
-  });
-
-  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>(
-    prefetchedGithubRepo.state === 'ready'
-      ? prefetchedGithubRepo.data
-      : undefined
+  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport | null>(
+    null
   );
 
   const [viewState, setViewState] = useState<View>(() => {
@@ -87,22 +81,34 @@ export const ImportRepository: React.FC<
     return 'select';
   });
 
+  // Fork mode if selected repo is not on your personal gh space and you have read access
   const forkMode =
-    viewState === 'config' &&
-    selectedRepo.authorization === GithubRepoAuthorization.Read;
+    selectedRepo?.authorization === GithubRepoAuthorization.Read &&
+    githubAccounts.state === 'ready' &&
+    githubAccounts.personal.login !== selectedRepo?.owner.login;
 
   useEffect(() => {
-    if (prefetchedGithubRepo.state === 'ready') {
-      setSelectedRepo(prefetchedGithubRepo.data);
-      setViewState('config');
-      return;
+    if (preSelectedRepo) {
+      handleFetchGithubRepo(preSelectedRepo);
     }
+  }, [preSelectedRepo]);
 
-    if (prefetchedGithubRepo.state === 'error') {
-      setSelectedRepo(undefined);
+  const handleFetchGithubRepo = async (repo: {
+    owner: string;
+    name: string;
+  }) => {
+    try {
+      const data = await effects.gql.queries.getGithubRepository({
+        owner: repo.owner,
+        name: repo.name,
+      });
+      setSelectedRepo(data.githubRepo);
+      setViewState('config');
+    } catch {
+      setSelectedRepo(null);
       setViewState('select');
     }
-  }, [prefetchedGithubRepo]);
+  };
 
   const selectGithubRepo = (repo: GithubRepoToImport) => {
     setSelectedRepo(repo);
@@ -195,6 +201,7 @@ export const ImportRepository: React.FC<
               <ModalContent>
                 <Panel tab={tabState} id="search-in-org">
                   <SearchInOrganizations
+                    githubAccounts={githubAccounts}
                     onSelected={selectGithubRepo}
                     onFindByURLClicked={() => tabState.select('find-by-url')}
                   />
@@ -220,7 +227,12 @@ export const ImportRepository: React.FC<
               </ModalSidebar>
 
               <ModalContent>
-                <ConfigureRepo repository={selectedRepo} forkMode={forkMode} />
+                <ConfigureRepo
+                  githubAccounts={githubAccounts}
+                  repository={selectedRepo}
+                  forkMode={forkMode}
+                  onRefetchGithubRepo={handleFetchGithubRepo}
+                />
               </ModalContent>
             </>
           )}

@@ -67,21 +67,19 @@ export const useGitHubAccountRepositories = ({
     };
   }
 
-  const accountData = account?.data?.me?.githubRepos;
-  const organizationData = organization?.data?.githubOrganizationRepos.sort(
-    (a, b) => (a.pushedAt > b.pushedAt ? -1 : 1) // Sort by last pushed
-  );
-  const isLoading = account.loading || organization.loading;
-
   if (
-    (typeof accountData === 'undefined' &&
-      typeof organizationData === 'undefined') ||
-    isLoading
+    (accountType === 'personal' && account.loading) ||
+    (accountType === 'organization' && organization.loading)
   ) {
     return {
       state: 'loading',
     };
   }
+
+  const accountData = account?.data?.me?.githubRepos;
+  const organizationData = organization?.data?.githubOrganizationRepos.sort(
+    (a, b) => (a.pushedAt > b.pushedAt ? -1 : 1) // Sort by last pushed
+  );
 
   return {
     state: 'ready',

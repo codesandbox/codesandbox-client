@@ -18,14 +18,14 @@ import {
   githubAppInstallLink,
 } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+import { GithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import styled from 'styled-components';
 import { useNewControlledWindow } from 'app/hooks/useNewControlledWindow';
-import { GithubRepoToImport } from '../../utils/types';
+import { GithubRepoToImport, RepoDefinition } from '../../utils/types';
 import { useValidateRepoDestination } from '../../hooks/useValidateRepoDestination';
 import { AccountSelect } from '../components/AccountSelect';
 import { useRepositoryWorkspaces } from '../../hooks/useRepositoryWorkspaces';
@@ -39,11 +39,15 @@ const COLORS = {
 type ConfigureRepoProps = {
   repository: GithubRepoToImport;
   forkMode: boolean;
+  githubAccounts: GithubAccounts;
+  onRefetchGithubRepo: (repo: RepoDefinition) => void;
 };
 
 export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
   repository,
   forkMode,
+  githubAccounts,
+  onRefetchGithubRepo,
 }) => {
   const { activeTeamInfo, user } = useAppState();
   const effects = useEffects();
@@ -62,7 +66,6 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
   );
 
   // Fork related fields
-  const githubAccounts = useGithubAccounts();
   const [isImporting, setIsImporting] = React.useState<boolean>(false);
   const [repoName, setRepoName] = React.useState<string>(repository.name);
   const [selectedOrg, setSelectedOrg] = React.useState<string>('');
@@ -85,6 +88,12 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
     trackEvents: {
       open: 'Import repository - Configure - Click Install GH App',
       close: 'Import repository - Configure - Close GH App Window',
+    },
+    onCloseWindow: () => {
+      onRefetchGithubRepo({
+        owner: repository.owner.login,
+        name: repository.name,
+      });
     },
   });
 

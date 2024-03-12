@@ -5,7 +5,7 @@ import { Input, SkeletonText, Stack, Text } from '@codesandbox/components';
 
 import { useAppState } from 'app/overmind';
 
-import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
+import { GithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
 import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
 import styled from 'styled-components';
@@ -17,10 +17,12 @@ import { UnstyledButtonLink } from '../../elements';
 import { getOwnerAndNameFromInput } from '../utils';
 
 type SearchInOrganizationsProps = {
+  githubAccounts: GithubAccounts;
   onSelected: (repo: GithubRepoToImport) => void;
   onFindByURLClicked: () => void;
 };
 export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
+  githubAccounts,
   onSelected,
   onFindByURLClicked,
 }) => {
@@ -29,7 +31,6 @@ export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
   const workspaceRepos = sidebar[activeTeam]?.repositories || [];
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
-  const githubAccounts = useGithubAccounts();
 
   useEffect(() => {
     // Set initially selected account bazed on fuzzy matching

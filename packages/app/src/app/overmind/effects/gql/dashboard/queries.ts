@@ -29,6 +29,8 @@ import {
   RepositoriesByTeamQueryVariables,
   RepositoryByDetailsQuery,
   RepositoryByDetailsQueryVariables,
+  GetGithubRepoQuery,
+  GetGithubRepoQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -274,4 +276,26 @@ export const getRepositoryByDetails: Query<
   }
   ${projectWithBranchesFragment}
   ${branchFragment}
+`;
+
+export const getGithubRepository: Query<
+  GetGithubRepoQuery,
+  GetGithubRepoQueryVariables
+> = gql`
+  query GetGithubRepo($owner: String!, $name: String!) {
+    githubRepo(owner: $owner, repo: $name) {
+      name
+      fullName
+      updatedAt
+      pushedAt
+      authorization
+      private
+      appInstalled
+      owner {
+        id
+        login
+        avatarUrl
+      }
+    }
+  }
 `;

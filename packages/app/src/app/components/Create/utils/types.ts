@@ -15,4 +15,9 @@ export interface TemplateCollection {
   isOwned?: boolean;
 }
 
+export type RepoDefinition = {
+  owner: string;
+  name: string;
+};
+
 export type GithubRepoToImport = NonNullable<GetGithubRepoQuery['githubRepo']>;
