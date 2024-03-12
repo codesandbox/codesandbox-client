@@ -18,7 +18,7 @@ import { getOwnerAndNameFromInput } from '../utils';
 
 type SearchInOrganizationsProps = {
   githubAccounts: GithubAccounts;
-  onSelected: (repo: GithubRepoToImport) => void;
+  onSelected: (repo: Omit<GithubRepoToImport, 'appInstalled'>) => void;
   onFindByURLClicked: () => void;
 };
 export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({

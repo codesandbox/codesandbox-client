@@ -20,4 +20,6 @@ export type RepoDefinition = {
   name: string;
 };
 
-export type GithubRepoToImport = NonNullable<GetGithubRepoQuery['githubRepo']>;
+export type GithubRepoToImport = NonNullable<
+  GetGithubRepoQuery['githubRepo']
+> & { appInstalled: boolean | undefined }; // When appInstalled is undefined, it must be queried separately

@@ -76,15 +76,24 @@ export const useGitHubAccountRepositories = ({
     };
   }
 
-  const accountData = account?.data?.me?.githubRepos;
-  const organizationData = organization?.data?.githubOrganizationRepos.sort(
-    (a, b) => (a.pushedAt > b.pushedAt ? -1 : 1) // Sort by last pushed
-  );
+  if (accountType === 'personal') {
+    return {
+      state: 'ready',
+      data: account.data.me.githubRepos,
+    };
+  }
+
+  if (accountType === 'organization') {
+    return {
+      state: 'ready',
+      data: organization.data.githubOrganizationRepos.sort(
+        (a, b) => (a.pushedAt && b.pushedAt && a.pushedAt > b.pushedAt ? -1 : 1) // Sort by last pushed
+      ),
+    };
+  }
 
   return {
-    state: 'ready',
-    data: (accountData || organizationData)?.filter(
-      repository => repository.owner.login === name
-    ),
+    state: 'error',
+    error: 'No repositories available',
   };
 };

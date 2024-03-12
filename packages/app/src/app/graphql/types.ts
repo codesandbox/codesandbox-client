@@ -3203,7 +3203,6 @@ export type GetGitHubAccountReposQuery = {
       fullName: string;
       name: string;
       private: boolean;
-      appInstalled: boolean;
       updatedAt: string;
       pushedAt: string | null;
       owner: {
@@ -3231,7 +3230,6 @@ export type GetGitHubOrganizationReposQuery = {
     fullName: string;
     name: string;
     private: boolean;
-    appInstalled: boolean;
     updatedAt: string;
     pushedAt: string | null;
     owner: {

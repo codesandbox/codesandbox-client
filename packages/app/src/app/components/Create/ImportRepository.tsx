@@ -35,6 +35,7 @@ import { SearchInOrganizations } from './ImportRepository/steps/SearchInOrganiza
 import { ConfigureRepo } from './ImportRepository/steps/ConfigureRepo';
 import { FindByURL } from './ImportRepository/steps/FindByURL';
 import { StartFromTemplate } from './ImportRepository/steps/StartFromTemplate';
+import { ForkRepo } from './ImportRepository/steps/ForkRepo';
 
 type View = 'signin' | 'permissions' | 'select' | 'fetching' | 'config';
 
@@ -89,11 +90,11 @@ export const ImportRepository: React.FC<
 
   useEffect(() => {
     if (preSelectedRepo) {
-      handleFetchGithubRepo(preSelectedRepo);
+      handleFetchFullGithubRepo(preSelectedRepo);
     }
   }, [preSelectedRepo]);
 
-  const handleFetchGithubRepo = async (repo: {
+  const handleFetchFullGithubRepo = async (repo: {
     owner: string;
     name: string;
   }) => {
@@ -113,6 +114,7 @@ export const ImportRepository: React.FC<
   const selectGithubRepo = (repo: GithubRepoToImport) => {
     setSelectedRepo(repo);
     setViewState('config');
+    handleFetchFullGithubRepo({ owner: repo.owner.login, name: repo.name });
   };
 
   const trackTabClick = (tab: string) => {
@@ -227,12 +229,17 @@ export const ImportRepository: React.FC<
               </ModalSidebar>
 
               <ModalContent>
-                <ConfigureRepo
-                  githubAccounts={githubAccounts}
-                  repository={selectedRepo}
-                  forkMode={forkMode}
-                  onRefetchGithubRepo={handleFetchGithubRepo}
-                />
+                {forkMode ? (
+                  <ForkRepo
+                    githubAccounts={githubAccounts}
+                    repository={selectedRepo}
+                  />
+                ) : (
+                  <ConfigureRepo
+                    repository={selectedRepo}
+                    onRefetchGithubRepo={handleFetchFullGithubRepo}
+                  />
+                )}
               </ModalContent>
             </>
           )}
