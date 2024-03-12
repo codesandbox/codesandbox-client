@@ -262,6 +262,7 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
             type="submit"
             variant="primary"
             autoWidth
+            css={{ minWidth: '130px' }}
           >
             Import repository
           </Button>
