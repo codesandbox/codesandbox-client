@@ -13,8 +13,7 @@ export type GithubAccounts =
   | {
       state: 'ready';
       personal: ProfileFragment;
-      all: OrganizationFragment[];
-      inferred?: OrganizationFragment;
+      all: Array<OrganizationFragment | ProfileFragment>;
     };
 
 export const useGithubAccounts = (): GithubAccounts => {
@@ -23,28 +22,32 @@ export const useGithubAccounts = (): GithubAccounts => {
     GetGithubAccountsQueryVariables
   >(GET_GITHUB_ACCOUNTS);
 
-  if (loading) {
-    return {
-      state: 'loading',
-    };
-  }
-
-  if (error || !data?.me) {
+  if (error) {
     return {
       state: 'error',
       error: error.message,
     };
   }
 
-  // Convert PersonalOrg fragment to generic org
-  const personalOrg: OrganizationFragment = {
-    id: data.me.githubProfile.id,
-    login: data.me.githubProfile.login,
-  };
+  if (loading) {
+    return {
+      state: 'loading',
+    };
+  }
+
+  const githubAccount = data?.me?.githubProfile ?? null;
+  const githubOrgs = data?.me?.githubOrganizations ?? [];
+
+  if (githubAccount === null) {
+    return {
+      state: 'error',
+      error: 'No organizations found',
+    };
+  }
 
   return {
     state: 'ready',
-    personal: data.me.githubProfile,
-    all: [personalOrg, ...data.me.githubOrganizations],
+    personal: githubAccount,
+    all: [githubAccount, ...githubOrgs],
   };
 };

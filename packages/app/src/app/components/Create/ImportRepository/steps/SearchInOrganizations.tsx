@@ -7,7 +7,6 @@ import { useAppState } from 'app/overmind';
 
 import { GithubAccounts } from 'app/hooks/useGithubOrganizations';
 import { fuzzyMatchGithubToCsb } from 'app/utils/fuzzyMatchGithubToCsb';
-import { useGitHubAccountRepositories } from 'app/hooks/useGitHubAccountRepositories';
 import styled from 'styled-components';
 import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { GithubRepoToImport } from '../../utils/types';
@@ -15,6 +14,7 @@ import { AccountSelect } from '../components/AccountSelect';
 import { RepoListItem } from '../components/RepoListItem';
 import { UnstyledButtonLink } from '../../elements';
 import { getOwnerAndNameFromInput } from '../utils';
+import { useGithubRepos } from '../../hooks/useGithubRepos';
 
 type SearchInOrganizationsProps = {
   githubAccounts: GithubAccounts;
@@ -55,23 +55,25 @@ export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
         : 'organization'
       : undefined;
 
-  const githubRepos = useGitHubAccountRepositories({
-    name: selectedAccount,
-    accountType: selectedAccountType,
-  });
+  const githubRepos = useGithubRepos(selectedAccount, selectedAccountType);
 
   const [queryString, setQueryString] = React.useState<string>('');
 
   const resultsListLoading = githubRepos.state === 'loading';
+  const resultsListPartiallyLoaded = githubRepos.state === 'partial';
   const filteredResults =
-    githubRepos.state === 'ready'
-      ? githubRepos.data.filter(r =>
+    githubRepos.state === 'ready' || githubRepos.state === 'partial'
+      ? githubRepos.repositories.filter(r =>
           r.name.toLowerCase().includes(queryString.toLowerCase())
         )
       : null;
 
-  const hasResults = filteredResults && filteredResults.length > 0;
-  const noResults = filteredResults && filteredResults.length === 0;
+  const hasResults =
+    githubRepos.state === 'ready' || githubRepos.state === 'partial';
+  const noResults =
+    githubRepos.state === 'ready' &&
+    filteredResults &&
+    filteredResults.length === 0;
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -121,20 +123,6 @@ export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
         />
       </Stack>
 
-      {resultsListLoading && (
-        <StyledList direction="vertical" gap={1}>
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-          <SkeletonText css={{ height: '48px', width: '100%' }} />
-        </StyledList>
-      )}
-
       {hasResults && (
         <StyledList as="ul" direction="vertical" gap={1}>
           {filteredResults.map(repo => {
@@ -163,6 +151,34 @@ export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
               />
             );
           })}
+
+          {resultsListPartiallyLoaded && (
+            <>
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+              <SkeletonText css={{ height: '48px', width: '100%' }} />
+            </>
+          )}
+        </StyledList>
+      )}
+
+      {resultsListLoading && (
+        <StyledList direction="vertical" gap={1}>
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
+          <SkeletonText css={{ height: '48px', width: '100%' }} />
         </StyledList>
       )}
 

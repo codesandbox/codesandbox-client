@@ -100,60 +100,6 @@ export const GET_GITHUB_ACCOUNTS = gql`
   ${ORGANIZATION_FRAGMENT}
 `;
 
-export const GET_GITHUB_ACCOUNT_REPOS = gql`
-  query GetGitHubAccountRepos($perPage: Int, $page: Int, $sort: UserRepoSort) {
-    me {
-      id
-      githubRepos(
-        perPage: $perPage
-        page: $page
-        sort: $sort
-        affiliation: OWNER
-      ) {
-        id
-        authorization
-        fullName
-        name
-        private
-        updatedAt
-        pushedAt
-        owner {
-          id
-          login
-          avatarUrl
-        }
-      }
-    }
-  }
-`;
-
-export const GET_GITHUB_ORGANIZATION_REPOS = gql`
-  query GetGitHubOrganizationRepos(
-    $organization: String!
-    $perPage: Int
-    $page: Int
-  ) {
-    githubOrganizationRepos(
-      organization: $organization
-      perPage: $perPage
-      page: $page
-    ) {
-      id
-      authorization
-      fullName
-      name
-      private
-      updatedAt
-      pushedAt
-      owner {
-        id
-        login
-        avatarUrl
-      }
-    }
-  }
-`;
-
 export const GET_REPOSITORY_TEAMS = gql`
   query RepositoryTeams($owner: String!, $name: String!) {
     projects(owner: $owner, name: $name, provider: GITHUB) {

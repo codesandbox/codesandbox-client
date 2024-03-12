@@ -309,3 +309,20 @@ export const projectWithBranchesFragment = gql`
   }
   ${branchFragment}
 `;
+
+export const githubRepoFragment = gql`
+  fragment githubRepo on GithubRepo {
+    id
+    authorization
+    fullName
+    name
+    private
+    updatedAt
+    pushedAt
+    owner {
+      id
+      login
+      avatarUrl
+    }
+  }
+`;
