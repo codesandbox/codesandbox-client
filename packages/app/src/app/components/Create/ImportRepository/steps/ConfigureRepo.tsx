@@ -207,34 +207,39 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
           )}
         </Stack>
 
-        {repository.appInstalled ? (
-          <StyledGHAppCard gap={4}>
-            <Icon size={24} name="simpleCheck" color="#A3EC98" />
-            <Stack gap={1} direction="vertical">
-              <Text size={3}>GitHub App is installed</Text>
-              <Text size={3} color="#a6a6a6">
-                Each pull request on this repository gets an instant CodeSandbox
-                link.
-              </Text>
-            </Stack>
-          </StyledGHAppCard>
-        ) : (
-          <StyledGHAppInteractiveCard
-            gap={4}
-            as="button"
-            type="button"
-            onClick={openGHAppInstallWindow}
-          >
-            <Icon size={24} name="github" />
-            <Stack gap={1} direction="vertical">
-              <Text size={3}>Setup PR previews</Text>
-              <Text size={3} color="#a6a6a6">
-                Install our GitHub App to get CodeSandbox links on each pull
-                request.
-              </Text>
-            </Stack>
-          </StyledGHAppInteractiveCard>
-        )}
+        <Stack gap={2} direction="vertical">
+          <Text size={3} as="label">
+            Integrations
+          </Text>
+          {repository.appInstalled ? (
+            <StyledGHAppCard gap={4}>
+              <Icon size={24} name="simpleCheck" color="#A3EC98" />
+              <Stack gap={1} direction="vertical">
+                <Text size={3}>GitHub App is installed</Text>
+                <Text size={3} color="#a6a6a6">
+                  Each pull request on this repository gets an instant
+                  CodeSandbox link.
+                </Text>
+              </Stack>
+            </StyledGHAppCard>
+          ) : (
+            <StyledGHAppInteractiveCard
+              gap={4}
+              as="button"
+              type="button"
+              onClick={openGHAppInstallWindow}
+            >
+              <Icon size={24} name="github" />
+              <Stack gap={1} direction="vertical">
+                <Text size={3}>Setup PR previews</Text>
+                <Text size={3} color="#a6a6a6">
+                  Install our GitHub App to get CodeSandbox links on each pull
+                  request.
+                </Text>
+              </Stack>
+            </StyledGHAppInteractiveCard>
+          )}
+        </Stack>
       </Stack>
 
       <Stack css={{ justifyContent: 'flex-end' }}>

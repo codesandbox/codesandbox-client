@@ -78,6 +78,7 @@ export const Dashboard: FunctionComponent = () => {
         modal: 'importRepository',
         repoToImport: owner && name ? { owner, name } : undefined,
       });
+      searchParams.delete('import_repo');
     } else if (JSON.parse(searchParams.get('create_sandbox'))) {
       actions.modalOpened({ modal: 'createSandbox' });
     } else if (JSON.parse(searchParams.get('create_devbox'))) {

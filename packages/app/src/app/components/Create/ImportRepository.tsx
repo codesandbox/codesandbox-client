@@ -88,7 +88,7 @@ export const ImportRepository: React.FC<
   });
 
   useEffect(() => {
-    if (restrictsPublicRepos === undefined) {
+    if (!hasLogIn || restrictsPublicRepos === undefined) {
       return;
     }
 
