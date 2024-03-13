@@ -231,6 +231,7 @@ function resolvePath(
               subDepVersion,
               p
             ).finally(() => {
+              packagesToInvalidate.add(depName);
               invalidatePendingPackages(manager);
             });
 
@@ -377,8 +378,6 @@ export async function fetchModule(
   manager: Manager,
   defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
 ): Promise<Module> {
-  invalidatePendingPackages(manager);
-
   const currentPath = currentTModule.module.path;
 
   // Get the last part of the path as dependency name for paths like
@@ -387,6 +386,9 @@ export async function fetchModule(
   const dependencyName = getDependencyName(
     path.replace(/.*\/node_modules\//, '')
   );
+
+  packagesToInvalidate.add(dependencyName);
+  invalidatePendingPackages(manager);
 
   const versionInfo = await getDependencyVersion(
     currentTModule,
@@ -423,6 +425,9 @@ export async function fetchModule(
     combinedMetas = { ...combinedMetas, ...normalizedMeta };
   }
 
+  packagesToInvalidate.add(dependencyName);
+  invalidatePendingPackages(manager);
+
   const foundPath = await resolvePath(
     path,
     currentTModule,
@@ -449,6 +454,7 @@ export async function fetchModule(
   }
 
   return downloadDependency(dependencyName, version, foundPath).finally(() => {
+    packagesToInvalidate.add(dependencyName);
     invalidatePendingPackages(manager);
   });
 }
