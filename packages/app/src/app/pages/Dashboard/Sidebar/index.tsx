@@ -81,7 +81,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
   const showRespositories = !state.environment.isOnPrem;
 
-  const { isPrimarySpace } = useWorkspaceAuthorization();
+  const { isPrimarySpace, isTeamAdmin } = useWorkspaceAuthorization();
   const { isFree } = useWorkspaceSubscription();
 
   const showTemplates = state.activeTeam
@@ -172,7 +172,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.portalVMUsage(activeTeam)}
             icon="coins"
           />
-          {isFree && (
+          {isFree && isTeamAdmin && (
             <RowItem
               name="Upgrade"
               page="external"
