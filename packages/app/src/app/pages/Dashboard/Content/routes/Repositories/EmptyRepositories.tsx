@@ -1,15 +1,12 @@
 import React from 'react';
 
-import { ArticleCard, Element } from '@codesandbox/components';
+import { ArticleCard } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useActions } from 'app/overmind';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
-import { RestrictedImportDisclaimer } from 'app/pages/Dashboard/Components/shared/RestrictedImportDisclaimer';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
-import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
-import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
@@ -18,7 +15,6 @@ const DESCRIPTION =
 
 export const EmptyRepositories: React.FC = () => {
   const actions = useActions();
-  const { restrictsPublicRepos } = useGitHubPermissions();
   const { isFrozen } = useWorkspaceLimits();
 
   return (
@@ -67,11 +63,6 @@ export const EmptyRepositories: React.FC = () => {
           }
         />
       </EmptyPage.StyledGrid>
-      <RestrictedImportDisclaimer />
-      <Element css={{ minHeight: 32 }} />
-      {restrictsPublicRepos === false && !isFrozen && (
-        <SuggestionsRow page="empty repositories" />
-      )}
     </EmptyPage.StyledWrapper>
   );
 };

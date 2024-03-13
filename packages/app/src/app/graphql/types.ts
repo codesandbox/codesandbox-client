@@ -1326,11 +1326,13 @@ export type LiveSessionHost = {
 /** Details about a repository as it appears on GitHub (Open API `repository`) */
 export type GithubRepo = {
   __typename?: 'GithubRepo';
+  /** Whether the GitHub App is installed for the repository */
+  appInstalled: Scalars['Boolean'];
   /** Current users's access to the GitHub repo */
   authorization: GithubRepoAuthorization;
   /** Full repository name, e.g. owner/name */
   fullName: Scalars['String'];
-  /** Integer ID */
+  /** Integer ID from GitHub */
   id: Scalars['ID'];
   /** Short repository name */
   name: Scalars['String'];
@@ -1399,6 +1401,10 @@ export type CurrentUser = {
    * If either `page` or `perPage` are specified, then a single page of results will be returned.
    * If neither argument is given, then all results will be returned. Note that this still requires
    * paginated requests to the GitHub API, but the server will concatenate the results.
+   *
+   * Defaults to sorting by repository name (`sort` value `FULL_NAME`). In this case, repositories
+   * are returned in ascending order. If any other value is given, repositories are returned in
+   * descending order (ex. most recently pushed first).
    */
   githubRepos: Array<GithubRepo>;
   id: Scalars['UUID4'];
@@ -1434,6 +1440,7 @@ export type CurrentUserGithubReposArgs = {
   affiliation?: InputMaybe<Array<UserRepoAffiliation>>;
   page: InputMaybe<Scalars['Int']>;
   perPage: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<UserRepoSort>;
 };
 
 export type CurrentUserNotificationsArgs = {
@@ -1508,6 +1515,14 @@ export enum UserRepoAffiliation {
   Collaborator = 'COLLABORATOR',
   OrganizationMember = 'ORGANIZATION_MEMBER',
   Owner = 'OWNER',
+}
+
+/** Sorting key for repositories */
+export enum UserRepoSort {
+  Created = 'CREATED',
+  FullName = 'FULL_NAME',
+  Pushed = 'PUSHED',
+  Updated = 'UPDATED',
 }
 
 export type NotificationPreferences = {
@@ -3129,6 +3144,7 @@ export type GetGithubRepoQuery = {
     pushedAt: string | null;
     authorization: GithubRepoAuthorization;
     private: boolean;
+    appInstalled: boolean;
     owner: {
       __typename?: 'GithubOrganization';
       id: string;
@@ -3142,7 +3158,6 @@ export type ProfileFragment = {
   __typename?: 'GithubProfile';
   id: string;
   login: string;
-  name: string | null;
 };
 
 export type OrganizationFragment = {
@@ -3161,7 +3176,6 @@ export type GetGithubAccountsQuery = {
       __typename?: 'GithubProfile';
       id: string;
       login: string;
-      name: string | null;
     } | null;
     githubOrganizations: Array<{
       __typename?: 'GithubOrganization';
@@ -3169,56 +3183,6 @@ export type GetGithubAccountsQuery = {
       login: string;
     }> | null;
   } | null;
-};
-
-export type GetGitHubAccountReposQueryVariables = Exact<{
-  perPage: InputMaybe<Scalars['Int']>;
-  page: InputMaybe<Scalars['Int']>;
-}>;
-
-export type GetGitHubAccountReposQuery = {
-  __typename?: 'RootQueryType';
-  me: {
-    __typename?: 'CurrentUser';
-    id: any;
-    githubRepos: Array<{
-      __typename?: 'GithubRepo';
-      id: string;
-      authorization: GithubRepoAuthorization;
-      fullName: string;
-      name: string;
-      private: boolean;
-      updatedAt: string;
-      pushedAt: string | null;
-      owner: {
-        __typename?: 'GithubOrganization';
-        id: string;
-        login: string;
-        avatarUrl: string;
-      };
-    }>;
-  } | null;
-};
-
-export type GetGitHubOrganizationReposQueryVariables = Exact<{
-  organization: Scalars['String'];
-  perPage: InputMaybe<Scalars['Int']>;
-  page: InputMaybe<Scalars['Int']>;
-}>;
-
-export type GetGitHubOrganizationReposQuery = {
-  __typename?: 'RootQueryType';
-  githubOrganizationRepos: Array<{
-    __typename?: 'GithubRepo';
-    id: string;
-    authorization: GithubRepoAuthorization;
-    fullName: string;
-    name: string;
-    private: boolean;
-    updatedAt: string;
-    pushedAt: string | null;
-    owner: { __typename?: 'GithubOrganization'; id: string; login: string };
-  }> | null;
 };
 
 export type RepositoryTeamsQueryVariables = Exact<{
@@ -4810,6 +4774,23 @@ export type ProjectWithBranchesFragment = {
   team: { __typename?: 'Team'; id: any } | null;
 };
 
+export type GithubRepoFragment = {
+  __typename?: 'GithubRepo';
+  id: string;
+  authorization: GithubRepoAuthorization;
+  fullName: string;
+  name: string;
+  private: boolean;
+  updatedAt: string;
+  pushedAt: string | null;
+  owner: {
+    __typename?: 'GithubOrganization';
+    id: string;
+    login: string;
+    avatarUrl: string;
+  };
+};
+
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -5474,6 +5455,21 @@ export type ConvertToUsageBillingMutationVariables = Exact<{
 export type ConvertToUsageBillingMutation = {
   __typename?: 'RootMutationType';
   convertToUsageBilling: boolean;
+};
+
+export type UpdateProjectVmTierMutationVariables = Exact<{
+  projectId: Scalars['UUID4'];
+  vmTier: Scalars['Int'];
+}>;
+
+export type UpdateProjectVmTierMutation = {
+  __typename?: 'RootMutationType';
+  updateProjectVmTier: {
+    __typename?: 'Resources';
+    cpu: number;
+    memory: number;
+    storage: number;
+  };
 };
 
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{
@@ -6254,6 +6250,110 @@ export type RepositoryByDetailsQuery = {
     };
     team: { __typename?: 'Team'; id: any } | null;
   } | null;
+};
+
+export type GetPartialGitHubAccountReposQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetPartialGitHubAccountReposQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
+    githubRepos: Array<{
+      __typename?: 'GithubRepo';
+      id: string;
+      authorization: GithubRepoAuthorization;
+      fullName: string;
+      name: string;
+      private: boolean;
+      updatedAt: string;
+      pushedAt: string | null;
+      owner: {
+        __typename?: 'GithubOrganization';
+        id: string;
+        login: string;
+        avatarUrl: string;
+      };
+    }>;
+  } | null;
+};
+
+export type GetFullGitHubAccountReposQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetFullGitHubAccountReposQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
+    githubRepos: Array<{
+      __typename?: 'GithubRepo';
+      id: string;
+      authorization: GithubRepoAuthorization;
+      fullName: string;
+      name: string;
+      private: boolean;
+      updatedAt: string;
+      pushedAt: string | null;
+      owner: {
+        __typename?: 'GithubOrganization';
+        id: string;
+        login: string;
+        avatarUrl: string;
+      };
+    }>;
+  } | null;
+};
+
+export type GetPartialGitHubOrganizationReposQueryVariables = Exact<{
+  organization: Scalars['String'];
+}>;
+
+export type GetPartialGitHubOrganizationReposQuery = {
+  __typename?: 'RootQueryType';
+  githubOrganizationRepos: Array<{
+    __typename?: 'GithubRepo';
+    id: string;
+    authorization: GithubRepoAuthorization;
+    fullName: string;
+    name: string;
+    private: boolean;
+    updatedAt: string;
+    pushedAt: string | null;
+    owner: {
+      __typename?: 'GithubOrganization';
+      id: string;
+      login: string;
+      avatarUrl: string;
+    };
+  }> | null;
+};
+
+export type GetFullGitHubOrganizationReposQueryVariables = Exact<{
+  organization: Scalars['String'];
+}>;
+
+export type GetFullGitHubOrganizationReposQuery = {
+  __typename?: 'RootQueryType';
+  githubOrganizationRepos: Array<{
+    __typename?: 'GithubRepo';
+    id: string;
+    authorization: GithubRepoAuthorization;
+    fullName: string;
+    name: string;
+    private: boolean;
+    updatedAt: string;
+    pushedAt: string | null;
+    owner: {
+      __typename?: 'GithubOrganization';
+      id: string;
+      login: string;
+      avatarUrl: string;
+    };
+  }> | null;
 };
 
 export type RecentNotificationFragment = {

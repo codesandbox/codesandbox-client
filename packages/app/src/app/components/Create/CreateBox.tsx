@@ -42,8 +42,6 @@ import { TemplateInfo } from './CreateBox/TemplateInfo';
 import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
 import { useAllTemplates } from './hooks/useAllTemplates';
 
-export const COLUMN_MEDIA_THRESHOLD = 1600;
-
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
   type?: 'devbox' | 'sandbox';
@@ -215,7 +213,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
         >
           <HeaderInformation>
             {viewState === 'initial' ? (
-              <Text size={4} variant="muted">
+              <Text size={4}>
                 Create {type === 'devbox' ? 'Devbox' : 'Sandbox'}
               </Text>
             ) : (

@@ -14,12 +14,20 @@ import { Stack, Text, Icon, Element } from '@codesandbox/components';
 // In the new codebase this should be a Radix dropdown menu
 // https://www.radix-ui.com/docs/primitives/components/dropdown-menu
 // also, more composable if it were a design system component
-export const AccountSelect = ({ options, value, onChange }) => {
+export const AccountSelect = ({
+  options,
+  value,
+  onChange,
+  variant = 'ghost',
+}) => {
   const menu = useMenuState();
 
   return (
     <>
-      <StyledMenuButton {...menu}>
+      <StyledMenuButton
+        {...menu}
+        css={{ background: variant === 'ghost' ? 'transparent' : '#252525' }}
+      >
         <Stack gap={2} align="center">
           <Icon name="github" />
           <Stack gap={2} align="center">
@@ -27,14 +35,14 @@ export const AccountSelect = ({ options, value, onChange }) => {
             <Text>
               {value} <VisuallyHidden>is currently selected</VisuallyHidden>
             </Text>
-            <Icon name="chevronDown" size={8} />
+            <Icon className="chevron" name="chevronDown" size={8} />
           </Stack>
         </Stack>
       </StyledMenuButton>
       <StyledMenu {...menu} aria-label="GitHub account selection">
         <Stack direction="vertical">
           <Element paddingY={2} paddingX={4}>
-            <Text variant="muted">GitHub accounts</Text>
+            <Text>GitHub accounts</Text>
           </Element>
           {options.map(option => (
             <StyledMenuItem
@@ -44,7 +52,6 @@ export const AccountSelect = ({ options, value, onChange }) => {
                 onChange(option.login);
                 menu.hide();
               }}
-              $isSelected={option.login === value}
             >
               <Stack justify="space-between">
                 <Stack gap={2} align="center" css={{ overflow: 'hidden' }}>
@@ -70,7 +77,7 @@ export const AccountSelect = ({ options, value, onChange }) => {
           >
             <Stack direction="vertical" gap={1}>
               <Text>Review GitHub permissions</Text>
-              <Text css={{ color: '#999999B3' }}>
+              <Text variant="muted">
                 Only authorized organizations are visible. Some permission
                 changes require admin approval.
               </Text>
@@ -84,12 +91,24 @@ export const AccountSelect = ({ options, value, onChange }) => {
 
 const StyledMenuButton = styled(MenuDisclosure)`
   all: unset;
-  font-family: 'Inter';
-  color: #c5c5c5;
+  color: #e5e5e5;
+  cursor: pointer;
+  box-sizing: border-box;
+  background: #252525;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  .chevron {
+    translate: 0 1px;
+    transition: all 0.125s ease-out;
+  }
 
-  &:focus,
   &:hover {
-    color: #ffffff;
+    background: #e5e5e51a;
+    .chevron {
+      translate: 0 3px;
+    }
   }
 
   &:focus-visible {
@@ -99,8 +118,8 @@ const StyledMenuButton = styled(MenuDisclosure)`
 
 const StyledMenu = styled(Menu)`
   z-index: 1;
-  background-color: #252525;
-  font-size: 12px;
+  background-color: #333333;
+  font-size: 13px;
   padding: 8px 0;
   max-width: 220px;
 
@@ -109,13 +128,14 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const StyledMenuItem = styled(MenuItem)<{ $isSelected?: boolean }>`
+const StyledMenuItem = styled(MenuItem)`
   all: unset;
   box-sizing: border-box;
   padding: 8px 16px;
   min-width: 220px;
+  cursor: pointer;
 
-  color: ${({ $isSelected }) => ($isSelected ? '#E5E5E5' : '#C5C5C5')};
+  color: #ffffff;
 
   &:hover,
   &:focus {
@@ -128,5 +148,5 @@ const StyledMenuSeparator = styled(MenuSeparator)`
   display: block;
   width: 100%;
   height: 1px;
-  background-color: #343434;
+  background-color: #525252;
 `;

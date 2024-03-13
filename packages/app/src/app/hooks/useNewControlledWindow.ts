@@ -56,9 +56,7 @@ export const useNewControlledWindow = ({
 
         if (popupRef.current) {
           if (popupRef.current.closed) {
-            track(trackEvents.close, {
-              event_source: 'UI',
-            });
+            track(trackEvents.close);
 
             if (onCloseWindow) {
               onCloseWindow();
@@ -105,9 +103,7 @@ export const useNewControlledWindow = ({
         },left=${window.screen.width / 2 - popupW / 2}`
       );
 
-      track(trackEvents.open, {
-        event_source: 'UI',
-      });
+      track(trackEvents.open);
 
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       (popupRef.current as any) = windowRef;

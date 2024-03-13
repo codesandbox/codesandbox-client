@@ -272,6 +272,7 @@ export const modalOpened = (
     modal: ModalName;
     message?: string;
     itemId?: string;
+    repoToImport?: { owner: string; name: string };
   }
 ) => {
   effects.analytics.track('Open Modal', { modal: props.modal });
@@ -284,10 +285,16 @@ export const modalOpened = (
   } else {
     state.currentModalMessage = props.message || null;
   }
+
+  if (props.modal === 'importRepository') {
+    state.repoToImport = props.repoToImport || null;
+  }
 };
 
 export const modalClosed = ({ state }: Context) => {
   state.currentModal = null;
+  state.currentModalMessage = null;
+  state.repoToImport = null;
 };
 
 export const signInClicked = (

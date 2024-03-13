@@ -218,6 +218,7 @@ const Modals: FunctionComponent = () => {
     },
     currentModal,
     currentModalItemId,
+    repoToImport,
   } = useAppState();
 
   const [localState, setLocalState] = useState({
@@ -257,6 +258,13 @@ const Modals: FunctionComponent = () => {
     modal.props = {
       ...modal.props,
       ...(currentModalItemId ? { collectionId: currentModalItemId } : {}),
+    };
+  }
+
+  if (currentModal === 'importRepository') {
+    modal.props = {
+      ...modal.props,
+      preSelectedRepo: repoToImport,
     };
   }
 

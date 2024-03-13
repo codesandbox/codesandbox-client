@@ -1,5 +1,3 @@
-const REGEX_PLAIN = /(?<owner>^\w+)(?<slash>\/)(?<name>[\w.-]+$)/g;
-
 export const getOwnerAndNameFromInput = (input: string) => {
   let sanitizedInput = input.replace(/\s/, '');
 
@@ -46,11 +44,12 @@ export const getOwnerAndNameFromInput = (input: string) => {
   }
 
   // Check if the input matches "owner/name".
-  if (sanitizedInput.match(REGEX_PLAIN)) {
-    const matches = REGEX_PLAIN.exec(sanitizedInput);
-    return matches?.groups
-      ? { owner: matches.groups.owner, name: matches.groups.name }
-      : null;
+  if (sanitizedInput.includes('/')) {
+    const splitInput = sanitizedInput.split('/');
+    
+    if (splitInput.length === 2) {
+      return { owner: splitInput[0], name: splitInput[1] };
+    }
   }
 
   return null;

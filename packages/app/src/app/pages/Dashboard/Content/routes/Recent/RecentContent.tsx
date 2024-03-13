@@ -6,7 +6,6 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { useActions, useAppState } from 'app/overmind';
 import { Sandbox } from 'app/pages/Dashboard/Components/Sandbox';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { SuggestionsRow } from 'app/pages/Dashboard/Components/SuggestionsRow/SuggestionsRow';
 import {
   GRID_MAX_WIDTH,
   ITEM_MIN_WIDTH,
@@ -20,7 +19,6 @@ import {
   PageTypes,
 } from 'app/pages/Dashboard/types';
 
-import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
 import { Branch } from 'app/pages/Dashboard/Components/Branch';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
@@ -134,10 +132,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
   } = useAppState();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
-  const { restrictsPublicRepos } = useGitHubPermissions();
   const page: PageTypes = 'recent';
-  const showRepositoryImport =
-    !isOnPrem && !isFrozen && restrictsPublicRepos === false;
   const showDocsLine = !isOnPrem;
   const branches = recentItems.filter(
     item => item.type === 'branch'
@@ -245,7 +240,6 @@ export const RecentContent: React.FC<RecentContentProps> = ({
         </SelectionProvider>
       </Stack>
       {showDocsLine && <DocumentationRow />}
-      {showRepositoryImport && <SuggestionsRow page="recent" />}
     </StyledWrapper>
   );
 };

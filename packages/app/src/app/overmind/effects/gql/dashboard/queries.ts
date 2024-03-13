@@ -29,6 +29,16 @@ import {
   RepositoriesByTeamQueryVariables,
   RepositoryByDetailsQuery,
   RepositoryByDetailsQueryVariables,
+  GetGithubRepoQuery,
+  GetGithubRepoQueryVariables,
+  GetPartialGitHubAccountReposQuery,
+  GetPartialGitHubAccountReposQueryVariables,
+  GetFullGitHubAccountReposQuery,
+  GetFullGitHubAccountReposQueryVariables,
+  GetPartialGitHubOrganizationReposQuery,
+  GetPartialGitHubOrganizationReposQueryVariables,
+  GetFullGitHubOrganizationReposQuery,
+  GetFullGitHubOrganizationReposQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -42,6 +52,7 @@ import {
   branchFragment,
   projectFragment,
   projectWithBranchesFragment,
+  githubRepoFragment,
 } from './fragments';
 
 export const deletedTeamSandboxes: Query<
@@ -274,4 +285,80 @@ export const getRepositoryByDetails: Query<
   }
   ${projectWithBranchesFragment}
   ${branchFragment}
+`;
+
+export const getGithubRepository: Query<
+  GetGithubRepoQuery,
+  GetGithubRepoQueryVariables
+> = gql`
+  query GetGithubRepo($owner: String!, $name: String!) {
+    githubRepo(owner: $owner, repo: $name) {
+      name
+      fullName
+      updatedAt
+      pushedAt
+      authorization
+      private
+      appInstalled
+      owner {
+        id
+        login
+        avatarUrl
+      }
+    }
+  }
+`;
+
+export const getPartialAccountRepos: Query<
+  GetPartialGitHubAccountReposQuery,
+  GetPartialGitHubAccountReposQueryVariables
+> = gql`
+  query GetPartialGitHubAccountRepos {
+    me {
+      id
+      githubRepos(perPage: 10, page: 1, sort: PUSHED, affiliation: OWNER) {
+        ...githubRepo
+      }
+    }
+  }
+  ${githubRepoFragment}
+`;
+
+export const getFullAccountRepos: Query<
+  GetFullGitHubAccountReposQuery,
+  GetFullGitHubAccountReposQueryVariables
+> = gql`
+  query GetFullGitHubAccountRepos {
+    me {
+      id
+      githubRepos(sort: PUSHED, affiliation: OWNER) {
+        ...githubRepo
+      }
+    }
+  }
+  ${githubRepoFragment}
+`;
+
+export const getPartialOrganizationRepos: Query<
+  GetPartialGitHubOrganizationReposQuery,
+  GetPartialGitHubOrganizationReposQueryVariables
+> = gql`
+  query GetPartialGitHubOrganizationRepos($organization: String!) {
+    githubOrganizationRepos(organization: $organization, perPage: 10, page: 1) {
+      ...githubRepo
+    }
+  }
+  ${githubRepoFragment}
+`;
+
+export const getFullOrganizationRepos: Query<
+  GetFullGitHubOrganizationReposQuery,
+  GetFullGitHubOrganizationReposQueryVariables
+> = gql`
+  query GetFullGitHubOrganizationRepos($organization: String!) {
+    githubOrganizationRepos(organization: $organization) {
+      ...githubRepo
+    }
+  }
+  ${githubRepoFragment}
 `;

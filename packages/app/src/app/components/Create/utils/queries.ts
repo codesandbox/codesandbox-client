@@ -60,6 +60,7 @@ export const GET_GITHUB_REPO = gql`
       pushedAt
       authorization
       private
+      appInstalled
       owner {
         id
         login
@@ -73,7 +74,6 @@ const PROFILE_FRAGMENT = gql`
   fragment Profile on GithubProfile {
     id
     login
-    name
   }
 `;
 
@@ -98,56 +98,6 @@ export const GET_GITHUB_ACCOUNTS = gql`
 
   ${PROFILE_FRAGMENT}
   ${ORGANIZATION_FRAGMENT}
-`;
-
-// TODO: Remove unnecessary fields
-export const GET_GITHUB_ACCOUNT_REPOS = gql`
-  query GetGitHubAccountRepos($perPage: Int, $page: Int) {
-    me {
-      id
-      githubRepos(perPage: $perPage, page: $page) {
-        id
-        authorization
-        fullName
-        name
-        private
-        updatedAt
-        pushedAt
-        owner {
-          id
-          login
-          avatarUrl
-        }
-      }
-    }
-  }
-`;
-
-// TODO: Remove unnecessary fields
-export const GET_GITHUB_ORGANIZATION_REPOS = gql`
-  query GetGitHubOrganizationRepos(
-    $organization: String!
-    $perPage: Int
-    $page: Int
-  ) {
-    githubOrganizationRepos(
-      organization: $organization
-      perPage: $perPage
-      page: $page
-    ) {
-      id
-      authorization
-      fullName
-      name
-      private
-      updatedAt
-      pushedAt
-      owner {
-        id
-        login
-      }
-    }
-  }
 `;
 
 export const GET_REPOSITORY_TEAMS = gql`

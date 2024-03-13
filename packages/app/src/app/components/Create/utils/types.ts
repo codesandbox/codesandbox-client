@@ -1,4 +1,4 @@
-import { TemplateFragment } from 'app/graphql/types';
+import { TemplateFragment, GetGithubRepoQuery } from 'app/graphql/types';
 
 export type CreateParams = {
   name?: string;
@@ -14,3 +14,12 @@ export interface TemplateCollection {
   templates: TemplateFragment[];
   isOwned?: boolean;
 }
+
+export type RepoDefinition = {
+  owner: string;
+  name: string;
+};
+
+export type GithubRepoToImport = NonNullable<
+  GetGithubRepoQuery['githubRepo']
+> & { appInstalled: boolean | undefined }; // When appInstalled is undefined, it must be queried separately

@@ -7,18 +7,20 @@ import {
 } from 'app/graphql/types';
 import { GET_GITHUB_ACCOUNTS } from '../components/Create/utils/queries';
 
-export const useGithubAccounts = (): {
-  state: 'error' | 'loading' | 'ready';
-  error?: string;
-  data?: {
-    personal?: ProfileFragment | null;
-    organizations?: OrganizationFragment[] | null;
-  };
-} => {
-  const { data, error } = useQuery<
+export type GithubAccounts =
+  | { state: 'error'; error: string }
+  | { state: 'loading' }
+  | {
+      state: 'ready';
+      personal: ProfileFragment;
+      all: Array<OrganizationFragment | ProfileFragment>;
+    };
+
+export const useGithubAccounts = (skip?: boolean): GithubAccounts => {
+  const { data, error, loading } = useQuery<
     GetGithubAccountsQuery,
     GetGithubAccountsQueryVariables
-  >(GET_GITHUB_ACCOUNTS);
+  >(GET_GITHUB_ACCOUNTS, { skip });
 
   if (error) {
     return {
@@ -27,17 +29,25 @@ export const useGithubAccounts = (): {
     };
   }
 
-  if (typeof data?.me === 'undefined') {
+  if (loading) {
     return {
       state: 'loading',
     };
   }
 
+  const githubAccount = data?.me?.githubProfile ?? null;
+  const githubOrgs = data?.me?.githubOrganizations ?? [];
+
+  if (githubAccount === null) {
+    return {
+      state: 'error',
+      error: 'No organizations found',
+    };
+  }
+
   return {
     state: 'ready',
-    data: {
-      personal: data.me?.githubProfile,
-      organizations: data.me?.githubOrganizations,
-    },
+    personal: githubAccount,
+    all: [githubAccount, ...githubOrgs],
   };
 };
