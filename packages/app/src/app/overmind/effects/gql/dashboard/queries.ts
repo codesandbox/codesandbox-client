@@ -39,6 +39,8 @@ import {
   GetPartialGitHubOrganizationReposQueryVariables,
   GetFullGitHubOrganizationReposQuery,
   GetFullGitHubOrganizationReposQueryVariables,
+  GetSandboxWithTemplateQuery,
+  GetSandboxWithTemplateQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -361,4 +363,28 @@ export const getFullOrganizationRepos: Query<
     }
   }
   ${githubRepoFragment}
+`;
+
+export const getSandboxWithTemplate: Query<
+  GetSandboxWithTemplateQuery,
+  GetSandboxWithTemplateQueryVariables
+> = gql`
+  query GetSandboxWithTemplate($id: ID!) {
+    sandbox(sandboxId: $id) {
+      id
+      alias
+      title
+      description
+      forkCount
+      viewCount
+      isV2
+      team {
+        name
+      }
+      customTemplate {
+        id
+        iconUrl
+      }
+    }
+  }
 `;

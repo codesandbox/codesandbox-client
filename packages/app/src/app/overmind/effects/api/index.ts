@@ -519,6 +519,12 @@ export default {
   preloadTeamTemplates(teamId: string) {
     client.query({ query: FETCH_TEAM_TEMPLATES, variables: { teamId } });
   },
+  fetchTemplate(
+    sandboxId: string,
+    templateId: string
+  ): Promise<CustomTemplate> {
+    return api.get(`/sandboxes/${sandboxId}/templates/`);
+  },
   deleteTemplate(
     sandboxId: string,
     templateId: string

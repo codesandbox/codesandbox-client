@@ -2,10 +2,11 @@ import {
   Text,
   Stack,
   Element,
+  Loading,
   IconButton,
   ThemeProvider,
 } from '@codesandbox/components';
-import { useActions, useAppState } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import React, { useState, useEffect } from 'react';
 import { useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
@@ -45,14 +46,17 @@ import { useAllTemplates } from './hooks/useAllTemplates';
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
   type?: 'devbox' | 'sandbox';
+  sandboxIdToFork?: string;
 };
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
+  sandboxIdToFork,
   type = 'devbox',
   closeModal,
 }) => {
   const { hasLogIn, activeTeam } = useAppState();
+  const effects = useEffects();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
   const [collectionId, setCollectionId] = useState<string | undefined>(
@@ -70,8 +74,8 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     selectedId: type === 'devbox' ? 'featured' : 'all',
   });
 
-  const [viewState, setViewState] = useState<'initial' | 'fromTemplate'>(
-    'initial'
+  const [viewState, setViewState] = useState<'select' | 'loading' | 'config'>(
+    'select'
   );
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -108,6 +112,30 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
   const showTeamTemplates = teamTemplates.length > 0;
   const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
+
+  useEffect(() => {
+    if (!sandboxIdToFork) {
+      return;
+    }
+
+    setViewState('loading');
+    effects.gql.queries
+      .getSandboxWithTemplate({ id: sandboxIdToFork })
+      .then(result => {
+        const { sandbox } = result;
+        setSelectedTemplate({
+          iconUrl: sandbox.customTemplate?.iconUrl,
+          color: '#fff',
+          published: true,
+          id: sandbox.customTemplate?.id,
+          sandbox: {
+            // TODO: proper mapping of fields and ajust the types
+            ...sandbox,
+          },
+        });
+        setViewState('config');
+      });
+  }, [sandboxIdToFork]);
 
   useEffect(() => {
     if (searchQuery) {
@@ -171,7 +199,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     }
 
     setSelectedTemplate(template);
-    setViewState('fromTemplate');
+    setViewState('config');
 
     track(`Create ${type} - Select template`, {
       type: 'fork',
@@ -212,7 +240,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
           }}
         >
           <HeaderInformation>
-            {viewState === 'initial' ? (
+            {viewState === 'select' ? (
               <Text size={4}>
                 Create {type === 'devbox' ? 'Devbox' : 'Sandbox'}
               </Text>
@@ -229,13 +257,13 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   },
                 }}
                 onClick={() => {
-                  setViewState('initial');
+                  setViewState('select');
                 }}
               />
             )}
           </HeaderInformation>
 
-          {mobileScreenSize && viewState === 'initial' ? (
+          {mobileScreenSize && viewState === 'select' ? (
             <SearchBox
               value={searchQuery}
               onChange={e => {
@@ -248,8 +276,14 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
         </Stack>
 
         <ModalBody>
+          {viewState === 'loading' && (
+            <Stack css={{ width: '100%' }} align="center" justify="center">
+              <Loading size={12} />
+            </Stack>
+          )}
+
           <ModalSidebar>
-            {viewState === 'initial' ? (
+            {viewState === 'select' ? (
               <Stack
                 css={{ height: '100%' }}
                 direction="vertical"
@@ -370,13 +404,13 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               </Stack>
             ) : null}
 
-            {viewState === 'fromTemplate' ? (
+            {viewState === 'config' ? (
               <TemplateInfo template={selectedTemplate} />
             ) : null}
           </ModalSidebar>
 
           <ModalContent>
-            {viewState === 'initial' && (
+            {viewState === 'select' && (
               <Stack direction="vertical" gap={2}>
                 <Panel tab={tabState} id="featured">
                   {hasRecentlyUsedTemplates && (
@@ -486,13 +520,13 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               </Stack>
             )}
 
-            {viewState === 'fromTemplate' ? (
+            {viewState === 'config' ? (
               <CreateBoxForm
                 type={type}
                 collectionId={collectionId}
                 setCollectionId={setCollectionId}
                 onCancel={() => {
-                  setViewState('initial');
+                  setViewState('select');
                 }}
                 onSubmit={params => {
                   createFromTemplate(selectedTemplate, params);

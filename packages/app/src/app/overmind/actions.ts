@@ -273,6 +273,7 @@ export const modalOpened = (
     message?: string;
     itemId?: string;
     repoToImport?: { owner: string; name: string };
+    sandboxIdToFork?: string;
   }
 ) => {
   effects.analytics.track('Open Modal', { modal: props.modal });
@@ -282,6 +283,7 @@ export const modalOpened = (
   }
   if (props.modal === 'createDevbox' || props.modal === 'createSandbox') {
     state.currentModalItemId = props.itemId;
+    state.sandboxIdToFork = props.sandboxIdToFork || null;
   } else {
     state.currentModalMessage = props.message || null;
   }
@@ -295,6 +297,7 @@ export const modalClosed = ({ state }: Context) => {
   state.currentModal = null;
   state.currentModalMessage = null;
   state.repoToImport = null;
+  state.sandboxIdToFork = null;
 };
 
 export const signInClicked = (
