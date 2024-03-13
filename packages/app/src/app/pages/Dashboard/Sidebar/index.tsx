@@ -178,9 +178,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               page="external"
               path={dashboardUrls.upgradeUrl({
                 workspaceId: activeTeam,
-                source: 'menu-item',
+                source: 'sidebar',
               })}
               icon="proBadge"
+              style={{ color: '#E4FC82' }}
             />
           )}
 
