@@ -82,12 +82,6 @@ export const ImportRepository: React.FC<
     return 'select';
   });
 
-  // Fork mode if selected repo is not on your personal gh space and you have read access
-  const forkMode =
-    selectedRepo?.authorization === GithubRepoAuthorization.Read &&
-    githubAccounts.state === 'ready' &&
-    githubAccounts.personal.login !== selectedRepo?.owner.login;
-
   useEffect(() => {
     if (preSelectedRepo) {
       handleFetchFullGithubRepo(preSelectedRepo);
@@ -122,6 +116,8 @@ export const ImportRepository: React.FC<
       tab_name: tab,
     });
   };
+
+  const forkMode = selectedRepo?.authorization === GithubRepoAuthorization.Read;
 
   return (
     <ThemeProvider>
