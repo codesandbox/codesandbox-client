@@ -37,7 +37,7 @@ import { FindByURL } from './ImportRepository/steps/FindByURL';
 import { StartFromTemplate } from './ImportRepository/steps/StartFromTemplate';
 import { ForkRepo } from './ImportRepository/steps/ForkRepo';
 
-type View = 'signin' | 'permissions' | 'select' | 'fetching' | 'config';
+type View = 'signin' | 'permissions' | 'select' | 'loading' | 'config';
 
 export const ImportRepository: React.FC<
   ModalContentProps & { preSelectedRepo?: { owner: string; name: string } }
@@ -48,7 +48,7 @@ export const ImportRepository: React.FC<
     restrictsPublicRepos,
     restrictsPrivateRepos,
   } = useGitHubPermissions();
-  const githubAccounts = useGithubAccounts();
+  const githubAccounts = useGithubAccounts(restrictsPublicRepos !== false);
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
@@ -67,6 +67,11 @@ export const ImportRepository: React.FC<
       return 'signin';
     }
 
+    // GH integration is not yet fetched (can only happen with preselected repos)
+    if (preSelectedRepo && restrictsPublicRepos === undefined) {
+      return 'loading';
+    }
+
     if (restrictsPublicRepos) {
       return 'permissions';
     }
@@ -74,7 +79,7 @@ export const ImportRepository: React.FC<
     if (preSelectedRepo) {
       if (!selectedRepo) {
         // If the repo was not yet fetched, there should be a brief loading state before the final step
-        return 'fetching';
+        return 'loading';
       }
       return 'config';
     }
@@ -83,16 +88,29 @@ export const ImportRepository: React.FC<
   });
 
   useEffect(() => {
-    if (preSelectedRepo) {
+    if (restrictsPublicRepos === undefined) {
+      return;
+    }
+
+    if (restrictsPublicRepos) {
+      setViewState('permissions');
+    } else {
+      setViewState('select');
+    }
+  }, [restrictsPublicRepos]);
+
+  useEffect(() => {
+    if (preSelectedRepo && restrictsPublicRepos === false) {
       handleFetchFullGithubRepo(preSelectedRepo);
     }
-  }, [preSelectedRepo]);
+  }, [preSelectedRepo, restrictsPublicRepos]);
 
   const handleFetchFullGithubRepo = async (repo: {
     owner: string;
     name: string;
   }) => {
     try {
+      setViewState('loading');
       const data = await effects.gql.queries.getGithubRepository({
         owner: repo.owner,
         name: repo.name,
@@ -213,7 +231,7 @@ export const ImportRepository: React.FC<
               </ModalContent>
             </>
           )}
-          {viewState === 'fetching' && (
+          {viewState === 'loading' && (
             <Stack css={{ width: '100%' }} align="center" justify="center">
               <Loading size={12} />
             </Stack>

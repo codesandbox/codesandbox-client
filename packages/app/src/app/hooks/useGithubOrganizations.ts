@@ -16,11 +16,11 @@ export type GithubAccounts =
       all: Array<OrganizationFragment | ProfileFragment>;
     };
 
-export const useGithubAccounts = (): GithubAccounts => {
+export const useGithubAccounts = (skip?: boolean): GithubAccounts => {
   const { data, error, loading } = useQuery<
     GetGithubAccountsQuery,
     GetGithubAccountsQueryVariables
-  >(GET_GITHUB_ACCOUNTS);
+  >(GET_GITHUB_ACCOUNTS, { skip });
 
   if (error) {
     return {
