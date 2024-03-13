@@ -181,7 +181,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 source: 'sidebar',
               })}
               icon="proBadge"
-              style={{ color: '#E4FC82' }}
+              style={{ color: '#BDB1F6' }}
             />
           )}
 
