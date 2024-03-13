@@ -8,6 +8,7 @@ import { Element, List, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -81,6 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const showRespositories = !state.environment.isOnPrem;
 
   const { isPrimarySpace } = useWorkspaceAuthorization();
+  const { isFree } = useWorkspaceSubscription();
 
   const showTemplates = state.activeTeam
     ? state.sidebar[state.activeTeam]?.hasTemplates
@@ -170,6 +172,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.portalVMUsage(activeTeam)}
             icon="coins"
           />
+          {isFree && (
+            <RowItem
+              name="Upgrade"
+              page="external"
+              path={dashboardUrls.upgradeUrl({
+                workspaceId: activeTeam,
+                source: 'sidebar',
+              })}
+              icon="proBadge"
+              style={{ color: '#BDB1F6' }}
+            />
+          )}
 
           {showRespositories && (
             <>

@@ -12,6 +12,7 @@ import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import css from '@styled-system/css';
 import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
+import { CSSProperties } from 'styled-components';
 import { DragItemType, useDrop } from '../utils/dnd';
 import {
   SidebarContext,
@@ -58,6 +59,7 @@ interface RowItemProps {
   setFoldersVisibility?: (val: boolean) => void;
   folderPath?: string;
   nestingLevel?: number;
+  style?: CSSProperties;
 }
 
 export const RowItem: React.FC<RowItemProps> = ({
@@ -68,6 +70,7 @@ export const RowItem: React.FC<RowItemProps> = ({
   page,
   icon,
   setFoldersVisibility = null,
+  style = {},
   ...props
 }) => {
   const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
@@ -139,6 +142,7 @@ export const RowItem: React.FC<RowItemProps> = ({
         color: isCurrentLink ? 'sideBar.foreground' : 'sideBarTitle.foreground',
         backgroundColor:
           canDrop && isOver ? 'list.hoverBackground' : 'transparent',
+        ...style,
       })}
     >
       {props.children || (
@@ -185,7 +189,7 @@ export const RowItem: React.FC<RowItemProps> = ({
           >
             <Icon name={icon} />
           </Stack>
-          <Text truncate lineHeight="16px">
+          <Text truncate lineHeight="16px" color="inherit">
             {name}
           </Text>
         </Link>
