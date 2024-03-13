@@ -15,18 +15,6 @@ import {
 
 export type ResolverCache = Map<string, any>;
 
-export function invalidatePackageFromCache(
-  pkgName: string,
-  cache: ResolverCache
-): void {
-  const lowerPkgName = pkgName.toLowerCase();
-  for (const [key] of cache) {
-    if (key.toLowerCase().includes(lowerPkgName)) {
-      cache.delete(key);
-    }
-  }
-}
-
 export interface IResolveOptionsInput {
   filename: string;
   extensions: string[];
@@ -219,14 +207,14 @@ function* resolveNodeModule(
             : yield* loadNearestPackageJSON(pkgFilePath, opts, rootDir);
         if (pkgJson) {
           try {
-            return yield* resolve(pkgFilePath, {
+            return yield* resolver(pkgFilePath, {
               ...opts,
               filename: pkgJson.filepath,
               pkgJson,
             });
           } catch (err) {
             if (!pkgSpecifierParts.filepath) {
-              return yield* resolve(pathUtils.join(pkgFilePath, 'index'), {
+              return yield* resolver(pathUtils.join(pkgFilePath, 'index'), {
                 ...opts,
                 filename: pkgJson.filepath,
               });
@@ -343,14 +331,19 @@ function* getTSConfig(
   return config;
 }
 
-function* resolve(
-  moduleSpecifier: string,
-  inputOpts: IResolveOptionsInput,
-  skipIndexExpansion: boolean = false
+export const resolver = gensync<
+  (
+    moduleSpecifier: string,
+    inputOpts: IResolveOptionsInput,
+    skipIndexExpansion?: boolean
+  ) => string
+>(function* resolve(
+  moduleSpecifier,
+  inputOpts,
+  skipIndexExpansion = false
 ): Generator<any, string, any> {
   const normalizedSpecifier = normalizeModuleSpecifier(moduleSpecifier);
   const opts = normalizeResolverOptions(inputOpts);
-
   const modulePath = yield* resolveModule(normalizedSpecifier, opts);
 
   if (modulePath[0] !== '/') {
@@ -373,8 +366,7 @@ function* resolve(
     }
 
     try {
-      const resolved = yield* resolveNodeModule(modulePath, opts);
-      return resolved;
+      return yield* resolveNodeModule(modulePath, opts);
     } catch (e) {
       throw new ModuleNotFoundError(normalizedSpecifier, opts.filename);
     }
@@ -403,15 +395,7 @@ function* resolve(
   }
 
   return foundFile;
-}
-
-export const resolver = gensync<
-  (
-    moduleSpecifier: string,
-    inputOpts: IResolveOptionsInput,
-    skipIndexExpansion?: boolean
-  ) => string
->(resolve);
+});
 
 export const resolveSync = resolver.sync;
 export const resolveAsync = resolver.async;
