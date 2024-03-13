@@ -6,7 +6,7 @@ import { Element } from '../Element';
 
 const pulse = keyframes`
   0% { background-position: 100% 50%; }
-  100% { background-position: -100% 50%; }
+  100% { background-position: -20% 50%; }
 `;
 
 export const SkeletonText = styled(Element)(props => {
@@ -24,7 +24,7 @@ export const SkeletonText = styled(Element)(props => {
    */
 
   const backgroundLuminosity = themeType === 'light' ? 86 : 14;
-  const highlightLuminosity = themeType === 'light' ? 88 : 16;
+  const highlightLuminosity = themeType === 'light' ? 88 : 18;
 
   // @ts-ignore - we have multiple versions of color in the app
   // which leads to confusing type checks
@@ -38,13 +38,13 @@ export const SkeletonText = styled(Element)(props => {
       width: 200px;
       border-radius: 2px;
       opacity: 0.7;
-      animation: ${pulse} 4s linear infinite;
+      animation: ${pulse} 2s linear infinite;
       background: linear-gradient(
         90deg,
         ${background} 0%,
-        ${background} 20%,
+        ${background} 40%,
         ${highlight} 50%,
-        ${background} 80%,
+        ${background} 60%,
         ${background} 100%
       );
       background-size: 200% 200%;
