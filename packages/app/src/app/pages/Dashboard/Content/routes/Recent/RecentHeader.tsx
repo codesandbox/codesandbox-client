@@ -35,64 +35,6 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
       >
         {title}
       </Text>
-      <Stack direction="vertical" gap={4}>
-        <Text as="h2" lineHeight="25px" margin={0} size={16} weight="400">
-          Start a new project
-        </Text>
-        <EmptyPage.StyledGrid
-          css={{
-            gridAutoRows: 'auto',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px,1fr))',
-            '@media (min-width: 1585px)': {
-              gridTemplateColumns: 'repeat(auto-fill, minmax(370px,1fr))',
-            },
-          }}
-        >
-          <LargeCTAButton
-            icon="boxRepository"
-            title="Import repository"
-            disabled={isFrozen}
-            subtitle={IMPORT_BUTTON_DESCRIPTION}
-            onClick={() => {
-              track('Recent Page - Import Repository', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-              actions.modalOpened({ modal: 'importRepository' });
-            }}
-            variant="primary"
-          />
-
-          <LargeCTAButton
-            icon="boxDevbox"
-            title="Create a Devbox"
-            disabled={isFrozen}
-            subtitle={DEVBOX_BUTTON_DESCRIPTION}
-            onClick={() => {
-              track('Recent Page - Create Devbox', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-              actions.modalOpened({ modal: 'createDevbox' });
-            }}
-            variant="primary"
-          />
-
-          <LargeCTAButton
-            icon="boxSandbox"
-            title="Create a Sandbox"
-            subtitle={SANDBOX_BUTTON_DESCRIPTION}
-            onClick={() => {
-              track('Recent Page - Create Sandbox', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-              actions.modalOpened({ modal: 'createSandbox' });
-            }}
-            variant="secondary"
-          />
-        </EmptyPage.StyledGrid>
-      </Stack>
     </Stack>
   );
 };

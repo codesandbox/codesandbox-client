@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Combobox, ComboboxInput } from '@reach/combobox';
-
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Stack,
@@ -18,6 +18,7 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -25,13 +26,9 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
-    const { modalOpened } = useActions();
-    const {
-      activeWorkspaceAuthorization,
-      hasLogIn,
-      environment,
-    } = useAppState();
-    const showDiscover = !environment.isOnPrem;
+    const actions = useActions();
+    const { isFrozen } = useWorkspaceLimits();
+    const { activeWorkspaceAuthorization, hasLogIn } = useAppState();
 
     return (
       <Stack
@@ -99,39 +96,43 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
         <Stack align="center" gap={2}>
           <Button
-            variant="ghost"
-            css={css({ width: 'auto' })}
-            disabled={activeWorkspaceAuthorization === 'READ'}
+            variant="primary"
+            disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
-              modalOpened({ modal: 'genericCreate' });
+              track('Dashboard - Topbar - Import repository');
+              actions.modalOpened({ modal: 'importRepository' });
             }}
+            autoWidth
           >
-            <Icon
-              name="plus"
-              size={16}
-              title="Create new"
-              css={{ marginRight: '8px' }}
-            />
-            Create
+            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
+            Repository
           </Button>
 
-          {showDiscover && (
-            <Button
-              variant="ghost"
-              autoWidth
-              onClick={() => {
-                window.open('http://codesandbox.io/discover', '_blank');
-              }}
-            >
-              <Icon
-                name="discover"
-                size={16}
-                title="New"
-                css={{ marginRight: '8px' }}
-              />
-              Discover
-            </Button>
-          )}
+          <Button
+            variant="primary"
+            disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
+            onClick={() => {
+              track('Dashboard - Topbar - Create Devbox');
+              actions.modalOpened({ modal: 'createDevbox' });
+            }}
+            autoWidth
+          >
+            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
+            Devbox
+          </Button>
+
+          <Button
+            variant="light"
+            disabled={activeWorkspaceAuthorization === 'READ'}
+            onClick={() => {
+              track('Dashboard - Topbar - Create Sandbox');
+              actions.modalOpened({ modal: 'createSandbox' });
+            }}
+            autoWidth
+          >
+            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
+            Sandbox
+          </Button>
 
           {hasLogIn && <Notifications dashboard />}
         </Stack>
