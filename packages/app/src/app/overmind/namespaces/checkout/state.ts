@@ -12,25 +12,23 @@ import {
 } from './constants';
 
 export interface State {
-  selectedPlan: PlanType | null;
+  selectedPlan: PlanType;
   creditAddons: Array<{ addon: CreditAddon; quantity: number }>;
   spendingLimit: number;
   totalCredits: number;
   totalPrice: number;
   convertProToUBBCharge: InvoicePreview | null;
-  recurringType: 'annual' | 'monthly';
   availableBasePlans: Record<PlanType, PricingPlan>;
   availableCreditAddons: Record<CreditAddonType, CreditAddon>;
 }
 
 export const state: State = {
-  selectedPlan: null,
+  selectedPlan: 'flex-annual',
   creditAddons: [],
   spendingLimit: DEFAULT_SPENDING_LIMIT,
   totalCredits: 0,
   totalPrice: 0,
   convertProToUBBCharge: null,
-  recurringType: 'annual',
   availableBasePlans: {
     free: FREE_PLAN,
     flex: PRO_PLAN,

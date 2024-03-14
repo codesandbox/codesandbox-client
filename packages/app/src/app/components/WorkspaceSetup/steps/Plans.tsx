@@ -57,8 +57,8 @@ export const Plans: React.FC<StepProps> = ({
     },
   } = checkout;
 
-  const currentProPlan =
-    checkout.recurringType === 'annual' ? proAnnualPlan : proPlan;
+  const annualPlan = checkout.selectedPlan === 'flex-annual';
+  const currentProPlan = annualPlan ? proAnnualPlan : proPlan;
 
   // For new workspaces
   const freeButtonCTA = isUpgrading
@@ -77,7 +77,6 @@ export const Plans: React.FC<StepProps> = ({
   }, [urlWorkspaceId, activeTeam, actions]);
 
   const handleProPlanSelection = async () => {
-    actions.checkout.selectPlan('flex');
     track('Checkout - Select Pro Plan', {
       from: isUpgrading ? 'upgrade' : 'create-workspace',
       currentPlan: isFree ? 'free' : 'pro',
@@ -101,10 +100,12 @@ export const Plans: React.FC<StepProps> = ({
         />
 
         <Stack gap={4} direction="vertical">
-          <Stack horizontal css={{ justifyContent: 'center' }}>
+          <Stack css={{ justifyContent: 'center' }}>
             <RecurringType
-              current={checkout.recurringType}
-              onChangeValue={actions.checkout.setRecurringType}
+              current={annualPlan ? 'annual' : 'monthly'}
+              onChangeValue={() =>
+                actions.checkout.selectPlan(annualPlan ? 'flex' : 'flex-annual')
+              }
             />
           </Stack>
 
@@ -802,7 +803,6 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
 const RecurringType = ({ current, onChangeValue }) => {
   return (
     <Stack
-      horizontal
       css={{
         background: '#1D1D1D',
         border: '1px solid #3B3B3B',

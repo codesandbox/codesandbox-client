@@ -1,6 +1,6 @@
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { IconButton, Stack, Text } from '@codesandbox/components';
+import { IconButton, Stack, Text, Switch } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import styled from 'styled-components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -103,6 +103,27 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
         </Stack>
 
         <Text color="#fff">${totalPrice}</Text>
+      </Stack>
+
+      <Stack css={{ gap: '8px' }}>
+        <Switch
+          id="recurring"
+          on={selectedPlan === 'flex-annual'}
+          onChange={() =>
+            actions.checkout.selectPlan(
+              selectedPlan === 'flex-annual' ? 'flex' : 'flex-annual'
+            )
+          }
+        />
+        <Stack direction="vertical" css={{ marginTop: -3 }}>
+          <Text color="#fff" as="label" htmlFor="recurring">
+            Annual (30% off)
+          </Text>
+
+          {selectedPlan === 'flex-annual' && (
+            <Text>24 hour processing time</Text>
+          )}
+        </Stack>
       </Stack>
 
       <Text>

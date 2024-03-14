@@ -26,7 +26,8 @@ export const fetchPrices = async ({ state, effects }: Context) => {
 };
 
 export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
-  actions.checkout.clearCheckout();
+  // Why?
+  // actions.checkout.clearCheckout();
   state.checkout.selectedPlan = plan;
   actions.checkout.recomputeTotals();
 };
@@ -72,10 +73,6 @@ export const removeCreditsPackage = (
 };
 
 export const recomputeTotals = ({ state }: Context) => {
-  if (!state.checkout.selectedPlan) {
-    return;
-  }
-
   const { availableBasePlans, selectedPlan, creditAddons } = state.checkout;
 
   const basePlan = availableBasePlans[selectedPlan];
@@ -126,10 +123,6 @@ export const calculateConversionCharge = async (
 ) => {
   const { selectedPlan } = state.checkout;
 
-  if (!selectedPlan) {
-    return;
-  }
-
   const basePlan = state.checkout.availableBasePlans[selectedPlan];
 
   try {
@@ -160,10 +153,6 @@ export const convertToUsageBilling = async (
   { workspaceId }: { workspaceId: string }
 ): Promise<{ success: boolean; error?: string }> => {
   const { selectedPlan } = state.checkout;
-
-  if (!selectedPlan) {
-    return { success: false, error: 'No plan selected' };
-  }
 
   const basePlan = state.checkout.availableBasePlans[selectedPlan];
 
@@ -196,11 +185,4 @@ export const getFlatAddonsList = ({ state }: Context): string[] => {
   });
 
   return addons;
-};
-
-export const setRecurringType = (
-  { state }: Context,
-  recurringType: Context['state']['checkout']['recurringType']
-) => {
-  state.checkout.recurringType = recurringType;
 };
