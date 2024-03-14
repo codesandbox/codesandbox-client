@@ -32,9 +32,31 @@ export const FREE_PLAN: PricingPlan = {
 export const PRO_PLAN: PricingPlan = {
   id: 'flex',
   name: 'Pro',
-  price: 9,
-  priceDiscountNote: 'Early access discount',
+  price: 12,
   credits: 1000,
+  recurringTypeDescription: 'per month per workspace',
+  creditsNote:
+    'Ideal to get started with cloud development and understand your usage needs.',
+  storage: 50,
+  features: ['All free features', 'Unlimited Codeium AI code completions'],
+  usage: [
+    'Start from 100 hours worth of VM credits per month',
+    '50 GB storage per VM',
+    'VMs up to 16 vCPUs + 32 GB RAM',
+    'Unlimited Devboxes and repositories',
+    'Unlimited Sandboxes',
+    'Unlimited personal drafts',
+    '20 members',
+    'Access on-demand VM credits for $0.18 per hour',
+  ],
+};
+
+export const PRO_PLAN_ANNUAL: PricingPlan = {
+  id: 'flex',
+  name: 'Pro',
+  price: 9,
+  credits: 1000,
+  recurringTypeDescription: 'per workspace per month billed annually',
   creditsNote:
     'Ideal to get started with cloud development and understand your usage needs.',
   storage: 50,
