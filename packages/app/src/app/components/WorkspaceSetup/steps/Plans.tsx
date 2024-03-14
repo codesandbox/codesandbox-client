@@ -97,6 +97,13 @@ export const Plans: React.FC<StepProps> = ({
         />
 
         <Stack gap={4} direction="vertical">
+          <Stack horizontal css={{ justifyContent: 'center' }}>
+            <RecurringType
+              current={checkout.recurringType}
+              onChangeValue={actions.checkout.setRecurringType}
+            />
+          </Stack>
+
           <HorizontalScroller css={{ width: '100%' }}>
             <Stack gap={6} justify="center">
               {showFreePlan && (
@@ -800,3 +807,47 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
     ))}
   </>
 );
+
+const RecurringType = ({ current, onChangeValue }) => {
+  return (
+    <Stack
+      horizontal
+      css={{
+        background: '#1D1D1D',
+        border: '1px solid #3B3B3B',
+        padding: 3,
+        borderRadius: 999999,
+      }}
+    >
+      <RecurringTypeButton
+        type="button"
+        data-active={current === 'annual'}
+        onClick={() => onChangeValue('annual')}
+      >
+        <Text>Annual (30% off)</Text>
+      </RecurringTypeButton>
+      <RecurringTypeButton
+        type="button"
+        data-active={current === 'monthly'}
+        onClick={() => onChangeValue('monthly')}
+      >
+        <Text>Monthly</Text>
+      </RecurringTypeButton>
+    </Stack>
+  );
+};
+
+const RecurringTypeButton = styled.button`
+  border: none;
+  height: 34px;
+  padding: 0 21px 0 22px;
+  border-radius: 999999px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+
+  &[data-active='true'] {
+    background: #bdb1f6;
+    color: #0e0e0e;
+  }
+`;

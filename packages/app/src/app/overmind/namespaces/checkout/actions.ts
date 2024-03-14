@@ -197,3 +197,10 @@ export const getFlatAddonsList = ({ state }: Context): string[] => {
 
   return addons;
 };
+
+export const setRecurringType = (
+  { state }: Context,
+  recurringType: Context['state']['checkout']['recurringType']
+) => {
+  state.checkout.recurringType = recurringType;
+};

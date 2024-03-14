@@ -17,6 +17,7 @@ export interface State {
   totalCredits: number;
   totalPrice: number;
   convertProToUBBCharge: InvoicePreview | null;
+  recurringType: 'annual' | 'monthly';
   availableBasePlans: Record<PlanType, PricingPlan>;
   availableCreditAddons: Record<CreditAddonType, CreditAddon>;
 }
@@ -28,6 +29,7 @@ export const state: State = {
   totalCredits: 0,
   totalPrice: 0,
   convertProToUBBCharge: null,
+  recurringType: 'annual',
   availableBasePlans: {
     free: FREE_PLAN,
     flex: PRO_PLAN,
