@@ -7,7 +7,7 @@ export const AuthorizeGitHubPermissions = () => {
   const { signInGithubClicked } = useActions();
 
   useEffect(() => {
-    track('Import repo - Permissions - Display');
+    track('Import repository - Permissions - Display');
   }, []);
 
   return (
@@ -31,7 +31,7 @@ export const AuthorizeGitHubPermissions = () => {
           size="large"
           onClick={() => {
             signInGithubClicked('private_repos');
-            track('Import repo - Permissions - Authorize all');
+            track('Import repository - Permissions - Authorize all');
           }}
         >
           Authorize access to public and private repositories
@@ -41,7 +41,7 @@ export const AuthorizeGitHubPermissions = () => {
           size="large"
           onClick={() => {
             signInGithubClicked('public_repos');
-            track('Import repo - Permissions - Authorize public');
+            track('Import repository - Permissions - Authorize public');
           }}
         >
           Authorize access to public repositories only
