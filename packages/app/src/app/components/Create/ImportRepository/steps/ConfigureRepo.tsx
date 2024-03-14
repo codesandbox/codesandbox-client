@@ -84,6 +84,7 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
     setIsImporting(true);
     track('Import repository - Configure - Click import', {
       vmTier: selectedTier,
+      appInstalled: repository.appInstalled,
     });
 
     const result = await dashboard.importGitHubRepository({

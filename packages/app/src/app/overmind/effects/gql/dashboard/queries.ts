@@ -344,7 +344,12 @@ export const getPartialOrganizationRepos: Query<
   GetPartialGitHubOrganizationReposQueryVariables
 > = gql`
   query GetPartialGitHubOrganizationRepos($organization: String!) {
-    githubOrganizationRepos(organization: $organization, perPage: 10, page: 1) {
+    githubOrganizationRepos(
+      organization: $organization
+      sort: PUSHED
+      perPage: 10
+      page: 1
+    ) {
       ...githubRepo
     }
   }
@@ -356,7 +361,7 @@ export const getFullOrganizationRepos: Query<
   GetFullGitHubOrganizationReposQueryVariables
 > = gql`
   query GetFullGitHubOrganizationRepos($organization: String!) {
-    githubOrganizationRepos(organization: $organization) {
+    githubOrganizationRepos(organization: $organization, sort: PUSHED) {
       ...githubRepo
     }
   }

@@ -75,7 +75,7 @@ export const ForkRepo: React.FC<ForkRepoProps> = ({
     }
 
     setIsImporting(true);
-    track('Import repository - Configure - Click fork', {
+    track('Import repository - Fork - Click fork', {
       vmTier: selectedTier,
     });
 
@@ -93,7 +93,7 @@ export const ForkRepo: React.FC<ForkRepoProps> = ({
     });
 
     if (result.success) {
-      track('Import repository - Configure - Fork successful');
+      track('Import repository - Fork - Fork successful');
 
       window.location.href = v2BranchUrl({
         workspaceId: activeTeamInfo?.id,
@@ -152,7 +152,7 @@ export const ForkRepo: React.FC<ForkRepoProps> = ({
                 options={githubAccounts.all}
                 value={selectedOrg}
                 onChange={(account: string) => {
-                  track('Import repository - Configure - Change GH Org');
+                  track('Import repository - Fork - Change GH Org');
                   setSelectedOrg(account);
                 }}
                 variant="secondary"
