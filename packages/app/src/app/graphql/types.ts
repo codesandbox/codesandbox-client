@@ -196,6 +196,7 @@ export type RootQueryTypeGithubOrganizationReposArgs = {
   organization: Scalars['String'];
   page: InputMaybe<Scalars['Int']>;
   perPage: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<UserRepoSort>;
 };
 
 export type RootQueryTypeGithubRepoArgs = {
@@ -1323,6 +1324,14 @@ export type LiveSessionHost = {
   username: Scalars['String'];
 };
 
+/** Sorting key for repositories */
+export enum UserRepoSort {
+  Created = 'CREATED',
+  FullName = 'FULL_NAME',
+  Pushed = 'PUSHED',
+  Updated = 'UPDATED',
+}
+
 /** Details about a repository as it appears on GitHub (Open API `repository`) */
 export type GithubRepo = {
   __typename?: 'GithubRepo';
@@ -1515,14 +1524,6 @@ export enum UserRepoAffiliation {
   Collaborator = 'COLLABORATOR',
   OrganizationMember = 'ORGANIZATION_MEMBER',
   Owner = 'OWNER',
-}
-
-/** Sorting key for repositories */
-export enum UserRepoSort {
-  Created = 'CREATED',
-  FullName = 'FULL_NAME',
-  Pushed = 'PUSHED',
-  Updated = 'UPDATED',
 }
 
 export type NotificationPreferences = {
@@ -6371,7 +6372,10 @@ export type GetSandboxWithTemplateQuery = {
     forkCount: number;
     viewCount: number;
     isV2: boolean;
+    insertedAt: string;
+    updatedAt: string;
     team: { __typename?: 'TeamPreview'; name: string } | null;
+    source: { __typename?: 'Source'; template: string | null };
     customTemplate: {
       __typename?: 'Template';
       id: any | null;

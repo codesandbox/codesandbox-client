@@ -10,7 +10,6 @@ import { useActions, useAppState, useEffects } from 'app/overmind';
 import React, { useState, useEffect } from 'react';
 import { useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
-import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
@@ -35,13 +34,14 @@ import { TemplateList } from './TemplateList';
 import { useTemplateCollections } from './hooks/useTemplateCollections';
 import { useOfficialTemplates } from './hooks/useOfficialTemplates';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
-import { CreateParams } from './utils/types';
+import { CreateParams, SandboxToFork } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
 import { CreateBoxForm } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
 import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
 import { useAllTemplates } from './hooks/useAllTemplates';
+import { mapSandboxGQLResponseToSandboxToFork } from './utils/api';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -77,7 +77,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const [viewState, setViewState] = useState<'select' | 'loading' | 'config'>(
     'select'
   );
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
+  const [selectedTemplate, setSelectedTemplate] = useState<SandboxToFork>();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [autoLaunchVSCode] = useGlobalPersistedState(
     'AUTO_LAUNCH_VSCODE',
@@ -122,20 +122,12 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     effects.gql.queries
       .getSandboxWithTemplate({ id: sandboxIdToFork })
       .then(result => {
-        const { sandbox } = result;
-        setSelectedTemplate({
-          iconUrl: sandbox.customTemplate?.iconUrl,
-          color: '#fff',
-          published: true,
-          id: sandbox.customTemplate?.id,
-          sandbox: {
-            // TODO: proper mapping of fields and ajust the types
-            ...sandbox,
-          },
-        });
+        setSelectedTemplate(
+          mapSandboxGQLResponseToSandboxToFork(result.sandbox)
+        );
         setViewState('config');
       })
-      .catch(() => {
+      .catch(e => {
         setViewState('select');
       });
   }, [sandboxIdToFork]);
@@ -157,17 +149,15 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
 
   const createFromTemplate = (
-    template: TemplateFragment,
+    sandbox: SandboxToFork,
     { name, createAs, permission, editor, customVMTier }: CreateParams
   ) => {
-    const { sandbox } = template;
     const openInVSCode = editor === 'vscode';
 
     track(`Create ${type} - Create`, {
       type: 'fork',
       title: name,
-      template_name:
-        template.sandbox.title || template.sandbox.alias || template.sandbox.id,
+      template_name: sandbox.title || sandbox.alias || sandbox.id,
       open_in_editor: editor,
       ...(customVMTier ? { vm_tier: customVMTier } : {}),
     });
@@ -190,38 +180,31 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     closeModal();
   };
 
-  const selectTemplate = (
-    template: TemplateFragment,
-    trackingSource: string
-  ) => {
-    const { sandbox } = template;
+  const selectTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
     if (!hasLogIn) {
       // Open template in editor for anonymous users
       window.location.href = sandboxUrl(sandbox, hasBetaEditorExperiment);
       return;
     }
 
-    setSelectedTemplate(template);
+    setSelectedTemplate(sandbox);
     setViewState('config');
 
     track(`Create ${type} - Select template`, {
       type: 'fork',
       tab_name: trackingSource,
-      template_name:
-        template.sandbox.title || template.sandbox.alias || template.sandbox.id,
+      template_name: sandbox.title || sandbox.alias || sandbox.id,
     });
   };
 
-  const openTemplate = (template: TemplateFragment, trackingSource: string) => {
-    const { sandbox } = template;
+  const openTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
     const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
     window.open(url, '_blank');
 
     track(`Create ${type} - Open template`, {
       type: 'open',
       tab_name: trackingSource,
-      template_name:
-        template.sandbox.title || template.sandbox.alias || template.sandbox.id,
+      template_name: sandbox.title || sandbox.alias || sandbox.id,
     });
   };
 

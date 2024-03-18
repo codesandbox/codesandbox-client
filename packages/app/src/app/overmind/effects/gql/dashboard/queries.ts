@@ -378,8 +378,13 @@ export const getSandboxWithTemplate: Query<
       forkCount
       viewCount
       isV2
+      insertedAt
+      updatedAt
       team {
         name
+      }
+      source {
+        template
       }
       customTemplate {
         id

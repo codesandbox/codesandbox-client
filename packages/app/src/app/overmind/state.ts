@@ -6,10 +6,10 @@ import {
 import {
   CurrentTeamInfoFragmentFragment as CurrentTeam,
   TeamMemberAuthorization,
-  TemplateFragment,
 } from 'app/graphql/types';
 import { derived } from 'overmind';
 import { hasLogIn } from '@codesandbox/common/lib/utils/user';
+import { SandboxToFork } from 'app/components/Create/utils/types';
 import { MetaFeatures } from './effects/api/types';
 
 export type PendingUserType = {
@@ -24,7 +24,7 @@ type State = {
   isFirstVisit: boolean;
   isLoggedIn: boolean;
   hasLogIn: boolean;
-  officialTemplates: TemplateFragment[];
+  officialTemplates: SandboxToFork[];
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
   authToken: string | null;

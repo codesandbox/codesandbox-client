@@ -5,10 +5,12 @@ import {
   TemplateFragment,
 } from 'app/graphql/types';
 import { FETCH_TEAM_TEMPLATES } from '../utils/queries';
+import { SandboxToFork } from '../utils/types';
+import { mapTemplateGQLResponseToSandboxToFork } from '../utils/api';
 
 type BaseState = {
-  recentTemplates: TemplateFragment[];
-  teamTemplates: TemplateFragment[];
+  recentTemplates: SandboxToFork[];
+  teamTemplates: SandboxToFork[];
 };
 
 type State = BaseState &
@@ -82,7 +84,11 @@ export const useTeamTemplates = ({
 
   return {
     state: 'ready',
-    recentTemplates: data.me.recentlyUsedTemplates.filter(respectBoxType),
-    teamTemplates: data.me.team.templates.filter(respectBoxType),
+    recentTemplates: data.me.recentlyUsedTemplates
+      .filter(respectBoxType)
+      .map(mapTemplateGQLResponseToSandboxToFork),
+    teamTemplates: data.me.team.templates
+      .filter(respectBoxType)
+      .map(mapTemplateGQLResponseToSandboxToFork),
   };
 };
