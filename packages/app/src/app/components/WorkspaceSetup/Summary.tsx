@@ -110,9 +110,14 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
         <Switch
           id="recurring"
           on={isAnnual}
-          onChange={() =>
-            actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual')
-          }
+          onChange={() => {
+            actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual');
+
+            track('Checkout - Toggle recurring type', {
+              from: 'summary',
+              newValue: isAnnual ? 'annual' : 'monthly',
+            });
+          }}
         />
         <Stack direction="vertical" css={{ marginTop: -3 }}>
           <Text color="#fff" as="label" htmlFor="recurring">

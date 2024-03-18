@@ -4,6 +4,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { InputText } from 'app/components/dashboard/InputText';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { PlanType } from 'app/overmind/namespaces/checkout/types';
 import { StepProps } from '../types';
@@ -58,37 +59,43 @@ const AnnualForm = ({
       .map(item => `${item.addon.credits} x ${item.quantity}`)
       .join(', ');
 
-    await effects.http.post(
-      ROWS_REQUEST_URL,
-      {
-        values: [
-          [
-            '',
-            workspaceId,
-            checkout.selectedPlan,
-            addons === '' ? 'N/A' : addons,
-            checkout.spendingLimit,
-            country,
-            zipCode,
+    try {
+      await effects.http.post(
+        ROWS_REQUEST_URL,
+        {
+          values: [
+            [
+              '',
+              workspaceId,
+              checkout.selectedPlan,
+              addons === '' ? 'N/A' : addons,
+              checkout.spendingLimit,
+              country,
+              zipCode,
+            ],
           ],
-        ],
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + ROWS_API_KEY,
         },
-      }
-    );
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + ROWS_API_KEY,
+          },
+        }
+      );
+    } catch {
+      track('Checkout - Failed annual plan');
+    }
   };
 
   const handleSubmit = () => {
     if (isAnnual) {
+      track('Checkout - Submit annual plan');
       annualSendRequest();
 
       return;
     }
 
+    track('Checkout - Drop annual plan to monthly');
     refreshParentSelectedPlan();
   };
 
@@ -115,9 +122,14 @@ const AnnualForm = ({
             <Switch
               id="recurring"
               on={isAnnual}
-              onChange={() =>
-                actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual')
-              }
+              onChange={() => {
+                track('Checkout - Toggle recurring type', {
+                  from: 'finalize-step',
+                  newValue: isAnnual ? 'annual' : 'monthly',
+                });
+
+                actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual');
+              }}
             />
             <Stack direction="vertical" css={{ marginTop: -3 }}>
               <Text color="#fff" as="label" htmlFor="recurring">
