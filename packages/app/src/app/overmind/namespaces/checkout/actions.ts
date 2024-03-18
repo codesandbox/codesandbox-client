@@ -26,8 +26,7 @@ export const fetchPrices = async ({ state, effects }: Context) => {
 };
 
 export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
-  // Why?
-  // actions.checkout.clearCheckout();
+  actions.checkout.clearCheckout();
   state.checkout.selectedPlan = plan;
   actions.checkout.recomputeTotals();
 };
@@ -76,13 +75,15 @@ export const recomputeTotals = ({ state }: Context) => {
   const { availableBasePlans, selectedPlan, creditAddons } = state.checkout;
 
   const basePlan = availableBasePlans[selectedPlan];
+  const recurring = selectedPlan === 'flex-annual' ? 12 : 1;
 
   const totalCreditAddonsPrice = creditAddons.reduce(
     (acc, item) => acc + item.addon.price * item.quantity,
     0
   );
 
-  state.checkout.totalPrice = basePlan.price + totalCreditAddonsPrice;
+  state.checkout.totalPrice =
+    (basePlan.price + totalCreditAddonsPrice) * recurring;
 
   state.checkout.totalCredits =
     basePlan.credits +
@@ -92,13 +93,15 @@ export const recomputeTotals = ({ state }: Context) => {
     );
 };
 
-export const clearCheckout = ({ state }: Context) => {
-  state.checkout.selectedPlan = null;
+export const clearCheckout = ({ state, actions }: Context) => {
+  state.checkout.selectedPlan = 'flex-annual';
   state.checkout.creditAddons = [];
   state.checkout.totalPrice = 0;
   state.checkout.totalCredits = 0;
   state.checkout.spendingLimit = DEFAULT_SPENDING_LIMIT;
   state.checkout.convertProToUBBCharge = null;
+
+  actions.checkout.recomputeTotals();
 };
 
 export const setSpendingLimit = async (

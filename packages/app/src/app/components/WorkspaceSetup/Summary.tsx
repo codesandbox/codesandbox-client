@@ -126,7 +126,7 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
         </Stack>
       </Stack>
 
-      <Text>
+      <Text size={3}>
         Additional VM credits are available on-demand for $0.018/credit.
         <br />
         Spending limit: ${spendingLimit}

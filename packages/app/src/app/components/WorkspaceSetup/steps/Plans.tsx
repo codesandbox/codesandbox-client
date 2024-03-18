@@ -67,6 +67,7 @@ export const Plans: React.FC<StepProps> = ({
 
   useEffect(() => {
     actions.checkout.fetchPrices();
+    actions.checkout.recomputeTotals();
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
   }, []);
 
