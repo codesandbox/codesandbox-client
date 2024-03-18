@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Switch, Stack, Text, Button } from '@codesandbox/components';
+import { Switch, Stack, Text, Button, Icon } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { InputText } from 'app/components/dashboard/InputText';
 
+import { PlanType } from 'app/overmind/namespaces/checkout/types';
 import { StepProps } from '../types';
 import { Payment } from './Payment';
 import { ChangePlan } from './ChangePlan';
@@ -22,7 +23,8 @@ const AnnualForm = ({
   onDismiss,
   currentStep,
   numberOfSteps,
-}: StepProps) => {
+  refreshParentSelectedPlan,
+}: StepProps & { refreshParentSelectedPlan: () => void }) => {
   const { checkout } = useAppState();
   const {
     selectedPlan,
@@ -80,7 +82,15 @@ const AnnualForm = ({
     );
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    if (isAnnual) {
+      annualSendRequest();
+
+      return;
+    }
+
+    refreshParentSelectedPlan();
+  };
 
   return (
     <AnimatedStep css={{ width: '100%', maxWidth: 600 }}>
@@ -137,48 +147,55 @@ const AnnualForm = ({
           Spending limit: ${spendingLimit}
         </Text>
 
-        <Stack
-          direction="vertical"
-          gap={4}
-          css={{ paddingBottom: 24 * 2, paddingTop: 24 * 2 }}
-        >
-          <Text color="#fff" size={4}>
-            Billing details:
-          </Text>
+        {isAnnual ? (
+          <Stack
+            direction="vertical"
+            gap={4}
+            css={{ paddingBottom: 24 * 2, paddingTop: 24 * 2 }}
+          >
+            <Text color="#fff" size={4}>
+              Billing details:
+            </Text>
 
-          <InputText
-            label="Country *"
-            placeholder="Introduce your country or region"
-            id="country"
-            value={country}
-            onChange={e => setCountry(e.target.value)}
-            name="country"
-          />
-          <InputText
-            label="ZIP code *"
-            placeholder="99999"
-            id="zipCode"
-            value={zipCode}
-            name="zipCode"
-            onChange={e => setZipCode(e.target.value)}
-          />
-        </Stack>
+            <InputText
+              label="Country *"
+              placeholder="Introduce your country or region"
+              id="country"
+              value={country}
+              onChange={e => setCountry(e.target.value)}
+              name="country"
+            />
+            <InputText
+              label="ZIP code *"
+              placeholder="99999"
+              id="zipCode"
+              value={zipCode}
+              name="zipCode"
+              onChange={e => setZipCode(e.target.value)}
+            />
+          </Stack>
+        ) : (
+          <Stack />
+        )}
 
         <Button
-          disabled={disabled}
+          disabled={isAnnual && disabled}
           autoWidth
           size="large"
           type="submit"
           onClick={handleSubmit}
         >
-          Send request
+          {isAnnual ? 'Send request' : 'Proceed to checkout'}
         </Button>
 
-        <Text>
-          {isAnnual
-            ? 'We will review your request in 24 hours and get back to you.'
-            : 'Process immediately.'}
-        </Text>
+        <Stack gap={1} css={{ color: '#A8BFFA' }}>
+          <Icon name="circleBang" />
+          <Text size={3}>
+            {isAnnual
+              ? 'We will review your request in 24 hours and get back to you.'
+              : 'Process immediately.'}
+          </Text>
+        </Stack>
       </Stack>
     </AnimatedStep>
   );
@@ -188,8 +205,21 @@ export const Finalize: React.FC<StepProps> = props => {
   const { checkout } = useAppState();
   const { isPro } = useWorkspaceSubscription();
 
-  if (checkout.selectedPlan === 'flex-annual') {
-    return <AnnualForm {...props} />;
+  // This internal state is used to avoid unnecessary rerenders
+  // and show the wrong step while the user is recurring plan
+  const [_stepSelectedPlan, setStepSelectedPlan] = React.useState<PlanType>(
+    checkout.selectedPlan
+  );
+
+  if (_stepSelectedPlan === 'flex-annual') {
+    return (
+      <AnnualForm
+        refreshParentSelectedPlan={() =>
+          setStepSelectedPlan(checkout.selectedPlan)
+        }
+        {...props}
+      />
+    );
   }
 
   if (isPro) {
