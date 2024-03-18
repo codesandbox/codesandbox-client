@@ -806,7 +806,6 @@ const RecurringType = ({ current, onChangeValue }) => {
     <Stack
       css={{
         background: '#1D1D1D',
-        border: '1px solid #3B3B3B',
         padding: 3,
         borderRadius: 999999,
       }}
