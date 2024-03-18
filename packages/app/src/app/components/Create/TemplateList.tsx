@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, Stack } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
-import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TemplateCard } from './TemplateCard';
 import {
@@ -9,15 +8,16 @@ import {
   SandboxAlternative,
   TemplateGrid,
 } from './elements';
+import { SandboxToFork } from './utils/types';
 
 interface TemplateListProps {
   title: string;
   showEmptyState?: boolean;
   searchQuery?: string;
   type: 'sandbox' | 'devbox';
-  templates: TemplateFragment[];
-  onSelectTemplate: (template: TemplateFragment) => void;
-  onOpenTemplate: (template: TemplateFragment) => void;
+  templates: SandboxToFork[];
+  onSelectTemplate: (template: SandboxToFork) => void;
+  onOpenTemplate: (template: SandboxToFork) => void;
 }
 
 export const TemplateList = ({

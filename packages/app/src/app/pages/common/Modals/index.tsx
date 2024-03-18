@@ -219,6 +219,7 @@ const Modals: FunctionComponent = () => {
     currentModal,
     currentModalItemId,
     repoToImport,
+    sandboxIdToFork,
   } = useAppState();
 
   const [localState, setLocalState] = useState({
@@ -258,6 +259,7 @@ const Modals: FunctionComponent = () => {
     modal.props = {
       ...modal.props,
       ...(currentModalItemId ? { collectionId: currentModalItemId } : {}),
+      ...(sandboxIdToFork ? { sandboxIdToFork } : {}),
     };
   }
 

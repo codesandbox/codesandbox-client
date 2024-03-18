@@ -1,25 +1,22 @@
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { Stack, Text, Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
-import { TemplateFragment } from 'app/graphql/types';
 import React from 'react';
+import { SandboxToFork } from '../utils/types';
 
 interface TemplateInfoProps {
-  template: TemplateFragment;
+  template: SandboxToFork;
 }
 
 export const TemplateInfo = ({ template }: TemplateInfoProps) => {
   const { UserIcon } = getTemplateIcon(
-    template.sandbox.title,
+    template.title,
     template.iconUrl,
-    template.sandbox?.source?.template
+    template.sourceTemplate
   );
 
-  const title = template.sandbox.title || template.sandbox.alias;
-  const author =
-    template.sandbox?.team?.name ||
-    template.sandbox?.author?.username ||
-    'CodeSandbox';
+  const title = template.title || template.alias;
+  const owner = template.owner;
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -28,23 +25,23 @@ export const TemplateInfo = ({ template }: TemplateInfoProps) => {
         <Text size={3} weight="500">
           {title}
         </Text>
-        {author && (
+        {owner && (
           <Text size={3} css={{ color: '#999' }}>
-            {author}
+            {owner}
           </Text>
         )}
       </Stack>
       <Text size={3} css={{ color: '#999', lineHeight: '1.4' }}>
-        {template.sandbox.description}
+        {template.description}
       </Text>
       <Stack gap={3} css={{ color: '#999' }}>
         <Stack gap={1}>
           <Icon name="eye" size={14} />
-          <Text size={2}>{formatNumber(template.sandbox.viewCount)}</Text>
+          <Text size={2}>{formatNumber(template.viewCount)}</Text>
         </Stack>
         <Stack gap={1}>
           <Icon name="fork" size={14} />
-          <Text size={2}>{formatNumber(template.sandbox.forkCount)}</Text>
+          <Text size={2}>{formatNumber(template.forkCount)}</Text>
         </Stack>
       </Stack>
     </Stack>

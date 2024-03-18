@@ -1,4 +1,4 @@
-import { TemplateFragment, GetGithubRepoQuery } from 'app/graphql/types';
+import { GetGithubRepoQuery } from 'app/graphql/types';
 
 export type CreateParams = {
   name?: string;
@@ -8,10 +8,25 @@ export type CreateParams = {
   customVMTier?: number;
 };
 
+export type SandboxToFork = {
+  id: string;
+  alias: string | null;
+  title: string | null;
+  description: string | null;
+  insertedAt: string;
+  updatedAt: string;
+  isV2: boolean;
+  forkCount: number;
+  viewCount: number;
+  iconUrl?: string;
+  sourceTemplate?: string;
+  owner: string;
+};
+
 export interface TemplateCollection {
   title?: string;
   key: string;
-  templates: TemplateFragment[];
+  templates: SandboxToFork[];
   isOwned?: boolean;
 }
 
