@@ -21,7 +21,8 @@ import {
   SerializedTranspiledModule,
 } from './transpiled-module/transpiled-module';
 import { Preset } from './preset';
-import fetchModule, {
+import {
+  fetchModule,
   setCombinedMetas,
   combinedMetas,
 } from './npm/dynamic/fetch-npm-module';
