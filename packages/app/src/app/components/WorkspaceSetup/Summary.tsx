@@ -25,6 +25,7 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
   } = checkout;
 
   const basePlan = availableBasePlans[selectedPlan];
+  const isAnnual = selectedPlan === 'flex-annual';
 
   if (!basePlan) {
     return null;
@@ -98,7 +99,7 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
 
       <Stack justify="space-between">
         <Stack direction="vertical">
-          <Text color="#fff">Total cost per month</Text>
+          <Text color="#fff">Total cost per {isAnnual ? 'year' : 'month'}</Text>
           <Text>{totalCredits} VM credits</Text>
         </Stack>
 
@@ -108,11 +109,9 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
       <Stack css={{ gap: '8px' }}>
         <Switch
           id="recurring"
-          on={selectedPlan === 'flex-annual'}
+          on={isAnnual}
           onChange={() =>
-            actions.checkout.selectPlan(
-              selectedPlan === 'flex-annual' ? 'flex' : 'flex-annual'
-            )
+            actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual')
           }
         />
         <Stack direction="vertical" css={{ marginTop: -3 }}>
@@ -120,9 +119,7 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
             Annual (30% off)
           </Text>
 
-          {selectedPlan === 'flex-annual' && (
-            <Text>24 hour processing time</Text>
-          )}
+          {isAnnual && <Text>24 hour processing time</Text>}
         </Stack>
       </Stack>
 

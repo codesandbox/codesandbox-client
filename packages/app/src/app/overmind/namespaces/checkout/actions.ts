@@ -26,7 +26,6 @@ export const fetchPrices = async ({ state, effects }: Context) => {
 };
 
 export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
-  actions.checkout.clearCheckout();
   state.checkout.selectedPlan = plan;
   actions.checkout.recomputeTotals();
 };

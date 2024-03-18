@@ -22,9 +22,7 @@ export const WorkspaceSetup: React.FC<WorkspaceSetupProps> = ({
   onDismiss,
 }) => {
   const startFromIndex = startFrom ? steps.indexOf(startFrom) : 0;
-  const [currentStepIndex, setCurrentStepIndex] = React.useState<number>(
-    startFromIndex
-  );
+  const [currentStepIndex, setCurrentStepIndex] = React.useState<number>(3);
 
   const currentStep = steps[currentStepIndex];
   const Component = STEP_COMPONENTS[currentStep];
@@ -60,8 +58,4 @@ const STEP_COMPONENTS: Record<WorkspaceSetupStep, React.FC<StepProps>> = {
   finalize: Finalize,
 };
 
-const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = [
-  'spending-limit',
-  'addons',
-  'finalize',
-];
+const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = ['spending-limit', 'addons'];
