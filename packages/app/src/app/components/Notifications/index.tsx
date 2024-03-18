@@ -35,7 +35,7 @@ export const Notifications = ({ dashboard }: { dashboard?: boolean }) => {
           }
         >
           <Button
-            variant={dashboard ? 'ghost' : 'secondary'}
+            variant="secondary"
             css={{ position: 'relative' }}
             onClick={open}
           >

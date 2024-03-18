@@ -4,7 +4,7 @@ import {
   csbSite,
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
+import { Menu, Stack, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
@@ -29,7 +29,7 @@ export const UserMenu: FunctionComponent & {
 
   if (!user) {
     return (
-      <Element>
+      <Stack>
         <Menu>
           {props.children}
           <Menu.List>
@@ -48,7 +48,7 @@ export const UserMenu: FunctionComponent & {
             </Menu.Link>
           </Menu.List>
         </Menu>
-      </Element>
+      </Stack>
     );
   }
 
@@ -57,7 +57,7 @@ export const UserMenu: FunctionComponent & {
   const showStorage = !environment.isOnPrem;
 
   return (
-    <Element>
+    <Stack>
       <Menu>
         {props.children || (
           <ProfileImage
@@ -135,7 +135,7 @@ export const UserMenu: FunctionComponent & {
           >
             <Stack align="center" gap={2}>
               <Icon name="gear" size={16} />
-              <Text>{isEditorPage ? 'Preferences' : 'Settings'}</Text>
+              <Text>{isEditorPage ? 'Preferences' : 'User settings'}</Text>
             </Stack>
           </Menu.Item>
 
@@ -156,7 +156,7 @@ export const UserMenu: FunctionComponent & {
           </Menu.Item>
         </Menu.List>
       </Menu>
-    </Element>
+    </Stack>
   );
 };
 

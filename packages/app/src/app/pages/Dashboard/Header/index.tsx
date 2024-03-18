@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Combobox, ComboboxInput } from '@reach/combobox';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
-import {
-  Stack,
-  Input,
-  Button,
-  Icon,
-  IconButton,
-} from '@codesandbox/components';
+import { Stack, Input, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
@@ -19,6 +13,7 @@ import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -28,7 +23,12 @@ export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const actions = useActions();
     const { isFrozen } = useWorkspaceLimits();
-    const { activeWorkspaceAuthorization, hasLogIn } = useAppState();
+    const {
+      activeWorkspaceAuthorization,
+      hasLogIn,
+      user,
+      activeTeam,
+    } = useAppState();
 
     return (
       <Stack
@@ -43,60 +43,32 @@ export const Header: React.FC<HeaderProps> = React.memo(
           color: 'titleBar.activeForeground',
         })}
       >
-        <IconButton
-          name="menu"
-          size={16}
-          title="Menu"
-          onClick={onSidebarToggle}
-          css={css({ display: ['block', 'block', 'none'] })}
-        />
-
-        <div>
-          <UserMenu
-            css={css({
-              display: ['none', 'none', 'block'],
-            })}
+        <Stack align="center" gap={2} css={{ paddingLeft: '4px' }}>
+          <Button
+            name="menu"
+            title="Menu"
+            onClick={onSidebarToggle}
+            variant="secondary"
+            autoWidth
+            css={css({ display: ['block', 'block', 'none'] })}
           >
-            <Button
-              as={UserMenu.Button}
-              variant="link"
-              css={css({
-                marginLeft: '2px',
-                transition: 'color .3s',
+            <Icon name="menu" size={16} />
+          </Button>
 
-                '.chevron': {
-                  transition: 'transform .3s',
-                },
-
-                '&:hover': {
-                  '.chevron': {
-                    transform: 'translateY(2px)',
-                  },
-                },
-              })}
-            >
-              <LogoIcon
-                width={18}
-                height={18}
-                css={css({
-                  marginRight: '8px',
-                })}
-              />
-              <Icon
-                className="chevron"
-                name="chevronDown"
-                size={6}
-                title="User actions"
-              />
-            </Button>
-          </UserMenu>
-        </div>
-
-        <SearchInputGroup />
+          <Button
+            as={Link}
+            to={dashboardUrls.recent(activeTeam)}
+            autoWidth
+            variant="ghost"
+          >
+            <LogoIcon width={18} height={18} />
+          </Button>
+        </Stack>
 
         <Stack align="center" gap={2}>
+          <SearchInputGroup />
           <Button
-            variant="primary"
+            variant="secondary"
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
               track('Dashboard - Topbar - Import repository');
@@ -109,7 +81,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
 
           <Button
-            variant="primary"
+            variant="secondary"
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
               track('Dashboard - Topbar - Create Devbox');
@@ -122,7 +94,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
 
           <Button
-            variant="light"
+            variant="secondary"
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               track('Dashboard - Topbar - Create Sandbox');
@@ -135,6 +107,31 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
 
           {hasLogIn && <Notifications dashboard />}
+
+          <UserMenu>
+            <Button
+              as={UserMenu.Button}
+              variant="secondary"
+              css={{
+                width: '28px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                padding: 0,
+                border: '2px solid transparent',
+                transition: 'border 0.125s ease-out',
+              }}
+            >
+              <TeamAvatar
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  border: 0,
+                }}
+                name={user?.name}
+                avatar={user?.avatarUrl}
+              />
+            </Button>
+          </UserMenu>
         </Stack>
       </Stack>
     );
@@ -178,10 +175,7 @@ const SearchInputGroup = () => {
     <Stack
       align="center"
       css={css({
-        width: 320,
         display: ['none', 'none', 'flex'],
-        position: 'fixed',
-        left: '288px',
       })}
     >
       <Combobox
@@ -192,54 +186,42 @@ const SearchInputGroup = () => {
       >
         <Stack
           align="center"
-          css={css({
+          css={{
             position: 'relative',
-          })}
+          }}
         >
           <Icon
             name="search"
             size={16}
-            title="Search"
             className="icon"
-            css={css({
+            css={{
               position: 'absolute',
               top: '50%',
-              left: 0,
+              left: 6,
               transform: 'translateY(-50%)',
               pointerEvents: 'none',
               color: '#999999',
-            })}
+            }}
           />
           <ComboboxInput
             as={Input}
             value={query}
             onChange={onChange}
             onKeyPress={handleEnter}
-            placeholder="Search"
+            placeholder="Search in workspace"
             icon="search"
-            css={css({
-              background: 'transparent',
-              border: 'none',
+            css={{
               paddingLeft: '24px',
               color: '#999999',
 
               '&::placeholder': {
                 color: '#999999',
-                transition: 'color .3s',
-              },
-
-              '&:hover': {
-                '&::placeholder': {
-                  color: '#ffffff',
-                },
               },
 
               '&:focus': {
-                '&::placeholder': {
-                  color: '#717171',
-                },
+                color: '#E6E6E6',
               },
-            })}
+            }}
           />
         </Stack>
       </Combobox>
