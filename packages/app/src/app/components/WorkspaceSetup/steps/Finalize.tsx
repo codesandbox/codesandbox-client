@@ -36,6 +36,7 @@ const AnnualForm = ({
   } = checkout;
   const [country, setCountry] = React.useState('');
   const [zipCode, setZipCode] = React.useState('');
+  const [success, setSuccess] = React.useState(false);
 
   const actions = useActions();
   const effects = useEffects();
@@ -82,6 +83,8 @@ const AnnualForm = ({
           },
         }
       );
+
+      setSuccess(true);
     } catch {
       track('Checkout - Failed annual plan');
     }
@@ -98,6 +101,28 @@ const AnnualForm = ({
     track('Checkout - Drop annual plan to monthly');
     refreshParentSelectedPlan();
   };
+
+  if (success) {
+    return (
+      <AnimatedStep css={{ width: '100%', maxWidth: 600 }}>
+        <Stack direction="vertical" gap={4}>
+          <Text size={8} color="#fff" as="label" htmlFor="recurring">
+            The next step is on us
+          </Text>
+
+          <Text color="#CCCCCC" css={{ paddingBottom: 24 }}>
+            Your request for an annual plan has been sent successfully to our
+            team. Someone from support will be in touch with you within 24
+            hours.{' '}
+          </Text>
+
+          <Button onClick={onDismiss} autoWidth>
+            Continue to dashboard
+          </Button>
+        </Stack>
+      </AnimatedStep>
+    );
+  }
 
   return (
     <AnimatedStep css={{ width: '100%', maxWidth: 600 }}>
@@ -133,7 +158,7 @@ const AnnualForm = ({
             />
             <Stack direction="vertical" css={{ marginTop: -3 }}>
               <Text color="#fff" as="label" htmlFor="recurring">
-                Annual (30% off)
+                Annual (Save 30%)
               </Text>
             </Stack>
           </Stack>

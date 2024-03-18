@@ -816,7 +816,7 @@ const RecurringType = ({ current, onChangeValue }) => {
         data-active={current === 'annual'}
         onClick={() => onChangeValue('annual')}
       >
-        <Text>Annual (30% off)</Text>
+        <Text>Annual (Save 30%)</Text>
       </RecurringTypeButton>
       <RecurringTypeButton
         type="button"

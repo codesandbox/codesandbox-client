@@ -121,7 +121,7 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
         />
         <Stack direction="vertical" css={{ marginTop: -3 }}>
           <Text color="#fff" as="label" htmlFor="recurring">
-            Annual (30% off)
+            Annual (Save 30%)
           </Text>
 
           {isAnnual && <Text>24 hour processing time</Text>}

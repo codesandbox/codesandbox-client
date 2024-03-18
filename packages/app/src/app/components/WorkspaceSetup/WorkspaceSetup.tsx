@@ -22,7 +22,9 @@ export const WorkspaceSetup: React.FC<WorkspaceSetupProps> = ({
   onDismiss,
 }) => {
   const startFromIndex = startFrom ? steps.indexOf(startFrom) : 0;
-  const [currentStepIndex, setCurrentStepIndex] = React.useState<number>(3);
+  const [currentStepIndex, setCurrentStepIndex] = React.useState<number>(
+    startFromIndex
+  );
 
   const currentStep = steps[currentStepIndex];
   const Component = STEP_COMPONENTS[currentStep];
