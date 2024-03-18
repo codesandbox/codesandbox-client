@@ -63,23 +63,29 @@ const mapAPIResponseToTemplateInfo = (
 
 export const mapTemplateGQLResponseToSandboxToFork = (
   template: TemplateFragment
-): SandboxToFork => ({
-  id: template.sandbox.id,
-  alias: template.sandbox.alias,
-  title: template.sandbox.title,
-  description: template.sandbox.description,
-  insertedAt: template.sandbox.insertedAt,
-  updatedAt: template.sandbox.updatedAt,
-  isV2: template.sandbox.isV2 || false,
-  forkCount: template.sandbox.forkCount,
-  viewCount: template.sandbox.viewCount,
-  iconUrl: template.iconUrl,
-  sourceTemplate: template.sandbox.source?.template,
-  owner: template.sandbox.team?.name || 'CodeSandbox',
-});
+): SandboxToFork | null => {
+  if (!template.sandbox) {
+    return null;
+  }
+
+  return {
+    id: template.sandbox.id,
+    alias: template.sandbox.alias,
+    title: template.sandbox.title,
+    description: template.sandbox.description,
+    insertedAt: template.sandbox.insertedAt,
+    updatedAt: template.sandbox.updatedAt,
+    isV2: template.sandbox.isV2 || false,
+    forkCount: template.sandbox.forkCount,
+    viewCount: template.sandbox.viewCount,
+    iconUrl: template.iconUrl || undefined,
+    sourceTemplate: template.sandbox.source?.template || undefined,
+    owner: template.sandbox.team?.name || 'CodeSandbox',
+  };
+};
 
 export const mapSandboxGQLResponseToSandboxToFork = (
-  sandbox: GetSandboxWithTemplateQuery['sandbox']
+  sandbox: NonNullable<GetSandboxWithTemplateQuery['sandbox']>
 ): SandboxToFork => ({
   id: sandbox.id,
   alias: sandbox.alias,
@@ -90,8 +96,8 @@ export const mapSandboxGQLResponseToSandboxToFork = (
   isV2: sandbox.isV2 || false,
   forkCount: sandbox.forkCount,
   viewCount: sandbox.viewCount,
-  iconUrl: sandbox.customTemplate?.iconUrl,
-  sourceTemplate: sandbox.source?.template,
+  iconUrl: sandbox.customTemplate?.iconUrl || undefined,
+  sourceTemplate: sandbox.source?.template || undefined,
   owner: sandbox.team?.name || 'CodeSandbox',
 });
 
