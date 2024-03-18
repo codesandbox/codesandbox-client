@@ -79,10 +79,22 @@ export const Dashboard: FunctionComponent = () => {
         repoToImport: owner && name ? { owner, name } : undefined,
       });
       searchParams.delete('import_repo');
-    } else if (JSON.parse(searchParams.get('create_sandbox'))) {
-      actions.modalOpened({ modal: 'createSandbox' });
-    } else if (JSON.parse(searchParams.get('create_devbox'))) {
-      actions.modalOpened({ modal: 'createDevbox' });
+    } else if (searchParams.get('create_sandbox')) {
+      const sandboxId = searchParams.get('create_sandbox');
+      actions.modalOpened({
+        modal: 'createSandbox',
+        sandboxIdToFork:
+          !!sandboxId && sandboxId !== 'true' ? sandboxId : undefined,
+      });
+      searchParams.delete('create_sandbox');
+    } else if (searchParams.get('create_devbox')) {
+      const sandboxId = searchParams.get('create_devbox');
+      actions.modalOpened({
+        modal: 'createDevbox',
+        sandboxIdToFork:
+          !!sandboxId && sandboxId !== 'true' ? sandboxId : undefined,
+      });
+      searchParams.delete('create_devbox');
     } else if (JSON.parse(searchParams.get('create'))) {
       actions.modalOpened({ modal: 'genericCreate' });
     } else if (searchParams.get('preferences')) {

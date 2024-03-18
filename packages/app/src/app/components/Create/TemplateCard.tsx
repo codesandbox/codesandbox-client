@@ -1,15 +1,15 @@
 import React from 'react';
 import { formatNumber, Icon, Stack, Text } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
+import { SandboxToFork } from './utils/types';
 
 interface TemplateCardProps {
   disabled?: boolean;
-  template: TemplateFragment;
-  onSelectTemplate: (template: TemplateFragment) => void;
-  onOpenTemplate: (template: TemplateFragment) => void;
+  template: SandboxToFork;
+  onSelectTemplate: (template: SandboxToFork) => void;
+  onOpenTemplate: (template: SandboxToFork) => void;
   padding?: number | string;
   forks?: number;
 }
@@ -23,17 +23,13 @@ export const TemplateCard = ({
   forks,
 }: TemplateCardProps) => {
   const { UserIcon } = getTemplateIcon(
-    template.sandbox.title,
+    template.title,
     template.iconUrl,
-    template.sandbox?.source?.template
+    template.sourceTemplate
   );
 
-  const sandboxTitle = template.sandbox?.title || template.sandbox?.alias;
-
-  const teamName =
-    template.sandbox?.team?.name ||
-    template.sandbox?.author?.username ||
-    'CodeSandbox';
+  const sandboxTitle = template.title || template.alias;
+  const teamName = template.owner;
 
   return (
     <TemplateButton
