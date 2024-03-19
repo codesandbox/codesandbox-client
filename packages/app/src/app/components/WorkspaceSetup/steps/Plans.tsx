@@ -808,6 +808,7 @@ const RecurringType = ({ current, onChangeValue }) => {
         background: '#1D1D1D',
         padding: 3,
         borderRadius: 999999,
+        border: '1px solid #323232',
       }}
     >
       <RecurringTypeButton
@@ -836,6 +837,11 @@ const RecurringTypeButton = styled.button`
   background: none;
   color: #fff;
   cursor: pointer;
+  transition: color 200ms ease;
+
+  &:hover {
+    color: #bdb1f6;
+  }
 
   &[data-active='true'] {
     background: #bdb1f6;
