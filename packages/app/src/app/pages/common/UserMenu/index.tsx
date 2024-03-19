@@ -70,12 +70,37 @@ export const UserMenu: FunctionComponent & {
         )}
 
         <Menu.List>
+          <Menu.Item
+            onClick={() =>
+              modalOpened({
+                modal: 'preferences',
+                itemId: isEditorPage ? 'appearance' : 'account',
+              })
+            }
+          >
+            <Stack align="center" gap={2}>
+              <Icon name="gear" size={16} />
+              <Text>User settings</Text>
+            </Stack>
+          </Menu.Item>
+
           <Menu.Link href={profileUrl(user.username)}>
             <Stack align="center" gap={2}>
               <Icon name="profile" size={16} />
               <Text>Profile</Text>
             </Stack>
           </Menu.Link>
+
+          {showStorage && (
+            <Menu.Item onClick={() => gotUploadedFiles(null)}>
+              <Stack align="center" gap={2}>
+                <Icon name="folder" size={16} />
+                <Text>Storage</Text>
+              </Stack>
+            </Menu.Item>
+          )}
+
+          <Menu.Divider />
 
           <Menu.Link href={docsUrl()}>
             <Stack align="center" gap={2}>
@@ -91,62 +116,14 @@ export const UserMenu: FunctionComponent & {
             </Stack>
           </Menu.Item>
 
-          {showBecomePro && (
-            <Menu.Link
-              to={upgradeUrl({
-                workspaceId: activeTeam,
-                source: 'main_menu',
-              })}
-            >
-              <Stack align="center" gap={2}>
-                <Icon name="proBadge" size={16} />
-                <Text>Upgrade to Pro</Text>
-              </Stack>
-            </Menu.Link>
-          )}
-
-          <Menu.Divider />
-
-          {showManageSubscription && (
-            <Menu.Link href={dashboardUrls.portalOverview(activeTeam)}>
-              <Stack align="center" gap={2}>
-                <Icon name="proBadge" size={16} />
-                <Text>Subscription</Text>
-              </Stack>
-            </Menu.Link>
-          )}
-
-          {showStorage && (
-            <Menu.Item onClick={() => gotUploadedFiles(null)}>
-              <Stack align="center" gap={2}>
-                <Icon name="folder" size={16} />
-                <Text>Storage</Text>
-              </Stack>
-            </Menu.Item>
-          )}
-
-          <Menu.Item
-            onClick={() =>
-              modalOpened({
-                modal: 'preferences',
-                itemId: isEditorPage ? 'appearance' : 'account',
-              })
-            }
-          >
-            <Stack align="center" gap={2}>
-              <Icon name="gear" size={16} />
-              <Text>{isEditorPage ? 'Preferences' : 'User settings'}</Text>
-            </Stack>
-          </Menu.Item>
-
-          <Menu.Divider />
-
           <Menu.Link href={`${csbSite()}/?from-app=1`}>
             <Stack align="center" gap={2}>
               <Icon name="external" size={16} />
               <Text>codesandbox.io</Text>
             </Stack>
           </Menu.Link>
+
+          <Menu.Divider />
 
           <Menu.Item onClick={() => signOutClicked()}>
             <Stack align="center" gap={2}>

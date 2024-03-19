@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Combobox, ComboboxInput } from '@reach/combobox';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
@@ -11,9 +11,10 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TeamAvatar } from 'app/components/TeamAvatar';
+import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
+import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -21,6 +22,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
+    const history = useHistory();
     const actions = useActions();
     const { isFrozen } = useWorkspaceLimits();
     const {
@@ -28,7 +30,10 @@ export const Header: React.FC<HeaderProps> = React.memo(
       hasLogIn,
       user,
       activeTeam,
+      activeTeamInfo,
+      dashboard,
     } = useAppState();
+    const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
 
     return (
       <Stack
@@ -43,7 +48,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           color: 'titleBar.activeForeground',
         })}
       >
-        <Stack align="center" gap={2} css={{ paddingLeft: '4px' }}>
+        <Stack align="center" gap={1} css={{ paddingLeft: '4px' }}>
           <Button
             name="menu"
             title="Menu"
@@ -63,12 +68,36 @@ export const Header: React.FC<HeaderProps> = React.memo(
           >
             <LogoIcon width={18} height={18} />
           </Button>
+
+          <Stack direction="horizontal">
+            {teamDataLoaded ? (
+              <WorkspaceSelect
+                selectedTeamId={activeTeam}
+                onSelect={teamId => {
+                  actions.setActiveTeam({
+                    id: teamId,
+                  });
+
+                  history.replace(dashboardUrls.recent(teamId));
+                }}
+              />
+            ) : (
+              <Stack
+                align="center"
+                css={{ width: '100%', paddingLeft: '28px' }}
+              >
+                <SkeletonTextBlock
+                  css={{ width: 120, height: 12, marginLeft: 8 }}
+                />
+              </Stack>
+            )}
+          </Stack>
         </Stack>
 
         <Stack align="center" gap={2}>
           <SearchInputGroup />
           <Button
-            variant="secondary"
+            variant="primary"
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
               track('Dashboard - Topbar - Import repository');
@@ -81,7 +110,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
 
           <Button
-            variant="secondary"
+            variant="primary"
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
               track('Dashboard - Topbar - Create Devbox');
@@ -94,7 +123,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
 
           <Button
-            variant="secondary"
+            variant="light"
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               track('Dashboard - Topbar - Create Sandbox');
@@ -142,7 +171,6 @@ const SearchInputGroup = () => {
   const { activeTeam } = useAppState();
 
   const history = useHistory();
-  const location = useLocation();
 
   const [query, setQuery] = useState(
     new URLSearchParams(window.location.search).get('query') || ''
@@ -151,7 +179,7 @@ const SearchInputGroup = () => {
   const search = (queryString: string) => {
     history.push(dashboardUrls.search(queryString, activeTeam));
   };
-  const [debouncedSearch] = useDebouncedCallback(search, 100);
+  const [debouncedSearch] = useDebouncedCallback(search, 200);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -159,16 +187,8 @@ const SearchInputGroup = () => {
       debouncedSearch(event.target.value);
     }
     if (!event.target.value) {
-      history.push(dashboardUrls.sandboxes('/', activeTeam));
+      history.push(dashboardUrls.recent(activeTeam));
     }
-  };
-
-  const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!location.pathname.includes('search')) {
-      // navigate from other places on enter
-      history.push(dashboardUrls.search(query, activeTeam));
-    }
-    if (event.which === ENTER) event.currentTarget.blur();
   };
 
   return (
@@ -207,7 +227,7 @@ const SearchInputGroup = () => {
             as={Input}
             value={query}
             onChange={onChange}
-            onKeyPress={handleEnter}
+            // onKeyPress={handleEnter}
             placeholder="Search in workspace"
             icon="search"
             css={{
