@@ -42,6 +42,7 @@ export const Plans: React.FC<StepProps> = ({
   const actions = useActions();
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
+  const planFromUrl = getQueryParam('plan');
   const { pathname } = useLocation();
   const [tiers, setTiers] = useState<VMTier[]>([]);
   const { isFree } = useWorkspaceSubscription();
@@ -52,9 +53,13 @@ export const Plans: React.FC<StepProps> = ({
     availableBasePlans: {
       enterprise: enterprisePlan,
       flex: proPlan,
+      'flex-annual': proAnnualPlan,
       free: freePlan,
     },
   } = checkout;
+
+  const annualPlan = checkout.selectedPlan === 'flex-annual';
+  const currentProPlan = annualPlan ? proAnnualPlan : proPlan;
 
   // For new workspaces
   const freeButtonCTA = isUpgrading
@@ -62,7 +67,12 @@ export const Plans: React.FC<StepProps> = ({
     : 'Get started for free';
 
   useEffect(() => {
+    if (planFromUrl === 'flex' || planFromUrl === 'flex-annual') {
+      actions.checkout.selectPlan(planFromUrl);
+    }
+
     actions.checkout.fetchPrices();
+    actions.checkout.recomputeTotals();
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
   }, []);
 
@@ -73,7 +83,6 @@ export const Plans: React.FC<StepProps> = ({
   }, [urlWorkspaceId, activeTeam, actions]);
 
   const handleProPlanSelection = async () => {
-    actions.checkout.selectPlan('flex');
     track('Checkout - Select Pro Plan', {
       from: isUpgrading ? 'upgrade' : 'create-workspace',
       currentPlan: isFree ? 'free' : 'pro',
@@ -97,6 +106,15 @@ export const Plans: React.FC<StepProps> = ({
         />
 
         <Stack gap={4} direction="vertical">
+          <Stack css={{ justifyContent: 'center' }}>
+            <RecurringType
+              current={annualPlan ? 'annual' : 'monthly'}
+              onChangeValue={() =>
+                actions.checkout.selectPlan(annualPlan ? 'flex' : 'flex-annual')
+              }
+            />
+          </Stack>
+
           <HorizontalScroller css={{ width: '100%' }}>
             <Stack gap={6} justify="center">
               {showFreePlan && (
@@ -154,12 +172,12 @@ export const Plans: React.FC<StepProps> = ({
                 css={{ borderColor: '#9581FF' }}
               >
                 <Text size={7} fontFamily="everett" weight="medium">
-                  {proPlan.name}
+                  {currentProPlan.name}
                 </Text>
                 <CardHeading>
                   Pay as you go with a monthly subscription
                 </CardHeading>
-                <PlanPricing plan={proPlan} />
+                <PlanPricing plan={currentProPlan} />
                 <Button
                   variant="dark"
                   css={{
@@ -173,10 +191,13 @@ export const Plans: React.FC<StepProps> = ({
                 </Button>
                 <PlanFeatures
                   heading="Usage"
-                  features={proPlan.usage}
+                  features={currentProPlan.usage}
                   includeTooltips
                 />
-                <PlanFeatures heading="Features" features={proPlan.features} />
+                <PlanFeatures
+                  heading="Features"
+                  features={currentProPlan.features}
+                />
                 <PlanFeatures
                   itemIcon="plus"
                   heading="Add-ons"
@@ -313,34 +334,18 @@ const PlanPricing: React.FC<{ plan: PricingPlan; overridePrice?: string }> = ({
         <Text size={9} fontFamily="everett" weight="medium">
           {overridePrice || `$${plan.price}`}
         </Text>
-
-        {plan.priceDiscountNote && (
-          <Element css={{ position: 'absolute', top: 6, right: -6, width: 0 }}>
-            <Text
-              size={2}
-              css={{
-                padding: '6px 8px',
-                borderRadius: 4,
-                display: 'block',
-                backgroundColor: '#DCF76E',
-                color: 'inherit',
-                width: 90,
-              }}
-            >
-              {plan.priceDiscountNote}
-            </Text>
-          </Element>
-        )}
       </Element>
 
       {(plan.id === 'free' || plan.id === 'enterprise') && (
         <Element css={{ height: '40px' }} />
       )}
       {isPro && (
-        <Text align="center" weight="medium">
-          per month
-          <br />
-          per workspace
+        <Text
+          align="center"
+          weight="medium"
+          css={{ textWrap: 'balance', width: 180 }}
+        >
+          {plan.recurringTypeDescription}
         </Text>
       )}
     </Stack>
@@ -800,3 +805,51 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
     ))}
   </>
 );
+
+const RecurringType = ({ current, onChangeValue }) => {
+  return (
+    <Stack
+      css={{
+        background: '#1D1D1D',
+        padding: 3,
+        borderRadius: 999999,
+        border: '1px solid #323232',
+      }}
+    >
+      <RecurringTypeButton
+        type="button"
+        data-active={current === 'annual'}
+        onClick={() => onChangeValue('annual')}
+      >
+        <Text>Annual (Save 30%)</Text>
+      </RecurringTypeButton>
+      <RecurringTypeButton
+        type="button"
+        data-active={current === 'monthly'}
+        onClick={() => onChangeValue('monthly')}
+      >
+        <Text>Monthly</Text>
+      </RecurringTypeButton>
+    </Stack>
+  );
+};
+
+const RecurringTypeButton = styled.button`
+  border: none;
+  height: 34px;
+  padding: 0 21px 0 22px;
+  border-radius: 999999px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  transition: color 200ms ease;
+
+  &:hover {
+    color: #bdb1f6;
+  }
+
+  &[data-active='true'] {
+    background: #bdb1f6;
+    color: #0e0e0e;
+  }
+`;
