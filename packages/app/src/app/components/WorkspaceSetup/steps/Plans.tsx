@@ -42,6 +42,7 @@ export const Plans: React.FC<StepProps> = ({
   const actions = useActions();
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
+  const planFromUrl = getQueryParam('plan');
   const { pathname } = useLocation();
   const [tiers, setTiers] = useState<VMTier[]>([]);
   const { isFree } = useWorkspaceSubscription();
@@ -66,6 +67,10 @@ export const Plans: React.FC<StepProps> = ({
     : 'Get started for free';
 
   useEffect(() => {
+    if (planFromUrl === 'flex' || planFromUrl === 'flex-annual') {
+      actions.checkout.selectPlan(planFromUrl);
+    }
+
     actions.checkout.fetchPrices();
     actions.checkout.recomputeTotals();
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
