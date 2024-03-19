@@ -1,8 +1,8 @@
-import { TemplateFragment } from 'app/graphql/types';
+import { SandboxToFork } from '../utils/types';
 
 interface UseFeaturedTemplatesParams {
-  recentTemplates: TemplateFragment[];
-  officialTemplates: TemplateFragment[];
+  recentTemplates: SandboxToFork[];
+  officialTemplates: SandboxToFork[];
 }
 
 const FEATURED_IDS = [
@@ -28,8 +28,8 @@ export const useFeaturedTemplates = ({
   const featuredOfficialTemplates = FEATURED_IDS.map(
     id =>
       // If the template is already in recently used, don't add it twice
-      !recentlyUsedTemplates.find(t => t.sandbox.id === id) &&
-      officialTemplates.find(t => t.sandbox.id === id)
+      !recentlyUsedTemplates.find(t => t.id === id) &&
+      officialTemplates.find(t => t.id === id)
   ).filter(Boolean);
 
   return featuredOfficialTemplates.slice(0, hasRecentlyUsedTemplates ? 6 : 9);

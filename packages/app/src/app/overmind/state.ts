@@ -6,10 +6,10 @@ import {
 import {
   CurrentTeamInfoFragmentFragment as CurrentTeam,
   TeamMemberAuthorization,
-  TemplateFragment,
 } from 'app/graphql/types';
 import { derived } from 'overmind';
 import { hasLogIn } from '@codesandbox/common/lib/utils/user';
+import { SandboxToFork } from 'app/components/Create/utils/types';
 import { MetaFeatures } from './effects/api/types';
 
 export type PendingUserType = {
@@ -24,7 +24,7 @@ type State = {
   isFirstVisit: boolean;
   isLoggedIn: boolean;
   hasLogIn: boolean;
-  officialTemplates: TemplateFragment[];
+  officialTemplates: SandboxToFork[];
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
   authToken: string | null;
@@ -55,6 +55,7 @@ type State = {
   currentModalMessage: string | null;
   currentModalItemId?: string; // Used for passing collection id for create modals
   repoToImport: { owner: string; name: string } | null;
+  sandboxIdToFork: string | null;
   uploadedFiles: UploadFile[] | null;
   maxStorage: number;
   usedStorage: number;
@@ -149,6 +150,7 @@ export const state: State = {
   currentModal: null,
   currentModalMessage: null,
   repoToImport: null,
+  sandboxIdToFork: null,
   uploadedFiles: null,
   maxStorage: 0,
   usedStorage: 0,

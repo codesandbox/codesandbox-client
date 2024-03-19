@@ -6437,6 +6437,33 @@ export type GetFullGitHubOrganizationReposQuery = {
   }> | null;
 };
 
+export type GetSandboxWithTemplateQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type GetSandboxWithTemplateQuery = {
+  __typename?: 'RootQueryType';
+  sandbox: {
+    __typename?: 'Sandbox';
+    id: string;
+    alias: string | null;
+    title: string | null;
+    description: string | null;
+    forkCount: number;
+    viewCount: number;
+    isV2: boolean;
+    insertedAt: string;
+    updatedAt: string;
+    team: { __typename?: 'TeamPreview'; name: string } | null;
+    source: { __typename?: 'Source'; template: string | null };
+    customTemplate: {
+      __typename?: 'Template';
+      id: any | null;
+      iconUrl: string | null;
+    } | null;
+  } | null;
+};
+
 export type RecentNotificationFragment = {
   __typename?: 'Notification';
   id: any;

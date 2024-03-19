@@ -39,6 +39,8 @@ import {
   GetPartialGitHubOrganizationReposQueryVariables,
   GetFullGitHubOrganizationReposQuery,
   GetFullGitHubOrganizationReposQueryVariables,
+  GetSandboxWithTemplateQuery,
+  GetSandboxWithTemplateQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -344,7 +346,12 @@ export const getPartialOrganizationRepos: Query<
   GetPartialGitHubOrganizationReposQueryVariables
 > = gql`
   query GetPartialGitHubOrganizationRepos($organization: String!) {
-    githubOrganizationRepos(organization: $organization, perPage: 10, page: 1) {
+    githubOrganizationRepos(
+      organization: $organization
+      sort: PUSHED
+      perPage: 10
+      page: 1
+    ) {
       ...githubRepo
     }
   }
@@ -356,9 +363,38 @@ export const getFullOrganizationRepos: Query<
   GetFullGitHubOrganizationReposQueryVariables
 > = gql`
   query GetFullGitHubOrganizationRepos($organization: String!) {
-    githubOrganizationRepos(organization: $organization) {
+    githubOrganizationRepos(organization: $organization, sort: PUSHED) {
       ...githubRepo
     }
   }
   ${githubRepoFragment}
+`;
+
+export const getSandboxWithTemplate: Query<
+  GetSandboxWithTemplateQuery,
+  GetSandboxWithTemplateQueryVariables
+> = gql`
+  query GetSandboxWithTemplate($id: ID!) {
+    sandbox(sandboxId: $id) {
+      id
+      alias
+      title
+      description
+      forkCount
+      viewCount
+      isV2
+      insertedAt
+      updatedAt
+      team {
+        name
+      }
+      source {
+        template
+      }
+      customTemplate {
+        id
+        iconUrl
+      }
+    }
+  }
 `;

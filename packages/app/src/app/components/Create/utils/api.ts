@@ -1,6 +1,9 @@
 import { TemplateType } from '@codesandbox/common/lib/templates';
-import { isServer } from '@codesandbox/common/lib/templates/helpers/is-server';
-import { TemplateCollection } from './types';
+import {
+  GetSandboxWithTemplateQuery,
+  TemplateFragment,
+} from 'app/graphql/types';
+import { SandboxToFork, TemplateCollection } from './types';
 
 interface ExploreTemplateAPIResponse {
   title: string;
@@ -43,40 +46,59 @@ const mapAPIResponseToTemplateInfo = (
   key: exploreTemplate.title,
   title: exploreTemplate.title,
   templates: exploreTemplate.sandboxes.map(sandbox => ({
-    id: sandbox.custom_template.id,
-    color: sandbox.custom_template.color,
+    id: sandbox.id,
+    alias: sandbox.alias,
+    title: sandbox.title,
+    description: sandbox.description,
+    insertedAt: sandbox.inserted_at,
+    updatedAt: sandbox.updated_at,
+    isV2: sandbox.v2 || false,
+    forkCount: sandbox.fork_count,
+    viewCount: sandbox.view_count,
     iconUrl: sandbox.custom_template.icon_url,
-    published: true,
-    sandbox: {
-      id: sandbox.id,
-      insertedAt: sandbox.inserted_at,
-      updatedAt: sandbox.updated_at,
-      alias: sandbox.alias,
-      title: sandbox.title,
-      author: sandbox.author,
-      description: sandbox.description,
-      source: {
-        template: sandbox.environment,
-      },
-      // TODO: Update /official and /essential endpoints to return
-      // team -> name instead of collection -> team -> name
-      team: {
-        name: 'CodeSandbox',
-      },
-      isV2: sandbox.v2 || false,
-      isSse: isServer(sandbox.environment),
-      forkCount: sandbox.fork_count,
-      viewCount: sandbox.view_count,
-      git: sandbox.git && {
-        id: sandbox.git.id,
-        username: sandbox.git.username,
-        commitSha: sandbox.git.commit_sha,
-        path: sandbox.git.path,
-        repo: sandbox.git.repo,
-        branch: sandbox.git.branch,
-      },
-    },
+    sourceTemplate: sandbox.environment,
+    owner: 'CodeSandbox',
   })),
+});
+
+export const mapTemplateGQLResponseToSandboxToFork = (
+  template: TemplateFragment
+): SandboxToFork | null => {
+  if (!template.sandbox) {
+    return null;
+  }
+
+  return {
+    id: template.sandbox.id,
+    alias: template.sandbox.alias,
+    title: template.sandbox.title,
+    description: template.sandbox.description,
+    insertedAt: template.sandbox.insertedAt,
+    updatedAt: template.sandbox.updatedAt,
+    isV2: template.sandbox.isV2 || false,
+    forkCount: template.sandbox.forkCount,
+    viewCount: template.sandbox.viewCount,
+    iconUrl: template.iconUrl || undefined,
+    sourceTemplate: template.sandbox.source?.template || undefined,
+    owner: template.sandbox.team?.name || 'CodeSandbox',
+  };
+};
+
+export const mapSandboxGQLResponseToSandboxToFork = (
+  sandbox: NonNullable<GetSandboxWithTemplateQuery['sandbox']>
+): SandboxToFork => ({
+  id: sandbox.id,
+  alias: sandbox.alias,
+  title: sandbox.title,
+  description: sandbox.description,
+  insertedAt: sandbox.insertedAt,
+  updatedAt: sandbox.updatedAt,
+  isV2: sandbox.isV2 || false,
+  forkCount: sandbox.forkCount,
+  viewCount: sandbox.viewCount,
+  iconUrl: sandbox.customTemplate?.iconUrl || undefined,
+  sourceTemplate: sandbox.source?.template || undefined,
+  owner: sandbox.team?.name || 'CodeSandbox',
 });
 
 export const getTemplateInfosFromAPI = (

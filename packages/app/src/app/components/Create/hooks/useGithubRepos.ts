@@ -42,12 +42,10 @@ export const useGithubRepos = (
       ...cache,
       [orgName]: {
         state: newState,
-        repositories: repos
-          .map(r => ({
-            ...r,
-            appInstalled: undefined,
-          }))
-          .sort((a, b) => (b.pushedAt > a.pushedAt ? 1 : -1)),
+        repositories: repos.map(r => ({
+          ...r,
+          appInstalled: undefined,
+        })),
       },
     }));
   };

@@ -1,20 +1,20 @@
-import { TemplateFragment } from 'app/graphql/types';
-import {  useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppState } from 'app/overmind';
 import { getTemplateInfosFromAPI } from '../utils/api';
+import { SandboxToFork } from '../utils/types';
 
 type State =
   | {
       state: 'loading';
-      templates: TemplateFragment[];
+      templates: SandboxToFork[];
     }
   | {
       state: 'ready';
-      templates: TemplateFragment[];
+      templates: SandboxToFork[];
     }
   | {
       state: 'error';
-      templates: TemplateFragment[];
+      templates: SandboxToFork[];
     };
 
 export const useOfficialTemplates = ({
@@ -55,8 +55,8 @@ export const useOfficialTemplates = ({
 
   return {
     state: officialTemplatesData.state,
-    templates: officialTemplatesData.templates.filter(t =>
-      type === 'sandbox' && !t.sandbox.isV2 || type === 'devbox' && t.sandbox.isV2
+    templates: officialTemplatesData.templates.filter(
+      t => (type === 'sandbox' && !t.isV2) || (type === 'devbox' && t.isV2)
     ),
   };
 };

@@ -1,11 +1,10 @@
-import { TemplateFragment } from 'app/graphql/types';
-import { TemplateCollection } from '../utils/types';
+import { SandboxToFork, TemplateCollection } from '../utils/types';
 
 interface UseAllTemplatesParams {
   searchQuery?: string;
-  featuredTemplates: TemplateFragment[];
-  officialTemplates: TemplateFragment[];
-  teamTemplates: TemplateFragment[];
+  featuredTemplates: SandboxToFork[];
+  officialTemplates: SandboxToFork[];
+  teamTemplates: SandboxToFork[];
   collections: TemplateCollection[];
 }
 
@@ -17,7 +16,7 @@ export const useAllTemplates = ({
   searchQuery,
 }: UseAllTemplatesParams) => {
   // Using a map to ensure unique entries for templates
-  const allTemplatesMap: Map<string, TemplateFragment> = new Map();
+  const allTemplatesMap: Map<string, SandboxToFork> = new Map();
 
   featuredTemplates.forEach(t => {
     allTemplatesMap.set(t.id, t);
@@ -39,7 +38,7 @@ export const useAllTemplates = ({
 
   return Array.from(allTemplatesMap.values()).filter(t =>
     searchQuery
-      ? (t.sandbox.title || t.sandbox.alias || '')
+      ? (t.title || t.alias || '')
           .toLowerCase()
           .includes(searchQuery.trim().toLowerCase())
       : true
