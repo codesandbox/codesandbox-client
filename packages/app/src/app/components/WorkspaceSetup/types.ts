@@ -7,6 +7,7 @@ export type WorkspaceSetupStep =
   | 'finalize';
 
 export interface StepProps {
+  flow: WorkspaceFlow;
   currentStep: number;
   numberOfSteps: number;
   onNextStep: () => void;
@@ -14,3 +15,5 @@ export interface StepProps {
   onEarlyExit: (fullReload?: boolean) => void;
   onDismiss: () => void;
 }
+
+export type WorkspaceFlow = 'create-workspace' | 'upgrade' | 'manage-addons';

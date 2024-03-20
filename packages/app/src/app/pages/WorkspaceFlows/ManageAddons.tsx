@@ -10,7 +10,7 @@ import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const ManageAddons = () => {
-  const { hasLogIn, activeTeam } = useAppState();
+  const { hasLogIn, activeTeam, activeTeamInfo } = useAppState();
   const { isPro } = useWorkspaceSubscription();
   const { getQueryParam, setQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
@@ -25,6 +25,14 @@ export const ManageAddons = () => {
     dashboardMounted();
     checkout.fetchPrices();
   }, [dashboardMounted]);
+
+  useEffect(() => {
+    if (!activeTeamInfo) {
+      return;
+    }
+
+    checkout.initializeCartFromExistingSubscription();
+  }, [activeTeamInfo]);
 
   useEffect(() => {
     if (!activeTeam) {
@@ -57,6 +65,7 @@ export const ManageAddons = () => {
   return (
     <WorkspaceSetup
       steps={steps}
+      flow="manage-addons"
       onComplete={fullReload => {
         if (fullReload) {
           window.location.href = dashboardUrls.recent(workspaceId);

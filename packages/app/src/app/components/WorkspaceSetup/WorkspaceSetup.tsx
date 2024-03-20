@@ -1,6 +1,6 @@
 import React from 'react';
 import { WorkspaceFlowLayout } from './Layout';
-import { StepProps, WorkspaceSetupStep } from './types';
+import { StepProps, WorkspaceSetupStep, WorkspaceFlow } from './types';
 import { Create } from './steps/Create';
 import { Plans } from './steps/Plans';
 import { SpendingLimit } from './steps/SpendingLimit';
@@ -9,6 +9,7 @@ import { Addons } from './steps/Addons';
 import { Finalize } from './steps/Finalize';
 
 export type WorkspaceSetupProps = {
+  flow: WorkspaceFlow;
   steps: WorkspaceSetupStep[];
   startFrom?: WorkspaceSetupStep; // when this isn't passed, first one from the array is used
   onComplete: (fullReload?: boolean) => void;
@@ -16,6 +17,7 @@ export type WorkspaceSetupProps = {
 };
 
 export const WorkspaceSetup: React.FC<WorkspaceSetupProps> = ({
+  flow,
   steps,
   startFrom,
   onComplete,
@@ -40,6 +42,7 @@ export const WorkspaceSetup: React.FC<WorkspaceSetupProps> = ({
       allowSummaryChanges={currentStep === 'addons'}
     >
       <Component
+        flow={flow}
         currentStep={currentStepIndex}
         numberOfSteps={steps.length}
         onPrevStep={() => setCurrentStepIndex(crtStepIndex => crtStepIndex - 1)}

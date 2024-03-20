@@ -93,14 +93,12 @@ export const ENTERPRISE_PLAN: PricingPlan = {
 
 export const ADDON_CREDITS_500: CreditAddon = {
   id: 'credits_500',
-  type: 'credits',
   credits: 500,
   price: 9,
 };
 
 export const ADDON_CREDITS_4000: CreditAddon = {
   id: 'credits_4000',
-  type: 'credits',
   credits: 4000,
   price: 50,
   fullPrice: 72,
@@ -109,7 +107,6 @@ export const ADDON_CREDITS_4000: CreditAddon = {
 
 export const ADDON_CREDITS_24000: CreditAddon = {
   id: 'credits_24000',
-  type: 'credits',
   credits: 24000,
   price: 216,
   fullPrice: 432,

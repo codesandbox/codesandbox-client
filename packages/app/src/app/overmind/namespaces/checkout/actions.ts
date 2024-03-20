@@ -30,7 +30,10 @@ export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
   actions.checkout.recomputeTotals();
 };
 
-export const setExistingPlan = ({ state, actions }: Context) => {
+export const initializeCartFromExistingSubscription = ({
+  state,
+  actions,
+}: Context) => {
   if (!state.activeTeamInfo?.subscriptionSchedule.current) {
     return;
   }
@@ -38,7 +41,24 @@ export const setExistingPlan = ({ state, actions }: Context) => {
   const { items } = state.activeTeamInfo.subscriptionSchedule.current;
 
   state.checkout.selectedPlan = 'flex';
-  items.forEach(item => {});
+  items.forEach(item => {
+    if (!item.name.startsWith('credits_')) {
+      return;
+    }
+
+    const standardAddon = state.checkout.availableCreditAddons[item.name];
+
+    state.checkout.creditAddons.push({
+      quantity: item.quantity,
+      addon: {
+        id: item.name as CreditAddonType,
+        price: parseInt(item.unitAmountDecimal ?? standardAddon.price, 10),
+        credits: standardAddon.credits,
+      },
+    });
+  });
+
+  actions.checkout.recomputeTotals();
 };
 
 export const addCreditsPackage = (

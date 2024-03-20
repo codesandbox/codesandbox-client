@@ -69,6 +69,7 @@ export const UpgradeWorkspace = () => {
   return (
     <WorkspaceSetup
       steps={steps}
+      flow="upgrade"
       onComplete={fullReload => {
         if (fullReload) {
           window.location.href = dashboardUrls.recent(workspaceId);

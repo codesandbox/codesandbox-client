@@ -16,7 +16,6 @@ export type PricingPlan = {
 };
 
 export type CreditAddon = {
-  type: 'credits';
   id: CreditAddonType;
   credits: number;
   price: number;
