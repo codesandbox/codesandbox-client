@@ -2,16 +2,12 @@ import {
   profileUrl,
   docsUrl,
   csbSite,
-  dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Menu, Stack, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
-import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
@@ -22,9 +18,7 @@ export const UserMenu: FunctionComponent & {
     signOutClicked,
     files: { gotUploadedFiles },
   } = useActions();
-  const { user, activeTeam, environment } = useAppState();
-  const { isAdmin } = useWorkspaceAuthorization();
-  const { isPro, isFree } = useWorkspaceSubscription();
+  const { user, environment } = useAppState();
   const isEditorPage = useIsEditorPage();
 
   if (!user) {
@@ -52,8 +46,6 @@ export const UserMenu: FunctionComponent & {
     );
   }
 
-  const showBecomePro = isFree && isAdmin && !environment.isOnPrem;
-  const showManageSubscription = isPro && isAdmin && !environment.isOnPrem;
   const showStorage = !environment.isOnPrem;
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Link, useHistory } from 'react-router-dom';
 import { Combobox, ComboboxInput } from '@reach/combobox';
@@ -15,6 +15,7 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -34,6 +35,17 @@ export const Header: React.FC<HeaderProps> = React.memo(
       dashboard,
     } = useAppState();
     const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
+
+    const [highlightButtons, setHighlightButtons] = useGlobalPersistedState<
+      boolean | undefined
+    >('PRIMARY_BUTTONS_ABTEST', undefined);
+
+    useEffect(() => {
+      if (highlightButtons === undefined) {
+        // 50% pseudo-random, good enough for a/b test
+        setHighlightButtons(Math.random() > 0.5);
+      }
+    }, [highlightButtons, setHighlightButtons]);
 
     return (
       <Stack
@@ -97,10 +109,12 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <Stack align="center" gap={2}>
           <SearchInputGroup />
           <Button
-            variant="primary"
+            variant={highlightButtons ? 'primary' : 'secondary'}
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
-              track('Dashboard - Topbar - Import repository');
+              track('Dashboard - Topbar - Import repository', {
+                highlightButtons,
+              });
               actions.modalOpened({ modal: 'importRepository' });
             }}
             autoWidth
@@ -110,10 +124,10 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
 
           <Button
-            variant="primary"
+            variant={highlightButtons ? 'primary' : 'secondary'}
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
-              track('Dashboard - Topbar - Create Devbox');
+              track('Dashboard - Topbar - Create Devbox', { highlightButtons });
               actions.modalOpened({ modal: 'createDevbox' });
             }}
             autoWidth
@@ -123,10 +137,12 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
 
           <Button
-            variant="light"
+            variant={highlightButtons ? 'light' : 'secondary'}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
-              track('Dashboard - Topbar - Create Sandbox');
+              track('Dashboard - Topbar - Create Sandbox', {
+                highlightButtons,
+              });
               actions.modalOpened({ modal: 'createSandbox' });
             }}
             autoWidth
@@ -233,6 +249,7 @@ const SearchInputGroup = () => {
             css={{
               paddingLeft: '24px',
               color: '#999999',
+              minWidth: '250px',
 
               '&::placeholder': {
                 color: '#999999',
