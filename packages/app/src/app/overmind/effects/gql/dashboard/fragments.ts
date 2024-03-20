@@ -232,6 +232,8 @@ export const currentTeamInfoFragment = gql`
         items {
           name
           quantity
+          unitAmount
+          unitAmountDecimal
         }
         startDate
         endDate
@@ -241,6 +243,8 @@ export const currentTeamInfoFragment = gql`
         items {
           name
           quantity
+          unitAmount
+          unitAmountDecimal
         }
         startDate
         endDate

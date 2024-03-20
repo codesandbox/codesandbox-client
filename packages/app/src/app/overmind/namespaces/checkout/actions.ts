@@ -31,6 +31,17 @@ export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
   actions.checkout.recomputeTotals();
 };
 
+export const setExistingPlan = ({ state, actions }: Context) => {
+  if (!state.activeTeamInfo?.subscriptionSchedule.current) {
+    return;
+  }
+
+  const { items } = state.activeTeamInfo.subscriptionSchedule.current;
+
+  state.checkout.selectedPlan = 'flex';
+  items.forEach(item => {});
+};
+
 export const addCreditsPackage = (
   { state, actions }: Context,
   addon: CreditAddon

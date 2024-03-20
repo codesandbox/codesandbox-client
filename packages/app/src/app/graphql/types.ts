@@ -1128,6 +1128,10 @@ export type SubscriptionItem = {
   name: Scalars['String'];
   /** Quanity is null for metered items, such as the on-demand credit usage. */
   quantity: Maybe<Scalars['Int']>;
+  /** Price per unit in cents */
+  unitAmount: Maybe<Scalars['Int']>;
+  /** Price in fractions of a cent (currently only for on-demand credits) */
+  unitAmountDecimal: Maybe<Scalars['String']>;
 };
 
 export enum TeamType {
@@ -4736,6 +4740,8 @@ export type CurrentTeamInfoFragmentFragment = {
         __typename?: 'SubscriptionItem';
         name: string;
         quantity: number | null;
+        unitAmount: number | null;
+        unitAmountDecimal: string | null;
       }>;
     } | null;
     upcoming: {
@@ -4746,6 +4752,8 @@ export type CurrentTeamInfoFragmentFragment = {
         __typename?: 'SubscriptionItem';
         name: string;
         quantity: number | null;
+        unitAmount: number | null;
+        unitAmountDecimal: string | null;
       }>;
     } | null;
   } | null;
@@ -6200,6 +6208,8 @@ export type GetTeamQuery = {
             __typename?: 'SubscriptionItem';
             name: string;
             quantity: number | null;
+            unitAmount: number | null;
+            unitAmountDecimal: string | null;
           }>;
         } | null;
         upcoming: {
@@ -6210,6 +6220,8 @@ export type GetTeamQuery = {
             __typename?: 'SubscriptionItem';
             name: string;
             quantity: number | null;
+            unitAmount: number | null;
+            unitAmountDecimal: string | null;
           }>;
         } | null;
       } | null;
