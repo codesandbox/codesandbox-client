@@ -1,6 +1,6 @@
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { IconButton, Stack, Text } from '@codesandbox/components';
+import { IconButton, Stack, Text, Switch } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import styled from 'styled-components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -25,6 +25,7 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
   } = checkout;
 
   const basePlan = availableBasePlans[selectedPlan];
+  const isAnnual = selectedPlan === 'flex-annual';
 
   if (!basePlan) {
     return null;
@@ -98,14 +99,36 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
 
       <Stack justify="space-between">
         <Stack direction="vertical">
-          <Text color="#fff">Total cost per month</Text>
+          <Text color="#fff">Total cost per {isAnnual ? 'year' : 'month'}</Text>
           <Text>{totalCredits} VM credits</Text>
         </Stack>
 
         <Text color="#fff">${totalPrice}</Text>
       </Stack>
 
-      <Text>
+      <Stack css={{ gap: '8px' }}>
+        <Switch
+          id="recurring"
+          on={isAnnual}
+          onChange={() => {
+            actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual');
+
+            track('Checkout - Toggle recurring type', {
+              from: 'summary',
+              newValue: isAnnual ? 'annual' : 'monthly',
+            });
+          }}
+        />
+        <Stack direction="vertical" css={{ marginTop: -3 }}>
+          <Text color="#fff" as="label" htmlFor="recurring">
+            Annual (Save 30%)
+          </Text>
+
+          {isAnnual && <Text>24 hour processing time</Text>}
+        </Stack>
+      </Stack>
+
+      <Text size={3}>
         Additional VM credits are available on-demand for $0.018/credit.
         <br />
         Spending limit: ${spendingLimit}

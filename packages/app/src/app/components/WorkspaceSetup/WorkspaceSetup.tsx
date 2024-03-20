@@ -60,8 +60,4 @@ const STEP_COMPONENTS: Record<WorkspaceSetupStep, React.FC<StepProps>> = {
   finalize: Finalize,
 };
 
-const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = [
-  'spending-limit',
-  'addons',
-  'finalize',
-];
+const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = ['spending-limit', 'addons'];
