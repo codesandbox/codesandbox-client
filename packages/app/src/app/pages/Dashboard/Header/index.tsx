@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Combobox, ComboboxInput } from '@reach/combobox';
-
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
-import {
-  Stack,
-  Input,
-  Button,
-  Icon,
-  IconButton,
-} from '@codesandbox/components';
+import { Stack, Input, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
 
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { TeamAvatar } from 'app/components/TeamAvatar';
+import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
+import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
+import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -25,13 +23,29 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
-    const { modalOpened } = useActions();
+    const history = useHistory();
+    const actions = useActions();
+    const { isFrozen } = useWorkspaceLimits();
     const {
       activeWorkspaceAuthorization,
       hasLogIn,
-      environment,
+      user,
+      activeTeam,
+      activeTeamInfo,
+      dashboard,
     } = useAppState();
-    const showDiscover = !environment.isOnPrem;
+    const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
+
+    const [highlightButtons, setHighlightButtons] = useGlobalPersistedState<
+      boolean | undefined
+    >('PRIMARY_BUTTONS_ABTEST', undefined);
+
+    useEffect(() => {
+      if (highlightButtons === undefined) {
+        // 50% pseudo-random, good enough for a/b test
+        setHighlightButtons(Math.random() > 0.5);
+      }
+    }, [highlightButtons, setHighlightButtons]);
 
     return (
       <Stack
@@ -46,94 +60,123 @@ export const Header: React.FC<HeaderProps> = React.memo(
           color: 'titleBar.activeForeground',
         })}
       >
-        <IconButton
-          name="menu"
-          size={16}
-          title="Menu"
-          onClick={onSidebarToggle}
-          css={css({ display: ['block', 'block', 'none'] })}
-        />
-
-        <div>
-          <UserMenu
-            css={css({
-              display: ['none', 'none', 'block'],
-            })}
+        <Stack align="center" gap={1} css={{ paddingLeft: '4px' }}>
+          <Button
+            name="menu"
+            title="Menu"
+            onClick={onSidebarToggle}
+            variant="secondary"
+            autoWidth
+            css={css({ display: ['block', 'block', 'none'] })}
           >
+            <Icon name="menu" size={16} />
+          </Button>
+
+          <Button
+            as={Link}
+            to={dashboardUrls.recent(activeTeam)}
+            autoWidth
+            variant="ghost"
+          >
+            <LogoIcon width={18} height={18} />
+          </Button>
+
+          <Stack direction="horizontal">
+            {teamDataLoaded ? (
+              <WorkspaceSelect
+                selectedTeamId={activeTeam}
+                onSelect={teamId => {
+                  actions.setActiveTeam({
+                    id: teamId,
+                  });
+
+                  history.replace(dashboardUrls.recent(teamId));
+                }}
+              />
+            ) : (
+              <Stack
+                align="center"
+                css={{ width: '100%', paddingLeft: '28px' }}
+              >
+                <SkeletonTextBlock
+                  css={{ width: 120, height: 12, marginLeft: 8 }}
+                />
+              </Stack>
+            )}
+          </Stack>
+        </Stack>
+
+        <Stack align="center" gap={2}>
+          <SearchInputGroup />
+          <Button
+            variant={highlightButtons ? 'primary' : 'secondary'}
+            disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
+            onClick={() => {
+              track('Dashboard - Topbar - Import repository', {
+                highlightButtons,
+              });
+              actions.modalOpened({ modal: 'importRepository' });
+            }}
+            autoWidth
+          >
+            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
+            Repository
+          </Button>
+
+          <Button
+            variant={highlightButtons ? 'primary' : 'secondary'}
+            disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
+            onClick={() => {
+              track('Dashboard - Topbar - Create Devbox', { highlightButtons });
+              actions.modalOpened({ modal: 'createDevbox' });
+            }}
+            autoWidth
+          >
+            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
+            Devbox
+          </Button>
+
+          <Button
+            variant={highlightButtons ? 'light' : 'secondary'}
+            disabled={activeWorkspaceAuthorization === 'READ'}
+            onClick={() => {
+              track('Dashboard - Topbar - Create Sandbox', {
+                highlightButtons,
+              });
+              actions.modalOpened({ modal: 'createSandbox' });
+            }}
+            autoWidth
+          >
+            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
+            Sandbox
+          </Button>
+
+          {hasLogIn && <Notifications dashboard />}
+
+          <UserMenu>
             <Button
               as={UserMenu.Button}
-              variant="link"
-              css={css({
-                marginLeft: '2px',
-                transition: 'color .3s',
-
-                '.chevron': {
-                  transition: 'transform .3s',
-                },
-
-                '&:hover': {
-                  '.chevron': {
-                    transform: 'translateY(2px)',
-                  },
-                },
-              })}
+              variant="secondary"
+              css={{
+                width: '28px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                padding: 0,
+                border: '2px solid transparent',
+                transition: 'border 0.125s ease-out',
+              }}
             >
-              <LogoIcon
-                width={18}
-                height={18}
-                css={css({
-                  marginRight: '8px',
-                })}
-              />
-              <Icon
-                className="chevron"
-                name="chevronDown"
-                size={6}
-                title="User actions"
+              <TeamAvatar
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  border: 0,
+                }}
+                name={user?.name}
+                avatar={user?.avatarUrl}
               />
             </Button>
           </UserMenu>
-        </div>
-
-        <SearchInputGroup />
-
-        <Stack align="center" gap={2}>
-          <Button
-            variant="ghost"
-            css={css({ width: 'auto' })}
-            disabled={activeWorkspaceAuthorization === 'READ'}
-            onClick={() => {
-              modalOpened({ modal: 'genericCreate' });
-            }}
-          >
-            <Icon
-              name="plus"
-              size={16}
-              title="Create new"
-              css={{ marginRight: '8px' }}
-            />
-            Create
-          </Button>
-
-          {showDiscover && (
-            <Button
-              variant="ghost"
-              autoWidth
-              onClick={() => {
-                window.open('http://codesandbox.io/discover', '_blank');
-              }}
-            >
-              <Icon
-                name="discover"
-                size={16}
-                title="New"
-                css={{ marginRight: '8px' }}
-              />
-              Discover
-            </Button>
-          )}
-
-          {hasLogIn && <Notifications dashboard />}
         </Stack>
       </Stack>
     );
@@ -144,7 +187,6 @@ const SearchInputGroup = () => {
   const { activeTeam } = useAppState();
 
   const history = useHistory();
-  const location = useLocation();
 
   const [query, setQuery] = useState(
     new URLSearchParams(window.location.search).get('query') || ''
@@ -153,7 +195,7 @@ const SearchInputGroup = () => {
   const search = (queryString: string) => {
     history.push(dashboardUrls.search(queryString, activeTeam));
   };
-  const [debouncedSearch] = useDebouncedCallback(search, 100);
+  const [debouncedSearch] = useDebouncedCallback(search, 200);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -161,26 +203,15 @@ const SearchInputGroup = () => {
       debouncedSearch(event.target.value);
     }
     if (!event.target.value) {
-      history.push(dashboardUrls.sandboxes('/', activeTeam));
+      history.push(dashboardUrls.recent(activeTeam));
     }
-  };
-
-  const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!location.pathname.includes('search')) {
-      // navigate from other places on enter
-      history.push(dashboardUrls.search(query, activeTeam));
-    }
-    if (event.which === ENTER) event.currentTarget.blur();
   };
 
   return (
     <Stack
       align="center"
       css={css({
-        width: 320,
         display: ['none', 'none', 'flex'],
-        position: 'fixed',
-        left: '288px',
       })}
     >
       <Combobox
@@ -191,54 +222,43 @@ const SearchInputGroup = () => {
       >
         <Stack
           align="center"
-          css={css({
+          css={{
             position: 'relative',
-          })}
+          }}
         >
           <Icon
             name="search"
             size={16}
-            title="Search"
             className="icon"
-            css={css({
+            css={{
               position: 'absolute',
               top: '50%',
-              left: 0,
+              left: 6,
               transform: 'translateY(-50%)',
               pointerEvents: 'none',
               color: '#999999',
-            })}
+            }}
           />
           <ComboboxInput
             as={Input}
             value={query}
             onChange={onChange}
-            onKeyPress={handleEnter}
-            placeholder="Search"
+            // onKeyPress={handleEnter}
+            placeholder="Search in workspace"
             icon="search"
-            css={css({
-              background: 'transparent',
-              border: 'none',
+            css={{
               paddingLeft: '24px',
               color: '#999999',
+              minWidth: '250px',
 
               '&::placeholder': {
                 color: '#999999',
-                transition: 'color .3s',
-              },
-
-              '&:hover': {
-                '&::placeholder': {
-                  color: '#ffffff',
-                },
               },
 
               '&:focus': {
-                '&::placeholder': {
-                  color: '#717171',
-                },
+                color: '#E6E6E6',
               },
-            })}
+            }}
           />
         </Stack>
       </Combobox>

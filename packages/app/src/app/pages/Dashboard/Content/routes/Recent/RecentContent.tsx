@@ -31,7 +31,7 @@ const StyledWrapper = styled(Stack)`
   padding: 0 ${GUTTER}px 64px;
   overflow: auto;
   scrollbar-gutter: stable;
-  margin: 24px auto 0;
+  margin: 12px auto 0;
   flex-direction: column;
   gap: 32px;
 

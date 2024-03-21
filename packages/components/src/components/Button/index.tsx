@@ -21,11 +21,11 @@ const variantStyles = {
     },
   },
   secondary: {
-    backgroundColor: 'secondaryButton.background',
-    color: 'secondaryButton.foreground',
+    backgroundColor: '#ffffff1a',
+    color: '#F2F2F2',
 
-    ':hover:not(:disabled), :focus:not(:disabled)': {
-      background: theme => theme.colors.secondaryButton.hoverBackground,
+    ':hover:not(:disabled)': {
+      background: '#333333',
     },
   },
   link: {
@@ -43,7 +43,7 @@ const variantStyles = {
 
     ':hover:not(:disabled), :focus:not(:disabled)': {
       color: 'foreground',
-      backgroundColor: '#E5E5E51A',
+      backgroundColor: '#FFFFFF1A',
     },
   },
   danger: {
@@ -113,7 +113,7 @@ const commonStyles = {
   textDecoration: 'none',
 
   ':focus-visible': {
-    boxShadow: `0 0 0 1px #AC9CFF`,
+    boxShadow: `0 0 0 2px #AC9CFF`,
     outline: 'none',
   },
   ':active:not(:disabled)': {

@@ -2,16 +2,12 @@ import {
   profileUrl,
   docsUrl,
   csbSite,
-  dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
+import { Menu, Stack, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
-import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
@@ -22,14 +18,12 @@ export const UserMenu: FunctionComponent & {
     signOutClicked,
     files: { gotUploadedFiles },
   } = useActions();
-  const { user, activeTeam, environment } = useAppState();
-  const { isAdmin } = useWorkspaceAuthorization();
-  const { isPro, isFree } = useWorkspaceSubscription();
+  const { user, environment } = useAppState();
   const isEditorPage = useIsEditorPage();
 
   if (!user) {
     return (
-      <Element>
+      <Stack>
         <Menu>
           {props.children}
           <Menu.List>
@@ -48,16 +42,14 @@ export const UserMenu: FunctionComponent & {
             </Menu.Link>
           </Menu.List>
         </Menu>
-      </Element>
+      </Stack>
     );
   }
 
-  const showBecomePro = isFree && isAdmin && !environment.isOnPrem;
-  const showManageSubscription = isPro && isAdmin && !environment.isOnPrem;
   const showStorage = !environment.isOnPrem;
 
   return (
-    <Element>
+    <Stack>
       <Menu>
         {props.children || (
           <ProfileImage
@@ -70,12 +62,37 @@ export const UserMenu: FunctionComponent & {
         )}
 
         <Menu.List>
+          <Menu.Item
+            onClick={() =>
+              modalOpened({
+                modal: 'preferences',
+                itemId: isEditorPage ? 'appearance' : 'account',
+              })
+            }
+          >
+            <Stack align="center" gap={2}>
+              <Icon name="gear" size={16} />
+              <Text>User settings</Text>
+            </Stack>
+          </Menu.Item>
+
           <Menu.Link href={profileUrl(user.username)}>
             <Stack align="center" gap={2}>
               <Icon name="profile" size={16} />
               <Text>Profile</Text>
             </Stack>
           </Menu.Link>
+
+          {showStorage && (
+            <Menu.Item onClick={() => gotUploadedFiles(null)}>
+              <Stack align="center" gap={2}>
+                <Icon name="folder" size={16} />
+                <Text>Storage</Text>
+              </Stack>
+            </Menu.Item>
+          )}
+
+          <Menu.Divider />
 
           <Menu.Link href={docsUrl()}>
             <Stack align="center" gap={2}>
@@ -91,62 +108,14 @@ export const UserMenu: FunctionComponent & {
             </Stack>
           </Menu.Item>
 
-          {showBecomePro && (
-            <Menu.Link
-              to={upgradeUrl({
-                workspaceId: activeTeam,
-                source: 'main_menu',
-              })}
-            >
-              <Stack align="center" gap={2}>
-                <Icon name="proBadge" size={16} />
-                <Text>Upgrade to Pro</Text>
-              </Stack>
-            </Menu.Link>
-          )}
-
-          <Menu.Divider />
-
-          {showManageSubscription && (
-            <Menu.Link href={dashboardUrls.portalOverview(activeTeam)}>
-              <Stack align="center" gap={2}>
-                <Icon name="proBadge" size={16} />
-                <Text>Subscription</Text>
-              </Stack>
-            </Menu.Link>
-          )}
-
-          {showStorage && (
-            <Menu.Item onClick={() => gotUploadedFiles(null)}>
-              <Stack align="center" gap={2}>
-                <Icon name="folder" size={16} />
-                <Text>Storage</Text>
-              </Stack>
-            </Menu.Item>
-          )}
-
-          <Menu.Item
-            onClick={() =>
-              modalOpened({
-                modal: 'preferences',
-                itemId: isEditorPage ? 'appearance' : 'account',
-              })
-            }
-          >
-            <Stack align="center" gap={2}>
-              <Icon name="gear" size={16} />
-              <Text>{isEditorPage ? 'Preferences' : 'Settings'}</Text>
-            </Stack>
-          </Menu.Item>
-
-          <Menu.Divider />
-
           <Menu.Link href={`${csbSite()}/?from-app=1`}>
             <Stack align="center" gap={2}>
               <Icon name="external" size={16} />
               <Text>codesandbox.io</Text>
             </Stack>
           </Menu.Link>
+
+          <Menu.Divider />
 
           <Menu.Item onClick={() => signOutClicked()}>
             <Stack align="center" gap={2}>
@@ -156,7 +125,7 @@ export const UserMenu: FunctionComponent & {
           </Menu.Item>
         </Menu.List>
       </Menu>
-    </Element>
+    </Stack>
   );
 };
 
