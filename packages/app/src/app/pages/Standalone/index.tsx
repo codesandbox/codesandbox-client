@@ -14,8 +14,10 @@ import { NotFound } from '../common/NotFound';
 const COMPONENT_MAP = {
   preferences: Preferences,
   create: GenericCreate,
-  createSandbox: () => <CreateBox type="sandbox" isModal={false} />,
-  createDevbox: () => <CreateBox type="devbox" isModal={false} />,
+  createSandbox: () => (
+    <CreateBox isStandalone type="sandbox" isModal={false} />
+  ),
+  createDevbox: () => <CreateBox isStandalone type="devbox" isModal={false} />,
   import: ImportRepository,
   'create-repo-files': CreateRepoFiles,
 };

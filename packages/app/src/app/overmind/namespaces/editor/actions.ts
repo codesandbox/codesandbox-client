@@ -756,6 +756,7 @@ export const forkExternalSandbox = async (
     hasBetaEditorExperiment,
     customVMTier,
     body,
+    preventNavigation,
   }: {
     sandboxId: string;
     openInNewWindow?: boolean;
@@ -763,6 +764,7 @@ export const forkExternalSandbox = async (
     autoLaunchVSCode?: boolean;
     hasBetaEditorExperiment?: boolean;
     customVMTier?: number;
+    preventNavigation?: boolean;
     body?: {
       collectionId: string;
       alias?: string;
@@ -796,11 +798,15 @@ export const forkExternalSandbox = async (
     } else {
       state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
 
-      effects.router.updateSandboxUrl(forkedSandbox, {
-        openInNewWindow,
-        hasBetaEditorExperiment,
-      });
+      if (!preventNavigation) {
+        effects.router.updateSandboxUrl(forkedSandbox, {
+          openInNewWindow,
+          hasBetaEditorExperiment,
+        });
+      }
     }
+
+    return forkedSandbox;
   } catch (error) {
     const errorMessage = actions.internal.getErrorMessage({ error });
 
@@ -818,6 +824,8 @@ export const forkExternalSandbox = async (
       });
     }
   }
+
+  return undefined;
 };
 
 // TODO: Look into
