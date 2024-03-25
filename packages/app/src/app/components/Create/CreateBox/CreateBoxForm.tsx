@@ -203,11 +203,14 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                     <Icon name={isDraft ? 'file' : 'folder'} size={12} />
                   )}
                   value={isDraft ? '$CSBDRAFTS' : collectionId}
-                  onChange={({ target: { value } }) =>
-                    value === '$CSBDRAFTS'
-                      ? setCollectionId(undefined)
-                      : setCollectionId(value)
-                  }
+                  onChange={({ target: { value } }) => {
+                    if (value === '$CSBDRAFTS') {
+                      setCollectionId(undefined);
+                      setPermission(2);
+                    } else {
+                      setCollectionId(value);
+                    }
+                  }}
                 >
                   <option value="$CSBDRAFTS">Drafts</option>
 
