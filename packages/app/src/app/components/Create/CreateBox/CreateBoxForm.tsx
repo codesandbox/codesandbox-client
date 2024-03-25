@@ -79,7 +79,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const defaultTier = isFree ? 1 : 2;
   const [selectedTier, setSelectedTier] = useState<number>(defaultTier);
-  const [availableTiers, setAvailableTiers] = useState<VMTier[]>([]);
+  const [allVmTiers, setAllVmTiers] = useState<VMTier[]>([]);
+
+  useEffect(() => {
+    if (type === 'devbox') {
+      effects.api.getVMSpecs().then(res => {
+        setAllVmTiers(res.vmTiers);
+      });
+    }
+  }, [type]);
 
   useEffect(() => {
     effects.api.getSandboxTitle().then(({ title }) => {
@@ -89,14 +97,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         nameInputRef.current.select();
       }
     });
-    if (type === 'devbox') {
-      effects.api.getVMSpecs().then(res => {
-        setAvailableTiers(
-          res.vmTiers.filter(t => t.tier <= highestAllowedVMTier)
-        );
-      });
-    }
   }, []);
+
+  const availableTiers = allVmTiers.filter(t => t.tier <= highestAllowedVMTier);
+
+  useEffect(() => {
+    if (selectedTier > highestAllowedVMTier) {
+      setSelectedTier(highestAllowedVMTier);
+    }
+  }, [selectedTier, highestAllowedVMTier]);
 
   const { data: collectionsData } = useQuery<
     PathedSandboxesFoldersQuery,
@@ -366,7 +375,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
                   <Icon name="circleBang" />
                   <Text size={3}>
-                    Better specs are available for Pro workspaces.
+                    Better specs are available for{' '}
+                    <a
+                      href="/pricing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Pro workspaces
+                    </a>
+                    .
                   </Text>
                 </Stack>
               )}

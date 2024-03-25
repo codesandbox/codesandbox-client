@@ -38,9 +38,13 @@ export const ModalBody = styled.div`
 `;
 
 export const ModalSidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 176px;
   flex-shrink: 0;
   padding: 0px 24px;
+  padding-bottom: 16px;
   overflow: auto;
 
   @media screen and (max-width: 950px) {

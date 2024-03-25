@@ -42,6 +42,7 @@ import { TemplateInfo } from './CreateBox/TemplateInfo';
 import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
 import { useAllTemplates } from './hooks/useAllTemplates';
 import { mapSandboxGQLResponseToSandboxToFork } from './utils/api';
+import { WorkspaceSelect } from '../WorkspaceSelect';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -549,6 +550,16 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             <>
               <ModalSidebar>
                 <TemplateInfo template={selectedTemplate} />
+
+                {hasLogIn && (
+                  <WorkspaceSelect
+                    selectedTeamId={activeTeam}
+                    onSelect={teamId => {
+                      actions.setActiveTeam({ id: teamId });
+                      setCollectionId(undefined);
+                    }}
+                  />
+                )}
               </ModalSidebar>
 
               <ModalContent>
