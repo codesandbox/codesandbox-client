@@ -84,6 +84,7 @@ export const SelectWorkspace: React.FC<StepProps> = ({
             name="workspace"
             label="Select the workspace you want to upgrade"
             onChange={ev => setWorkspaceId(ev.target.value)}
+            value={workspaceId}
             options={workspacesEligibleForUpgrade.map(w => ({
               label: w.name,
               value: w.id,
