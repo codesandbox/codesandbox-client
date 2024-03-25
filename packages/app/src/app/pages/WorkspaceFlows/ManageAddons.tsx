@@ -46,7 +46,10 @@ export const ManageAddons = () => {
 
   const [steps] = useState(() => {
     // Ensure this is run only once
-    const initialSteps: WorkspaceSetupStep[] = ['addons', 'finalize'];
+    const initialSteps: WorkspaceSetupStep[] = [
+      'addons',
+      'change-addons-confirmation',
+    ];
 
     return initialSteps;
   });

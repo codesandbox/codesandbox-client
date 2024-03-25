@@ -19,12 +19,14 @@ export const Addons: React.FC<StepProps> = ({
   numberOfSteps,
 }) => {
   const {
-    checkout: { availableCreditAddons },
+    checkout: { availableCreditAddons, addonChanges },
   } = useAppState();
   const { isPro } = useWorkspaceSubscription();
   const { checkout } = useActions();
   const { getQueryParam } = useURLSearchParams();
   const urlWorkspaceId = getQueryParam('workspace');
+
+  const disableActions = flow === 'manage-addons' && addonChanges.length === 0;
 
   const handleSubmit = () => {
     if (isPro) {
@@ -50,7 +52,9 @@ export const Addons: React.FC<StepProps> = ({
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
           title={
-            flow === 'manage-addons' ? 'Update plan' : 'Choose your add-ons (optional)'
+            flow === 'manage-addons'
+              ? 'Update plan'
+              : 'Choose your add-ons (optional)'
           }
         />
 
@@ -92,9 +96,30 @@ export const Addons: React.FC<StepProps> = ({
           </Element>
         </Stack>
 
-        <Button autoWidth size="large" onClick={handleSubmit}>
-          Next
-        </Button>
+        <Stack gap={2}>
+          {flow === 'manage-addons' && (
+            <Button
+              disabled={disableActions}
+              variant="secondary"
+              type="button"
+              autoWidth
+              size="large"
+              onClick={() => {
+                checkout.initializeCartFromExistingSubscription();
+              }}
+            >
+              Reset changes
+            </Button>
+          )}
+          <Button
+            disabled={disableActions}
+            autoWidth
+            size="large"
+            onClick={handleSubmit}
+          >
+            Next
+          </Button>
+        </Stack>
       </Stack>
     </AnimatedStep>
   );

@@ -7,6 +7,7 @@ import { SpendingLimit } from './steps/SpendingLimit';
 import { SelectWorkspace } from './steps/SelectWorkspace';
 import { Addons } from './steps/Addons';
 import { Finalize } from './steps/Finalize';
+import { ChangeAddons } from './steps/ChangeAddons';
 
 export type WorkspaceSetupProps = {
   flow: WorkspaceFlow;
@@ -62,6 +63,11 @@ const STEP_COMPONENTS: Record<WorkspaceSetupStep, React.FC<StepProps>> = {
   'spending-limit': SpendingLimit,
   addons: Addons,
   finalize: Finalize,
+  'change-addons-confirmation': ChangeAddons,
 };
 
-const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = ['spending-limit', 'addons'];
+const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = [
+  'spending-limit',
+  'addons',
+  'change-addons-confirmation',
+];

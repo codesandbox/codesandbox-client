@@ -1,5 +1,5 @@
 import type { Context } from 'app/overmind';
-import { CreditAddon, CreditAddonType, PlanType } from './types';
+import { AddonItem, CreditAddon, CreditAddonType, PlanType } from './types';
 import { DEFAULT_SPENDING_LIMIT, PRO_PLAN_ANNUAL } from './constants';
 
 export const fetchPrices = async ({ state, effects }: Context) => {
@@ -51,6 +51,8 @@ export const initializeCartFromExistingSubscription = ({
     return;
   }
 
+  actions.checkout.clearCheckout();
+
   const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
 
   state.checkout.basePlan = {
@@ -83,9 +85,27 @@ export const initializeCartFromExistingSubscription = ({
         credits: standardAddon.credits,
       },
     });
+
+    // Duplicate the current subscription addons to compare them later
+    state.checkout.currentSubscriptionAddons.push({
+      quantity: item.quantity,
+      addon: {
+        id: item.name as CreditAddonType,
+        price: item.unitAmount / 100,
+        credits: standardAddon.credits,
+      },
+    });
   });
 
   actions.checkout.recomputeTotals();
+  actions.checkout.recomputeAddonChanges();
+
+  // Use the subscription limit for the total credits
+  state.checkout.currentSubscriptionTotalCredits =
+    state.activeTeamInfo.limits.includedCredits;
+
+  // Use the current checkout data asa reference to compare changes at the end
+  state.checkout.currentSubscriptionTotalPrice = state.checkout.totalPrice;
 };
 
 export const addCreditsPackage = (
@@ -103,6 +123,7 @@ export const addCreditsPackage = (
   }
 
   actions.checkout.recomputeTotals();
+  actions.checkout.recomputeAddonChanges();
 };
 
 export const removeCreditsPackage = (
@@ -126,6 +147,7 @@ export const removeCreditsPackage = (
   }
 
   actions.checkout.recomputeTotals();
+  actions.checkout.recomputeAddonChanges();
 };
 
 export const recomputeTotals = ({ state }: Context) => {
@@ -163,7 +185,12 @@ export const clearCheckout = ({ state, actions }: Context) => {
   state.checkout.spendingLimit = DEFAULT_SPENDING_LIMIT;
   state.checkout.convertProToUBBCharge = null;
 
+  state.checkout.currentSubscriptionAddons = [];
+  state.checkout.currentSubscriptionTotalCredits = 0;
+  state.checkout.currentSubscriptionTotalPrice = 0;
+
   actions.checkout.recomputeTotals();
+  actions.checkout.recomputeAddonChanges();
 };
 
 export const setSpendingLimit = async (
@@ -246,4 +273,40 @@ export const getFlatAddonsList = ({ state }: Context): string[] => {
   });
 
   return addons;
+};
+
+export const recomputeAddonChanges = ({ state }: Context): void => {
+  const changes: Array<AddonItem> = [];
+
+  const {
+    creditAddons: newAddons,
+    currentSubscriptionAddons: currentAddons,
+  } = state.checkout;
+
+  currentAddons.forEach(current => {
+    const newAddon = newAddons.find(item => item.addon.id === current.addon.id);
+
+    if (!newAddon) {
+      changes.push({
+        addon: current.addon,
+        quantity: -current.quantity,
+      });
+    } else if (newAddon.quantity !== current.quantity) {
+      changes.push({
+        addon: current.addon,
+        quantity: newAddon.quantity - current.quantity,
+      });
+    }
+  });
+
+  newAddons.forEach(newAddon => {
+    if (!currentAddons.find(item => item.addon.id === newAddon.addon.id)) {
+      changes.push({
+        addon: newAddon.addon,
+        quantity: newAddon.quantity,
+      });
+    }
+  });
+
+  state.checkout.addonChanges = changes;
 };

@@ -1,5 +1,11 @@
 import { InvoicePreview } from 'app/graphql/types';
-import { CreditAddon, CreditAddonType, PlanType, PricingPlan } from './types';
+import {
+  AddonItem,
+  CreditAddon,
+  CreditAddonType,
+  PlanType,
+  PricingPlan,
+} from './types';
 import {
   FREE_PLAN,
   PRO_PLAN,
@@ -13,10 +19,14 @@ import {
 
 export interface State {
   basePlan: { id: PlanType; name: string; price: number; credits: number };
-  creditAddons: Array<{ addon: CreditAddon; quantity: number }>;
+  creditAddons: Array<AddonItem>;
   spendingLimit: number;
   totalCredits: number;
   totalPrice: number;
+  currentSubscriptionTotalCredits: number;
+  currentSubscriptionTotalPrice: number;
+  currentSubscriptionAddons: Array<AddonItem>;
+  addonChanges: Array<AddonItem>;
   convertProToUBBCharge: InvoicePreview | null;
   availableBasePlans: Record<PlanType, PricingPlan>;
   availableCreditAddons: Record<CreditAddonType, CreditAddon>;
@@ -33,6 +43,10 @@ export const state: State = {
   spendingLimit: DEFAULT_SPENDING_LIMIT,
   totalCredits: 0,
   totalPrice: 0,
+  currentSubscriptionTotalCredits: 0, // Used only for existing UBB Pro when managing addons
+  currentSubscriptionTotalPrice: 0, // Used only for existing UBB Pro when managing addons
+  currentSubscriptionAddons: [], // Used only for existing UBB Pro when managing addons, to compare addons
+  addonChanges: [], // Recomputed everytime an addon is changed
   convertProToUBBCharge: null,
   availableBasePlans: {
     free: FREE_PLAN,

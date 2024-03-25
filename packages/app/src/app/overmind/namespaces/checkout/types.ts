@@ -22,3 +22,5 @@ export type CreditAddon = {
   fullPrice?: number;
   discount?: number;
 };
+
+export type AddonItem = { addon: CreditAddon; quantity: number };

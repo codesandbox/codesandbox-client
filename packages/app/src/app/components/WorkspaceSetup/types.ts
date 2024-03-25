@@ -3,6 +3,7 @@ export type WorkspaceSetupStep =
   | 'select-workspace'
   | 'plans'
   | 'addons'
+  | 'change-addons-confirmation'
   | 'spending-limit'
   | 'finalize';
 
