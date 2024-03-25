@@ -94,7 +94,7 @@ export const Payment: React.FC<StepProps> = ({
               ? 'Redirecting to payment to provider'
               : 'Cannot redirect to payment provider'
           }
-          workspaceId={urlWorkspaceId}
+          workspaceId={workspaceId}
         />
 
         {checkout.status === 'error' ? (
