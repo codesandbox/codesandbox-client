@@ -103,6 +103,7 @@ export const Plans: React.FC<StepProps> = ({
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
           title="Choose a plan"
+          workspaceId={urlWorkspaceId}
         />
 
         <Stack gap={4} direction="vertical">
@@ -116,7 +117,7 @@ export const Plans: React.FC<StepProps> = ({
           </Stack>
 
           <HorizontalScroller css={{ width: '100%' }}>
-            <Stack gap={6} justify="center">
+            <Stack gap={6} >
               {showFreePlan && (
                 <StyledCard
                   direction="vertical"

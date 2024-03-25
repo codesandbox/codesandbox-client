@@ -46,6 +46,7 @@ export const ChangePlan: React.FC<StepProps> = ({
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
           title="Review plan"
+          workspaceId={urlWorkspaceId}
         />
 
         <Text color="#e5e5e5">You are switching to the following plan:</Text>

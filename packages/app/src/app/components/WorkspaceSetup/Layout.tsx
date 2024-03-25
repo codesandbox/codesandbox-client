@@ -31,6 +31,7 @@ export const WorkspaceFlowLayout: React.FC<{
         >
           <Stack
             css={{
+              width: '100%',
               height: '100%',
               padding: '64px',
               flex: 1,
