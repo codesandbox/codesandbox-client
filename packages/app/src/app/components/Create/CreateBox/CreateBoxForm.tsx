@@ -229,7 +229,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   <Select
                     icon={
                       isDraft
-                        ? PRIVACY_OPTIONS[0].icon
+                        ? PRIVACY_OPTIONS[2].icon
                         : PRIVACY_OPTIONS[permission].icon
                     }
                     defaultValue={permission}
