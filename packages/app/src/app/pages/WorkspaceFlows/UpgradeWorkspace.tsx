@@ -27,8 +27,8 @@ export const UpgradeWorkspace = () => {
   // Cannot upgrade if already on ubb or legacy paddle
   const cannotUpgradeToUbb = (ubbBeta && isPro) || isPaddle;
 
-  if (proPlanPreSelected && !checkout.selectedPlan) {
-    actions.checkout.selectPlan('flex');
+  if (proPlanPreSelected && !checkout.basePlan) {
+    actions.checkout.selectPlan('flex-annual');
   }
 
   const {

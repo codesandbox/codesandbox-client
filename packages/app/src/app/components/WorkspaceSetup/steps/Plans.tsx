@@ -56,9 +56,10 @@ export const Plans: React.FC<StepProps> = ({
       'flex-annual': proAnnualPlan,
       free: freePlan,
     },
+    basePlan,
   } = checkout;
 
-  const annualPlan = checkout.selectedPlan === 'flex-annual';
+  const annualPlan = basePlan.id === 'flex-annual';
   const currentProPlan = annualPlan ? proAnnualPlan : proPlan;
 
   // For new workspaces

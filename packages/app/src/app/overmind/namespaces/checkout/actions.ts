@@ -1,6 +1,6 @@
 import type { Context } from 'app/overmind';
 import { CreditAddon, CreditAddonType, PlanType } from './types';
-import { DEFAULT_SPENDING_LIMIT } from './constants';
+import { DEFAULT_SPENDING_LIMIT, PRO_PLAN_ANNUAL } from './constants';
 
 export const fetchPrices = async ({ state, effects }: Context) => {
   try {
@@ -26,7 +26,13 @@ export const fetchPrices = async ({ state, effects }: Context) => {
 };
 
 export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
-  state.checkout.selectedPlan = plan;
+  state.checkout.basePlan = {
+    id: plan,
+    name: state.checkout.availableBasePlans[plan].name,
+    price: state.checkout.availableBasePlans[plan].price,
+    credits: state.checkout.availableBasePlans[plan].credits,
+  };
+
   actions.checkout.recomputeTotals();
 };
 
@@ -34,15 +40,36 @@ export const initializeCartFromExistingSubscription = ({
   state,
   actions,
 }: Context) => {
-  if (!state.activeTeamInfo?.subscriptionSchedule.current) {
+  if (!state.activeTeamInfo?.subscriptionSchedule?.current) {
     return;
   }
 
   const { items } = state.activeTeamInfo.subscriptionSchedule.current;
+  const basePlanItem = items.find(i => i.name === 'flex');
 
-  state.checkout.selectedPlan = 'flex';
+  if (!basePlanItem) {
+    return;
+  }
+
+  const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
+
+  state.checkout.basePlan = {
+    id: basePlanItem.name as PlanType,
+    // price might be custom even if it's the base plan selected
+    price: basePlanItem.unitAmount
+      ? basePlanItem.unitAmount / 100
+      : standardPlan.price,
+    name: standardPlan.name,
+    credits: standardPlan.credits, // credits are always the same for the base plan
+  };
+
   items.forEach(item => {
-    if (!item.name.startsWith('credits_')) {
+    // Ignore all non-credit prefixed addons or addons with no quantity / unitAmount
+    if (
+      !item.name.startsWith('credits_') ||
+      item.quantity === null ||
+      item.unitAmount === null
+    ) {
       return;
     }
 
@@ -52,7 +79,7 @@ export const initializeCartFromExistingSubscription = ({
       quantity: item.quantity,
       addon: {
         id: item.name as CreditAddonType,
-        price: parseInt(item.unitAmountDecimal ?? standardAddon.price, 10),
+        price: item.unitAmount / 100,
         credits: standardAddon.credits,
       },
     });
@@ -102,10 +129,9 @@ export const removeCreditsPackage = (
 };
 
 export const recomputeTotals = ({ state }: Context) => {
-  const { availableBasePlans, selectedPlan, creditAddons } = state.checkout;
+  const { basePlan, creditAddons } = state.checkout;
 
-  const basePlan = availableBasePlans[selectedPlan];
-  const recurring = selectedPlan === 'flex-annual' ? 12 : 1;
+  const recurring = basePlan.id === 'flex-annual' ? 12 : 1;
 
   const totalCreditAddonsPrice = creditAddons.reduce(
     (acc, item) => acc + item.addon.price * item.quantity,
@@ -124,7 +150,13 @@ export const recomputeTotals = ({ state }: Context) => {
 };
 
 export const clearCheckout = ({ state, actions }: Context) => {
-  state.checkout.selectedPlan = 'flex-annual';
+  // Reset to default (flex-anual)
+  state.checkout.basePlan = {
+    id: PRO_PLAN_ANNUAL.id,
+    name: PRO_PLAN_ANNUAL.name,
+    price: PRO_PLAN_ANNUAL.price,
+    credits: PRO_PLAN_ANNUAL.credits,
+  };
   state.checkout.creditAddons = [];
   state.checkout.totalPrice = 0;
   state.checkout.totalCredits = 0;
@@ -154,9 +186,7 @@ export const calculateConversionCharge = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ) => {
-  const { selectedPlan } = state.checkout;
-
-  const basePlan = state.checkout.availableBasePlans[selectedPlan];
+  const { basePlan } = state.checkout;
 
   try {
     const result = await effects.gql.mutations.previewConvertToUsageBilling({
@@ -185,9 +215,7 @@ export const convertToUsageBilling = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ): Promise<{ success: boolean; error?: string }> => {
-  const { selectedPlan } = state.checkout;
-
-  const basePlan = state.checkout.availableBasePlans[selectedPlan];
+  const { basePlan } = state.checkout;
 
   try {
     await effects.gql.mutations.convertToUsageBilling({

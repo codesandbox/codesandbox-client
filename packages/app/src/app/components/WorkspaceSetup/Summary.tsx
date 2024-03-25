@@ -7,29 +7,28 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useLocation } from 'react-router-dom';
 import { fadeAnimation } from './elements';
 
-export const Summary: React.FC<{ allowChanges: boolean }> = ({
-  allowChanges,
-}) => {
+export const Summary: React.FC<{
+  allowChanges: boolean;
+  allowAnual: boolean;
+}> = ({ allowChanges, allowAnual }) => {
   const actions = useActions();
   const { isPro } = useWorkspaceSubscription();
   const { pathname } = useLocation();
   const isUpgrading = pathname.includes('upgrade');
   const { checkout } = useAppState();
   const {
-    selectedPlan,
+    basePlan,
     creditAddons,
     totalCredits,
     totalPrice,
     spendingLimit,
-    availableBasePlans,
   } = checkout;
-
-  const basePlan = availableBasePlans[selectedPlan];
-  const isAnnual = selectedPlan === 'flex-annual';
 
   if (!basePlan) {
     return null;
   }
+
+  const isAnnual = basePlan.id === 'flex-annual';
 
   return (
     <Stack
@@ -106,27 +105,29 @@ export const Summary: React.FC<{ allowChanges: boolean }> = ({
         <Text color="#fff">${totalPrice}</Text>
       </Stack>
 
-      <Stack css={{ gap: '8px' }}>
-        <Switch
-          id="recurring"
-          on={isAnnual}
-          onChange={() => {
-            actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual');
+      {allowAnual && (
+        <Stack css={{ gap: '8px' }}>
+          <Switch
+            id="recurring"
+            on={isAnnual}
+            onChange={() => {
+              actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual');
 
-            track('Checkout - Toggle recurring type', {
-              from: 'summary',
-              newValue: isAnnual ? 'annual' : 'monthly',
-            });
-          }}
-        />
-        <Stack direction="vertical" css={{ marginTop: -3 }}>
-          <Text color="#fff" as="label" htmlFor="recurring">
-            Annual (Save 30%)
-          </Text>
+              track('Checkout - Toggle recurring type', {
+                from: 'summary',
+                newValue: isAnnual ? 'annual' : 'monthly',
+              });
+            }}
+          />
+          <Stack direction="vertical" css={{ marginTop: -3 }}>
+            <Text color="#fff" as="label" htmlFor="recurring">
+              Annual (Save 30%)
+            </Text>
 
-          {isAnnual && <Text>24 hour processing time</Text>}
+            {isAnnual && <Text>24 hour processing time</Text>}
+          </Stack>
         </Stack>
-      </Stack>
+      )}
 
       <Text size={3}>
         Additional VM credits are available on-demand for $0.018/credit.

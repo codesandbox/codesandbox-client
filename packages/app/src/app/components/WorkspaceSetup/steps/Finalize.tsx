@@ -34,13 +34,7 @@ const AnnualForm = ({
   refreshParentSelectedPlan,
 }: StepProps & { refreshParentSelectedPlan: () => void }) => {
   const { checkout } = useAppState();
-  const {
-    selectedPlan,
-    totalPrice,
-    totalCredits,
-    spendingLimit,
-    availableBasePlans,
-  } = checkout;
+  const { basePlan, totalPrice, totalCredits, spendingLimit } = checkout;
   const [country, setCountry] = React.useState('');
   const [zipCode, setZipCode] = React.useState('');
   const [success, setSuccess] = React.useState(false);
@@ -50,8 +44,7 @@ const AnnualForm = ({
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
 
-  const basePlan = availableBasePlans[selectedPlan];
-  const isAnnual = selectedPlan === 'flex-annual';
+  const isAnnual = basePlan.id === 'flex-annual';
   const disabled = !country || !zipCode;
 
   useEffect(() => {
@@ -75,7 +68,7 @@ const AnnualForm = ({
             [
               '',
               workspaceId,
-              checkout.selectedPlan,
+              basePlan.id,
               addons === '' ? 'N/A' : addons,
               checkout.spendingLimit,
               country,
@@ -267,14 +260,14 @@ export const Finalize: React.FC<StepProps> = props => {
   // This internal state is used to avoid unnecessary rerenders
   // and show the wrong step while the user is recurring plan
   const [_stepSelectedPlan, setStepSelectedPlan] = React.useState<PlanType>(
-    checkout.selectedPlan
+    checkout.basePlan.id
   );
 
   if (_stepSelectedPlan === 'flex-annual') {
     return (
       <AnnualForm
         refreshParentSelectedPlan={() =>
-          setStepSelectedPlan(checkout.selectedPlan)
+          setStepSelectedPlan(checkout.basePlan.id)
         }
         {...props}
       />

@@ -12,7 +12,7 @@ import {
 } from './constants';
 
 export interface State {
-  selectedPlan: PlanType;
+  basePlan: { id: PlanType; name: string; price: number; credits: number };
   creditAddons: Array<{ addon: CreditAddon; quantity: number }>;
   spendingLimit: number;
   totalCredits: number;
@@ -23,7 +23,12 @@ export interface State {
 }
 
 export const state: State = {
-  selectedPlan: 'flex-annual',
+  basePlan: {
+    id: PRO_PLAN_ANNUAL.id,
+    name: PRO_PLAN_ANNUAL.name,
+    price: PRO_PLAN_ANNUAL.price,
+    credits: PRO_PLAN_ANNUAL.credits,
+  },
   creditAddons: [],
   spendingLimit: DEFAULT_SPENDING_LIMIT,
   totalCredits: 0,

@@ -40,6 +40,7 @@ export const WorkspaceSetup: React.FC<WorkspaceSetupProps> = ({
     <WorkspaceFlowLayout
       showSummary={STEPS_WITH_CHECKOUT.includes(currentStep)}
       allowSummaryChanges={currentStep === 'addons'}
+      flow={flow}
     >
       <Component
         flow={flow}
