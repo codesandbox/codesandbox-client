@@ -37,23 +37,42 @@ import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateParams, SandboxToFork } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
-import { CreateBoxForm } from './CreateBox/CreateBoxForm';
+import { CreateBoxForm, PrivacyLevel } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
 import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
 import { useAllTemplates } from './hooks/useAllTemplates';
 import { mapSandboxGQLResponseToSandboxToFork } from './utils/api';
+import { WorkspaceSelect } from '../WorkspaceSelect';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
   type?: 'devbox' | 'sandbox';
   sandboxIdToFork?: string;
+  isStandalone?: boolean;
 };
+
+function parsePrivacy(privacy: string | undefined): PrivacyLevel | undefined {
+  if (privacy === 'public') {
+    return 0;
+  }
+
+  if (privacy === 'unlisted') {
+    return 1;
+  }
+
+  if (privacy === 'private') {
+    return 2;
+  }
+
+  return undefined;
+}
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
   sandboxIdToFork,
   type = 'devbox',
   closeModal,
+  isStandalone,
 }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const effects = useEffects();
@@ -62,6 +81,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const [collectionId, setCollectionId] = useState<string | undefined>(
     initialCollectionId
   );
+
+  const parsedUrl = new URL(window.location.href);
+  const initialPrivacy = parsePrivacy(parsedUrl.searchParams.get('privacy'));
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
@@ -162,22 +184,41 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       ...(customVMTier ? { vm_tier: customVMTier } : {}),
     });
 
-    actions.editor.forkExternalSandbox({
-      sandboxId: sandbox.id,
-      openInNewWindow: false,
-      openInVSCode,
-      autoLaunchVSCode,
-      hasBetaEditorExperiment,
-      customVMTier,
-      body: {
-        title: name,
-        collectionId,
-        privacy: permission,
-        v2: createAs === 'devbox',
-      },
-    });
+    actions.editor
+      .forkExternalSandbox({
+        sandboxId: sandbox.id,
+        openInNewWindow: false,
+        openInVSCode,
+        autoLaunchVSCode,
+        hasBetaEditorExperiment,
+        customVMTier,
+        redirectAfterFork: !isStandalone,
+        body: {
+          title: name,
+          collectionId,
+          privacy: permission,
+          v2: createAs === 'devbox',
+        },
+      })
+      .then(forkedSandbox => {
+        if (forkedSandbox && isStandalone) {
+          window.parent.postMessage(
+            {
+              type: 'sandbox-created',
+              data: {
+                id: forkedSandbox.id,
+                alias: forkedSandbox.alias,
+                url: sandboxUrl(forkedSandbox, hasBetaEditorExperiment),
+              },
+            },
+            '*'
+          );
+        }
+      });
 
-    closeModal();
+    if (closeModal) {
+      closeModal();
+    }
   };
 
   const selectTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
@@ -509,6 +550,16 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             <>
               <ModalSidebar>
                 <TemplateInfo template={selectedTemplate} />
+
+                {hasLogIn && (
+                  <WorkspaceSelect
+                    selectedTeamId={activeTeam}
+                    onSelect={teamId => {
+                      actions.setActiveTeam({ id: teamId });
+                      setCollectionId(undefined);
+                    }}
+                  />
+                )}
               </ModalSidebar>
 
               <ModalContent>
@@ -516,6 +567,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   type={type}
                   collectionId={collectionId}
                   setCollectionId={setCollectionId}
+                  initialPrivacy={initialPrivacy}
                   onCancel={() => {
                     setViewState('select');
                   }}

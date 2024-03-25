@@ -14,8 +14,30 @@ import { NotFound } from '../common/NotFound';
 const COMPONENT_MAP = {
   preferences: Preferences,
   create: GenericCreate,
-  createSandbox: () => <CreateBox type="sandbox" isModal={false} />,
-  createDevbox: () => <CreateBox type="devbox" isModal={false} />,
+  createSandbox: () => {
+    const parsedUrl = new URL(window.location.href);
+    const sandboxIdToFork = parsedUrl.searchParams.get('sandbox');
+    return (
+      <CreateBox
+        isStandalone
+        type="sandbox"
+        sandboxIdToFork={sandboxIdToFork}
+        isModal={false}
+      />
+    );
+  },
+  createDevbox: () => {
+    const parsedUrl = new URL(window.location.href);
+    const sandboxIdToFork = parsedUrl.searchParams.get('sandbox');
+    return (
+      <CreateBox
+        isStandalone
+        type="devbox"
+        sandboxIdToFork={sandboxIdToFork}
+        isModal={false}
+      />
+    );
+  },
   import: ImportRepository,
   'create-repo-files': CreateRepoFiles,
 };
