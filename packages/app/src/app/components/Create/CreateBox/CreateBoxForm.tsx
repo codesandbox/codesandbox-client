@@ -389,8 +389,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   </Text>
                 </Stack>
               )}
-              {!activeTeamInfo.featureFlags.ubbBeta &&
-                activeTeamInfo.subscription.status && (
+              {!activeTeamInfo?.featureFlags.ubbBeta &&
+                activeTeamInfo?.subscription.status && (
                   <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
                     <Icon name="circleBang" />
                     <Text size={3}>
