@@ -70,7 +70,7 @@ function parsePrivacy(privacy: string | undefined): PrivacyLevel | undefined {
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
-  sandboxIdToFork: sandboxIdToForkProp,
+  sandboxIdToFork,
   type = 'devbox',
   closeModal,
   isStandalone,
@@ -84,8 +84,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   );
 
   const parsedUrl = new URL(window.location.href);
-  const sandboxIdToFork =
-    sandboxIdToForkProp ?? parsedUrl.searchParams.get('sandbox');
   const initialPrivacy = parsePrivacy(parsedUrl.searchParams.get('privacy'));
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
