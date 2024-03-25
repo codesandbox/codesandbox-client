@@ -756,7 +756,7 @@ export const forkExternalSandbox = async (
     hasBetaEditorExperiment,
     customVMTier,
     body,
-    preventNavigation,
+    redirectAfterFork,
   }: {
     sandboxId: string;
     openInNewWindow?: boolean;
@@ -764,7 +764,7 @@ export const forkExternalSandbox = async (
     autoLaunchVSCode?: boolean;
     hasBetaEditorExperiment?: boolean;
     customVMTier?: number;
-    preventNavigation?: boolean;
+    redirectAfterFork?: boolean;
     body?: {
       collectionId: string;
       alias?: string;
@@ -798,7 +798,7 @@ export const forkExternalSandbox = async (
     } else {
       state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
 
-      if (!preventNavigation) {
+      if (redirectAfterFork) {
         effects.router.updateSandboxUrl(forkedSandbox, {
           openInNewWindow,
           hasBetaEditorExperiment,

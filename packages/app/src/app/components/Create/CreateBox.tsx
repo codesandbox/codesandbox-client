@@ -193,7 +193,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
         autoLaunchVSCode,
         hasBetaEditorExperiment,
         customVMTier,
-        preventNavigation: isStandalone,
+        redirectAfterFork: !isStandalone,
         body: {
           title: name,
           collectionId,
