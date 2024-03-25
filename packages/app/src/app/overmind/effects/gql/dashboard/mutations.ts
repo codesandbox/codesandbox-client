@@ -59,6 +59,8 @@ import {
   ConvertToUsageBillingMutationVariables,
   UpdateProjectVmTierMutationVariables,
   UpdateProjectVmTierMutation,
+  UpdateUsageSubscriptionMutationVariables,
+  UpdateUsageSubscriptionMutation,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -450,6 +452,15 @@ export const convertToUsageBilling: Query<
     $plan: String!
   ) {
     convertToUsageBilling(plan: $plan, addons: $addons, teamId: $teamId)
+  }
+`;
+
+export const updateSubscriptionAddons: Query<
+  UpdateUsageSubscriptionMutation,
+  UpdateUsageSubscriptionMutationVariables
+> = gql`
+  mutation UpdateUsageSubscription($teamId: UUID4!, $addons: [String!]!) {
+    updateUsageSubscription(addons: $addons, teamId: $teamId)
   }
 `;
 

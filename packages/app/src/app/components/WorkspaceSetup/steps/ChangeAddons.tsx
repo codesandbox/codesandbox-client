@@ -5,7 +5,6 @@ import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dash
 
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState } from 'app/overmind';
-import { AddonItem } from 'app/overmind/namespaces/checkout/types';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -15,26 +14,30 @@ export const ChangeAddons: React.FC<StepProps> = ({
   onDismiss,
   currentStep,
   numberOfSteps,
+  flow,
 }) => {
+  const actions = useActions();
   const { checkout } = useAppState();
   const { getQueryParam } = useURLSearchParams();
   const urlWorkspaceId = getQueryParam('workspace');
 
   const handleSubmit = async e => {
     e.preventDefault();
-    // const result = await actions.checkout.convertToUsageBilling({
-    //   workspaceId: urlWorkspaceId,
-    // });
-    // if (result.success) {
-    //   track('Checkout - Change Pro Plan');
-    //   window.location.href = dashboardUrls.portalOverview(urlWorkspaceId);
-    // } else {
-    //   actions.addNotification({
-    //     message: result.error,
-    //     type: 'error',
-    //     timeAlive: 10,
-    //   });
-    // }
+    const result = await actions.checkout.updateSubscriptionAddons({
+      workspaceId: urlWorkspaceId,
+    });
+    if (result.success) {
+      track('Checkout - Update subscription addons', {
+        from: flow,
+      });
+      window.location.href = dashboardUrls.portalOverview(urlWorkspaceId);
+    } else {
+      actions.addNotification({
+        message: result.error,
+        type: 'error',
+        timeAlive: 10,
+      });
+    }
   };
 
   return (

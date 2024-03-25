@@ -1128,9 +1128,7 @@ export type SubscriptionItem = {
   name: Scalars['String'];
   /** Quanity is null for metered items, such as the on-demand credit usage. */
   quantity: Maybe<Scalars['Int']>;
-  /** Price per unit in cents */
   unitAmount: Maybe<Scalars['Int']>;
-  /** Price in fractions of a cent (currently only for on-demand credits) */
   unitAmountDecimal: Maybe<Scalars['String']>;
 };
 
@@ -5521,6 +5519,16 @@ export type ConvertToUsageBillingMutationVariables = Exact<{
 export type ConvertToUsageBillingMutation = {
   __typename?: 'RootMutationType';
   convertToUsageBilling: boolean;
+};
+
+export type UpdateUsageSubscriptionMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  addons: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type UpdateUsageSubscriptionMutation = {
+  __typename?: 'RootMutationType';
+  updateUsageSubscription: boolean;
 };
 
 export type UpdateProjectVmTierMutationVariables = Exact<{

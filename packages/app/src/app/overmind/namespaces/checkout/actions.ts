@@ -310,3 +310,25 @@ export const recomputeAddonChanges = ({ state }: Context): void => {
 
   state.checkout.addonChanges = changes;
 };
+
+export const updateSubscriptionAddons = async (
+  { effects, actions }: Context,
+  { workspaceId }: { workspaceId: string }
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    await effects.gql.mutations.updateSubscriptionAddons({
+      teamId: workspaceId,
+      addons: actions.checkout.getFlatAddonsList(),
+    });
+
+    return { success: true };
+  } catch (e) {
+    if (e.response && e.response.errors) {
+      return { success: false, error: e.response.errors[0].message };
+    }
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
+};
