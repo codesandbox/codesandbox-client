@@ -215,7 +215,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                     <option value={collection.id}>
                       {collection.path === '/'
                         ? 'Root folder (/)'
-                        : collection.path.split('/').join(' / ')}
+                        : collection.path}
                     </option>
                   ))}
                 </Select>
