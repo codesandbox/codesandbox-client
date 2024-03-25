@@ -18,8 +18,6 @@ import { pluralize } from 'app/utils/pluralize';
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import { SignInForTemplates } from 'app/pages/common/Modals/SignInForTemplates';
-import { SignIn } from 'app/pages/SignIn/SignIn';
 import {
   Container,
   Tab,
