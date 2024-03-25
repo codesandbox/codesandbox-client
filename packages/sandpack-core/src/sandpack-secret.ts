@@ -24,7 +24,7 @@ export const setSandpackSecret = (secret: string) => {
     cookieValue !== secret
   ) {
     if (secret) {
-      document.cookie = `${SANDPACK_SECRET_COOKIE_NAME}=${secret};samesite=none;secure;`;
+      document.cookie = `${SANDPACK_SECRET_COOKIE_NAME}=${secret};samesite=none;secure;partitioned`;
 
       setTimeout(() => {
         location.reload();
