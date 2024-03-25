@@ -99,8 +99,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
     });
   }, []);
 
-  const availableTiers = allVmTiers.filter(t => t.tier <= highestAllowedVMTier);
-
   useEffect(() => {
     if (selectedTier > highestAllowedVMTier) {
       setSelectedTier(highestAllowedVMTier);
@@ -158,7 +156,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
           customVMTier:
             // Only pass customVMTier if user selects something else than the default
-            availableTiers.length > 0 && selectedTier !== defaultTier
+            allVmTiers.length > 0 && selectedTier !== defaultTier
               ? selectedTier
               : undefined,
         });
@@ -361,11 +359,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             <>
               <Select
                 value={selectedTier}
-                disabled={availableTiers.length === 0}
+                disabled={allVmTiers.length === 0}
                 onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
               >
-                {availableTiers.map(t => (
-                  <option key={t.shortid} value={t.tier}>
+                {allVmTiers.map(t => (
+                  <option
+                    disabled={t.tier > highestAllowedVMTier}
+                    key={t.shortid}
+                    value={t.tier}
+                  >
                     {t.name} ({t.cpu} vCPUs, {t.memory} GiB RAM, {t.storage} GB
                     Disk for {t.creditBasis} credits/hour)
                   </option>
@@ -381,12 +383,30 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Pro workspaces
+                      Pro & Enterprise workspaces
                     </a>
                     .
                   </Text>
                 </Stack>
               )}
+              {!activeTeamInfo.featureFlags.ubbBeta &&
+                activeTeamInfo.subscription.status && (
+                  <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
+                    <Icon name="circleBang" />
+                    <Text size={3}>
+                      Better specs are available for our new team plan, you can
+                      upgrade{' '}
+                      <a
+                        href="/upgrade"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        here
+                      </a>
+                      .
+                    </Text>
+                  </Stack>
+                )}
             </>
           )}
         </Stack>
