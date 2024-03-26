@@ -60,7 +60,7 @@ export const ChangeAddons: React.FC<StepProps> = ({
         <Stack direction="vertical" gap={6}>
           <Stack justify="space-between" gap={4}>
             <Text size={5} color="#e5e5e5">
-              Current plan (per month)
+              Current plan
             </Text>
             <Text size={5} color="#e5e5e5">
               ${checkout.currentSubscriptionTotalPrice}
@@ -92,12 +92,17 @@ export const ChangeAddons: React.FC<StepProps> = ({
 
           <Element as="hr" css={{ width: '100%' }} />
 
-          <Stack justify="space-between" gap={4}>
-            <Text size={5} color="#e5e5e5">
-              New total (per month)
-            </Text>
-            <Text size={5} color="#e5e5e5">
-              ${checkout.totalPrice}
+          <Stack direction="vertical">
+            <Stack justify="space-between" gap={4}>
+              <Text size={5} color="#e5e5e5">
+                New total per month
+              </Text>
+              <Text size={5} color="#e5e5e5">
+                ${checkout.totalPrice}
+              </Text>
+            </Stack>
+            <Text size={4} color="inherit">
+              * tax not included
             </Text>
           </Stack>
         </Stack>
