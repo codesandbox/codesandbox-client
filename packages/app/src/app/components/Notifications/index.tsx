@@ -40,7 +40,7 @@ export const Notifications = ({ dashboard }: { dashboard?: boolean }) => {
             onClick={open}
           >
             <Icon name="bell" size={16} title="Notifications" />
-            {unreadCount === 0 ? (
+            {unreadCount > 0 ? (
               <Element
                 css={css({
                   width: '8px',
