@@ -7,6 +7,13 @@ import {
 import { cookieConsentConfig } from '../utils/cookieConsent/cookieConsentConfig';
 
 export const useCookieConsent = (amplitudeApiKey: string) => {
+  let isRenderedInIframe;
+  try {
+    isRenderedInIframe = window.self !== window.top;
+  } catch (e) {
+    isRenderedInIframe = true;
+  }
+
   const handleCookieConsent = (cookie: CookieConsent.CookieValue) => {
     const allowAnalytics = cookie?.categories?.includes('analytical') || false;
     if (allowAnalytics) {
@@ -18,6 +25,10 @@ export const useCookieConsent = (amplitudeApiKey: string) => {
 
   useEffect(() => {
     if (process.env.NODE_ENV !== 'production') {
+      return;
+    }
+
+    if (isRenderedInIframe) {
       return;
     }
 

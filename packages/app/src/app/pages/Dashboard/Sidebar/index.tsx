@@ -1,12 +1,9 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import { Element, List, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { ContextMenu } from './ContextMenu';
@@ -31,11 +28,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   hasTopBarBanner,
   onSidebarToggle,
 }) => {
-  const history = useHistory();
   const state = useAppState();
   const actions = useActions();
 
-  const { dashboard, activeTeam, activeTeamInfo } = state;
+  const { dashboard, activeTeam } = state;
 
   React.useEffect(() => {
     // Used to fetch collections
@@ -78,7 +74,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setNewFolderPath,
   };
 
-  const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
   const showRespositories = !state.environment.isOnPrem;
 
   const { isPrimarySpace, isTeamAdmin } = useWorkspaceAuthorization();
@@ -105,39 +100,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
         css={css({
           width: SIDEBAR_WIDTH,
           zIndex: 3,
-          marginTop: '24px',
+          marginTop: '12px',
           paddingBottom: '32px',
           // We set sidebar as absolute so that content can
           // take 100% width, this helps us enable dragging
           // sandboxes onto the sidebar more freely.
           position: 'absolute',
-          // 100vh - topbar height - (banner height or 0) - padding bottom
+          // 100vh - topbar height - (banner height or 0) - margin top
           height: `calc(100vh - 60px - ${
             hasTopBarBanner ? '44' : '0'
-          }px - 32px)`,
+          }px - 12px)`,
         })}
       >
-        <Stack direction="horizontal">
-          {teamDataLoaded ? (
-            <WorkspaceSelect
-              selectedTeamId={activeTeam}
-              onSelect={teamId => {
-                actions.setActiveTeam({
-                  id: teamId,
-                });
-
-                history.replace(dashboardUrls.recent(teamId));
-              }}
-            />
-          ) : (
-            <Stack align="center" css={{ width: '100%', paddingLeft: '28px' }}>
-              <SkeletonTextBlock
-                css={{ width: 120, height: 12, marginLeft: 8 }}
-              />
-            </Stack>
-          )}
-        </Stack>
-
         <List
           css={{
             display: 'flex',

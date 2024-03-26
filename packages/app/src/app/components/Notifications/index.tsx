@@ -35,12 +35,12 @@ export const Notifications = ({ dashboard }: { dashboard?: boolean }) => {
           }
         >
           <Button
-            variant={dashboard ? 'ghost' : 'secondary'}
-            css={{ position: 'relative' }}
+            variant="secondary"
+            css={{ position: 'relative', width: '28px' }}
             onClick={open}
           >
             <Icon name="bell" size={16} title="Notifications" />
-            {unreadCount > 0 ? (
+            {unreadCount === 0 ? (
               <Element
                 css={css({
                   width: '8px',
@@ -50,8 +50,8 @@ export const Notifications = ({ dashboard }: { dashboard?: boolean }) => {
                   position: 'absolute',
                   zIndex: 10,
                   color: '#000',
-                  top: '3px',
-                  right: '3px',
+                  top: '2px',
+                  right: '2px',
                 })}
               />
             ) : null}

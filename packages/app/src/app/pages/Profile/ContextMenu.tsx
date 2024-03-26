@@ -123,6 +123,7 @@ export const ContextMenu = () => {
           forkExternalSandbox({
             sandboxId,
             openInNewWindow: true,
+            redirectAfterFork: true,
           });
         }}
       >
