@@ -96,7 +96,8 @@ export const initializeCartFromExistingSubscription = ({
       if (
         !item.name.startsWith('credits_') ||
         item.quantity === null ||
-        item.unitAmount === null
+        item.unitAmount === null ||
+        !currentSubscription
       ) {
         return;
       }
@@ -147,7 +148,8 @@ export const initializeCartFromExistingSubscription = ({
       if (
         !item.name.startsWith('credits_') ||
         item.quantity === null ||
-        item.unitAmount === null
+        item.unitAmount === null ||
+        !upcomingSubscription
       ) {
         return;
       }
@@ -173,13 +175,14 @@ export const initializeCartFromExistingSubscription = ({
    * If there's an existing subscription update, currentSubscription and newSubscription are both used (manage addons flow)
    * Otherwise, the newSubscription is used as the current checkout "cart"
    */
-  if (upcomingSubscription) {
+  if (upcomingSubscription && currentSubscription) {
     state.checkout.currentSubscription = currentSubscription;
     state.checkout.newSubscription = upcomingSubscription;
     state.checkout.hasUpcomingChange = true;
-  } else {
+  } else if (currentSubscription) {
+    // When no upcoming change is scheduled, initialize both currentSubscription and newSubscription with the same data, as only one is displayed
     state.checkout.currentSubscription = currentSubscription;
-    state.checkout.newSubscription = structuredClone(currentSubscription);
+    state.checkout.newSubscription = structuredClone(currentSubscription); // ensure no cross reference.
   }
 
   actions.checkout.recomputeTotals();
@@ -255,20 +258,11 @@ export const recomputeTotals = ({ state }: Context) => {
     0
   );
 
-  state.checkout.newSubscription.totalPrice =
+  newSubscription.totalPrice =
     (newSubscription.basePlan.price + totalCreditAddonsPrice) * recurring;
 
-  state.checkout.newSubscription.totalCredits =
+  newSubscription.totalCredits =
     newSubscription.basePlan.credits + totalAddonCredits;
-};
-
-export const clearCheckout = ({ state }: Context) => {
-  state.checkout.newSubscription = null;
-  state.checkout.currentSubscription = null;
-
-  state.checkout.spendingLimit = DEFAULT_SPENDING_LIMIT;
-  state.checkout.convertProToUBBCharge = null;
-  state.checkout.addonChanges = [];
 };
 
 export const setSpendingLimit = async (
@@ -292,6 +286,10 @@ export const calculateConversionCharge = async (
   { workspaceId }: { workspaceId: string }
 ) => {
   const { newSubscription } = state.checkout;
+
+  if (!newSubscription) {
+    return;
+  }
 
   try {
     const result = await effects.gql.mutations.previewConvertToUsageBilling({
@@ -321,6 +319,13 @@ export const convertToUsageBilling = async (
   { workspaceId }: { workspaceId: string }
 ): Promise<{ success: boolean; error?: string }> => {
   const { newSubscription } = state.checkout;
+
+  if (!newSubscription) {
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
 
   try {
     await effects.gql.mutations.convertToUsageBilling({
