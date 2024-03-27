@@ -51,10 +51,7 @@ export const WorkspaceFlowLayout: React.FC<{
           </Stack>
           {showSummary && (
             <SlidePanel>
-              <Summary
-                allowAnual={flow !== 'manage-addons'}
-                allowChanges={allowSummaryChanges}
-              />
+              <Summary flow={flow} allowChanges={allowSummaryChanges} />
             </SlidePanel>
           )}
         </Stack>

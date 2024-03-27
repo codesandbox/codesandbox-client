@@ -20,9 +20,12 @@ export const ChangeAddons: React.FC<StepProps> = ({
   const { checkout } = useAppState();
   const { getQueryParam } = useURLSearchParams();
   const urlWorkspaceId = getQueryParam('workspace');
+  const [isSubmitting, setSubmitting] = React.useState(false);
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setSubmitting(true);
+
     const result = await actions.checkout.updateSubscriptionAddons({
       workspaceId: urlWorkspaceId,
     });
@@ -37,6 +40,7 @@ export const ChangeAddons: React.FC<StepProps> = ({
         type: 'error',
         timeAlive: 10,
       });
+      setSubmitting(false);
     }
   };
 
@@ -63,7 +67,7 @@ export const ChangeAddons: React.FC<StepProps> = ({
               Current plan
             </Text>
             <Text size={5} color="#e5e5e5">
-              ${checkout.currentSubscriptionTotalPrice}
+              ${checkout.currentSubscription.totalPrice}
             </Text>
           </Stack>
 
@@ -98,16 +102,16 @@ export const ChangeAddons: React.FC<StepProps> = ({
                 New total per month
               </Text>
               <Text size={5} color="#e5e5e5">
-                ${checkout.totalPrice}
+                ${checkout.newSubscription.totalPrice}
               </Text>
             </Stack>
             <Text size={4} color="inherit">
-              * tax not included
+              tax not included
             </Text>
           </Stack>
         </Stack>
 
-        <Button autoWidth size="large" type="submit">
+        <Button autoWidth size="large" type="submit" disabled={isSubmitting}>
           Confirm changes
         </Button>
       </Stack>

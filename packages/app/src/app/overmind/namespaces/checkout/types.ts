@@ -15,6 +15,13 @@ export type PricingPlan = {
   usage: string[];
 };
 
+export type SubscriptionPackage = {
+  basePlan: { id: PlanType; name: string; price: number; credits: number };
+  totalCredits: number;
+  totalPrice: number;
+  addonItems: AddonItem[];
+};
+
 export type CreditAddon = {
   id: CreditAddonType;
   credits: number;

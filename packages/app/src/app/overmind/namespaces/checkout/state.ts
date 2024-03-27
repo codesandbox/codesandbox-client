@@ -5,6 +5,7 @@ import {
   CreditAddonType,
   PlanType,
   PricingPlan,
+  SubscriptionPackage,
 } from './types';
 import {
   FREE_PLAN,
@@ -18,14 +19,10 @@ import {
 } from './constants';
 
 export interface State {
-  basePlan: { id: PlanType; name: string; price: number; credits: number };
-  creditAddons: Array<AddonItem>;
   spendingLimit: number;
-  totalCredits: number;
-  totalPrice: number;
-  currentSubscriptionTotalCredits: number;
-  currentSubscriptionTotalPrice: number;
-  currentSubscriptionAddons: Array<AddonItem>;
+  newSubscription: SubscriptionPackage | null;
+  currentSubscription: SubscriptionPackage | null;
+  hasUpcomingChange: boolean;
   addonChanges: Array<AddonItem>;
   convertProToUBBCharge: InvoicePreview | null;
   availableBasePlans: Record<PlanType, PricingPlan>;
@@ -33,20 +30,14 @@ export interface State {
 }
 
 export const state: State = {
-  basePlan: {
-    id: PRO_PLAN_ANNUAL.id,
-    name: PRO_PLAN_ANNUAL.name,
-    price: PRO_PLAN_ANNUAL.price,
-    credits: PRO_PLAN_ANNUAL.credits,
-  },
-  creditAddons: [],
   spendingLimit: DEFAULT_SPENDING_LIMIT,
-  totalCredits: 0,
-  totalPrice: 0,
-  currentSubscriptionTotalCredits: 0, // Used only for existing UBB Pro when managing addons
-  currentSubscriptionTotalPrice: 0, // Used only for existing UBB Pro when managing addons
-  currentSubscriptionAddons: [], // Used only for existing UBB Pro when managing addons, to compare addons
+
+  newSubscription: null,
+  currentSubscription: null,
+  hasUpcomingChange: false,
+
   addonChanges: [], // Recomputed everytime an addon is changed
+
   convertProToUBBCharge: null,
   availableBasePlans: {
     free: FREE_PLAN,

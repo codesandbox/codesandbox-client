@@ -21,7 +21,7 @@ export const Payment: React.FC<StepProps> = ({
 }) => {
   const { api } = useEffects();
   const {
-    checkout: { basePlan },
+    checkout: { newSubscription },
   } = useAppState();
   const actions = useActions();
   const { getQueryParam } = useURLSearchParams();
@@ -50,7 +50,7 @@ export const Payment: React.FC<StepProps> = ({
         success_path: successPath,
         cancel_path: cancelPath,
         team_id: workspaceId,
-        plan: basePlan.id,
+        plan: newSubscription.basePlan.id,
         addons: actions.checkout.getFlatAddonsList(),
       });
 

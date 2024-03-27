@@ -31,6 +31,11 @@ export const ManageAddons = () => {
       return;
     }
 
+    if (!activeTeamInfo.subscriptionSchedule?.current) {
+      window.location.href = dashboardUrls.recent(workspaceId);
+      return;
+    }
+
     checkout.initializeCartFromExistingSubscription();
   }, [activeTeamInfo]);
 

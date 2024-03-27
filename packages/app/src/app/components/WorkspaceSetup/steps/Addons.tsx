@@ -19,14 +19,12 @@ export const Addons: React.FC<StepProps> = ({
   numberOfSteps,
 }) => {
   const {
-    checkout: { availableCreditAddons, addonChanges },
+    checkout: { availableCreditAddons },
   } = useAppState();
   const { isPro } = useWorkspaceSubscription();
   const { checkout } = useActions();
   const { getQueryParam } = useURLSearchParams();
   const urlWorkspaceId = getQueryParam('workspace');
-
-  const disableActions = flow === 'manage-addons' && addonChanges.length === 0;
 
   const handleSubmit = () => {
     if (isPro) {
@@ -45,7 +43,6 @@ export const Addons: React.FC<StepProps> = ({
       <Stack direction="vertical" gap={12}>
         <StepHeader
           onPrevStep={() => {
-            checkout.clearCheckout();
             onPrevStep();
           }}
           onDismiss={onDismiss}
@@ -100,7 +97,6 @@ export const Addons: React.FC<StepProps> = ({
         <Stack gap={2}>
           {flow === 'manage-addons' && (
             <Button
-              disabled={disableActions}
               variant="secondary"
               type="button"
               autoWidth
@@ -112,12 +108,7 @@ export const Addons: React.FC<StepProps> = ({
               Reset changes
             </Button>
           )}
-          <Button
-            disabled={disableActions}
-            autoWidth
-            size="large"
-            onClick={handleSubmit}
-          >
+          <Button autoWidth size="large" onClick={handleSubmit}>
             Next
           </Button>
         </Stack>

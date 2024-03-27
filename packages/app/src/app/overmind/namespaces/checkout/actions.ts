@@ -1,6 +1,12 @@
 import type { Context } from 'app/overmind';
-import { AddonItem, CreditAddon, CreditAddonType, PlanType } from './types';
-import { DEFAULT_SPENDING_LIMIT, PRO_PLAN_ANNUAL } from './constants';
+import {
+  AddonItem,
+  CreditAddon,
+  CreditAddonType,
+  PlanType,
+  SubscriptionPackage,
+} from './types';
+import { DEFAULT_SPENDING_LIMIT } from './constants';
 
 export const fetchPrices = async ({ state, effects }: Context) => {
   try {
@@ -26,12 +32,28 @@ export const fetchPrices = async ({ state, effects }: Context) => {
 };
 
 export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
-  state.checkout.basePlan = {
-    id: plan,
-    name: state.checkout.availableBasePlans[plan].name,
-    price: state.checkout.availableBasePlans[plan].price,
-    credits: state.checkout.availableBasePlans[plan].credits,
-  };
+  const availableBasePlan = state.checkout.availableBasePlans[plan];
+
+  if (!state.checkout.newSubscription) {
+    state.checkout.newSubscription = {
+      basePlan: {
+        id: plan,
+        name: availableBasePlan.name,
+        price: availableBasePlan.price,
+        credits: availableBasePlan.credits,
+      },
+      totalCredits: 0,
+      totalPrice: 0,
+      addonItems: [],
+    };
+  } else {
+    state.checkout.newSubscription.basePlan = {
+      id: plan,
+      name: availableBasePlan.name,
+      price: availableBasePlan.price,
+      credits: availableBasePlan.credits,
+    };
+  }
 
   actions.checkout.recomputeTotals();
 };
@@ -40,86 +62,146 @@ export const initializeCartFromExistingSubscription = ({
   state,
   actions,
 }: Context) => {
-  if (!state.activeTeamInfo?.subscriptionSchedule?.current) {
-    return;
-  }
+  let currentSubscription: SubscriptionPackage | null = null;
+  let upcomingSubscription: SubscriptionPackage | null = null;
 
-  const { items } = state.activeTeamInfo.subscriptionSchedule.current;
-  const basePlanItem = items.find(i => i.name === 'flex');
+  if (state.activeTeamInfo?.subscriptionSchedule?.current) {
+    const { items } = state.activeTeamInfo.subscriptionSchedule.current;
+    const basePlanItem = items.find(i => i.name === 'flex');
 
-  if (!basePlanItem) {
-    return;
-  }
-
-  actions.checkout.clearCheckout();
-
-  const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
-
-  state.checkout.basePlan = {
-    id: basePlanItem.name as PlanType,
-    // price might be custom even if it's the base plan selected
-    price: basePlanItem.unitAmount
-      ? basePlanItem.unitAmount / 100
-      : standardPlan.price,
-    name: standardPlan.name,
-    credits: standardPlan.credits, // credits are always the same for the base plan
-  };
-
-  items.forEach(item => {
-    // Ignore all non-credit prefixed addons or addons with no quantity / unitAmount
-    if (
-      !item.name.startsWith('credits_') ||
-      item.quantity === null ||
-      item.unitAmount === null
-    ) {
+    if (!basePlanItem) {
       return;
     }
 
-    const standardAddon = state.checkout.availableCreditAddons[item.name];
+    const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
+    const basePlan = {
+      id: basePlanItem.name as PlanType,
+      // price might be custom even if it's the base plan selected
+      price: basePlanItem.unitAmount
+        ? basePlanItem.unitAmount / 100
+        : standardPlan.price,
+      name: standardPlan.name,
+      credits: standardPlan.credits, // credits are always the same for the base plan
+    };
 
-    state.checkout.creditAddons.push({
-      quantity: item.quantity,
-      addon: {
-        id: item.name as CreditAddonType,
-        price: item.unitAmount / 100,
-        credits: standardAddon.credits,
-      },
-    });
+    currentSubscription = {
+      totalCredits: basePlan.credits,
+      totalPrice: basePlan.price,
+      addonItems: [],
+      basePlan,
+    };
 
-    // Duplicate the current subscription addons to compare them later
-    state.checkout.currentSubscriptionAddons.push({
-      quantity: item.quantity,
-      addon: {
-        id: item.name as CreditAddonType,
-        price: item.unitAmount / 100,
-        credits: standardAddon.credits,
-      },
+    items.forEach(item => {
+      // Ignore all non-credit prefixed addons or addons with no quantity / unitAmount
+      if (
+        !item.name.startsWith('credits_') ||
+        item.quantity === null ||
+        item.unitAmount === null
+      ) {
+        return;
+      }
+
+      const standardAddon = state.checkout.availableCreditAddons[item.name];
+
+      currentSubscription.addonItems.push({
+        quantity: item.quantity,
+        addon: {
+          id: item.name as CreditAddonType,
+          price: item.unitAmount / 100,
+          credits: standardAddon.credits,
+        },
+      });
+      currentSubscription.totalPrice += (item.unitAmount / 100) * item.quantity;
+      currentSubscription.totalCredits += standardAddon.credits * item.quantity;
     });
-  });
+  }
+
+  if (state.activeTeamInfo?.subscriptionSchedule?.upcoming) {
+    const { items } = state.activeTeamInfo.subscriptionSchedule.upcoming;
+    const basePlanItem = items.find(i => i.name === 'flex');
+
+    if (!basePlanItem) {
+      return;
+    }
+
+    const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
+    const basePlan = {
+      id: basePlanItem.name as PlanType,
+      // price might be custom even if it's the base plan selected
+      price: basePlanItem.unitAmount
+        ? basePlanItem.unitAmount / 100
+        : standardPlan.price,
+      name: standardPlan.name,
+      credits: standardPlan.credits, // credits are always the same for the base plan
+    };
+
+    upcomingSubscription = {
+      totalCredits: basePlan.credits,
+      totalPrice: basePlan.price,
+      addonItems: [],
+      basePlan,
+    };
+
+    items.forEach(item => {
+      // Ignore all non-credit prefixed addons or addons with no quantity / unitAmount
+      if (
+        !item.name.startsWith('credits_') ||
+        item.quantity === null ||
+        item.unitAmount === null
+      ) {
+        return;
+      }
+
+      const standardAddon = state.checkout.availableCreditAddons[item.name];
+
+      upcomingSubscription.addonItems.push({
+        quantity: item.quantity,
+        addon: {
+          id: item.name as CreditAddonType,
+          price: item.unitAmount / 100,
+          credits: standardAddon.credits,
+        },
+      });
+      upcomingSubscription.totalPrice +=
+        (item.unitAmount / 100) * item.quantity;
+      upcomingSubscription.totalCredits +=
+        standardAddon.credits * item.quantity;
+    });
+  }
+
+  /**
+   * If there's an existing subscription update, currentSubscription and newSubscription are both used (manage addons flow)
+   * Otherwise, the newSubscription is used as the current checkout "cart"
+   */
+  if (upcomingSubscription) {
+    state.checkout.currentSubscription = currentSubscription;
+    state.checkout.newSubscription = upcomingSubscription;
+    state.checkout.hasUpcomingChange = true;
+  } else {
+    state.checkout.currentSubscription = currentSubscription;
+    state.checkout.newSubscription = structuredClone(currentSubscription);
+  }
 
   actions.checkout.recomputeTotals();
   actions.checkout.recomputeAddonChanges();
-
-  // Use the subscription limit for the total credits
-  state.checkout.currentSubscriptionTotalCredits =
-    state.activeTeamInfo.limits.includedCredits;
-
-  // Use the current checkout data asa reference to compare changes at the end
-  state.checkout.currentSubscriptionTotalPrice = state.checkout.totalPrice;
 };
 
 export const addCreditsPackage = (
   { state, actions }: Context,
   addon: CreditAddon
 ) => {
-  const addonInCheckoutAlready = state.checkout.creditAddons.find(
+  if (!state.checkout.newSubscription) {
+    return;
+  }
+
+  const addonInCheckoutAlready = state.checkout.newSubscription.addonItems.find(
     item => item.addon.id === addon.id
   );
 
   if (addonInCheckoutAlready) {
     addonInCheckoutAlready.quantity++;
   } else {
-    state.checkout.creditAddons.push({ addon, quantity: 1 });
+    state.checkout.newSubscription.addonItems.push({ addon, quantity: 1 });
   }
 
   actions.checkout.recomputeTotals();
@@ -128,10 +210,14 @@ export const addCreditsPackage = (
 
 export const removeCreditsPackage = (
   { state, actions }: Context,
-  addonId: CreditAddonType
+  addon: CreditAddon
 ) => {
-  const addonItem = state.checkout.creditAddons.find(
-    item => item.addon.id === addonId
+  if (!state.checkout.newSubscription) {
+    return;
+  }
+
+  const addonItem = state.checkout.newSubscription.addonItems.find(
+    item => item.addon.id === addon.id
   );
 
   if (!addonItem) {
@@ -141,8 +227,8 @@ export const removeCreditsPackage = (
   addonItem.quantity--;
 
   if (addonItem.quantity === 0) {
-    state.checkout.creditAddons = state.checkout.creditAddons.filter(
-      item => item.addon.id !== addonId
+    state.checkout.newSubscription.addonItems = state.checkout.newSubscription.addonItems.filter(
+      item => item.addon.id !== addon.id
     );
   }
 
@@ -151,46 +237,38 @@ export const removeCreditsPackage = (
 };
 
 export const recomputeTotals = ({ state }: Context) => {
-  const { basePlan, creditAddons } = state.checkout;
+  const { newSubscription } = state.checkout;
 
-  const recurring = basePlan.id === 'flex-annual' ? 12 : 1;
+  if (!newSubscription) {
+    return;
+  }
 
-  const totalCreditAddonsPrice = creditAddons.reduce(
+  const recurring = newSubscription.basePlan.id === 'flex-annual' ? 12 : 1;
+
+  const totalCreditAddonsPrice = newSubscription.addonItems.reduce(
     (acc, item) => acc + item.addon.price * item.quantity,
     0
   );
 
-  state.checkout.totalPrice =
-    (basePlan.price + totalCreditAddonsPrice) * recurring;
+  const totalAddonCredits = newSubscription.addonItems.reduce(
+    (acc, item) => acc + item.addon.credits * item.quantity,
+    0
+  );
 
-  state.checkout.totalCredits =
-    basePlan.credits +
-    creditAddons.reduce(
-      (acc, item) => acc + item.addon.credits * item.quantity,
-      0
-    );
+  state.checkout.newSubscription.totalPrice =
+    (newSubscription.basePlan.price + totalCreditAddonsPrice) * recurring;
+
+  state.checkout.newSubscription.totalCredits =
+    newSubscription.basePlan.credits + totalAddonCredits;
 };
 
-export const clearCheckout = ({ state, actions }: Context) => {
-  // Reset to default (flex-anual)
-  state.checkout.basePlan = {
-    id: PRO_PLAN_ANNUAL.id,
-    name: PRO_PLAN_ANNUAL.name,
-    price: PRO_PLAN_ANNUAL.price,
-    credits: PRO_PLAN_ANNUAL.credits,
-  };
-  state.checkout.creditAddons = [];
-  state.checkout.totalPrice = 0;
-  state.checkout.totalCredits = 0;
+export const clearCheckout = ({ state }: Context) => {
+  state.checkout.newSubscription = null;
+  state.checkout.currentSubscription = null;
+
   state.checkout.spendingLimit = DEFAULT_SPENDING_LIMIT;
   state.checkout.convertProToUBBCharge = null;
-
-  state.checkout.currentSubscriptionAddons = [];
-  state.checkout.currentSubscriptionTotalCredits = 0;
-  state.checkout.currentSubscriptionTotalPrice = 0;
-
-  actions.checkout.recomputeTotals();
-  actions.checkout.recomputeAddonChanges();
+  state.checkout.addonChanges = [];
 };
 
 export const setSpendingLimit = async (
@@ -213,12 +291,12 @@ export const calculateConversionCharge = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ) => {
-  const { basePlan } = state.checkout;
+  const { newSubscription } = state.checkout;
 
   try {
     const result = await effects.gql.mutations.previewConvertToUsageBilling({
       teamId: workspaceId,
-      plan: basePlan.id,
+      plan: newSubscription.basePlan.id,
       addons: actions.checkout.getFlatAddonsList(),
     });
 
@@ -242,12 +320,12 @@ export const convertToUsageBilling = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ): Promise<{ success: boolean; error?: string }> => {
-  const { basePlan } = state.checkout;
+  const { newSubscription } = state.checkout;
 
   try {
     await effects.gql.mutations.convertToUsageBilling({
       teamId: workspaceId,
-      plan: basePlan.id,
+      plan: newSubscription.basePlan.id,
       addons: actions.checkout.getFlatAddonsList(),
     });
 
@@ -264,9 +342,13 @@ export const convertToUsageBilling = async (
 };
 
 export const getFlatAddonsList = ({ state }: Context): string[] => {
-  const { creditAddons } = state.checkout;
+  if (!state.checkout.newSubscription) {
+    return [];
+  }
+
+  const addonItems = state.checkout.newSubscription.addonItems;
   const addons: string[] = [];
-  creditAddons.forEach(item => {
+  addonItems.forEach(item => {
     for (let i = 0; i < item.quantity; i++) {
       addons.push(item.addon.id);
     }
@@ -278,10 +360,8 @@ export const getFlatAddonsList = ({ state }: Context): string[] => {
 export const recomputeAddonChanges = ({ state }: Context): void => {
   const changes: Array<AddonItem> = [];
 
-  const {
-    creditAddons: newAddons,
-    currentSubscriptionAddons: currentAddons,
-  } = state.checkout;
+  const currentAddons = state.checkout.currentSubscription?.addonItems || [];
+  const newAddons = state.checkout.newSubscription?.addonItems || [];
 
   currentAddons.forEach(current => {
     const newAddon = newAddons.find(item => item.addon.id === current.addon.id);

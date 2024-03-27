@@ -22,13 +22,14 @@ export const UpgradeWorkspace = () => {
   const plan = getQueryParam('plan');
   const history = useHistory();
 
-  const proPlanPreSelected = plan === 'pro' && workspaceId;
+  const proPlanPreSelected =
+    (plan === 'flex' || plan === 'flex-annual') && workspaceId;
 
   // Cannot upgrade if already on ubb or legacy paddle
   const cannotUpgradeToUbb = (ubbBeta && isPro) || isPaddle;
 
-  if (proPlanPreSelected && !checkout.basePlan) {
-    actions.checkout.selectPlan('flex-annual');
+  if (proPlanPreSelected && !checkout.newSubscription) {
+    actions.checkout.selectPlan(plan);
   }
 
   const {
