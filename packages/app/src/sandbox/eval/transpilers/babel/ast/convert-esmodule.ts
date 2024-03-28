@@ -607,7 +607,12 @@ export function convertEsModule(ast: ESTreeAST): void {
           !ref.init
         ) {
           const name = trackedExports[ref.identifier.name];
-          ref.identifier.name = `exports.${name} = ${ref.identifier.name}`;
+          if (ref.isRead()) {
+            // If it's both a read and a write (e.g. --num), we can just use the name
+            ref.identifier.name = `exports.${name}`;
+          } else {
+            ref.identifier.name = `exports.${name} = ${ref.identifier.name}`;
+          }
         }
       });
     });
