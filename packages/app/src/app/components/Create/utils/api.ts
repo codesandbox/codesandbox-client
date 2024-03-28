@@ -2,7 +2,7 @@ import {
   GetSandboxWithTemplateQuery,
   TemplateFragment,
 } from 'app/graphql/types';
-import { SandboxToFork, TemplateCollection } from './types';
+import { PrivacyLevel, SandboxToFork, TemplateCollection } from './types';
 
 export const mapTemplateGQLResponseToSandboxToFork = (
   template: TemplateFragment
@@ -116,3 +116,21 @@ export const getAllMatchingTemplates = ({
       : true
   );
 };
+
+export function parsePrivacy(
+  privacy: string | undefined
+): PrivacyLevel | undefined {
+  if (privacy === 'public') {
+    return 0;
+  }
+
+  if (privacy === 'unlisted') {
+    return 1;
+  }
+
+  if (privacy === 'private') {
+    return 2;
+  }
+
+  return undefined;
+}

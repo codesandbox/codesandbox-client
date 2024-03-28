@@ -35,16 +35,16 @@ import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateParams, SandboxToFork } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
-import { CreateBoxForm, PrivacyLevel } from './CreateBox/CreateBoxForm';
+import { CreateBoxForm } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
 import {
   getTemplatesInCollections,
   getAllMatchingTemplates,
   mapSandboxGQLResponseToSandboxToFork,
+  parsePrivacy,
 } from './utils/api';
-import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
-import { useAllTemplates } from './hooks/useAllTemplates';
 import { WorkspaceSelect } from '../WorkspaceSelect';
+import { FEATURED_IDS } from './utils/constants';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -52,34 +52,6 @@ type CreateBoxProps = ModalContentProps & {
   sandboxIdToFork?: string;
   isStandalone?: boolean;
 };
-
-const FEATURED_IDS = [
-  '9qputt', // react (vite + ts)
-  '3l5fg9', // javascript-devbox
-  'kmwy42', // html-css-devbox
-  'fxis37', // next
-  'k5hn76', // next.js + postgres
-  'pb6sit', // vue
-  'angular', // angular
-  'hsd8ke', // docker
-  'in2qez', // python
-];
-
-function parsePrivacy(privacy: string | undefined): PrivacyLevel | undefined {
-  if (privacy === 'public') {
-    return 0;
-  }
-
-  if (privacy === 'unlisted') {
-    return 1;
-  }
-
-  if (privacy === 'private') {
-    return 2;
-  }
-
-  return undefined;
-}
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,

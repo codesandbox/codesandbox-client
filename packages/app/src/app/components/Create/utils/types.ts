@@ -48,7 +48,7 @@ export type SandboxToFork = {
   forkCount: number;
   viewCount: number;
   iconUrl?: string;
-  sourceTemplate?: TemplateType;
+  sourceTemplate?: string;
 };
 
 export interface TemplateCollection {
@@ -65,3 +65,5 @@ export type RepoDefinition = {
 export type GithubRepoToImport = NonNullable<
   GetGithubRepoQuery['githubRepo']
 > & { appInstalled: boolean | undefined }; // When appInstalled is undefined, it must be queried separately
+
+export type PrivacyLevel = 0 | 1 | 2;

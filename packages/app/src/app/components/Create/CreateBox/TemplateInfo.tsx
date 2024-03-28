@@ -1,4 +1,3 @@
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { Stack, Text, Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import React from 'react';
