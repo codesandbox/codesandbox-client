@@ -105,6 +105,7 @@ export const prefetchOfficialTemplates = async ({ state }: Context) => {
         alias: template.title,
         description: template.description,
         tags: template.tags,
+        editorUrl: template.editorUrl,
         type: 'devbox',
         forkCount: template.forkCount,
         viewCount: template.viewCount,

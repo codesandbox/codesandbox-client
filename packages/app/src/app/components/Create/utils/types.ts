@@ -42,6 +42,7 @@ export type SandboxToFork = {
   alias: string | null;
   title: string | null;
   description: string | null;
+  editorUrl?: string;
   author: string;
   tags: string[];
   type: 'devbox' | 'sandbox';

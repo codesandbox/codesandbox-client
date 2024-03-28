@@ -226,7 +226,8 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const selectTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
     if (!hasLogIn) {
       // Open template in editor for anonymous users
-      window.location.href = sandboxUrl(sandbox, hasBetaEditorExperiment);
+      window.location.href =
+        sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
       return;
     }
 
@@ -241,7 +242,8 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   };
 
   const openTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
-    const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
+    const url =
+      sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
     window.open(url, '_blank');
 
     track(`Create ${type} - Open template`, {
