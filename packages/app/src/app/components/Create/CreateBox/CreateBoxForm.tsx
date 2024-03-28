@@ -23,7 +23,7 @@ import {
   PathedSandboxesFoldersQuery,
   PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
-import { CreateParams } from '../utils/types';
+import { CreateParams, PrivacyLevel } from '../utils/types';
 
 interface CreateBoxFormProps {
   type: 'sandbox' | 'devbox';
@@ -34,8 +34,6 @@ interface CreateBoxFormProps {
   onSubmit: (params: CreateParams) => void;
   onClose: () => void;
 }
-
-export type PrivacyLevel = 0 | 1 | 2;
 
 export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   type,

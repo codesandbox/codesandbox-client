@@ -1,9 +1,9 @@
 import React from 'react';
 import { formatNumber, Icon, Stack, Text } from '@codesandbox/components';
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
 import { SandboxToFork } from './utils/types';
+import { TemplateIcon } from './TemplateIcon';
 
 interface TemplateCardProps {
   disabled?: boolean;
@@ -22,14 +22,8 @@ export const TemplateCard = ({
   padding,
   forks,
 }: TemplateCardProps) => {
-  const { UserIcon } = getTemplateIcon(
-    template.title,
-    template.iconUrl,
-    template.sourceTemplate
-  );
-
   const sandboxTitle = template.title || template.alias;
-  const teamName = template.owner;
+  const teamName = template.author;
 
   return (
     <TemplateButton
@@ -72,7 +66,7 @@ export const TemplateCard = ({
         <Stack
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
-          <UserIcon height="20" width="20" />
+          <TemplateIcon template={template} />
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text

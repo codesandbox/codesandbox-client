@@ -1,26 +1,20 @@
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { Stack, Text, Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import React from 'react';
 import { SandboxToFork } from '../utils/types';
+import { TemplateIcon } from '../TemplateIcon';
 
 interface TemplateInfoProps {
   template: SandboxToFork;
 }
 
 export const TemplateInfo = ({ template }: TemplateInfoProps) => {
-  const { UserIcon } = getTemplateIcon(
-    template.title,
-    template.iconUrl,
-    template.sourceTemplate
-  );
-
   const title = template.title || template.alias;
-  const owner = template.owner;
+  const owner = template.author;
 
   return (
     <Stack direction="vertical" gap={4}>
-      <UserIcon />
+      <TemplateIcon template={template} />
       <Stack direction="vertical" gap={1}>
         <Text size={3} weight="500">
           {title}

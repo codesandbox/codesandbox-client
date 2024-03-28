@@ -13,7 +13,11 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
 import { SubscriptionStatus } from 'app/graphql/types';
-import { getTemplateInfosFromAPI } from 'app/components/Create/utils/api';
+import {
+  GithubTemplate,
+  OfficialTemplatesResponseType,
+  SandboxToFork,
+} from 'app/components/Create/utils/types';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
@@ -51,19 +55,6 @@ export const initializeNewUser = async ({
     effects.api.preloadTeamTemplates(state.activeTeam);
   }
 
-  // Preload official templates for the create modal
-  if (state.officialTemplates.length === 0) {
-    try {
-      const result = await getTemplateInfosFromAPI(
-        '/api/v1/sandboxes/templates/official'
-      );
-
-      state.officialTemplates = result[0].templates;
-    } catch (e) {
-      // ignore errors
-    }
-  }
-
   // Fallback scenario when the teams are not initialized
   if (state.dashboard.teams.length === 0) {
     await actions.dashboard.getTeams();
@@ -98,6 +89,70 @@ export const signIn = async (
       message: 'Could not authenticate',
       error,
     });
+  }
+};
+
+export const prefetchOfficialTemplates = async ({ state }: Context) => {
+  // Preload official devbox templates for the create modal
+  if (state.officialDevboxTemplates.length === 0) {
+    try {
+      const response = (await fetch(
+        'https://raw.githubusercontent.com/codesandbox/sandbox-templates/main/templates.json'
+      ).then(res => res.json())) as GithubTemplate[];
+
+      const result: SandboxToFork[] = response.map(template => ({
+        id: template.id,
+        title: template.title,
+        alias: template.title,
+        description: template.description,
+        tags: template.tags,
+        editorUrl: template.editorUrl,
+        type: 'devbox',
+        forkCount: template.forkCount,
+        viewCount: template.viewCount,
+        iconUrl: template.iconUrl,
+        author: 'CodeSandbox',
+      }));
+
+      // Sort templates by fork count
+      result.sort((s1, s2) => s2.forkCount - s1.forkCount);
+
+      state.officialDevboxTemplates = result;
+    } catch (e) {
+      // ignore errors
+    }
+  }
+
+  // Preload official sandbox templates for the create modal
+  if (state.officialSandboxTemplates.length === 0) {
+    try {
+      const response = (await fetch(
+        '/api/v1/sandboxes/templates/official'
+      ).then(res => res.json())) as OfficialTemplatesResponseType;
+
+      const result: SandboxToFork[] = response[0].sandboxes
+        .filter(s => !s.v2)
+        .map(template => ({
+          id: template.id,
+          title: template.title,
+          alias: template.alias,
+          description: template.description,
+          tags: [],
+          type: 'sandbox',
+          forkCount: template.fork_count,
+          viewCount: template.view_count,
+          iconUrl: template.custom_template.icon_url,
+          sourceTemplate: template.environment,
+          author: 'CodeSandbox',
+        }));
+
+      // Sort templates by fork count
+      result.sort((s1, s2) => s2.forkCount - s1.forkCount);
+
+      state.officialSandboxTemplates = result;
+    } catch (e) {
+      // ignore errors
+    }
   }
 };
 
