@@ -31,17 +31,17 @@ import {
   SandboxAlternative,
 } from './elements';
 import { TemplateList } from './TemplateList';
-import { useTemplateCollections } from './hooks/useTemplateCollections';
-import { useOfficialTemplates } from './hooks/useOfficialTemplates';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateParams, SandboxToFork } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
 import { CreateBoxForm } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
-import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
-import { useAllTemplates } from './hooks/useAllTemplates';
-import { mapSandboxGQLResponseToSandboxToFork } from './utils/api';
+import {
+  getTemplatesInCollections,
+  getAllMatchingTemplates,
+  mapSandboxGQLResponseToSandboxToFork,
+} from './utils/api';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -49,13 +49,30 @@ type CreateBoxProps = ModalContentProps & {
   sandboxIdToFork?: string;
 };
 
+const FEATURED_IDS = [
+  '9qputt', // react (vite + ts)
+  '3l5fg9', // javascript-devbox
+  'kmwy42', // html-css-devbox
+  'fxis37', // next
+  'k5hn76', // next.js + postgres
+  'pb6sit', // vue
+  'angular', // angular
+  'hsd8ke', // docker
+  'in2qez', // python
+];
+
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
   sandboxIdToFork,
   type = 'devbox',
   closeModal,
 }) => {
-  const { hasLogIn, activeTeam } = useAppState();
+  const {
+    hasLogIn,
+    activeTeam,
+    officialDevboxTemplates,
+    officialSandboxTemplates,
+  } = useAppState();
   const effects = useEffects();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
@@ -84,8 +101,15 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     false
   );
 
-  const { collections } = useTemplateCollections({ type });
-  const { templates: officialTemplates } = useOfficialTemplates({ type });
+  const officialTemplates =
+    type === 'devbox' ? officialDevboxTemplates : officialSandboxTemplates;
+
+  const collections = getTemplatesInCollections(officialTemplates, [
+    'react',
+    'starter',
+    'node',
+  ]);
+
   const { teamTemplates, recentTemplates } = useTeamTemplates({
     teamId: activeTeam,
     hasLogIn,
@@ -93,23 +117,27 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   });
 
   const recentlyUsedTemplates = recentTemplates.slice(0, 3);
-  const featuredTemplates = useFeaturedTemplates({
-    officialTemplates,
-    recentTemplates,
-  });
+  const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
+  const recentlyUsedTemplatesIds = recentlyUsedTemplates.map(t => t.id);
 
-  const allTemplates = useAllTemplates({
-    featuredTemplates,
+  const featuredTemplates = FEATURED_IDS.map(id =>
+    officialTemplates.find(
+      t => t.id === id && !recentlyUsedTemplatesIds.includes(t.id)
+    )
+  )
+    .filter(Boolean)
+    .slice(0, hasRecentlyUsedTemplates ? 6 : 9);
+
+  const allTemplates = getAllMatchingTemplates({
     officialTemplates,
     teamTemplates,
-    collections,
     searchQuery,
   });
 
   /**
    * Only show the team templates if the list is populated.
    */
-  const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
+
   const showTeamTemplates = teamTemplates.length > 0;
   const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
 

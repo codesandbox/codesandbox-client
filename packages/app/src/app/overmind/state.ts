@@ -24,7 +24,8 @@ type State = {
   isFirstVisit: boolean;
   isLoggedIn: boolean;
   hasLogIn: boolean;
-  officialTemplates: SandboxToFork[];
+  officialDevboxTemplates: SandboxToFork[];
+  officialSandboxTemplates: SandboxToFork[];
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
   authToken: string | null;
@@ -115,7 +116,8 @@ export const state: State = {
         contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
     ) > -1
   ),
-  officialTemplates: [],
+  officialDevboxTemplates: [],
+  officialSandboxTemplates: [],
   hasLoadedApp: false,
   isAuthenticating: true,
   authToken: null,

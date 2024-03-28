@@ -1,4 +1,5 @@
 import { GetGithubRepoQuery } from 'app/graphql/types';
+import { TemplateType } from '@codesandbox/common/lib/templates';
 
 export type CreateParams = {
   name?: string;
@@ -8,26 +9,52 @@ export type CreateParams = {
   customVMTier?: number;
 };
 
+export type GithubTemplate = {
+  id: string;
+  title: string;
+  description: string;
+  iconUrl: string;
+  tags: string[];
+  editorUrl: string;
+  forkCount: number;
+  viewCount: number;
+  author: string | null;
+};
+
+export interface OfficialTemplatesResponseType {
+  sandboxes: {
+    id: string;
+    title: string | null;
+    alias: string | null;
+    description: string | null;
+    v2?: boolean;
+    fork_count: number;
+    view_count: number;
+    environment: TemplateType;
+    custom_template: {
+      icon_url: string;
+    };
+  }[];
+}
+
 export type SandboxToFork = {
   id: string;
   alias: string | null;
   title: string | null;
   description: string | null;
-  insertedAt: string;
-  updatedAt: string;
-  isV2: boolean;
+  author: string;
+  tags: string[];
+  type: 'devbox' | 'sandbox';
   forkCount: number;
   viewCount: number;
   iconUrl?: string;
-  sourceTemplate?: string;
-  owner: string;
+  sourceTemplate?: TemplateType;
 };
 
 export interface TemplateCollection {
   title?: string;
   key: string;
   templates: SandboxToFork[];
-  isOwned?: boolean;
 }
 
 export type RepoDefinition = {

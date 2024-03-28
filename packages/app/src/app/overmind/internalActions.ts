@@ -13,7 +13,10 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
 import { SubscriptionStatus } from 'app/graphql/types';
-import { getTemplateInfosFromAPI } from 'app/components/Create/utils/api';
+import {
+  GithubTemplate,
+  OfficialTemplatesResponseType,
+} from 'app/components/Create/utils/types';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
@@ -51,14 +54,52 @@ export const initializeNewUser = async ({
     effects.api.preloadTeamTemplates(state.activeTeam);
   }
 
-  // Preload official templates for the create modal
-  if (state.officialTemplates.length === 0) {
+  // Preload official devbox templates for the create modal
+  if (state.officialDevboxTemplates.length === 0) {
     try {
-      const result = await getTemplateInfosFromAPI(
-        '/api/v1/sandboxes/templates/official'
-      );
+      const response = (await fetch(
+        'https://raw.githubusercontent.com/codesandbox/sandbox-templates/main/templates.json'
+      ).then(res => res.json())) as GithubTemplate[];
 
-      state.officialTemplates = result[0].templates;
+      state.officialDevboxTemplates = response.map(template => ({
+        id: template.id,
+        title: template.title,
+        alias: template.title,
+        description: template.description,
+        tags: template.tags,
+        type: 'devbox',
+        forkCount: template.forkCount,
+        viewCount: template.viewCount,
+        iconUrl: template.iconUrl,
+        author: 'CodeSandbox',
+      }));
+    } catch (e) {
+      // ignore errors
+    }
+  }
+
+  // Preload official sandbox templates for the create modal
+  if (state.officialSandboxTemplates.length === 0) {
+    try {
+      const response = (await fetch(
+        '/api/v1/sandboxes/templates/official'
+      ).then(res => res.json())) as OfficialTemplatesResponseType;
+
+      state.officialSandboxTemplates = response[0].sandboxes
+        .filter(s => !s.v2)
+        .map(template => ({
+          id: template.id,
+          title: template.title,
+          alias: template.alias,
+          description: template.description,
+          tags: [],
+          type: 'sandbox',
+          forkCount: template.fork_count,
+          viewCount: template.view_count,
+          iconUrl: template.custom_template.icon_url,
+          sourceTemplate: template.environment,
+          author: 'CodeSandbox',
+        }));
     } catch (e) {
       // ignore errors
     }
