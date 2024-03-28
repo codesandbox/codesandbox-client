@@ -54,6 +54,44 @@ export const initializeNewUser = async ({
     effects.api.preloadTeamTemplates(state.activeTeam);
   }
 
+  // Fallback scenario when the teams are not initialized
+  if (state.dashboard.teams.length === 0) {
+    await actions.dashboard.getTeams();
+  }
+};
+
+export const signIn = async (
+  { state, effects, actions }: Context,
+  options: AuthOptions
+) => {
+  effects.analytics.track('Sign In', {
+    provider: options.provider,
+    scope: options.provider === 'github' ? options.includedScopes : '',
+  });
+  try {
+    await actions.internal.runProviderAuth(options);
+
+    state.signInModalOpen = false;
+    state.cancelOnLogin = null;
+    state.pendingUser = null;
+
+    const currentUser = await effects.api.getCurrentUser();
+    state.user = renameZeitToVercel(currentUser);
+
+    await actions.internal.initializeNewUser();
+    actions.refetchSandboxInfo();
+    state.hasLogIn = true;
+    state.isAuthenticating = false;
+    actions.getActiveTeamInfo();
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'Could not authenticate',
+      error,
+    });
+  }
+};
+
+export const prefetchOfficialTemplates = async ({ state }: Context) => {
   // Preload official devbox templates for the create modal
   if (state.officialDevboxTemplates.length === 0) {
     try {
@@ -103,42 +141,6 @@ export const initializeNewUser = async ({
     } catch (e) {
       // ignore errors
     }
-  }
-
-  // Fallback scenario when the teams are not initialized
-  if (state.dashboard.teams.length === 0) {
-    await actions.dashboard.getTeams();
-  }
-};
-
-export const signIn = async (
-  { state, effects, actions }: Context,
-  options: AuthOptions
-) => {
-  effects.analytics.track('Sign In', {
-    provider: options.provider,
-    scope: options.provider === 'github' ? options.includedScopes : '',
-  });
-  try {
-    await actions.internal.runProviderAuth(options);
-
-    state.signInModalOpen = false;
-    state.cancelOnLogin = null;
-    state.pendingUser = null;
-
-    const currentUser = await effects.api.getCurrentUser();
-    state.user = renameZeitToVercel(currentUser);
-
-    await actions.internal.initializeNewUser();
-    actions.refetchSandboxInfo();
-    state.hasLogIn = true;
-    state.isAuthenticating = false;
-    actions.getActiveTeamInfo();
-  } catch (error) {
-    actions.internal.handleError({
-      message: 'Could not authenticate',
-      error,
-    });
   }
 };
 

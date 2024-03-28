@@ -102,7 +102,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const collections = getTemplatesInCollections(officialTemplates, [
     'react',
-    'starter',
+    'typescript',
     'node',
   ]);
 
@@ -393,6 +393,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                         ? collections.map(collection => (
                             <Tab
                               key={collection.key}
+                              css={{ textTransform: 'capitalize' }}
                               {...tabState}
                               stopId={slugify(collection.title)}
                               onClick={() => trackTabClick(collection.title)}
