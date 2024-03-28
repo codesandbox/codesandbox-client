@@ -227,6 +227,30 @@ export const currentTeamInfoFragment = gql`
       updateBillingUrl
     }
 
+    subscriptionSchedule {
+      current {
+        items {
+          name
+          quantity
+          unitAmount
+          unitAmountDecimal
+        }
+        startDate
+        endDate
+      }
+
+      upcoming {
+        items {
+          name
+          quantity
+          unitAmount
+          unitAmountDecimal
+        }
+        startDate
+        endDate
+      }
+    }
+
     limits {
       includedCredits
       includedSandboxes

@@ -2,11 +2,13 @@ import React from 'react';
 import { Stack, ThemeProvider } from '@codesandbox/components';
 import styled, { keyframes } from 'styled-components';
 import { Summary } from './Summary';
+import { WorkspaceFlow } from './types';
 
 export const WorkspaceFlowLayout: React.FC<{
+  flow: WorkspaceFlow;
   showSummary: boolean;
   allowSummaryChanges: boolean;
-}> = ({ children, showSummary, allowSummaryChanges }) => {
+}> = ({ children, showSummary, allowSummaryChanges, flow }) => {
   return (
     <ThemeProvider>
       <Stack
@@ -49,7 +51,7 @@ export const WorkspaceFlowLayout: React.FC<{
           </Stack>
           {showSummary && (
             <SlidePanel>
-              <Summary allowChanges={allowSummaryChanges} />
+              <Summary flow={flow} allowChanges={allowSummaryChanges} />
             </SlidePanel>
           )}
         </Stack>

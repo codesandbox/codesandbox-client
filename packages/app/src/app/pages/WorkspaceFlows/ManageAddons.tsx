@@ -7,51 +7,54 @@ import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { WorkspaceSetupStep } from 'app/components/WorkspaceSetup/types';
 import { useActions, useAppState } from 'app/overmind';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
-export const UpgradeWorkspace = () => {
-  const { hasLogIn, checkout } = useAppState();
-  const actions = useActions();
-  const { isAdmin } = useWorkspaceAuthorization();
-  const { isPro, isPaddle } = useWorkspaceSubscription();
-  const { ubbBeta } = useWorkspaceFeatureFlags();
-  const { getQueryParam } = useURLSearchParams();
+export const ManageAddons = () => {
+  const { hasLogIn, activeTeam, activeTeamInfo } = useAppState();
+  const { isPro } = useWorkspaceSubscription();
+  const { getQueryParam, setQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
-  const plan = getQueryParam('plan');
   const history = useHistory();
-
-  const proPlanPreSelected =
-    (plan === 'flex' || plan === 'flex-annual') && workspaceId;
-
-  // Cannot upgrade if already on ubb or legacy paddle
-  const cannotUpgradeToUbb = (ubbBeta && isPro) || isPaddle;
-
-  if (proPlanPreSelected && !checkout.newSubscription) {
-    actions.checkout.selectPlan(plan);
-  }
 
   const {
     dashboard: { dashboardMounted },
+    checkout,
   } = useActions();
 
   useEffect(() => {
     dashboardMounted();
+    checkout.fetchPrices();
   }, [dashboardMounted]);
+
+  useEffect(() => {
+    if (!activeTeamInfo) {
+      return;
+    }
+
+    if (!activeTeamInfo.subscriptionSchedule?.current) {
+      window.location.href = dashboardUrls.recent(workspaceId);
+      return;
+    }
+
+    checkout.initializeCartFromExistingSubscription();
+  }, [activeTeamInfo]);
+
+  useEffect(() => {
+    if (!activeTeam) {
+      return;
+    }
+
+    if (!workspaceId || workspaceId !== activeTeam) {
+      setQueryParam('workspace', activeTeam);
+    }
+  }, [workspaceId, activeTeam]);
 
   const [steps] = useState(() => {
     // Ensure this is run only once
     const initialSteps: WorkspaceSetupStep[] = [
-      'plans',
       'addons',
-      'spending-limit',
-      'finalize',
+      'change-addons-confirmation',
     ];
-
-    if (!workspaceId) {
-      initialSteps.unshift('select-workspace');
-    }
 
     return initialSteps;
   });
@@ -62,7 +65,7 @@ export const UpgradeWorkspace = () => {
     );
   }
 
-  if (workspaceId && (isAdmin === false || cannotUpgradeToUbb)) {
+  if (!workspaceId || isPro === false) {
     // Page was accessed by a non-admin or workpace cannot be upgraded
     return <Redirect to={dashboardUrls.recent(workspaceId)} />;
   }
@@ -70,7 +73,7 @@ export const UpgradeWorkspace = () => {
   return (
     <WorkspaceSetup
       steps={steps}
-      flow="upgrade"
+      flow="manage-addons"
       onComplete={fullReload => {
         if (fullReload) {
           window.location.href = dashboardUrls.recent(workspaceId);
@@ -79,10 +82,9 @@ export const UpgradeWorkspace = () => {
         }
       }}
       onDismiss={() => {
-        track('Upgrade Workspace Flow - Dismissed');
+        track('Manage Addons Flow - Dismissed');
         history.push(dashboardUrls.recent(workspaceId));
       }}
-      startFrom={proPlanPreSelected ? 'addons' : undefined}
     />
   );
 };

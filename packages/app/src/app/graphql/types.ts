@@ -406,6 +406,7 @@ export type Team = {
   settings: Maybe<WorkspaceSandboxSettings>;
   shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
+  subscriptionSchedule: Maybe<SubscriptionSchedule>;
   templates: Array<Template>;
   /** @deprecated All teams are teams now */
   type: TeamType;
@@ -1108,6 +1109,28 @@ export enum SubscriptionType {
   PersonalPro = 'PERSONAL_PRO',
   TeamPro = 'TEAM_PRO',
 }
+
+export type SubscriptionSchedule = {
+  __typename?: 'SubscriptionSchedule';
+  current: Maybe<SubscriptionSchedulePhase>;
+  upcoming: Maybe<SubscriptionSchedulePhase>;
+};
+
+export type SubscriptionSchedulePhase = {
+  __typename?: 'SubscriptionSchedulePhase';
+  endDate: Maybe<Scalars['String']>;
+  items: Array<SubscriptionItem>;
+  startDate: Maybe<Scalars['String']>;
+};
+
+export type SubscriptionItem = {
+  __typename?: 'SubscriptionItem';
+  name: Scalars['String'];
+  /** Quanity is null for metered items, such as the on-demand credit usage. */
+  quantity: Maybe<Scalars['Int']>;
+  unitAmount: Maybe<Scalars['Int']>;
+  unitAmountDecimal: Maybe<Scalars['String']>;
+};
 
 export enum TeamType {
   Personal = 'PERSONAL',
@@ -2089,6 +2112,14 @@ export type RootMutationType = {
   /** update subscription details (not billing details) */
   updateSubscription: ProSubscription;
   updateSubscriptionBillingInterval: ProSubscription;
+  /**
+   * Update an active usage-based billing subscription.
+   *
+   * This mutation requires the caller to be an admin of the team. Otherwise, an error will be
+   * returned `"Not an admin"`. This return value will always be `true`. Clients should observe
+   * the `teamEvents` subscription for updates to the workspace subscription.
+   */
+  updateUsageSubscription: Scalars['Boolean'];
 };
 
 export type RootMutationTypeAcceptTeamInvitationArgs = {
@@ -2666,6 +2697,11 @@ export type RootMutationTypeUpdateSubscriptionArgs = {
 export type RootMutationTypeUpdateSubscriptionBillingIntervalArgs = {
   billingInterval: SubscriptionInterval;
   subscriptionId: Scalars['UUID4'];
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeUpdateUsageSubscriptionArgs = {
+  addons: Array<Scalars['String']>;
   teamId: Scalars['UUID4'];
 };
 
@@ -4692,6 +4728,33 @@ export type CurrentTeamInfoFragmentFragment = {
     unitPrice: number | null;
     updateBillingUrl: string | null;
   } | null;
+  subscriptionSchedule: {
+    __typename?: 'SubscriptionSchedule';
+    current: {
+      __typename?: 'SubscriptionSchedulePhase';
+      startDate: string | null;
+      endDate: string | null;
+      items: Array<{
+        __typename?: 'SubscriptionItem';
+        name: string;
+        quantity: number | null;
+        unitAmount: number | null;
+        unitAmountDecimal: string | null;
+      }>;
+    } | null;
+    upcoming: {
+      __typename?: 'SubscriptionSchedulePhase';
+      startDate: string | null;
+      endDate: string | null;
+      items: Array<{
+        __typename?: 'SubscriptionItem';
+        name: string;
+        quantity: number | null;
+        unitAmount: number | null;
+        unitAmountDecimal: string | null;
+      }>;
+    } | null;
+  } | null;
   limits: {
     __typename?: 'TeamLimits';
     includedCredits: number;
@@ -5458,6 +5521,16 @@ export type ConvertToUsageBillingMutation = {
   convertToUsageBilling: boolean;
 };
 
+export type UpdateUsageSubscriptionMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  addons: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type UpdateUsageSubscriptionMutation = {
+  __typename?: 'RootMutationType';
+  updateUsageSubscription: boolean;
+};
+
 export type UpdateProjectVmTierMutationVariables = Exact<{
   projectId: Scalars['UUID4'];
   vmTier: Scalars['Int'];
@@ -6132,6 +6205,33 @@ export type GetTeamQuery = {
         type: SubscriptionType;
         unitPrice: number | null;
         updateBillingUrl: string | null;
+      } | null;
+      subscriptionSchedule: {
+        __typename?: 'SubscriptionSchedule';
+        current: {
+          __typename?: 'SubscriptionSchedulePhase';
+          startDate: string | null;
+          endDate: string | null;
+          items: Array<{
+            __typename?: 'SubscriptionItem';
+            name: string;
+            quantity: number | null;
+            unitAmount: number | null;
+            unitAmountDecimal: string | null;
+          }>;
+        } | null;
+        upcoming: {
+          __typename?: 'SubscriptionSchedulePhase';
+          startDate: string | null;
+          endDate: string | null;
+          items: Array<{
+            __typename?: 'SubscriptionItem';
+            name: string;
+            quantity: number | null;
+            unitAmount: number | null;
+            unitAmountDecimal: string | null;
+          }>;
+        } | null;
       } | null;
       limits: {
         __typename?: 'TeamLimits';
