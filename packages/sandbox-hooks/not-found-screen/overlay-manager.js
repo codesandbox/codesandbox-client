@@ -21,7 +21,7 @@ function createIframe() {
       'style',
       `position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 214748366;`
     );
-    iframe.setAttribute('id', 'frame');
+    iframe.setAttribute('id', 'not-found-frame');
 
     iframeReference = iframe;
 
