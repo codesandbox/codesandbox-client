@@ -16,6 +16,7 @@ import { SubscriptionStatus } from 'app/graphql/types';
 import {
   GithubTemplate,
   OfficialTemplatesResponseType,
+  SandboxToFork,
 } from 'app/components/Create/utils/types';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
@@ -99,7 +100,7 @@ export const prefetchOfficialTemplates = async ({ state }: Context) => {
         'https://raw.githubusercontent.com/codesandbox/sandbox-templates/main/templates.json'
       ).then(res => res.json())) as GithubTemplate[];
 
-      state.officialDevboxTemplates = response.map(template => ({
+      const result: SandboxToFork[] = response.map(template => ({
         id: template.id,
         title: template.title,
         alias: template.title,
@@ -112,6 +113,11 @@ export const prefetchOfficialTemplates = async ({ state }: Context) => {
         iconUrl: template.iconUrl,
         author: 'CodeSandbox',
       }));
+
+      // Sort templates by fork count
+      result.sort((s1, s2) => s2.forkCount - s1.forkCount);
+
+      state.officialDevboxTemplates = result;
     } catch (e) {
       // ignore errors
     }
@@ -124,7 +130,7 @@ export const prefetchOfficialTemplates = async ({ state }: Context) => {
         '/api/v1/sandboxes/templates/official'
       ).then(res => res.json())) as OfficialTemplatesResponseType;
 
-      state.officialSandboxTemplates = response[0].sandboxes
+      const result: SandboxToFork[] = response[0].sandboxes
         .filter(s => !s.v2)
         .map(template => ({
           id: template.id,
@@ -139,6 +145,11 @@ export const prefetchOfficialTemplates = async ({ state }: Context) => {
           sourceTemplate: template.environment,
           author: 'CodeSandbox',
         }));
+
+      // Sort templates by fork count
+      result.sort((s1, s2) => s2.forkCount - s1.forkCount);
+
+      state.officialSandboxTemplates = result;
     } catch (e) {
       // ignore errors
     }
