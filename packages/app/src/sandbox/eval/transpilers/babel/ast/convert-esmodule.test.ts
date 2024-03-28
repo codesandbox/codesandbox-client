@@ -592,4 +592,26 @@ export function test3() {
     const result = convertEsModule(code).code;
     expect(result).toMatchSnapshot();
   });
+
+  it('can do -- assigns', () => {
+    const code = `
+    export var character = 0
+    export var characters = ''
+    export var position = 0
+    /**
+     * @return {number}
+     */
+    export function prev () {
+      character = position > 0 ? charat(characters, --position) : 0
+    
+      if (column--, character === 10)
+        column = 1, line--
+    
+      return character
+    }
+    `;
+
+    const result = convertEsModule(code).code;
+    expect(result).toMatchSnapshot();
+  });
 });

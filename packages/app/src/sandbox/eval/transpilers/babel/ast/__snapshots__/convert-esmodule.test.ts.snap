@@ -179,6 +179,27 @@ exports.default = $csb__default;
 "
 `;
 
+exports[`convert-esmodule can do -- assigns 1`] = `
+""use strict";
+exports.prev = exports.position = exports.characters = exports.character = void  0;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.prev = prev;
+var character = 0;
+exports.character = character;
+var characters = '';
+exports.characters = characters;
+var position = 0;
+exports.position = position;
+function prev() {
+  exports.character = character = position > 0 ? charat(characters, --exports.position) : 0;
+  if ((column--, character === 10)) (column = 1, line--);
+  return character;
+}
+"
+`;
+
 exports[`convert-esmodule can do array exports 1`] = `
 ""use strict";
 exports.y = exports.x = void  0;
