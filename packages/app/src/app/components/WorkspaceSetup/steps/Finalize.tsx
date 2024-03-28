@@ -151,6 +151,7 @@ const AnnualForm = ({
             currentStep={currentStep}
             numberOfSteps={numberOfSteps}
             title="Review plan"
+            workspaceId={workspaceId}
           />
 
           <Stack css={{ gap: '8px' }}>

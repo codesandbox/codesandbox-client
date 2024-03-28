@@ -57,23 +57,21 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
           as={Menu.Button}
           disabled={disabled}
           justify="space-between"
+          gap={2}
           align="center"
           css={{
             width: '100%',
             cursor: 'pointer',
             color: '#cccccc',
-            paddingLeft: '28px',
-            paddingRight: '12px',
-            borderRadius: 0,
-            height: '36px',
-            transition: 'none',
+            paddingRight: '8px',
+            borderRadius: '4px',
+            height: '28px',
             '.chevron': {
               translate: 0,
               transition: 'translate 0.125s ease-out',
             },
 
             '&:hover': {
-              backgroundColor: '#242424',
               '.chevron': {
                 translate: '0 3px',
               },
@@ -83,7 +81,8 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
         >
           <Stack align="center" gap={2}>
             <Text
-              size={16}
+              size={14}
+              lineHeight="16px"
               maxWidth={
                 selectedTeam?.subscription?.status === SubscriptionStatus.Active
                   ? 170

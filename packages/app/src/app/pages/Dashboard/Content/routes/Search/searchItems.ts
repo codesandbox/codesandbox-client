@@ -94,18 +94,12 @@ export const useGetItems = ({ query, getFilteredSandboxes }) => {
   const sandboxesInSearch = foundResults.filter(s => !s.path);
   // @ts-ignore
   const foldersInSearch = foundResults.filter(s => s.path);
-  // @ts-ignore
-  const repositoriesInSearch = foundResults.filter(s => s.repository);
 
   const filteredSandboxes: SandboxFragmentDashboardFragment[] = getFilteredSandboxes(
     sandboxesInSearch
   );
 
-  const orderedSandboxes = [
-    ...foldersInSearch,
-    ...filteredSandboxes,
-    ...repositoriesInSearch,
-  ];
+  const orderedSandboxes = [...foldersInSearch, ...filteredSandboxes];
 
   // @ts-ignore
   const items: DashboardGridItem[] =

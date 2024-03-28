@@ -193,6 +193,15 @@ export const showUpdatedToSIfNeeded = ({ state, effects }: Context) => {
     ? new Date(state.user.insertedAt)
     : new Date();
 
+  // If we're in an iframe, don't show notification
+  try {
+    if (window.self !== window.top) {
+      return;
+    }
+  } catch (e) {
+    // Ignore errors
+  }
+
   if (registrationDate >= new Date('2024-03-10')) {
     // This means that the user has registered before we updated the ToS, and we need to notify
     // them that the ToS has changed.
