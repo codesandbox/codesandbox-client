@@ -139,7 +139,7 @@
     "graphql-subscriptions-client": "^0.12.0",
     "graphql-tag": "^2.10.1",
     "gsap": "^3.6.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-filter": "^5.0.0",
     "gulp-postcss": "^9.0.0",
     "gulp-rev": "^7.1.2",
