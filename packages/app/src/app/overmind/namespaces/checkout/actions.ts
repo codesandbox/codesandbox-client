@@ -1,5 +1,11 @@
 import type { Context } from 'app/overmind';
-import { CreditAddon, CreditAddonType, PlanType } from './types';
+import {
+  AddonItem,
+  CreditAddon,
+  CreditAddonType,
+  PlanType,
+  SubscriptionPackage,
+} from './types';
 import { DEFAULT_SPENDING_LIMIT } from './constants';
 
 export const fetchPrices = async ({ state, effects }: Context) => {
@@ -26,33 +32,195 @@ export const fetchPrices = async ({ state, effects }: Context) => {
 };
 
 export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
-  state.checkout.selectedPlan = plan;
+  const availableBasePlan = state.checkout.availableBasePlans[plan];
+
+  if (!state.checkout.newSubscription) {
+    state.checkout.newSubscription = {
+      basePlan: {
+        id: plan,
+        name: availableBasePlan.name,
+        price: availableBasePlan.price,
+        credits: availableBasePlan.credits,
+      },
+      totalCredits: 0,
+      totalPrice: 0,
+      addonItems: [],
+    };
+  } else {
+    state.checkout.newSubscription.basePlan = {
+      id: plan,
+      name: availableBasePlan.name,
+      price: availableBasePlan.price,
+      credits: availableBasePlan.credits,
+    };
+  }
+
   actions.checkout.recomputeTotals();
+};
+
+export const initializeCartFromExistingSubscription = ({
+  state,
+  actions,
+}: Context) => {
+  let currentSubscription: SubscriptionPackage | null = null;
+  let upcomingSubscription: SubscriptionPackage | null = null;
+
+  if (state.activeTeamInfo?.subscriptionSchedule?.current) {
+    const { items } = state.activeTeamInfo.subscriptionSchedule.current;
+    const basePlanItem = items.find(i => i.name === 'flex');
+
+    if (!basePlanItem) {
+      return;
+    }
+
+    const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
+    const basePlan = {
+      id: basePlanItem.name as PlanType,
+      // price might be custom even if it's the base plan selected
+      price: basePlanItem.unitAmount
+        ? basePlanItem.unitAmount / 100
+        : standardPlan.price,
+      name: standardPlan.name,
+      credits: standardPlan.credits, // credits are always the same for the base plan
+    };
+
+    currentSubscription = {
+      totalCredits: basePlan.credits,
+      totalPrice: basePlan.price,
+      addonItems: [],
+      basePlan,
+    };
+
+    items.forEach(item => {
+      // Ignore all non-credit prefixed addons or addons with no quantity / unitAmount
+      if (
+        !item.name.startsWith('credits_') ||
+        item.quantity === null ||
+        item.unitAmount === null ||
+        !currentSubscription
+      ) {
+        return;
+      }
+
+      const standardAddon = state.checkout.availableCreditAddons[item.name];
+
+      currentSubscription.addonItems.push({
+        quantity: item.quantity,
+        addon: {
+          id: item.name as CreditAddonType,
+          price: item.unitAmount / 100,
+          credits: standardAddon.credits,
+        },
+      });
+      currentSubscription.totalPrice += (item.unitAmount / 100) * item.quantity;
+      currentSubscription.totalCredits += standardAddon.credits * item.quantity;
+    });
+  }
+
+  if (state.activeTeamInfo?.subscriptionSchedule?.upcoming) {
+    const { items } = state.activeTeamInfo.subscriptionSchedule.upcoming;
+    const basePlanItem = items.find(i => i.name === 'flex');
+
+    if (!basePlanItem) {
+      return;
+    }
+
+    const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
+    const basePlan = {
+      id: basePlanItem.name as PlanType,
+      // price might be custom even if it's the base plan selected
+      price: basePlanItem.unitAmount
+        ? basePlanItem.unitAmount / 100
+        : standardPlan.price,
+      name: standardPlan.name,
+      credits: standardPlan.credits, // credits are always the same for the base plan
+    };
+
+    upcomingSubscription = {
+      totalCredits: basePlan.credits,
+      totalPrice: basePlan.price,
+      addonItems: [],
+      basePlan,
+    };
+
+    items.forEach(item => {
+      // Ignore all non-credit prefixed addons or addons with no quantity / unitAmount
+      if (
+        !item.name.startsWith('credits_') ||
+        item.quantity === null ||
+        item.unitAmount === null ||
+        !upcomingSubscription
+      ) {
+        return;
+      }
+
+      const standardAddon = state.checkout.availableCreditAddons[item.name];
+
+      upcomingSubscription.addonItems.push({
+        quantity: item.quantity,
+        addon: {
+          id: item.name as CreditAddonType,
+          price: item.unitAmount / 100,
+          credits: standardAddon.credits,
+        },
+      });
+      upcomingSubscription.totalPrice +=
+        (item.unitAmount / 100) * item.quantity;
+      upcomingSubscription.totalCredits +=
+        standardAddon.credits * item.quantity;
+    });
+  }
+
+  /**
+   * If there's an existing subscription update, currentSubscription and newSubscription are both used (manage addons flow)
+   * Otherwise, the newSubscription is used as the current checkout "cart"
+   */
+  if (upcomingSubscription && currentSubscription) {
+    state.checkout.currentSubscription = currentSubscription;
+    state.checkout.newSubscription = upcomingSubscription;
+    state.checkout.hasUpcomingChange = true;
+  } else if (currentSubscription) {
+    // When no upcoming change is scheduled, initialize both currentSubscription and newSubscription with the same data, as only one is displayed
+    state.checkout.currentSubscription = currentSubscription;
+    state.checkout.newSubscription = structuredClone(currentSubscription); // ensure no cross reference.
+  }
+
+  actions.checkout.recomputeTotals();
+  actions.checkout.recomputeAddonChanges();
 };
 
 export const addCreditsPackage = (
   { state, actions }: Context,
   addon: CreditAddon
 ) => {
-  const addonInCheckoutAlready = state.checkout.creditAddons.find(
+  if (!state.checkout.newSubscription) {
+    return;
+  }
+
+  const addonInCheckoutAlready = state.checkout.newSubscription.addonItems.find(
     item => item.addon.id === addon.id
   );
 
   if (addonInCheckoutAlready) {
     addonInCheckoutAlready.quantity++;
   } else {
-    state.checkout.creditAddons.push({ addon, quantity: 1 });
+    state.checkout.newSubscription.addonItems.push({ addon, quantity: 1 });
   }
 
   actions.checkout.recomputeTotals();
+  actions.checkout.recomputeAddonChanges();
 };
 
 export const removeCreditsPackage = (
   { state, actions }: Context,
-  addonId: CreditAddonType
+  addon: CreditAddon
 ) => {
-  const addonItem = state.checkout.creditAddons.find(
-    item => item.addon.id === addonId
+  if (!state.checkout.newSubscription) {
+    return;
+  }
+
+  const addonItem = state.checkout.newSubscription.addonItems.find(
+    item => item.addon.id === addon.id
   );
 
   if (!addonItem) {
@@ -62,45 +230,39 @@ export const removeCreditsPackage = (
   addonItem.quantity--;
 
   if (addonItem.quantity === 0) {
-    state.checkout.creditAddons = state.checkout.creditAddons.filter(
-      item => item.addon.id !== addonId
+    state.checkout.newSubscription.addonItems = state.checkout.newSubscription.addonItems.filter(
+      item => item.addon.id !== addon.id
     );
   }
 
   actions.checkout.recomputeTotals();
+  actions.checkout.recomputeAddonChanges();
 };
 
 export const recomputeTotals = ({ state }: Context) => {
-  const { availableBasePlans, selectedPlan, creditAddons } = state.checkout;
+  const { newSubscription } = state.checkout;
 
-  const basePlan = availableBasePlans[selectedPlan];
-  const recurring = selectedPlan === 'flex-annual' ? 12 : 1;
+  if (!newSubscription) {
+    return;
+  }
 
-  const totalCreditAddonsPrice = creditAddons.reduce(
+  const recurring = newSubscription.basePlan.id === 'flex-annual' ? 12 : 1;
+
+  const totalCreditAddonsPrice = newSubscription.addonItems.reduce(
     (acc, item) => acc + item.addon.price * item.quantity,
     0
   );
 
-  state.checkout.totalPrice =
-    (basePlan.price + totalCreditAddonsPrice) * recurring;
+  const totalAddonCredits = newSubscription.addonItems.reduce(
+    (acc, item) => acc + item.addon.credits * item.quantity,
+    0
+  );
 
-  state.checkout.totalCredits =
-    basePlan.credits +
-    creditAddons.reduce(
-      (acc, item) => acc + item.addon.credits * item.quantity,
-      0
-    );
-};
+  newSubscription.totalPrice =
+    (newSubscription.basePlan.price + totalCreditAddonsPrice) * recurring;
 
-export const clearCheckout = ({ state, actions }: Context) => {
-  state.checkout.selectedPlan = 'flex-annual';
-  state.checkout.creditAddons = [];
-  state.checkout.totalPrice = 0;
-  state.checkout.totalCredits = 0;
-  state.checkout.spendingLimit = DEFAULT_SPENDING_LIMIT;
-  state.checkout.convertProToUBBCharge = null;
-
-  actions.checkout.recomputeTotals();
+  newSubscription.totalCredits =
+    newSubscription.basePlan.credits + totalAddonCredits;
 };
 
 export const setSpendingLimit = async (
@@ -123,14 +285,16 @@ export const calculateConversionCharge = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ) => {
-  const { selectedPlan } = state.checkout;
+  const { newSubscription } = state.checkout;
 
-  const basePlan = state.checkout.availableBasePlans[selectedPlan];
+  if (!newSubscription) {
+    return;
+  }
 
   try {
     const result = await effects.gql.mutations.previewConvertToUsageBilling({
       teamId: workspaceId,
-      plan: basePlan.id,
+      plan: newSubscription.basePlan.id,
       addons: actions.checkout.getFlatAddonsList(),
     });
 
@@ -154,14 +318,19 @@ export const convertToUsageBilling = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ): Promise<{ success: boolean; error?: string }> => {
-  const { selectedPlan } = state.checkout;
+  const { newSubscription } = state.checkout;
 
-  const basePlan = state.checkout.availableBasePlans[selectedPlan];
+  if (!newSubscription) {
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
 
   try {
     await effects.gql.mutations.convertToUsageBilling({
       teamId: workspaceId,
-      plan: basePlan.id,
+      plan: newSubscription.basePlan.id,
       addons: actions.checkout.getFlatAddonsList(),
     });
 
@@ -178,13 +347,73 @@ export const convertToUsageBilling = async (
 };
 
 export const getFlatAddonsList = ({ state }: Context): string[] => {
-  const { creditAddons } = state.checkout;
+  if (!state.checkout.newSubscription) {
+    return [];
+  }
+
+  const addonItems = state.checkout.newSubscription.addonItems;
   const addons: string[] = [];
-  creditAddons.forEach(item => {
+  addonItems.forEach(item => {
     for (let i = 0; i < item.quantity; i++) {
       addons.push(item.addon.id);
     }
   });
 
   return addons;
+};
+
+export const recomputeAddonChanges = ({ state }: Context): void => {
+  const changes: Array<AddonItem> = [];
+
+  const currentAddons = state.checkout.currentSubscription?.addonItems || [];
+  const newAddons = state.checkout.newSubscription?.addonItems || [];
+
+  currentAddons.forEach(current => {
+    const newAddon = newAddons.find(item => item.addon.id === current.addon.id);
+
+    if (!newAddon) {
+      changes.push({
+        addon: current.addon,
+        quantity: -current.quantity,
+      });
+    } else if (newAddon.quantity !== current.quantity) {
+      changes.push({
+        addon: current.addon,
+        quantity: newAddon.quantity - current.quantity,
+      });
+    }
+  });
+
+  newAddons.forEach(newAddon => {
+    if (!currentAddons.find(item => item.addon.id === newAddon.addon.id)) {
+      changes.push({
+        addon: newAddon.addon,
+        quantity: newAddon.quantity,
+      });
+    }
+  });
+
+  state.checkout.addonChanges = changes;
+};
+
+export const updateSubscriptionAddons = async (
+  { effects, actions }: Context,
+  { workspaceId }: { workspaceId: string }
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    await effects.gql.mutations.updateSubscriptionAddons({
+      teamId: workspaceId,
+      addons: actions.checkout.getFlatAddonsList(),
+    });
+
+    return { success: true };
+  } catch (e) {
+    if (e.response && e.response.errors) {
+      return { success: false, error: e.response.errors[0].message };
+    }
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
 };

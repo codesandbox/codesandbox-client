@@ -34,13 +34,7 @@ const AnnualForm = ({
   refreshParentSelectedPlan,
 }: StepProps & { refreshParentSelectedPlan: () => void }) => {
   const { checkout } = useAppState();
-  const {
-    selectedPlan,
-    totalPrice,
-    totalCredits,
-    spendingLimit,
-    availableBasePlans,
-  } = checkout;
+  const { newSubscription, spendingLimit } = checkout;
   const [country, setCountry] = React.useState('');
   const [zipCode, setZipCode] = React.useState('');
   const [success, setSuccess] = React.useState(false);
@@ -50,20 +44,19 @@ const AnnualForm = ({
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
 
-  const basePlan = availableBasePlans[selectedPlan];
-  const isAnnual = selectedPlan === 'flex-annual';
+  const isAnnual = newSubscription.basePlan.id === 'flex-annual';
   const disabled = !country || !zipCode;
 
   useEffect(() => {
     actions.checkout.recomputeTotals();
   }, []);
 
-  if (!basePlan) {
+  if (!newSubscription) {
     return null;
   }
 
   const annualSendRequest = async () => {
-    const addons = checkout.creditAddons
+    const addons = newSubscription.addonItems
       .map(item => `${item.addon.credits} x ${item.quantity}`)
       .join(', ');
 
@@ -75,7 +68,7 @@ const AnnualForm = ({
             [
               '',
               workspaceId,
-              checkout.selectedPlan,
+              newSubscription.basePlan.id,
               addons === '' ? 'N/A' : addons,
               checkout.spendingLimit,
               country,
@@ -181,12 +174,12 @@ const AnnualForm = ({
           </Text>
 
           <Text size={6} color="#fff">
-            ${totalPrice} {isAnnual ? ' / year' : '/ month'}
+            ${newSubscription.totalPrice} {isAnnual ? ' / year' : '/ month'}
           </Text>
         </Stack>
 
         <Text color="#CCCCCC" size={4}>
-          {totalCredits} VM credits/month
+          {newSubscription.totalCredits} VM credits/month
         </Text>
 
         <Text color="#CCCCCC" size={4}>
@@ -268,14 +261,14 @@ export const Finalize: React.FC<StepProps> = props => {
   // This internal state is used to avoid unnecessary rerenders
   // and show the wrong step while the user is recurring plan
   const [_stepSelectedPlan, setStepSelectedPlan] = React.useState<PlanType>(
-    checkout.selectedPlan
+    checkout.newSubscription.basePlan.id
   );
 
   if (_stepSelectedPlan === 'flex-annual') {
     return (
       <AnnualForm
         refreshParentSelectedPlan={() =>
-          setStepSelectedPlan(checkout.selectedPlan)
+          setStepSelectedPlan(checkout.newSubscription.basePlan.id)
         }
         {...props}
       />

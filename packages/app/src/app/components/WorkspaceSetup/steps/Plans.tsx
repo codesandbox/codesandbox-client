@@ -14,7 +14,6 @@ import styled from 'styled-components';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { VMTier } from 'app/overmind/effects/api/types';
-import { useLocation } from 'react-router-dom';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { PricingPlan } from 'app/overmind/namespaces/checkout/types';
 import { StepProps } from '../types';
@@ -35,6 +34,7 @@ export const Plans: React.FC<StepProps> = ({
   onDismiss,
   currentStep,
   numberOfSteps,
+  flow,
 }) => {
   const { getQueryParam } = useURLSearchParams();
   const { activeTeam, checkout } = useAppState();
@@ -42,11 +42,8 @@ export const Plans: React.FC<StepProps> = ({
   const actions = useActions();
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
-  const planFromUrl = getQueryParam('plan');
-  const { pathname } = useLocation();
   const [tiers, setTiers] = useState<VMTier[]>([]);
   const { isFree } = useWorkspaceSubscription();
-  const isUpgrading = pathname.includes('upgrade');
   const showFreePlan = isFree;
 
   const {
@@ -56,23 +53,18 @@ export const Plans: React.FC<StepProps> = ({
       'flex-annual': proAnnualPlan,
       free: freePlan,
     },
+    newSubscription,
   } = checkout;
 
-  const annualPlan = checkout.selectedPlan === 'flex-annual';
+  const annualPlan = newSubscription?.basePlan.id === 'flex-annual';
   const currentProPlan = annualPlan ? proAnnualPlan : proPlan;
 
   // For new workspaces
-  const freeButtonCTA = isUpgrading
-    ? 'Continue on Free'
-    : 'Get started for free';
+  const freeButtonCTA =
+    flow === 'create-workspace' ? 'Get started for free' : 'Continue on Free';
 
   useEffect(() => {
-    if (planFromUrl === 'flex' || planFromUrl === 'flex-annual') {
-      actions.checkout.selectPlan(planFromUrl);
-    }
-
     actions.checkout.fetchPrices();
-    actions.checkout.recomputeTotals();
     effects.api.getVMSpecs().then(res => setTiers(res.vmTiers));
   }, []);
 
@@ -83,8 +75,9 @@ export const Plans: React.FC<StepProps> = ({
   }, [urlWorkspaceId, activeTeam, actions]);
 
   const handleProPlanSelection = async () => {
+    actions.checkout.selectPlan(annualPlan ? 'flex-annual' : 'flex');
     track('Checkout - Select Pro Plan', {
-      from: isUpgrading ? 'upgrade' : 'create-workspace',
+      from: flow,
       currentPlan: isFree ? 'free' : 'pro',
     });
     onNextStep();
@@ -117,7 +110,7 @@ export const Plans: React.FC<StepProps> = ({
           </Stack>
 
           <HorizontalScroller css={{ width: '100%' }}>
-            <Stack gap={6} >
+            <Stack gap={6}>
               {showFreePlan && (
                 <StyledCard
                   direction="vertical"
@@ -144,7 +137,7 @@ export const Plans: React.FC<StepProps> = ({
                     size="large"
                     onClick={() => {
                       track('Checkout - Select Free Plan', {
-                        from: isUpgrading ? 'upgrade' : 'create-workspace',
+                        from: flow,
                         currentPlan: isFree ? 'free' : 'pro',
                       });
                       onEarlyExit();
@@ -225,7 +218,7 @@ export const Plans: React.FC<StepProps> = ({
                   href={ORGANIZATION_CONTACT_LINK}
                   onClick={() => {
                     track('Checkout - Select Enterprise Plan', {
-                      from: isUpgrading ? 'upgrade' : 'create-workspace',
+                      from: flow,
                       currentPlan: isFree ? 'free' : 'pro',
                     });
                   }}

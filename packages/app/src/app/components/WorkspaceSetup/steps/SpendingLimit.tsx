@@ -5,7 +5,6 @@ import { InputText } from 'app/components/dashboard/InputText';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useLocation } from 'react-router-dom';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -16,6 +15,7 @@ export const SpendingLimit: React.FC<StepProps> = ({
   onDismiss,
   currentStep,
   numberOfSteps,
+  flow,
 }) => {
   const actions = useActions();
   const { checkout } = useAppState();
@@ -23,8 +23,6 @@ export const SpendingLimit: React.FC<StepProps> = ({
   const urlWorkspaceId = getQueryParam('workspace');
   const [error, setError] = React.useState<React.ReactNode>('');
   const { isPro } = useWorkspaceSubscription();
-  const { pathname } = useLocation();
-  const isUpgrading = pathname.includes('upgrade');
 
   const handleChange = e => {
     setError('');
@@ -68,7 +66,7 @@ export const SpendingLimit: React.FC<StepProps> = ({
         as="form"
         onSubmit={() => {
           track('Checkout - Proceed to checkout', {
-            from: isUpgrading ? 'upgrade' : 'create-workspace',
+            from: flow,
             currentPlan: isPro ? 'pro' : 'free',
           });
           onNextStep();
@@ -84,11 +82,11 @@ export const SpendingLimit: React.FC<StepProps> = ({
         />
 
         <Text color="#a6a6a6">
-          Your plan will include {checkout.totalCredits} credits/month. If your
-          usage exceeds that amount, we will automatically bill you for
-          on-demand credits at $0.018/credit. You can set a monthly spend limit
-          for on-demand credits to control your spend. You can change this limit
-          at any time.
+          Your plan will include {checkout.newSubscription.totalCredits}{' '}
+          credits/month. If your usage exceeds that amount, we will
+          automatically bill you for on-demand credits at $0.018/credit. You can
+          set a monthly spend limit for on-demand credits to control your spend.
+          You can change this limit at any time.
         </Text>
 
         <Stack direction="vertical" gap={2}>

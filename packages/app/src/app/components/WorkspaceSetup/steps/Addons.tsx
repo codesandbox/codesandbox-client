@@ -5,13 +5,13 @@ import { useActions, useAppState } from 'app/overmind';
 import styled from 'styled-components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
-import { useLocation } from 'react-router-dom';
 import { CreditAddon } from 'app/overmind/namespaces/checkout/types';
-import { StepProps } from '../types';
+import { StepProps, WorkspaceFlow } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
 
 export const Addons: React.FC<StepProps> = ({
+  flow,
   onNextStep,
   onPrevStep,
   onDismiss,
@@ -24,9 +24,7 @@ export const Addons: React.FC<StepProps> = ({
   const { isPro } = useWorkspaceSubscription();
   const { checkout } = useActions();
   const { getQueryParam } = useURLSearchParams();
-  const { pathname } = useLocation();
   const urlWorkspaceId = getQueryParam('workspace');
-  const isUpgrading = pathname.includes('upgrade');
 
   const handleSubmit = () => {
     if (isPro) {
@@ -34,7 +32,7 @@ export const Addons: React.FC<StepProps> = ({
     }
 
     track('Checkout - Next from addons', {
-      from: isUpgrading ? 'upgrade' : 'create-workspace',
+      from: flow,
       currentPlan: isPro ? 'pro' : 'free',
     });
     onNextStep();
@@ -45,13 +43,16 @@ export const Addons: React.FC<StepProps> = ({
       <Stack direction="vertical" gap={12}>
         <StepHeader
           onPrevStep={() => {
-            checkout.clearCheckout();
             onPrevStep();
           }}
           onDismiss={onDismiss}
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
-          title="Choose your add-ons (optional)"
+          title={
+            flow === 'manage-addons'
+              ? 'Update plan'
+              : 'Choose your add-ons (optional)'
+          }
           workspaceId={urlWorkspaceId}
         />
 
@@ -88,30 +89,49 @@ export const Addons: React.FC<StepProps> = ({
             }}
           >
             {Object.values(availableCreditAddons).map(addon => (
-              <CreditAddonButton key={addon.id} addon={addon} />
+              <CreditAddonButton key={addon.id} addon={addon} flow={flow} />
             ))}
           </Element>
         </Stack>
 
-        <Button autoWidth size="large" onClick={handleSubmit}>
-          Next
-        </Button>
+        <Stack gap={2}>
+          {flow === 'manage-addons' && (
+            <Button
+              variant="secondary"
+              type="button"
+              autoWidth
+              size="large"
+              onClick={() => {
+                checkout.initializeCartFromExistingSubscription();
+              }}
+            >
+              Reset changes
+            </Button>
+          )}
+          <Button autoWidth size="large" onClick={handleSubmit}>
+            Next
+          </Button>
+        </Stack>
       </Stack>
     </AnimatedStep>
   );
 };
 
-const CreditAddonButton = ({ addon }: { addon: CreditAddon }) => {
+const CreditAddonButton = ({
+  addon,
+  flow,
+}: {
+  addon: CreditAddon;
+  flow: WorkspaceFlow;
+}) => {
   const actions = useActions();
   const { isPro } = useWorkspaceSubscription();
-  const { pathname } = useLocation();
-  const isUpgrading = pathname.includes('upgrade');
 
   return (
     <StyledAddonButton
       onClick={() => {
         track('Checkout - Click on addon', {
-          from: isUpgrading ? 'upgrade' : 'create-workspace',
+          from: flow,
           currentPlan: isPro ? 'pro' : 'free',
           addonId: addon.id,
         });
