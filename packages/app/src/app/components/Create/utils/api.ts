@@ -73,14 +73,16 @@ export const validateRepositoryDestination: ValidateRepositoryDestinationFn = de
 
 export const getTemplatesInCollections = (
   templates: SandboxToFork[],
-  tags: string[]
+  collections: Array<{ tag: string; title: string }>
 ): TemplateCollection[] => {
   const result: TemplateCollection[] = [];
-  tags.forEach(tag => {
+  collections.forEach(collection => {
     result.push({
-      key: tag,
-      title: tag,
-      templates: templates.filter(template => template.tags.includes(tag)),
+      key: collection.tag,
+      title: collection.title,
+      templates: templates.filter(template =>
+        template.tags.includes(collection.tag)
+      ),
     });
   });
   return result;

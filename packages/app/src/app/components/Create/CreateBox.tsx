@@ -101,9 +101,10 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     type === 'devbox' ? officialDevboxTemplates : officialSandboxTemplates;
 
   const collections = getTemplatesInCollections(officialTemplates, [
-    'react',
-    'typescript',
-    'node',
+    { tag: 'frontend', title: 'Frontend frameworks' },
+    { tag: 'backend', title: 'Backend frameworks' },
+    { tag: 'playground', title: 'Code playgrounds' },
+    { tag: 'starter', title: 'Project starters' },
   ]);
 
   const { teamTemplates, recentTemplates } = useTeamTemplates({
@@ -395,7 +396,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                         ? collections.map(collection => (
                             <Tab
                               key={collection.key}
-                              css={{ textTransform: 'capitalize' }}
                               {...tabState}
                               stopId={slugify(collection.title)}
                               onClick={() => trackTabClick(collection.title)}
