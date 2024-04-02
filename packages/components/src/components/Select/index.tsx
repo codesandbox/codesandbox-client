@@ -49,7 +49,6 @@ const SelectComponent = styled(Input).attrs(() => ({ as: 'select' }))<{
   css(
     deepmerge(variantStyles[variant], {
       appearance: 'none',
-      color: 'input.placeholderForeground',
       cursor: 'pointer',
       transition: 'all ease',
       transitionDuration: theme => theme.speeds[2],
@@ -63,7 +62,6 @@ const SelectComponent = styled(Input).attrs(() => ({ as: 'select' }))<{
       backgroundRepeat: 'no-repeat',
 
       ':hover, :focus': {
-        color: 'input.foreground',
         backgroundImage: theme =>
           theme && `url(${getSVG(variant, theme.colors.input.foreground)})`,
       },
@@ -76,7 +74,7 @@ const SelectWithIcon = styled(Element)<{
 }>(({ variant = 'default' }) =>
   css({
     position: 'relative',
-    color: 'input.placeholderForeground',
+    color: '#fff',
     transition: 'all ease',
     transitionDuration: theme => theme.speeds[2],
 
@@ -93,9 +91,7 @@ const SelectWithIcon = styled(Element)<{
     // hover anywhere on the component should make all elements change
     ':hover, :focus-within': {
       // the svg takes currentcolor
-      color: 'input.foreground',
       select: {
-        color: 'input.foreground',
         backgroundImage: theme =>
           `url(${getSVG(variant, theme.colors.input.foreground)})`,
       },

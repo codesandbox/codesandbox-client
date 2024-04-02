@@ -18,29 +18,31 @@ export const Input = styled(Element).attrs(p => ({
   as: ((p as unknown) as { as: string }).as || 'input',
 }))<IInputProps>(
   css({
-    height: '28px',
     width: '100%',
-    paddingX: '8px',
+    padding: '8px',
     fontSize: '13px',
     lineHeight: '16px',
     fontFamily: 'Inter, sans-serif',
     borderRadius: '4px',
-    backgroundColor: 'input.background',
+    backgroundColor: '#000',
     border: '1px solid',
-    borderColor: 'input.border',
-    color: 'input.foreground',
+    borderColor: '#525252',
+    color: '#fff',
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
     transition: 'all ease',
     transitionDuration: theme => theme.speeds[2],
     appearance: 'none',
+    boxShadow: '0px 0px 0px 0px rgba(189, 177, 246, 0.50)',
+    outline: 'none',
 
     ':hover, :focus': {
-      borderColor: 'inputOption.activeBorder',
-      // need to use !important to override styles from
-      // workbench-theme.css, not proud :/
-      outline: 'none !important',
+      borderColor: '#ADADAD',
+    },
+    ':focus': {
+      borderColor: '#BDB1F6',
+      boxShadow: '0px 0px 16px 0px rgba(189, 177, 246, 0.50)',
     },
     ':disabled': {
       color: '#999999',
