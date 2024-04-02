@@ -7,7 +7,6 @@ import {
   Text,
   ListAction,
   IconButton,
-  Tooltip,
   Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -21,8 +20,16 @@ export const BranchListItem = ({
   onContextMenu,
   lastAccessed,
 }: BranchProps) => {
-  const { name: branchName, project, contribution } = branch;
+  const { name: branchName, project } = branch;
   const { repository } = project;
+
+  const pullRequest =
+    branchName !== repository.defaultBranch &&
+    'pullRequests' in branch &&
+    branch.pullRequests.length > 0
+      ? branch.pullRequests[0]
+      : null;
+
   return (
     <ListAction
       align="center"
@@ -72,38 +79,33 @@ export const BranchListItem = ({
               paddingTop: 4,
             }}
           >
-            <Stack gap={4} align="center" marginLeft={2}>
-              {contribution ? (
-                <Icon
-                  color="#EDFFA5"
-                  name="contribution"
-                  size={16}
-                  width="32px"
-                />
+            <Stack gap={2} align="center" paddingLeft={4}>
+              {pullRequest ? (
+                <Icon color="#E5E5E5" name="github" size={16} />
               ) : (
-                <Icon name="branch" color="#999" size={16} width="32px" />
+                <Icon name="branch" color="#E5E5E5" size={16} />
               )}
 
               <Element css={{ overflow: 'hidden' }}>
-                <Tooltip label={branchName}>
-                  <Text
-                    size={3}
-                    weight="medium"
-                    maxWidth="100%"
-                    css={{ color: '#E5E5E5' }}
-                  >
-                    {branchName}
-                  </Text>
-                </Tooltip>
+                <Text
+                  size={3}
+                  weight="medium"
+                  maxWidth="100%"
+                  css={{ color: '#E5E5E5' }}
+                >
+                  {branchName}
+                </Text>
               </Element>
             </Stack>
           </Column>
-          <Column span={[0, 2, 2]} as={Stack} align="center">
-            <Text size={3} variant="muted" maxWidth="100%">
-              {repository.owner}/{repository.name}
-            </Text>
+          <Column span={[0, 5, 5]} as={Stack} align="center">
+            {pullRequest && (
+              <Text size={13} color="#E5E5E5" truncate>
+                #{pullRequest.number} - {pullRequest.title}
+              </Text>
+            )}
           </Column>
-          <Column span={[0, 5, 6]} as={Stack} align="center">
+          <Column span={[0, 2, 3]} as={Stack} align="center">
             <Text size={3} variant="muted" maxWidth="100%">
               {lastAccessed}
             </Text>

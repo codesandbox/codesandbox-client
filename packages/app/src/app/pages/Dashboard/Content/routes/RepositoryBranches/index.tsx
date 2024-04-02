@@ -11,14 +11,15 @@ import {
   getProjectUniqueKey,
   sortByLastAccessed,
 } from 'app/overmind/namespaces/dashboard/utils';
-import { BranchFragment } from 'app/graphql/types';
+import { BranchWithPrFragment } from 'app/graphql/types';
 import { InstallGHAppStripe } from 'app/pages/Dashboard/Components/shared/InstallGHAppStripe';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
 type MappedBranches = {
-  defaultBranch: BranchFragment | null;
-  accessedBranches: BranchFragment[];
-  unaccessedBranches: BranchFragment[];
+  defaultBranch: BranchWithPrFragment | null;
+  activePRs: BranchWithPrFragment[];
+  myBranches: BranchWithPrFragment[];
+  otherRemoteBranches: BranchWithPrFragment[];
 };
 
 export const RepositoryBranchesPage = () => {
@@ -29,7 +30,7 @@ export const RepositoryBranchesPage = () => {
   const actions = useActions();
   const {
     activeTeam,
-    dashboard: { repositoriesWithBranches, viewMode },
+    dashboard: { repositoriesWithBranches },
   } = useAppState();
 
   const key = getProjectUniqueKey({ teamId: activeTeam, owner, name });
@@ -62,23 +63,32 @@ export const RepositoryBranchesPage = () => {
       (acc, branch) => {
         if (branch.name === repositoryProject.repository.defaultBranch) {
           acc.defaultBranch = branch;
+        } else if (branch.pullRequests.length > 0) {
+          // First we show the branches that have PRs attached to them.
+          acc.activePRs.push(branch);
         } else if (branch.lastAccessedAt) {
-          acc.accessedBranches.push(branch);
-        } else {
-          acc.unaccessedBranches.push(branch);
+          // lastAccessedAt is only set when the current user visits a branch.
+          acc.myBranches.push(branch);
+        } else if (branch.upstream) {
+          // only show other branches that have been pushed to GH, not all draft branches.
+          acc.otherRemoteBranches.push(branch);
         }
         return acc;
       },
       {
         defaultBranch: null,
-        accessedBranches: [],
-        unaccessedBranches: [],
+        activePRs: [],
+        myBranches: [],
+        otherRemoteBranches: [],
       } as MappedBranches
     );
 
     const orderedBranches = [
-      ...branches.accessedBranches.sort(sortByLastAccessed),
-      ...branches.unaccessedBranches,
+      ...branches.activePRs.sort(
+        (a, b) => b.pullRequests[0]?.number - a.pullRequests[0]?.number
+      ),
+      ...branches.myBranches.sort(sortByLastAccessed),
+      ...branches.otherRemoteBranches,
     ];
 
     if (branches.defaultBranch) {
@@ -89,22 +99,6 @@ export const RepositoryBranchesPage = () => {
       type: 'branch',
       branch,
     }));
-
-    if (viewMode === 'grid') {
-      branchItems.unshift({
-        type: 'new-branch',
-        workspaceId: repositoryProject?.team?.id,
-        repo: { owner, name },
-        disabled: isFrozen,
-        onClick: () => {
-          actions.dashboard.createDraftBranch({
-            owner,
-            name,
-            teamId: repositoryProject?.team?.id,
-          });
-        },
-      });
-    }
 
     return branchItems;
   };
@@ -123,8 +117,8 @@ export const RepositoryBranchesPage = () => {
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        path={ownerNamePath}
-        showViewOptions
+        path={name}
+        showViewOptions={false}
         nestedPageType={pageType}
         selectedRepo={{
           owner: repositoryProject?.repository.owner,

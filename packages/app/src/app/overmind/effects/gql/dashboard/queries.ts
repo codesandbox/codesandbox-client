@@ -52,6 +52,7 @@ import {
   currentTeamInfoFragment,
   teamFragmentDashboard,
   branchFragment,
+  branchWithPRFragment,
   projectFragment,
   projectWithBranchesFragment,
   githubRepoFragment,
@@ -286,7 +287,7 @@ export const getRepositoryByDetails: Query<
     }
   }
   ${projectWithBranchesFragment}
-  ${branchFragment}
+  ${branchWithPRFragment}
 `;
 
 export const getGithubRepository: Query<

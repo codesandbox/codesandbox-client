@@ -40,7 +40,7 @@ export const BranchCard: React.FC<BranchProps> = ({
                 </Text>
               )}
 
-              <Stack gap={3}>
+              <Stack gap={2}>
                 {contribution ? (
                   <Icon color="#EDFFA5" name="contribution" size={16} />
                 ) : (

@@ -242,6 +242,7 @@ export type Album = {
 export type Sandbox = {
   __typename?: 'Sandbox';
   alias: Maybe<Scalars['String']>;
+  /** @deprecated No longer supported */
   alwaysOn: Maybe<Scalars['Boolean']>;
   author: Maybe<User>;
   authorId: Maybe<Scalars['UUID4']>;
@@ -264,6 +265,7 @@ export type Sandbox = {
   insertedAt: Scalars['String'];
   invitations: Array<Invitation>;
   isFrozen: Scalars['Boolean'];
+  /** @deprecated No longer supported */
   isSse: Maybe<Scalars['Boolean']>;
   isV2: Scalars['Boolean'];
   /** Depending on the context, this may be the last access of the current user or the aggregate last access for all users */
@@ -2038,8 +2040,6 @@ export type RootMutationType = {
   setPreventSandboxesLeavingWorkspace: Array<Sandbox>;
   /** Change the primary workspace for the current user */
   setPrimaryWorkspace: Scalars['String'];
-  /** set sandbox always on status */
-  setSandboxAlwaysOn: Sandbox;
   setSandboxesFrozen: Array<Sandbox>;
   setSandboxesPrivacy: Array<Sandbox>;
   /** Configure consent for AI features in this team. Can be overridden for specific repositories or sandboxes. */
@@ -2538,11 +2538,6 @@ export type RootMutationTypeSetPreventSandboxesLeavingWorkspaceArgs = {
 
 export type RootMutationTypeSetPrimaryWorkspaceArgs = {
   primaryWorkspaceId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeSetSandboxAlwaysOnArgs = {
-  alwaysOn: Scalars['Boolean'];
-  sandboxId: Scalars['ID'];
 };
 
 export type RootMutationTypeSetSandboxesFrozenArgs = {
@@ -4791,6 +4786,33 @@ export type BranchFragment = {
   };
 };
 
+export type BranchWithPrFragment = {
+  __typename?: 'Branch';
+  id: string;
+  name: string;
+  contribution: boolean;
+  lastAccessedAt: string | null;
+  upstream: boolean;
+  project: {
+    __typename?: 'Project';
+    repository: {
+      __typename?: 'GitHubRepository';
+      defaultBranch: string;
+      name: string;
+      owner: string;
+      private: boolean;
+    };
+    team: { __typename?: 'Team'; id: any } | null;
+  };
+  pullRequests: Array<{
+    __typename?: 'PullRequest';
+    title: string;
+    number: number;
+    additions: number | null;
+    deletions: number | null;
+  }>;
+};
+
 export type ProjectFragment = {
   __typename?: 'Project';
   appInstalled: boolean;
@@ -4827,6 +4849,13 @@ export type ProjectWithBranchesFragment = {
       };
       team: { __typename?: 'Team'; id: any } | null;
     };
+    pullRequests: Array<{
+      __typename?: 'PullRequest';
+      title: string;
+      number: number;
+      additions: number | null;
+      deletions: number | null;
+    }>;
   }>;
   repository: {
     __typename?: 'GitHubRepository';
@@ -6341,6 +6370,13 @@ export type RepositoryByDetailsQuery = {
         };
         team: { __typename?: 'Team'; id: any } | null;
       };
+      pullRequests: Array<{
+        __typename?: 'PullRequest';
+        title: string;
+        number: number;
+        additions: number | null;
+        deletions: number | null;
+      }>;
     }>;
     repository: {
       __typename?: 'GitHubRepository';

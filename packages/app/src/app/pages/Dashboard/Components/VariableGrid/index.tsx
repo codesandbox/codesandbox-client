@@ -248,10 +248,10 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
   viewMode: propViewMode,
 }) => {
   const { dashboard } = useAppState();
-  const location = useLocation();
 
   let viewMode: 'grid' | 'list';
-  if (location.pathname.includes('deleted')) viewMode = 'list';
+
+  if (page === 'deleted' || page === 'repository-branches') viewMode = 'list';
   else viewMode = propViewMode || dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
