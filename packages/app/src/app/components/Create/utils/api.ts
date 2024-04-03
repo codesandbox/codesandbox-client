@@ -1,65 +1,8 @@
-import { TemplateType } from '@codesandbox/common/lib/templates';
 import {
   GetSandboxWithTemplateQuery,
   TemplateFragment,
 } from 'app/graphql/types';
-import { SandboxToFork, TemplateCollection } from './types';
-
-interface ExploreTemplateAPIResponse {
-  title: string;
-  sandboxes: {
-    id: string;
-    title: string | null;
-    alias: string | null;
-    description: string | null;
-    inserted_at: string;
-    updated_at: string;
-    author: { username: string } | null;
-    environment: TemplateType;
-    v2?: boolean;
-    fork_count: number;
-    view_count: number;
-    custom_template: {
-      id: string;
-      icon_url: string;
-      color: string;
-    };
-    collection?: {
-      team: {
-        name: string;
-      };
-    };
-    git: {
-      id: string;
-      username: string;
-      commit_sha: string;
-      path: string;
-      repo: string;
-      branch: string;
-    };
-  }[];
-}
-
-const mapAPIResponseToTemplateInfo = (
-  exploreTemplate: ExploreTemplateAPIResponse
-): TemplateCollection => ({
-  key: exploreTemplate.title,
-  title: exploreTemplate.title,
-  templates: exploreTemplate.sandboxes.map(sandbox => ({
-    id: sandbox.id,
-    alias: sandbox.alias,
-    title: sandbox.title,
-    description: sandbox.description,
-    insertedAt: sandbox.inserted_at,
-    updatedAt: sandbox.updated_at,
-    isV2: sandbox.v2 || false,
-    forkCount: sandbox.fork_count,
-    viewCount: sandbox.view_count,
-    iconUrl: sandbox.custom_template.icon_url,
-    sourceTemplate: sandbox.environment,
-    owner: 'CodeSandbox',
-  })),
-});
+import { PrivacyLevel, SandboxToFork, TemplateCollection } from './types';
 
 export const mapTemplateGQLResponseToSandboxToFork = (
   template: TemplateFragment
@@ -73,14 +16,13 @@ export const mapTemplateGQLResponseToSandboxToFork = (
     alias: template.sandbox.alias,
     title: template.sandbox.title,
     description: template.sandbox.description,
-    insertedAt: template.sandbox.insertedAt,
-    updatedAt: template.sandbox.updatedAt,
-    isV2: template.sandbox.isV2 || false,
+    author: template.sandbox.team?.name || 'CodeSandbox',
+    type: template.sandbox.isV2 ? 'devbox' : 'sandbox',
+    tags: [],
     forkCount: template.sandbox.forkCount,
     viewCount: template.sandbox.viewCount,
     iconUrl: template.iconUrl || undefined,
     sourceTemplate: template.sandbox.source?.template || undefined,
-    owner: template.sandbox.team?.name || 'CodeSandbox',
   };
 };
 
@@ -91,24 +33,14 @@ export const mapSandboxGQLResponseToSandboxToFork = (
   alias: sandbox.alias,
   title: sandbox.title,
   description: sandbox.description,
-  insertedAt: sandbox.insertedAt,
-  updatedAt: sandbox.updatedAt,
-  isV2: sandbox.isV2 || false,
+  author: sandbox.team?.name || 'CodeSandbox',
+  type: sandbox.isV2 ? 'devbox' : 'sandbox',
   forkCount: sandbox.forkCount,
   viewCount: sandbox.viewCount,
   iconUrl: sandbox.customTemplate?.iconUrl || undefined,
   sourceTemplate: sandbox.source?.template || undefined,
-  owner: sandbox.team?.name || 'CodeSandbox',
+  tags: [],
 });
-
-export const getTemplateInfosFromAPI = (
-  url: string
-): Promise<TemplateCollection[]> =>
-  fetch(url)
-    .then(res => res.json())
-    .then((body: ExploreTemplateAPIResponse[]) =>
-      body.map(mapAPIResponseToTemplateInfo)
-    );
 
 type ValidateRepositoryDestinationFn = (
   destination: string
@@ -138,3 +70,69 @@ export const validateRepositoryDestination: ValidateRepositoryDestinationFn = de
     })
     .then(res => res.json());
 };
+
+export const getTemplatesInCollections = (
+  templates: SandboxToFork[],
+  collections: Array<{ tag: string; title: string }>
+): TemplateCollection[] => {
+  const result: TemplateCollection[] = [];
+  collections.forEach(collection => {
+    result.push({
+      key: collection.tag,
+      title: collection.title,
+      templates: templates.filter(template =>
+        template.tags.includes(collection.tag)
+      ),
+    });
+  });
+  return result;
+};
+
+interface Params {
+  searchQuery?: string;
+  officialTemplates: SandboxToFork[];
+  teamTemplates: SandboxToFork[];
+}
+
+export const getAllMatchingTemplates = ({
+  officialTemplates,
+  teamTemplates,
+  searchQuery,
+}: Params): SandboxToFork[] => {
+  // Using a map to ensure unique entries for templates
+  const allTemplatesMap: Map<string, SandboxToFork> = new Map();
+
+  officialTemplates.forEach(t => {
+    allTemplatesMap.set(t.id, t);
+  });
+
+  teamTemplates.forEach(t => {
+    allTemplatesMap.set(t.id, t);
+  });
+
+  const query = searchQuery ? searchQuery.trim().toLowerCase() : null;
+  return Array.from(allTemplatesMap.values()).filter(t =>
+    query
+      ? (t.title || t.alias || '').toLowerCase().includes(query) ||
+        t.tags.some(tag => tag.includes(query))
+      : true
+  );
+};
+
+export function parsePrivacy(
+  privacy: string | undefined
+): PrivacyLevel | undefined {
+  if (privacy === 'public') {
+    return 0;
+  }
+
+  if (privacy === 'unlisted') {
+    return 1;
+  }
+
+  if (privacy === 'private') {
+    return 2;
+  }
+
+  return undefined;
+}

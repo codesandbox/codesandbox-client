@@ -28,6 +28,7 @@ export const withLoadApp = <I>(
 
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
+  actions.internal.prefetchOfficialTemplates();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
   if (localStorage.jwt) {

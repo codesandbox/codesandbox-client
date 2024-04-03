@@ -31,18 +31,20 @@ import {
   SandboxAlternative,
 } from './elements';
 import { TemplateList } from './TemplateList';
-import { useTemplateCollections } from './hooks/useTemplateCollections';
-import { useOfficialTemplates } from './hooks/useOfficialTemplates';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateParams, SandboxToFork } from './utils/types';
 import { SearchBox } from './SearchBox';
 import { ImportTemplate } from './ImportTemplate';
-import { CreateBoxForm, PrivacyLevel } from './CreateBox/CreateBoxForm';
+import { CreateBoxForm } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
-import { useFeaturedTemplates } from './hooks/useFeaturedTemplates';
-import { useAllTemplates } from './hooks/useAllTemplates';
-import { mapSandboxGQLResponseToSandboxToFork } from './utils/api';
+import {
+  getTemplatesInCollections,
+  getAllMatchingTemplates,
+  mapSandboxGQLResponseToSandboxToFork,
+  parsePrivacy,
+} from './utils/api';
 import { WorkspaceSelect } from '../WorkspaceSelect';
+import { FEATURED_IDS } from './utils/constants';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -51,22 +53,6 @@ type CreateBoxProps = ModalContentProps & {
   isStandalone?: boolean;
 };
 
-function parsePrivacy(privacy: string | undefined): PrivacyLevel | undefined {
-  if (privacy === 'public') {
-    return 0;
-  }
-
-  if (privacy === 'unlisted') {
-    return 1;
-  }
-
-  if (privacy === 'private') {
-    return 2;
-  }
-
-  return undefined;
-}
-
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
   sandboxIdToFork,
@@ -74,7 +60,12 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   closeModal,
   isStandalone,
 }) => {
-  const { hasLogIn, activeTeam } = useAppState();
+  const {
+    hasLogIn,
+    activeTeam,
+    officialDevboxTemplates,
+    officialSandboxTemplates,
+  } = useAppState();
   const effects = useEffects();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
@@ -106,8 +97,16 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     false
   );
 
-  const { collections } = useTemplateCollections({ type });
-  const { templates: officialTemplates } = useOfficialTemplates({ type });
+  const officialTemplates =
+    type === 'devbox' ? officialDevboxTemplates : officialSandboxTemplates;
+
+  const collections = getTemplatesInCollections(officialTemplates, [
+    { tag: 'frontend', title: 'Frontend frameworks' },
+    { tag: 'backend', title: 'Backend frameworks' },
+    { tag: 'playground', title: 'Code playgrounds' },
+    { tag: 'starter', title: 'Project starters' },
+  ]);
+
   const { teamTemplates, recentTemplates } = useTeamTemplates({
     teamId: activeTeam,
     hasLogIn,
@@ -115,23 +114,27 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   });
 
   const recentlyUsedTemplates = recentTemplates.slice(0, 3);
-  const featuredTemplates = useFeaturedTemplates({
-    officialTemplates,
-    recentTemplates,
-  });
+  const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
+  const recentlyUsedTemplatesIds = recentlyUsedTemplates.map(t => t.id);
 
-  const allTemplates = useAllTemplates({
-    featuredTemplates,
+  const featuredTemplates = FEATURED_IDS.map(id =>
+    officialTemplates.find(
+      t => t.id === id && !recentlyUsedTemplatesIds.includes(t.id)
+    )
+  )
+    .filter(Boolean)
+    .slice(0, hasRecentlyUsedTemplates ? 6 : 9);
+
+  const allTemplates = getAllMatchingTemplates({
     officialTemplates,
     teamTemplates,
-    collections,
     searchQuery,
   });
 
   /**
    * Only show the team templates if the list is populated.
    */
-  const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
+
   const showTeamTemplates = teamTemplates.length > 0;
   const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
 
@@ -224,7 +227,8 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const selectTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
     if (!hasLogIn) {
       // Open template in editor for anonymous users
-      window.location.href = sandboxUrl(sandbox, hasBetaEditorExperiment);
+      window.location.href =
+        sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
       return;
     }
 
@@ -239,7 +243,8 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   };
 
   const openTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
-    const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
+    const url =
+      sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
     window.open(url, '_blank');
 
     track(`Create ${type} - Open template`, {
