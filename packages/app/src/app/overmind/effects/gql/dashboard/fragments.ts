@@ -294,6 +294,35 @@ export const branchFragment = gql`
   }
 `;
 
+export const branchWithPRFragment = gql`
+  fragment branchWithPR on Branch {
+    id
+    name
+    contribution
+    lastAccessedAt
+    upstream
+    project {
+      repository {
+        ... on GitHubRepository {
+          defaultBranch
+          name
+          owner
+          private
+        }
+      }
+      team {
+        id
+      }
+    }
+    pullRequests {
+      title
+      number
+      additions
+      deletions
+    }
+  }
+`;
+
 export const projectFragment = gql`
   fragment project on Project {
     appInstalled
@@ -317,7 +346,7 @@ export const projectWithBranchesFragment = gql`
   fragment projectWithBranches on Project {
     appInstalled
     branches {
-      ...branch
+      ...branchWithPR
     }
     repository {
       ... on GitHubRepository {
@@ -331,7 +360,7 @@ export const projectWithBranchesFragment = gql`
       id
     }
   }
-  ${branchFragment}
+  ${branchWithPRFragment}
 `;
 
 export const githubRepoFragment = gql`

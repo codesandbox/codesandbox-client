@@ -31,6 +31,10 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
     viewMode = 'grid';
   }
 
+  if (page === 'repository-branches') {
+    viewMode = 'list';
+  }
+
   const branchUrl = v2BranchUrl({
     owner: project.repository.owner,
     repoName: project.repository.name,

@@ -2,6 +2,7 @@ import {
   BranchFragment,
   ProjectFragment,
   SidebarCollectionDashboardFragment as Collection,
+  BranchWithPrFragment,
 } from 'app/graphql/types';
 import { DELETE_ME_COLLECTION } from './types';
 
@@ -20,8 +21,8 @@ export function getDecoratedCollection(
 }
 
 export function sortByLastAccessed(
-  a: ProjectFragment | BranchFragment,
-  b: ProjectFragment | BranchFragment
+  a: ProjectFragment | BranchFragment | BranchWithPrFragment,
+  b: ProjectFragment | BranchFragment | BranchWithPrFragment
 ): number {
   if (!a.lastAccessedAt || !b.lastAccessedAt) {
     return 1;
