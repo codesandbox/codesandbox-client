@@ -608,8 +608,11 @@ export function convertEsModule(ast: ESTreeAST): void {
         ) {
           const name = trackedExports[ref.identifier.name];
           if (ref.isRead()) {
-            // If it's both a read and a write (e.g. --num), we can just use the name
-            ref.identifier.name = `exports.${name}`;
+            // If it's both a read and a write (e.g. --num), we need to go a level higher
+            // However, that information is not available here, and we don't have an easy way
+            // to fix it. Because of this, we bail out from this fast converter, and rely on Babel
+            // to convert to commonjs.
+            throw new Error("Can't convert read + write exports");
           } else {
             ref.identifier.name = `exports.${name} = ${ref.identifier.name}`;
           }
