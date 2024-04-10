@@ -613,7 +613,7 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
               <a
                 target="_blank"
                 rel="noreferrer"
-                href="https://codesandbox.io/docs/learn/devboxes/editors?tab=sandbox"
+                href="https://codesandbox.io/docs/learn/devboxes/overview?tab=sandbox#difference-between-devboxes--sandboxes"
               >
                 Learn more about Sandboxes.
               </a>
@@ -637,7 +637,7 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
               <a
                 target="_blank"
                 rel="noreferrer"
-                href="https://codesandbox.io/docs/learn/devboxes/editors?tab=devbox"
+                href="https://codesandbox.io/docs/learn/devboxes/overview?tab=devbox#difference-between-devboxes--sandboxes"
               >
                 Learn more about Devboxes.
               </a>
