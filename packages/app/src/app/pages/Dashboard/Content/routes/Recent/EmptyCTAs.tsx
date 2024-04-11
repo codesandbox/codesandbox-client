@@ -7,7 +7,7 @@ export const EmptyCTAs: React.FC<{ isFrozen: boolean }> = ({ isFrozen }) => {
   const actions = useActions();
 
   return (
-    <Stack direction="vertical" align="center" gap={4}>
+    <Stack direction="vertical" align="center" gap={4} padding={8}>
       <Text size={6}>You have no recent work</Text>
       <Stack gap={2}>
         <Button

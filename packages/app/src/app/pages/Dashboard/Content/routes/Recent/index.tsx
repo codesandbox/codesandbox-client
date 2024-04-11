@@ -95,10 +95,8 @@ export const Recent = () => {
         <title>Recent - CodeSandbox</title>
       </Helmet>
 
-      <Stack direction="vertical" gap={4}>
-        {hasReachedSandboxLimit && <RestrictedSandboxes />}
-        <TopBanner />
-      </Stack>
+      {hasReachedSandboxLimit && <RestrictedSandboxes />}
+      <TopBanner />
 
       <ContentSection title="Recent">
         {recentRepos.length > 0 && (
