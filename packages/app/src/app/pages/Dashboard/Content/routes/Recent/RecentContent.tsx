@@ -16,45 +16,19 @@ import { RepoInfo } from 'app/overmind/namespaces/sidebar/types';
 import { TopBanner } from './TopBanner';
 import { CreateBranchesRow } from './CreateBranchesRow';
 import { ItemsGrid } from './ItemsGrid';
+import { EmptyCTAs } from './EmptyCTAs';
 
 type RecentContentProps = {
   recentItems: (DashboardSandbox | DashboardBranch)[];
   recentRepos: RepoInfo[];
+  otherRepos: RepoInfo[];
 };
 export const RecentContent: React.FC<RecentContentProps> = ({
   recentItems,
   recentRepos,
+  otherRepos,
 }) => {
   const { activeTeam } = useAppState();
   const { isFrozen, hasReachedSandboxLimit } = useWorkspaceLimits();
   const page: PageTypes = 'recent';
-
-  return (
-    <StyledContentWrapper>
-      <Stack direction="vertical" gap={4}>
-        {hasReachedSandboxLimit && <RestrictedSandboxes />}
-        <TopBanner />
-      </Stack>
-
-      <ContentSection title="Recent">
-        {recentRepos.length > 0 && (
-          <CreateBranchesRow
-            title="Create a new branch"
-            isFrozen={isFrozen}
-            repos={recentRepos}
-            trackEvent="Recent Page - Repositories - Create new branch"
-          />
-        )}
-
-        {recentItems.length > 0 && (
-          <ItemsGrid
-            title="Pick up where you left off"
-            items={recentItems}
-            page={page}
-            activeTeam={activeTeam}
-          />
-        )}
-      </ContentSection>
-    </StyledContentWrapper>
-  );
 };
