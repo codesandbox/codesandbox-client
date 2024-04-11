@@ -4,13 +4,14 @@ import { Stack, Text } from '@codesandbox/components';
 import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { useActions, useAppState } from 'app/overmind';
-
-type RepoInfo = { owner: string; name: string; defaultBranch: string };
+import { RepoInfo } from 'app/overmind/namespaces/sidebar/types';
 
 export const CreateBranchesRow: React.FC<{
+  title: string;
   repos: Array<RepoInfo>;
   isFrozen: boolean;
-}> = ({ repos, isFrozen }) => {
+  trackEvent: string;
+}> = ({ title, repos, isFrozen, trackEvent }) => {
   const { activeTeam } = useAppState();
   const actions = useActions();
 
@@ -23,7 +24,7 @@ export const CreateBranchesRow: React.FC<{
           repo,
           isFrozen,
           onClick: evt => {
-            track('Recent Pae - Explore workspace - Create new branch');
+            track(trackEvent, { owner: repo.owner, name: repo.name });
             actions.dashboard.createDraftBranch({
               owner: repo.owner,
               name: repo.name,
@@ -39,7 +40,7 @@ export const CreateBranchesRow: React.FC<{
   return (
     <Stack direction="vertical" gap={4}>
       <Text as="h3" margin={0} size={4} weight="400">
-        Start working on existing repositories
+        {title}
       </Text>
       <Carousel items={items} />
     </Stack>

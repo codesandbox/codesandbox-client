@@ -4,6 +4,7 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Helmet } from 'react-helmet';
 import { DashboardBranch, DashboardSandbox } from 'app/pages/Dashboard/types';
 import { Loading, Stack } from '@codesandbox/components';
+import { RepoInfo } from 'app/overmind/namespaces/sidebar/types';
 import { EmptyRecent } from './EmptyRecent';
 import { RecentContent } from './RecentContent';
 
@@ -23,7 +24,7 @@ export const Recent = props => {
 
   const items: (DashboardSandbox | DashboardBranch)[] =
     sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null
-      ? null
+      ? undefined
       : [
           ...(sandboxes.RECENT_SANDBOXES || []).map(sandbox => ({
             type: 'sandbox' as const,
@@ -49,8 +50,25 @@ export const Recent = props => {
           })
           .slice(0, 18);
 
+  const branches = items?.filter(
+    item => item.type === 'branch'
+  ) as DashboardBranch[];
+
+  const recentRepos: RepoInfo[] = branches
+    ?.map(br => ({
+      owner: br.branch.project.repository.owner,
+      name: br.branch.project.repository.name,
+      defaultBranch: br.branch.project.repository.defaultBranch,
+    }))
+    .reduce((acc, repo) => {
+      if (!acc.some(r => r.owner === repo.owner && r.name === repo.name)) {
+        acc.push(repo);
+      }
+      return acc;
+    }, []);
+
   let pageState: 'loading' | 'ready' | 'empty';
-  if (!items) {
+  if (items === undefined) {
     pageState = 'loading';
   } else if (items.length > 0) {
     pageState = 'ready';
@@ -70,7 +88,9 @@ export const Recent = props => {
       )}
 
       {pageState === 'empty' && <EmptyRecent />}
-      {pageState === 'ready' && <RecentContent recentItems={items} />}
+      {pageState === 'ready' && (
+        <RecentContent recentRepos={recentRepos} recentItems={items} />
+      )}
     </>
   );
 };

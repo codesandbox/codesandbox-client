@@ -55,7 +55,7 @@ export const StyledContentWrapper = styled(Stack)`
   scrollbar-gutter: stable;
   margin: 12px auto 0;
   flex-direction: column;
-  gap: 32px;
+  gap: 48px;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -63,7 +63,7 @@ export const StyledContentWrapper = styled(Stack)`
   }
 `;
 
-export const StyledGrid = styled.ul`
+export const StyledGrid = styled(Element)`
   display: grid;
   list-style-type: none;
   margin: 0;

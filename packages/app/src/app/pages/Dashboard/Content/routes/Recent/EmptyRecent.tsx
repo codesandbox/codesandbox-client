@@ -1,19 +1,15 @@
 import React from 'react';
-import { Stack, Text } from '@codesandbox/components';
+import { Stack, Text, Button } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import { useAppState, useActions } from 'app/overmind';
 import { ContentSection } from 'app/pages/Dashboard/Components/shared/ContentSection';
 import { RestrictedSandboxes } from 'app/components/StripeMessages/RestrictedSandboxes';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import {
-  StyledContentWrapper,
-  StyledGrid,
-} from 'app/pages/Dashboard/Components/shared/elements';
+import { StyledContentWrapper } from 'app/pages/Dashboard/Components/shared/elements';
 
-import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { CreateBranchesRow } from './CreateBranchesRow';
 import { TopBanner } from './TopBanner';
-import { DocumentationRow } from './DocumentationRow';
-import { InstructionsRow } from './InstructionsRow';
 
 export const EmptyRecent: React.FC = () => {
   const { sidebar, activeTeam } = useAppState();
@@ -24,26 +20,23 @@ export const EmptyRecent: React.FC = () => {
 
   return (
     <StyledContentWrapper>
-      {hasReachedSandboxLimit && <RestrictedSandboxes />}
-      <TopBanner />
+      <Stack direction="vertical" gap={4}>
+        {hasReachedSandboxLimit && <RestrictedSandboxes />}
+        <TopBanner />
+      </Stack>
 
-      {hasWorkspaceRepositories ? (
-        <>
-          <ContentSection title="No recent work">
-            <EmptyCTAs isFrozen={isFrozen} />
-          </ContentSection>
+      <ContentSection title="Recent">
+        <EmptyCTAs isFrozen={isFrozen} />
+      </ContentSection>
 
-          <ContentSection title="Explore workspace activity">
-            <CreateBranchesRow
-              repos={workspaceRepositories}
-              isFrozen={isFrozen}
-            />
-          </ContentSection>
-        </>
-      ) : (
-        <ContentSection title="Let's start building">
-          <InstructionsRow />
-          <DocumentationRow />
+      {hasWorkspaceRepositories && (
+        <ContentSection title="Explore workspace activity">
+          <CreateBranchesRow
+            title="Start working on existing repositories"
+            repos={workspaceRepositories}
+            isFrozen={isFrozen}
+            trackEvent="Recent Page - Explore workspace - Create new branch"
+          />
         </ContentSection>
       )}
     </StyledContentWrapper>
@@ -51,34 +44,35 @@ export const EmptyRecent: React.FC = () => {
 };
 
 const EmptyCTAs: React.FC<{ isFrozen: boolean }> = ({ isFrozen }) => {
-  const { activeTeam } = useAppState();
   const actions = useActions();
 
   return (
-    <Stack direction="vertical" gap={4}>
-      <Text as="h3" margin={0} size={4} weight="400">
-        Start by creating something
-      </Text>
-      <StyledGrid>
-        <ActionCard
+    <Stack direction="vertical" align="center" gap={4}>
+      <Text size={6}>You have no recent work</Text>
+      <Stack gap={2}>
+        <Button
           onClick={() => {
+            track('Empty Recent - Explore templates');
             actions.modalOpened({ modal: 'createDevbox' });
           }}
-          icon="boxDevbox"
           disabled={isFrozen}
+          variant="secondary"
+          autoWidth
         >
-          <Text weight="500">Explore templates</Text>
-        </ActionCard>
-        <ActionCard
+          Explore templates
+        </Button>
+        <Button
           onClick={() => {
+            track('Empty Recent - Import repository');
             actions.modalOpened({ modal: 'importRepository' });
           }}
-          icon="boxRepository"
           disabled={isFrozen}
+          variant="secondary"
+          autoWidth
         >
-          <Text weight="500">Import repository</Text>
-        </ActionCard>
-      </StyledGrid>
+          Import repository
+        </Button>
+      </Stack>
     </Stack>
   );
 };

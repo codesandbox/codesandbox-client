@@ -1,7 +1,9 @@
+import { RepoInfo } from './types';
+
 type SidebarState = {
   hasSyncedSandboxes: boolean | null;
   hasTemplates: boolean | null;
-  repositories: Array<{ name: string; owner: string; defaultBranch: string }>;
+  repositories: Array<RepoInfo>;
 };
 
 export type State = Record<string, SidebarState>;
