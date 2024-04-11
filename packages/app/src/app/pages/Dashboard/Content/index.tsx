@@ -13,6 +13,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
+import { GetStarted } from './routes/GetStarted';
 import { Recent } from './routes/Recent';
 import { Shared } from './routes/Shared';
 import { Sandboxes } from './routes/Sandboxes';
@@ -59,6 +60,7 @@ export const Content = withRouter(({ history }) => {
     >
       <Switch>
         <Route path="/dashboard/recent" component={Recent} />
+        <Route path="/dashboard/get-started" component={GetStarted} />
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/sandboxes/:path*" component={Sandboxes} />
         <Route path="/dashboard/templates" component={Templates} />
