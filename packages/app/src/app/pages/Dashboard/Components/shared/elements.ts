@@ -1,5 +1,11 @@
-import { Button, Element, Text } from '@codesandbox/components';
+import { Button, Element, Text, Stack } from '@codesandbox/components';
 import styled from 'styled-components';
+import {
+  GRID_MAX_WIDTH,
+  GUTTER,
+  ITEM_HEIGHT_GRID,
+  ITEM_MIN_WIDTH,
+} from '../VariableGrid/constants';
 
 export const StyledDisclaimerWrapper = styled(Element)<{
   insideGrid?: boolean;
@@ -38,5 +44,89 @@ export const StyledDisclaimerButton = styled(Button)<{ insideGrid?: boolean }>`
   &:focus-visible {
     outline: 2px solid #ac9cff;
     outline-offset: -2px;
+  }
+`;
+
+export const StyledContentWrapper = styled(Stack)`
+  width: 100%;
+  max-width: ${GRID_MAX_WIDTH}px;
+  padding: 0 ${GUTTER}px 64px;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  margin: 12px auto 0;
+  flex-direction: column;
+  gap: 32px;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+`;
+
+export const StyledGrid = styled.ul`
+  display: grid;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(${ITEM_MIN_WIDTH}px, 1fr));
+  grid-auto-rows: minmax(${ITEM_HEIGHT_GRID}px, 1fr);
+
+  @media (width <= 1149px) {
+    & li.create-branch:not(:nth-child(-n + 4)) {
+      display: none;
+    }
+  }
+
+  @media (width <= 1425px) {
+    & li.create-branch:not(:nth-child(-n + 3)) {
+      display: none;
+    }
+  }
+
+  @media (width <= 1702px) {
+    & li.recent-item:not(:nth-child(-n + 12)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 4)) {
+      display: none;
+    }
+  }
+
+  @media (1702px < width <= 1978px) {
+    & li.recent-item:not(:nth-child(-n + 15)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 5)) {
+      display: none;
+    }
+  }
+
+  @media (1978px < width <= 2254px) {
+    & li.recent-item:not(:nth-child(-n + 18)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 6)) {
+      display: none;
+    }
+  }
+
+  @media (2254px < width <= 2530px) {
+    & li.recent-item:not(:nth-child(-n + 14)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 7)) {
+      display: none;
+    }
+  }
+
+  @media (2530px < width <= 2806px) {
+    & li.recent-item:not(:nth-child(-n + 16)) {
+      display: none;
+    }
+    & li.create-branch:not(:nth-child(-n + 8)) {
+      display: none;
+    }
   }
 `;

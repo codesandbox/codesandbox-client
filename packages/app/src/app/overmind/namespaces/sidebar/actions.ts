@@ -20,6 +20,7 @@ export const getSidebarData = async (
       result.me?.team?.projects?.map(p => ({
         owner: p.repository.owner,
         name: p.repository.name,
+        defaultBranch: p.repository.defaultBranch,
       })) || [];
 
     const hasSyncedSandboxes = sandboxes && sandboxes.length > 0;
