@@ -133,27 +133,29 @@ export const Recent = () => {
         )}
       </ContentSection>
 
-      {otherRepos.length > 0 && otherSandboxes.length > 0 && (
-        <ContentSection title="Explore workspace activity">
-          {otherRepos.length > 0 && (
-            <CreateBranchesRow
-              title="Start working on imported repositories"
-              repos={otherRepos}
-              isFrozen={isFrozen}
-              trackEvent="Recent Page - Explore workspace - Create new branch"
-            />
-          )}
+      {recentItems.length === 0 &&
+        otherRepos.length > 0 &&
+        otherSandboxes.length > 0 && (
+          <ContentSection title="Explore workspace activity">
+            {otherRepos.length > 0 && (
+              <CreateBranchesRow
+                title="Start working on imported repositories"
+                repos={otherRepos}
+                isFrozen={isFrozen}
+                trackEvent="Recent Page - Explore workspace - Create new branch"
+              />
+            )}
 
-          {otherSandboxes.length > 0 && (
-            <ItemsGrid
-              title="Pick up Devboxes and Sandboxes from the workspace"
-              items={otherSandboxes}
-              page={page}
-              activeTeam={activeTeam}
-            />
-          )}
-        </ContentSection>
-      )}
+            {otherSandboxes.length > 0 && (
+              <ItemsGrid
+                title="Pick up Devboxes and Sandboxes from the workspace"
+                items={otherSandboxes}
+                page={page}
+                activeTeam={activeTeam}
+              />
+            )}
+          </ContentSection>
+        )}
     </StyledContentWrapper>
   );
 };
