@@ -89,6 +89,19 @@ export const Recent = () => {
     wr => !recentRepos.find(r => r.owner === wr.owner && r.name === wr.name)
   );
 
+  const allWorkspaceSandboxes = [
+    ...(sidebar[activeTeam]?.sandboxes || []).map(s => ({
+      type: 'sandbox' as const,
+      sandbox: s,
+    })),
+  ];
+  const otherSandboxes = allWorkspaceSandboxes.filter(
+    s =>
+      !recentItems.find(
+        r => r.type === 'sandbox' && r.sandbox.id === s.sandbox.id
+      )
+  );
+
   return (
     <StyledContentWrapper>
       <Helmet>
@@ -120,14 +133,25 @@ export const Recent = () => {
         )}
       </ContentSection>
 
-      {recentItems.length === 0 && otherRepos.length > 0 && (
+      {otherRepos.length > 0 && otherSandboxes.length > 0 && (
         <ContentSection title="Explore workspace activity">
-          <CreateBranchesRow
-            title="Start working on existing repositories"
-            repos={otherRepos}
-            isFrozen={isFrozen}
-            trackEvent="Recent Page - Explore workspace - Create new branch"
-          />
+          {otherRepos.length > 0 && (
+            <CreateBranchesRow
+              title="Start working on imported repositories"
+              repos={otherRepos}
+              isFrozen={isFrozen}
+              trackEvent="Recent Page - Explore workspace - Create new branch"
+            />
+          )}
+
+          {otherSandboxes.length > 0 && (
+            <ItemsGrid
+              title="Pick up Devboxes and Sandboxes from the workspace"
+              items={otherSandboxes}
+              page={page}
+              activeTeam={activeTeam}
+            />
+          )}
         </ContentSection>
       )}
     </StyledContentWrapper>

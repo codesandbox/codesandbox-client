@@ -6698,7 +6698,7 @@ export type TeamSidebarDataQuery = {
     __typename?: 'CurrentUser';
     team: {
       __typename?: 'Team';
-      sandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
+      syncedSandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
       templates: Array<{ __typename?: 'Template'; id: any | null }>;
       projects: Array<{
         __typename?: 'Project';
@@ -6708,6 +6708,47 @@ export type TeamSidebarDataQuery = {
           owner: string;
           defaultBranch: string;
         };
+      }>;
+      sandboxes: Array<{
+        __typename?: 'Sandbox';
+        id: string;
+        alias: string | null;
+        title: string | null;
+        description: string | null;
+        lastAccessedAt: any;
+        insertedAt: string;
+        updatedAt: string;
+        removedAt: string | null;
+        privacy: number;
+        isFrozen: boolean;
+        isSse: boolean | null;
+        screenshotUrl: string | null;
+        screenshotOutdated: boolean;
+        viewCount: number;
+        likeCount: number;
+        isV2: boolean;
+        draft: boolean;
+        restricted: boolean;
+        authorId: any | null;
+        teamId: any | null;
+        source: { __typename?: 'Source'; template: string | null };
+        customTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          iconUrl: string | null;
+        } | null;
+        forkedTemplate: {
+          __typename?: 'Template';
+          id: any | null;
+          color: string | null;
+          iconUrl: string | null;
+        } | null;
+        collection: { __typename?: 'Collection'; path: string } | null;
+        permissions: {
+          __typename?: 'SandboxProtectionSettings';
+          preventSandboxLeaving: boolean;
+          preventSandboxExport: boolean;
+        } | null;
       }>;
     } | null;
   } | null;
