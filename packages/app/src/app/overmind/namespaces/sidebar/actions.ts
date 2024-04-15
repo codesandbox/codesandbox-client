@@ -15,7 +15,7 @@ export const getSidebarData = async (
     const result = await queries.getTeamSidebarData({ id: teamId });
 
     const syncedSandboxes = result.me?.team?.syncedSandboxes || null;
-    const sandboxes = result.me?.team?.sandboxes || null;
+    const sandboxes = result.me?.team?.sandboxes || [];
     const templates = result.me?.team?.templates || null;
     const repositories =
       result.me?.team?.projects?.map(p => ({
