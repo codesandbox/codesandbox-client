@@ -146,6 +146,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.portalVMUsage(activeTeam)}
             icon="coins"
           />
+          <RowItem
+            name="Get started"
+            page="get-started"
+            path={dashboardUrls.getStarted(activeTeam)}
+            icon="documentation"
+          />
           {isFree && isTeamAdmin && (
             <RowItem
               name="Upgrade"

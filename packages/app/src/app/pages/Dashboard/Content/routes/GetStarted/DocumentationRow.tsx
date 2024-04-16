@@ -1,8 +1,7 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { ArticleCard, VideoCard } from '@codesandbox/components';
+import { ArticleCard, VideoCard, Stack, Text } from '@codesandbox/components';
 import { blogUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
-import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
 
@@ -73,11 +72,11 @@ export const DocumentationRow: React.FC = () => {
   }).filter(Boolean);
 
   return (
-    <EmptyPage.StyledGridWrapper>
-      <EmptyPage.StyledGridTitle>
+    <Stack direction="vertical" gap={4}>
+      <Text as="h3" margin={0} size={4} weight="400">
         Optimize your workflow
-      </EmptyPage.StyledGridTitle>
+      </Text>
       <Carousel items={items} />
-    </EmptyPage.StyledGridWrapper>
+    </Stack>
   );
 };

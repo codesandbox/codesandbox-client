@@ -11,12 +11,11 @@ import { EmptyPage } from '../EmptyPage';
 export const StyledWrapper = styled(Element)`
   position: relative;
   overflow: hidden;
-  margin-right: calc(-2 * ${GUTTER}px);
 `;
 
 export const StyledInvisibleGrid = styled(EmptyPage.StyledGrid)`
   position: absolute;
-  width: calc(100% - 2 * ${GUTTER}px);
+  width: 100%;
   height: 0;
   visibility: hidden;
 `;
@@ -25,7 +24,6 @@ export const StyledCarousel = styled(Stack)`
   position: relative;
   width: 100%;
   padding: 0;
-  padding-right: calc(2 * ${GUTTER}px);
   margin: 0;
   overflow-x: scroll;
   white-space: nowrap;
@@ -46,7 +44,7 @@ export const StyledCarousel = styled(Stack)`
   }
 `;
 
-type CarouselItem = {
+export type CarouselItem = {
   id: string;
   Component: React.FunctionComponent;
   props: Record<string, unknown>;

@@ -75,6 +75,9 @@ export const recent = (
   return recentUrl;
 };
 
+export const getStarted = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/get-started`, teamId);
+
 export const deleted = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/deleted`, teamId);
 
