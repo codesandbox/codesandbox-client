@@ -91,7 +91,7 @@ export const initializeCartFromExistingSubscription = ({
   let upcomingSubscription: SubscriptionPackage | null = null;
   const billingInterval =
     state.activeTeamInfo.subscriptionSchedule.billingInterval;
-  const intervalFactor =
+  const billingFactor =
     billingInterval === SubscriptionInterval.Monthly ? 1 : 12;
 
   if (state.activeTeamInfo?.subscriptionSchedule?.current) {
@@ -115,14 +115,14 @@ export const initializeCartFromExistingSubscription = ({
       price:
         (basePlanItem.unitAmount
           ? basePlanItem.unitAmount / 100
-          : standardPrice) / intervalFactor,
+          : standardPrice) / billingFactor,
       name: standardPlan.name,
       credits: standardPlan.credits, // credits are always the same for the base plan
     };
 
     currentSubscription = {
       totalCredits: basePlan.credits,
-      totalPrice: basePlan.price,
+      totalPrice: basePlan.price * billingFactor, // total price is re-multiplied by 12 for annual
       addonItems: [],
       basePlan,
       billingInterval,
@@ -145,7 +145,7 @@ export const initializeCartFromExistingSubscription = ({
         quantity: item.quantity,
         addon: {
           id: item.name as CreditAddonType,
-          price: item.unitAmount / intervalFactor / 100,
+          price: item.unitAmount / billingFactor / 100,
           credits: standardAddon.credits,
         },
       });
@@ -175,14 +175,14 @@ export const initializeCartFromExistingSubscription = ({
       price:
         (basePlanItem.unitAmount
           ? basePlanItem.unitAmount / 100
-          : standardPrice) / intervalFactor,
+          : standardPrice) / billingFactor,
       name: standardPlan.name,
       credits: standardPlan.credits, // credits are always the same for the base plan
     };
 
     upcomingSubscription = {
       totalCredits: basePlan.credits,
-      totalPrice: basePlan.price,
+      totalPrice: basePlan.price * billingFactor,
       addonItems: [],
       basePlan,
       billingInterval,

@@ -5,6 +5,7 @@ import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dash
 
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState } from 'app/overmind';
+import { SubscriptionInterval } from 'app/graphql/types';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -21,6 +22,10 @@ export const ChangeAddons: React.FC<StepProps> = ({
   const { getQueryParam } = useURLSearchParams();
   const urlWorkspaceId = getQueryParam('workspace');
   const [isSubmitting, setSubmitting] = React.useState(false);
+  const billingFactor =
+    checkout.newSubscription.billingInterval === SubscriptionInterval.Monthly
+      ? 1
+      : 12;
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -88,7 +93,10 @@ export const ChangeAddons: React.FC<StepProps> = ({
                   size={5}
                   color={change.quantity > 0 ? '#A3EC98' : '#DD5F5F'}
                 >
-                  {changeSign}${change.addon.price * Math.abs(change.quantity)}
+                  {changeSign}$
+                  {change.addon.price *
+                    billingFactor *
+                    Math.abs(change.quantity)}
                 </Text>
               </Stack>
             );
