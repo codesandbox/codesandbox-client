@@ -90,7 +90,8 @@ export const initializeCartFromExistingSubscription = ({
   let currentSubscription: SubscriptionPackage | null = null;
   let upcomingSubscription: SubscriptionPackage | null = null;
   const billingInterval =
-    state.activeTeamInfo.subscriptionSchedule.billingInterval;
+    state.activeTeamInfo?.subscriptionSchedule?.billingInterval ||
+    SubscriptionInterval.Monthly;
   const billingFactor =
     billingInterval === SubscriptionInterval.Monthly ? 1 : 12;
 
