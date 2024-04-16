@@ -1,9 +1,10 @@
 import type { Context } from 'app/overmind';
+import { SubscriptionInterval } from 'app/graphql/types';
 import {
   AddonItem,
-  CreditAddon,
   CreditAddonType,
   PlanType,
+  PricingPlan,
   SubscriptionPackage,
 } from './types';
 import { DEFAULT_SPENDING_LIMIT } from './constants';
@@ -18,12 +19,14 @@ export const fetchPrices = async ({ state, effects }: Context) => {
     state.checkout.availableBasePlans.flex = {
       ...state.checkout.availableBasePlans.flex,
       credits: proPricing.credits,
-      price: proPricing.cost_month / 100,
+      priceMonthly: proPricing.cost_month / 100,
+      priceYearly: proPricing.cost_year / 100,
       storage: proPricing.storage,
     };
 
     Object.values(state.checkout.availableCreditAddons).forEach(creditAddon => {
-      creditAddon.price = proAddons[creditAddon.id].cost_month / 100;
+      creditAddon.priceMonthly = proAddons[creditAddon.id].cost_month / 100;
+      creditAddon.priceYearly = proAddons[creditAddon.id].cost_year / 100;
       creditAddon.credits = proAddons[creditAddon.id].credits;
     });
   } catch {
@@ -31,7 +34,13 @@ export const fetchPrices = async ({ state, effects }: Context) => {
   }
 };
 
-export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
+export const selectPlan = (
+  { state, actions }: Context,
+  {
+    plan,
+    billingInterval,
+  }: { plan: PlanType; billingInterval: SubscriptionInterval }
+) => {
   const availableBasePlan = state.checkout.availableBasePlans[plan];
 
   if (!state.checkout.newSubscription) {
@@ -39,20 +48,36 @@ export const selectPlan = ({ state, actions }: Context, plan: PlanType) => {
       basePlan: {
         id: plan,
         name: availableBasePlan.name,
-        price: availableBasePlan.price,
+        price:
+          billingInterval === SubscriptionInterval.Monthly
+            ? availableBasePlan.priceMonthly
+            : availableBasePlan.priceYearly,
         credits: availableBasePlan.credits,
       },
+      billingInterval,
       totalCredits: 0,
       totalPrice: 0,
       addonItems: [],
     };
   } else {
+    state.checkout.newSubscription.billingInterval = billingInterval;
     state.checkout.newSubscription.basePlan = {
       id: plan,
       name: availableBasePlan.name,
-      price: availableBasePlan.price,
+      price:
+        billingInterval === SubscriptionInterval.Monthly
+          ? availableBasePlan.priceMonthly
+          : availableBasePlan.priceYearly / 12,
       credits: availableBasePlan.credits,
     };
+
+    state.checkout.newSubscription.addonItems.forEach(item => {
+      const baseAddon = state.checkout.availableCreditAddons[item.addon.id];
+      item.addon.price =
+        billingInterval === SubscriptionInterval.Monthly
+          ? baseAddon.priceMonthly
+          : baseAddon.priceYearly / 12;
+    });
   }
 
   actions.checkout.recomputeTotals();
@@ -64,22 +89,30 @@ export const initializeCartFromExistingSubscription = ({
 }: Context) => {
   let currentSubscription: SubscriptionPackage | null = null;
   let upcomingSubscription: SubscriptionPackage | null = null;
+  const billingInterval =
+    state.activeTeamInfo.subscriptionSchedule.billingInterval;
 
   if (state.activeTeamInfo?.subscriptionSchedule?.current) {
     const { items } = state.activeTeamInfo.subscriptionSchedule.current;
-    const basePlanItem = items.find(i => i.name === 'flex');
 
+    const basePlanItem = items.find(i => i.name === 'flex');
     if (!basePlanItem) {
       return;
     }
 
-    const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
+    const standardPlan: PricingPlan =
+      state.checkout.availableBasePlans[basePlanItem.name];
+    const standardPrice =
+      billingInterval === SubscriptionInterval.Yearly
+        ? standardPlan.priceYearly
+        : standardPlan.priceMonthly;
+
     const basePlan = {
       id: basePlanItem.name as PlanType,
       // price might be custom even if it's the base plan selected
       price: basePlanItem.unitAmount
         ? basePlanItem.unitAmount / 100
-        : standardPlan.price,
+        : standardPrice,
       name: standardPlan.name,
       credits: standardPlan.credits, // credits are always the same for the base plan
     };
@@ -89,6 +122,7 @@ export const initializeCartFromExistingSubscription = ({
       totalPrice: basePlan.price,
       addonItems: [],
       basePlan,
+      billingInterval,
     };
 
     items.forEach(item => {
@@ -125,13 +159,19 @@ export const initializeCartFromExistingSubscription = ({
       return;
     }
 
-    const standardPlan = state.checkout.availableBasePlans[basePlanItem.name];
+    const standardPlan: PricingPlan =
+      state.checkout.availableBasePlans[basePlanItem.name];
+    const standardPrice =
+      billingInterval === SubscriptionInterval.Yearly
+        ? standardPlan.priceYearly
+        : standardPlan.priceMonthly;
+
     const basePlan = {
       id: basePlanItem.name as PlanType,
       // price might be custom even if it's the base plan selected
       price: basePlanItem.unitAmount
         ? basePlanItem.unitAmount / 100
-        : standardPlan.price,
+        : standardPrice,
       name: standardPlan.name,
       credits: standardPlan.credits, // credits are always the same for the base plan
     };
@@ -141,6 +181,7 @@ export const initializeCartFromExistingSubscription = ({
       totalPrice: basePlan.price,
       addonItems: [],
       basePlan,
+      billingInterval,
     };
 
     items.forEach(item => {
@@ -191,9 +232,10 @@ export const initializeCartFromExistingSubscription = ({
 
 export const addCreditsPackage = (
   { state, actions }: Context,
-  addon: CreditAddon
+  addonId: CreditAddonType
 ) => {
-  if (!state.checkout.newSubscription) {
+  const addon = state.checkout.availableCreditAddons[addonId];
+  if (!state.checkout.newSubscription || !addon) {
     return;
   }
 
@@ -204,7 +246,18 @@ export const addCreditsPackage = (
   if (addonInCheckoutAlready) {
     addonInCheckoutAlready.quantity++;
   } else {
-    state.checkout.newSubscription.addonItems.push({ addon, quantity: 1 });
+    state.checkout.newSubscription.addonItems.push({
+      addon: {
+        id: addon.id,
+        credits: addon.credits,
+        price:
+          state.checkout.newSubscription.billingInterval ===
+          SubscriptionInterval.Monthly
+            ? addon.priceMonthly
+            : addon.priceYearly / 12,
+      },
+      quantity: 1,
+    });
   }
 
   actions.checkout.recomputeTotals();
@@ -213,14 +266,14 @@ export const addCreditsPackage = (
 
 export const removeCreditsPackage = (
   { state, actions }: Context,
-  addon: CreditAddon
+  addonId: CreditAddonType
 ) => {
   if (!state.checkout.newSubscription) {
     return;
   }
 
   const addonItem = state.checkout.newSubscription.addonItems.find(
-    item => item.addon.id === addon.id
+    item => item.addon.id === addonId
   );
 
   if (!addonItem) {
@@ -231,7 +284,7 @@ export const removeCreditsPackage = (
 
   if (addonItem.quantity === 0) {
     state.checkout.newSubscription.addonItems = state.checkout.newSubscription.addonItems.filter(
-      item => item.addon.id !== addon.id
+      item => item.addon.id !== addonId
     );
   }
 
@@ -246,10 +299,11 @@ export const recomputeTotals = ({ state }: Context) => {
     return;
   }
 
-  const recurring = newSubscription.basePlan.id === 'flex-annual' ? 12 : 1;
+  const billingInterval =
+    newSubscription.billingInterval === SubscriptionInterval.Monthly ? 1 : 12;
 
   const totalCreditAddonsPrice = newSubscription.addonItems.reduce(
-    (acc, item) => acc + item.addon.price * item.quantity,
+    (acc, item) => acc + item.addon.price * item.quantity * billingInterval,
     0
   );
 
@@ -259,7 +313,7 @@ export const recomputeTotals = ({ state }: Context) => {
   );
 
   newSubscription.totalPrice =
-    (newSubscription.basePlan.price + totalCreditAddonsPrice) * recurring;
+    newSubscription.basePlan.price * billingInterval + totalCreditAddonsPrice;
 
   newSubscription.totalCredits =
     newSubscription.basePlan.credits + totalAddonCredits;

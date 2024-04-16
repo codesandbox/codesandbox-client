@@ -10,7 +10,6 @@ import {
 import {
   FREE_PLAN,
   PRO_PLAN,
-  PRO_PLAN_ANNUAL,
   ENTERPRISE_PLAN,
   ADDON_CREDITS_500,
   ADDON_CREDITS_4000,
@@ -42,7 +41,6 @@ export const state: State = {
   availableBasePlans: {
     free: FREE_PLAN,
     flex: PRO_PLAN,
-    'flex-annual': PRO_PLAN_ANNUAL,
     enterprise: ENTERPRISE_PLAN,
   },
   availableCreditAddons: {

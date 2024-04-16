@@ -1114,6 +1114,7 @@ export enum SubscriptionType {
 
 export type SubscriptionSchedule = {
   __typename?: 'SubscriptionSchedule';
+  billingInterval: Maybe<SubscriptionInterval>;
   current: Maybe<SubscriptionSchedulePhase>;
   upcoming: Maybe<SubscriptionSchedulePhase>;
 };
@@ -1422,6 +1423,15 @@ export type CurrentUser = {
    * Returns false if they have created any teams that have used a trial in the last 6 months.
    */
   eligibleForTrial: Scalars['Boolean'];
+  /**
+   * List workspaces a user is eligible to join
+   *
+   * This endpoint looks at the user's verified email address domains to find workspaces that allow
+   * automatically joining.
+   *
+   * Note that this endpoint is _expensive_ to calculate, and should only be called when necessary.
+   */
+  eligibleWorkspaces: Array<TeamPreview>;
   email: Scalars['String'];
   /** User-based feature flags and whether or not they are active for the current user */
   featureFlags: UserFeatureFlags;
@@ -1914,6 +1924,19 @@ export type RootMutationType = {
   /** Invite someone to a team via email */
   inviteToTeamViaEmail: Scalars['String'];
   /**
+   * Join a workspace the user is eligible to join based on email domain
+   *
+   * A list of eligible workspaces (and their IDs) is available from the `me > eligibleWorkspaces`
+   * query. This endpoint requires an authenticated user and an eligible workspace ID. Otherwise,
+   * one of the following errors will be returned:
+   *
+   * * `Please log in`
+   * * `Workspace not found`
+   *
+   * The latter error represents both invalid IDs and ineligible workspaces.
+   */
+  joinEligibleWorkspace: Team;
+  /**
    * Join an existing live session
    *
    * Accessible to non-editor guests for content that has an existing live session. For editors,
@@ -2374,6 +2397,10 @@ export type RootMutationTypeInviteToTeamViaEmailArgs = {
   authorization: InputMaybe<TeamMemberAuthorization>;
   email: Scalars['String'];
   teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeJoinEligibleWorkspaceArgs = {
+  workspaceId: Scalars['ID'];
 };
 
 export type RootMutationTypeJoinLiveSessionArgs = {
@@ -4725,6 +4752,7 @@ export type CurrentTeamInfoFragmentFragment = {
   } | null;
   subscriptionSchedule: {
     __typename?: 'SubscriptionSchedule';
+    billingInterval: SubscriptionInterval | null;
     current: {
       __typename?: 'SubscriptionSchedulePhase';
       startDate: string | null;
@@ -6237,6 +6265,7 @@ export type GetTeamQuery = {
       } | null;
       subscriptionSchedule: {
         __typename?: 'SubscriptionSchedule';
+        billingInterval: SubscriptionInterval | null;
         current: {
           __typename?: 'SubscriptionSchedulePhase';
           startDate: string | null;

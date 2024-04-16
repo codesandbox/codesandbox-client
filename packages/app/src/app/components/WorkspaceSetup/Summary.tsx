@@ -5,9 +5,10 @@ import { useActions, useAppState } from 'app/overmind';
 import styled from 'styled-components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import {
-  CreditAddon,
+  CreditAddonType,
   SubscriptionPackage,
 } from 'app/overmind/namespaces/checkout/types';
+import { SubscriptionInterval } from 'app/graphql/types';
 import { fadeAnimation } from './elements';
 import { WorkspaceFlow } from './types';
 
@@ -25,7 +26,8 @@ export const Summary: React.FC<{
     hasUpcomingChange,
   } = checkout;
 
-  const isAnnual = newSubscription?.basePlan.id === 'flex-annual';
+  const isAnnual =
+    newSubscription?.billingInterval === SubscriptionInterval.Yearly;
   const allowAnnualSwitch = flow !== 'manage-addons';
 
   return (
@@ -52,17 +54,19 @@ export const Summary: React.FC<{
           title={currentSubscription ? 'New plan' : 'Plan summary'}
           subscriptionPackage={newSubscription}
           editable={allowChanges}
-          onIncrementItem={addon => {
-            actions.checkout.addCreditsPackage(addon);
+          onIncrementItem={addonId => {
+            actions.checkout.addCreditsPackage(addonId);
             track('Checkout - Increment Addon Item', {
               from: flow,
+              addonId,
               currentPlan: isPro ? 'pro' : 'free',
             });
           }}
-          onDecrementItem={addon => {
-            actions.checkout.removeCreditsPackage(addon);
+          onDecrementItem={addonId => {
+            actions.checkout.removeCreditsPackage(addonId);
             track('Checkout - Decrement Addon Item', {
               from: flow,
+              addonId,
               currentPlan: isPro ? 'pro' : 'free',
             });
           }}
@@ -75,7 +79,12 @@ export const Summary: React.FC<{
             id="recurring"
             on={isAnnual}
             onChange={() => {
-              actions.checkout.selectPlan(isAnnual ? 'flex' : 'flex-annual');
+              actions.checkout.selectPlan({
+                plan: 'flex',
+                billingInterval: isAnnual
+                  ? SubscriptionInterval.Monthly
+                  : SubscriptionInterval.Yearly,
+              });
 
               track('Checkout - Toggle recurring type', {
                 from: flow,
@@ -87,8 +96,6 @@ export const Summary: React.FC<{
             <Text color="#fff" as="label" htmlFor="recurring">
               Annual (Save 30%)
             </Text>
-
-            {isAnnual && <Text>24 hour processing time</Text>}
           </Stack>
         </Stack>
       )}
@@ -106,8 +113,8 @@ interface PlanSummaryProps {
   title: string;
   subscriptionPackage: SubscriptionPackage;
   editable: boolean;
-  onDecrementItem?: (addon: CreditAddon) => void;
-  onIncrementItem?: (addon: CreditAddon) => void;
+  onDecrementItem?: (id: CreditAddonType) => void;
+  onIncrementItem?: (id: CreditAddonType) => void;
 }
 
 const PlanSummary: React.FC<PlanSummaryProps> = ({
@@ -129,10 +136,8 @@ const PlanSummary: React.FC<PlanSummaryProps> = ({
     >
       <Stack direction="horizontal" justify="space-between" gap={2}>
         <Stack direction="vertical">
-          <Text color="#fff">
-            {subscriptionPackage.basePlan.name} plan base
-          </Text>
-          <Text>{subscriptionPackage.basePlan.credits} VM credits</Text>
+          <Text color="#fff">Monthly base plan</Text>
+          <Text>{subscriptionPackage.basePlan.credits} VM credits/month</Text>
         </Stack>
         <Text color="#fff">${subscriptionPackage.basePlan.price}</Text>
       </Stack>
@@ -145,13 +150,13 @@ const PlanSummary: React.FC<PlanSummaryProps> = ({
           justify="space-between"
           gap={2}
         >
-          <Text color="#fff">{item.addon.credits} VM credits</Text>
+          <Text color="#fff">{item.addon.credits} VM credits/month</Text>
           <Stack align="center">
             {editable && (
               <QuantityCounter
                 quantity={item.quantity}
-                onIncrement={() => onIncrementItem?.(item.addon)}
-                onDecrement={() => onDecrementItem?.(item.addon)}
+                onIncrement={() => onIncrementItem?.(item.addon.id)}
+                onDecrement={() => onDecrementItem?.(item.addon.id)}
               />
             )}
 
@@ -167,9 +172,11 @@ const PlanSummary: React.FC<PlanSummaryProps> = ({
       <Stack direction="vertical">
         <Text color="#fff">
           Total cost per{' '}
-          {subscriptionPackage.basePlan.id === 'flex-annual' ? 'year' : 'month'}
+          {subscriptionPackage.billingInterval === SubscriptionInterval.Yearly
+            ? 'year'
+            : 'month'}
         </Text>
-        <Text>{subscriptionPackage.totalCredits} VM credits</Text>
+        <Text>{subscriptionPackage.totalCredits} VM credits/month</Text>
       </Stack>
 
       <Text color="#fff">${subscriptionPackage.totalPrice}</Text>

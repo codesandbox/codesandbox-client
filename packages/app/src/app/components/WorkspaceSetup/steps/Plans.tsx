@@ -16,6 +16,7 @@ import { useActions, useAppState, useEffects } from 'app/overmind';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { PricingPlan } from 'app/overmind/namespaces/checkout/types';
+import { SubscriptionInterval } from 'app/graphql/types';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -45,19 +46,17 @@ export const Plans: React.FC<StepProps> = ({
   const [tiers, setTiers] = useState<VMTier[]>([]);
   const { isFree } = useWorkspaceSubscription();
   const showFreePlan = isFree;
+  const [billingInterval, setBillingInterval] = useState(
+    SubscriptionInterval.Monthly
+  );
 
   const {
     availableBasePlans: {
       enterprise: enterprisePlan,
       flex: proPlan,
-      'flex-annual': proAnnualPlan,
       free: freePlan,
     },
-    newSubscription,
   } = checkout;
-
-  const annualPlan = newSubscription?.basePlan.id === 'flex-annual';
-  const currentProPlan = annualPlan ? proAnnualPlan : proPlan;
 
   // For new workspaces
   const freeButtonCTA =
@@ -75,7 +74,7 @@ export const Plans: React.FC<StepProps> = ({
   }, [urlWorkspaceId, activeTeam, actions]);
 
   const handleProPlanSelection = async () => {
-    actions.checkout.selectPlan(annualPlan ? 'flex-annual' : 'flex');
+    actions.checkout.selectPlan({ plan: proPlan.id, billingInterval });
     track('Checkout - Select Pro Plan', {
       from: flow,
       currentPlan: isFree ? 'free' : 'pro',
@@ -102,10 +101,14 @@ export const Plans: React.FC<StepProps> = ({
         <Stack gap={4} direction="vertical">
           <Stack css={{ justifyContent: 'center' }}>
             <RecurringType
-              current={annualPlan ? 'annual' : 'monthly'}
-              onChangeValue={() =>
-                actions.checkout.selectPlan(annualPlan ? 'flex' : 'flex-annual')
-              }
+              current={billingInterval}
+              onChangeValue={interval => {
+                setBillingInterval(interval);
+                actions.checkout.selectPlan({
+                  plan: proPlan.id,
+                  billingInterval: interval,
+                });
+              }}
             />
           </Stack>
 
@@ -166,12 +169,12 @@ export const Plans: React.FC<StepProps> = ({
                 css={{ borderColor: '#9581FF' }}
               >
                 <Text size={7} fontFamily="everett" weight="medium">
-                  {currentProPlan.name}
+                  {proPlan.name}
                 </Text>
                 <CardHeading>
                   Pay as you go with a monthly subscription
                 </CardHeading>
-                <PlanPricing plan={currentProPlan} />
+                <PlanPricing plan={proPlan} interval={billingInterval} />
                 <Button
                   variant="dark"
                   css={{
@@ -185,13 +188,10 @@ export const Plans: React.FC<StepProps> = ({
                 </Button>
                 <PlanFeatures
                   heading="Usage"
-                  features={currentProPlan.usage}
+                  features={proPlan.usage}
                   includeTooltips
                 />
-                <PlanFeatures
-                  heading="Features"
-                  features={currentProPlan.features}
-                />
+                <PlanFeatures heading="Features" features={proPlan.features} />
                 <PlanFeatures
                   itemIcon="plus"
                   heading="Add-ons"
@@ -307,10 +307,11 @@ const HorizontalScroller = styled(Element)`
   }
 `;
 
-const PlanPricing: React.FC<{ plan: PricingPlan; overridePrice?: string }> = ({
-  plan,
-  overridePrice,
-}) => {
+const PlanPricing: React.FC<{
+  plan: PricingPlan;
+  interval?: SubscriptionInterval;
+  overridePrice?: string;
+}> = ({ plan, interval = SubscriptionInterval.Monthly, overridePrice }) => {
   const isPro = plan.id === 'flex';
 
   return (
@@ -326,7 +327,12 @@ const PlanPricing: React.FC<{ plan: PricingPlan; overridePrice?: string }> = ({
       </Stack>
       <Element css={{ position: 'relative' }}>
         <Text size={9} fontFamily="everett" weight="medium">
-          {overridePrice || `$${plan.price}`}
+          {overridePrice ||
+            `$${
+              interval === SubscriptionInterval.Monthly
+                ? plan.priceMonthly
+                : plan.priceYearly / 12
+            }`}
         </Text>
       </Element>
 
@@ -800,7 +806,15 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
   </>
 );
 
-const RecurringType = ({ current, onChangeValue }) => {
+type RecurringTypeProps = {
+  current: SubscriptionInterval;
+  onChangeValue: (value: SubscriptionInterval) => void;
+};
+
+const RecurringType: React.FC<RecurringTypeProps> = ({
+  current,
+  onChangeValue,
+}) => {
   return (
     <Stack
       css={{
@@ -812,15 +826,15 @@ const RecurringType = ({ current, onChangeValue }) => {
     >
       <RecurringTypeButton
         type="button"
-        data-active={current === 'annual'}
-        onClick={() => onChangeValue('annual')}
+        data-active={current === SubscriptionInterval.Yearly}
+        onClick={() => onChangeValue(SubscriptionInterval.Yearly)}
       >
         <Text>Annual (Save 30%)</Text>
       </RecurringTypeButton>
       <RecurringTypeButton
         type="button"
-        data-active={current === 'monthly'}
-        onClick={() => onChangeValue('monthly')}
+        data-active={current === SubscriptionInterval.Monthly}
+        onClick={() => onChangeValue(SubscriptionInterval.Monthly)}
       >
         <Text>Monthly</Text>
       </RecurringTypeButton>
