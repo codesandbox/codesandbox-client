@@ -139,7 +139,7 @@ export const Recent = () => {
           <ContentSection title="Explore workspace activity">
             {otherRepos.length > 0 && (
               <CreateBranchesRow
-                title="Start working on imported repositories"
+                title="Create a branch from a workspace repository"
                 repos={otherRepos}
                 isFrozen={isFrozen}
                 trackEvent="Recent Page - Explore workspace - Create new branch"
@@ -148,7 +148,7 @@ export const Recent = () => {
 
             {otherSandboxes.length > 0 && (
               <ItemsGrid
-                title="Pick up Devboxes and Sandboxes from the workspace"
+                title="Open a workspace Sandbox or Devbox"
                 items={otherSandboxes}
                 page={page}
                 activeTeam={activeTeam}
