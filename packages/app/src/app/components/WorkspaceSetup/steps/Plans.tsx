@@ -345,7 +345,7 @@ const PlanPricing: React.FC<{
           weight="medium"
           css={{ textWrap: 'balance', width: 180 }}
         >
-          {plan.recurringTypeDescription}
+          {interval === SubscriptionInterval.Monthly ? "per month per workspace" : "per workspace per month billed annually"}
         </Text>
       )}
     </Stack>

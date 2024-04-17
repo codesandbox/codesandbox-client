@@ -11,7 +11,6 @@ export type PricingPlan = {
   priceMonthly: number;
   priceYearly: number;
   credits: number;
-  recurringTypeDescription?: string;
   creditsNote?: string;
   storage?: number;
   features: string[];
