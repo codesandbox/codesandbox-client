@@ -48,6 +48,13 @@ const DOCS: DocsItem[] = [
     url: 'https://www.youtube.com/watch?v=1ZHrwJHoKOw',
     thumbnail: '/static/img/thumbnails/video_postgres-tutorial.jpg',
   },
+  {
+    label: 'blog_design-system',
+    title: 'How To Use CodeSandbox with Your Design System',
+    url:
+      'https://codesandbox.io/blog/how-to-use-codesandbox-with-your-design-system',
+    thumbnail: '/static/img/thumbnails/blog_design-system.png',
+  },
 ];
 
 export const InstructionsRow: React.FC = () => {
