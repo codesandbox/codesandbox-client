@@ -228,6 +228,7 @@ export const currentTeamInfoFragment = gql`
     }
 
     subscriptionSchedule {
+      billingInterval
       current {
         items {
           name
@@ -238,7 +239,6 @@ export const currentTeamInfoFragment = gql`
         startDate
         endDate
       }
-
       upcoming {
         items {
           name

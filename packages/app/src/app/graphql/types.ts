@@ -1114,6 +1114,7 @@ export enum SubscriptionType {
 
 export type SubscriptionSchedule = {
   __typename?: 'SubscriptionSchedule';
+  billingInterval: Maybe<SubscriptionInterval>;
   current: Maybe<SubscriptionSchedulePhase>;
   upcoming: Maybe<SubscriptionSchedulePhase>;
 };
@@ -4751,6 +4752,7 @@ export type CurrentTeamInfoFragmentFragment = {
   } | null;
   subscriptionSchedule: {
     __typename?: 'SubscriptionSchedule';
+    billingInterval: SubscriptionInterval | null;
     current: {
       __typename?: 'SubscriptionSchedulePhase';
       startDate: string | null;
@@ -6263,6 +6265,7 @@ export type GetTeamQuery = {
       } | null;
       subscriptionSchedule: {
         __typename?: 'SubscriptionSchedule';
+        billingInterval: SubscriptionInterval | null;
         current: {
           __typename?: 'SubscriptionSchedulePhase';
           startDate: string | null;

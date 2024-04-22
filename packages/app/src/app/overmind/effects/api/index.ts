@@ -626,6 +626,7 @@ export default {
     cancel_path: string;
     team_id: string;
     plan: string;
+    billing_interval: string;
     addons: string[];
   }) {
     return api.post<{ stripeCheckoutUrl: string }>(`/checkout`, params, {

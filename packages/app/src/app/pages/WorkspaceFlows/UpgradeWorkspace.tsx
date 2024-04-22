@@ -10,6 +10,7 @@ import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { SubscriptionInterval } from 'app/graphql/types';
 
 export const UpgradeWorkspace = () => {
   const { hasLogIn, checkout } = useAppState();
@@ -20,16 +21,25 @@ export const UpgradeWorkspace = () => {
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
   const plan = getQueryParam('plan');
+  const interval = getQueryParam('interval');
   const history = useHistory();
 
   const proPlanPreSelected =
-    (plan === 'flex' || plan === 'flex-annual') && workspaceId;
+    plan === 'flex' &&
+    (interval === 'month' || interval === 'year') &&
+    workspaceId;
 
   // Cannot upgrade if already on ubb or legacy paddle
   const cannotUpgradeToUbb = (ubbBeta && isPro) || isPaddle;
 
   if (proPlanPreSelected && !checkout.newSubscription) {
-    actions.checkout.selectPlan(plan);
+    actions.checkout.selectPlan({
+      plan,
+      billingInterval:
+        interval === 'month'
+          ? SubscriptionInterval.Monthly
+          : SubscriptionInterval.Yearly,
+    });
   }
 
   const {

@@ -135,7 +135,7 @@ const CreditAddonButton = ({
           currentPlan: isPro ? 'pro' : 'free',
           addonId: addon.id,
         });
-        actions.checkout.addCreditsPackage(addon);
+        actions.checkout.addCreditsPackage(addon.id);
       }}
     >
       <Stack
@@ -163,7 +163,7 @@ const StyledPrice = ({ addon }: { addon: CreditAddon }) => (
           ${addon.fullPrice}
         </Text>
       )}{' '}
-      ${addon.price}
+      ${addon.priceMonthly}
     </Text>
     {addon.discount && (
       <Text size={2} color={addon.discount === 30 ? '#BDB1F6' : '#DCF76E'}>

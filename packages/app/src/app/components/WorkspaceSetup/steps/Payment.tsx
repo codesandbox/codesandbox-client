@@ -4,6 +4,7 @@ import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { dashboard as dashboardURLs } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { SubscriptionInterval } from 'app/graphql/types';
 import { StepProps } from '../types';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
@@ -51,6 +52,10 @@ export const Payment: React.FC<StepProps> = ({
         cancel_path: cancelPath,
         team_id: workspaceId,
         plan: newSubscription.basePlan.id,
+        billing_interval:
+          newSubscription.billingInterval === SubscriptionInterval.Monthly
+            ? 'monthly'
+            : 'yearly',
         addons: actions.checkout.getFlatAddonsList(),
       });
 
