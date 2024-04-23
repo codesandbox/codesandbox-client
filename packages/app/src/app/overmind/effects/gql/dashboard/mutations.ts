@@ -61,6 +61,8 @@ import {
   UpdateProjectVmTierMutation,
   UpdateUsageSubscriptionMutationVariables,
   UpdateUsageSubscriptionMutation,
+  SetTeamMetadataMutation,
+  SetTeamMetadataMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -475,4 +477,16 @@ export const updateProjectVmTier: Query<
       storage
     }
   }
+`;
+
+export const setTeamMetadata: Query<
+  SetTeamMetadataMutation,
+  SetTeamMetadataMutationVariables
+> = gql`
+  mutation SetTeamMetadata($teamId: UUID4!, $useCases: [String!]!) {
+    setTeamMetadata(teamId: $teamId, metadata: { useCases: $useCases }) {
+      ...teamFragmentDashboard
+    }
+  }
+  ${teamFragmentDashboard}
 `;

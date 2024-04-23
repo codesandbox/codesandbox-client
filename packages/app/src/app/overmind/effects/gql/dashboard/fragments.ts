@@ -268,6 +268,10 @@ export const currentTeamInfoFragment = gql`
       ubbBeta
       friendOfCsb
     }
+
+    metadata {
+      useCases
+    }
   }
 `;
 

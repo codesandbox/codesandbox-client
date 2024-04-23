@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
 import { StepProps } from '../types';
+import { useAppState, useEffects } from 'app/overmind';
 
 const USE_CASES = [
   'Conduct interviews',
@@ -25,6 +26,8 @@ export const SelectUsecases: React.FC<StepProps> = ({
   currentStep,
   numberOfSteps,
 }) => {
+  const { activeTeam } = useAppState();
+  const effects = useEffects();
   const [usecases, setUsecases] = useState<Record<string, boolean>>(
     USE_CASES.reduce((res, usecase) => {
       res[usecase] = false;
@@ -34,7 +37,13 @@ export const SelectUsecases: React.FC<StepProps> = ({
 
   const handleSubmit = async e => {
     e.preventDefault();
-    console.log('submit', usecases);
+    const selectedUseCases = Object.keys(usecases).filter(k => usecases[k]);
+    if (selectedUseCases.length > 0) {
+      effects.gql.mutations.setTeamMetadata({
+        teamId: activeTeam,
+        useCases: selectedUseCases,
+      });
+    }
     onNextStep();
   };
 
