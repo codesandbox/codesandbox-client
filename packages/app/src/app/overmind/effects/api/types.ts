@@ -68,11 +68,17 @@ export type VMTier = {
 export type APIPricingResult = {
   addons: Record<
     CreditAddonType,
-    { credits: number; cost_month: number; sandboxes: number }
+    {
+      credits: number;
+      cost_month: number;
+      cost_year: number;
+      sandboxes: number;
+    }
   >;
   base: {
     flex: {
       cost_month: number;
+      cost_year: number;
       credits: number;
       drafts: number;
       members: number;

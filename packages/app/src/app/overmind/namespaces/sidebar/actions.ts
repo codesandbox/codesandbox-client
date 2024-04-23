@@ -14,20 +14,23 @@ export const getSidebarData = async (
      */
     const result = await queries.getTeamSidebarData({ id: teamId });
 
-    const sandboxes = result.me?.team?.sandboxes || null;
+    const syncedSandboxes = result.me?.team?.syncedSandboxes || null;
+    const sandboxes = result.me?.team?.sandboxes || [];
     const templates = result.me?.team?.templates || null;
     const repositories =
       result.me?.team?.projects?.map(p => ({
         owner: p.repository.owner,
         name: p.repository.name,
+        defaultBranch: p.repository.defaultBranch,
       })) || [];
 
-    const hasSyncedSandboxes = sandboxes && sandboxes.length > 0;
+    const hasSyncedSandboxes = syncedSandboxes && syncedSandboxes.length > 0;
     const hasTemplates = templates && templates.length > 0;
 
     state.sidebar[teamId] = {
       hasSyncedSandboxes,
       hasTemplates,
+      sandboxes,
       repositories,
     };
   } catch {

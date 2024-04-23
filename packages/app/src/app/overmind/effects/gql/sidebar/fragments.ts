@@ -18,6 +18,7 @@ export const sidebarProjectFragment = gql`
       ... on GitHubRepository {
         name
         owner
+        defaultBranch
       }
     }
   }

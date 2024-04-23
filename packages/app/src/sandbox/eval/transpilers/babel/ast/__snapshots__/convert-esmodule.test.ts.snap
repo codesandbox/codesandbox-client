@@ -193,7 +193,7 @@ exports.characters = characters;
 var position = 0;
 exports.position = position;
 function prev() {
-  exports.character = character = position > 0 ? charat(characters, --exports.position) : 0;
+  exports.character = character = position > 0 ? charat(characters, --position) : 0;
   if ((column--, character === 10)) (column = 1, line--);
   return character;
 }
