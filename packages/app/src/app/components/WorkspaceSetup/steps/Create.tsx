@@ -174,9 +174,9 @@ export const Create: React.FC<StepProps> = ({
           target="_blank"
           rel="noreferrer"
         >
-          <Stack gap={1} align="center">
+          <Stack gap={2} align="center">
             <Text>More about teams and workspaces</Text>
-            <Icon name="external" size={16} />
+            <Icon name="external" size={14} />
           </Stack>
         </Link>
       </Stack>
@@ -220,8 +220,18 @@ const JoinWorkspace: React.FC = () => {
   if (eligibleWorkspace) {
     return (
       <>
-        <Text>or</Text>
-        <div>
+        <Text css={{ textAlign: 'center' }}>or</Text>
+        <Stack
+          direction="vertical"
+          gap={4}
+          css={{
+            background: '#1A1A1A',
+            padding: 18,
+            marginLeft: -18,
+            marginRight: -18,
+            borderRadius: 4,
+          }}
+        >
           <Text
             margin={0}
             as="h1"
@@ -232,7 +242,10 @@ const JoinWorkspace: React.FC = () => {
           >
             You have been invited to join the {eligibleWorkspace.name} workspace
           </Text>
-          <p>Join the {eligibleWorkspace.name} workspace</p>
+          <p>
+            Your email matches the domain of the {eligibleWorkspace.name}{' '}
+            workspace.
+          </p>
 
           <Button
             loading={loading}
@@ -242,7 +255,7 @@ const JoinWorkspace: React.FC = () => {
           >
             Join workspace
           </Button>
-        </div>
+        </Stack>
       </>
     );
   }
