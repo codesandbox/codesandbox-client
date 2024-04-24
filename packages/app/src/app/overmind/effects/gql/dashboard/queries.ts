@@ -41,6 +41,8 @@ import {
   GetFullGitHubOrganizationReposQueryVariables,
   GetSandboxWithTemplateQuery,
   GetSandboxWithTemplateQueryVariables,
+  GetEligibleWorkspacesQuery,
+  GetEligibleWorkspacesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -395,6 +397,22 @@ export const getSandboxWithTemplate: Query<
       customTemplate {
         id
         iconUrl
+      }
+    }
+  }
+`;
+
+export const getEligibleWorkspaces: Query<
+  GetEligibleWorkspacesQuery,
+  GetEligibleWorkspacesQueryVariables
+> = gql`
+  query GetEligibleWorkspaces {
+    me {
+      eligibleWorkspaces {
+        id
+        avatarUrl
+        name
+        shortid
       }
     }
   }
