@@ -61,6 +61,8 @@ import {
   UpdateProjectVmTierMutation,
   UpdateUsageSubscriptionMutationVariables,
   UpdateUsageSubscriptionMutation,
+  JoinEligibleWorkspaceMutation,
+  JoinEligibleWorkspaceMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -473,6 +475,17 @@ export const updateProjectVmTier: Query<
       cpu
       memory
       storage
+    }
+  }
+`;
+
+export const joinEligibleWorkspace: Query<
+  JoinEligibleWorkspaceMutation,
+  JoinEligibleWorkspaceMutationVariables
+> = gql`
+  mutation JoinEligibleWorkspace($workspaceId: ID!) {
+    joinEligibleWorkspace(workspaceId: $workspaceId) {
+      id
     }
   }
 `;

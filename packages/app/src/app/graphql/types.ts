@@ -172,7 +172,7 @@ export type RootQueryType = {
    * For a list of all workspaces the user is eligible to join, see `query eligibleWorkspaces`.
    * The ID returned by this query can be used in `mutation joinEligibleWorkspace`.
    */
-  sandboxEligibleWorkspace: Maybe<Scalars['UUID4']>;
+  sandboxEligibleWorkspace: Maybe<TeamPreview>;
   /** A team from an invite token */
   teamByToken: Maybe<TeamPreview>;
 };
@@ -5643,6 +5643,15 @@ export type UpdateProjectVmTierMutation = {
     memory: number;
     storage: number;
   };
+};
+
+export type JoinEligibleWorkspaceMutationVariables = Exact<{
+  workspaceId: Scalars['ID'];
+}>;
+
+export type JoinEligibleWorkspaceMutation = {
+  __typename?: 'RootMutationType';
+  joinEligibleWorkspace: { __typename?: 'Team'; id: any };
 };
 
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{

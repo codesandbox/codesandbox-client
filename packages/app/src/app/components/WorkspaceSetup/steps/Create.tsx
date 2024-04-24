@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useActions, useAppState } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
+import { useHistory } from 'react-router-dom';
 import {
   Stack,
   Button,
@@ -165,6 +166,9 @@ export const Create: React.FC<StepProps> = ({
             Next
           </Button>
         </Stack>
+
+        <JoinWorkspace />
+
         <Link
           href={docsUrl('/learn/plans/workspace')}
           target="_blank"
@@ -178,4 +182,70 @@ export const Create: React.FC<StepProps> = ({
       </Stack>
     </AnimatedStep>
   );
+};
+
+const JoinWorkspace: React.FC = () => {
+  const effects = useEffects();
+  const actions = useActions();
+  const [eligibleWorkspace, setEligibleWorkspace] = useState<{
+    id: string;
+    name: string;
+  }>(null);
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    effects.gql.queries
+      .getEligibleWorkspaces({})
+      .then(result => {
+        setEligibleWorkspace(result.me.eligibleWorkspaces[0]);
+      })
+      .catch(e => {});
+  }, []);
+
+  const joinWorkspace = () => {
+    setLoading(true);
+    effects.gql.mutations
+      .joinEligibleWorkspace({
+        workspaceId: eligibleWorkspace.id,
+      })
+      .then(async () => {
+        await actions.setActiveTeam({ id: eligibleWorkspace.id });
+        await actions.dashboard.getTeams();
+
+        history.push(`/dashboard/recent?workspace=${eligibleWorkspace.id}`);
+      });
+  };
+
+  if (eligibleWorkspace) {
+    return (
+      <>
+        <Text>or</Text>
+        <div>
+          <Text
+            margin={0}
+            as="h1"
+            color="#fff"
+            weight="medium"
+            fontFamily="everett"
+            size={24}
+          >
+            You have been invited to join the {eligibleWorkspace.name} workspace
+          </Text>
+          <p>Join the {eligibleWorkspace.name} workspace</p>
+
+          <Button
+            loading={loading}
+            type="submit"
+            size="large"
+            onClick={joinWorkspace}
+          >
+            Join workspace
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  return null;
 };
