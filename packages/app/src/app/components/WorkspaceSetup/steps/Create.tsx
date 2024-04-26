@@ -35,6 +35,7 @@ export const Create: React.FC<StepProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const [disableButton, setDisableButton] = useState(false);
 
   const urlWorkspaceId = getQueryParam('workspace');
   const teamIsAlreadyCreated = !!urlWorkspaceId;
@@ -144,6 +145,7 @@ export const Create: React.FC<StepProps> = ({
                 defaultValue={teamIsAlreadyCreated ? activeTeamInfo.name : ''}
                 onChange={handleInput}
                 ref={inputRef}
+                disabled={disableButton || loading}
               />
 
               {error && (
@@ -159,7 +161,7 @@ export const Create: React.FC<StepProps> = ({
 
           <Button
             loading={loading}
-            disabled={loading || !!error}
+            disabled={disableButton || loading || !!error}
             type="submit"
             size="large"
           >
@@ -167,7 +169,7 @@ export const Create: React.FC<StepProps> = ({
           </Button>
         </Stack>
 
-        <JoinWorkspace />
+        <JoinWorkspace handleParentSubmitButton={setDisableButton} />
 
         <Link
           href={docsUrl('/learn/plans/workspace')}
@@ -184,7 +186,10 @@ export const Create: React.FC<StepProps> = ({
   );
 };
 
-const JoinWorkspace: React.FC = () => {
+const JoinWorkspace: React.FC<{
+  handleParentSubmitButton: (bool: boolean) => void;
+}> = ({ handleParentSubmitButton }) => {
+  const [hidden, setHidden] = useState(true);
   const effects = useEffects();
   const actions = useActions();
   const [eligibleWorkspace, setEligibleWorkspace] = useState<{
@@ -198,6 +203,7 @@ const JoinWorkspace: React.FC = () => {
     effects.gql.queries
       .getEligibleWorkspaces({})
       .then(result => {
+        handleParentSubmitButton(true);
         setEligibleWorkspace(result.me.eligibleWorkspaces[0]);
       })
       .catch(e => {});
@@ -217,13 +223,12 @@ const JoinWorkspace: React.FC = () => {
       });
   };
 
-  if (eligibleWorkspace) {
+  if (eligibleWorkspace && hidden) {
     return (
       <>
         <Text css={{ textAlign: 'center' }}>or</Text>
         <Stack
           direction="vertical"
-          gap={4}
           css={{
             background: '#1A1A1A',
             padding: 18,
@@ -247,14 +252,32 @@ const JoinWorkspace: React.FC = () => {
             workspace.
           </p>
 
-          <Button
-            loading={loading}
-            type="submit"
-            size="large"
-            onClick={joinWorkspace}
-          >
-            Join workspace
-          </Button>
+          <Stack gap={4} css={{ marginTop: 32 }}>
+            <Button
+              autoWidth
+              loading={loading}
+              type="submit"
+              size="large"
+              onClick={joinWorkspace}
+              css={{ flex: 1 }}
+            >
+              Join workspace
+            </Button>
+
+            <Button
+              autoWidth
+              type="submit"
+              size="large"
+              css={{ flex: 1 }}
+              variant="secondary"
+              onClick={() => {
+                setHidden(false);
+                handleParentSubmitButton(false);
+              }}
+            >
+              Reject
+            </Button>
+          </Stack>
         </Stack>
       </>
     );
