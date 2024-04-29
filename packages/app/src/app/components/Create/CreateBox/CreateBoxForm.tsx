@@ -8,15 +8,12 @@ import {
   Icon,
   Select,
 } from '@codesandbox/components';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { PATHED_SANDBOXES_FOLDER_QUERY } from 'app/pages/Dashboard/queries';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { Link } from 'react-router-dom';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useQuery } from '@apollo/react-hooks';
 import {
@@ -48,21 +45,14 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
-  const {
-    hasReachedSandboxLimit,
-    hasReachedDraftLimit,
-    highestAllowedVMTier,
-  } = useWorkspaceLimits();
-  const { isAdmin } = useWorkspaceAuthorization();
+  const { hasReachedSandboxLimit, highestAllowedVMTier } = useWorkspaceLimits();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isFree } = useWorkspaceSubscription();
   const isDraft = collectionId === undefined;
-  const canCreateDraft = !hasReachedDraftLimit;
   const canCreateInFolders = type === 'devbox' || !hasReachedSandboxLimit;
-  const canCreate =
-    (isDraft && canCreateDraft) || (!isDraft && canCreateInFolders);
+  const canCreate = !isDraft && canCreateInFolders;
 
   const minimumPrivacy = Math.max(
     initialPrivacy ?? 2,
@@ -256,46 +246,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               </Stack>
             </Stack>
 
-            {isDraft && canCreateDraft && (
+            {isDraft && (
               <Stack gap={1} css={{ color: '#A8BFFA' }}>
                 <Icon name="circleBang" />
                 <Text size={3}>
                   Drafts are private and only visible to you.
-                </Text>
-              </Stack>
-            )}
-
-            {isDraft && !canCreateDraft && (
-              <Stack gap={1} css={{ color: '#F5A8A8' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>
-                  Your{' '}
-                  <Link
-                    css={{ color: 'inherit' }}
-                    onClick={onClose}
-                    to={dashboard.drafts(activeTeam)}
-                  >
-                    Drafts folder
-                  </Link>{' '}
-                  is full. Delete unneeded drafts, or{' '}
-                  {isAdmin ? (
-                    <>
-                      <Link
-                        css={{ color: 'inherit' }}
-                        to={dashboard.upgradeUrl({
-                          workspaceId: activeTeam,
-                          source: 'create_draft_limit',
-                        })}
-                        onClick={onClose}
-                      >
-                        upgrade to Pro
-                      </Link>{' '}
-                      for unlimited drafts
-                    </>
-                  ) : (
-                    'ask an admin to upgrade to Pro for unlimited drafts'
-                  )}
-                  .
                 </Text>
               </Stack>
             )}
