@@ -47,8 +47,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     applyUbbRestrictions &&
     usage.privateSandboxesQuantity >= limits.includedPrivateSandboxes;
 
-  console.log(usage.privateSandboxesQuantity, limits.includedPrivateSandboxes);
-
   const highestAllowedVMTier = limits.includedVmTier;
 
   return {

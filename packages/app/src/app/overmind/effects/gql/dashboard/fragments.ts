@@ -161,6 +161,16 @@ export const teamFragmentDashboard = gql`
       ubbBeta
       friendOfCsb
     }
+
+    limits {
+      includedPublicSandboxes
+      includedPrivateSandboxes
+    }
+
+    usage {
+      publicSandboxesQuantity
+      privateSandboxesQuantity
+    }
   }
 `;
 

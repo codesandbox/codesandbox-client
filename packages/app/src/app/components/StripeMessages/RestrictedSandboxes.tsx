@@ -37,7 +37,7 @@ export const RestrictedSandboxes = () => {
     return (
       <MessageStripe variant="warning" justify="space-between">
         You reached the maximum amount of private Sandboxes in this workspace.
-        Upgrade to Pro to create more shareable Sandboxes.
+        Upgrade to Pro to create more private Sandboxes.
         <MessageStripe.Action
           as="a"
           href={upgradeUrl({

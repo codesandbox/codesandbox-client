@@ -4732,6 +4732,16 @@ export type TeamFragmentDashboardFragment = {
     ubbBeta: boolean;
     friendOfCsb: boolean;
   };
+  limits: {
+    __typename?: 'TeamLimits';
+    includedPublicSandboxes: number;
+    includedPrivateSandboxes: number;
+  };
+  usage: {
+    __typename?: 'TeamUsage';
+    publicSandboxesQuantity: number;
+    privateSandboxesQuantity: number;
+  };
 };
 
 export type CurrentTeamInfoFragmentFragment = {
@@ -5019,6 +5029,16 @@ export type _CreateTeamMutation = {
       ubbBeta: boolean;
       friendOfCsb: boolean;
     };
+    limits: {
+      __typename?: 'TeamLimits';
+      includedPublicSandboxes: number;
+      includedPrivateSandboxes: number;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      publicSandboxesQuantity: number;
+      privateSandboxesQuantity: number;
+    };
   };
 };
 
@@ -5073,6 +5093,7 @@ export type AddToFolderMutationVariables = Exact<{
   collectionPath: InputMaybe<Scalars['String']>;
   sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
   teamId: InputMaybe<Scalars['UUID4']>;
+  privacy: InputMaybe<Scalars['Int']>;
 }>;
 
 export type AddToFolderMutation = {
@@ -5381,6 +5402,16 @@ export type _AcceptTeamInvitationMutation = {
       ubbBeta: boolean;
       friendOfCsb: boolean;
     };
+    limits: {
+      __typename?: 'TeamLimits';
+      includedPublicSandboxes: number;
+      includedPrivateSandboxes: number;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      publicSandboxesQuantity: number;
+      privateSandboxesQuantity: number;
+    };
   };
 };
 
@@ -5464,6 +5495,16 @@ export type _SetTeamNameMutation = {
       __typename?: 'TeamFeatureFlags';
       ubbBeta: boolean;
       friendOfCsb: boolean;
+    };
+    limits: {
+      __typename?: 'TeamLimits';
+      includedPublicSandboxes: number;
+      includedPrivateSandboxes: number;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      publicSandboxesQuantity: number;
+      privateSandboxesQuantity: number;
     };
   };
 };
@@ -6049,6 +6090,16 @@ export type AllTeamsQuery = {
         __typename?: 'TeamFeatureFlags';
         ubbBeta: boolean;
         friendOfCsb: boolean;
+      };
+      limits: {
+        __typename?: 'TeamLimits';
+        includedPublicSandboxes: number;
+        includedPrivateSandboxes: number;
+      };
+      usage: {
+        __typename?: 'TeamUsage';
+        publicSandboxesQuantity: number;
+        privateSandboxesQuantity: number;
       };
     }>;
   } | null;

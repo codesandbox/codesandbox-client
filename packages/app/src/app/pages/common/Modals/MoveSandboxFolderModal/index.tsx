@@ -20,13 +20,25 @@ import { DirectoryPicker } from './DirectoryPicker';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const { dashboard, refetchSandboxInfo, modals: modalsActions } = useActions();
-  const { activeTeam, modals, activeTeamInfo } = useAppState();
+  const {
+    activeTeam,
+    modals,
+    activeTeamInfo,
+    dashboard: { teams },
+  } = useAppState();
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const defaultPath = modals.moveSandboxModal.defaultOpenedPath ?? '/';
   const [path, setPath] = useState<string | null>(defaultPath);
   const [teamId, setTeamId] = useState(activeTeam);
   const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
+
+  const minimumPrivacy = Math.max(
+    activeTeamInfo?.settings.minimumPrivacy ?? 0
+  ) as PrivacyLevel;
+
+  const [privacy, setPrivacy] = useState<PrivacyLevel>(minimumPrivacy);
+  const isDraft = path === null;
 
   const onWorkspaceSelect = (newTeamId: string) => {
     track('Dashboard Move Modal - Workspace Select', {
@@ -45,9 +57,11 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
         sandboxIds: modals.moveSandboxModal.sandboxIds,
         collectionPath: path,
         teamId,
+        privacy: isDraft ? undefined : privacy,
       })
       .then(() => {
         refetchSandboxInfo();
+        dashboard.getTeams(); // refetch teams' limits and usage
 
         setLoading(false);
         modalsActions.moveSandboxModal.close();
@@ -61,17 +75,17 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
       });
   };
 
+  const currentTeam = teams.find(item => item.id === teamId);
+  const hasReachedPrivateSandboxLimit =
+    !currentTeam.featureFlags.friendOfCsb &&
+    currentTeam.usage.privateSandboxesQuantity >=
+      currentTeam.limits.includedPrivateSandboxes;
+  const limitError = privacy === 2 && hasReachedPrivateSandboxLimit;
+
   const onSelect = ({ teamId: newTeamId, path: newPath }) => {
     setTeamId(newTeamId);
     setPath(newPath);
   };
-
-  const minimumPrivacy = Math.max(
-    activeTeamInfo?.settings.minimumPrivacy ?? 0
-  ) as PrivacyLevel;
-
-  const [permission, setPermission] = useState<PrivacyLevel>(minimumPrivacy);
-  const isDraft = path === null;
 
   const renderSubmitLabel = () => {
     if (loading) return 'Moving Sandbox...';
@@ -80,8 +94,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
 
     return 'Move to Folder';
   };
-
-  console.log(path, defaultPath);
 
   return (
     <ThemeProvider>
@@ -134,21 +146,21 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                 icon={
                   isDraft
                     ? PRIVACY_OPTIONS[2].icon
-                    : PRIVACY_OPTIONS[permission].icon
+                    : PRIVACY_OPTIONS[privacy].icon
                 }
-                defaultValue={permission}
+                defaultValue={privacy}
                 onChange={({ target: { value } }) => {
                   if (value === 'DRAFT') {
                     setPath(null);
-                    setPermission(2);
+                    setPrivacy(2);
                   } else {
-                    setPermission(parseInt(value, 10) as 0 | 1 | 2);
+                    setPrivacy(parseInt(value, 10) as 0 | 1 | 2);
                     if (path === null) {
                       setPath(defaultPath);
                     }
                   }
                 }}
-                value={isDraft ? 'DRAFT' : permission}
+                value={isDraft ? 'DRAFT' : privacy}
               >
                 <option value={0}>{PRIVACY_OPTIONS[0].description}</option>
                 <option value={1}>{PRIVACY_OPTIONS[1].description}</option>
@@ -156,6 +168,16 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                 <option value="DRAFT">Draft (only you have access)</option>
               </Select>
             </Stack>
+
+            {limitError && (
+              <Stack gap={1} css={{ color: '#F5A8A8' }}>
+                <Icon name="circleBang" />
+                <Text size={3}>
+                  You reached the maximum amount of private Sandboxes in this
+                  workspace.
+                </Text>
+              </Stack>
+            )}
 
             {!isDraft && (
               <Stack direction="vertical" gap={2}>
@@ -194,7 +216,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
 
               <Button
                 css={css({ width: 'auto' })}
-                disabled={loading}
+                disabled={limitError || loading}
                 onClick={handleMove}
               >
                 {renderSubmitLabel()}

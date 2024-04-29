@@ -20,6 +20,7 @@ import {
 
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
+import { PrivacyLevel } from 'app/components/Create/utils/types';
 
 export const internal = internalActions;
 
@@ -707,6 +708,7 @@ export const recoverSandboxes = async (
       // only way to pass, null is a value in the BE
       // @ts-ignore
       teamId: state.activeTeam || undefined,
+      privacy: undefined,
     });
   } catch (error) {
     state.dashboard.sandboxes.DELETED = [...oldDeleted];
@@ -809,11 +811,13 @@ export const addSandboxesToFolder = async (
     collectionPath,
     teamId = state.activeTeam,
     deleteFromCurrentPath = true,
+    privacy,
   }: {
     sandboxIds: string[];
     collectionPath: string | null;
     teamId?: string | null;
     deleteFromCurrentPath?: boolean;
+    privacy?: PrivacyLevel;
   }
 ) => {
   effects.analytics.track('Dashboard - Moved Sandboxes', {
@@ -838,6 +842,7 @@ export const addSandboxesToFolder = async (
       sandboxIds,
       collectionPath,
       teamId,
+      privacy,
     });
 
     if (deleteFromCurrentPath) {

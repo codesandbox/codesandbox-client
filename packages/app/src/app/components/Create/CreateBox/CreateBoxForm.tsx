@@ -259,8 +259,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               <Stack gap={1} css={{ color: '#F5A8A8' }}>
                 <Icon name="circleBang" />
                 <Text size={3}>
-                  You reached the maximum amount of shareable Sandboxes in this
-                  workspace.
+                  TODO You reached the maximum amount of shareable Sandboxes in
+                  this workspace.
                 </Text>
               </Stack>
             )}
