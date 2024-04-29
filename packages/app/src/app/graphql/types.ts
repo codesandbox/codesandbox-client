@@ -155,8 +155,24 @@ export type RootQueryType = {
    * ```
    */
   recentTeamsByRepository: Array<TeamPreview>;
-  /** Get a sandbox */
+  /**
+   * Get a sandbox by its (short) ID
+   *
+   * Requires the current user have read authorization (or that the sandbox is public). Otherwise
+   * returns an error (`"unauthorized"`).
+   */
   sandbox: Maybe<Sandbox>;
+  /**
+   * Returns a sandbox's team ID if the current user is eligible to join that workspace
+   *
+   * This query is designed for use in 404 experience where the current user does not have access
+   * to the resource but *might* have access if they accept an open invitation to its workspace.
+   * Returns null if no such open invitation exists, or an error if no user is authenticated.
+   *
+   * For a list of all workspaces the user is eligible to join, see `query eligibleWorkspaces`.
+   * The ID returned by this query can be used in `mutation joinEligibleWorkspace`.
+   */
+  sandboxEligibleWorkspace: Maybe<TeamPreview>;
   /** A team from an invite token */
   teamByToken: Maybe<TeamPreview>;
 };
@@ -224,6 +240,10 @@ export type RootQueryTypeRecentTeamsByRepositoryArgs = {
 };
 
 export type RootQueryTypeSandboxArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootQueryTypeSandboxEligibleWorkspaceArgs = {
   sandboxId: Scalars['ID'];
 };
 
@@ -390,6 +410,8 @@ export type Team = {
   legacy: Scalars['Boolean'];
   limits: TeamLimits;
   members: Array<TeamMember>;
+  /** Additional user-provided metadata about the workspace */
+  metadata: TeamMetadata;
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
   /**
@@ -494,7 +516,11 @@ export type TeamLimits = {
   includedDrafts: Scalars['Int'];
   /** Number of workspace members included with the team's subscription, including add-ons */
   includedMembers: Scalars['Int'];
-  /** Number of sandboxes included with the team's subscription, including add-ons */
+  /** Number of included private browser sandboxes with the team's subscription */
+  includedPrivateSandboxes: Scalars['Int'];
+  /** Number of included public browser sandboxes with the team's subscription */
+  includedPublicSandboxes: Scalars['Int'];
+  /** DEPRECATED: Number of sandboxes included with the team's subscription */
   includedSandboxes: Scalars['Int'];
   /** Storage (in GB) included with the team's subscription, including add-ons */
   includedStorage: Scalars['Int'];
@@ -533,6 +559,13 @@ export type TeamMember = {
   id: Scalars['UUID4'];
   name: Maybe<Scalars['String']>;
   username: Scalars['String'];
+};
+
+/** Additional user-provided metadata about a workspace */
+export type TeamMetadata = {
+  __typename?: 'TeamMetadata';
+  /** Use-cases for the workspace provided during creation */
+  useCases: Array<Scalars['String']>;
 };
 
 /** A private package registry */
@@ -2071,6 +2104,8 @@ export type RootMutationType = {
   setTeamDescription: Team;
   /** Set user-editable limits for the workspace */
   setTeamLimits: Scalars['String'];
+  /** Set user-provided metadata about the workspace */
+  setTeamMetadata: Team;
   /** Set minimum privacy level for workspace */
   setTeamMinimumPrivacy: WorkspaceSandboxSettings;
   /** Set the name of the team */
@@ -2162,12 +2197,14 @@ export type RootMutationTypeAddSandboxesToAlbumArgs = {
 
 export type RootMutationTypeAddToCollectionArgs = {
   collectionPath: Scalars['String'];
+  privacy: InputMaybe<Scalars['Int']>;
   sandboxIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 export type RootMutationTypeAddToCollectionOrTeamArgs = {
   collectionPath: InputMaybe<Scalars['String']>;
+  privacy: InputMaybe<Scalars['Int']>;
   sandboxIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   teamId: InputMaybe<Scalars['UUID4']>;
 };
@@ -2595,6 +2632,11 @@ export type RootMutationTypeSetTeamLimitsArgs = {
   teamId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeSetTeamMetadataArgs = {
+  metadata: TeamMetadataInput;
+  teamId: Scalars['UUID4'];
+};
+
 export type RootMutationTypeSetTeamMinimumPrivacyArgs = {
   minimumPrivacy: Scalars['Int'];
   teamId: Scalars['UUID4'];
@@ -2810,6 +2852,12 @@ export type BillingDetails = {
   amount: Scalars['Int'];
   currency: Scalars['String'];
   date: Scalars['String'];
+};
+
+/** Additional user-provided metadata about a workspace */
+export type TeamMetadataInput = {
+  /** Use-cases for the workspace */
+  useCases: Array<Scalars['String']>;
 };
 
 export type RootSubscriptionType = {
@@ -4487,7 +4535,6 @@ export type SandboxFragmentDashboardFragment = {
   viewCount: number;
   likeCount: number;
   isV2: boolean;
-  draft: boolean;
   restricted: boolean;
   authorId: any | null;
   teamId: any | null;
@@ -4530,7 +4577,6 @@ export type RepoFragmentDashboardFragment = {
   viewCount: number;
   likeCount: number;
   isV2: boolean;
-  draft: boolean;
   restricted: boolean;
   authorId: any | null;
   teamId: any | null;
@@ -4601,7 +4647,6 @@ export type TemplateFragmentDashboardFragment = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
-    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -4781,12 +4826,18 @@ export type CurrentTeamInfoFragmentFragment = {
   limits: {
     __typename?: 'TeamLimits';
     includedCredits: number;
-    includedSandboxes: number;
-    includedDrafts: number;
     includedVmTier: number;
     onDemandCreditLimit: number | null;
+    includedPublicSandboxes: number;
+    includedPrivateSandboxes: number;
   };
-  usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
+  usage: {
+    __typename?: 'TeamUsage';
+    sandboxes: number;
+    credits: number;
+    publicSandboxesQuantity: number;
+    privateSandboxesQuantity: number;
+  };
   featureFlags: {
     __typename?: 'TeamFeatureFlags';
     ubbBeta: boolean;
@@ -5041,7 +5092,6 @@ export type AddToFolderMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
-    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5090,7 +5140,6 @@ export type MoveToTrashMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
-    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5140,7 +5189,6 @@ export type ChangePrivacyMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
-    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5190,7 +5238,6 @@ export type ChangeFrozenMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
-    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5240,7 +5287,6 @@ export type _RenameSandboxMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
-    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5631,7 +5677,6 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
-        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5695,7 +5740,6 @@ export type SandboxesByPathQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
-        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5751,7 +5795,6 @@ export type TeamDraftsQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
-        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5824,7 +5867,6 @@ export type GetTeamReposQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
-        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5903,7 +5945,6 @@ export type TeamTemplatesQuery = {
           viewCount: number;
           likeCount: number;
           isV2: boolean;
-          draft: boolean;
           restricted: boolean;
           authorId: any | null;
           teamId: any | null;
@@ -6028,7 +6069,6 @@ export type _SearchTeamSandboxesQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
-        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -6082,7 +6122,6 @@ export type RecentlyAccessedSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
-      draft: boolean;
       restricted: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6165,7 +6204,6 @@ export type SharedWithMeSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
-      draft: boolean;
       restricted: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6294,12 +6332,18 @@ export type GetTeamQuery = {
       limits: {
         __typename?: 'TeamLimits';
         includedCredits: number;
-        includedSandboxes: number;
-        includedDrafts: number;
         includedVmTier: number;
         onDemandCreditLimit: number | null;
+        includedPublicSandboxes: number;
+        includedPrivateSandboxes: number;
       };
-      usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
+      usage: {
+        __typename?: 'TeamUsage';
+        sandboxes: number;
+        credits: number;
+        publicSandboxesQuantity: number;
+        privateSandboxesQuantity: number;
+      };
       featureFlags: {
         __typename?: 'TeamFeatureFlags';
         ubbBeta: boolean;
@@ -6730,7 +6774,6 @@ export type TeamSidebarDataQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
-        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;

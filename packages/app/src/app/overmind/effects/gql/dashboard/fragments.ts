@@ -18,7 +18,6 @@ export const sandboxFragmentDashboard = gql`
     viewCount
     likeCount
     isV2
-    draft
     restricted
 
     source {
@@ -253,15 +252,17 @@ export const currentTeamInfoFragment = gql`
 
     limits {
       includedCredits
-      includedSandboxes
-      includedDrafts
       includedVmTier
       onDemandCreditLimit
+      includedPublicSandboxes
+      includedPrivateSandboxes
     }
 
     usage {
       sandboxes
       credits
+      publicSandboxesQuantity
+      privateSandboxesQuantity
     }
 
     featureFlags {
