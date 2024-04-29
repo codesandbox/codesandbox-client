@@ -4535,6 +4535,7 @@ export type SandboxFragmentDashboardFragment = {
   viewCount: number;
   likeCount: number;
   isV2: boolean;
+  draft: boolean;
   restricted: boolean;
   authorId: any | null;
   teamId: any | null;
@@ -4577,6 +4578,7 @@ export type RepoFragmentDashboardFragment = {
   viewCount: number;
   likeCount: number;
   isV2: boolean;
+  draft: boolean;
   restricted: boolean;
   authorId: any | null;
   teamId: any | null;
@@ -4647,6 +4649,7 @@ export type TemplateFragmentDashboardFragment = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5092,6 +5095,7 @@ export type AddToFolderMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5140,6 +5144,7 @@ export type MoveToTrashMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5189,6 +5194,7 @@ export type ChangePrivacyMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5238,6 +5244,7 @@ export type ChangeFrozenMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5287,6 +5294,7 @@ export type _RenameSandboxMutation = {
     viewCount: number;
     likeCount: number;
     isV2: boolean;
+    draft: boolean;
     restricted: boolean;
     authorId: any | null;
     teamId: any | null;
@@ -5677,6 +5685,7 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5740,6 +5749,7 @@ export type SandboxesByPathQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5795,6 +5805,7 @@ export type TeamDraftsQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5867,6 +5878,7 @@ export type GetTeamReposQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -5945,6 +5957,7 @@ export type TeamTemplatesQuery = {
           viewCount: number;
           likeCount: number;
           isV2: boolean;
+          draft: boolean;
           restricted: boolean;
           authorId: any | null;
           teamId: any | null;
@@ -6069,6 +6082,7 @@ export type _SearchTeamSandboxesQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;
@@ -6122,6 +6136,7 @@ export type RecentlyAccessedSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
+      draft: boolean;
       restricted: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6204,6 +6219,7 @@ export type SharedWithMeSandboxesQuery = {
       viewCount: number;
       likeCount: number;
       isV2: boolean;
+      draft: boolean;
       restricted: boolean;
       authorId: any | null;
       teamId: any | null;
@@ -6774,6 +6790,7 @@ export type TeamSidebarDataQuery = {
         viewCount: number;
         likeCount: number;
         isV2: boolean;
+        draft: boolean;
         restricted: boolean;
         authorId: any | null;
         teamId: any | null;

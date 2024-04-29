@@ -38,7 +38,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const history = useHistory();
   const location = useLocation();
   const { userRole, isTeamAdmin, isTeamViewer } = useWorkspaceAuthorization();
-  const { isFrozen } = useWorkspaceLimits();
+  const { isFrozen, hasReachedPrivateSandboxLimit } = useWorkspaceLimits();
 
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
   const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
@@ -241,6 +241,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )}
           {sandbox.privacy !== 2 && (
             <MenuItem
+              disabled={hasReachedPrivateSandboxLimit}
               onSelect={() =>
                 actions.dashboard.changeSandboxesPrivacy({
                   sandboxIds: [sandbox.id],

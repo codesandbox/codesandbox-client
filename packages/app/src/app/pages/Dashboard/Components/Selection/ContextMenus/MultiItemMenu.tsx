@@ -11,6 +11,7 @@ import {
   DashboardSyncedRepo,
   PageTypes,
 } from '../../../types';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
 interface IMultiMenuProps {
   selectedItems: Array<
@@ -24,6 +25,7 @@ type MenuAction =
   | {
       label: string;
       fn: () => void;
+      disabled?: boolean;
     };
 
 export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
@@ -33,6 +35,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const { visible, setVisibility, position } = React.useContext(Context);
   const location = useLocation();
   const { isAdmin } = useWorkspaceAuthorization();
+  const { hasReachedPrivateSandboxLimit } = useWorkspaceLimits();
 
   const isInDrafts = location.pathname.includes('/drafts');
 
@@ -149,6 +152,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const MAKE_PRIVATE = {
     label: 'Make private',
     fn: changeItemPrivacy(2),
+    disabled: hasReachedPrivateSandboxLimit,
   };
   const PRIVACY_ITEMS = isInDrafts
     ? []
@@ -310,7 +314,11 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
         option === 'divider' ? (
           <Menu.Divider />
         ) : (
-          <MenuItem key={option.label} onSelect={option.fn}>
+          <MenuItem
+            key={option.label}
+            onSelect={option.fn}
+            disabled={option.disabled}
+          >
             {option.label}
           </MenuItem>
         )

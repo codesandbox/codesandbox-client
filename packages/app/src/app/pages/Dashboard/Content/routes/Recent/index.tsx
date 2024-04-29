@@ -20,7 +20,7 @@ export const Recent = () => {
     sidebar,
     dashboard: { sandboxes },
   } = useAppState();
-  const { isFrozen, hasReachedSandboxLimit } = useWorkspaceLimits();
+  const { isFrozen, hasReachedPrivateSandboxLimit } = useWorkspaceLimits();
   const {
     dashboard: { getPage },
   } = useActions();
@@ -108,7 +108,7 @@ export const Recent = () => {
         <title>Recent - CodeSandbox</title>
       </Helmet>
 
-      {hasReachedSandboxLimit && <RestrictedSandboxes />}
+      {hasReachedPrivateSandboxLimit && <RestrictedSandboxes />}
       <TopBanner />
 
       <ContentSection title="Recent">
