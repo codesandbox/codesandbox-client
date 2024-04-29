@@ -262,7 +262,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               <Stack gap={1} css={{ color: '#F5A8A8' }}>
                 <Icon name="circleBang" />
                 <Text size={3}>
-                  You have reached the free limit of 5 {label}.
+                  You have reached the free limit of 5 private {label}.
                 </Text>
               </Stack>
             )}
