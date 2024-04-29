@@ -45,14 +45,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
-  const { hasReachedSandboxLimit, highestAllowedVMTier } = useWorkspaceLimits();
+  const {
+    hasReachedPrivateSandboxLimit,
+    highestAllowedVMTier,
+  } = useWorkspaceLimits();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isFree } = useWorkspaceSubscription();
   const isDraft = collectionId === undefined;
-  const canCreateInFolders = type === 'devbox' || !hasReachedSandboxLimit;
-  const canCreate = !isDraft && canCreateInFolders;
 
   const minimumPrivacy = Math.max(
     initialPrivacy ?? 2,
@@ -68,6 +69,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const defaultTier = isFree ? 1 : 2;
   const [selectedTier, setSelectedTier] = useState<number>(defaultTier);
   const [allVmTiers, setAllVmTiers] = useState<VMTier[]>([]);
+  const canCreate =
+    isDraft || !(permission === 2 && hasReachedPrivateSandboxLimit);
 
   useEffect(() => {
     if (type === 'devbox') {
@@ -140,7 +143,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         onSubmit({
           name,
           createAs: type,
-          permission,
+          permission: isDraft ? undefined : permission,
           editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
           customVMTier:
             // Only pass customVMTier if user selects something else than the default
@@ -255,12 +258,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               </Stack>
             )}
 
-            {!isDraft && !canCreateInFolders && (
+            {!isDraft && !canCreate && (
               <Stack gap={1} css={{ color: '#F5A8A8' }}>
                 <Icon name="circleBang" />
                 <Text size={3}>
-                  TODO You reached the maximum amount of shareable Sandboxes in
-                  this workspace.
+                  You have reached the free limit of 5 {label}.
                 </Text>
               </Stack>
             )}

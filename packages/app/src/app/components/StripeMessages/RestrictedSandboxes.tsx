@@ -18,8 +18,8 @@ export const RestrictedSandboxes = () => {
   if (isAdmin && isPro) {
     return (
       <MessageStripe variant="warning" justify="space-between">
-        You reached the maximum amount of private Sandboxes in this workspace.
-        Contact us to increase your limit.
+        You have reached the free limit of 5 Sandboxes. Contact us to increase
+        your limit.
         <MessageStripe.Action
           as="a"
           href="mailto:support@codesandbox.io?subject=Sandbox limit on Pro plan"
@@ -36,8 +36,8 @@ export const RestrictedSandboxes = () => {
   if (isAdmin && isFree) {
     return (
       <MessageStripe variant="warning" justify="space-between">
-        You reached the maximum amount of private Sandboxes in this workspace.
-        Upgrade to Pro to create more private Sandboxes.
+        You have reached the free limit of 5 Sandboxes. Upgrade to Pro to create
+        more private Sandboxes.
         <MessageStripe.Action
           as="a"
           href={upgradeUrl({
@@ -57,8 +57,8 @@ export const RestrictedSandboxes = () => {
   if (!isAdmin && isPro) {
     return (
       <MessageStripe variant="warning" justify="space-between">
-        You reached the maximum amount of private Sandboxes in this workspace.
-        Ask your administrator to increase the limit.
+        You have reached the free limit of 5 Sandboxes. Ask your administrator
+        to increase the limit.
       </MessageStripe>
     );
   }
@@ -66,8 +66,8 @@ export const RestrictedSandboxes = () => {
   if (!isAdmin && isFree) {
     return (
       <MessageStripe variant="warning" justify="space-between">
-        You reached the maximum amount of private Sandboxes in this workspace.
-        To increase the limit, ask your administrator to upgrade to Pro.
+        You have reached the free limit of 5 Sandboxes. To increase the limit,
+        ask your administrator to upgrade to Pro.
       </MessageStripe>
     );
   }

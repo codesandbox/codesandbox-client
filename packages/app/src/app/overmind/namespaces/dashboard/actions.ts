@@ -868,7 +868,7 @@ export const addSandboxesToFolder = async (
   } catch (e) {
     if (e.message.includes('SANDBOX_LIMIT')) {
       effects.notificationToast.error(
-        'You reached the maximum amount of shareable Sandboxes in this workspace. Upgrade your plan to add more.'
+        'You have reached the maximum of 5 private Sandboxes in this workspace. Upgrade your plan to add more.'
       );
     } else {
       effects.notificationToast.error(

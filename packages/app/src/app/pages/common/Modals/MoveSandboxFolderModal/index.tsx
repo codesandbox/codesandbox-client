@@ -167,17 +167,16 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                 <option value={2}>{PRIVACY_OPTIONS[2].description}</option>
                 <option value="DRAFT">Draft (only you have access)</option>
               </Select>
-            </Stack>
 
-            {limitError && (
-              <Stack gap={1} css={{ color: '#F5A8A8' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>
-                  You reached the maximum amount of private Sandboxes in this
-                  workspace.
-                </Text>
-              </Stack>
-            )}
+              {limitError && (
+                <Stack gap={1} css={{ color: '#F5A8A8' }}>
+                  <Icon name="circleBang" />
+                  <Text size={3}>
+                    You have reached the free limit of 5 Sandboxes.
+                  </Text>
+                </Stack>
+              )}
+            </Stack>
 
             {!isDraft && (
               <Stack direction="vertical" gap={2}>
