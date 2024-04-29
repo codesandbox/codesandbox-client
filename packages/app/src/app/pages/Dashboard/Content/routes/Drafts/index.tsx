@@ -8,8 +8,6 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 
-import { DraftsLimit } from 'app/components/StripeMessages/DraftsLimit';
-
 export const Drafts = () => {
   const {
     activeTeam,

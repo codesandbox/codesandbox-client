@@ -708,7 +708,7 @@ export const recoverSandboxes = async (
       // only way to pass, null is a value in the BE
       // @ts-ignore
       teamId: state.activeTeam || undefined,
-      privacy: undefined,
+      privacy: null,
     });
   } catch (error) {
     state.dashboard.sandboxes.DELETED = [...oldDeleted];
@@ -817,7 +817,7 @@ export const addSandboxesToFolder = async (
     collectionPath: string | null;
     teamId?: string | null;
     deleteFromCurrentPath?: boolean;
-    privacy?: PrivacyLevel;
+    privacy: PrivacyLevel | null;
   }
 ) => {
   effects.analytics.track('Dashboard - Moved Sandboxes', {
