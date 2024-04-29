@@ -9,20 +9,22 @@ import {
   Element,
   Text,
   ThemeProvider,
+  Select,
+  Icon,
 } from '@codesandbox/components';
 import Modal from 'app/components/Modal';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
+import { PrivacyLevel } from 'app/components/Create/utils/types';
 
 import { DirectoryPicker } from './DirectoryPicker';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const { dashboard, refetchSandboxInfo, modals: modalsActions } = useActions();
-  const { activeTeam, modals } = useAppState();
+  const { activeTeam, modals, activeTeamInfo } = useAppState();
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
-  const [path, setPath] = useState<string | null>(
-    modals.moveSandboxModal.defaultOpenedPath
-  );
+  const defaultPath = modals.moveSandboxModal.defaultOpenedPath ?? '/';
+  const [path, setPath] = useState<string | null>(defaultPath);
   const [teamId, setTeamId] = useState(activeTeam);
   const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
 
@@ -64,6 +66,23 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     setPath(newPath);
   };
 
+  const minimumPrivacy = Math.max(
+    activeTeamInfo?.settings.minimumPrivacy ?? 0
+  ) as PrivacyLevel;
+
+  const [permission, setPermission] = useState<PrivacyLevel>(minimumPrivacy);
+  const isDraft = path === null;
+
+  const renderSubmitLabel = () => {
+    if (loading) return 'Moving Sandbox...';
+    if (isDraft) return 'Move to Draft folder';
+    if (path) return `Move to ${basename(path) || 'root folder'}`;
+
+    return 'Move to Folder';
+  };
+
+  console.log(path, defaultPath);
+
   return (
     <ThemeProvider>
       <Modal
@@ -80,15 +99,22 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
             Move {modals.moveSandboxModal.sandboxIds.length}{' '}
             {modals.moveSandboxModal.sandboxIds.length > 1 ? 'items' : 'item'}
           </Text>
-          <Stack gap={4} direction="vertical">
-            <Stack direction="vertical" gap={4}>
+          <Stack gap={6} direction="vertical">
+            <Stack direction="vertical" gap={2}>
+              <Text size={3} as="label">
+                Workspace
+              </Text>
+
               <Element
-                css={css({
-                  height: 10,
+                css={{
+                  backgroundColor: '#252525',
                   borderRadius: 4,
-                  border: '1px solid',
-                  borderColor: 'sideBar.border',
-                })}
+                  color: '#999999',
+                  border: '1px solid transparent',
+                  '&:hover': {
+                    borderColor: '#9581FF',
+                  },
+                }}
               >
                 <WorkspaceSelect
                   selectedTeamId={teamId}
@@ -97,50 +123,101 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                   filterNonPro
                 />
               </Element>
+            </Stack>
 
-              <Element
-                css={css({
-                  maxHeight: 400,
-                  overflow: 'auto',
-                  border: '1px solid',
-                  borderColor: 'sideBar.border',
-                  borderRadius: 4,
-                })}
+            <Stack direction="vertical" gap={2}>
+              <Text size={3} as="label">
+                Visibility
+              </Text>
+
+              <Select
+                icon={
+                  isDraft
+                    ? PRIVACY_OPTIONS[2].icon
+                    : PRIVACY_OPTIONS[permission].icon
+                }
+                defaultValue={permission}
+                onChange={({ target: { value } }) => {
+                  if (value === 'DRAFT') {
+                    setPath(null);
+                    setPermission(2);
+                  } else {
+                    setPermission(parseInt(value, 10) as 0 | 1 | 2);
+                    if (path === null) {
+                      setPath(defaultPath);
+                    }
+                  }
+                }}
+                value={isDraft ? 'DRAFT' : permission}
               >
-                <DirectoryPicker
-                  currentPath={path}
-                  currentTeamId={teamId}
-                  onSelect={onSelect}
-                />
-              </Element>
+                <option value={0}>{PRIVACY_OPTIONS[0].description}</option>
+                <option value={1}>{PRIVACY_OPTIONS[1].description}</option>
+                <option value={2}>{PRIVACY_OPTIONS[2].description}</option>
+                <option value="DRAFT">Draft (only you have access)</option>
+              </Select>
+            </Stack>
 
-              {error}
-
-              <Stack align="flex-end" gap={2} justify="flex-end">
-                <Button
-                  css={css({ width: 'auto' })}
-                  variant="secondary"
-                  onClick={modalsActions.moveSandboxModal.close}
+            {!isDraft && (
+              <Stack direction="vertical" gap={2}>
+                <Text size={3} as="label">
+                  Folder
+                </Text>
+                <Element
+                  css={css({
+                    maxHeight: 400,
+                    overflow: 'auto',
+                    border: '1px solid',
+                    borderColor: 'sideBar.border',
+                    borderRadius: 4,
+                    padding: '0 0.25rem',
+                  })}
                 >
-                  Cancel
-                </Button>
-
-                {path !== null && (
-                  <Button
-                    css={css({ width: 'auto' })}
-                    disabled={loading}
-                    onClick={handleMove}
-                  >
-                    {loading
-                      ? 'Moving Sandbox...'
-                      : `Move to ${basename(path) || 'root folder'}`}
-                  </Button>
-                )}
+                  <DirectoryPicker
+                    currentPath={path}
+                    currentTeamId={teamId}
+                    onSelect={onSelect}
+                  />
+                </Element>
               </Stack>
+            )}
+
+            {error}
+
+            <Stack align="flex-end" gap={2} justify="flex-end">
+              <Button
+                css={css({ width: 'auto' })}
+                variant="secondary"
+                onClick={modalsActions.moveSandboxModal.close}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                css={css({ width: 'auto' })}
+                disabled={loading}
+                onClick={handleMove}
+              >
+                {renderSubmitLabel()}
+              </Button>
             </Stack>
           </Stack>
         </Stack>
       </Modal>
     </ThemeProvider>
   );
+};
+
+const PRIVACY_OPTIONS = {
+  0: {
+    description: 'Public (everyone can view)',
+    icon: () => <Icon size={12} name="globe" />,
+  },
+  1: {
+    description: 'Unlisted (everyone with the link can view)',
+    icon: () => <Icon size={12} name="link" />,
+  },
+  2: {
+    description: 'Private (only workspace members have access)',
+    icon: () => <Icon size={12} name="lock" />,
+  },
 };

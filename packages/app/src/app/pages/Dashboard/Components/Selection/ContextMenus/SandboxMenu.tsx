@@ -163,19 +163,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork
         </MenuItem>
       ) : null}
-      {hasWriteAccess && isDraft ? (
-        <MenuItem
-          onSelect={() => {
-            actions.dashboard.addSandboxesToFolder({
-              sandboxIds: [item.sandbox.id],
-              collectionPath: '/',
-              teamId: activeTeam,
-            });
-          }}
-        >
-          Move out of Drafts
-        </MenuItem>
-      ) : null}
+
       {hasWriteAccess ? (
         <MenuItem
           onSelect={() => {

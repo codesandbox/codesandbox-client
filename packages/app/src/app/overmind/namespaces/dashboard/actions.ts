@@ -1029,7 +1029,7 @@ export const changeSandboxesPrivacy = async (
     });
   }
 
-  actions.getActiveTeamInfo();
+  await actions.getActiveTeamInfo();
 };
 
 export const deleteWorkspace = async ({ actions, effects, state }: Context) => {

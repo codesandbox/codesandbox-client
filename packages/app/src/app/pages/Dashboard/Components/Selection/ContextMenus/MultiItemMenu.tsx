@@ -3,6 +3,7 @@ import { useEffects, useActions, useAppState } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { useLocation } from 'react-router-dom';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 import {
   DashboardSandbox,
@@ -11,7 +12,6 @@ import {
   DashboardSyncedRepo,
   PageTypes,
 } from '../../../types';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
 interface IMultiMenuProps {
   selectedItems: Array<
@@ -103,14 +103,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
           s => s.sandbox.permissions.preventSandboxLeaving
         )
       ),
-    });
-  };
-
-  const moveOutOfDrafts = () => {
-    actions.dashboard.addSandboxesToFolder({
-      sandboxIds: [...sandboxes].map(s => s.sandbox.id),
-      collectionPath: '/',
-      teamId: activeTeam,
     });
   };
 
@@ -264,14 +256,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     fn: moveToFolder,
   };
 
-  const MOVE_OUT_OF_DRAFTS = {
-    label: 'Move out of Drafts',
-    fn: moveOutOfDrafts,
-  };
-
-  const MOVE_ITEMS = isInDrafts
-    ? [MOVE_OUT_OF_DRAFTS, MOVE_TO_FOLDER]
-    : [MOVE_TO_FOLDER];
+  const MOVE_ITEMS = [MOVE_TO_FOLDER];
 
   let options: MenuAction[] = [];
 
