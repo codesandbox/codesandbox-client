@@ -12,11 +12,10 @@ interface WorkspaceSelectProps {
   disabled?: boolean;
   onSelect: (teamId: string) => void;
   selectedTeamId: string;
-  filterNonPro?: boolean;
 }
 
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
-  ({ disabled, onSelect, selectedTeamId, filterNonPro }) => {
+  ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
     const history = useHistory();
     const { dashboard } = state;
@@ -111,10 +110,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             const isProWorkspace =
               team.subscription?.status === SubscriptionStatus.Active;
 
-            const moveNotAllowed =
-              filterNonPro && !isProWorkspace && !team.featureFlags.friendOfCsb;
-
-            if (team.id !== state.activeTeam && moveNotAllowed) {
+            if (team.id !== state.activeTeam) {
               return null;
             }
 
