@@ -36,6 +36,7 @@ export const Create: React.FC<StepProps> = ({
   const [error, setError] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [disableButton, setDisableButton] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const urlWorkspaceId = getQueryParam('workspace');
   const teamIsAlreadyCreated = !!urlWorkspaceId;
@@ -160,7 +161,7 @@ export const Create: React.FC<StepProps> = ({
           </Stack>
 
           <Button
-            loading={loading}
+            loading={loadingButton || loading}
             disabled={disableButton || loading || !!error}
             type="submit"
             size="large"
@@ -169,7 +170,11 @@ export const Create: React.FC<StepProps> = ({
           </Button>
         </Stack>
 
-        <JoinWorkspace handleParentSubmitButton={setDisableButton} />
+        <JoinWorkspace
+          onStart={() => setLoadingButton(true)}
+          onDidFinish={() => setLoadingButton(false)}
+          handleParentSubmitButton={setDisableButton}
+        />
 
         <Link
           href={docsUrl('/learn/plans/workspace')}
@@ -188,7 +193,9 @@ export const Create: React.FC<StepProps> = ({
 
 const JoinWorkspace: React.FC<{
   handleParentSubmitButton: (bool: boolean) => void;
-}> = ({ handleParentSubmitButton }) => {
+  onStart: () => void;
+  onDidFinish: () => void;
+}> = ({ handleParentSubmitButton, onStart, onDidFinish }) => {
   const [hidden, setHidden] = useState(true);
   const effects = useEffects();
   const actions = useActions();
@@ -200,13 +207,18 @@ const JoinWorkspace: React.FC<{
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    onStart();
+
     effects.gql.queries
       .getEligibleWorkspaces({})
       .then(result => {
-        handleParentSubmitButton(true);
         setEligibleWorkspace(result.me.eligibleWorkspaces[0]);
       })
-      .catch(e => {});
+      .catch(e => {})
+      .finally(() => {
+        handleParentSubmitButton(true);
+        onDidFinish();
+      });
   }, []);
 
   const joinWorkspace = () => {
