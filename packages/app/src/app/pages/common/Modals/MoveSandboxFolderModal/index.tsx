@@ -94,6 +94,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                   selectedTeamId={teamId}
                   disabled={preventSandboxLeaving}
                   onSelect={onWorkspaceSelect}
+                  filterNonPro
                 />
               </Element>
 
