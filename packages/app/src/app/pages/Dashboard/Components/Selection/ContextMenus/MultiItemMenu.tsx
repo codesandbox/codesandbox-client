@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffects, useActions, useAppState } from 'app/overmind';
+import { useEffects, useActions } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { useLocation } from 'react-router-dom';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -30,7 +30,6 @@ type MenuAction =
 
 export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const actions = useActions();
-  const { activeTeam } = useAppState();
   const { notificationToast } = useEffects();
   const { visible, setVisibility, position } = React.useContext(Context);
   const location = useLocation();
