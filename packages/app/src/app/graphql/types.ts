@@ -155,8 +155,24 @@ export type RootQueryType = {
    * ```
    */
   recentTeamsByRepository: Array<TeamPreview>;
-  /** Get a sandbox */
+  /**
+   * Get a sandbox by its (short) ID
+   *
+   * Requires the current user have read authorization (or that the sandbox is public). Otherwise
+   * returns an error (`"unauthorized"`).
+   */
   sandbox: Maybe<Sandbox>;
+  /**
+   * Returns a sandbox's team ID if the current user is eligible to join that workspace
+   *
+   * This query is designed for use in 404 experience where the current user does not have access
+   * to the resource but *might* have access if they accept an open invitation to its workspace.
+   * Returns null if no such open invitation exists, or an error if no user is authenticated.
+   *
+   * For a list of all workspaces the user is eligible to join, see `query eligibleWorkspaces`.
+   * The ID returned by this query can be used in `mutation joinEligibleWorkspace`.
+   */
+  sandboxEligibleWorkspace: Maybe<TeamPreview>;
   /** A team from an invite token */
   teamByToken: Maybe<TeamPreview>;
 };
@@ -224,6 +240,10 @@ export type RootQueryTypeRecentTeamsByRepositoryArgs = {
 };
 
 export type RootQueryTypeSandboxArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootQueryTypeSandboxEligibleWorkspaceArgs = {
   sandboxId: Scalars['ID'];
 };
 
@@ -390,6 +410,8 @@ export type Team = {
   legacy: Scalars['Boolean'];
   limits: TeamLimits;
   members: Array<TeamMember>;
+  /** Additional user-provided metadata about the workspace */
+  metadata: TeamMetadata;
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
   /**
@@ -533,6 +555,13 @@ export type TeamMember = {
   id: Scalars['UUID4'];
   name: Maybe<Scalars['String']>;
   username: Scalars['String'];
+};
+
+/** Additional user-provided metadata about a workspace */
+export type TeamMetadata = {
+  __typename?: 'TeamMetadata';
+  /** Use-cases for the workspace provided during creation */
+  useCases: Array<Scalars['String']>;
 };
 
 /** A private package registry */
@@ -2071,6 +2100,8 @@ export type RootMutationType = {
   setTeamDescription: Team;
   /** Set user-editable limits for the workspace */
   setTeamLimits: Scalars['String'];
+  /** Set user-provided metadata about the workspace */
+  setTeamMetadata: Team;
   /** Set minimum privacy level for workspace */
   setTeamMinimumPrivacy: WorkspaceSandboxSettings;
   /** Set the name of the team */
@@ -2595,6 +2626,11 @@ export type RootMutationTypeSetTeamLimitsArgs = {
   teamId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeSetTeamMetadataArgs = {
+  metadata: TeamMetadataInput;
+  teamId: Scalars['UUID4'];
+};
+
 export type RootMutationTypeSetTeamMinimumPrivacyArgs = {
   minimumPrivacy: Scalars['Int'];
   teamId: Scalars['UUID4'];
@@ -2810,6 +2846,12 @@ export type BillingDetails = {
   amount: Scalars['Int'];
   currency: Scalars['String'];
   date: Scalars['String'];
+};
+
+/** Additional user-provided metadata about a workspace */
+export type TeamMetadataInput = {
+  /** Use-cases for the workspace */
+  useCases: Array<Scalars['String']>;
 };
 
 export type RootSubscriptionType = {
@@ -5603,6 +5645,15 @@ export type UpdateProjectVmTierMutation = {
   };
 };
 
+export type JoinEligibleWorkspaceMutationVariables = Exact<{
+  workspaceId: Scalars['ID'];
+}>;
+
+export type JoinEligibleWorkspaceMutation = {
+  __typename?: 'RootMutationType';
+  joinEligibleWorkspace: { __typename?: 'Team'; id: any };
+};
+
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -6546,6 +6597,24 @@ export type GetSandboxWithTemplateQuery = {
       id: any | null;
       iconUrl: string | null;
     } | null;
+  } | null;
+};
+
+export type GetEligibleWorkspacesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetEligibleWorkspacesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    eligibleWorkspaces: Array<{
+      __typename?: 'TeamPreview';
+      id: any;
+      avatarUrl: string | null;
+      name: string;
+      shortid: string;
+    }>;
   } | null;
 };
 
