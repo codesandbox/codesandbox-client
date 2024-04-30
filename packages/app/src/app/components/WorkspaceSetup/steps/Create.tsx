@@ -173,7 +173,8 @@ export const Create: React.FC<StepProps> = ({
         <JoinWorkspace
           onStart={() => setLoadingButton(true)}
           onDidFinish={() => setLoadingButton(false)}
-          handleParentSubmitButton={setDisableButton}
+          onDidFindWorkspace={() => setDisableButton(true)}
+          onRejectWorkspace={() => setDisableButton(false)}
         />
 
         <Link
@@ -192,10 +193,11 @@ export const Create: React.FC<StepProps> = ({
 };
 
 const JoinWorkspace: React.FC<{
-  handleParentSubmitButton: (bool: boolean) => void;
+  onDidFindWorkspace: () => void;
+  onRejectWorkspace: () => void;
   onStart: () => void;
   onDidFinish: () => void;
-}> = ({ handleParentSubmitButton, onStart, onDidFinish }) => {
+}> = ({ onDidFindWorkspace, onStart, onDidFinish, onRejectWorkspace }) => {
   const [hidden, setHidden] = useState(true);
   const effects = useEffects();
   const actions = useActions();
@@ -212,11 +214,11 @@ const JoinWorkspace: React.FC<{
     effects.gql.queries
       .getEligibleWorkspaces({})
       .then(result => {
+        onDidFindWorkspace();
         setEligibleWorkspace(result.me.eligibleWorkspaces[0]);
       })
       .catch(e => {})
       .finally(() => {
-        handleParentSubmitButton(true);
         onDidFinish();
       });
   }, []);
@@ -284,7 +286,7 @@ const JoinWorkspace: React.FC<{
               variant="secondary"
               onClick={() => {
                 setHidden(false);
-                handleParentSubmitButton(false);
+                onRejectWorkspace();
               }}
             >
               Reject
