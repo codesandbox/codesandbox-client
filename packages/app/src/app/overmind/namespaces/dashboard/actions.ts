@@ -12,6 +12,7 @@ import {
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { PrivacyLevel } from 'app/components/Create/utils/types';
 import {
   getDecoratedCollection,
   getProjectUniqueKey,
@@ -20,7 +21,6 @@ import {
 
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
-import { PrivacyLevel } from 'app/components/Create/utils/types';
 
 export const internal = internalActions;
 
