@@ -143,7 +143,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         onSubmit({
           name,
           createAs: type,
-          permission: isDraft ? undefined : permission,
+          permission: isDraft ? null : permission,
           editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
           customVMTier:
             // Only pass customVMTier if user selects something else than the default

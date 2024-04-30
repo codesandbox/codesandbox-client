@@ -57,7 +57,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
         sandboxIds: modals.moveSandboxModal.sandboxIds,
         collectionPath: path,
         teamId,
-        privacy: isDraft ? undefined : privacy,
+        privacy: isDraft ? null : privacy,
       })
       .then(() => {
         refetchSandboxInfo();
