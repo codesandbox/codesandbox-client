@@ -214,7 +214,7 @@ const JoinWorkspace: React.FC<{
     effects.gql.queries
       .getEligibleWorkspaces({})
       .then(result => {
-        const hasEligibleWorkspace = result.me.eligibleWorkspaces[0] != null;
+        const hasEligibleWorkspace = result.me.eligibleWorkspaces.length > 0;
         if (hasEligibleWorkspace) {
           onDidFindWorkspace();
           setEligibleWorkspace(result.me.eligibleWorkspaces[0]);
