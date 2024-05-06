@@ -217,6 +217,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )}
           {sandbox.privacy !== 1 && (
             <MenuItem
+              disabled={hasReachedPrivateSandboxLimit}
               onSelect={() =>
                 actions.dashboard.changeSandboxesPrivacy({
                   sandboxIds: [sandbox.id],

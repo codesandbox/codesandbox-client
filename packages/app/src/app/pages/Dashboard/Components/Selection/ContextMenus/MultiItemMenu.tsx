@@ -139,6 +139,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const MAKE_UNLISTED = {
     label: 'Make unlisted',
     fn: changeItemPrivacy(1),
+    disabled: hasReachedPrivateSandboxLimit,
   };
   const MAKE_PRIVATE = {
     label: 'Make private',
