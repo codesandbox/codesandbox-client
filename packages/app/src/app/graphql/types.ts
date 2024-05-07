@@ -155,8 +155,24 @@ export type RootQueryType = {
    * ```
    */
   recentTeamsByRepository: Array<TeamPreview>;
-  /** Get a sandbox */
+  /**
+   * Get a sandbox by its (short) ID
+   *
+   * Requires the current user have read authorization (or that the sandbox is public). Otherwise
+   * returns an error (`"unauthorized"`).
+   */
   sandbox: Maybe<Sandbox>;
+  /**
+   * Returns a sandbox's team ID if the current user is eligible to join that workspace
+   *
+   * This query is designed for use in 404 experience where the current user does not have access
+   * to the resource but *might* have access if they accept an open invitation to its workspace.
+   * Returns null if no such open invitation exists, or an error if no user is authenticated.
+   *
+   * For a list of all workspaces the user is eligible to join, see `query eligibleWorkspaces`.
+   * The ID returned by this query can be used in `mutation joinEligibleWorkspace`.
+   */
+  sandboxEligibleWorkspace: Maybe<TeamPreview>;
   /** A team from an invite token */
   teamByToken: Maybe<TeamPreview>;
 };
@@ -224,6 +240,10 @@ export type RootQueryTypeRecentTeamsByRepositoryArgs = {
 };
 
 export type RootQueryTypeSandboxArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootQueryTypeSandboxEligibleWorkspaceArgs = {
   sandboxId: Scalars['ID'];
 };
 
@@ -496,7 +516,11 @@ export type TeamLimits = {
   includedDrafts: Scalars['Int'];
   /** Number of workspace members included with the team's subscription, including add-ons */
   includedMembers: Scalars['Int'];
-  /** Number of sandboxes included with the team's subscription, including add-ons */
+  /** Number of included private browser sandboxes with the team's subscription */
+  includedPrivateSandboxes: Scalars['Int'];
+  /** Number of included public browser sandboxes with the team's subscription */
+  includedPublicSandboxes: Scalars['Int'];
+  /** DEPRECATED: Number of sandboxes included with the team's subscription */
   includedSandboxes: Scalars['Int'];
   /** Storage (in GB) included with the team's subscription, including add-ons */
   includedStorage: Scalars['Int'];
@@ -2173,12 +2197,14 @@ export type RootMutationTypeAddSandboxesToAlbumArgs = {
 
 export type RootMutationTypeAddToCollectionArgs = {
   collectionPath: Scalars['String'];
+  privacy: InputMaybe<Scalars['Int']>;
   sandboxIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 export type RootMutationTypeAddToCollectionOrTeamArgs = {
   collectionPath: InputMaybe<Scalars['String']>;
+  privacy: InputMaybe<Scalars['Int']>;
   sandboxIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   teamId: InputMaybe<Scalars['UUID4']>;
 };
@@ -5683,6 +5709,15 @@ export type SetTeamMetadataMutation = {
   };
 };
 
+export type JoinEligibleWorkspaceMutationVariables = Exact<{
+  workspaceId: Scalars['ID'];
+}>;
+
+export type JoinEligibleWorkspaceMutation = {
+  __typename?: 'RootMutationType';
+  joinEligibleWorkspace: { __typename?: 'Team'; id: any };
+};
+
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -6627,6 +6662,24 @@ export type GetSandboxWithTemplateQuery = {
       id: any | null;
       iconUrl: string | null;
     } | null;
+  } | null;
+};
+
+export type GetEligibleWorkspacesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetEligibleWorkspacesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    eligibleWorkspaces: Array<{
+      __typename?: 'TeamPreview';
+      id: any;
+      avatarUrl: string | null;
+      name: string;
+      shortid: string;
+    }>;
   } | null;
 };
 

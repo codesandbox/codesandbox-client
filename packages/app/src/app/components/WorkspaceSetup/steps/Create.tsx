@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useActions, useAppState } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
+import { useHistory } from 'react-router-dom';
 import {
   Stack,
   Button,
@@ -34,6 +35,8 @@ export const Create: React.FC<StepProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const [disableButton, setDisableButton] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const urlWorkspaceId = getQueryParam('workspace');
   const teamIsAlreadyCreated = !!urlWorkspaceId;
@@ -143,6 +146,7 @@ export const Create: React.FC<StepProps> = ({
                 defaultValue={teamIsAlreadyCreated ? activeTeamInfo.name : ''}
                 onChange={handleInput}
                 ref={inputRef}
+                disabled={disableButton || loading}
               />
 
               {error && (
@@ -157,8 +161,8 @@ export const Create: React.FC<StepProps> = ({
           </Stack>
 
           <Button
-            loading={loading}
-            disabled={loading || !!error}
+            loading={loadingButton || loading}
+            disabled={disableButton || loading || !!error}
             type="submit"
             size="large"
             autoWidth
@@ -166,17 +170,136 @@ export const Create: React.FC<StepProps> = ({
             Next
           </Button>
         </Stack>
+
+        <JoinWorkspace
+          onStart={() => setLoadingButton(true)}
+          onDidFinish={() => setLoadingButton(false)}
+          onDidFindWorkspace={() => setDisableButton(true)}
+          onRejectWorkspace={() => setDisableButton(false)}
+        />
+
         <Link
           href={docsUrl('/learn/plans/workspace')}
           target="_blank"
           rel="noreferrer"
         >
-          <Stack gap={1} align="center">
+          <Stack gap={2} align="center">
             <Text>More about teams and workspaces</Text>
-            <Icon name="external" size={16} />
+            <Icon name="external" size={14} />
           </Stack>
         </Link>
       </Stack>
     </AnimatedStep>
   );
+};
+
+const JoinWorkspace: React.FC<{
+  onDidFindWorkspace: () => void;
+  onRejectWorkspace: () => void;
+  onStart: () => void;
+  onDidFinish: () => void;
+}> = ({ onDidFindWorkspace, onStart, onDidFinish, onRejectWorkspace }) => {
+  const [hidden, setHidden] = useState(true);
+  const effects = useEffects();
+  const actions = useActions();
+  const [eligibleWorkspace, setEligibleWorkspace] = useState<{
+    id: string;
+    name: string;
+  }>(null);
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    onStart();
+
+    effects.gql.queries
+      .getEligibleWorkspaces({})
+      .then(result => {
+        const hasEligibleWorkspace = result.me.eligibleWorkspaces.length > 0;
+        if (hasEligibleWorkspace) {
+          onDidFindWorkspace();
+          setEligibleWorkspace(result.me.eligibleWorkspaces[0]);
+        }
+      })
+      .catch(e => {})
+      .finally(() => {
+        onDidFinish();
+      });
+  }, []);
+
+  const joinWorkspace = () => {
+    setLoading(true);
+    effects.gql.mutations
+      .joinEligibleWorkspace({
+        workspaceId: eligibleWorkspace.id,
+      })
+      .then(async () => {
+        await actions.setActiveTeam({ id: eligibleWorkspace.id });
+        await actions.dashboard.getTeams();
+
+        history.push(`/dashboard/recent?workspace=${eligibleWorkspace.id}`);
+      });
+  };
+
+  if (eligibleWorkspace && hidden) {
+    return (
+      <>
+        <Text css={{ textAlign: 'center' }}>or</Text>
+        <Stack
+          direction="vertical"
+          css={{
+            background: '#1A1A1A',
+            padding: 18,
+            marginLeft: -18,
+            marginRight: -18,
+            borderRadius: 4,
+          }}
+        >
+          <Text
+            margin={0}
+            as="h1"
+            color="#fff"
+            weight="medium"
+            fontFamily="everett"
+            size={24}
+          >
+            You have been invited to join the {eligibleWorkspace.name} workspace
+          </Text>
+          <p>
+            Your email matches the domain of the {eligibleWorkspace.name}{' '}
+            workspace.
+          </p>
+
+          <Stack gap={4} css={{ marginTop: 32 }}>
+            <Button
+              autoWidth
+              loading={loading}
+              type="submit"
+              size="large"
+              onClick={joinWorkspace}
+              css={{ flex: 1 }}
+            >
+              Join workspace
+            </Button>
+
+            <Button
+              autoWidth
+              type="submit"
+              size="large"
+              css={{ flex: 1 }}
+              variant="secondary"
+              onClick={() => {
+                setHidden(false);
+                onRejectWorkspace();
+              }}
+            >
+              Reject
+            </Button>
+          </Stack>
+        </Stack>
+      </>
+    );
+  }
+
+  return null;
 };

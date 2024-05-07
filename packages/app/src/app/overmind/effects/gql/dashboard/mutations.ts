@@ -63,6 +63,8 @@ import {
   UpdateUsageSubscriptionMutation,
   SetTeamMetadataMutation,
   SetTeamMetadataMutationVariables,
+  JoinEligibleWorkspaceMutation,
+  JoinEligibleWorkspaceMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -489,4 +491,15 @@ export const setTeamMetadata: Query<
     }
   }
   ${teamFragmentDashboard}
+`;
+
+export const joinEligibleWorkspace: Query<
+  JoinEligibleWorkspaceMutation,
+  JoinEligibleWorkspaceMutationVariables
+> = gql`
+  mutation JoinEligibleWorkspace($workspaceId: ID!) {
+    joinEligibleWorkspace(workspaceId: $workspaceId) {
+      id
+    }
+  }
 `;
