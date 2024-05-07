@@ -863,7 +863,7 @@ export const addSandboxesToFolder = async (
 
     if (collectionPath === '/') {
       path = 'All sandboxes and devboxes';
-    } else if (collectionPath === null) {
+    } else if (collectionPath === undefined) {
       path = 'Drafts';
     }
 
