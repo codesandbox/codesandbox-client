@@ -1035,6 +1035,7 @@ export const changeSandboxesPrivacy = async (
   }
 
   await actions.getActiveTeamInfo();
+  await actions.dashboard.getTeams();
 };
 
 export const deleteWorkspace = async ({ actions, effects, state }: Context) => {

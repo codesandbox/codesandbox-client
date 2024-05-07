@@ -37,8 +37,8 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     activeTeamInfo?.settings.minimumPrivacy ?? 0
   ) as PrivacyLevel;
 
-  const [privacy, setPrivacy] = useState<PrivacyLevel>(minimumPrivacy);
-  const isDraft = path === null;
+  const [privacy, setPrivacy] = useState<PrivacyLevel | null>(minimumPrivacy);
+  const isDraft = privacy === null;
 
   const onWorkspaceSelect = (newTeamId: string) => {
     track('Dashboard Move Modal - Workspace Select', {
@@ -151,7 +151,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                 onChange={({ target: { value } }) => {
                   if (value === 'DRAFT') {
                     setPath(null);
-                    setPrivacy(2);
+                    setPrivacy(null);
                   } else {
                     setPrivacy(parseInt(value, 10) as 0 | 1 | 2);
                     if (path === null) {
