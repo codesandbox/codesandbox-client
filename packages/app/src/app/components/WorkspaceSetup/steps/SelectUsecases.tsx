@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Element, Stack, Text } from '@codesandbox/components';
-
+import { useAppState, useEffects } from 'app/overmind';
 import styled from 'styled-components';
 import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
 import { StepProps } from '../types';
-import { useAppState, useEffects } from 'app/overmind';
 
 const USE_CASES = [
   'Conduct interviews',
