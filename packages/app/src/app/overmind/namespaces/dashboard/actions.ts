@@ -859,12 +859,15 @@ export const addSandboxesToFolder = async (
     // Re-fetch team to get updated usage data
     actions.getActiveTeamInfo();
 
-    effects.notificationToast.success(
-      'Successfully moved to ' +
-        (collectionPath === '/'
-          ? "'All sandboxes and devboxes'"
-          : collectionPath)
-    );
+    let path = collectionPath;
+
+    if (collectionPath === '/') {
+      path = 'All sandboxes and devboxes';
+    } else if (collectionPath === null) {
+      path = 'Drafts';
+    }
+
+    effects.notificationToast.success('Successfully moved to ' + path);
   } catch (e) {
     if (e.message.includes('SANDBOX_LIMIT')) {
       effects.notificationToast.error(
