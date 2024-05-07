@@ -516,7 +516,11 @@ export type TeamLimits = {
   includedDrafts: Scalars['Int'];
   /** Number of workspace members included with the team's subscription, including add-ons */
   includedMembers: Scalars['Int'];
-  /** Number of sandboxes included with the team's subscription, including add-ons */
+  /** Number of included private browser sandboxes with the team's subscription */
+  includedPrivateSandboxes: Scalars['Int'];
+  /** Number of included public browser sandboxes with the team's subscription */
+  includedPublicSandboxes: Scalars['Int'];
+  /** DEPRECATED: Number of sandboxes included with the team's subscription */
   includedSandboxes: Scalars['Int'];
   /** Storage (in GB) included with the team's subscription, including add-ons */
   includedStorage: Scalars['Int'];
@@ -2193,12 +2197,14 @@ export type RootMutationTypeAddSandboxesToAlbumArgs = {
 
 export type RootMutationTypeAddToCollectionArgs = {
   collectionPath: Scalars['String'];
+  privacy: InputMaybe<Scalars['Int']>;
   sandboxIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   teamId: InputMaybe<Scalars['UUID4']>;
 };
 
 export type RootMutationTypeAddToCollectionOrTeamArgs = {
   collectionPath: InputMaybe<Scalars['String']>;
+  privacy: InputMaybe<Scalars['Int']>;
   sandboxIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   teamId: InputMaybe<Scalars['UUID4']>;
 };
@@ -4834,6 +4840,7 @@ export type CurrentTeamInfoFragmentFragment = {
     ubbBeta: boolean;
     friendOfCsb: boolean;
   };
+  metadata: { __typename?: 'TeamMetadata'; useCases: Array<string> };
 };
 
 export type BranchFragment = {
@@ -5645,6 +5652,63 @@ export type UpdateProjectVmTierMutation = {
   };
 };
 
+export type SetTeamMetadataMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  useCases: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type SetTeamMetadataMutation = {
+  __typename?: 'RootMutationType';
+  setTeamMetadata: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    type: TeamType;
+    description: string | null;
+    creatorId: any | null;
+    avatarUrl: string | null;
+    legacy: boolean;
+    frozen: boolean;
+    insertedAt: string;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+    } | null;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    subscription: {
+      __typename?: 'ProSubscription';
+      origin: SubscriptionOrigin | null;
+      type: SubscriptionType;
+      status: SubscriptionStatus;
+      paymentProvider: SubscriptionPaymentProvider | null;
+    } | null;
+    featureFlags: {
+      __typename?: 'TeamFeatureFlags';
+      ubbBeta: boolean;
+      friendOfCsb: boolean;
+    };
+  };
+};
+
 export type JoinEligibleWorkspaceMutationVariables = Exact<{
   workspaceId: Scalars['ID'];
 }>;
@@ -6356,6 +6420,7 @@ export type GetTeamQuery = {
         ubbBeta: boolean;
         friendOfCsb: boolean;
       };
+      metadata: { __typename?: 'TeamMetadata'; useCases: Array<string> };
     } | null;
   } | null;
 };

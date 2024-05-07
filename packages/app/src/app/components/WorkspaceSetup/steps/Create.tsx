@@ -165,6 +165,7 @@ export const Create: React.FC<StepProps> = ({
             disabled={disableButton || loading || !!error}
             type="submit"
             size="large"
+            autoWidth
           >
             Next
           </Button>

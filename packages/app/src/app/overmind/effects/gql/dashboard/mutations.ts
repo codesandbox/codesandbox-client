@@ -61,6 +61,8 @@ import {
   UpdateProjectVmTierMutation,
   UpdateUsageSubscriptionMutationVariables,
   UpdateUsageSubscriptionMutation,
+  SetTeamMetadataMutation,
+  SetTeamMetadataMutationVariables,
   JoinEligibleWorkspaceMutation,
   JoinEligibleWorkspaceMutationVariables,
 } from 'app/graphql/types';
@@ -477,6 +479,18 @@ export const updateProjectVmTier: Query<
       storage
     }
   }
+`;
+
+export const setTeamMetadata: Query<
+  SetTeamMetadataMutation,
+  SetTeamMetadataMutationVariables
+> = gql`
+  mutation SetTeamMetadata($teamId: UUID4!, $useCases: [String!]!) {
+    setTeamMetadata(teamId: $teamId, metadata: { useCases: $useCases }) {
+      ...teamFragmentDashboard
+    }
+  }
+  ${teamFragmentDashboard}
 `;
 
 export const joinEligibleWorkspace: Query<
