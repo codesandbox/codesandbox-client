@@ -229,11 +229,11 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
 
 const PRIVACY_OPTIONS = {
   0: {
-    description: 'Public (everyone can view)',
+    description: 'Public (everyone has access)',
     icon: () => <Icon size={12} name="globe" />,
   },
   1: {
-    description: 'Unlisted (everyone with the link can view)',
+    description: 'Unlisted (everyone with the link can access)',
     icon: () => <Icon size={12} name="link" />,
   },
   2: {
