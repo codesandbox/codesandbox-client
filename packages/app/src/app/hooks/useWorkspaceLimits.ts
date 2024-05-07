@@ -19,6 +19,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       showUsageLimitBanner: undefined,
       isFrozen: undefined,
       hasReachedPrivateSandboxLimit: undefined,
+      privateSandboxLimit: undefined,
       highestAllowedVMTier: undefined,
     };
   }
@@ -62,6 +63,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isCloseToSpendingLimit,
     isFrozen: applyUbbRestrictions && frozen,
     highestAllowedVMTier,
+    privateSandboxLimit: limits.includedPrivateSandboxes,
   };
 };
 
@@ -75,6 +77,7 @@ export type WorkspaceLimitsReturn =
       isFrozen: undefined;
       hasReachedPrivateSandboxLimit: undefined;
       highestAllowedVMTier: undefined;
+      privateSandboxLimit: undefined;
     }
   | {
       isOutOfCredits: boolean;
@@ -85,4 +88,5 @@ export type WorkspaceLimitsReturn =
       isFrozen: boolean;
       hasReachedPrivateSandboxLimit: boolean;
       highestAllowedVMTier: number;
+      privateSandboxLimit: number;
     };

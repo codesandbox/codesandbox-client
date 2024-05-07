@@ -48,6 +48,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const {
     hasReachedPrivateSandboxLimit,
     highestAllowedVMTier,
+    privateSandboxLimit,
   } = useWorkspaceLimits();
   const [name, setName] = useState<string>();
   const effects = useEffects();
@@ -140,10 +141,16 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
       }}
       onSubmit={e => {
         e.preventDefault();
+
+        let privacy = permission;
+        if (isDraft) {
+          privacy = 2;
+        }
+
         onSubmit({
           name,
           createAs: type,
-          permission: isDraft ? null : permission,
+          permission: privacy,
           editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
           customVMTier:
             // Only pass customVMTier if user selects something else than the default
@@ -184,37 +191,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         {hasLogIn && (
           <Stack gap={2} direction="vertical">
             <Stack gap={2}>
-              <Stack style={{ flex: 1 }} direction="vertical" gap={2}>
-                <Text size={3} as="label">
-                  Folder
-                </Text>
-
-                <Select
-                  icon={() => (
-                    <Icon name={isDraft ? 'file' : 'folder'} size={12} />
-                  )}
-                  value={isDraft ? '$CSBDRAFTS' : collectionId}
-                  onChange={({ target: { value } }) => {
-                    if (value === '$CSBDRAFTS') {
-                      setCollectionId(undefined);
-                      setPermission(2);
-                    } else {
-                      setCollectionId(value);
-                    }
-                  }}
-                >
-                  <option value="$CSBDRAFTS">Drafts</option>
-
-                  {collectionsData?.me?.collections?.map(collection => (
-                    <option value={collection.id}>
-                      {collection.path === '/'
-                        ? 'Root folder (/)'
-                        : collection.path}
-                    </option>
-                  ))}
-                </Select>
-              </Stack>
-
               <Stack style={{ flex: 2 }} direction="vertical" gap={2}>
                 <Text size={3} as="label">
                   Visibility
@@ -247,6 +223,32 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   </Select>
                 </Stack>
               </Stack>
+
+              {!isDraft && (
+                <Stack style={{ flex: 1 }} direction="vertical" gap={2}>
+                  <Text size={3} as="label">
+                    Folder
+                  </Text>
+
+                  <Select
+                    icon={() => (
+                      <Icon name={isDraft ? 'file' : 'folder'} size={12} />
+                    )}
+                    value={collectionId}
+                    onChange={({ target: { value } }) => {
+                      setCollectionId(value);
+                    }}
+                  >
+                    {collectionsData?.me?.collections?.map(collection => (
+                      <option value={collection.id}>
+                        {collection.path === '/'
+                          ? 'Root folder (/)'
+                          : collection.path}
+                      </option>
+                    ))}
+                  </Select>
+                </Stack>
+              )}
             </Stack>
 
             {isDraft && (
@@ -262,7 +264,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               <Stack gap={1} css={{ color: '#F5A8A8' }}>
                 <Icon name="circleBang" />
                 <Text size={3}>
-                  You have reached the free limit of 5 private {label}.
+                  You have reached the free limit of {privateSandboxLimit}{' '}
+                  private {label}.
                 </Text>
               </Stack>
             )}

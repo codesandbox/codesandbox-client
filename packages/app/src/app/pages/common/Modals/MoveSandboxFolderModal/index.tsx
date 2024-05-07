@@ -83,6 +83,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     currentTeam.usage.privateSandboxesQuantity >=
       currentTeam.limits.includedPrivateSandboxes;
   const limitError = privacy === 2 && hasReachedPrivateSandboxLimit;
+  const privateSandboxLimit = currentTeam?.limits.includedPrivateSandboxes;
 
   const onSelect = ({ teamId: newTeamId, path: newPath }) => {
     setTeamId(newTeamId);
@@ -168,7 +169,8 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                 <Stack gap={1} css={{ color: '#F5A8A8' }}>
                   <Icon name="circleBang" />
                   <Text size={3}>
-                    You have reached the free limit of 5 private Sandboxes.
+                    You have reached the free limit of {privateSandboxLimit}{' '}
+                    private Sandboxes.
                   </Text>
                 </Stack>
               )}

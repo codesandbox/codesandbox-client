@@ -457,7 +457,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: activeTeam ? null : '/',
-          privacy: null,
+          privacy: 2,
         });
       } else if (dropPage === 'sandboxes') {
         actions.dashboard.addSandboxesToFolder({
