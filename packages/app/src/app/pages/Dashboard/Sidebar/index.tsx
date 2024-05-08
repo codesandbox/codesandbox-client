@@ -14,6 +14,7 @@ import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
 import { ExpandableReposRowItem } from './ExpandableReposRowItem';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
 interface SidebarProps {
   visible: boolean;
@@ -76,6 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const showRespositories = !state.environment.isOnPrem;
 
+  const { ubbBeta } = useWorkspaceFeatureFlags();
   const { isPrimarySpace, isTeamAdmin } = useWorkspaceAuthorization();
   const { isFree } = useWorkspaceSubscription();
 
@@ -140,12 +142,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.portalOverview(activeTeam)}
             icon="people"
           />
-          <RowItem
-            name="Usage"
-            page="external"
-            path={dashboardUrls.portalVMUsage(activeTeam)}
-            icon="coins"
-          />
+          {ubbBeta && (
+            <RowItem
+              name="Usage"
+              page="external"
+              path={dashboardUrls.portalVMUsage(activeTeam)}
+              icon="coins"
+            />
+          )}
           <RowItem
             name="Get started"
             page="get-started"
