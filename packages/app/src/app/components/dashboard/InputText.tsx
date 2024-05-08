@@ -16,7 +16,7 @@ const StyledInput = styled.input<{ isInvalid?: boolean }>`
 
   ${props => (props.isInvalid ? 'outline: 1px solid #EB5E5E;' : '')}
 
-  &:hover {
+  &:hover:not(:disabled) {
     box-shadow: 0 0 0 2px #e5e5e51a;
   }
 

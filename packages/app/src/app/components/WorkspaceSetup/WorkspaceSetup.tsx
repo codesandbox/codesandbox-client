@@ -8,6 +8,7 @@ import { SelectWorkspace } from './steps/SelectWorkspace';
 import { Addons } from './steps/Addons';
 import { Finalize } from './steps/Finalize';
 import { ChangeAddons } from './steps/ChangeAddons';
+import { SelectUsecases } from './steps/SelectUsecases';
 
 export type WorkspaceSetupProps = {
   flow: WorkspaceFlow;
@@ -59,6 +60,7 @@ export const WorkspaceSetup: React.FC<WorkspaceSetupProps> = ({
 const STEP_COMPONENTS: Record<WorkspaceSetupStep, React.FC<StepProps>> = {
   create: Create,
   'select-workspace': SelectWorkspace,
+  usecases: SelectUsecases,
   plans: Plans,
   'spending-limit': SpendingLimit,
   addons: Addons,

@@ -4856,6 +4856,7 @@ export type CurrentTeamInfoFragmentFragment = {
     ubbBeta: boolean;
     friendOfCsb: boolean;
   };
+  metadata: { __typename?: 'TeamMetadata'; useCases: Array<string> };
 };
 
 export type BranchFragment = {
@@ -5698,6 +5699,72 @@ export type UpdateProjectVmTierMutation = {
   };
 };
 
+export type SetTeamMetadataMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  useCases: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type SetTeamMetadataMutation = {
+  __typename?: 'RootMutationType';
+  setTeamMetadata: {
+    __typename?: 'Team';
+    id: any;
+    name: string;
+    type: TeamType;
+    description: string | null;
+    creatorId: any | null;
+    avatarUrl: string | null;
+    legacy: boolean;
+    frozen: boolean;
+    insertedAt: string;
+    settings: {
+      __typename?: 'WorkspaceSandboxSettings';
+      minimumPrivacy: number;
+    } | null;
+    userAuthorizations: Array<{
+      __typename?: 'UserAuthorization';
+      userId: any;
+      authorization: TeamMemberAuthorization;
+      teamManager: boolean;
+    }>;
+    users: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    invitees: Array<{
+      __typename?: 'User';
+      id: any;
+      name: string | null;
+      username: string;
+      avatarUrl: string;
+    }>;
+    subscription: {
+      __typename?: 'ProSubscription';
+      origin: SubscriptionOrigin | null;
+      type: SubscriptionType;
+      status: SubscriptionStatus;
+      paymentProvider: SubscriptionPaymentProvider | null;
+    } | null;
+    featureFlags: {
+      __typename?: 'TeamFeatureFlags';
+      ubbBeta: boolean;
+      friendOfCsb: boolean;
+    };
+  };
+};
+
+export type JoinEligibleWorkspaceMutationVariables = Exact<{
+  workspaceId: Scalars['ID'];
+}>;
+
+export type JoinEligibleWorkspaceMutation = {
+  __typename?: 'RootMutationType';
+  joinEligibleWorkspace: { __typename?: 'Team'; id: any };
+};
+
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -6416,6 +6483,7 @@ export type GetTeamQuery = {
         ubbBeta: boolean;
         friendOfCsb: boolean;
       };
+      metadata: { __typename?: 'TeamMetadata'; useCases: Array<string> };
     } | null;
   } | null;
 };
@@ -6657,6 +6725,24 @@ export type GetSandboxWithTemplateQuery = {
       id: any | null;
       iconUrl: string | null;
     } | null;
+  } | null;
+};
+
+export type GetEligibleWorkspacesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetEligibleWorkspacesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    eligibleWorkspaces: Array<{
+      __typename?: 'TeamPreview';
+      id: any;
+      avatarUrl: string | null;
+      name: string;
+      shortid: string;
+    }>;
   } | null;
 };
 
