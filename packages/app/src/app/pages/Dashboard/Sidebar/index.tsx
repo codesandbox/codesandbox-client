@@ -6,6 +6,7 @@ import { Element, List, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -14,7 +15,6 @@ import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
 import { ExpandableReposRowItem } from './ExpandableReposRowItem';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
 interface SidebarProps {
   visible: boolean;
