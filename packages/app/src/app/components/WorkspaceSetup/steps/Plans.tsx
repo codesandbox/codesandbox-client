@@ -345,7 +345,9 @@ const PlanPricing: React.FC<{
           weight="medium"
           css={{ textWrap: 'balance', width: 180 }}
         >
-          {interval === SubscriptionInterval.Monthly ? "per month per workspace" : "per workspace per month billed annually"}
+          {interval === SubscriptionInterval.Monthly
+            ? 'per month per workspace'
+            : 'per workspace per month billed annually'}
         </Text>
       )}
     </Stack>
@@ -612,21 +614,38 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           property="storage"
         />
         <FeatureComparisonNumbersRow
-          title="Sandboxes"
+          title="Private Sandboxes"
           description={
             <>
-              The maximum number of Sandboxes in a workspace. <br />
+              The maximum number of private Sandboxes in a workspace. <br />
               <a
                 target="_blank"
                 rel="noreferrer"
-                href="https://codesandbox.io/docs/learn/devboxes/overview?tab=sandbox#difference-between-devboxes--sandboxes"
+                href="https://codesandbox.io/docs/learn/devboxes/editors?tab=sandbox"
               >
                 Learn more about Sandboxes.
               </a>
             </>
           }
           plans={plans}
-          property="sandboxes"
+          property="privateSandboxes"
+        />
+        <FeatureComparisonNumbersRow
+          title="Public Sandboxes"
+          description={
+            <>
+              The maximum number of public Sandboxes in a workspace. <br />
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://codesandbox.io/docs/learn/devboxes/editors?tab=sandbox"
+              >
+                Learn more about Sandboxes.
+              </a>
+            </>
+          }
+          plans={plans}
+          property="publicSandboxes"
         />
         <FeatureComparisonNumbersRow
           title="Personal drafts"
