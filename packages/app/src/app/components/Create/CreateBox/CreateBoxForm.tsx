@@ -8,15 +8,12 @@ import {
   Icon,
   Select,
 } from '@codesandbox/components';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { PATHED_SANDBOXES_FOLDER_QUERY } from 'app/pages/Dashboard/queries';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { Link } from 'react-router-dom';
 import { VMTier } from 'app/overmind/effects/api/types';
 import { useQuery } from '@apollo/react-hooks';
 import {
@@ -49,20 +46,15 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
   const {
-    hasReachedSandboxLimit,
-    hasReachedDraftLimit,
+    hasReachedPrivateSandboxLimit,
     highestAllowedVMTier,
+    privateSandboxLimit,
   } = useWorkspaceLimits();
-  const { isAdmin } = useWorkspaceAuthorization();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isFree } = useWorkspaceSubscription();
   const isDraft = collectionId === undefined;
-  const canCreateDraft = !hasReachedDraftLimit;
-  const canCreateInFolders = type === 'devbox' || !hasReachedSandboxLimit;
-  const canCreate =
-    (isDraft && canCreateDraft) || (!isDraft && canCreateInFolders);
 
   const minimumPrivacy = Math.max(
     initialPrivacy ?? 2,
@@ -78,6 +70,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const defaultTier = isFree ? 1 : 2;
   const [selectedTier, setSelectedTier] = useState<number>(defaultTier);
   const [allVmTiers, setAllVmTiers] = useState<VMTier[]>([]);
+  const canCreate =
+    isDraft || !(permission === 2 && hasReachedPrivateSandboxLimit);
 
   useEffect(() => {
     if (type === 'devbox') {
@@ -147,10 +141,16 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
       }}
       onSubmit={e => {
         e.preventDefault();
+
+        let privacy = permission;
+        if (isDraft) {
+          privacy = 2;
+        }
+
         onSubmit({
           name,
           createAs: type,
-          permission,
+          permission: privacy,
           editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
           customVMTier:
             // Only pass customVMTier if user selects something else than the default
@@ -191,37 +191,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         {hasLogIn && (
           <Stack gap={2} direction="vertical">
             <Stack gap={2}>
-              <Stack style={{ flex: 1 }} direction="vertical" gap={2}>
-                <Text size={3} as="label">
-                  Folder
-                </Text>
-
-                <Select
-                  icon={() => (
-                    <Icon name={isDraft ? 'file' : 'folder'} size={12} />
-                  )}
-                  value={isDraft ? '$CSBDRAFTS' : collectionId}
-                  onChange={({ target: { value } }) => {
-                    if (value === '$CSBDRAFTS') {
-                      setCollectionId(undefined);
-                      setPermission(2);
-                    } else {
-                      setCollectionId(value);
-                    }
-                  }}
-                >
-                  <option value="$CSBDRAFTS">Drafts</option>
-
-                  {collectionsData?.me?.collections?.map(collection => (
-                    <option value={collection.id}>
-                      {collection.path === '/'
-                        ? 'Root folder (/)'
-                        : collection.path}
-                    </option>
-                  ))}
-                </Select>
-              </Stack>
-
               <Stack style={{ flex: 2 }} direction="vertical" gap={2}>
                 <Text size={3} as="label">
                   Visibility
@@ -254,9 +223,35 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   </Select>
                 </Stack>
               </Stack>
+
+              {!isDraft && (
+                <Stack style={{ flex: 1 }} direction="vertical" gap={2}>
+                  <Text size={3} as="label">
+                    Folder
+                  </Text>
+
+                  <Select
+                    icon={() => (
+                      <Icon name={isDraft ? 'file' : 'folder'} size={12} />
+                    )}
+                    value={collectionId}
+                    onChange={({ target: { value } }) => {
+                      setCollectionId(value);
+                    }}
+                  >
+                    {collectionsData?.me?.collections?.map(collection => (
+                      <option value={collection.id}>
+                        {collection.path === '/'
+                          ? 'Root folder (/)'
+                          : collection.path}
+                      </option>
+                    ))}
+                  </Select>
+                </Stack>
+              )}
             </Stack>
 
-            {isDraft && canCreateDraft && (
+            {isDraft && (
               <Stack gap={1} css={{ color: '#A8BFFA' }}>
                 <Icon name="circleBang" />
                 <Text size={3}>
@@ -265,47 +260,12 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               </Stack>
             )}
 
-            {isDraft && !canCreateDraft && (
+            {!isDraft && !canCreate && (
               <Stack gap={1} css={{ color: '#F5A8A8' }}>
                 <Icon name="circleBang" />
                 <Text size={3}>
-                  Your{' '}
-                  <Link
-                    css={{ color: 'inherit' }}
-                    onClick={onClose}
-                    to={dashboard.drafts(activeTeam)}
-                  >
-                    Drafts folder
-                  </Link>{' '}
-                  is full. Delete unneeded drafts, or{' '}
-                  {isAdmin ? (
-                    <>
-                      <Link
-                        css={{ color: 'inherit' }}
-                        to={dashboard.upgradeUrl({
-                          workspaceId: activeTeam,
-                          source: 'create_draft_limit',
-                        })}
-                        onClick={onClose}
-                      >
-                        upgrade to Pro
-                      </Link>{' '}
-                      for unlimited drafts
-                    </>
-                  ) : (
-                    'ask an admin to upgrade to Pro for unlimited drafts'
-                  )}
-                  .
-                </Text>
-              </Stack>
-            )}
-
-            {!isDraft && !canCreateInFolders && (
-              <Stack gap={1} css={{ color: '#F5A8A8' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>
-                  You reached the maximum amount of shareable Sandboxes in this
-                  workspace.
+                  You have reached the free limit of {privateSandboxLimit}{' '}
+                  private {label}.
                 </Text>
               </Stack>
             )}

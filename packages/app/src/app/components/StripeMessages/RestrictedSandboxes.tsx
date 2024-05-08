@@ -5,11 +5,13 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboard';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 
 export const RestrictedSandboxes = () => {
   const { activeTeam } = useAppState();
   const { isAdmin } = useWorkspaceAuthorization();
   const { isPro, isFree } = useWorkspaceSubscription();
+  const { privateSandboxLimit } = useWorkspaceLimits();
 
   useEffect(() => {
     track('Dashboard Sandbox Limit Reached - Display', { isFree, isAdmin });
@@ -18,8 +20,10 @@ export const RestrictedSandboxes = () => {
   if (isAdmin && isPro) {
     return (
       <MessageStripe variant="warning" justify="space-between">
-        You reached the maximum amount of shareable Sandboxes in this workspace.
-        Contact us to increase your limit.
+        <>
+          You have reached the free limit of {privateSandboxLimit} private
+          Sandboxes. Contact us to increase your limit.
+        </>
         <MessageStripe.Action
           as="a"
           href="mailto:support@codesandbox.io?subject=Sandbox limit on Pro plan"
@@ -36,8 +40,10 @@ export const RestrictedSandboxes = () => {
   if (isAdmin && isFree) {
     return (
       <MessageStripe variant="warning" justify="space-between">
-        You reached the maximum amount of shareable Sandboxes in this workspace.
-        Upgrade to Pro to create more shareable Sandboxes.
+        <>
+          You have reached the free limit of {privateSandboxLimit} private
+          Sandboxes. Upgrade to Pro to create more private Sandboxes.
+        </>
         <MessageStripe.Action
           as="a"
           href={upgradeUrl({
@@ -57,8 +63,10 @@ export const RestrictedSandboxes = () => {
   if (!isAdmin && isPro) {
     return (
       <MessageStripe variant="warning" justify="space-between">
-        You reached the maximum amount of shareable Sandboxes in this workspace.
-        Ask your administrator to increase the limit.
+        <>
+          You have reached the free limit of {privateSandboxLimit} private
+          Sandboxes. Ask your administrator to increase the limit.
+        </>
       </MessageStripe>
     );
   }
@@ -66,8 +74,11 @@ export const RestrictedSandboxes = () => {
   if (!isAdmin && isFree) {
     return (
       <MessageStripe variant="warning" justify="space-between">
-        You reached the maximum amount of shareable Sandboxes in this workspace.
-        To increase the limit, ask your administrator to upgrade to Pro.
+        <>
+          You have reached the free limit of {privateSandboxLimit} private
+          Sandboxes. To increase the limit, ask your administrator to upgrade to
+          Pro.
+        </>
       </MessageStripe>
     );
   }

@@ -17,7 +17,7 @@ export const Templates = () => {
     activeTeam,
   } = useAppState();
   const { getPage } = useActions().dashboard;
-  const { hasReachedSandboxLimit } = useWorkspaceLimits();
+  const { hasReachedPrivateSandboxLimit } = useWorkspaceLimits();
 
   useEffect(() => {
     getPage(sandboxesTypes.TEMPLATES);
@@ -59,7 +59,7 @@ export const Templates = () => {
         showViewOptions
         showSortOptions
       />
-      {hasReachedSandboxLimit && (
+      {hasReachedPrivateSandboxLimit && (
         <Element css={{ padding: '0 26px 16px 16px' }}>
           <RestrictedSandboxes />
         </Element>

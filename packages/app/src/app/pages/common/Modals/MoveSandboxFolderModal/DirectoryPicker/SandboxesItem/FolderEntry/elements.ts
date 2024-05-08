@@ -15,7 +15,8 @@ export const Container = styled(NavLink)<{
   transition: 0.25s ease all;
   display: flex;
   align-items: center;
-  height: 2rem;
+  height: 1.8rem;
+  border-radius: 2px;
 
   color: rgba(255, 255, 255, 0.6);
   text-decoration: none;

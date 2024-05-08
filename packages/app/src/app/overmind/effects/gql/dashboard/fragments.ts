@@ -161,6 +161,16 @@ export const teamFragmentDashboard = gql`
       ubbBeta
       friendOfCsb
     }
+
+    limits {
+      includedPublicSandboxes
+      includedPrivateSandboxes
+    }
+
+    usage {
+      publicSandboxesQuantity
+      privateSandboxesQuantity
+    }
   }
 `;
 
@@ -253,15 +263,17 @@ export const currentTeamInfoFragment = gql`
 
     limits {
       includedCredits
-      includedSandboxes
-      includedDrafts
       includedVmTier
       onDemandCreditLimit
+      includedPublicSandboxes
+      includedPrivateSandboxes
     }
 
     usage {
       sandboxes
       credits
+      publicSandboxesQuantity
+      privateSandboxesQuantity
     }
 
     featureFlags {

@@ -12,6 +12,7 @@ import {
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { PrivacyLevel } from 'app/components/Create/utils/types';
 import {
   getDecoratedCollection,
   getProjectUniqueKey,
@@ -707,6 +708,7 @@ export const recoverSandboxes = async (
       // only way to pass, null is a value in the BE
       // @ts-ignore
       teamId: state.activeTeam || undefined,
+      privacy: null,
     });
   } catch (error) {
     state.dashboard.sandboxes.DELETED = [...oldDeleted];
@@ -809,11 +811,13 @@ export const addSandboxesToFolder = async (
     collectionPath,
     teamId = state.activeTeam,
     deleteFromCurrentPath = true,
+    privacy,
   }: {
     sandboxIds: string[];
     collectionPath: string | null;
     teamId?: string | null;
     deleteFromCurrentPath?: boolean;
+    privacy: PrivacyLevel | null;
   }
 ) => {
   effects.analytics.track('Dashboard - Moved Sandboxes', {
@@ -838,6 +842,7 @@ export const addSandboxesToFolder = async (
       sandboxIds,
       collectionPath,
       teamId,
+      privacy,
     });
 
     if (deleteFromCurrentPath) {
@@ -854,16 +859,19 @@ export const addSandboxesToFolder = async (
     // Re-fetch team to get updated usage data
     actions.getActiveTeamInfo();
 
-    effects.notificationToast.success(
-      'Successfully moved to ' +
-        (collectionPath === '/'
-          ? "'All sandboxes and devboxes'"
-          : collectionPath)
-    );
+    let path = collectionPath;
+
+    if (collectionPath === '/') {
+      path = 'All sandboxes and devboxes';
+    } else if (collectionPath === undefined) {
+      path = 'Drafts';
+    }
+
+    effects.notificationToast.success('Successfully moved to ' + path);
   } catch (e) {
     if (e.message.includes('SANDBOX_LIMIT')) {
       effects.notificationToast.error(
-        'You reached the maximum amount of shareable Sandboxes in this workspace. Upgrade your plan to add more.'
+        'You have reached the maximum of 5 private Sandboxes in this workspace. Upgrade your plan to add more.'
       );
     } else {
       effects.notificationToast.error(
@@ -1028,6 +1036,9 @@ export const changeSandboxesPrivacy = async (
       error,
     });
   }
+
+  await actions.getActiveTeamInfo();
+  await actions.dashboard.getTeams();
 };
 
 export const deleteWorkspace = async ({ actions, effects, state }: Context) => {

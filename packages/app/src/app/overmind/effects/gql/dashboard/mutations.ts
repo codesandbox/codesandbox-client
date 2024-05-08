@@ -140,11 +140,13 @@ export const addSandboxToFolder: Query<
     $collectionPath: String
     $sandboxIds: [ID!]!
     $teamId: UUID4
+    $privacy: Int
   ) {
     addToCollectionOrTeam(
       collectionPath: $collectionPath
       sandboxIds: $sandboxIds
       teamId: $teamId
+      privacy: $privacy
     ) {
       ...sandboxFragmentDashboard
     }

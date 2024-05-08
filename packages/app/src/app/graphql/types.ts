@@ -4732,6 +4732,16 @@ export type TeamFragmentDashboardFragment = {
     ubbBeta: boolean;
     friendOfCsb: boolean;
   };
+  limits: {
+    __typename?: 'TeamLimits';
+    includedPublicSandboxes: number;
+    includedPrivateSandboxes: number;
+  };
+  usage: {
+    __typename?: 'TeamUsage';
+    publicSandboxesQuantity: number;
+    privateSandboxesQuantity: number;
+  };
 };
 
 export type CurrentTeamInfoFragmentFragment = {
@@ -4829,12 +4839,18 @@ export type CurrentTeamInfoFragmentFragment = {
   limits: {
     __typename?: 'TeamLimits';
     includedCredits: number;
-    includedSandboxes: number;
-    includedDrafts: number;
     includedVmTier: number;
     onDemandCreditLimit: number | null;
+    includedPublicSandboxes: number;
+    includedPrivateSandboxes: number;
   };
-  usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
+  usage: {
+    __typename?: 'TeamUsage';
+    sandboxes: number;
+    credits: number;
+    publicSandboxesQuantity: number;
+    privateSandboxesQuantity: number;
+  };
   featureFlags: {
     __typename?: 'TeamFeatureFlags';
     ubbBeta: boolean;
@@ -5014,6 +5030,16 @@ export type _CreateTeamMutation = {
       ubbBeta: boolean;
       friendOfCsb: boolean;
     };
+    limits: {
+      __typename?: 'TeamLimits';
+      includedPublicSandboxes: number;
+      includedPrivateSandboxes: number;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      publicSandboxesQuantity: number;
+      privateSandboxesQuantity: number;
+    };
   };
 };
 
@@ -5068,6 +5094,7 @@ export type AddToFolderMutationVariables = Exact<{
   collectionPath: InputMaybe<Scalars['String']>;
   sandboxIds: Array<Scalars['ID']> | Scalars['ID'];
   teamId: InputMaybe<Scalars['UUID4']>;
+  privacy: InputMaybe<Scalars['Int']>;
 }>;
 
 export type AddToFolderMutation = {
@@ -5376,6 +5403,16 @@ export type _AcceptTeamInvitationMutation = {
       ubbBeta: boolean;
       friendOfCsb: boolean;
     };
+    limits: {
+      __typename?: 'TeamLimits';
+      includedPublicSandboxes: number;
+      includedPrivateSandboxes: number;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      publicSandboxesQuantity: number;
+      privateSandboxesQuantity: number;
+    };
   };
 };
 
@@ -5459,6 +5496,16 @@ export type _SetTeamNameMutation = {
       __typename?: 'TeamFeatureFlags';
       ubbBeta: boolean;
       friendOfCsb: boolean;
+    };
+    limits: {
+      __typename?: 'TeamLimits';
+      includedPublicSandboxes: number;
+      includedPrivateSandboxes: number;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      publicSandboxesQuantity: number;
+      privateSandboxesQuantity: number;
     };
   };
 };
@@ -6111,6 +6158,16 @@ export type AllTeamsQuery = {
         ubbBeta: boolean;
         friendOfCsb: boolean;
       };
+      limits: {
+        __typename?: 'TeamLimits';
+        includedPublicSandboxes: number;
+        includedPrivateSandboxes: number;
+      };
+      usage: {
+        __typename?: 'TeamUsage';
+        publicSandboxesQuantity: number;
+        privateSandboxesQuantity: number;
+      };
     }>;
   } | null;
 };
@@ -6409,12 +6466,18 @@ export type GetTeamQuery = {
       limits: {
         __typename?: 'TeamLimits';
         includedCredits: number;
-        includedSandboxes: number;
-        includedDrafts: number;
         includedVmTier: number;
         onDemandCreditLimit: number | null;
+        includedPublicSandboxes: number;
+        includedPrivateSandboxes: number;
       };
-      usage: { __typename?: 'TeamUsage'; sandboxes: number; credits: number };
+      usage: {
+        __typename?: 'TeamUsage';
+        sandboxes: number;
+        credits: number;
+        publicSandboxesQuantity: number;
+        privateSandboxesQuantity: number;
+      };
       featureFlags: {
         __typename?: 'TeamFeatureFlags';
         ubbBeta: boolean;

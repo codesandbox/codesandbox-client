@@ -116,7 +116,7 @@ class ModalComponent extends React.Component {
             border: '1px solid',
             borderColor: 'sideBar.border',
             borderRadius: fullWidth ? 0 : '8px',
-            backgroundColor: 'sideBar.background',
+            backgroundColor: '#151515',
             boxShadow: 2,
             color: 'sideBar.foreground',
             lineHeight: 1.2,
