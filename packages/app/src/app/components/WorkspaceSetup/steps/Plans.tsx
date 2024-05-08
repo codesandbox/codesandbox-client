@@ -113,7 +113,7 @@ export const Plans: React.FC<StepProps> = ({
           </Stack>
 
           <HorizontalScroller css={{ width: '100%' }}>
-            <Stack gap={6}>
+            <Stack gap={6} justify="center">
               {showFreePlan && (
                 <StyledCard
                   direction="vertical"
@@ -345,7 +345,9 @@ const PlanPricing: React.FC<{
           weight="medium"
           css={{ textWrap: 'balance', width: 180 }}
         >
-          {interval === SubscriptionInterval.Monthly ? "per month per workspace" : "per workspace per month billed annually"}
+          {interval === SubscriptionInterval.Monthly
+            ? 'per month per workspace'
+            : 'per workspace per month billed annually'}
         </Text>
       )}
     </Stack>
