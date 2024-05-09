@@ -113,7 +113,7 @@ export const Plans: React.FC<StepProps> = ({
           </Stack>
 
           <HorizontalScroller css={{ width: '100%' }}>
-            <Stack gap={6}>
+            <Stack gap={6} justify="center">
               {showFreePlan && (
                 <StyledCard
                   direction="vertical"
