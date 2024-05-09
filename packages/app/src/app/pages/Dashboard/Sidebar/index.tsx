@@ -6,6 +6,7 @@ import { Element, List, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -76,6 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const showRespositories = !state.environment.isOnPrem;
 
+  const { ubbBeta } = useWorkspaceFeatureFlags();
   const { isPrimarySpace, isTeamAdmin } = useWorkspaceAuthorization();
   const { isFree } = useWorkspaceSubscription();
 
@@ -140,12 +142,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.portalOverview(activeTeam)}
             icon="people"
           />
-          <RowItem
-            name="Usage"
-            page="external"
-            path={dashboardUrls.portalVMUsage(activeTeam)}
-            icon="coins"
-          />
+          {ubbBeta && (
+            <RowItem
+              name="Usage"
+              page="external"
+              path={dashboardUrls.portalVMUsage(activeTeam)}
+              icon="coins"
+            />
+          )}
           <RowItem
             name="Get started"
             page="get-started"
