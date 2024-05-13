@@ -156,6 +156,10 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               openInNewWindow: true,
               hasBetaEditorExperiment,
               redirectAfterFork: true,
+              body: {
+                privacy: sandbox.draft ? 2 : sandbox.privacy,
+                collectionId: sandbox.draft ? undefined : sandbox.collection.id,
+              },
             });
           }}
           disabled={restrictedFork}

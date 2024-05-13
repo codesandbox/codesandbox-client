@@ -4551,7 +4551,11 @@ export type SandboxFragmentDashboardFragment = {
     color: string | null;
     iconUrl: string | null;
   } | null;
-  collection: { __typename?: 'Collection'; path: string } | null;
+  collection: {
+    __typename?: 'Collection';
+    path: string;
+    id: any | null;
+  } | null;
   permissions: {
     __typename?: 'SandboxProtectionSettings';
     preventSandboxLeaving: boolean;
@@ -4610,7 +4614,11 @@ export type RepoFragmentDashboardFragment = {
     color: string | null;
     iconUrl: string | null;
   } | null;
-  collection: { __typename?: 'Collection'; path: string } | null;
+  collection: {
+    __typename?: 'Collection';
+    path: string;
+    id: any | null;
+  } | null;
   permissions: {
     __typename?: 'SandboxProtectionSettings';
     preventSandboxLeaving: boolean;
@@ -4676,7 +4684,11 @@ export type TemplateFragmentDashboardFragment = {
       color: string | null;
       iconUrl: string | null;
     } | null;
-    collection: { __typename?: 'Collection'; path: string } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      id: any | null;
+    } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -5133,7 +5145,11 @@ export type AddToFolderMutation = {
       color: string | null;
       iconUrl: string | null;
     } | null;
-    collection: { __typename?: 'Collection'; path: string } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      id: any | null;
+    } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -5182,7 +5198,11 @@ export type MoveToTrashMutation = {
       color: string | null;
       iconUrl: string | null;
     } | null;
-    collection: { __typename?: 'Collection'; path: string } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      id: any | null;
+    } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -5232,7 +5252,11 @@ export type ChangePrivacyMutation = {
       color: string | null;
       iconUrl: string | null;
     } | null;
-    collection: { __typename?: 'Collection'; path: string } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      id: any | null;
+    } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -5282,7 +5306,11 @@ export type ChangeFrozenMutation = {
       color: string | null;
       iconUrl: string | null;
     } | null;
-    collection: { __typename?: 'Collection'; path: string } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      id: any | null;
+    } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -5332,7 +5360,11 @@ export type _RenameSandboxMutation = {
       color: string | null;
       iconUrl: string | null;
     } | null;
-    collection: { __typename?: 'Collection'; path: string } | null;
+    collection: {
+      __typename?: 'Collection';
+      path: string;
+      id: any | null;
+    } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -5753,6 +5785,16 @@ export type SetTeamMetadataMutation = {
       ubbBeta: boolean;
       friendOfCsb: boolean;
     };
+    limits: {
+      __typename?: 'TeamLimits';
+      includedPublicSandboxes: number;
+      includedPrivateSandboxes: number;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      publicSandboxesQuantity: number;
+      privateSandboxesQuantity: number;
+    };
   };
 };
 
@@ -5809,7 +5851,11 @@ export type RecentlyDeletedTeamSandboxesQuery = {
           color: string | null;
           iconUrl: string | null;
         } | null;
-        collection: { __typename?: 'Collection'; path: string } | null;
+        collection: {
+          __typename?: 'Collection';
+          path: string;
+          id: any | null;
+        } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -5873,7 +5919,11 @@ export type SandboxesByPathQuery = {
           color: string | null;
           iconUrl: string | null;
         } | null;
-        collection: { __typename?: 'Collection'; path: string } | null;
+        collection: {
+          __typename?: 'Collection';
+          path: string;
+          id: any | null;
+        } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -5929,7 +5979,11 @@ export type TeamDraftsQuery = {
           color: string | null;
           iconUrl: string | null;
         } | null;
-        collection: { __typename?: 'Collection'; path: string } | null;
+        collection: {
+          __typename?: 'Collection';
+          path: string;
+          id: any | null;
+        } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -6018,7 +6072,11 @@ export type GetTeamReposQuery = {
           color: string | null;
           iconUrl: string | null;
         } | null;
-        collection: { __typename?: 'Collection'; path: string } | null;
+        collection: {
+          __typename?: 'Collection';
+          path: string;
+          id: any | null;
+        } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -6092,7 +6150,11 @@ export type TeamTemplatesQuery = {
             color: string | null;
             iconUrl: string | null;
           } | null;
-          collection: { __typename?: 'Collection'; path: string } | null;
+          collection: {
+            __typename?: 'Collection';
+            path: string;
+            id: any | null;
+          } | null;
           permissions: {
             __typename?: 'SandboxProtectionSettings';
             preventSandboxLeaving: boolean;
@@ -6216,7 +6278,11 @@ export type _SearchTeamSandboxesQuery = {
           color: string | null;
           iconUrl: string | null;
         } | null;
-        collection: { __typename?: 'Collection'; path: string } | null;
+        collection: {
+          __typename?: 'Collection';
+          path: string;
+          id: any | null;
+        } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -6270,7 +6336,11 @@ export type RecentlyAccessedSandboxesQuery = {
         color: string | null;
         iconUrl: string | null;
       } | null;
-      collection: { __typename?: 'Collection'; path: string } | null;
+      collection: {
+        __typename?: 'Collection';
+        path: string;
+        id: any | null;
+      } | null;
       permissions: {
         __typename?: 'SandboxProtectionSettings';
         preventSandboxLeaving: boolean;
@@ -6353,7 +6423,11 @@ export type SharedWithMeSandboxesQuery = {
         color: string | null;
         iconUrl: string | null;
       } | null;
-      collection: { __typename?: 'Collection'; path: string } | null;
+      collection: {
+        __typename?: 'Collection';
+        path: string;
+        id: any | null;
+      } | null;
       permissions: {
         __typename?: 'SandboxProtectionSettings';
         preventSandboxLeaving: boolean;
@@ -6943,7 +7017,11 @@ export type TeamSidebarDataQuery = {
           color: string | null;
           iconUrl: string | null;
         } | null;
-        collection: { __typename?: 'Collection'; path: string } | null;
+        collection: {
+          __typename?: 'Collection';
+          path: string;
+          id: any | null;
+        } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
