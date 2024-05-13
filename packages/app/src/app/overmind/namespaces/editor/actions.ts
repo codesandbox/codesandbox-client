@@ -770,7 +770,7 @@ export const forkExternalSandbox = async (
       alias?: string;
       v2?: boolean;
       title?: string;
-      privacy?: number;
+      privacy?: 0 | 1 | 2;
     };
   }
 ) => {

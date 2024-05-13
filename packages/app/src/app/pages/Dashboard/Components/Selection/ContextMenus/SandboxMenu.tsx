@@ -157,7 +157,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               hasBetaEditorExperiment,
               redirectAfterFork: true,
               body: {
-                privacy: sandbox.draft ? 2 : sandbox.privacy,
+                privacy: sandbox.draft ? 2 : (sandbox.privacy as 2 | 1 | 0),
                 collectionId: sandbox.draft ? undefined : sandbox.collection.id,
               },
             });
