@@ -38,6 +38,7 @@ export const sandboxFragmentDashboard = gql`
 
     collection {
       path
+      id
     }
 
     authorId

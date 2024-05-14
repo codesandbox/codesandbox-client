@@ -766,7 +766,7 @@ export const forkExternalSandbox = async (
     customVMTier?: number;
     redirectAfterFork?: boolean;
     body?: {
-      collectionId: string;
+      collectionId?: string;
       alias?: string;
       v2?: boolean;
       title?: string;
