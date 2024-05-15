@@ -2237,6 +2237,7 @@ export type RootMutationTypeChangeTeamMemberAuthorizationsArgs = {
 
 export type RootMutationTypeConvertToUsageBillingArgs = {
   addons: Array<Scalars['String']>;
+  billingInterval: InputMaybe<SubscriptionInterval>;
   plan: Scalars['String'];
   teamId: Scalars['UUID4'];
 };
@@ -2473,6 +2474,7 @@ export type RootMutationTypePermanentlyDeleteSandboxesArgs = {
 
 export type RootMutationTypePreviewConvertToUsageBillingArgs = {
   addons: Array<Scalars['String']>;
+  billingInterval: InputMaybe<SubscriptionInterval>;
   plan: Scalars['String'];
   teamId: Scalars['UUID4'];
 };
@@ -5652,6 +5654,7 @@ export type PreviewConvertToUsageBillingMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   addons: Array<Scalars['String']> | Scalars['String'];
   plan: Scalars['String'];
+  billingInterval: InputMaybe<SubscriptionInterval>;
 }>;
 
 export type PreviewConvertToUsageBillingMutation = {
@@ -5667,6 +5670,7 @@ export type ConvertToUsageBillingMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   addons: Array<Scalars['String']> | Scalars['String'];
   plan: Scalars['String'];
+  billingInterval: InputMaybe<SubscriptionInterval>;
 }>;
 
 export type ConvertToUsageBillingMutation = {
@@ -5752,6 +5756,16 @@ export type SetTeamMetadataMutation = {
       __typename?: 'TeamFeatureFlags';
       ubbBeta: boolean;
       friendOfCsb: boolean;
+    };
+    limits: {
+      __typename?: 'TeamLimits';
+      includedPublicSandboxes: number;
+      includedPrivateSandboxes: number;
+    };
+    usage: {
+      __typename?: 'TeamUsage';
+      publicSandboxesQuantity: number;
+      privateSandboxesQuantity: number;
     };
   };
 };
