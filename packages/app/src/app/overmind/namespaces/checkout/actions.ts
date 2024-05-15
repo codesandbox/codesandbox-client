@@ -355,6 +355,7 @@ export const calculateConversionCharge = async (
       teamId: workspaceId,
       plan: newSubscription.basePlan.id,
       addons: actions.checkout.getFlatAddonsList(),
+      billingInterval: newSubscription.billingInterval,
     });
 
     // Cap the values to a min of 0
@@ -391,6 +392,7 @@ export const convertToUsageBilling = async (
       teamId: workspaceId,
       plan: newSubscription.basePlan.id,
       addons: actions.checkout.getFlatAddonsList(),
+      billingInterval: newSubscription.billingInterval,
     });
 
     return { success: true };

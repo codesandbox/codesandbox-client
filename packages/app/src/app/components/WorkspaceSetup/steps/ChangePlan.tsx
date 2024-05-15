@@ -3,6 +3,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Button, Text, Icon } from '@codesandbox/components';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
+import { SubscriptionInterval } from 'app/graphql/types';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState } from 'app/overmind';
 import { StepProps } from '../types';
@@ -59,7 +60,11 @@ export const ChangePlan: React.FC<StepProps> = ({
             <Text>{checkout.newSubscription.totalCredits} VM credits</Text>
           </Stack>
           <Text size={6} color="#e5e5e5">
-            ${checkout.newSubscription.totalPrice} / month
+            ${checkout.newSubscription.totalPrice} /{' '}
+            {checkout.newSubscription.billingInterval ===
+            SubscriptionInterval.Monthly
+              ? 'month'
+              : 'year'}
           </Text>
         </Stack>
 

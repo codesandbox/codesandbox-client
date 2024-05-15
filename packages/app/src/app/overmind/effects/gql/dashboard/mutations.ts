@@ -436,11 +436,13 @@ export const previewConvertToUsageBilling: Query<
     $teamId: UUID4!
     $addons: [String!]!
     $plan: String!
+    $billingInterval: SubscriptionInterval
   ) {
     previewConvertToUsageBilling(
       plan: $plan
       addons: $addons
       teamId: $teamId
+      billingInterval: $billingInterval
     ) {
       total
       totalExcludingTax
@@ -456,8 +458,14 @@ export const convertToUsageBilling: Query<
     $teamId: UUID4!
     $addons: [String!]!
     $plan: String!
+    $billingInterval: SubscriptionInterval
   ) {
-    convertToUsageBilling(plan: $plan, addons: $addons, teamId: $teamId)
+    convertToUsageBilling(
+      plan: $plan
+      addons: $addons
+      teamId: $teamId
+      billingInterval: $billingInterval
+    )
   }
 `;
 
