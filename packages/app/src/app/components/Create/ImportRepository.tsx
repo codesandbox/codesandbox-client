@@ -105,12 +105,22 @@ export const ImportRepository: React.FC<
     }
   }, [preSelectedRepo, restrictsPublicRepos]);
 
-  const handleFetchFullGithubRepo = async (repo: {
-    owner: string;
-    name: string;
-  }) => {
+  const handleFetchFullGithubRepo = async (
+    repo: {
+      owner: string;
+      name: string;
+    },
+    options: { runInBackground: boolean } = { runInBackground: false }
+  ) => {
+    if (viewState === 'loading') {
+      return;
+    }
+
     try {
-      setViewState('loading');
+      if (!options.runInBackground) {
+        // Don't switch back to loading state when the repo is already fetched
+        setViewState('loading');
+      }
       const data = await effects.gql.queries.getGithubRepository({
         owner: repo.owner,
         name: repo.name,
@@ -251,7 +261,9 @@ export const ImportRepository: React.FC<
                 ) : (
                   <ConfigureRepo
                     repository={selectedRepo}
-                    onRefetchGithubRepo={handleFetchFullGithubRepo}
+                    onRefetchGithubRepo={repo =>
+                      handleFetchFullGithubRepo(repo, { runInBackground: true })
+                    }
                   />
                 )}
               </ModalContent>
