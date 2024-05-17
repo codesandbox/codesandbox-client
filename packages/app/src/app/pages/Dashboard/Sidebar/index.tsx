@@ -15,6 +15,7 @@ import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
 import { ExpandableReposRowItem } from './ExpandableReposRowItem';
+import { UsageProgress } from './UsageProgress';
 
 interface SidebarProps {
   visible: boolean;
@@ -142,14 +143,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.portalOverview(activeTeam)}
             icon="people"
           />
-          {ubbBeta && (
-            <RowItem
-              name="Usage"
-              page="external"
-              path={dashboardUrls.portalVMUsage(activeTeam)}
-              icon="coins"
-            />
-          )}
           <RowItem
             name="Get started"
             page="get-started"
@@ -257,8 +250,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="sharing"
           />
         </List>
+        {ubbBeta && state.activeTeamInfo && (
+          <UsageProgress
+            workspaceId={activeTeam}
+            maxCredits={
+              state.activeTeamInfo.limits?.includedCredits +
+              state.activeTeamInfo.limits?.onDemandCreditLimit
+            }
+            usedCredits={state.activeTeamInfo.usage?.credits}
+          />
+        )}
       </Stack>
-
       <AnimatePresence>
         {visible && (
           <Element
