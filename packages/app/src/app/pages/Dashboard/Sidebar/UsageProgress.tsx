@@ -1,4 +1,4 @@
-import { Button, Link, Stack, Text, Tooltip } from '@codesandbox/components';
+import { Link, Stack, Text, Tooltip } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import React, { useEffect, useState } from 'react';
