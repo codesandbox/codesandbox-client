@@ -36,7 +36,7 @@ export const UsageProgress: React.FC<{
         size={2}
         css={css({ color: 'sideBarSectionHeader.foreground' })}
       >
-        {Math.min(usedCredits, maxCredits)} / {maxCredits} credits used
+        {Math.min(usedCredits, maxCredits)} / {maxCredits} credits
       </Text>
 
       <Stack direction="vertical" gap={4}>
