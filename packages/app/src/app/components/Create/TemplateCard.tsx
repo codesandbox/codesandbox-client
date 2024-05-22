@@ -4,6 +4,7 @@ import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
 import { SandboxToFork } from './utils/types';
 import { TemplateIcon } from './TemplateIcon';
+import { CODEIUM_ID } from './utils/constants';
 
 interface TemplateCardProps {
   disabled?: boolean;
@@ -23,7 +24,7 @@ export const TemplateCard = ({
   forks,
 }: TemplateCardProps) => {
   const sandboxTitle = template.title || template.alias;
-  const teamName = template.author;
+  const teamName = template.id === CODEIUM_ID ? 'Codeium' : template.author;
 
   return (
     <TemplateButton
