@@ -738,6 +738,12 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           plans={plans}
           property="sso"
         />
+        <FeatureComparisonBooleanRow
+          title="SOC 2 compliance"
+          description="Ensure the security of your data with our SOC 2 Type II compliance."
+          plans={plans}
+          property="soc2"
+        />
 
         <FeatureComparisonBooleanRow
           title="Private cloud"

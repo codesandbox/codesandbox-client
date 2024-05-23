@@ -18,6 +18,7 @@ export type PricingPlanFeatures = {
   apiAccess: boolean;
   protectedPreviews: boolean;
   sso: boolean;
+  soc2: boolean;
   privateCloud: boolean;
   onPremise: boolean;
   instantEnvironmentResume: boolean;
@@ -42,6 +43,7 @@ export const FREE_FEATURES: PricingPlanFeatures = {
   apiAccess: true,
   protectedPreviews: false,
   sso: false,
+  soc2: true,
   privateCloud: false,
   onPremise: false,
   instantEnvironmentResume: true,
@@ -67,6 +69,7 @@ export const PRO_FEATURES: PricingPlanFeatures = {
   apiAccess: true,
   protectedPreviews: false,
   sso: false,
+  soc2: true,
   privateCloud: false,
   onPremise: false,
   instantEnvironmentResume: true,
@@ -91,6 +94,7 @@ export const ENTERPRISE_FEATURES: PricingPlanFeatures = {
   apiAccess: true,
   protectedPreviews: true,
   sso: true,
+  soc2: true,
   privateCloud: true,
   onPremise: true,
   instantEnvironmentResume: true,

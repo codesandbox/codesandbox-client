@@ -68,6 +68,7 @@ export const ENTERPRISE_PLAN: PricingPlan = {
     'On-premise options',
     'Private managed cloud',
     'Dedicated support',
+    'SOC 2 Type II compliant',
     'SSO',
   ],
 };
