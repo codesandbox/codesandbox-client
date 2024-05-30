@@ -14,6 +14,7 @@ import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
@@ -29,7 +30,6 @@ import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
 import { FixedSignInBanner } from './FixedSignInBanner';
-import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 
 type EditorTypes = {
   showModalOnTop?: 'newSandbox' | 'newDevbox' | 'new';
