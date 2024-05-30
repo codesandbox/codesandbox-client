@@ -14,7 +14,7 @@ import {
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
-import { PaymentPending } from 'app/components/StripeMessages';
+import { PaymentPending } from 'app/components/StripeMessages/PaymentPending';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
