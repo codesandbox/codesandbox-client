@@ -149,9 +149,14 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
 
             {!betaSandboxEditor && (
               <MessageStripe variant="warning" corners="straight">
-                We are in the process of deprecating this version of the editor.
-                Starting June 3rd, all sandboxes will open in the Unified
-                Platform Editor.
+                This legacy editor will be deprecated on June 3rd.
+                <MessageStripe.Action
+                  as="a"
+                  target="_blank"
+                  href="https://codesandbox.io/blog/introducing-a-unified-development-platform"
+                >
+                  Learn more
+                </MessageStripe.Action>
                 <MessageStripe.Action
                   onClick={() => {
                     setBetaSandboxEditor(true);

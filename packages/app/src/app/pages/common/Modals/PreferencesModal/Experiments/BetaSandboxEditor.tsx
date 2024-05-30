@@ -33,8 +33,9 @@ export const BetaSandboxEditor = () => {
 
         {!betaSandboxEditor && (
           <Text color="#F5A8A8" block size={3}>
-            We are in the process of deprecating the old editor. <br />
-            All users will be migrated to the new editor starting June 3rd.
+            We are in the process of deprecating the legacy editor. <br />
+            The unified platform editor will become the default starting June
+            3rd.
           </Text>
         )}
       </Stack>
