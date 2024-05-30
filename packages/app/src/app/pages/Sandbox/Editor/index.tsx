@@ -5,24 +5,20 @@ import VERSION from '@codesandbox/common/lib/version';
 import {
   ThemeProvider as ComponentsThemeProvider,
   Element,
+  MessageStripe,
   Stack,
 } from '@codesandbox/components';
 import { GenericCreate } from 'app/components/Create/GenericCreate';
-import {
-  RestrictedSandbox,
-  PaymentPending,
-} from 'app/components/StripeMessages';
+
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
+import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { SubscriptionStatus } from 'app/graphql/types';
-import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { CreateBox } from 'app/components/Create/CreateBox';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
@@ -63,7 +59,7 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
     },
     customVSCodeTheme: null,
   });
-  const { subscription } = useWorkspaceSubscription();
+  const [betaSandboxEditor, setBetaSandboxEditor] = useBetaSandboxEditor();
 
   useEffect(() => {
     let timeout;
@@ -106,17 +102,12 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
   }, [effects.vscode]);
 
   const sandbox = state.editor.currentSandbox;
-  const sandboxFromActiveWorkspace = sandbox?.team?.id === state.activeTeam;
-  const showRestrictedBanner =
-    sandboxFromActiveWorkspace && sandbox?.restricted;
 
   const hideNavigation =
     state.preferences.settings.zenMode && state.workspace.workspaceHidden;
   const { statusBar } = state.editor;
 
   const templateDef = sandbox && getTemplateDefinition(sandbox.template);
-  const showCloudSandboxConvert =
-    !state.environment.isOnPrem && state.hasLogIn && sandbox?.isSse;
 
   const getTopOffset = () => {
     if (state.preferences.settings.zenMode) {
@@ -129,11 +120,7 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
     }
 
     // Has MessageStripe
-    if (
-      subscription?.status === SubscriptionStatus.Unpaid ||
-      showRestrictedBanner ||
-      showCloudSandboxConvert
-    ) {
+    if (!betaSandboxEditor) {
       // Header height + MessageStripe
       return 3 * 16 + 44;
     }
@@ -160,13 +147,27 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
             {!state.hasLogIn && <FixedSignInBanner />}
 
-            {subscription?.status === SubscriptionStatus.Unpaid ||
-              (subscription?.status === SubscriptionStatus.Incomplete && (
-                <PaymentPending status={subscription?.status} />
-              ))}
+            {!betaSandboxEditor && (
+              <MessageStripe variant="warning" corners="straight">
+                This legacy editor will be deprecated on June 3rd.
+                <MessageStripe.Action
+                  as="a"
+                  target="_blank"
+                  href="https://codesandbox.io/blog/introducing-a-unified-development-platform"
+                >
+                  Learn more
+                </MessageStripe.Action>
+                <MessageStripe.Action
+                  onClick={() => {
+                    setBetaSandboxEditor(true);
+                    window.location.reload();
+                  }}
+                >
+                  Switch to the new editor
+                </MessageStripe.Action>
+              </MessageStripe>
+            )}
 
-            {showRestrictedBanner ? <RestrictedSandbox /> : null}
-            {showCloudSandboxConvert ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>
         )}
