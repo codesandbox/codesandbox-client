@@ -148,7 +148,7 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
             {!state.hasLogIn && <FixedSignInBanner />}
 
             {!betaSandboxEditor && (
-              <MessageStripe variant="error" corners="straight">
+              <MessageStripe variant="warning" corners="straight">
                 We are in the process of deprecating this version of the editor.
                 Starting June 3rd, all sandboxes will open in the Unified
                 Platform Editor.
