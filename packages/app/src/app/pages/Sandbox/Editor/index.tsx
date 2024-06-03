@@ -5,7 +5,6 @@ import VERSION from '@codesandbox/common/lib/version';
 import {
   ThemeProvider as ComponentsThemeProvider,
   Element,
-  MessageStripe,
   Stack,
 } from '@codesandbox/components';
 import { GenericCreate } from 'app/components/Create/GenericCreate';
@@ -14,7 +13,6 @@ import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
-import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
@@ -59,7 +57,6 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
     },
     customVSCodeTheme: null,
   });
-  const [betaSandboxEditor, setBetaSandboxEditor] = useBetaSandboxEditor();
 
   useEffect(() => {
     let timeout;
@@ -119,12 +116,6 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
       return 5.5 * 16 + 2;
     }
 
-    // Has MessageStripe
-    if (!betaSandboxEditor) {
-      // Header height + MessageStripe
-      return 3 * 16 + 44;
-    }
-
     // Header height
     return 3 * 16;
   };
@@ -146,27 +137,6 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
         {state.preferences.settings.zenMode ? null : (
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
             {!state.hasLogIn && <FixedSignInBanner />}
-
-            {!betaSandboxEditor && (
-              <MessageStripe variant="warning" corners="straight">
-                This legacy editor will be deprecated on June 3rd.
-                <MessageStripe.Action
-                  as="a"
-                  target="_blank"
-                  href="https://codesandbox.io/blog/introducing-a-unified-development-platform"
-                >
-                  Learn more
-                </MessageStripe.Action>
-                <MessageStripe.Action
-                  onClick={() => {
-                    setBetaSandboxEditor(true);
-                    window.location.reload();
-                  }}
-                >
-                  Switch to the new editor
-                </MessageStripe.Action>
-              </MessageStripe>
-            )}
 
             <Header />
           </ComponentsThemeProvider>
