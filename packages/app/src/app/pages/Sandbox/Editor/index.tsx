@@ -149,7 +149,7 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
 
             {!betaSandboxEditor && (
               <MessageStripe variant="warning" corners="straight">
-                This legacy editor will be deprecated on June 3rd.
+                This legacy editor will be deprecated on June 18th.
                 <MessageStripe.Action
                   as="a"
                   target="_blank"
