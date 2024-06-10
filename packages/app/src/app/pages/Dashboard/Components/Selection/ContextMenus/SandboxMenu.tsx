@@ -168,7 +168,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </MenuItem>
       ) : null}
 
-      {hasWriteAccess ? (
+      {hasWriteAccess && !isTemplate ? (
         <MenuItem
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
