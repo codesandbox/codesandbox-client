@@ -1,7 +1,8 @@
-import { Text, Element } from '@codesandbox/components';
-import React, { FunctionComponent } from 'react';
+import { Text, Element } from "@codesandbox/components";
+import React, { FunctionComponent } from "react";
 
-import { SubContainer } from '../elements';
+import { SubContainer } from "../elements";
+import { BetaSandboxEditor } from "./BetaSandboxEditor";
 
 export const Experiments: FunctionComponent = () => (
   <>
@@ -11,9 +12,10 @@ export const Experiments: FunctionComponent = () => (
 
     <SubContainer>
       <Element paddingTop={2}>
-        <Text size={13} variant="muted">
+        <BetaSandboxEditor />
+        {/* <Text size={13} variant="muted">
           No experiements available at the moment
-        </Text>
+        </Text> */}
       </Element>
     </SubContainer>
   </>
