@@ -8,8 +8,24 @@ export const useBetaSandboxEditor = (): [
 ] => {
   const { hasLogIn } = useAppState();
 
-  const defaultValue =
-    hasLogIn && !document.location.search.includes("editorMode=v1");
+  const globalState = useGlobalPersistedState<boolean>(
+    "BETA_SANDBOX_EDITOR",
+    hasLogIn
+  );
+  const hasV1Override = document.location.search.includes("editorMode=v1");
 
-  return useGlobalPersistedState<boolean>("BETA_SANDBOX_EDITOR", defaultValue);
+  if (hasV1Override) {
+    // @ts-ignore
+    return [
+      false,
+      () => {
+        // noop
+      },
+      () => {
+        // noop
+      },
+    ];
+  }
+
+  return globalState;
 };
