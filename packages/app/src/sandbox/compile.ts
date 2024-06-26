@@ -633,6 +633,13 @@ async function compile(opts: CompileOptions) {
       configurations
     );
 
+    dispatch({
+      type: 'dependencies',
+      data: {
+        state: 'downloading_manifest',
+      },
+    });
+
     dependencies = await manager.preset.processDependencies(dependencies);
 
     metrics.measure('dependencies');
@@ -647,7 +654,16 @@ async function compile(opts: CompileOptions) {
 
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
-      ({ done, total, remainingDependencies }) => {
+      ({ done, total, remainingDependencies, dependencyName }) => {
+        dispatch({
+          type: 'dependencies',
+          data: {
+            state: 'downloaded_module',
+            totalPending: total - done,
+            name: dependencyName,
+          },
+        });
+
         if (!showLoadingScreen) {
           return;
         }
@@ -731,6 +747,13 @@ async function compile(opts: CompileOptions) {
         showFullScreen: firstLoad,
       });
     }
+
+    dispatch({
+      type: 'dependencies',
+      data: {
+        state: 'starting',
+      },
+    });
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');

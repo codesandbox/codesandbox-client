@@ -81,6 +81,7 @@ export type UpdateProgressFunc = (progress: {
   done: number;
   total: number;
   remainingDependencies: string[];
+  dependencyName: string;
 }) => void;
 
 export async function getDependenciesFromSources(
@@ -106,7 +107,7 @@ export async function getDependenciesFromSources(
       forceFetchDynamically
     );
 
-    const updateLoadScreen = () => {
+    const updateLoadScreen = (depName: string) => {
       const progress = totalDependencies - remainingDependencies.length;
       const total = totalDependencies;
 
@@ -114,6 +115,7 @@ export async function getDependenciesFromSources(
         done: progress,
         total,
         remainingDependencies,
+        dependencyName: depName,
       });
     };
 
@@ -128,7 +130,7 @@ export async function getDependenciesFromSources(
             remainingDependencies.indexOf(depName),
             1
           );
-          updateLoadScreen();
+          updateLoadScreen(depName);
         })
       )
     );
@@ -156,7 +158,7 @@ export async function getDependenciesFromSources(
               remainingDependencies.indexOf(depName),
               1
             );
-            updateLoadScreen();
+            updateLoadScreen(depName);
           })
       )
     );
