@@ -28,6 +28,7 @@ import {
   UnibitIcon,
   DocusaurusIcon,
   SolidIcon,
+  TramvaiIcon,
 } from '@codesandbox/template-icons';
 
 import {
@@ -62,6 +63,7 @@ import {
   TemplateType,
   remix,
   solid,
+  tramvai,
 } from '.';
 
 export default function getIcon(theme: TemplateType) {
@@ -126,6 +128,8 @@ export default function getIcon(theme: TemplateType) {
       return RemixIcon;
     case solid.name:
       return SolidIcon;
+    case tramvai.name:
+      return TramvaiIcon;
 
     default:
       return ReactIcon;
