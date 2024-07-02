@@ -302,6 +302,9 @@ function runDevServer(port, protocol, index) {
     inline: true,
     hot: true,
     liveReload: process.env['DISABLE_REFRESH'] ? false : true,
+    headers: {
+      'x-csb-no-sw-proxy': '1'
+    }
   };
   // console.log(JSON.stringify(devServerConfig, null, 2));
   var devServer = new WebpackDevServer(compiler, devServerConfig);

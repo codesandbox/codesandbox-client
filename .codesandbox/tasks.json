@@ -50,6 +50,14 @@
     "typecheck": {
       "name": "typecheck",
       "command": "yarn typecheck"
+    },
+    "start:sandpack-sandbox": {
+      "name": "start:sandpack-sandbox",
+      "command": "cd packages/app && yarn start:sandpack-sandbox"
+    },
+    "start:sandpack-core": {
+      "name": "start:sandpack-core",
+      "command": "cd packages/sandpack-core && yarn start"
     }
   }
 }

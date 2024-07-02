@@ -1,3 +1,5 @@
+/* eslint-disable import/default */
+
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
@@ -16,6 +18,7 @@ import {
   removeSandpackSecret,
 } from 'sandpack-core/lib/sandpack-secret';
 import compile, { getCurrentManager } from './compile';
+import { startServiceWorker } from './worker';
 
 const host = process.env.CODESANDBOX_HOST;
 const withServiceWorker = !process.env.SANDPACK;
@@ -29,7 +32,9 @@ debug('Booting sandbox v2');
 
 endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 
-requirePolyfills().then(() => {
+requirePolyfills().then(async () => {
+  await startServiceWorker();
+
   if (withServiceWorker) {
     registerServiceWorker('/sandbox-service-worker.js', {});
   }

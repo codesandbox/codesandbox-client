@@ -3487,6 +3487,11 @@
   dependencies:
     "@octokit/openapi-types" "^16.0.0"
 
+"@open-draft/deferred-promise@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@open-draft/deferred-promise/-/deferred-promise-2.2.0.tgz#4a822d10f6f0e316be4d67b4d4f8c9a124b073bd"
+  integrity sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA==
+
 "@parcel/watcher@2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@parcel/watcher/-/watcher-2.0.4.tgz#f300fef4cc38008ff4b8c29d92588eced3ce014b"
@@ -18767,6 +18772,11 @@ os-tmpdir@^1.0.1, os-tmpdir@~1.0.2:
 ot@^0.0.15:
   version "0.0.15"
   resolved "https://registry.yarnpkg.com/ot/-/ot-0.0.15.tgz#98bd953e6283670a01868e7ef4d2d983a29cd6a7"
+
+outvariant@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/outvariant/-/outvariant-1.4.2.tgz#f54f19240eeb7f15b28263d5147405752d8e2066"
+  integrity sha512-Ou3dJ6bA/UJ5GVHxah4LnqDwZRwAmWxrG3wtrHrbGnP4RnLCtA64A4F+ae7Y8ww660JaddSoArUR5HjipWSHAQ==
 
 overmind-graphql@^8.0.0-1615750082257:
   version "8.0.0-1615750082257"
