@@ -1,6 +1,4 @@
 /* eslint-disable import/default */
-// @ts-ignore
-import SandpackWorker from 'worker-loader?publicPath=/&name=sandpack-sw.[hash:8].worker.js!./sandpack-sw';
 
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
@@ -20,6 +18,7 @@ import {
   removeSandpackSecret,
 } from 'sandpack-core/lib/sandpack-secret';
 import compile, { getCurrentManager } from './compile';
+import { startServiceWorker } from './worker';
 
 const host = process.env.CODESANDBOX_HOST;
 const withServiceWorker = !process.env.SANDPACK;
@@ -34,11 +33,7 @@ debug('Booting sandbox v2');
 endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 
 requirePolyfills().then(async () => {
-  const hacky = SandpackWorker.toString()
-    .replace('function() {\n  return new Worker("/" + "', '')
-    .replace('");\n}', '');
-  const workerUrl = new URL(hacky, location.origin).href;
-  await navigator.serviceWorker.register(workerUrl, { scope: '/' });
+  await startServiceWorker();
 
   if (withServiceWorker) {
     registerServiceWorker('/sandbox-service-worker.js', {});
