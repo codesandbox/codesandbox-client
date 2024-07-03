@@ -1,5 +1,3 @@
-/* eslint-disable import/default */
-
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
@@ -31,7 +29,7 @@ debug('Booting sandbox v2');
 
 endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 
-requirePolyfills().then(async () => {
+requirePolyfills().then(() => {
   if (withServiceWorker) {
     registerServiceWorker('/sandbox-service-worker.js', {});
   }
