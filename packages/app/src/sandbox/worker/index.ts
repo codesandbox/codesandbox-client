@@ -1,10 +1,10 @@
 import { invariant } from 'outvariant';
-// import { DeferredPromise } from '@open-draft/deferred-promise';
 
-import { getServiceWorker, preventStaleTermination } from './utils';
+import { debug, getServiceWorker, preventStaleTermination } from './utils';
 import {
   CHANNEL_NAME,
   IPreviewInitMessage,
+  IPreviewReadyMessage,
   IPreviewResponseMessage,
   IWorkerInitMessage,
 } from './types';
@@ -16,7 +16,7 @@ const workerChannel = new MessageChannel();
 const workerReadyPromise = new DeferredPromise<ServiceWorker>();
 
 workerReadyPromise.then(worker => {
-  // console.debug("worker is ready, initializing MessageChannel...");
+  debug('[relay] worker is ready, initializing MessageChannel...');
 
   // Always post the initial MessageChannel message to the worker
   // as soon as the worker is ready. This is done once.
@@ -33,6 +33,7 @@ const parentPortPromise = new DeferredPromise<MessagePort>();
 window.addEventListener(
   'message',
   (event: MessageEvent<IPreviewInitMessage>) => {
+    debug('[relay]', event.data);
     if (event.data.$type === 'preview/init') {
       const parentPort = event.ports[0];
       parentPort.onmessage = async (evt: MessageEvent) => {
@@ -53,14 +54,17 @@ window.addEventListener(
 export async function startServiceWorker() {
   const worker = await getServiceWorker().catch(error => {
     console.error(
-      'Failed to ensure the relay has a Service Worker registered. See details below.'
+      '[relay] Failed to ensure the relay has a Service Worker registered. See details below.'
     );
     console.error(error);
   });
 
   await navigator.serviceWorker.ready;
 
-  invariant(worker, 'Failed to retrieve the worker instance: worker not found');
+  invariant(
+    worker,
+    '[relay] Failed to retrieve the worker instance: worker not found'
+  );
   preventStaleTermination(worker);
 
   // TODO: remove before flight
@@ -72,15 +76,21 @@ export async function startServiceWorker() {
       await registration.unregister();
     }
 
-    console.debug('Unregister all SW');
+    debug('[relay] Unregister all SW');
   });
 
   workerReadyPromise.resolve(worker);
 
-  console.debug('Worker ready');
+  debug('[relay] Worker ready');
 
   // Wait until the parent sends the init event
   // via the MessageChannel, acknowledging that it recognized the relay.
   const parentPort = await parentPortPromise;
-  console.debug('parent port received', parentPort);
+  debug('[relay] Parent port received', parentPort);
+
+  const readyMessage: IPreviewReadyMessage = {
+    $channel: CHANNEL_NAME,
+    $type: 'preview/ready',
+  };
+  parentPort.postMessage(readyMessage);
 }

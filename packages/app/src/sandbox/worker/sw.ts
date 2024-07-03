@@ -171,7 +171,6 @@ self.addEventListener('fetch', event => {
   const req = event.request.clone();
   const parsedUrl = new URL(req.url);
 
-  console.debug(parsedUrl);
   return;
 
   if (

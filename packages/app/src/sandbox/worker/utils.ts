@@ -11,7 +11,7 @@ const __SERVICE_WORKER_BUNDLE_NAME = SandpackWorker.toString()
 const workerUrl = new URL(__SERVICE_WORKER_BUNDLE_NAME, location.origin).href;
 
 const DEBUG = true;
-const debug = (...args) => {
+export const debug = (...args) => {
   if (DEBUG) console.debug(...args);
 };
 
@@ -36,7 +36,7 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
 
   // Unregisters irrelevant worker registrations.
   const registrations = await navigator.serviceWorker.getRegistrations();
-  debug('all registrations', location, registrations);
+  debug('[sw:register] all registrations', location, registrations);
 
   await Promise.all(
     // @ts-ignore
@@ -46,7 +46,7 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
       // Unregister any worker that shouldn't be there.
       if (worker && worker.scriptURL !== workerUrl) {
         debug(
-          'found irrelevant worker registration, unregistering...',
+          '[sw:register] found irrelevant worker registration, unregistering...',
           worker,
           registration
         );
@@ -60,18 +60,23 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
 
   // No controller means the relay does not have any Service Worker registered.
   if (!controller) {
-    debug('relay is not controlled by a worker, registering a new worker...');
+    debug(
+      '[sw:register] relay is not controlled by a worker, registering a new worker...'
+    );
     return registerWorker();
   }
 
   if (controller) {
-    debug('found a crontoller', controller);
+    debug('[sw:register] found a crontoller', controller);
   }
 
   // If the controller has the same script as the expected worker,
   // this means the correct worker is already handling the page.
   if (controller.scriptURL === workerUrl) {
-    debug('relay is controlled by the correct worker', controller.scriptURL);
+    debug(
+      '[sw:register] relay is controlled by the correct worker',
+      controller.scriptURL
+    );
     return controller;
   }
 
@@ -80,14 +85,14 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
     navigator.serviceWorker.getRegistration(workerUrl),
   ]);
 
-  debug('controller registration:', controllerRegistration);
-  debug('worker registration:', registration);
+  debug('[sw:register] controller registration:', controllerRegistration);
+  debug('[sw:register] worker registration:', registration);
 
   // If there's no registration associated with the correct worker,
   // unregister whichever existing controller and register the worker anew.
   if (!registration) {
     debug(
-      'no registration found for "%s", unregistering controller and registering a new worker...',
+      '[sw:register] no registration found for "%s", unregistering controller and registering a new worker...',
       workerUrl
     );
     await controllerRegistration?.unregister();
@@ -97,7 +102,7 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
   // Waiting registration means the correct worker is queued but
   // hasn't been installed/activated yet. Promote it by updating.
   if (registration.waiting) {
-    debug('found waiting registration, promoting...');
+    debug('[sw:register] found waiting registration, promoting...');
     await registration.update();
     const worker = getWorkerInstance(registration);
 
@@ -135,16 +140,20 @@ export function preventStaleTermination(worker: ServiceWorker): void {
       $type: 'worker/ping',
     };
 
-    debug(pingMessage);
-
     worker.postMessage(pingMessage);
   }, 5000);
+
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data.$type === 'worker/pong') {
+      debug('[sw:register] ping/pong');
+    }
+  });
 
   worker.addEventListener('statechange', () => {
     // Stop the keepalive if the worker becomes redundant
     // (e.g. get unregistered or force-reloaded).
     if (worker.state === 'redundant') {
-      debug('Stop the keepalive');
+      debug('[sw:register] Stop the keepalive');
       clearInterval(keepaliveInterval);
     }
   });
