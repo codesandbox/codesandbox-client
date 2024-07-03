@@ -8,6 +8,7 @@ import {
   Stack,
 } from '@codesandbox/components';
 import { GenericCreate } from 'app/components/Create/GenericCreate';
+import { ContentSkeleton } from 'app/components/Skeleton';
 
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
@@ -23,7 +24,7 @@ import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
 import { Navigation } from './Navigation';
-import { ContentSkeleton } from './Skeleton';
+
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';

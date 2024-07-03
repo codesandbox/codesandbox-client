@@ -3,7 +3,7 @@ import { getType } from 'app/utils/get-type';
 import { Text, Element, ListAction, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useActions, useAppState, useEffects } from 'app/overmind';
-import { EntryIcons } from '../../../Files/DirectoryEntry/Entry/EntryIcons';
+import { EntryIcons } from 'app/components/EntryIcons';
 import { ToggleIcon } from '../icons';
 
 export const Result = ({ i, updateRender }) => {

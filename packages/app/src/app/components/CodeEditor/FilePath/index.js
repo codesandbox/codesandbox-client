@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import EntryIcons from 'app/components/EntryIcons';
 import { getType } from 'app/utils/get-type';
 
 import { Container, Chevron, FileName, StyledExitZen } from './elements';

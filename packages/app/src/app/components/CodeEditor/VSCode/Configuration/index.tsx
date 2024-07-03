@@ -4,7 +4,7 @@ import { ThemeProvider } from '@codesandbox/components';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import theme from '@codesandbox/common/lib/theme';
 import { Module } from '@codesandbox/common/lib/types';
-import { EntryIcons } from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import { EntryIcons } from 'app/components/EntryIcons';
 import { getType } from 'app/utils/get-type';
 import { TextOperation } from 'ot';
 import React from 'react';

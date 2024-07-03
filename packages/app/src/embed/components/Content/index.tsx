@@ -21,13 +21,13 @@ import {
   DevTools,
   IViewType,
 } from 'app/components/Preview/DevTools';
-import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
-import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
+import { StyledNotSyncedIcon } from 'app/components/Tabs/ModuleTab/elements';
+import Tab from 'app/components/Tabs/Tab';
 import {
   StyledCloseIcon,
   TabDir,
   TabTitle,
-} from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
+} from 'app/components/Tabs/Tab/elements';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
 // @flow

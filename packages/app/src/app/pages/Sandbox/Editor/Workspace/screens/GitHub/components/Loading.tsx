@@ -1,7 +1,7 @@
 import { Collapsible, List, ListItem } from '@codesandbox/components';
 import React from 'react';
 
-import { SkeletonTextBlock } from '../../../../Skeleton/elements';
+import { SkeletonTextBlock } from 'app/components/Skeleton/elements';
 
 export const Loading = () => (
   <Collapsible title="GitHub Repository" defaultOpen>

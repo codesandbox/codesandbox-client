@@ -1,7 +1,7 @@
 import React from 'react';
 import css from '@styled-system/css';
 import { ListItem, Stack } from '@codesandbox/components';
-import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
+import { SkeletonTextBlock } from 'app/components/Skeleton/elements';
 
 const NotificationSkeleton = () => (
   <ListItem

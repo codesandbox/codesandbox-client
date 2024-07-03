@@ -1,6 +1,7 @@
 import theme from '@codesandbox/common/lib/theme';
 import { Directory, Module } from '@codesandbox/common/lib/types';
 import { ContextMenu, ContextMenuItemType } from 'app/components/ContextMenu';
+import { EntryIcons } from 'app/components/EntryIcons';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
 import EditIcon from 'react-icons/lib/go/pencil';
@@ -13,7 +14,6 @@ import UndoIcon from 'react-icons/lib/md/undo';
 import { EntryContainer } from '../../../elements';
 import { EditIcons } from './EditIcons';
 import { NotSyncedIconWithMargin, Right } from './elements';
-import { EntryIcons } from './EntryIcons';
 import { EntryTitle } from './EntryTitle';
 import { EntryTitleInput } from './EntryTitleInput';
 
