@@ -56,8 +56,12 @@ export default function setupConsole() {
 
 const isIFramePreview = window.top !== window.self;
 
+const insideCodeSandboxPreview =
+  window.location.host.endsWith('csb.app') ||
+  window.location.host.endsWith('csb.dev');
+
 // Only run this script in editor context
-if (isIFramePreview) {
+if (isIFramePreview && insideCodeSandboxPreview) {
   // This is a temporary fix for deprecating the V1 editor. We need to load both V1 and V2 preview protocol
   // and this is the simplest way to achieve that. Later everything will be V2 preview protocol
   (function LoadV2PreviewProtocol() {

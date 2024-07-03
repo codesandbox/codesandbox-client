@@ -4,7 +4,6 @@ import { invariant } from 'outvariant';
 // @ts-ignore
 import SandpackWorker from 'worker-loader?publicPath=/&name=sw.[hash:8].worker.js!./sw';
 import { CHANNEL_NAME, IWorkerPingMessage } from './types';
-// import { DeferredPromise } from '@open-draft/deferred-promise';
 
 const __SERVICE_WORKER_BUNDLE_NAME = SandpackWorker.toString()
   .replace('function() {\n  return new Worker("/" + "', '')
@@ -136,7 +135,7 @@ export function preventStaleTermination(worker: ServiceWorker): void {
       $type: 'worker/ping',
     };
 
-    console.debug(pingMessage);
+    debug(pingMessage);
 
     worker.postMessage(pingMessage);
   }, 5000);
@@ -145,7 +144,7 @@ export function preventStaleTermination(worker: ServiceWorker): void {
     // Stop the keepalive if the worker becomes redundant
     // (e.g. get unregistered or force-reloaded).
     if (worker.state === 'redundant') {
-      console.debug('Stop the keepalive');
+      debug('Stop the keepalive');
       clearInterval(keepaliveInterval);
     }
   });
