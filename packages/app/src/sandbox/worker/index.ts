@@ -50,6 +50,21 @@ window.addEventListener(
   }
 );
 
+workerChannel.port1.onmessage = async event => {
+  const data = event.data;
+
+  // console.debug("incoming message from the worker", event.data);
+
+  if (data.$channel === CHANNEL_NAME) {
+    // Pause the message handling until the parent has taken control of the preview.
+    const port = await parentPortPromise;
+
+    // Route all data to the parent.
+    const message = data;
+    port.postMessage(message);
+  }
+};
+
 export async function startServiceWorker() {
   const worker = await getServiceWorker().catch(error => {
     console.error(

@@ -110,6 +110,7 @@ self.addEventListener('message', async event => {
        * to the previous (incorrect) message port.
        */
       relayPortPromise.resolve(nextRelayPort);
+      console.log('[SW]: relay port resolved', nextRelayPort);
       break;
     }
 
@@ -148,7 +149,9 @@ function getResponse(request: Request): DeferredPromise<IResponseData> {
         `Failed to handle ${request.method} ${request.url} request: no response received from the BroadcastChannel within timeout. There's likely an issue with the relay/worker communication.`
       )
     );
-  }, 20000);
+  }, 5000);
+
+  console.debug(`[SW]: `, request.url);
 
   const requestMessage: IPreviewRequestMessage = {
     $channel: CHANNEL_NAME,
@@ -171,13 +174,13 @@ self.addEventListener('fetch', event => {
   const req = event.request.clone();
   const parsedUrl = new URL(req.url);
 
-  return;
-
   if (
     parsedUrl.origin !== self.location.origin ||
-    parsedUrl.pathname.startsWith('/sw')
+    !parsedUrl.pathname.startsWith('/public')
+    // parsedUrl.pathname.startsWith('/sw') ||
+    // parsedUrl.pathname.startsWith('/static') ||
+    // parsedUrl.pathname === '/'
   ) {
-    console.debug('ignored:', parsedUrl);
     return;
   }
 
@@ -189,6 +192,10 @@ self.addEventListener('fetch', event => {
     });
     return swResponse;
   };
+
+  handleRequest();
+
+  return;
 
   // eslint-disable-next-line
   return event.respondWith(handleRequest());
