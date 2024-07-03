@@ -56,7 +56,9 @@ export default function setupConsole() {
 
 const isIFramePreview = window.top !== window.self;
 
-const insideCodeSandboxPreview = window.location.host.endsWith('csb.app');
+const insideCodeSandboxPreview =
+  window.location.host.endsWith('csb.app') ||
+  window.location.host.endsWith('csb.dev');
 
 // Only run this script in editor context
 if (isIFramePreview && insideCodeSandboxPreview) {
