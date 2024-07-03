@@ -5,6 +5,9 @@ import { invariant } from 'outvariant';
 import SandpackWorker from 'worker-loader?publicPath=/&name=sw.[hash:8].worker.js!./sw';
 import { CHANNEL_NAME, IWorkerPingMessage } from './types';
 
+/**
+ * TODO: Find a way to get the SW file name from webpack
+ */
 const __SERVICE_WORKER_BUNDLE_NAME = SandpackWorker.toString()
   .replace('function() {\n  return new Worker("/" + "', '')
   .replace('");\n}', '');

@@ -178,6 +178,10 @@ self.addEventListener('fetch', event => {
   const req = event.request.clone();
   const parsedUrl = new URL(req.url);
 
+  /**
+   * TODO: figure out a way to filter bundler requests and
+   * local requests. Now, it only supports `public`
+   */
   if (
     parsedUrl.origin !== self.location.origin ||
     !parsedUrl.pathname.startsWith('/public')

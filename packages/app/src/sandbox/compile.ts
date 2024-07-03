@@ -44,6 +44,7 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
+import { startServiceWorker } from './worker';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -535,6 +536,7 @@ interface CompileOptions {
   clearConsoleDisabled?: boolean;
   reactDevTools?: 'legacy' | 'latest';
   teamId?: string;
+  experimental_enableServiceWorker?: boolean;
 }
 
 async function compile(opts: CompileOptions) {
@@ -556,7 +558,12 @@ async function compile(opts: CompileOptions) {
     clearConsoleDisabled = false,
     reactDevTools,
     teamId,
+    experimental_enableServiceWorker = false,
   } = opts;
+
+  if (experimental_enableServiceWorker) {
+    await startServiceWorker();
+  }
 
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
