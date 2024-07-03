@@ -18,6 +18,12 @@ function generateRandomId() {
   return (+`${now}${randomNumber}${counter}`).toString(16);
 }
 
+const DEBUG = process.env.NODE_ENV === 'development';
+
+const debug = (...args) => {
+  if (DEBUG) console.debug(...args);
+};
+
 self.addEventListener('install', function () {
   self.skipWaiting();
 });
@@ -110,7 +116,7 @@ self.addEventListener('message', async event => {
        * to the previous (incorrect) message port.
        */
       relayPortPromise.resolve(nextRelayPort);
-      console.log('[SW]: relay port resolved', nextRelayPort);
+      debug('[SW]: relay port resolved', nextRelayPort);
       break;
     }
 
@@ -151,8 +157,6 @@ function getResponse(request: Request): DeferredPromise<IResponseData> {
     );
   }, 5000);
 
-  console.debug(`[SW]: `, request.url);
-
   const requestMessage: IPreviewRequestMessage = {
     $channel: CHANNEL_NAME,
     $type: 'preview/request',
@@ -185,17 +189,17 @@ self.addEventListener('fetch', event => {
   }
 
   const handleRequest = async () => {
+    debug(`[SW]: request `, req);
+
     const response = await getResponse(req);
     const swResponse = new Response(response.body, {
       headers: response.headers,
       status: response.status,
     });
+
+    debug(`[SW]: response`, response);
     return swResponse;
   };
-
-  handleRequest();
-
-  return;
 
   // eslint-disable-next-line
   return event.respondWith(handleRequest());
