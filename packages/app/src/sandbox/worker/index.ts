@@ -33,7 +33,6 @@ const parentPortPromise = new DeferredPromise<MessagePort>();
 window.addEventListener(
   'message',
   (event: MessageEvent<IPreviewInitMessage>) => {
-    debug('[relay]', event.data);
     if (event.data.$type === 'preview/init') {
       const parentPort = event.ports[0];
       parentPort.onmessage = async (evt: MessageEvent) => {
@@ -67,17 +66,18 @@ export async function startServiceWorker() {
   );
   preventStaleTermination(worker);
 
-  // TODO: remove before flight
-  window.addEventListener('beforeunload', async () => {
-    const registrations = await navigator.serviceWorker.getRegistrations();
+  if (process.env.NODE_ENV === 'development') {
+    window.addEventListener('beforeunload', async () => {
+      const registrations = await navigator.serviceWorker.getRegistrations();
 
-    for (const registration of registrations) {
-      // eslint-disable-next-line no-await-in-loop
-      await registration.unregister();
-    }
+      for (const registration of registrations) {
+        // eslint-disable-next-line no-await-in-loop
+        await registration.unregister();
+      }
 
-    debug('[relay] Unregister all SW');
-  });
+      debug('[relay] Unregister all SW');
+    });
+  }
 
   workerReadyPromise.resolve(worker);
 

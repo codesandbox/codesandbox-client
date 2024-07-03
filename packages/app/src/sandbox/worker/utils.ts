@@ -10,7 +10,7 @@ const __SERVICE_WORKER_BUNDLE_NAME = SandpackWorker.toString()
   .replace('");\n}', '');
 const workerUrl = new URL(__SERVICE_WORKER_BUNDLE_NAME, location.origin).href;
 
-const DEBUG = true;
+const DEBUG = process.env.NODE_ENV === 'development';
 export const debug = (...args) => {
   if (DEBUG) console.debug(...args);
 };
