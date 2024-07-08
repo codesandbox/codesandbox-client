@@ -659,7 +659,8 @@ async function compile(opts: CompileOptions) {
           type: 'dependencies',
           data: {
             state: 'downloaded_module',
-            totalPending: total - done,
+            total,
+            progress: done,
             name: dependencyName,
           },
         });
