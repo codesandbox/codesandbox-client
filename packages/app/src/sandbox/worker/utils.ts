@@ -5,8 +5,6 @@ import { invariant } from 'outvariant';
 import workerUrl from 'url-loader?limit=false&name=sw.[hash:8].worker.js!./sw.js';
 import { CHANNEL_NAME, IWorkerPingMessage } from './types';
 
-console.log({ workerUrl });
-
 const DEBUG = process.env.NODE_ENV === 'development';
 export const debug = (...args) => {
   if (DEBUG) console.debug(...args);
