@@ -2,16 +2,10 @@
 
 import { invariant } from 'outvariant';
 // @ts-ignore
-import SandpackWorker from 'worker-loader?publicPath=/&name=sw.[hash:8].worker.js!./sw';
+import workerUrl from 'url-loader?limit=false&name=sw.[hash:8].worker.js!./sw.js';
 import { CHANNEL_NAME, IWorkerPingMessage } from './types';
 
-/**
- * TODO: Find a way to get the SW file name from webpack
- */
-const __SERVICE_WORKER_BUNDLE_NAME = SandpackWorker.toString()
-  .replace('function() {\n  return new Worker("/" + "', '')
-  .replace('");\n}', '');
-const workerUrl = new URL(__SERVICE_WORKER_BUNDLE_NAME, location.origin).href;
+console.log({ workerUrl });
 
 const DEBUG = process.env.NODE_ENV === 'development';
 export const debug = (...args) => {
@@ -28,12 +22,10 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
    * Registers the relay Service Worker anew.
    */
   const registerWorker = async (): Promise<ServiceWorker | null> => {
-    const registration = await navigator.serviceWorker.register(
-      __SERVICE_WORKER_BUNDLE_NAME,
-      {
-        scope: '/',
-      }
-    );
+    const registration = await navigator.serviceWorker.register(workerUrl, {
+      scope: '/',
+    });
+
     return getWorkerInstance(registration);
   };
 

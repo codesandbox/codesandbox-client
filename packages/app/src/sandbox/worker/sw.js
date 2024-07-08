@@ -1,13 +1,13 @@
-import { invariant } from 'outvariant';
+/**
+ * Utils
+ */
+const CHANNEL_NAME = '$CSB_RELAY';
 
-import {
-  CHANNEL_NAME,
-  IPreviewRequestMessage,
-  IPreviewResponseMessage,
-  IWorkerPongMessage,
-  MessageSentToWorker,
-} from './types';
-import { DeferredPromise } from './promise';
+function invariant(predicate, message, ...positionals) {
+  if (!predicate) {
+    throw new Error(message, ...positionals);
+  }
+}
 
 let counter = 0;
 
@@ -18,11 +18,58 @@ function generateRandomId() {
   return (+`${now}${randomNumber}${counter}`).toString(16);
 }
 
-const DEBUG = process.env.NODE_ENV === 'development';
+const DEBUG = false;
 
 const debug = (...args) => {
   if (DEBUG) console.debug(...args);
 };
+
+function DeferredPromise() {
+  let resolve;
+  let reject;
+
+  const promise = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
+  promise.state = 'pending';
+
+  promise.resolve = data => {
+    if (promise.state !== 'pending') {
+      return;
+    }
+
+    promise.result = data;
+
+    const onFulfilled = value => {
+      promise.state = 'fulfilled';
+      return value;
+    };
+
+    return resolve(
+      data instanceof Promise ? data : Promise.resolve(data).then(onFulfilled)
+    );
+  };
+
+  promise.reject = reason => {
+    if (promise.state !== 'pending') {
+      return;
+    }
+
+    queueMicrotask(() => {
+      promise.state = 'rejected';
+    });
+
+    return reject((promise.rejectionReason = reason));
+  };
+
+  return promise;
+}
+
+/**
+ * End utils
+ */
 
 self.addEventListener('install', function () {
   self.skipWaiting();
@@ -32,24 +79,18 @@ self.addEventListener('activate', () => {
   return self.clients.claim();
 });
 
-interface IResponseData {
-  status: number;
-  headers: Record<string, string>;
-  body: string | Uint8Array;
-}
-
-const pendingRequests = new Map<string, DeferredPromise<IResponseData>>();
-function initRelayPort(relayPort: MessagePort): void {
+const pendingRequests = new Map();
+function initRelayPort(relayPort) {
   /**
    * @note that "addEventListener" and "onmessage" are not always
    * synonymous in MessageChannel so be careful refactoring this.
    */
-  relayPort.onmessage = (event: MessageEvent<MessageSentToWorker>) => {
+  relayPort.onmessage = event => {
     const { data } = event;
 
     switch (data.$type) {
       case 'preview/response': {
-        const message: IPreviewResponseMessage = data;
+        const message = data;
         const foundRequest = pendingRequests.get(message.id);
 
         // No pending request associated with the request ID from the message is a no-op.
@@ -71,8 +112,8 @@ function initRelayPort(relayPort: MessagePort): void {
   };
 }
 
-function createRelayPortPromise(): DeferredPromise<MessagePort> {
-  const promise = new DeferredPromise<MessagePort>();
+function createRelayPortPromise() {
+  const promise = new DeferredPromise();
   promise.then(port => {
     initRelayPort(port);
     return port;
@@ -84,7 +125,7 @@ function createRelayPortPromise(): DeferredPromise<MessagePort> {
 // a message with the MessagePort to bind their communication.
 const relayPortPromise = createRelayPortPromise();
 
-async function sendToRelay(message: any): Promise<void> {
+async function sendToRelay(message) {
   const relayPort = await relayPortPromise;
   invariant(
     relayPort,
@@ -99,7 +140,7 @@ self.addEventListener('message', async event => {
     return;
   }
 
-  const message = event.data as MessageSentToWorker;
+  const message = event.data;
   switch (message.$type) {
     case 'worker/init': {
       const nextRelayPort = event.ports[0];
@@ -128,7 +169,7 @@ self.addEventListener('message', async event => {
 
       const client = await self.clients.get(event.source.id);
       if (client) {
-        const pong: IWorkerPongMessage = {
+        const pong = {
           $channel: CHANNEL_NAME,
           $type: 'worker/pong',
         };
@@ -142,9 +183,9 @@ self.addEventListener('message', async event => {
   }
 });
 
-function getResponse(request: Request): DeferredPromise<IResponseData> {
+function getResponse(request) {
   const requestId = generateRandomId();
-  const requestPromise = new DeferredPromise<IResponseData>();
+  const requestPromise = new DeferredPromise();
 
   // Add some response timeout so the worker doesn't hang indefinitely,
   // making it hard to know what went wrong.
@@ -157,7 +198,7 @@ function getResponse(request: Request): DeferredPromise<IResponseData> {
     );
   }, 5000);
 
-  const requestMessage: IPreviewRequestMessage = {
+  const requestMessage = {
     $channel: CHANNEL_NAME,
     $type: 'preview/request',
     id: requestId,
@@ -185,9 +226,6 @@ self.addEventListener('fetch', event => {
   if (
     parsedUrl.origin !== self.location.origin ||
     !parsedUrl.pathname.startsWith('/public')
-    // parsedUrl.pathname.startsWith('/sw') ||
-    // parsedUrl.pathname.startsWith('/static') ||
-    // parsedUrl.pathname === '/'
   ) {
     return;
   }
