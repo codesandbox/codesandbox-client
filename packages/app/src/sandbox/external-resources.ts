@@ -43,6 +43,8 @@ export function createExternalJSLink(resource): HTMLScriptElement {
   script.setAttribute('src', resource);
   script.async = false;
   script.setAttribute('id', 'external-js');
+  // allow catch script error
+  script.setAttribute('crossorigin', 'anonymous');
 
   return script;
 }
