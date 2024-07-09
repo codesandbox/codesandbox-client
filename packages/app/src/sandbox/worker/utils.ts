@@ -45,6 +45,8 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
         );
         return registration.unregister();
       }
+
+      return Promise.resolve();
     })
   );
 
