@@ -175,6 +175,7 @@
     "normalizr": "^3.2.3",
     "onigasm": "^2.2.1",
     "ot": "^0.0.15",
+    "outvariant": "^1.4.2",
     "overmind": "^27.0.0-1624124645626",
     "overmind-graphql": "^8.0.0-1615750082257",
     "overmind-react": "^28.0.0-1624124645626",
