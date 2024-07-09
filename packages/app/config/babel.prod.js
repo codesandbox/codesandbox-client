@@ -1,4 +1,4 @@
-const TARGETS = ['>0.25%', 'not ie 11', 'not op_mini all'];
+const TARGETS = ['>0.3%', 'defaults'];
 
 module.exports = {
   // Don't try to find .babelrc because we want to force this configuration.
