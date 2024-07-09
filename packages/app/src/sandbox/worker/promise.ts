@@ -1,6 +1,6 @@
 /**
- * Copied it from https://github.com/open-draft/deferred-promise 
- * because the current Babel configu doesn't support static block in classes
+ * Copied from https://github.com/open-draft/deferred-promise 
+ * because the current Babel configuration doesn't support static block in classes
  */
 
 type PromiseState = 'pending' | 'fulfilled' | 'rejected'
