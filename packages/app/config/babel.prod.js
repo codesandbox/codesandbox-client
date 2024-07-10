@@ -26,7 +26,6 @@ module.exports = {
   plugins: [
     require.resolve('@babel/plugin-transform-template-literals'),
     require.resolve('@babel/plugin-transform-destructuring'),
-    require.resolve('@babel/plugin-transform-async-to-generator'),
     require.resolve('@babel/plugin-proposal-object-rest-spread'),
     require.resolve('@babel/plugin-proposal-class-properties'),
     require.resolve('@babel/plugin-proposal-optional-chaining'),
