@@ -13,7 +13,7 @@ fetch(
     },
     body: JSON.stringify({
       environment: process.env.ENVIRONMENT
-      value: process.env.CIRCLE_SHA1.substr(0, 7),
+      tag: process.env.CIRCLE_SHA1.substr(0, 7),
     }),
   }
 )
