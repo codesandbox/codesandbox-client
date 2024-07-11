@@ -9,7 +9,7 @@ fetch(
       'CF-Access-Client-Id': process.env.CF_ZERO_TRUST_DEPLOYER_CLIENT_ID,
       'CF-Access-Client-Secret':
         process.env.CF_ZERO_TRUST_DEPLOYER_CLIENT_SECRET,
-      'Authorization': `Bearer${process.env.DEPLOYER_API_TOKEN }`
+      'Authorization': `Bearer ${process.env.DEPLOYER_API_TOKEN }`
     },
     body: JSON.stringify({
       environment: process.env.ENVIRONMENT
