@@ -80,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const { ubbBeta } = useWorkspaceFeatureFlags();
   const { isPrimarySpace, isTeamAdmin } = useWorkspaceAuthorization();
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, isPro } = useWorkspaceSubscription();
 
   const showTemplates = state.activeTeam
     ? state.sidebar[state.activeTeam]?.hasTemplates
@@ -88,6 +88,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const showSyncedSandboxes = state.activeTeam
     ? state.sidebar[state.activeTeam]?.hasSyncedSandboxes
     : false;
+
+  let maxCredits = state.activeTeamInfo.limits?.includedCredits;
+  if (isPro) {
+    maxCredits += state.activeTeamInfo.limits?.onDemandCreditLimit;
+  }
 
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
@@ -253,10 +258,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {ubbBeta && state.activeTeamInfo && (
           <UsageProgress
             workspaceId={activeTeam}
-            maxCredits={
-              state.activeTeamInfo.limits?.includedCredits +
-              state.activeTeamInfo.limits?.onDemandCreditLimit
-            }
+            maxCredits={maxCredits}
             usedCredits={state.activeTeamInfo.usage?.credits}
           />
         )}
