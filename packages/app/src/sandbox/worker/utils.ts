@@ -2,7 +2,7 @@
 
 import { invariant } from 'outvariant';
 // @ts-ignore
-import workerUrl from 'url-loader?limit=false&name=sw.[hash:8].worker.js!./sw.js';
+import workerUrl from 'url-loader?limit=false&name=sw.[hash:8].worker.js!./sw.no-webpack.js';
 import { CHANNEL_NAME, IWorkerPingMessage } from './types';
 
 const DEBUG = process.env.NODE_ENV === 'development';
