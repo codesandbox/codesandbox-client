@@ -3,7 +3,6 @@ import { useEffects, useActions } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { useLocation } from 'react-router-dom';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 import {
   DashboardSandbox,
@@ -34,7 +33,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const { visible, setVisibility, position } = React.useContext(Context);
   const location = useLocation();
   const { isAdmin } = useWorkspaceAuthorization();
-  const { hasReachedPrivateSandboxLimit } = useWorkspaceLimits();
 
   const isInDrafts = location.pathname.includes('/drafts');
 
@@ -139,12 +137,10 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const MAKE_UNLISTED = {
     label: 'Make unlisted',
     fn: changeItemPrivacy(1),
-    disabled: hasReachedPrivateSandboxLimit,
   };
   const MAKE_PRIVATE = {
     label: 'Make private',
     fn: changeItemPrivacy(2),
-    disabled: hasReachedPrivateSandboxLimit,
   };
   const PRIVACY_ITEMS = isInDrafts
     ? []

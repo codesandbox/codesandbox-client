@@ -38,13 +38,12 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const history = useHistory();
   const location = useLocation();
   const { userRole, isTeamAdmin, isTeamViewer } = useWorkspaceAuthorization();
-  const { isFrozen, hasReachedPrivateSandboxLimit } = useWorkspaceLimits();
+  const { isFrozen } = useWorkspaceLimits();
 
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
   const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
   const folderUrl = getFolderUrl(item, activeTeam);
   const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
-  const isDraft = sandbox.draft;
 
   const restrictedFork = isFrozen;
 
@@ -204,7 +203,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </Tooltip>
       )}
 
-      {hasWriteAccess && !isDraft ? (
+      {hasWriteAccess ? (
         <>
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
@@ -221,7 +220,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )}
           {sandbox.privacy !== 1 && (
             <MenuItem
-              disabled={hasReachedPrivateSandboxLimit}
               onSelect={() =>
                 actions.dashboard.changeSandboxesPrivacy({
                   sandboxIds: [sandbox.id],
@@ -234,7 +232,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )}
           {sandbox.privacy !== 2 && (
             <MenuItem
-              disabled={hasReachedPrivateSandboxLimit}
               onSelect={() =>
                 actions.dashboard.changeSandboxesPrivacy({
                   sandboxIds: [sandbox.id],
@@ -256,7 +253,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       )}
       {hasWriteAccess &&
         !isTemplate &&
-        !isDraft &&
         (sandbox.isFrozen ? (
           <MenuItem
             onSelect={() => {
@@ -292,7 +288,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       )}
 
       {hasAccess &&
-        !isDraft &&
         (isTemplate ? (
           <MenuItem
             onSelect={() => {

@@ -10,8 +10,6 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
-import { RestrictedSandboxes } from 'app/components/StripeMessages/RestrictedSandboxes';
-import { Element } from '@codesandbox/components';
 import { useFilteredItems } from './useFilteredItems';
 
 export const SandboxesPage = () => {
@@ -22,7 +20,7 @@ export const SandboxesPage = () => {
   const cleanParam = currentPath.split(' ').join('{}');
   const items = useFilteredItems(currentPath, cleanParam, level);
   const actions = useActions();
-  const { isFrozen, hasReachedPrivateSandboxLimit } = useWorkspaceLimits();
+  const { isFrozen } = useWorkspaceLimits();
   const {
     dashboard: { allCollections },
     activeTeam,
@@ -87,12 +85,6 @@ export const SandboxesPage = () => {
           {currentPath.split('/').pop() || 'Sandboxes'} - CodeSandbox
         </title>
       </Helmet>
-
-      {hasReachedPrivateSandboxLimit && (
-        <Element css={{ padding: '0 26px 32px 16px' }}>
-          <RestrictedSandboxes />
-        </Element>
-      )}
 
       <Header
         activeTeam={activeTeam}

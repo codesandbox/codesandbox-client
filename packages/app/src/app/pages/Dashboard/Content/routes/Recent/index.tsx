@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet';
 import { DashboardBranch, DashboardSandbox } from 'app/pages/Dashboard/types';
 import { Loading, Stack } from '@codesandbox/components';
 import { RepoInfo } from 'app/overmind/namespaces/sidebar/types';
-import { RestrictedSandboxes } from 'app/components/StripeMessages/RestrictedSandboxes';
 import { StyledContentWrapper } from 'app/pages/Dashboard/Components/shared/elements';
 import { ContentSection } from 'app/pages/Dashboard/Components/shared/ContentSection';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
@@ -20,7 +19,7 @@ export const Recent = () => {
     sidebar,
     dashboard: { sandboxes },
   } = useAppState();
-  const { isFrozen, hasReachedPrivateSandboxLimit } = useWorkspaceLimits();
+  const { isFrozen } = useWorkspaceLimits();
   const {
     dashboard: { getPage },
   } = useActions();
@@ -108,7 +107,6 @@ export const Recent = () => {
         <title>Recent - CodeSandbox</title>
       </Helmet>
 
-      {hasReachedPrivateSandboxLimit && <RestrictedSandboxes />}
       <TopBanner />
 
       <ContentSection title="Recent">

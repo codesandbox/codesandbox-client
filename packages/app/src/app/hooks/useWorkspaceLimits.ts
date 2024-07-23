@@ -18,8 +18,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isCloseToSpendingLimit: undefined,
       showUsageLimitBanner: undefined,
       isFrozen: undefined,
-      hasReachedPrivateSandboxLimit: undefined,
-      privateSandboxLimit: undefined,
       highestAllowedVMTier: undefined,
     };
   }
@@ -44,10 +42,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     usage.credits / (limits.includedCredits + onDemandCreditsLimit) >
       SPENDING_LIMIT_WARNING;
 
-  const hasReachedPrivateSandboxLimit =
-    applyUbbRestrictions &&
-    usage.privateSandboxesQuantity >= limits.includedPrivateSandboxes;
-
   const highestAllowedVMTier = limits.includedVmTier;
 
   return {
@@ -55,7 +49,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     isCloseToOutOfCredits,
     isAtSpendingLimit,
     isCloseToSpendingLimit,
-    hasReachedPrivateSandboxLimit,
     showUsageLimitBanner:
       isOutOfCredits ||
       isCloseToOutOfCredits ||
@@ -63,7 +56,6 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       isCloseToSpendingLimit,
     isFrozen: applyUbbRestrictions && frozen,
     highestAllowedVMTier,
-    privateSandboxLimit: limits.includedPrivateSandboxes,
   };
 };
 
@@ -75,9 +67,7 @@ export type WorkspaceLimitsReturn =
       isCloseToSpendingLimit: undefined;
       showUsageLimitBanner: undefined;
       isFrozen: undefined;
-      hasReachedPrivateSandboxLimit: undefined;
       highestAllowedVMTier: undefined;
-      privateSandboxLimit: undefined;
     }
   | {
       isOutOfCredits: boolean;
@@ -86,7 +76,5 @@ export type WorkspaceLimitsReturn =
       isCloseToSpendingLimit: boolean;
       showUsageLimitBanner: boolean;
       isFrozen: boolean;
-      hasReachedPrivateSandboxLimit: boolean;
       highestAllowedVMTier: number;
-      privateSandboxLimit: number;
     };

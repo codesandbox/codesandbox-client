@@ -45,16 +45,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
-  const {
-    hasReachedPrivateSandboxLimit,
-    highestAllowedVMTier,
-    privateSandboxLimit,
-  } = useWorkspaceLimits();
+  const { highestAllowedVMTier } = useWorkspaceLimits();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isFree } = useWorkspaceSubscription();
-  const isDraft = collectionId === undefined;
 
   const minimumPrivacy = Math.max(
     initialPrivacy ?? 2,
@@ -70,8 +65,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const defaultTier = isFree ? 1 : 2;
   const [selectedTier, setSelectedTier] = useState<number>(defaultTier);
   const [allVmTiers, setAllVmTiers] = useState<VMTier[]>([]);
-  const canCreate =
-    isDraft || !(permission === 2 && hasReachedPrivateSandboxLimit);
 
   useEffect(() => {
     if (type === 'devbox') {
@@ -107,27 +100,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
     skip: !activeTeam || !hasLogIn,
   });
 
-  const rootCollection = collectionsData?.me?.collections?.find(
-    collection => collection.path === '/'
-  );
-  useEffect(() => {
-    if (collectionsData?.me?.collections == null) {
-      return;
-    }
-
-    if (permission < 2) {
-      if (collectionId == null && rootCollection != null) {
-        setCollectionId(rootCollection.id);
-      }
-    }
-  }, [
-    collectionsData,
-    rootCollection,
-    permission,
-    collectionId,
-    setCollectionId,
-  ]);
-
   return (
     <Element
       as="form"
@@ -142,15 +114,10 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
       onSubmit={e => {
         e.preventDefault();
 
-        let privacy = permission;
-        if (isDraft) {
-          privacy = 2;
-        }
-
         onSubmit({
           name,
           createAs: type,
-          permission: privacy,
+          permission,
           editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
           customVMTier:
             // Only pass customVMTier if user selects something else than the default
@@ -197,78 +164,45 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 </Text>
                 <Stack direction="vertical" gap={2}>
                   <Select
-                    icon={
-                      isDraft
-                        ? PRIVACY_OPTIONS[2].icon
-                        : PRIVACY_OPTIONS[permission].icon
-                    }
+                    icon={PRIVACY_OPTIONS[permission].icon}
                     defaultValue={permission}
-                    onChange={({ target: { value } }) => {
-                      if (value === 'DRAFT') {
-                        setCollectionId(undefined);
-                        setPermission(2);
-                      } else {
-                        setPermission(parseInt(value, 10) as 0 | 1 | 2);
-                        if (collectionId == null) {
-                          setCollectionId(rootCollection?.id);
-                        }
-                      }
-                    }}
-                    value={isDraft ? 'DRAFT' : permission}
+                    onChange={({ target: { value } }) =>
+                      setPermission(parseInt(value, 10) as 0 | 1 | 2)
+                    }
+                    value={permission}
                   >
                     <option value={0}>{PRIVACY_OPTIONS[0].description}</option>
                     <option value={1}>{PRIVACY_OPTIONS[1].description}</option>
                     <option value={2}>{PRIVACY_OPTIONS[2].description}</option>
-                    <option value="DRAFT">Draft (only you have access)</option>
                   </Select>
                 </Stack>
               </Stack>
 
-              {!isDraft && (
-                <Stack style={{ flex: 1 }} direction="vertical" gap={2}>
-                  <Text size={3} as="label">
-                    Folder
-                  </Text>
+              <Stack style={{ flex: 1 }} direction="vertical" gap={2}>
+                <Text size={3} as="label">
+                  Folder
+                </Text>
 
-                  <Select
-                    icon={() => (
-                      <Icon name={isDraft ? 'file' : 'folder'} size={12} />
-                    )}
-                    value={collectionId}
-                    onChange={({ target: { value } }) => {
-                      setCollectionId(value);
-                    }}
-                  >
-                    {collectionsData?.me?.collections?.map(collection => (
-                      <option value={collection.id}>
-                        {collection.path === '/'
-                          ? 'Root folder (/)'
-                          : collection.path}
-                      </option>
-                    ))}
-                  </Select>
-                </Stack>
-              )}
+                <Select
+                  icon={() => <Icon name="folder" size={12} />}
+                  value={collectionId}
+                  onChange={({ target: { value } }) => {
+                    setCollectionId(value);
+                  }}
+                >
+                  <option key="drafts" value={null}>
+                    Drafts
+                  </option>
+                  {collectionsData?.me?.collections?.map(collection => (
+                    <option key={collection.id} value={collection.id}>
+                      {collection.path === '/'
+                        ? 'Root folder (/)'
+                        : collection.path}
+                    </option>
+                  ))}
+                </Select>
+              </Stack>
             </Stack>
-
-            {isDraft && (
-              <Stack gap={1} css={{ color: '#A8BFFA' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>
-                  Drafts are private and only visible to you.
-                </Text>
-              </Stack>
-            )}
-
-            {!isDraft && !canCreate && (
-              <Stack gap={1} css={{ color: '#F5A8A8' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>
-                  You have reached the free limit of {privateSandboxLimit}{' '}
-                  private {label}.
-                </Text>
-              </Stack>
-            )}
           </Stack>
         )}
 
@@ -384,12 +318,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             Cancel
           </Button>
           {hasLogIn ? (
-            <Button
-              type="submit"
-              disabled={!canCreate}
-              variant="primary"
-              autoWidth
-            >
+            <Button type="submit" variant="primary" autoWidth>
               Create {label}
             </Button>
           ) : (
