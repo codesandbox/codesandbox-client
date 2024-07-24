@@ -144,6 +144,7 @@ self.addEventListener('message', async event => {
   const message = event.data;
   switch (message.$type) {
     case 'worker/init': {
+      console.log('worker/init');
       const nextRelayPort = event.ports[0];
 
       invariant(

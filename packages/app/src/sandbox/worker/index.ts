@@ -81,18 +81,18 @@ export async function startServiceWorker() {
   );
   preventStaleTermination(worker);
 
-  if (process.env.NODE_ENV === 'development') {
-    window.addEventListener('beforeunload', async () => {
-      const registrations = await navigator.serviceWorker.getRegistrations();
+  // if (process.env.NODE_ENV === 'development') {
+  //   window.addEventListener('beforeunload', async () => {
+  //     const registrations = await navigator.serviceWorker.getRegistrations();
 
-      for (const registration of registrations) {
-        // eslint-disable-next-line no-await-in-loop
-        await registration.unregister();
-      }
+  //     for (const registration of registrations) {
+  //       // eslint-disable-next-line no-await-in-loop
+  //       await registration.unregister();
+  //     }
 
-      debug('[relay] Unregister all SW');
-    });
-  }
+  //     debug('[relay] Unregister all SW');
+  //   });
+  // }
 
   workerReadyPromise.resolve(worker);
 

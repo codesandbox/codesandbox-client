@@ -37,7 +37,7 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
       const worker = getWorkerInstance(registration);
 
       // Unregister any worker that shouldn't be there.
-      if (worker && worker.scriptURL !== workerUrl) {
+      if (worker && new URL(worker.scriptURL).pathname !== workerUrl) {
         debug(
           '[sw:register] found irrelevant worker registration, unregistering...',
           worker,
@@ -67,7 +67,7 @@ export async function getServiceWorker(): Promise<ServiceWorker | null> {
 
   // If the controller has the same script as the expected worker,
   // this means the correct worker is already handling the page.
-  if (controller.scriptURL === workerUrl) {
+  if (new URL(controller.scriptURL).pathname === workerUrl) {
     debug(
       '[sw:register] relay is controlled by the correct worker',
       controller.scriptURL
