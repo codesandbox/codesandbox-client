@@ -6,6 +6,7 @@ import {
   IPreviewInitMessage,
   IPreviewReadyMessage,
   IPreviewResponseMessage,
+  IWokerInvalidatePortMessage,
   IWorkerInitMessage,
 } from './types';
 import { DeferredPromise } from './promise';
@@ -93,6 +94,17 @@ export async function startServiceWorker() {
   //     debug('[relay] Unregister all SW');
   //   });
   // }
+
+  window.addEventListener('beforeunload', async () => {
+    const message: IWokerInvalidatePortMessage = {
+      $channel: CHANNEL_NAME,
+      $type: 'worker/invalidate-port',
+    };
+
+    debug('[relay] Invalidating port...');
+
+    worker.postMessage(message);
+  });
 
   workerReadyPromise.resolve(worker);
 
