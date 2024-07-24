@@ -19,8 +19,6 @@ export const SandboxBadge: React.FC<SandboxBadgeProps> = ({
   let boxTypeColor = isDevbox ? '#FFFFFF' : '#A6A6A6';
   let boxTypeLabel = isDevbox ? 'Devbox' : 'Sandbox';
 
-  
-
   if (isTemplate) {
     boxTypeLabel = 'Template';
   }
@@ -28,10 +26,6 @@ export const SandboxBadge: React.FC<SandboxBadgeProps> = ({
   if (isRestricted) {
     boxTypeColor = '#F7CC66';
     boxTypeLabel += ' (Restricted)';
-  }
-
-  if (sandbox.draft) {
-    boxTypeLabel += ' (Draft)';
   }
 
   return (

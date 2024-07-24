@@ -1,5 +1,4 @@
 import React from 'react';
-import { Element, Text } from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
@@ -47,15 +46,6 @@ export const Drafts = () => {
         showViewOptions={!isEmpty}
         showSortOptions={!isEmpty}
       />
-
-      <Element
-        css={{ paddingLeft: '16px', paddingBottom: '24px', paddingTop: '8px' }}
-      >
-        <Text>
-          Drafts are private to you. To share a draft, move it to another
-          folder.
-        </Text>
-      </Element>
 
       <VariableGrid page={pageType} items={items} />
     </SelectionProvider>

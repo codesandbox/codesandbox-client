@@ -20,12 +20,7 @@ import { DirectoryPicker } from './DirectoryPicker';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const { dashboard, refetchSandboxInfo, modals: modalsActions } = useActions();
-  const {
-    activeTeam,
-    modals,
-    activeTeamInfo,
-    dashboard: { teams },
-  } = useAppState();
+  const { activeTeam, modals, activeTeamInfo } = useAppState();
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const defaultPath = modals.moveSandboxModal.defaultOpenedPath ?? '/';
@@ -37,10 +32,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     activeTeamInfo?.settings.minimumPrivacy ?? 0
   ) as PrivacyLevel;
 
-  const [privacy, setPrivacy] = useState<PrivacyLevel | 'DRAFT'>(
-    minimumPrivacy
-  );
-  const isDraft = privacy === 'DRAFT';
+  const [privacy, setPrivacy] = useState<PrivacyLevel>(minimumPrivacy);
 
   const onWorkspaceSelect = (newTeamId: string) => {
     track('Dashboard Move Modal - Workspace Select', {
@@ -58,8 +50,8 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
       .addSandboxesToFolder({
         teamId,
         sandboxIds: modals.moveSandboxModal.sandboxIds,
-        collectionPath: isDraft ? undefined : path,
-        privacy: isDraft ? 2 : privacy,
+        collectionPath: path,
+        privacy,
       })
       .then(() => {
         refetchSandboxInfo();
@@ -77,14 +69,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
       });
   };
 
-  const currentTeam = teams.find(item => item.id === teamId);
-  const hasReachedPrivateSandboxLimit =
-    !currentTeam.featureFlags.friendOfCsb &&
-    currentTeam.usage.privateSandboxesQuantity >=
-      currentTeam.limits.includedPrivateSandboxes;
-  const limitError = privacy === 2 && hasReachedPrivateSandboxLimit;
-  const privateSandboxLimit = currentTeam?.limits.includedPrivateSandboxes;
-
   const onSelect = ({ teamId: newTeamId, path: newPath }) => {
     setTeamId(newTeamId);
     setPath(newPath);
@@ -92,10 +76,9 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
 
   const renderSubmitLabel = () => {
     if (loading) return 'Moving Sandbox...';
-    if (isDraft) return 'Move to Draft folder';
     if (path) return `Move to ${basename(path) || 'root folder'}`;
 
-    return 'Move to Folder';
+    return 'Move to Drafts';
   };
 
   return (
@@ -145,60 +128,40 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
               </Text>
 
               <Select
-                icon={
-                  isDraft
-                    ? PRIVACY_OPTIONS[2].icon
-                    : PRIVACY_OPTIONS[privacy].icon
-                }
+                icon={PRIVACY_OPTIONS[privacy].icon}
                 defaultValue={privacy}
-                onChange={({ target: { value } }) => {
-                  if (value === 'DRAFT') {
-                    return setPrivacy('DRAFT');
-                  }
-                  setPrivacy(parseInt(value, 10) as 0 | 1 | 2);
-                }}
+                onChange={({ target: { value } }) =>
+                  setPrivacy(parseInt(value, 10) as 0 | 1 | 2)
+                }
                 value={privacy}
               >
                 <option value={0}>{PRIVACY_OPTIONS[0].description}</option>
                 <option value={1}>{PRIVACY_OPTIONS[1].description}</option>
                 <option value={2}>{PRIVACY_OPTIONS[2].description}</option>
-                <option value="DRAFT">Draft (only you have access)</option>
               </Select>
-
-              {limitError && (
-                <Stack gap={1} css={{ color: '#F5A8A8' }}>
-                  <Icon name="circleBang" />
-                  <Text size={3}>
-                    You have reached the free limit of {privateSandboxLimit}{' '}
-                    private Sandboxes.
-                  </Text>
-                </Stack>
-              )}
             </Stack>
 
-            {!isDraft && (
-              <Stack direction="vertical" gap={2}>
-                <Text size={3} as="label">
-                  Folder
-                </Text>
-                <Element
-                  css={css({
-                    maxHeight: 400,
-                    overflow: 'auto',
-                    border: '1px solid',
-                    borderColor: 'sideBar.border',
-                    borderRadius: 4,
-                    padding: '0 0.25rem',
-                  })}
-                >
-                  <DirectoryPicker
-                    currentPath={path}
-                    currentTeamId={teamId}
-                    onSelect={onSelect}
-                  />
-                </Element>
-              </Stack>
-            )}
+            <Stack direction="vertical" gap={2}>
+              <Text size={3} as="label">
+                Folder
+              </Text>
+              <Element
+                css={css({
+                  maxHeight: 400,
+                  overflow: 'auto',
+                  border: '1px solid',
+                  borderColor: 'sideBar.border',
+                  borderRadius: 4,
+                  padding: '0 0.25rem',
+                })}
+              >
+                <DirectoryPicker
+                  currentPath={path}
+                  currentTeamId={teamId}
+                  onSelect={onSelect}
+                />
+              </Element>
+            </Stack>
 
             {error}
 
@@ -213,7 +176,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
 
               <Button
                 css={css({ width: 'auto' })}
-                disabled={limitError || loading}
+                disabled={loading}
                 onClick={handleMove}
               >
                 {renderSubmitLabel()}
