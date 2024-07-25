@@ -42,10 +42,16 @@ export interface IWorkerInitMessage {
   $type: 'worker/init';
 }
 
+export interface IWokerInvalidatePortMessage {
+  $channel: typeof CHANNEL_NAME;
+  $type: 'worker/invalidate-port';
+}
+
 export type MessageSentToWorker =
   | IWorkerPingMessage
   | IPreviewResponseMessage
-  | IWorkerInitMessage;
+  | IWorkerInitMessage
+  | IWokerInvalidatePortMessage;
 export type MessageReceivedFromWorker =
   | IPreviewRequestMessage
   | IWorkerPongMessage;

@@ -6,6 +6,7 @@ import {
   IPreviewInitMessage,
   IPreviewReadyMessage,
   IPreviewResponseMessage,
+  IWokerInvalidatePortMessage,
   IWorkerInitMessage,
 } from './types';
 import { DeferredPromise } from './promise';
@@ -81,18 +82,29 @@ export async function startServiceWorker() {
   );
   preventStaleTermination(worker);
 
-  if (process.env.NODE_ENV === 'development') {
-    window.addEventListener('beforeunload', async () => {
-      const registrations = await navigator.serviceWorker.getRegistrations();
+  // if (process.env.NODE_ENV === 'development') {
+  //   window.addEventListener('beforeunload', async () => {
+  //     const registrations = await navigator.serviceWorker.getRegistrations();
 
-      for (const registration of registrations) {
-        // eslint-disable-next-line no-await-in-loop
-        await registration.unregister();
-      }
+  //     for (const registration of registrations) {
+  //       // eslint-disable-next-line no-await-in-loop
+  //       await registration.unregister();
+  //     }
 
-      debug('[relay] Unregister all SW');
-    });
-  }
+  //     debug('[relay] Unregister all SW');
+  //   });
+  // }
+
+  window.addEventListener('beforeunload', async () => {
+    const message: IWokerInvalidatePortMessage = {
+      $channel: CHANNEL_NAME,
+      $type: 'worker/invalidate-port',
+    };
+
+    debug('[relay] Invalidating port...');
+
+    worker.postMessage(message);
+  });
 
   workerReadyPromise.resolve(worker);
 

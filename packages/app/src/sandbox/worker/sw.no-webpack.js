@@ -124,7 +124,7 @@ function createRelayPortPromise() {
 
 // Declare a promise that resolves once the relay sends
 // a message with the MessagePort to bind their communication.
-const relayPortPromise = createRelayPortPromise();
+let relayPortPromise = createRelayPortPromise();
 
 async function sendToRelay(message) {
   const relayPort = await relayPortPromise;
@@ -143,6 +143,14 @@ self.addEventListener('message', async event => {
 
   const message = event.data;
   switch (message.$type) {
+    case 'worker/invalidate-port': {
+      debug('[SW]: Invalidate port');
+
+      relayPortPromise = createRelayPortPromise();
+
+      break;
+    }
+
     case 'worker/init': {
       const nextRelayPort = event.ports[0];
 
@@ -197,7 +205,7 @@ function getResponse(request) {
         `Failed to handle ${request.method} ${request.url} request: no response received from the BroadcastChannel within timeout. There's likely an issue with the relay/worker communication.`
       )
     );
-  }, 5000);
+  }, 3000);
 
   const requestMessage = {
     $channel: CHANNEL_NAME,
