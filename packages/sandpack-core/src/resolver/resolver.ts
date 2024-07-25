@@ -12,6 +12,7 @@ import {
   processTSConfig,
   getPotentialPathsFromTSConfig,
 } from './utils/tsconfig';
+import { replaceGlob } from './utils/glob';
 
 export type ResolverCache = Map<string, any>;
 
@@ -264,6 +265,7 @@ function* findPackageJSON(
         content: {
           aliases: {},
           hasExports: false,
+          imports: {},
         },
       };
     }
@@ -343,14 +345,60 @@ function* getTSConfig(
   return config;
 }
 
+function resolvePkgImport(
+  specifier: string,
+  pkgJson: IFoundPackageJSON
+): string {
+  const pkgImports = pkgJson.content.imports;
+  if (!pkgImports) return specifier;
+
+  if (pkgImports[specifier]) {
+    return pkgImports[specifier] as string;
+  }
+
+  for (const [importKey, importValue] of Object.entries(pkgImports)) {
+    if (!importKey.includes('*')) {
+      continue;
+    }
+
+    const match = replaceGlob(importKey, importValue, specifier);
+    if (match) {
+      return match;
+    }
+  }
+
+  return specifier;
+}
+
+function* resolvePkgImports(
+  specifier: string,
+  opts: IResolveOptions
+): Generator<any, string, any> {
+  // Imports always have the `#` prefix
+  if (specifier[0] !== '#') {
+    return specifier;
+  }
+
+  const pkgJson = yield* findPackageJSON(opts.filename, opts);
+  const resolved = resolvePkgImport(specifier, pkgJson);
+  if (resolved !== specifier) {
+    opts.filename = pkgJson.filepath;
+  }
+  return resolved;
+}
+
 function* resolve(
   moduleSpecifier: string,
   inputOpts: IResolveOptionsInput,
   skipIndexExpansion: boolean = false
 ): Generator<any, string, any> {
-  const normalizedSpecifier = normalizeModuleSpecifier(moduleSpecifier);
+  const _normalizedSpecifier = normalizeModuleSpecifier(moduleSpecifier);
   const opts = normalizeResolverOptions(inputOpts);
 
+  const normalizedSpecifier = yield* resolvePkgImports(
+    _normalizedSpecifier,
+    opts
+  );
   const modulePath = yield* resolveModule(normalizedSpecifier, opts);
 
   if (modulePath[0] !== '/') {

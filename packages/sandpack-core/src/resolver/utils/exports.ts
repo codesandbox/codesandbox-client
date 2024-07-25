@@ -3,16 +3,16 @@ import { normalizeAliasFilePath } from './alias';
 // exports keys, sorted from high to low priority
 const EXPORTS_KEYS = ['browser', 'development', 'default', 'require', 'import'];
 
-type PackageExportType =
+export type PackageExportType =
   | string
   | null
   | false
   | PackageExportObj
   | PackageExportArr;
 
-type PackageExportArr = Array<PackageExportObj | string>;
+export type PackageExportArr = Array<PackageExportObj | string>;
 
-type PackageExportObj = {
+export type PackageExportObj = {
   [key: string]: string | null | false | PackageExportType;
 };
 
