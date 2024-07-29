@@ -20,7 +20,7 @@ import {
 } from './WorkspaceFlows';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
-// import { Sandbox } from './Sandbox';
+import { Sandbox } from './Sandbox';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import(
@@ -168,7 +168,7 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
-            {/* <Route
+            <Route
               exact
               path="/s"
               component={() => <Sandbox showModalOnTop="newSandbox" />}
@@ -182,12 +182,11 @@ const RoutesComponent: React.FC = () => {
               exact
               path="/new"
               component={() => <Sandbox showModalOnTop="new" />}
-            /> */}
+            />
             <Route path="/invite/:token" component={TeamInvitation} />
 
             <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
-            {/* <Route path="/s/:id*" component={Sandbox} /> */}
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signout" exact component={SignOut} />
             <Route path="/signin/duplicate" component={DuplicateAccount} />
