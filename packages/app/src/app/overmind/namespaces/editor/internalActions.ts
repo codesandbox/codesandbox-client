@@ -6,7 +6,6 @@ import {
   Module,
   ModuleTab,
   Sandbox,
-  ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
 import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
@@ -209,15 +208,6 @@ export const saveCode = async (
 
     if (cbID) {
       effects.vscode.callCallback(cbID);
-    }
-
-    // If the executor is a server we only should send updates if the sandbox has been
-    // started already
-    if (
-      !effects.executor.isServer() ||
-      state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
-    ) {
-      effects.executor.updateFiles(sandbox);
     }
 
     if (sandbox.template === 'static') {
@@ -503,11 +493,6 @@ export const forkSandbox = async (
       forkedSandbox
     );
     effects.preview.updateAddressbarUrl();
-
-    if (templateDefinition.isServer) {
-      effects.preview.refresh();
-      actions.server.startContainer(forkedSandbox);
-    }
 
     if (state.workspace.openedWorkspaceItem === 'project-summary') {
       actions.workspace.openDefaultItem();

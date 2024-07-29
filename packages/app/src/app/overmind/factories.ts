@@ -29,7 +29,6 @@ export const withLoadApp = <I>(
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
   actions.internal.prefetchOfficialTemplates();
-  effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
   if (localStorage.jwt) {
     // We've introduced a new way of signing in to CodeSandbox, and we should let the user know to

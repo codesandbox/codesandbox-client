@@ -2,8 +2,6 @@ import {
   ModuleTab,
   NotificationButton,
   Sandbox,
-  ServerContainerStatus,
-  ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
 import history from 'app/utils/history';
@@ -449,12 +447,6 @@ export const setCurrentSandbox = async (
   state.editor.currentModuleShortid = currentModuleShortid;
   state.editor.workspaceConfigCode = '';
 
-  state.server.status = ServerStatus.INITIALIZING;
-  state.server.containerStatus = ServerContainerStatus.INITIALIZING;
-  state.server.error = null;
-  state.server.hasUnrecoverableError = false;
-  state.server.ports = [];
-
   const newTab: ModuleTab = {
     type: TabType.MODULE,
     moduleShortid: currentModuleShortid,
@@ -500,7 +492,6 @@ export const setCurrentSandbox = async (
   // the components to rerender. Because of this sometimes the GitHub component will get a
   // sandbox without a git
   actions.workspace.openDefaultItem();
-  actions.server.startContainer(sandbox);
 
   actions.internal.currentSandboxChanged();
 };

@@ -27,7 +27,6 @@ import { NetlifyLogs } from './NetlifyLogs';
 import { Preferences } from './PreferencesModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
-import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
 import { SignInForTemplates } from './SignInForTemplates';
@@ -139,10 +138,6 @@ const modals = {
   selectSandbox: {
     Component: SelectSandboxModal,
     width: 600,
-  },
-  searchDependencies: {
-    Component: SearchDependenciesModal,
-    width: 716,
   },
   liveSessionEnded: {
     Component: LiveSessionEnded,

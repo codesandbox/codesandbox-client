@@ -1,4 +1,3 @@
-import getTemplate from '@codesandbox/common/lib/templates';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
 import { CustomTemplate } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -329,13 +328,6 @@ export const sandboxPrivacyChanged = async (
         sandboxIds: [state.editor.currentSandbox.id],
         privacy: 0,
       });
-
-      const { isServer } = getTemplate(state.editor.currentSandbox.template);
-      const isChangeFromPrivate = oldPrivacy === 2;
-
-      if (isServer && isChangeFromPrivate) {
-        actions.server.restartContainer();
-      }
     } catch (error) {
       // Reset previous state
       state.editor.currentSandbox.privacy = oldPrivacy;
@@ -353,16 +345,6 @@ export const sandboxPrivacyChanged = async (
       );
 
       state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
-
-      const { isServer } = getTemplate(state.editor.currentSandbox.template);
-      const isChangeToPrivate = oldPrivacy !== 2 && privacy === 2;
-      const isChangeFromPrivate = oldPrivacy === 2 && privacy !== 2;
-
-      if (isServer && (isChangeToPrivate || isChangeFromPrivate)) {
-        // Privacy changed from private to unlisted/public or other way around, restart
-        // the sandbox to notify containers
-        actions.server.restartContainer();
-      }
 
       if (state.editor.currentSandbox.draft && privacy === 2) {
         // Optimistically update editing restriction when draft is set to private

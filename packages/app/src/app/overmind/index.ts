@@ -22,7 +22,6 @@ import * as git from './namespaces/git';
 import * as live from './namespaces/live';
 import * as preferences from './namespaces/preferences';
 import * as profile from './namespaces/profile';
-import * as server from './namespaces/server';
 import * as userNotifications from './namespaces/userNotifications';
 import * as workspace from './namespaces/workspace';
 import * as preview from './namespaces/preview';
@@ -46,7 +45,6 @@ export const config = merge(
     files,
     git,
     profile,
-    server,
     comments,
     preview,
     checkout,

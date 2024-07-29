@@ -34,11 +34,7 @@ import {
 import { Context } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
-import {
-  addDevToolsTab as addDevToolsTabUtil,
-  closeDevToolsTab as closeDevToolsTabUtil,
-  moveDevToolsTab as moveDevToolsTabUtil,
-} from 'app/pages/Sandbox/Editor/Content/utils';
+
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
@@ -1417,63 +1413,6 @@ export const renameModule = withOwnedSandbox(
   }
 );
 
-export const onDevToolsTabAdded = (
-  { state, actions }: Context,
-  {
-    tab,
-  }: {
-    tab: any;
-  }
-) => {
-  const { devToolTabs } = state.editor;
-  const { devTools: newDevToolTabs, position } = addDevToolsTabUtil(
-    json(devToolTabs),
-    tab
-  );
-  const nextPos = position;
-
-  actions.editor.internal.updateDevtools(newDevToolTabs);
-
-  state.editor.currentDevToolsPosition = nextPos;
-};
-
-export const onDevToolsTabMoved = (
-  { state, actions }: Context,
-  {
-    prevPos,
-    nextPos,
-  }: {
-    prevPos: any;
-    nextPos: any;
-  }
-) => {
-  const { devToolTabs } = state.editor;
-  const newDevToolTabs = moveDevToolsTabUtil(
-    json(devToolTabs),
-    prevPos,
-    nextPos
-  );
-
-  actions.editor.internal.updateDevtools(newDevToolTabs);
-
-  state.editor.currentDevToolsPosition = nextPos;
-};
-
-export const onDevToolsTabClosed = (
-  { state, actions }: Context,
-  {
-    pos,
-  }: {
-    pos: any;
-  }
-) => {
-  const { devToolTabs } = state.editor;
-  const closePos = pos;
-  const newDevToolTabs = closeDevToolsTabUtil(json(devToolTabs), closePos);
-
-  actions.editor.internal.updateDevtools(newDevToolTabs);
-};
-
 export const onDevToolsPositionChanged = (
   { state }: Context,
   {
@@ -1483,41 +1422,6 @@ export const onDevToolsPositionChanged = (
   }
 ) => {
   state.editor.currentDevToolsPosition = position;
-};
-
-export const openDevtoolsTab = (
-  { state, actions }: Context,
-  {
-    tab: tabToFind,
-  }: {
-    tab: any;
-  }
-) => {
-  const serializedTab = JSON.stringify(tabToFind);
-  const { devToolTabs } = state.editor;
-  let nextPos;
-
-  for (let i = 0; i < devToolTabs.length; i++) {
-    const view = devToolTabs[i];
-
-    for (let j = 0; j < view.views.length; j++) {
-      const tab = view.views[j];
-      if (JSON.stringify(tab) === serializedTab) {
-        nextPos = {
-          devToolIndex: i,
-          tabPosition: j,
-        };
-      }
-    }
-  }
-
-  if (nextPos) {
-    state.editor.currentDevToolsPosition = nextPos;
-  } else {
-    actions.editor.onDevToolsTabAdded({
-      tab: tabToFind,
-    });
-  }
 };
 
 export const sessionFreezeOverride = ({ state }: Context, frozen: boolean) => {
