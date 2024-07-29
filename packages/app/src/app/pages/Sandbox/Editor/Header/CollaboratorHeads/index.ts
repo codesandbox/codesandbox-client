@@ -1,1 +1,0 @@
-export { CollaboratorHeads } from './CollaboratorHeads';

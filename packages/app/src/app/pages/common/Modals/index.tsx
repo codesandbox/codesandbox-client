@@ -1,10 +1,7 @@
-import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { ThemeProvider } from '@codesandbox/components';
-import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
 import { useAppState, useActions } from 'app/overmind';
-import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
 import { ImportRepository } from 'app/components/Create/ImportRepository';
 import { CreateBox } from 'app/components/Create/CreateBox';
@@ -203,51 +200,15 @@ const modals = {
 };
 
 const Modals: FunctionComponent = () => {
-  const [themeProps, setThemeProps] = useState({});
-  const { pathname } = useLocation();
+  const [themeProps] = useState({});
   const { modalClosed } = useActions();
   const {
     modals: stateModals,
-    preferences: {
-      settings: { customVSCodeTheme },
-    },
     currentModal,
     currentModalItemId,
     repoToImport,
     sandboxIdToFork,
   } = useAppState();
-
-  const [localState, setLocalState] = useState({
-    theme: {
-      colors: {},
-      vscodeTheme: codesandbox,
-    },
-    customVSCodeTheme: null,
-  });
-
-  useEffect(() => {
-    async function loadTheme() {
-      try {
-        const t = await getVSCodeTheme('', customVSCodeTheme);
-        setLocalState({ theme: t, customVSCodeTheme });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    if (localState.customVSCodeTheme !== customVSCodeTheme) {
-      loadTheme();
-    }
-  }, [localState.customVSCodeTheme, customVSCodeTheme]);
-
-  useEffect(() => {
-    setThemeProps(
-      pathname.includes('/s/')
-        ? {
-            theme: localState.theme.vscodeTheme,
-          }
-        : {}
-    );
-  }, [pathname, localState]);
 
   const modal = currentModal && modals[currentModal];
   if (currentModal === 'createDevbox' || currentModal === 'createSandbox') {
