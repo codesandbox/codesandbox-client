@@ -44,6 +44,7 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
+import { startServiceWorker } from './worker';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -535,6 +536,7 @@ interface CompileOptions {
   clearConsoleDisabled?: boolean;
   reactDevTools?: 'legacy' | 'latest';
   teamId?: string;
+  experimental_enableServiceWorker?: boolean;
 }
 
 async function compile(opts: CompileOptions) {
@@ -556,7 +558,12 @@ async function compile(opts: CompileOptions) {
     clearConsoleDisabled = false,
     reactDevTools,
     teamId,
+    experimental_enableServiceWorker = false,
   } = opts;
+
+  if (experimental_enableServiceWorker) {
+    await startServiceWorker();
+  }
 
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
@@ -633,6 +640,13 @@ async function compile(opts: CompileOptions) {
       configurations
     );
 
+    dispatch({
+      type: 'dependencies',
+      data: {
+        state: 'downloading_manifest',
+      },
+    });
+
     dependencies = await manager.preset.processDependencies(dependencies);
 
     metrics.measure('dependencies');
@@ -647,7 +661,17 @@ async function compile(opts: CompileOptions) {
 
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
-      ({ done, total, remainingDependencies }) => {
+      ({ done, total, remainingDependencies, dependencyName }) => {
+        dispatch({
+          type: 'dependencies',
+          data: {
+            state: 'downloaded_module',
+            total,
+            progress: done,
+            name: dependencyName,
+          },
+        });
+
         if (!showLoadingScreen) {
           return;
         }
@@ -731,6 +755,13 @@ async function compile(opts: CompileOptions) {
         showFullScreen: firstLoad,
       });
     }
+
+    dispatch({
+      type: 'dependencies',
+      data: {
+        state: 'starting',
+      },
+    });
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');

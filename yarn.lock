@@ -18768,6 +18768,11 @@ ot@^0.0.15:
   version "0.0.15"
   resolved "https://registry.yarnpkg.com/ot/-/ot-0.0.15.tgz#98bd953e6283670a01868e7ef4d2d983a29cd6a7"
 
+outvariant@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/outvariant/-/outvariant-1.4.2.tgz#f54f19240eeb7f15b28263d5147405752d8e2066"
+  integrity sha512-Ou3dJ6bA/UJ5GVHxah4LnqDwZRwAmWxrG3wtrHrbGnP4RnLCtA64A4F+ae7Y8ww660JaddSoArUR5HjipWSHAQ==
+
 overmind-graphql@^8.0.0-1615750082257:
   version "8.0.0-1615750082257"
   resolved "https://registry.yarnpkg.com/overmind-graphql/-/overmind-graphql-8.0.0-1615750082257.tgz#1f32d8ecc0a81d2d8e67f20cd42e7404f1e72635"

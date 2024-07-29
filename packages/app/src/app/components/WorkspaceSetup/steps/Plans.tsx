@@ -400,8 +400,6 @@ export const EXPLAINED_FEATURES: Record<string, string> = {
     'Devboxes are our Cloud Development Environment, which runs in virtual machines and requires VM credits.',
   Sandboxes:
     "Sandboxes are powered by your browser and don't require credits to run.",
-  'personal drafts':
-    'Personal drafts are Sandbox drafts that are not shareable or embeddable.',
 };
 
 const TextWithTooltips = ({ text }: { text: string }) => {
@@ -646,12 +644,6 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           }
           plans={plans}
           property="publicSandboxes"
-        />
-        <FeatureComparisonNumbersRow
-          title="Personal drafts"
-          description="The maximum number of Sandbox drafts (not shareable or embeddable) per workspace user."
-          plans={plans}
-          property="drafts"
         />
         <FeatureComparisonNumbersRow
           title="Devboxes"
