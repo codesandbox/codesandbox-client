@@ -41,7 +41,6 @@ type State = {
   notifications: Notification[];
   isLoadingCLI: boolean;
   isLoadingGithub: boolean;
-  isLoadingVercel: boolean;
   pendingUserId: string | null;
   pendingUser: PendingUserType;
   // Persists the primaryWorkspaceId for a fresh user until redirect
@@ -140,7 +139,6 @@ export const state: State = {
   connected: true,
   notifications: [],
   contributors: [],
-  isLoadingVercel: false,
   isLoadingCLI: false,
   isLoadingGithub: false,
   contextMenu: {

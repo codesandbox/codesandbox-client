@@ -502,19 +502,11 @@ export default {
       },
     });
   },
-  createVercelIntegration(code: string): Promise<CurrentUserFromAPI> {
-    return api.post(`/users/current_user/integrations/vercel`, {
-      code,
-    });
-  },
   signout(): Promise<void> {
     return api.delete(`/users/signout`);
   },
   signoutGithubIntegration(): Promise<void> {
     return api.delete(`/users/current_user/integrations/github`);
-  },
-  signoutVercel(): Promise<void> {
-    return api.delete(`/users/current_user/integrations/vercel`);
   },
   preloadTeamTemplates(teamId: string) {
     client.query({ query: FETCH_TEAM_TEMPLATES, variables: { teamId } });

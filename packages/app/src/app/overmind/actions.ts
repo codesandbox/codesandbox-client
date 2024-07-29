@@ -13,7 +13,6 @@ import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 import { FinalizeSignUpOptions } from './effects/api/types';
 import { AuthOptions, GHScopeOption } from './utils/auth';
-import { renameZeitToVercel } from './utils/vercel';
 
 export const internal = internalActions;
 
@@ -81,34 +80,6 @@ export const onInitializeOvermind = async (
   effects.notifications.initialize({
     provideSocket() {
       return effects.live.getSocket();
-    },
-  });
-
-  effects.vercel.initialize({
-    getToken() {
-      return state.user?.integrations.vercel?.token ?? null;
-    },
-  });
-
-  effects.netlify.initialize({
-    getUserId() {
-      return state.user?.id ?? null;
-    },
-    provideJwtToken() {
-      if (process.env.LOCAL_SERVER || process.env.STAGING) {
-        return Promise.resolve(localStorage.getItem('devJwt'));
-      }
-
-      return provideJwtToken();
-    },
-  });
-
-  effects.githubPages.initialize({
-    provideJwtToken() {
-      if (process.env.LOCAL_SERVER || process.env.STAGING) {
-        return Promise.resolve(localStorage.getItem('devJwt'));
-      }
-      return provideJwtToken();
     },
   });
 
@@ -244,13 +215,10 @@ export const connectionChanged = ({ state }: Context, connected: boolean) => {
 };
 
 type ModalName =
-  | 'githubPagesLogs'
-  | 'deleteDeployment'
   | 'deleteSandbox'
   | 'feedback'
   | 'forkServerModal'
   | 'liveSessionEnded'
-  | 'netlifyLogs'
   | 'preferences'
   | 'searchDependencies'
   | 'share'
@@ -349,61 +317,6 @@ export const removeNotification = ({ state }: Context, id: number) => {
   );
 
   state.notifications.splice(notificationToRemoveIndex, 1);
-};
-
-export const signInVercelClicked = async ({
-  state,
-  effects: { browser, api, notificationToast },
-  actions,
-}: Context) => {
-  state.isLoadingVercel = true;
-
-  /**
-   * We're opening a browser popup here with the /auth/zeit page but then do a server
-   * side redirect to the Vercel sign in page. This only works on production, not locally.
-   * We also can't rename the zeit route to vercel (yet) because the server will throw an
-   * invalid redirect_uri error.
-   */
-  const popup = browser.openPopup('/auth/zeit', 'sign in');
-  const data: { code: string } = await browser.waitForMessage('signin');
-
-  popup.close();
-
-  if (data && data.code) {
-    try {
-      const currentUser = await api.createVercelIntegration(data.code);
-      state.user = renameZeitToVercel(currentUser);
-    } catch (error) {
-      actions.internal.handleError({
-        message: 'Not able to add a Vercel integration. Please try again.',
-        error,
-      });
-    }
-
-    try {
-      await actions.deployment.internal.getVercelUserDetails();
-
-      // Not sure if we ever reach the catch clause below because the error has already
-      // been caught in getVercelUserDetails.
-    } catch (error) {
-      actions.internal.handleError({
-        message:
-          'We were not able to fetch your Vercel user details. You should still be able to deploy to Vercel, please try again if needed.',
-        error,
-      });
-    }
-  } else {
-    notificationToast.error('Could not authorize with Vercel');
-  }
-
-  state.isLoadingVercel = false;
-};
-
-export const signOutVercelClicked = async ({ state, effects }: Context) => {
-  if (state.user?.integrations?.vercel) {
-    await effects.api.signoutVercel();
-    state.user.integrations.vercel = null;
-  }
 };
 
 export const authTokenRequested = async ({ actions }: Context) => {

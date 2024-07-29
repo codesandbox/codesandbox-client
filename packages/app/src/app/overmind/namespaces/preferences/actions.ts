@@ -39,10 +39,6 @@ export const itemIdChanged = async (
   itemId: string
 ) => {
   state.preferences.itemId = itemId;
-
-  if (itemId === 'integrations') {
-    await actions.deployment.internal.getVercelUserDetails();
-  }
 };
 
 export const settingChanged = (

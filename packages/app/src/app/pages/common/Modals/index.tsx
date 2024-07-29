@@ -7,11 +7,9 @@ import { ImportRepository } from 'app/components/Create/ImportRepository';
 import { CreateBox } from 'app/components/Create/CreateBox';
 import { GenericCreate } from 'app/components/Create/GenericCreate';
 import { AddPreset } from './AddPreset';
-import { DeleteDeploymentModal } from './DeleteDeploymentModal';
 import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import { DeleteSandboxModal } from './DeleteSandboxModal';
-import { DeploymentModal } from './DeploymentModal';
 import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
 import { ExportGitHubModal } from './ExportGitHubModal';
@@ -20,7 +18,6 @@ import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
 import { LiveSessionRestricted } from './LiveSessionRestricted';
 import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
-import { NetlifyLogs } from './NetlifyLogs';
 import { Preferences } from './PreferencesModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
@@ -38,7 +35,6 @@ import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfi
 import { UndoAccountDeletionModal } from './UndoAccountDeletion';
 import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/UndoDeletedConfirmation';
 import { NotFoundBranchModal } from './NotFoundBranchModal';
-import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 
 const modals = {
@@ -72,10 +68,6 @@ const modals = {
     Component: ShareModal,
     width: 1200,
   },
-  deployment: {
-    Component: DeploymentModal,
-    width: 600,
-  },
   recoveredFiles: {
     Component: RecoverFilesModal,
     width: 400,
@@ -92,21 +84,9 @@ const modals = {
     Component: SignInForTemplates,
     width: 400,
   },
-  netlifyLogs: {
-    Component: NetlifyLogs,
-    width: 750,
-  },
-  githubPagesLogs: {
-    Component: GithubPagesLogs,
-    width: 750,
-  },
   cropThumbnail: {
     Component: CropThumbnail,
     width: 750,
-  },
-  deleteDeployment: {
-    Component: DeleteDeploymentModal,
-    width: 400,
   },
   deleteSandbox: {
     Component: DeleteSandboxModal,

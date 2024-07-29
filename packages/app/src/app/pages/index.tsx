@@ -53,9 +53,6 @@ const SignOut = Loadable(() =>
     default: module.SignOut,
   }))
 );
-const VercelSignIn = Loadable(
-  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
-);
 const PreviewAuth = Loadable(
   () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
@@ -199,7 +196,6 @@ const RoutesComponent: React.FC = () => {
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={MobileAuth} />
             <Route path="/vscode/login" component={VSCodeAuth} />
-            <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             <Route path="/auth/sandpack/:teamId" component={SandpackSecret} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (

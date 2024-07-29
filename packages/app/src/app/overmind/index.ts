@@ -15,7 +15,6 @@ import * as checkout from './namespaces/checkout';
 import * as comments from './namespaces/comments';
 import * as dashboard from './namespaces/dashboard';
 import * as sidebar from './namespaces/sidebar';
-import * as deployment from './namespaces/deployment';
 import * as editor from './namespaces/editor';
 import * as files from './namespaces/files';
 import * as git from './namespaces/git';
@@ -41,7 +40,6 @@ export const config = merge(
     workspace,
     dashboard,
     sidebar,
-    deployment,
     files,
     git,
     profile,
