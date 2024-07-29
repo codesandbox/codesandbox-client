@@ -1,39 +1,20 @@
-import { TemplateType } from '@codesandbox/common/lib/templates';
 import {
   CurrentUserFromAPI,
   CustomTemplate,
-  Dependency,
-  Directory,
-  EnvironmentVariable,
-  GitChanges,
-  GitCommit,
-  GitFileCompare,
-  GitInfo,
-  GitPathChanges,
-  GitPr,
-  Module,
-  NpmManifest,
   Profile,
   Sandbox,
   UploadedFilesInfo,
   UserQuery,
   UserSandbox,
   SettingsSync,
-  ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
 import { FETCH_TEAM_TEMPLATES } from 'app/components/Create/utils/queries';
 import { client } from 'app/graphql/client';
 import { PendingUserType } from 'app/overmind/state';
 
-import {
-  transformDirectory,
-  transformModule,
-  transformSandbox,
-} from '../utils/sandbox';
+import { transformSandbox } from '../utils/sandbox';
 import apiFactory, { Api, ApiConfig, Params } from './apiFactory';
 import {
-  IDirectoryAPIResponse,
-  IModuleAPIResponse,
   SandboxAPIResponse,
   FinalizeSignUpOptions,
   MetaFeatures,
@@ -86,318 +67,8 @@ export default {
     // We need to add client side properties for tracking
     return transformSandbox(sandbox);
   },
-  async forkSandbox(id: string, body?: ForkSandboxBody): Promise<Sandbox> {
-    const url = id.includes('/')
-      ? `/sandboxes/fork/${id}`
-      : `/sandboxes/${id}/fork`;
-
-    const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
-
-    return transformSandbox(sandbox);
-  },
-  createModule(sandboxId: string, module: Module): Promise<Module> {
-    return api
-      .post<IModuleAPIResponse>(`/sandboxes/${sandboxId}/modules`, {
-        module: {
-          title: module.title,
-          directoryShortid: module.directoryShortid,
-          code: module.code,
-          isBinary: module.isBinary === undefined ? false : module.isBinary,
-        },
-      })
-      .then(transformModule);
-  },
-  async deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
-    await api.delete<IModuleAPIResponse>(
-      `/sandboxes/${sandboxId}/modules/${moduleShortid}`
-    );
-  },
-  saveModuleCode(
-    sandboxId: string,
-    moduleShortid: string,
-    code: string
-  ): Promise<Module> {
-    return api
-      .put<IModuleAPIResponse>(
-        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
-        {
-          module: { code },
-        }
-      )
-      .then(transformModule);
-  },
-  saveModulePrivateUpload(
-    sandboxId: string,
-    moduleShortid: string,
-    data: {
-      code: string;
-      uploadId: string;
-      sha: string;
-    }
-  ): Promise<Module> {
-    return api
-      .put<IModuleAPIResponse>(
-        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
-        {
-          module: data,
-        }
-      )
-      .then(transformModule);
-  },
-  saveModules(sandboxId: string, modules: Module[]): Promise<Module[]> {
-    return api
-      .put<IModuleAPIResponse[]>(`/sandboxes/${sandboxId}/modules/mupdate`, {
-        modules,
-      })
-      .then(modulesResult => modulesResult.map(transformModule));
-  },
-  getGitChanges(sandboxId: string): Promise<GitPathChanges> {
-    return api.get(`/sandboxes/${sandboxId}/git/diff`);
-  },
-  saveGitOriginalCommitSha(
-    sandboxId: string,
-    commitSha: string
-  ): Promise<void> {
-    return api.patch(`/sandboxes/${sandboxId}/original_git_commit_sha`, {
-      original_git_commit_sha: commitSha,
-    });
-  },
-  saveTemplate(sandboxId: string, template: TemplateType): Promise<void> {
-    return api.put(`/sandboxes/${sandboxId}/`, {
-      sandbox: { template },
-    });
-  },
-  unlikeSandbox(sandboxId: string) {
-    return api.request({
-      method: 'DELETE',
-      url: `/sandboxes/${sandboxId}/likes`,
-      data: {
-        id: sandboxId,
-      },
-    });
-  },
-  likeSandbox(sandboxId: string) {
-    return api.post(`/sandboxes/${sandboxId}/likes`, {
-      id: sandboxId,
-    });
-  },
-  savePrivacy(sandboxId: string, privacy: 0 | 1 | 2) {
-    return api.patch<SandboxAPIResponse>(`/sandboxes/${sandboxId}/privacy`, {
-      sandbox: {
-        privacy,
-      },
-    });
-  },
-  saveFrozen(sandboxId: string, isFrozen: boolean) {
-    return api.put<SandboxAPIResponse>(`/sandboxes/${sandboxId}`, {
-      sandbox: {
-        is_frozen: isFrozen,
-      },
-    });
-  },
-  getEnvironmentVariables(
-    sandboxId: string
-  ): Promise<{ [key: string]: string }> {
-    return api.get(
-      `/sandboxes/${sandboxId}/env`,
-      {},
-      { shouldCamelize: false }
-    );
-  },
-  saveEnvironmentVariable(
-    sandboxId: string,
-    environmentVariable: EnvironmentVariable
-  ): Promise<{ [key: string]: string }> {
-    return api.post(
-      `/sandboxes/${sandboxId}/env`,
-      {
-        environment_variable: environmentVariable,
-      },
-      {
-        shouldCamelize: false,
-      }
-    );
-  },
-  deleteEnvironmentVariable(
-    sandboxId: string,
-    name: string
-  ): Promise<{ [key: string]: string }> {
-    return api.delete(
-      `/sandboxes/${sandboxId}/env/${name}`,
-      {},
-      { shouldCamelize: false }
-    );
-  },
-  saveModuleTitle(sandboxId: string, moduleShortid: string, title: string) {
-    return api.put<IModuleAPIResponse>(
-      `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
-      {
-        module: { title },
-      }
-    );
-  },
-  createDirectory(
-    sandboxId: string,
-    directoryShortid: string,
-    title: string
-  ): Promise<Directory> {
-    return api
-      .post<IDirectoryAPIResponse>(`/sandboxes/${sandboxId}/directories`, {
-        directory: {
-          title,
-          directoryShortid,
-        },
-      })
-      .then(transformDirectory);
-  },
-  saveModuleDirectory(
-    sandboxId: string,
-    moduleShortid: string,
-    directoryShortid: string
-  ) {
-    return api.put<IDirectoryAPIResponse>(
-      `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
-      {
-        module: { directoryShortid },
-      }
-    );
-  },
-  saveDirectoryDirectory(
-    sandboxId: string,
-    sourceDirectoryShortid: string,
-    targetDirectoryShortId: string
-  ) {
-    return api.put<IDirectoryAPIResponse>(
-      `/sandboxes/${sandboxId}/directories/${sourceDirectoryShortid}`,
-      {
-        directory: { directoryShortid: targetDirectoryShortId },
-      }
-    );
-  },
-  deleteDirectory(sandboxId: string, directoryShortid: string) {
-    return api.delete(
-      `/sandboxes/${sandboxId}/directories/${directoryShortid}`
-    );
-  },
-  saveDirectoryTitle(
-    sandboxId: string,
-    directoryShortid: string,
-    title: string
-  ) {
-    return api.put<IDirectoryAPIResponse>(
-      `/sandboxes/${sandboxId}/directories/${directoryShortid}`,
-      {
-        directory: { title },
-      }
-    );
-  },
   getUploads(): Promise<UploadedFilesInfo> {
     return api.get('/users/current_user/uploads');
-  },
-  deleteUploadedFile(uploadId: string): Promise<void> {
-    return api.delete(`/users/current_user/uploads/${uploadId}`);
-  },
-  createUpload(name: string, content: string): Promise<{ url: string }> {
-    return api.post('/users/current_user/uploads', {
-      content,
-      name,
-    });
-  },
-  async massCreateModules(
-    sandboxId: string,
-    directoryShortid: string | null,
-    modules: Module[],
-    directories: Directory[]
-  ): Promise<{
-    modules: Module[];
-    directories: Directory[];
-  }> {
-    const data = (await api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
-      directoryShortid,
-      modules,
-      directories,
-    })) as {
-      modules: IModuleAPIResponse[];
-      directories: IDirectoryAPIResponse[];
-    };
-
-    return {
-      modules: data.modules.map(transformModule),
-      directories: data.directories.map(transformDirectory),
-    };
-  },
-  createGit(
-    sandboxId: string,
-    repoTitle: string,
-    data: object
-  ): Promise<GitInfo> {
-    return api.post(`/sandboxes/${sandboxId}/git/repo/${repoTitle}`, data);
-  },
-  createGitCommit(
-    sandboxId: string,
-    message: string,
-    changes: GitChanges,
-    parentCommitShas: string[]
-  ): Promise<GitCommit> {
-    return api.post(`/sandboxes/${sandboxId}/git/commit`, {
-      id: sandboxId,
-      message,
-      changes,
-      parentCommitShas,
-    });
-  },
-  async compareGit(
-    sandboxId: string,
-    baseRef: string,
-    headRef: string,
-    includeContents = false
-  ): Promise<{
-    baseCommitSha: string;
-    headCommitSha: string;
-    files: GitFileCompare[];
-  }> {
-    const response: any = await api.post(
-      `/sandboxes/${sandboxId}/git/compare`,
-      {
-        baseRef,
-        headRef,
-        includeContents,
-      }
-    );
-
-    return response;
-  },
-  getGitPr(sandboxId: string, prNumber: number): Promise<GitPr> {
-    return api.get(`/sandboxes/${sandboxId}/git/prs/${prNumber}`);
-  },
-  async getGitRights(sandboxId: string) {
-    const response = await api.get<{ permission: 'admin' | 'write' | 'read' }>(
-      `/sandboxes/${sandboxId}/git/rights`
-    );
-
-    return response.permission;
-  },
-  createGitPr(
-    sandboxId: string,
-    title: string,
-    description: string,
-    changes: GitChanges
-  ): Promise<GitPr> {
-    return api.post(`/sandboxes/${sandboxId}/git/pr`, {
-      sandboxId,
-      title,
-      description,
-      changes,
-    });
-  },
-  async createLiveRoom(sandboxId: string): Promise<string> {
-    const data = await api.post<{
-      id: string;
-    }>(`/sandboxes/${sandboxId}/live`, {
-      id: sandboxId,
-    });
-
-    return data.id;
   },
   getProfile(username: string): Promise<Profile> {
     return api.get(`/users/${username}`);
@@ -453,14 +124,6 @@ export default {
       },
     });
   },
-  createTag(sandboxId: string, tagName: string): Promise<string[]> {
-    return api.post(`/sandboxes/${sandboxId}/tags`, {
-      tag: tagName,
-    });
-  },
-  deleteTag(sandboxId: string, tagName: string): Promise<string[]> {
-    return api.delete(`/sandboxes/${sandboxId}/tags/${tagName}`);
-  },
   /**
    * Updates a sandbox. Used to update sandbox metadata but also to convert
    * a sandbox to a devbox.
@@ -468,20 +131,6 @@ export default {
   updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
     return api.put(`/sandboxes/${sandboxId}`, {
       sandbox: data,
-    });
-  },
-  createResource(sandboxId: string, resource: string): Promise<void> {
-    return api.post(`/sandboxes/${sandboxId}/resources`, {
-      externalResource: resource,
-    });
-  },
-  deleteResource(sandboxId: string, resource: string): Promise<void> {
-    return api.request({
-      method: 'DELETE',
-      url: `/sandboxes/${sandboxId}/resources/`,
-      data: {
-        id: resource,
-      },
     });
   },
   updatePrivacy(
@@ -503,46 +152,14 @@ export default {
   preloadTeamTemplates(teamId: string) {
     client.query({ query: FETCH_TEAM_TEMPLATES, variables: { teamId } });
   },
-  fetchTemplate(
-    sandboxId: string,
-    templateId: string
-  ): Promise<CustomTemplate> {
-    return api.get(`/sandboxes/${sandboxId}/templates/`);
-  },
   deleteTemplate(
     sandboxId: string,
     templateId: string
   ): Promise<CustomTemplate> {
     return api.delete(`/sandboxes/${sandboxId}/templates/${templateId}`);
   },
-  updateTemplate(
-    sandboxId: string,
-    template: CustomTemplate
-  ): Promise<CustomTemplate> {
-    return api
-      .put<{ template: CustomTemplate }>(
-        `/sandboxes/${sandboxId}/templates/${template.id}`,
-        {
-          template,
-        }
-      )
-      .then(data => data.template);
-  },
-  createTemplate(
-    sandboxId: string,
-    template: { color: string; description: string; title: string }
-  ): Promise<CustomTemplate> {
-    return api
-      .post<{ template: CustomTemplate }>(`/sandboxes/${sandboxId}/templates`, {
-        template,
-      })
-      .then(data => data.template);
-  },
   queryUsers(query: string): Promise<UserQuery[]> {
     return api.get(`/users/search?username=${query}`);
-  },
-  makeGitSandbox(sandboxId: string): Promise<Sandbox> {
-    return api.post<Sandbox>(`/sandboxes/${sandboxId}/make_git_sandbox`, null);
   },
   updateUserFeaturedSandboxes(
     username: string,

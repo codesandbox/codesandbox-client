@@ -1,5 +1,4 @@
 export { default as utils } from './utils';
-export { default as git } from './git';
 export { default as api } from './api';
 export { default as browser } from './browser';
 export { default as connection } from './connection';
