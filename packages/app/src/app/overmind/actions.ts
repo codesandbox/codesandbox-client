@@ -29,23 +29,11 @@ export const onInitializeOvermind = async (
 
   effects.live.initialize({
     provideJwtToken,
-    onApplyOperation: actions.live.applyTransformation,
-    onOperationError: actions.live.onOperationError,
   });
 
   effects.flows.initialize(overmindInstance.reaction);
 
-  // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
-  effects.browser.onUnload(() => {
-    if (state.editor.currentSandbox && state.connected) {
-      effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
-    }
-  });
-
   effects.api.initialize({
-    getParsedConfigurations() {
-      return state.editor.parsedConfigurations;
-    },
     provideJwtToken() {
       if (process.env.LOCAL_SERVER || process.env.STAGING) {
         return localStorage.getItem('devJwt');
@@ -83,58 +71,7 @@ export const onInitializeOvermind = async (
     },
   });
 
-  effects.prettyfier.initialize({
-    getCurrentModule() {
-      return state.editor.currentModule;
-    },
-    getPrettierConfig() {
-      let config = state.preferences.settings.prettierConfig;
-      const configFromSandbox = state.editor.currentSandbox?.modules.find(
-        module =>
-          module.directoryShortid == null && module.title === '.prettierrc'
-      );
-
-      if (configFromSandbox) {
-        config = JSON.parse(configFromSandbox.code);
-      }
-
-      return config;
-    },
-  });
-
-  effects.vscode.initialize({
-    getCurrentSandbox: () => state.editor.currentSandbox,
-    getCurrentModule: () => state.editor.currentModule,
-    getSandboxFs: () => state.editor.modulesByPath,
-    getCurrentUser: () => state.user,
-    onOperationApplied: actions.editor.onOperationApplied,
-    onCodeChange: actions.editor.codeChanged,
-    onSelectionChanged: selection => {
-      actions.editor.onSelectionChanged(selection);
-      actions.live.onSelectionChanged(selection);
-    },
-    onViewRangeChanged: actions.live.onViewRangeChanged,
-    onCommentClick: actions.comments.onCommentClick,
-    reaction: overmindInstance.reaction,
-    getState: (path: string) =>
-      path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
-    getSignal: (path: string) =>
-      path.split('.').reduce((aggr, key) => aggr[key], actions),
-  });
-
-  effects.preview.initialize();
-
   actions.internal.setViewModeForDashboard();
-
-  effects.browser.onWindowMessage(event => {
-    if (event.data.type === 'screenshot-requested-from-preview') {
-      actions.preview.createPreviewComment();
-    }
-  });
-
-  effects.browserExtension.hasExtension().then(hasExtension => {
-    actions.preview.setExtension(hasExtension);
-  });
 
   try {
     state.features = await effects.api.getFeatures();
@@ -338,17 +275,10 @@ export const signInGithubClicked = async (
   state.isLoadingGithub = true;
   await actions.internal.signIn({ includedScopes, provider: 'github' });
   state.isLoadingGithub = false;
-  if (state.editor.currentSandbox?.originalGit) {
-    actions.git.loadGitSource();
-  }
 };
 
 export const signOutClicked = async ({ state, effects, actions }: Context) => {
   effects.analytics.track('Sign Out', {});
-  state.workspace.openedWorkspaceItem = 'files';
-  if (state.live.isLive) {
-    actions.live.internal.disconnect();
-  }
   await effects.api.signout();
   effects.browser.storage.remove(TEAM_ID_LOCAL_STORAGE);
   effects.router.clearWorkspaceId();
@@ -382,34 +312,6 @@ export const track = (
   { name, data }: { name: string; data: any }
 ) => {
   effects.analytics.track(name, data);
-};
-
-export const refetchSandboxInfo = async ({
-  actions,
-  effects,
-  state,
-}: Context) => {
-  const sandbox = state.editor.currentSandbox;
-
-  if (!sandbox?.id) {
-    return;
-  }
-
-  const updatedSandbox = await effects.api.getSandbox(sandbox.id);
-
-  sandbox.collection = updatedSandbox.collection;
-  sandbox.owned = updatedSandbox.owned;
-  sandbox.userLiked = updatedSandbox.userLiked;
-  sandbox.title = updatedSandbox.title;
-  sandbox.description = updatedSandbox.description;
-  sandbox.team = updatedSandbox.team;
-  sandbox.roomId = updatedSandbox.roomId;
-  sandbox.authorization = updatedSandbox.authorization;
-  sandbox.privacy = updatedSandbox.privacy;
-  sandbox.featureFlags = updatedSandbox.featureFlags;
-  sandbox.npmRegistries = updatedSandbox.npmRegistries;
-
-  await actions.editor.internal.initializeSandbox(sandbox);
 };
 
 export const acceptTeamInvitation = (
@@ -548,4 +450,27 @@ export const getSandboxesLimits = async ({ effects, state }: Context) => {
 
 export const clearNewUserFirstWorkspaceId = ({ state }: Context) => {
   state.newUserFirstWorkspaceId = null;
+};
+
+export const gotUploadedFiles = async (
+  { state, actions, effects }: Context,
+  message: string
+) => {
+  const modal = 'storageManagement';
+  effects.analytics.track('Open Modal', { modal });
+  state.currentModalMessage = message;
+  state.currentModal = modal;
+
+  try {
+    const uploadedFilesInfo = await effects.api.getUploads();
+
+    state.uploadedFiles = uploadedFilesInfo.uploads;
+    state.maxStorage = uploadedFilesInfo.maxSize;
+    state.usedStorage = uploadedFilesInfo.currentSize;
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'Unable to get uploaded files information',
+      error,
+    });
+  }
 };

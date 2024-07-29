@@ -60,10 +60,6 @@ export const settingChanged = (
   );
   settingsTarget[lastKey] = value;
 
-  if (name === 'vimMode') {
-    effects.vscode.setVimExtensionEnabled(Boolean(value));
-  }
-
   effects.settingsStore.set(firstKey, state.preferences.settings[firstKey]);
 
   effects.analytics.track('Change Settings', {

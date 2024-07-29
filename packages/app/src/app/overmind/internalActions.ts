@@ -1,9 +1,4 @@
-import {
-  ModuleTab,
-  NotificationButton,
-  Sandbox,
-  TabType,
-} from '@codesandbox/common/lib/types';
+import { NotificationButton, Sandbox } from '@codesandbox/common/lib/types';
 import history from 'app/utils/history';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
@@ -17,8 +12,6 @@ import {
   SandboxToFork,
 } from 'app/components/Create/utils/types';
 import { ApiError } from './effects/api/apiFactory';
-import { defaultOpenedModule, mainModule } from './utils/main-module';
-import { parseConfigurations } from './utils/parse-configurations';
 import { Context } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { AuthOptions, GH_BASE_SCOPE, MAP_GH_SCOPE_OPTIONS } from './utils/auth';
@@ -45,7 +38,6 @@ export const initializeNewUser = async ({
 
   actions.internal.showUserSurveyIfNeeded();
   actions.internal.showUpdatedToSIfNeeded();
-  await effects.live.getSocket();
   actions.userNotifications.internal.initialize();
   actions.internal.setStoredSettings();
 
@@ -78,7 +70,6 @@ export const signIn = async (
     state.user = renameZeitToVercel(currentUser);
 
     await actions.internal.initializeNewUser();
-    actions.refetchSandboxInfo();
     state.hasLogIn = true;
     state.isAuthenticating = false;
     actions.getActiveTeamInfo();
@@ -277,8 +268,6 @@ export const authorize = async ({ state, effects }: Context) => {
   try {
     state.isLoadingAuthToken = true;
     state.authToken = await effects.api.getAuthToken();
-  } catch (error) {
-    state.editor.error = error.message;
   } finally {
     state.isLoadingAuthToken = false;
   }
@@ -389,127 +378,6 @@ export const switchCurrentWorkspaceBySandbox = (
   ) {
     actions.setActiveTeam({ id: sandbox.team.id });
   }
-};
-
-export const currentSandboxChanged = ({ state, actions }: Context) => {
-  const sandbox = state.editor.currentSandbox!;
-  actions.internal.switchCurrentWorkspaceBySandbox({
-    sandbox,
-  });
-};
-
-export const setCurrentSandbox = async (
-  { state, effects, actions }: Context,
-  sandbox: Sandbox
-) => {
-  state.editor.sandboxes[sandbox.id] = sandbox;
-  state.editor.currentId = sandbox.id;
-
-  let { currentModuleShortid } = state.editor;
-  const parsedConfigs = parseConfigurations(sandbox);
-  const main = mainModule(sandbox, parsedConfigs);
-
-  state.editor.mainModuleShortid = main?.shortid;
-
-  // Only change the module shortid if it doesn't exist in the new sandbox
-  // This can happen when a sandbox is opened that's different from the current
-  // sandbox, with completely different files
-  if (
-    !sandbox.modules.find(module => module.shortid === currentModuleShortid)
-  ) {
-    const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
-
-    if (defaultModule) {
-      currentModuleShortid = defaultModule.shortid;
-    }
-  }
-
-  const sandboxOptions = effects.router.getSandboxOptions();
-
-  if (sandboxOptions.currentModule) {
-    try {
-      const resolvedModule = effects.utils.resolveModule(
-        sandboxOptions.currentModule,
-        sandbox.modules,
-        sandbox.directories
-      );
-      currentModuleShortid = resolvedModule
-        ? resolvedModule.shortid
-        : currentModuleShortid;
-    } catch (error) {
-      actions.internal.handleError({
-        message: `Could not find module ${sandboxOptions.currentModule}`,
-        error,
-      });
-    }
-  }
-
-  state.editor.currentModuleShortid = currentModuleShortid;
-  state.editor.workspaceConfigCode = '';
-
-  const newTab: ModuleTab = {
-    type: TabType.MODULE,
-    moduleShortid: currentModuleShortid,
-    dirty: true,
-  };
-
-  state.editor.tabs = [newTab];
-
-  state.preferences.showPreview = Boolean(
-    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen
-  );
-
-  state.preferences.showEditor = Boolean(
-    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen
-  );
-
-  if (sandboxOptions.initialPath)
-    state.editor.initialPath = sandboxOptions.initialPath;
-  if (sandboxOptions.fontSize)
-    state.preferences.settings.fontSize = sandboxOptions.fontSize;
-  if (sandboxOptions.highlightedLines)
-    state.editor.highlightedLines = sandboxOptions.highlightedLines;
-  if (sandboxOptions.hideNavigation)
-    state.preferences.hideNavigation = sandboxOptions.hideNavigation;
-  if (sandboxOptions.isInProjectView)
-    state.editor.isInProjectView = sandboxOptions.isInProjectView;
-  if (sandboxOptions.autoResize)
-    state.preferences.settings.autoResize = sandboxOptions.autoResize;
-  if (sandboxOptions.enableEslint)
-    state.preferences.settings.enableEslint = sandboxOptions.enableEslint;
-  if (sandboxOptions.forceRefresh)
-    state.preferences.settings.forceRefresh = sandboxOptions.forceRefresh;
-  if (sandboxOptions.expandDevTools)
-    state.preferences.showDevtools = sandboxOptions.expandDevTools;
-  if (sandboxOptions.runOnClick)
-    state.preferences.runOnClick = sandboxOptions.runOnClick;
-
-  state.workspace.project.title = sandbox.title || '';
-  state.workspace.project.description = sandbox.description || '';
-  state.workspace.project.alias = sandbox.alias || '';
-
-  // Do this before startContainer, because startContainer flushes in overmind and causes
-  // the components to rerender. Because of this sometimes the GitHub component will get a
-  // sandbox without a git
-  actions.workspace.openDefaultItem();
-
-  actions.internal.currentSandboxChanged();
-};
-
-export const closeTabByIndex = ({ state }: Context, tabIndex: number) => {
-  const { currentModule } = state.editor;
-  const tabs = state.editor.tabs as ModuleTab[];
-  const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid;
-
-  if (isActiveTab) {
-    const newTab = tabIndex > 0 ? tabs[tabIndex - 1] : tabs[tabIndex + 1];
-
-    if (newTab) {
-      state.editor.currentModuleShortid = newTab.moduleShortid;
-    }
-  }
-
-  state.editor.tabs.splice(tabIndex, 1);
 };
 
 export const getErrorMessage = (

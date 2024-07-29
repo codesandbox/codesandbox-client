@@ -368,7 +368,7 @@ function initializeRequires() {
   });
 }
 
-export default function(isVSCode: boolean, requiredModule?: string[]) {
+export default function (isVSCode: boolean, requiredModule?: string[]) {
   var METADATA = isVSCode ? VSCODE_METADATA : MONACO_METADATA;
   var IS_FILE_PROTOCOL = global.location.protocol === 'file:';
   var DIRNAME: string | null = null;
@@ -393,13 +393,13 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
     }
   }
 
-  var LOADER_OPTS = (function() {
+  var LOADER_OPTS = (function () {
     function parseQueryString() {
       var str = global.location.search;
       str = str.replace(/^\?/, '');
       var pieces = str.split(/&/);
       var result = {};
-      pieces.forEach(function(piece) {
+      pieces.forEach(function (piece) {
         var config = piece.split(/=/);
         result[config[0]] = config[1];
       });
@@ -408,7 +408,7 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
     var overwrites = parseQueryString();
     var result = {};
     result['editor'] = overwrites['editor'] || 'src';
-    METADATA.PLUGINS.map(function(plugin) {
+    METADATA.PLUGINS.map(function (plugin) {
       result[plugin.name] =
         overwrites[plugin.name] || (process.env.VSCODE ? 'src' : 'npm/min');
     });
@@ -437,10 +437,10 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
     this.contrib = contrib;
     this.selectedPath = LOADER_OPTS[name];
   }
-  Component.prototype.isRelease = function() {
+  Component.prototype.isRelease = function () {
     return /release/.test(this.selectedPath);
   };
-  Component.prototype.getResolvedPath = function() {
+  Component.prototype.getResolvedPath = function () {
     var resolvedPath = this.paths[this.selectedPath];
     if (
       this.selectedPath === 'npm/dev' ||
@@ -461,27 +461,27 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
     }
     return resolvedPath;
   };
-  Component.prototype.generateLoaderConfig = function(dest) {
+  Component.prototype.generateLoaderConfig = function (dest) {
     dest[this.modulePrefix] =
       process.env.CODESANDBOX_HOST + this.getResolvedPath();
   };
-  Component.prototype.generateUrlForPath = function(pathName) {
+  Component.prototype.generateUrlForPath = function (pathName) {
     var NEW_LOADER_OPTS = {};
-    Object.keys(LOADER_OPTS).forEach(function(key) {
+    Object.keys(LOADER_OPTS).forEach(function (key) {
       NEW_LOADER_OPTS[key] =
         LOADER_OPTS[key] === 'npm/dev' ? undefined : LOADER_OPTS[key];
     });
     NEW_LOADER_OPTS[this.name] = pathName === 'npm/dev' ? undefined : pathName;
 
     var search = Object.keys(NEW_LOADER_OPTS)
-      .map(function(key) {
+      .map(function (key) {
         var value = NEW_LOADER_OPTS[key];
         if (value) {
           return key + '=' + value;
         }
         return '';
       })
-      .filter(function(assignment) {
+      .filter(function (assignment) {
         return Boolean(assignment);
       })
       .join('&');
@@ -490,14 +490,14 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
     }
     return toHREF(search);
   };
-  Component.prototype.renderLoadingOptions = function() {
+  Component.prototype.renderLoadingOptions = function () {
     return (
       '<strong style="width:130px;display:inline-block;">' +
       this.name +
       '</strong>:&nbsp;&nbsp;&nbsp;' +
       Object.keys(this.paths)
         .map(
-          function(pathName) {
+          function (pathName) {
             if (pathName === this.selectedPath) {
               return '<strong>' + pathName + '</strong>';
             }
@@ -516,7 +516,7 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
 
   var RESOLVED_CORE = new Component('editor', 'vs', METADATA.CORE.paths);
   global.RESOLVED_CORE_PATH = RESOLVED_CORE.getResolvedPath();
-  var RESOLVED_PLUGINS = METADATA.PLUGINS.map(function(plugin) {
+  var RESOLVED_PLUGINS = METADATA.PLUGINS.map(function (plugin) {
     return new Component(
       plugin.name,
       plugin.modulePrefix,
@@ -539,7 +539,7 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
     }
   }
 
-  (function() {
+  (function () {
     if (process.env.DEBUG_VERSION) {
       var allComponents = [RESOLVED_CORE];
       if (!RESOLVED_CORE.isRelease()) {
@@ -557,7 +557,7 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
       div.innerHTML =
         '<ul><li>' +
         allComponents
-          .map(function(component) {
+          .map(function (component) {
             return component.renderLoadingOptions();
           })
           .join('</li><li>') +
@@ -575,7 +575,7 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
     }
   })();
 
-  return function(callback: () => void, PATH_PREFIX?: string) {
+  return function (callback: () => void, PATH_PREFIX?: string) {
     PATH_PREFIX = PATH_PREFIX || '';
 
     global.nodeRequire = path => {
@@ -604,7 +604,7 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
         'vs/language/vue': '/public/14/vs/language/vue',
       };
       if (!RESOLVED_CORE.isRelease()) {
-        RESOLVED_PLUGINS.forEach(function(plugin) {
+        RESOLVED_PLUGINS.forEach(function (plugin) {
           plugin.generateLoaderConfig(loaderPathsConfig);
         });
       }
@@ -635,14 +635,14 @@ export default function(isVSCode: boolean, requiredModule?: string[]) {
       global.deps = new Set();
 
       if (requiredModule) {
-        global.require(requiredModule, function(a) {
+        global.require(requiredModule, function (a) {
           if (!isVSCode && !RESOLVED_CORE.isRelease()) {
             // At this point we've loaded the monaco-editor-core
             global.require(
-              RESOLVED_PLUGINS.map(function(plugin) {
+              RESOLVED_PLUGINS.map(function (plugin) {
                 return plugin.contrib;
               }),
-              function() {
+              function () {
                 // At this point we've loaded all the plugins
                 callback();
               }

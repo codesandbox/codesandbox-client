@@ -13,11 +13,7 @@ import { ProfileImage } from './elements';
 export const UserMenu: FunctionComponent & {
   Button: (props: any) => JSX.Element;
 } = props => {
-  const {
-    modalOpened,
-    signOutClicked,
-    files: { gotUploadedFiles },
-  } = useActions();
+  const { modalOpened, signOutClicked, gotUploadedFiles } = useActions();
   const { user, environment } = useAppState();
   const isEditorPage = useIsEditorPage();
 
