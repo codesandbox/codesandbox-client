@@ -13,6 +13,7 @@ import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 import { FinalizeSignUpOptions } from './effects/api/types';
 import { AuthOptions, GHScopeOption } from './utils/auth';
+import { Sandbox } from 'app/graphql/types';
 
 export const internal = internalActions;
 
@@ -464,4 +465,8 @@ export const gotUploadedFiles = async (
       error,
     });
   }
+};
+
+export const createRepoFiles = ({ effects }: Context, sandbox: Sandbox) => {
+  return effects.git.export(sandbox);
 };

@@ -2,12 +2,9 @@ import { Stack, Element } from '@codesandbox/components';
 import React, { ComponentProps, ComponentType } from 'react';
 
 import AccountIcon from 'react-icons/lib/fa/user';
-import CodeIcon from 'react-icons/lib/fa/code';
-import CodeFormatIcon from 'react-icons/lib/fa/dedent';
 import FlaskIcon from 'react-icons/lib/fa/flask';
 import MailIcon from 'react-icons/lib/go/mail';
 import BrowserIcon from 'react-icons/lib/go/browser';
-import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
 
 import { useAppState } from 'app/overmind';
@@ -15,9 +12,6 @@ import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 
 import { Account } from './Account';
-import { Appearance } from './Appearance';
-import { CodeFormatting } from './CodeFormatting';
-import { Editor } from './Editor';
 import { Preview } from './Preview';
 import { Experiments } from './Experiments';
 import { PreferencesSync } from './PreferencesSync';
@@ -62,24 +56,6 @@ const getItems = (
       Icon: FlaskIcon,
       id: 'experiments',
       title: 'Experiments',
-    },
-    isEditorPage && {
-      Content: Appearance,
-      Icon: AppearanceIcon,
-      id: 'appearance',
-      title: 'Appearance',
-    },
-    isEditorPage && {
-      Content: Editor,
-      Icon: CodeIcon,
-      id: 'editor',
-      title: 'Editor',
-    },
-    isEditorPage && {
-      Content: CodeFormatting,
-      Icon: CodeFormatIcon,
-      id: 'prettierSettings',
-      title: 'Prettier Settings',
     },
     isEditorPage && {
       Content: Preview,

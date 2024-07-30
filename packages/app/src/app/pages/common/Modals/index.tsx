@@ -6,10 +6,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { ImportRepository } from 'app/components/Create/ImportRepository';
 import { CreateBox } from 'app/components/Create/CreateBox';
 import { GenericCreate } from 'app/components/Create/GenericCreate';
-import { AddPreset } from './AddPreset';
-import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
-import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
 import { FeedbackModal } from './FeedbackModal';
 import { Preferences } from './PreferencesModal';
@@ -64,18 +61,6 @@ const modals = {
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,
     width: 400,
-  },
-  deletePreset: {
-    Component: DeletePreset,
-    width: 400,
-  },
-  addPreset: {
-    Component: AddPreset,
-    width: 400,
-  },
-  editPresets: {
-    Component: EditPresets,
-    width: 600,
   },
   emptyTrash: {
     Component: EmptyTrash,
