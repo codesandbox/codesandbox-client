@@ -7,6 +7,7 @@ import {
   UserQuery,
   UserSandbox,
   SettingsSync,
+  ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
 import { FETCH_TEAM_TEMPLATES } from 'app/components/Create/utils/queries';
 import { client } from 'app/graphql/client';
@@ -65,6 +66,15 @@ export default {
     );
 
     // We need to add client side properties for tracking
+    return transformSandbox(sandbox);
+  },
+  async forkSandbox(id: string, body?: ForkSandboxBody): Promise<Sandbox> {
+    const url = id.includes('/')
+      ? `/sandboxes/fork/${id}`
+      : `/sandboxes/${id}/fork`;
+
+    const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
+
     return transformSandbox(sandbox);
   },
   getUploads(): Promise<UploadedFilesInfo> {

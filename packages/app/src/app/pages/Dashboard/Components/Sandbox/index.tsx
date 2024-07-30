@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory, Link } from 'react-router-dom';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -12,7 +11,6 @@ import track, {
 } from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
-import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -68,7 +66,6 @@ function getFolderName(item: GenericSandboxProps['item']): string | undefined {
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const { dashboard, activeWorkspaceAuthorization } = useAppState();
-  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const actions = useActions();
 
   const { sandbox } = item;
@@ -89,8 +86,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const viewCount = formatNumber(sandbox.viewCount);
 
-  const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
-  const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
+  const url = sandboxUrl(sandbox);
 
   const TemplateIcon = getTemplateIcon(sandbox);
   const PrivacyIcon = PrivacyIcons[sandbox.privacy];
@@ -170,8 +166,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     [onRightClick, onMenuEvent, sandbox.id]
   );
 
-  const history = useHistory();
-
   const onDoubleClick = event => {
     if (page === 'deleted') {
       // Can't open deleted items, they don't exist anymore so we open
@@ -182,10 +176,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
       if (event.ctrlKey || event.metaKey) {
         window.open(url, '_blank');
-      } else if (linksToV2) {
-        window.location.href = url;
       } else {
-        history.push(url);
+        window.location.href = url;
       }
     }
   };
@@ -240,9 +232,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
       ? {
           ...baseInteractions,
           interaction: 'link' as const,
-          as: linksToV2 ? 'a' : Link,
-          to: linksToV2 ? undefined : url,
-          href: linksToV2 ? url : undefined,
+          as: 'a',
+          href: url,
           onClick: () => {
             // On the recent page the sandbox card is an anchor, so we only have
             // to track using onclick, the sandbox is opened through native anchor

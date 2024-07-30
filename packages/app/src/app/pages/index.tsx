@@ -180,6 +180,7 @@ const RoutesComponent: React.FC = () => {
               path="/new"
               component={() => <Sandbox showModalOnTop="new" />}
             />
+            <Route path="/s/:id*" component={Sandbox} />
             <Route path="/invite/:token" component={TeamInvitation} />
 
             <Route path="/phew" component={Phew} />

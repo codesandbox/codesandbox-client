@@ -1,10 +1,25 @@
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 
 import { Redirect } from 'react-router-dom';
 
-export const Sandbox = ({ showModalOnTop }) => {
+interface Props {
+  showModalOnTop?: 'newSandbox' | 'newDevbox' | 'new';
+  match?: {
+    params: {
+      id: string;
+    };
+  };
+}
+
+export const Sandbox: React.FC<Props> = ({ showModalOnTop, match }) => {
   const state = useAppState();
+
+  if (match.params.id) {
+    window.location.href = sandboxUrl({ id: match.params.id });
+    return null;
+  }
 
   if (state.hasLogIn) {
     if (showModalOnTop === 'newSandbox') {
