@@ -12,7 +12,7 @@ fetch(
       'Authorization': `Bearer ${process.env.DEPLOYER_API_TOKEN}`
     },
     body: JSON.stringify({
-      environment: process.env.ENVIRONMENT
+      environment: process.env.ENVIRONMENT,
       tag: process.env.CIRCLE_SHA1.substr(0, 7),
     }),
   }
