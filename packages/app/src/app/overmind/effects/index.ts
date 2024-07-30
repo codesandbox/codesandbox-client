@@ -13,3 +13,4 @@ export { default as executor } from './executor';
 export { default as flows } from './flows';
 export { default as gql } from './gql';
 export { default as live } from './live';
+export { default as git } from './git';

@@ -80,6 +80,9 @@ export default {
   getUploads(): Promise<UploadedFilesInfo> {
     return api.get('/users/current_user/uploads');
   },
+  deleteUploadedFile(uploadId: string): Promise<void> {
+    return api.delete(`/users/current_user/uploads/${uploadId}`);
+  },
   getProfile(username: string): Promise<Profile> {
     return api.get(`/users/${username}`);
   },

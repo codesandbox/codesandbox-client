@@ -5,6 +5,7 @@ import {
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { Sandbox } from '@codesandbox/common/lib/types';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
@@ -13,7 +14,6 @@ import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 import { FinalizeSignUpOptions } from './effects/api/types';
 import { AuthOptions, GHScopeOption } from './utils/auth';
-import { Sandbox } from 'app/graphql/types';
 
 export const internal = internalActions;
 
@@ -469,4 +469,25 @@ export const gotUploadedFiles = async (
 
 export const createRepoFiles = ({ effects }: Context, sandbox: Sandbox) => {
   return effects.git.export(sandbox);
+};
+
+export const deleteUploadedFile = async (
+  { actions, effects, state }: Context,
+  id: string
+) => {
+  if (!state.uploadedFiles) {
+    return;
+  }
+  const index = state.uploadedFiles.findIndex(file => file.id === id);
+  const removedFiles = state.uploadedFiles.splice(index, 1);
+
+  try {
+    await effects.api.deleteUploadedFile(id);
+  } catch (error) {
+    state.uploadedFiles.splice(index, 0, ...removedFiles);
+    actions.internal.handleError({
+      message: 'Unable to delete uploaded file',
+      error,
+    });
+  }
 };
