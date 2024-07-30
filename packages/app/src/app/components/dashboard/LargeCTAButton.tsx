@@ -24,7 +24,7 @@ export const LargeCTAButton = ({
     <StyledButton
       onClick={onClick}
       disabled={disabled}
-      css={{
+      style={{
         height: 'auto',
         flexDirection: alignment === 'horizontal' ? 'row' : 'column',
       }}

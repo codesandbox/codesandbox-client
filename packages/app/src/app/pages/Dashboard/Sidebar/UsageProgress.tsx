@@ -1,4 +1,4 @@
-import { Link, Stack, Text, Tooltip } from '@codesandbox/components';
+import { Element, Link, Stack, Text, Tooltip } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import React, { useEffect, useState } from 'react';
@@ -50,7 +50,7 @@ export const UsageProgress: React.FC<{
             </div>
           }
         >
-          <div
+          <Element
             css={css({
               position: 'relative',
               overflow: 'hidden',
@@ -60,7 +60,7 @@ export const UsageProgress: React.FC<{
               borderRadius: 4,
             })}
           >
-            <div
+            <Element
               style={{
                 position: 'absolute',
                 top: 0,
@@ -74,7 +74,7 @@ export const UsageProgress: React.FC<{
                 backgroundColor: '#E4FC82',
               })}
             />
-          </div>
+          </Element>
         </Tooltip>
 
         <Stack

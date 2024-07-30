@@ -33,6 +33,7 @@ const overlayStyles = css<{ radius?: number }>`
 type AnchorProps = {
   href: string;
   radius?: number;
+  css?: Object;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const StyledAnchor = styled.a<
@@ -51,6 +52,7 @@ const StyledAnchor = styled.a<
 
 type ButtonProps = {
   radius?: number;
+  css?: Object;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 const StyledButton = styled.button<

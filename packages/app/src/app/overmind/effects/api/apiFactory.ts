@@ -43,7 +43,6 @@ export type Api = {
 
 export type ApiConfig = {
   provideJwtToken: () => string | null;
-  getParsedConfigurations: () => any;
 };
 
 export default (config: ApiConfig) => {

@@ -29,7 +29,7 @@ export const TemplateCard = ({
   return (
     <TemplateButton
       title={sandboxTitle}
-      css={{ padding }}
+      style={{ padding }}
       type="button"
       onClick={evt => {
         if (disabled) {

@@ -7,9 +7,7 @@ import { Button, Icon } from '@codesandbox/components';
 
 type Props = Pick<UploadFile, 'id'>;
 export const DeleteFileButton: FunctionComponent<Props> = ({ id }) => {
-  const {
-    files: { deletedUploadedFile },
-  } = useActions();
+  const { deleteUploadedFile } = useActions();
 
   return (
     <Button
@@ -22,7 +20,7 @@ export const DeleteFileButton: FunctionComponent<Props> = ({ id }) => {
         },
       })}
       variant="secondary"
-      onClick={() => deletedUploadedFile(id)}
+      onClick={() => deleteUploadedFile(id)}
       title="Delete File"
     >
       <Icon name="trash" />

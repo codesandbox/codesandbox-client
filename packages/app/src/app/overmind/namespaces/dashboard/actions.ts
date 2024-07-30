@@ -9,7 +9,13 @@ import {
   RepoFragmentDashboardFragment,
   ProjectFragment,
 } from 'app/graphql/types';
-import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  sandboxUrl,
+  v2BranchUrl,
+  vsCodeLauncherUrl,
+  vsCodeUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import { ForkSandboxBody } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { PrivacyLevel } from 'app/components/Create/utils/types';
@@ -1718,4 +1724,85 @@ export const convertToDevbox = async (
 
   // Re-fetch team to get updated usage data
   actions.getActiveTeamInfo();
+};
+
+export const forkSandbox = async (
+  { effects, state, actions }: Context,
+  {
+    sandboxId,
+    openInNewWindow,
+    openInVSCode,
+    autoLaunchVSCode,
+    customVMTier,
+    body,
+    redirectAfterFork,
+  }: {
+    sandboxId: string;
+    openInNewWindow?: boolean;
+    openInVSCode?: boolean;
+    autoLaunchVSCode?: boolean;
+    customVMTier?: number;
+    redirectAfterFork?: boolean;
+    body?: {
+      collectionId?: string;
+      alias?: string;
+      v2?: boolean;
+      title?: string;
+      privacy?: 0 | 1 | 2;
+    };
+  }
+) => {
+  effects.analytics.track('Fork Sandbox', { type: 'external', sandboxId });
+
+  const usedBody: ForkSandboxBody = body || {};
+
+  if (state.activeTeam) {
+    usedBody.teamId = state.activeTeam;
+  }
+
+  try {
+    const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
+
+    if (customVMTier) {
+      await effects.api.setVMSpecs(forkedSandbox.id, customVMTier);
+    }
+
+    if (openInVSCode) {
+      if (autoLaunchVSCode) {
+        window.open(vsCodeUrl(forkedSandbox.id));
+      } else {
+        window.open(vsCodeLauncherUrl(forkedSandbox.id));
+      }
+    }
+
+    if (redirectAfterFork) {
+      const url = sandboxUrl({ id: forkedSandbox.id, isV2: forkedSandbox.v2 });
+
+      if (openInNewWindow) {
+        window.open(url, '_blank');
+      } else {
+        window.location.href = url;
+      }
+    }
+
+    return forkedSandbox;
+  } catch (error) {
+    const errorMessage = actions.internal.getErrorMessage({ error });
+
+    if (errorMessage.includes('DRAFT_LIMIT')) {
+      effects.notificationToast.add({
+        title: 'Cannot create draft',
+        message:
+          'Your drafts folder is full. Delete unneeded drafts, or upgrade to Pro for unlimited drafts.',
+        status: NotificationStatus.ERROR,
+      });
+    } else {
+      actions.internal.handleError({
+        message: 'We were unable to fork the sandbox',
+        error,
+      });
+    }
+  }
+
+  return undefined;
 };

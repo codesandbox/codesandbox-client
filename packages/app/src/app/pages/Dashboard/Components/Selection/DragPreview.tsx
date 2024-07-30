@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import { motion } from 'framer-motion';
-import { Stack, Text, Icon } from '@codesandbox/components';
+import { Stack, Text, Icon, Element } from '@codesandbox/components';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar/constants';
@@ -158,7 +158,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
             }}
           >
             {selectedIds.length > 1 ? (
-              <div
+              <Element
                 css={css({
                   position: 'fixed',
                   top: '-1rem',
@@ -175,7 +175,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
                 })}
               >
                 {selectedIds.length}
-              </div>
+              </Element>
             ) : null}
             {selectedItems.map((item, index) => (
               <Stack gap={2} align="center" key={item.id || item.path}>

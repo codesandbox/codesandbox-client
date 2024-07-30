@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Text } from '@codesandbox/components';
+import { Element, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 const backgrounds = [
@@ -42,7 +42,8 @@ export const TeamAvatar = ({
   const avatarSize = size === 'bigger' ? '55px' : '24px';
 
   return avatar ? (
-    <img
+    <Element
+      as="img"
       css={css({
         width: avatarSize,
         height: avatarSize,

@@ -13,11 +13,7 @@ import { ProfileImage } from './elements';
 export const UserMenu: FunctionComponent & {
   Button: (props: any) => JSX.Element;
 } = props => {
-  const {
-    modalOpened,
-    signOutClicked,
-    files: { gotUploadedFiles },
-  } = useActions();
+  const { modalOpened, signOutClicked, gotUploadedFiles } = useActions();
   const { user, environment } = useAppState();
   const isEditorPage = useIsEditorPage();
 
@@ -27,19 +23,27 @@ export const UserMenu: FunctionComponent & {
         <Menu>
           {props.children}
           <Menu.List>
-            <Menu.Link href={docsUrl()}>
+            <Menu.Item
+              onClick={() => {
+                window.location.href = docsUrl();
+              }}
+            >
               <Stack align="center" gap={2}>
                 <Icon name="documentation" size={16} />
                 <Text>Documentation</Text>
               </Stack>
-            </Menu.Link>
+            </Menu.Item>
             <Menu.Divider />
-            <Menu.Link href={`${csbSite()}/?from-app=1`}>
+            <Menu.Item
+              onClick={() => {
+                window.open(`${csbSite()}/?from-app=1`);
+              }}
+            >
               <Stack align="center" gap={2}>
                 <Icon name="external" size={16} />
                 <Text>codesandbox.io</Text>
               </Stack>
-            </Menu.Link>
+            </Menu.Item>
           </Menu.List>
         </Menu>
       </Stack>
@@ -76,12 +80,16 @@ export const UserMenu: FunctionComponent & {
             </Stack>
           </Menu.Item>
 
-          <Menu.Link href={profileUrl(user.username)}>
+          <Menu.Item
+            onClick={() => {
+              window.location.href = profileUrl(user.username);
+            }}
+          >
             <Stack align="center" gap={2}>
               <Icon name="profile" size={16} />
               <Text>Profile</Text>
             </Stack>
-          </Menu.Link>
+          </Menu.Item>
 
           {showStorage && (
             <Menu.Item onClick={() => gotUploadedFiles(null)}>
@@ -94,12 +102,16 @@ export const UserMenu: FunctionComponent & {
 
           <Menu.Divider />
 
-          <Menu.Link href={docsUrl()}>
+          <Menu.Item
+            onClick={() => {
+              window.location.href = docsUrl();
+            }}
+          >
             <Stack align="center" gap={2}>
               <Icon name="documentation" size={16} />
               <Text>Documentation</Text>
             </Stack>
-          </Menu.Link>
+          </Menu.Item>
 
           <Menu.Item onClick={() => modalOpened({ modal: 'feedback' })}>
             <Stack align="center" gap={2}>
@@ -108,12 +120,16 @@ export const UserMenu: FunctionComponent & {
             </Stack>
           </Menu.Item>
 
-          <Menu.Link href={`${csbSite()}/?from-app=1`}>
+          <Menu.Item
+            onClick={() => {
+              window.open(`${csbSite()}/?from-app=1`);
+            }}
+          >
             <Stack align="center" gap={2}>
               <Icon name="external" size={16} />
               <Text>codesandbox.io</Text>
             </Stack>
-          </Menu.Link>
+          </Menu.Item>
 
           <Menu.Divider />
 

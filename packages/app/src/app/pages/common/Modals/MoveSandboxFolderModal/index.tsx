@@ -19,7 +19,7 @@ import { PrivacyLevel } from 'app/components/Create/utils/types';
 import { DirectoryPicker } from './DirectoryPicker';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
-  const { dashboard, refetchSandboxInfo, modals: modalsActions } = useActions();
+  const { dashboard, modals: modalsActions } = useActions();
   const { activeTeam, modals, activeTeamInfo } = useAppState();
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
@@ -54,7 +54,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
         privacy,
       })
       .then(() => {
-        refetchSandboxInfo();
         dashboard.getTeams(); // refetch teams' limits and usage
 
         setLoading(false);

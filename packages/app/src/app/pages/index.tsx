@@ -53,14 +53,6 @@ const SignOut = Loadable(() =>
     default: module.SignOut,
   }))
 );
-const Live = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
-    default: module.Live,
-  }))
-);
-const VercelSignIn = Loadable(
-  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
-);
 const PreviewAuth = Loadable(
   () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
@@ -188,12 +180,11 @@ const RoutesComponent: React.FC = () => {
               path="/new"
               component={() => <Sandbox showModalOnTop="new" />}
             />
+            <Route path="/s/:id*" component={Sandbox} />
             <Route path="/invite/:token" component={TeamInvitation} />
 
             <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/s/:id*" component={Sandbox} />
-            <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signout" exact component={SignOut} />
             <Route path="/signin/duplicate" component={DuplicateAccount} />
@@ -206,7 +197,6 @@ const RoutesComponent: React.FC = () => {
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={MobileAuth} />
             <Route path="/vscode/login" component={VSCodeAuth} />
-            <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             <Route path="/auth/sandpack/:teamId" component={SandpackSecret} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (

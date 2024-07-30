@@ -20,20 +20,6 @@ export const profileMounted = withLoadApp(
 
     state.profile.profiles[profile.id] = profile;
     state.profile.currentProfileId = profile.id;
-
-    if (
-      profile.showcasedSandboxShortid &&
-      !state.editor.sandboxes[profile.showcasedSandboxShortid]
-    ) {
-      try {
-        state.editor.sandboxes[
-          profile.showcasedSandboxShortid
-        ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
-      } catch (e) {
-        // Ignore it
-      }
-    }
-
     state.profile.isLoadingProfile = false;
   }
 );
@@ -150,14 +136,7 @@ export const newSandboxShowcaseSelected = async (
     return;
   }
 
-  const [sandbox] = await Promise.all([
-    state.editor.sandboxes[id] ? null : effects.api.getSandbox(id),
-    effects.api.updateShowcasedSandbox(state.user.username, id),
-  ]);
-
-  if (sandbox) {
-    state.editor.sandboxes[id] = sandbox as Sandbox;
-  }
+  await effects.api.updateShowcasedSandbox(state.user.username, id);
 
   state.profile.isLoadingProfile = false;
 

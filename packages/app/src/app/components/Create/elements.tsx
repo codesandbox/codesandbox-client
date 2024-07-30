@@ -1,8 +1,9 @@
 import styled, { keyframes } from 'styled-components';
 import React, { ReactNode } from 'react';
 import { Tab as BaseTab, TabList, TabPanel, TabStateReturn } from 'reakit/Tab';
+import { Element } from '@codesandbox/components';
 
-export const Container = styled.div`
+export const Container = styled(Element)`
   height: 600px;
   overflow: hidden;
   border-radius: 4px;

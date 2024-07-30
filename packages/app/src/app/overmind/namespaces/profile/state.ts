@@ -83,13 +83,10 @@ export const state: State = {
       ? currentState.profiles[currentState.currentProfileId]
       : null
   ),
-  showcasedSandbox: derived(
-    (currentState: State, rootState: Context['state']) =>
-      currentState.current && currentState.current.showcasedSandboxShortid
-        ? rootState.editor.sandboxes[
-            currentState.current.showcasedSandboxShortid
-          ]
-        : null
+  showcasedSandbox: derived((currentState: State) =>
+    currentState.current && currentState.current.showcasedSandboxShortid
+      ? currentState.sandboxes.all[currentState.current.showcasedSandboxShortid]
+      : null
   ),
   currentLikedSandboxes: derived((currentState: State) =>
     currentState.current

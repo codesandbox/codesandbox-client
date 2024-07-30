@@ -13,7 +13,6 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { pluralize } from 'app/utils/pluralize';
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
@@ -171,8 +170,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     }
   }, [searchQuery, tabState.selectedId]);
 
-  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
-
   const createFromTemplate = (
     sandbox: SandboxToFork,
     { name, createAs, permission, editor, customVMTier }: CreateParams
@@ -187,13 +184,12 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       ...(customVMTier ? { vm_tier: customVMTier } : {}),
     });
 
-    actions.editor
-      .forkExternalSandbox({
+    actions.dashboard
+      .forkSandbox({
         sandboxId: sandbox.id,
         openInNewWindow: false,
         openInVSCode,
         autoLaunchVSCode,
-        hasBetaEditorExperiment,
         customVMTier,
         redirectAfterFork: !isStandalone,
         body: {
@@ -211,7 +207,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               data: {
                 id: forkedSandbox.id,
                 alias: forkedSandbox.alias,
-                url: sandboxUrl(forkedSandbox, hasBetaEditorExperiment),
+                url: sandboxUrl(forkedSandbox),
               },
             },
             '*'
@@ -227,8 +223,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const selectTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
     if (!hasLogIn) {
       // Open template in editor for anonymous users
-      window.location.href =
-        sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
+      window.location.href = sandbox.editorUrl || sandboxUrl(sandbox);
       return;
     }
 
@@ -243,8 +238,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   };
 
   const openTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
-    const url =
-      sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
+    const url = sandbox.editorUrl || sandboxUrl(sandbox);
     window.open(url, '_blank');
 
     track(`Create ${type} - Open template`, {

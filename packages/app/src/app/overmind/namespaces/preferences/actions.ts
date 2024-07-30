@@ -39,10 +39,6 @@ export const itemIdChanged = async (
   itemId: string
 ) => {
   state.preferences.itemId = itemId;
-
-  if (itemId === 'integrations') {
-    await actions.deployment.internal.getVercelUserDetails();
-  }
 };
 
 export const settingChanged = (
@@ -63,10 +59,6 @@ export const settingChanged = (
     state.preferences.settings
   );
   settingsTarget[lastKey] = value;
-
-  if (name === 'vimMode') {
-    effects.vscode.setVimExtensionEnabled(Boolean(value));
-  }
 
   effects.settingsStore.set(firstKey, state.preferences.settings[firstKey]);
 

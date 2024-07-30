@@ -35,7 +35,7 @@ export const MenuStyles = createGlobalStyle(
       fontWeight: 400,
     },
     '[data-reach-menu] > div': {
-      borderRadius: 4,
+      borderRadius: '4px',
     },
     '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
       display: 'none',
@@ -53,7 +53,7 @@ export const MenuStyles = createGlobalStyle(
       padding: '4px 0',
     },
     '[data-reach-menu-item][data-component=MenuItem], [data-reach-menu-item][data-component=MenuLink]': {
-      fontSize: 2,
+      fontSize: '13.6px',
       paddingY: 2,
       paddingX: 3,
       cursor: 'default',
@@ -71,10 +71,9 @@ export const MenuStyles = createGlobalStyle(
         opacity: 0.5,
         cursor: 'not-allowed',
       },
-      // override reach ui styles
-      font: 'inherit',
     },
     '[data-component="MenuItem"][disabled]': {
+      fontSize: '13.6px',
       paddingY: 2,
       paddingX: 3,
       cursor: 'not-allowed',
@@ -254,6 +253,7 @@ const MenuIconButton = props => (
 interface MenuListProps {
   children: any;
   style?: React.CSSProperties;
+  css?: Object;
 }
 
 const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(

@@ -24,11 +24,10 @@ import { browser } from './getBrowser';
 import { Alert } from '../Common/Alert';
 
 type Props = {
-  id?: string;
   user?: CurrentUser;
 };
 
-export const Feedback: FunctionComponent<Props> = ({ id, user }) => {
+export const Feedback: FunctionComponent<Props> = ({ user }) => {
   const { notificationAdded, modalClosed } = useActions();
   const { currentModalMessage } = useAppState();
   const [email, setEmail] = useState((user || {}).email);
@@ -62,7 +61,6 @@ export const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const onSubmit = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     const data = {
-      sandboxId: id || '',
       feedback,
       emoji,
       username: (user || {}).username,

@@ -14,21 +14,12 @@ import {
 
 import { useAppState, useActions } from 'app/overmind';
 
-import { AddFileToSandboxButton } from './AddFileToSandboxButton';
 import { DeleteFileButton } from './DeleteFileButton';
 
 export const FilesList: FunctionComponent = () => {
-  const {
-    files: { deletedUploadedFile, addedFileToSandbox },
-  } = useActions();
-  const {
-    editor: { currentSandbox },
-    uploadedFiles,
-  } = useAppState();
+  const { deleteUploadedFile } = useActions();
+  const { uploadedFiles } = useAppState();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-
-  const getSelection = () =>
-    uploadedFiles.filter(({ id }) => selectedItems.includes(id));
 
   const toggleCheckbox = (id: string) =>
     setSelectedItems(items =>
@@ -39,18 +30,10 @@ export const FilesList: FunctionComponent = () => {
     <Element marginTop={4}>
       <Stack gap={2} marginBottom={6} justify="space-between">
         <Button
-          autoWidth
-          disabled={selectedItems.length === 0 || !currentSandbox}
-          onClick={() => getSelection().map(addedFileToSandbox)}
-        >
-          Add all selected to project
-        </Button>
-
-        <Button
           variant="danger"
           autoWidth
           disabled={selectedItems.length === 0}
-          onClick={() => selectedItems.map(deletedUploadedFile)}
+          onClick={() => selectedItems.map(deleteUploadedFile)}
         >
           Delete all selected
         </Button>
@@ -93,7 +76,6 @@ export const FilesList: FunctionComponent = () => {
                 <Text size={3}>{filesize(objectSize)}</Text>
               </Element>
               <Stack gap={2}>
-                <AddFileToSandboxButton name={name} url={url} />
                 <DeleteFileButton id={id} />
               </Stack>
             </ListAction>

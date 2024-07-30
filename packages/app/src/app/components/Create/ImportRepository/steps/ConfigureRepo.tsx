@@ -186,7 +186,7 @@ export const ConfigureRepo: React.FC<ConfigureRepoProps> = ({
           </Text>
 
           <Select
-            css={{ height: '32px' }}
+            style={{ height: '32px' }}
             value={selectedTier}
             disabled={availableTiers.length === 0}
             onChange={e => setSelectedTier(parseInt(e.target.value, 10))}

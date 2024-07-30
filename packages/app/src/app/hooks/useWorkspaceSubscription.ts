@@ -1,6 +1,5 @@
 import {
   CurrentTeamInfoFragmentFragment,
-  SubscriptionPaymentProvider,
   SubscriptionStatus,
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
@@ -52,15 +51,11 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
 
-  const isPaddle =
-    subscription.paymentProvider === SubscriptionPaymentProvider.Paddle;
-
   return {
     subscription,
     isPro,
     isFree,
     hasPaymentMethod,
-    isPaddle,
   };
 };
 
@@ -69,7 +64,6 @@ const NO_WORKSPACE = {
   isPro: undefined,
   isFree: undefined,
   hasPaymentMethod: undefined,
-  isPaddle: undefined,
 };
 
 const NO_SUBSCRIPTION = {
@@ -77,7 +71,6 @@ const NO_SUBSCRIPTION = {
   isPro: false,
   isFree: true,
   hasPaymentMethod: false,
-  isPaddle: false,
 };
 
 export type WorkspaceSubscriptionReturn =
@@ -88,5 +81,4 @@ export type WorkspaceSubscriptionReturn =
       isPro: boolean;
       isFree: boolean;
       hasPaymentMethod: boolean;
-      isPaddle: boolean;
     };

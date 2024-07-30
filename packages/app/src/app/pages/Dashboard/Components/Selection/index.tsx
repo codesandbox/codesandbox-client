@@ -18,8 +18,6 @@ import {
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
-
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
 import {
@@ -105,7 +103,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   children,
   interactive = true,
 }) => {
-  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const possibleItems = (items || []).filter(
     item =>
       item.type === 'sandbox' ||
@@ -325,7 +322,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       const selectedId = selectedIds[0];
 
       let url: string;
-      let linksToV2 = false;
       if (selectedId.startsWith('/')) {
         // means its a folder
         url = dashboardUrls.sandboxes(selectedId, activeTeamId);
@@ -333,18 +329,13 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId
         );
-        url = sandboxUrl(selectedItem.sandbox, hasBetaEditorExperiment);
-        linksToV2 =
-          selectedItem.sandbox.isV2 ||
-          (!selectedItem.sandbox.isSse && hasBetaEditorExperiment);
+        url = sandboxUrl(selectedItem.sandbox);
       }
 
       if (event.ctrlKey || event.metaKey) {
         window.open(url, '_blank');
-      } else if (linksToV2) {
-        window.location.href = url;
       } else {
-        history.push(url, { focus: 'FIRST_ITEM' });
+        window.location.href = url;
       }
     }
 

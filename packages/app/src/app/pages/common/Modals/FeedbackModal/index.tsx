@@ -9,10 +9,7 @@ const Feedback = Loadable(() =>
 );
 
 export const FeedbackModal: FunctionComponent = () => {
-  const {
-    editor: { currentSandbox },
-    user,
-  } = useAppState();
+  const { user } = useAppState();
 
-  return <Feedback user={user} id={currentSandbox?.id} />;
+  return <Feedback user={user} />;
 };

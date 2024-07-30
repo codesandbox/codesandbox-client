@@ -49,20 +49,7 @@ export const TeamInviteModal = () => {
     <Element css={{ padding: '16px' }}>
       <Stack direction="vertical" gap={4}>
         <Stack gap={4}>
-          <TeamAvatar
-            name={teamName}
-            css={{
-              width: 80,
-              height: 80,
-              border: '2px solid #242424',
-              borderRadius: '4px',
-              flexShrink: 0,
-
-              '& span': {
-                fontSize: '32px',
-              },
-            }}
-          />
+          <TeamAvatar name={teamName} />
           <Stack direction="vertical" paddingTop={1} gap={2}>
             <Text weight="bold" block>
               Join {teamName}

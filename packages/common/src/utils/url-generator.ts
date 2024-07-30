@@ -110,17 +110,10 @@ export const editorUrl = () => `/s/`;
 
 export const newEditorUrlPrefix = () => `/p/`;
 
-export const sandboxUrl = (
-  sandboxDetails: SandboxUrlSourceData,
-  hasBetaEditorExperiment?: boolean
-) => {
-  let baseUrl = editorUrl();
-
-  if (sandboxDetails.isV2) {
-    baseUrl = `${newEditorUrlPrefix()}devbox/`;
-  } else if (!sandboxDetails.isSse && hasBetaEditorExperiment) {
-    baseUrl = `${newEditorUrlPrefix()}sandbox/`;
-  }
+export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
+  const baseUrl = sandboxDetails.isV2
+    ? `${newEditorUrlPrefix()}devbox/`
+    : `${newEditorUrlPrefix()}sandbox/`;
 
   const queryParams = sandboxDetails.query
     ? `?${new URLSearchParams(sandboxDetails.query).toString()}`

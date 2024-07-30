@@ -46,7 +46,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
             <Link
               to={isBeingRemoved ? undefined : repository.url}
               onContextMenu={onContextMenu}
-              css={{ textDecoration: 'none' }}
+              style={{ textDecoration: 'none' }}
               {...props}
             >
               <Text color="#e5e5e5" size={13} weight="500">

@@ -26,7 +26,7 @@ export const AccountSelect = ({
     <>
       <StyledMenuButton
         {...menu}
-        css={{ background: variant === 'ghost' ? 'transparent' : '#252525' }}
+        style={{ background: variant === 'ghost' ? 'transparent' : '#252525' }}
       >
         <Stack gap={2} align="center">
           <Icon name="github" />

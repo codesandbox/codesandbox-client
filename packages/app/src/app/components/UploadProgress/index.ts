@@ -1,1 +1,0 @@
-export { UploadProgress } from './UploadProgress';
