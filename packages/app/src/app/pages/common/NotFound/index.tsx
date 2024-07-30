@@ -115,9 +115,9 @@ export const NotFound: FunctionComponent = () => {
         </Text>
         <a
           href="/"
-          css={css({
+          style={{
             textDecoration: 'none',
-          })}
+          }}
         >
           <Button
             css={css({

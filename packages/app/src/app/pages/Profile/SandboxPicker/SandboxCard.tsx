@@ -8,6 +8,7 @@ import {
   IconButton,
   SkeletonText,
   isMenuClicked as isTargetInMenu,
+  Element,
 } from '@codesandbox/components';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import css from '@styled-system/css';
@@ -128,7 +129,7 @@ export const SandboxCard: React.FC<{
           </Stack>
         </Stack>
       )}
-      <div
+      <Element
         css={css({
           display: 'flex',
           alignItems: 'center',

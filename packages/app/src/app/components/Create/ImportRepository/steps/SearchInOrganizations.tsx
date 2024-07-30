@@ -187,7 +187,7 @@ export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
           No repository matching the search. Please double check the repository
           name or try the{' '}
           <UnstyledButtonLink
-            css={{ color: 'inherit', textDecoration: 'underline' }}
+            style={{ color: 'inherit', textDecoration: 'underline' }}
             onClick={onFindByURLClicked}
           >
             Find by URL

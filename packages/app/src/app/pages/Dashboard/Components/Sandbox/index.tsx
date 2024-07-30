@@ -292,7 +292,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   }, [preview]);
 
   return (
-    <div {...dragProps} css={{ height: '100%' }}>
+    <div {...dragProps} style={{ height: '100%' }}>
       <Component
         {...sandboxProps}
         {...interactionProps}

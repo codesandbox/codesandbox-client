@@ -1,10 +1,10 @@
 import React from 'react';
 import css from '@styled-system/css';
 import styled from 'styled-components';
-import { Element } from '../Element';
+import { Element, IElementProps } from '../Element';
 import { Text } from '../Text';
 
-interface IAvatarProps {
+interface IAvatarProps extends IElementProps {
   file?: string;
   user: {
     id?: string;

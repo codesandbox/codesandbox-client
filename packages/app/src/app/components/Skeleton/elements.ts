@@ -1,12 +1,13 @@
 import styled, { css, keyframes } from 'styled-components';
 import Color from 'color';
+import { Element } from '@codesandbox/components';
 
 const pulse = keyframes`
   0% { background-position: 100% 50%; }
   100% { background-position: -100% 50%; }
 `;
 
-export const SkeletonTextBlock = styled.div(props => {
+export const SkeletonTextBlock = styled(Element)(props => {
   let color = props.theme.colors?.sideBar.border || '#242424';
   const themeType = props.theme.vscodeTheme.type;
 

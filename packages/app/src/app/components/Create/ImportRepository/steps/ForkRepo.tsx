@@ -222,7 +222,7 @@ export const ForkRepo: React.FC<ForkRepoProps> = ({
           </Text>
 
           <Select
-            css={{ height: '32px' }}
+            style={{ height: '32px' }}
             value={selectedTier}
             disabled
             onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
