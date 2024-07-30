@@ -19,6 +19,7 @@ export default new ReactTemplate(
       '/src/index.ts',
       '/src/main.tsx',
       '/src/main.ts',
+      '/src/main.js',
     ],
     extraConfigurations: {
       '/jsconfig.json': configurations.jsconfig,
