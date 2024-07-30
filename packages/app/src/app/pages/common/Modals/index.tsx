@@ -9,33 +9,22 @@ import { GenericCreate } from 'app/components/Create/GenericCreate';
 import { AddPreset } from './AddPreset';
 import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
-import { DeleteSandboxModal } from './DeleteSandboxModal';
 import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
-import { ExportGitHubModal } from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
-import { ForkServerModal } from './ForkServerModal';
-import { LiveSessionEnded } from './LiveSessionEnded';
-import { LiveSessionRestricted } from './LiveSessionRestricted';
-import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { Preferences } from './PreferencesModal';
-import { RecoverFilesModal } from './RecoverFilesModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
-import { ShareModal } from './ShareModal';
 import { SignInForTemplates } from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
-import { UploadModal } from './UploadModal';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
 import { AccountDeletionModal } from './AccountDeletion';
 import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
 import { UndoAccountDeletionModal } from './UndoAccountDeletion';
 import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/UndoDeletedConfirmation';
-import { NotFoundBranchModal } from './NotFoundBranchModal';
-import { CropThumbnail } from './CropThumbnail';
 
 const modals = {
   preferences: {
@@ -64,32 +53,12 @@ const modals = {
     Component: ImportRepository,
     width: 950,
   },
-  share: {
-    Component: ShareModal,
-    width: 1200,
-  },
-  recoveredFiles: {
-    Component: RecoverFilesModal,
-    width: 400,
-  },
   teamInvite: {
     Component: TeamInviteModal,
     width: 400,
   },
-  exportGithub: {
-    Component: ExportGitHubModal,
-    width: 400,
-  },
   signInForTemplates: {
     Component: SignInForTemplates,
-    width: 400,
-  },
-  cropThumbnail: {
-    Component: CropThumbnail,
-    width: 750,
-  },
-  deleteSandbox: {
-    Component: DeleteSandboxModal,
     width: 400,
   },
   deleteProfileSandbox: {
@@ -116,29 +85,9 @@ const modals = {
     Component: SelectSandboxModal,
     width: 600,
   },
-  liveSessionEnded: {
-    Component: LiveSessionEnded,
-    width: 400,
-  },
-  liveSessionRestricted: {
-    Component: LiveSessionRestricted,
-    width: 400,
-  },
-  liveVersionMismatch: {
-    Component: LiveVersionMismatch,
-    width: 400,
-  },
-  uploading: {
-    Component: UploadModal,
-    width: 400,
-  },
   storageManagement: {
     Component: StorageManagementModal,
     width: 800,
-  },
-  forkServerModal: {
-    Component: ForkServerModal,
-    width: 400,
   },
   feedback: {
     Component: FeedbackModal,
@@ -171,10 +120,6 @@ const modals = {
   },
   undoDeleteConfirmation: {
     Component: UndoAccountDeletionConfirmationModal,
-    width: 450,
-  },
-  notFoundBranchModal: {
-    Component: NotFoundBranchModal,
     width: 450,
   },
 };

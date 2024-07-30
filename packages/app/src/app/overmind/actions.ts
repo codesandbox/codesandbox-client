@@ -152,20 +152,11 @@ export const connectionChanged = ({ state }: Context, connected: boolean) => {
 };
 
 type ModalName =
-  | 'deleteSandbox'
   | 'feedback'
-  | 'forkServerModal'
-  | 'liveSessionEnded'
   | 'preferences'
-  | 'searchDependencies'
-  | 'share'
-  | 'signInForTemplates'
   | 'userSurvey'
-  | 'liveSessionRestricted'
   | 'sandboxPicker'
   | 'minimumPrivacy'
-  | 'addMemberToWorkspace'
-  | 'legacyPayment'
   | 'importRepository'
   | 'createSandbox'
   | 'createDevbox'

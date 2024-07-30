@@ -115,16 +115,6 @@ export const KEYBINDINGS = {
     },
   },
 
-  'source.dependencies.open': {
-    title: 'Add Dependency',
-    type: 'Source',
-    bindings: [],
-    signal: 'modalOpened',
-    payload: {
-      modal: 'searchDependencies',
-    },
-  },
-
   'source.modules.prettify': {
     title: 'Prettify Current File',
     type: 'Source',
