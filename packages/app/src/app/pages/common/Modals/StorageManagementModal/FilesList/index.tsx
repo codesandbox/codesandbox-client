@@ -14,7 +14,6 @@ import {
 
 import { useAppState, useActions } from 'app/overmind';
 
-import { AddFileToSandboxButton } from './AddFileToSandboxButton';
 import { DeleteFileButton } from './DeleteFileButton';
 
 export const FilesList: FunctionComponent = () => {
@@ -77,7 +76,6 @@ export const FilesList: FunctionComponent = () => {
                 <Text size={3}>{filesize(objectSize)}</Text>
               </Element>
               <Stack gap={2}>
-                <AddFileToSandboxButton name={name} url={url} />
                 <DeleteFileButton id={id} />
               </Stack>
             </ListAction>
