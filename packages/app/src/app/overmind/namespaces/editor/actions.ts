@@ -317,7 +317,7 @@ export const sandboxChanged = withLoadApp<{
 
       // Failsafe, in case someone types in the URL to load a v2 sandbox in v1
       // or if they have the experimental v2 editor enabled
-      if (sandbox.v2 || (!sandbox.isSse && hasBetaEditorExperiment)) {
+      if (sandbox.v2 || hasBetaEditorExperiment) {
         // Only pass githubInfo for the URL if the URL in v1 is based on GH
         const githubInfoForURL =
           sandbox.git && url.pathname.startsWith('/s/github')
@@ -330,7 +330,6 @@ export const sandboxChanged = withLoadApp<{
             alias: sandbox.alias,
             git: githubInfoForURL,
             isV2: sandbox.v2,
-            isSse: sandbox.isSse,
             query: url.searchParams,
           },
           hasBetaEditorExperiment

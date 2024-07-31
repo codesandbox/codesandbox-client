@@ -24,13 +24,11 @@ export default new (class RouterEffect {
       alias,
       git,
       v2,
-      isSse,
     }: {
       id?: string | null;
       alias?: string | null;
       git?: GitInfo | null;
       v2?: boolean;
-      isSse?: boolean;
     },
     {
       openInNewWindow = false,
@@ -38,13 +36,13 @@ export default new (class RouterEffect {
     }: { openInNewWindow?: boolean; hasBetaEditorExperiment?: boolean } = {}
   ) {
     const url = sandboxUrl(
-      { id, alias, isV2: v2, isSse },
+      { id, alias, isV2: v2},
       hasBetaEditorExperiment
     );
 
     if (openInNewWindow) {
       window.open(url, '_blank');
-    } else if (v2 || (!isSse && hasBetaEditorExperiment)) {
+    } else if (v2 || hasBetaEditorExperiment) {
       window.location.href = url;
     } else {
       history.push(url);

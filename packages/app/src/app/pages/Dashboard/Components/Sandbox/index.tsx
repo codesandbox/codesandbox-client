@@ -90,7 +90,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const viewCount = formatNumber(sandbox.viewCount);
 
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
-  const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
+  const linksToV2 = sandbox.isV2 || hasBetaEditorExperiment;
 
   const TemplateIcon = getTemplateIcon(sandbox);
   const PrivacyIcon = PrivacyIcons[sandbox.privacy];

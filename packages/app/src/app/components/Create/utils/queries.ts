@@ -14,7 +14,6 @@ const TEMPLATE_FRAGMENT = gql`
       insertedAt
       updatedAt
       isV2
-      isSse
       forkCount
       viewCount
 
