@@ -12,7 +12,6 @@ export const sandboxFragmentDashboard = gql`
     removedAt
     privacy
     isFrozen
-    isSse
     screenshotUrl
     screenshotOutdated
     viewCount
@@ -120,11 +119,9 @@ export const teamFragmentDashboard = gql`
   fragment teamFragmentDashboard on Team {
     id
     name
-    type
     description
     creatorId
     avatarUrl
-    legacy
     frozen
     insertedAt
     settings {
@@ -155,7 +152,6 @@ export const teamFragmentDashboard = gql`
       origin
       type
       status
-      paymentProvider
     }
 
     featureFlags {
@@ -182,9 +178,7 @@ export const currentTeamInfoFragment = gql`
     description
     inviteToken
     name
-    type
     avatarUrl
-    legacy
     frozen
     insertedAt
     users {
@@ -228,7 +222,6 @@ export const currentTeamInfoFragment = gql`
       nextBillDate
       origin
       paymentMethodAttached
-      paymentProvider
       quantity
       status
       trialEnd

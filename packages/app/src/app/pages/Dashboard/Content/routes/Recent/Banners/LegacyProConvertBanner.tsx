@@ -21,7 +21,6 @@ export const LegacyProConvertBanner: React.FC<BannerProps> = ({
 }) => {
   const { activeTeam } = useAppState();
   const { isAdmin } = useWorkspaceAuthorization();
-  const { isPaddle } = useWorkspaceSubscription();
 
   return (
     <Banner
@@ -44,7 +43,7 @@ export const LegacyProConvertBanner: React.FC<BannerProps> = ({
           </Stack>
 
           <Stack align="center" gap={6}>
-            {isAdmin && !isPaddle && (
+            {isAdmin && (
               <RouterLink
                 to={upgradeUrl({
                   workspaceId: activeTeam,
@@ -61,15 +60,6 @@ export const LegacyProConvertBanner: React.FC<BannerProps> = ({
                   Upgrade to Pro
                 </Button>
               </RouterLink>
-            )}
-            {isAdmin && isPaddle && (
-              <Button
-                as="a"
-                href="mailto:support@codesandbox.io?subject=Convert to usage based billing"
-                autoWidth
-              >
-                Contact us
-              </Button>
             )}
             <Link
               href={docsUrl(

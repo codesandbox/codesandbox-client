@@ -335,8 +335,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         );
         url = sandboxUrl(selectedItem.sandbox, hasBetaEditorExperiment);
         linksToV2 =
-          selectedItem.sandbox.isV2 ||
-          (!selectedItem.sandbox.isSse && hasBetaEditorExperiment);
+          selectedItem.sandbox.isV2 || hasBetaEditorExperiment;
       }
 
       if (event.ctrlKey || event.metaKey) {

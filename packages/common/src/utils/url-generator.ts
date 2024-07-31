@@ -118,7 +118,7 @@ export const sandboxUrl = (
 
   if (sandboxDetails.isV2) {
     baseUrl = `${newEditorUrlPrefix()}devbox/`;
-  } else if (!sandboxDetails.isSse && hasBetaEditorExperiment) {
+  } else if (hasBetaEditorExperiment) {
     baseUrl = `${newEditorUrlPrefix()}sandbox/`;
   }
 

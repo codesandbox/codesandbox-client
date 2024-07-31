@@ -41,7 +41,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const { isFrozen } = useWorkspaceLimits();
 
   const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
-  const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
+  const linksToV2 = sandbox.isV2 || hasBetaEditorExperiment;
   const folderUrl = getFolderUrl(item, activeTeam);
   const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
 
