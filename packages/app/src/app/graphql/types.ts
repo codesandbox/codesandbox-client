@@ -4734,7 +4734,6 @@ export type TeamFragmentDashboardFragment = {
     origin: SubscriptionOrigin | null;
     type: SubscriptionType;
     status: SubscriptionStatus;
-    paymentProvider: SubscriptionPaymentProvider | null;
   } | null;
   featureFlags: {
     __typename?: 'TeamFeatureFlags';
@@ -4806,7 +4805,6 @@ export type CurrentTeamInfoFragmentFragment = {
     nextBillDate: any | null;
     origin: SubscriptionOrigin | null;
     paymentMethodAttached: boolean;
-    paymentProvider: SubscriptionPaymentProvider | null;
     quantity: number | null;
     status: SubscriptionStatus;
     trialEnd: any | null;
@@ -5028,7 +5026,6 @@ export type _CreateTeamMutation = {
       origin: SubscriptionOrigin | null;
       type: SubscriptionType;
       status: SubscriptionStatus;
-      paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
     featureFlags: {
       __typename?: 'TeamFeatureFlags';
@@ -5414,7 +5411,6 @@ export type _AcceptTeamInvitationMutation = {
       origin: SubscriptionOrigin | null;
       type: SubscriptionType;
       status: SubscriptionStatus;
-      paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
     featureFlags: {
       __typename?: 'TeamFeatureFlags';
@@ -5506,7 +5502,6 @@ export type _SetTeamNameMutation = {
       origin: SubscriptionOrigin | null;
       type: SubscriptionType;
       status: SubscriptionStatus;
-      paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
     featureFlags: {
       __typename?: 'TeamFeatureFlags';
@@ -5762,7 +5757,6 @@ export type SetTeamMetadataMutation = {
       origin: SubscriptionOrigin | null;
       type: SubscriptionType;
       status: SubscriptionStatus;
-      paymentProvider: SubscriptionPaymentProvider | null;
     } | null;
     featureFlags: {
       __typename?: 'TeamFeatureFlags';
@@ -6190,7 +6184,6 @@ export type AllTeamsQuery = {
         origin: SubscriptionOrigin | null;
         type: SubscriptionType;
         status: SubscriptionStatus;
-        paymentProvider: SubscriptionPaymentProvider | null;
       } | null;
       featureFlags: {
         __typename?: 'TeamFeatureFlags';
@@ -6472,7 +6465,6 @@ export type GetTeamQuery = {
         nextBillDate: any | null;
         origin: SubscriptionOrigin | null;
         paymentMethodAttached: boolean;
-        paymentProvider: SubscriptionPaymentProvider | null;
         quantity: number | null;
         status: SubscriptionStatus;
         trialEnd: any | null;
