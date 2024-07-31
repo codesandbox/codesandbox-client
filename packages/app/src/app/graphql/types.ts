@@ -1125,7 +1125,6 @@ export enum SubscriptionOrigin {
 }
 
 export enum SubscriptionPaymentProvider {
-  Paddle = 'PADDLE',
   Stripe = 'STRIPE',
 }
 
@@ -2013,6 +2012,7 @@ export type RootMutationType = {
    * with Stripe in a way that is more appropriate for a mutation than a query.
    */
   previewConvertToUsageBilling: InvoicePreview;
+  /** @deprecated Subscription management no longer supported via GraphQL */
   previewUpdateSubscriptionBillingInterval: BillingPreview;
   reactivateSubscription: ProSubscription;
   redeemSandboxInvitation: Invitation;
@@ -2167,8 +2167,12 @@ export type RootMutationType = {
    * Not passing a specific argument will leave it unchanged, explicitly passing `null` will revert it to the default.
    */
   updateSandboxSettings: SandboxSettings;
-  /** update subscription details (not billing details) */
+  /**
+   * update subscription details (not billing details)
+   * @deprecated Subscription management no longer supported via GraphQL
+   */
   updateSubscription: ProSubscription;
+  /** @deprecated Subscription management no longer supported via GraphQL */
   updateSubscriptionBillingInterval: ProSubscription;
   /**
    * Update an active usage-based billing subscription.
@@ -2273,7 +2277,6 @@ export type RootMutationTypeCreateCollectionArgs = {
 };
 
 export type RootMutationTypeCreateCommentArgs = {
-  codeReference: InputMaybe<CodeReference>;
   codeReferences: InputMaybe<Array<CodeReference>>;
   content: Scalars['String'];
   id: InputMaybe<Scalars['ID']>;
@@ -3169,7 +3172,6 @@ export type TemplateFragment = {
     insertedAt: string;
     updatedAt: string;
     isV2: boolean;
-    isSse: boolean | null;
     forkCount: number;
     viewCount: number;
     team: { __typename?: 'TeamPreview'; name: string } | null;
@@ -3201,7 +3203,6 @@ export type RecentAndWorkspaceTemplatesQuery = {
         insertedAt: string;
         updatedAt: string;
         isV2: boolean;
-        isSse: boolean | null;
         forkCount: number;
         viewCount: number;
         team: { __typename?: 'TeamPreview'; name: string } | null;
@@ -3226,7 +3227,6 @@ export type RecentAndWorkspaceTemplatesQuery = {
           insertedAt: string;
           updatedAt: string;
           isV2: boolean;
-          isSse: boolean | null;
           forkCount: number;
           viewCount: number;
           team: { __typename?: 'TeamPreview'; name: string } | null;
@@ -4531,7 +4531,6 @@ export type SandboxFragmentDashboardFragment = {
   removedAt: string | null;
   privacy: number;
   isFrozen: boolean;
-  isSse: boolean | null;
   screenshotUrl: string | null;
   screenshotOutdated: boolean;
   viewCount: number;
@@ -4578,7 +4577,6 @@ export type RepoFragmentDashboardFragment = {
   removedAt: string | null;
   privacy: number;
   isFrozen: boolean;
-  isSse: boolean | null;
   screenshotUrl: string | null;
   screenshotOutdated: boolean;
   viewCount: number;
@@ -4653,7 +4651,6 @@ export type TemplateFragmentDashboardFragment = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4703,11 +4700,9 @@ export type TeamFragmentDashboardFragment = {
   __typename?: 'Team';
   id: any;
   name: string;
-  type: TeamType;
   description: string | null;
   creatorId: any | null;
   avatarUrl: string | null;
-  legacy: boolean;
   frozen: boolean;
   insertedAt: string;
   settings: {
@@ -4765,9 +4760,7 @@ export type CurrentTeamInfoFragmentFragment = {
   description: string | null;
   inviteToken: string;
   name: string;
-  type: TeamType;
   avatarUrl: string | null;
-  legacy: boolean;
   frozen: boolean;
   insertedAt: string;
   users: Array<{
@@ -5001,11 +4994,9 @@ export type _CreateTeamMutation = {
     __typename?: 'Team';
     id: any;
     name: string;
-    type: TeamType;
     description: string | null;
     creatorId: any | null;
     avatarUrl: string | null;
-    legacy: boolean;
     frozen: boolean;
     insertedAt: string;
     settings: {
@@ -5125,7 +5116,6 @@ export type AddToFolderMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -5178,7 +5168,6 @@ export type MoveToTrashMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -5232,7 +5221,6 @@ export type ChangePrivacyMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -5286,7 +5274,6 @@ export type ChangeFrozenMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -5340,7 +5327,6 @@ export type _RenameSandboxMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -5394,11 +5380,9 @@ export type _AcceptTeamInvitationMutation = {
     __typename?: 'Team';
     id: any;
     name: string;
-    type: TeamType;
     description: string | null;
     creatorId: any | null;
     avatarUrl: string | null;
-    legacy: boolean;
     frozen: boolean;
     insertedAt: string;
     settings: {
@@ -5488,11 +5472,9 @@ export type _SetTeamNameMutation = {
     __typename?: 'Team';
     id: any;
     name: string;
-    type: TeamType;
     description: string | null;
     creatorId: any | null;
     avatarUrl: string | null;
-    legacy: boolean;
     frozen: boolean;
     insertedAt: string;
     settings: {
@@ -5746,11 +5728,9 @@ export type SetTeamMetadataMutation = {
     __typename?: 'Team';
     id: any;
     name: string;
-    type: TeamType;
     description: string | null;
     creatorId: any | null;
     avatarUrl: string | null;
-    legacy: boolean;
     frozen: boolean;
     insertedAt: string;
     settings: {
@@ -5833,7 +5813,6 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -5901,7 +5880,6 @@ export type SandboxesByPathQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -5961,7 +5939,6 @@ export type TeamDraftsQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6038,7 +6015,6 @@ export type GetTeamReposQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6121,7 +6097,6 @@ export type TeamTemplatesQuery = {
           removedAt: string | null;
           privacy: number;
           isFrozen: boolean;
-          isSse: boolean | null;
           screenshotUrl: string | null;
           screenshotOutdated: boolean;
           viewCount: number;
@@ -6181,11 +6156,9 @@ export type AllTeamsQuery = {
       __typename?: 'Team';
       id: any;
       name: string;
-      type: TeamType;
       description: string | null;
       creatorId: any | null;
       avatarUrl: string | null;
-      legacy: boolean;
       frozen: boolean;
       insertedAt: string;
       settings: {
@@ -6260,7 +6233,6 @@ export type _SearchTeamSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -6318,7 +6290,6 @@ export type RecentlyAccessedSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
-      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -6405,7 +6376,6 @@ export type SharedWithMeSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
-      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -6456,9 +6426,7 @@ export type GetTeamQuery = {
       description: string | null;
       inviteToken: string;
       name: string;
-      type: TeamType;
       avatarUrl: string | null;
-      legacy: boolean;
       frozen: boolean;
       insertedAt: string;
       users: Array<{
@@ -6999,7 +6967,6 @@ export type TeamSidebarDataQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
