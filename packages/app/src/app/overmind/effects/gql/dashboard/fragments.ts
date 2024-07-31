@@ -122,7 +122,6 @@ export const teamFragmentDashboard = gql`
     description
     creatorId
     avatarUrl
-    legacy
     frozen
     insertedAt
     settings {
@@ -181,7 +180,6 @@ export const currentTeamInfoFragment = gql`
     inviteToken
     name
     avatarUrl
-    legacy
     frozen
     insertedAt
     users {
