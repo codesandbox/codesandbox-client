@@ -152,7 +152,6 @@ export const teamFragmentDashboard = gql`
       origin
       type
       status
-      paymentProvider
     }
 
     featureFlags {
@@ -223,7 +222,6 @@ export const currentTeamInfoFragment = gql`
       nextBillDate
       origin
       paymentMethodAttached
-      paymentProvider
       quantity
       status
       trialEnd
