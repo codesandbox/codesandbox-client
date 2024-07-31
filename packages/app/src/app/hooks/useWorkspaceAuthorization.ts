@@ -5,7 +5,6 @@ type WorkspaceAuthorizationReturn =
   | {
       isAdmin: undefined;
       isBillingManager: undefined;
-      isPersonalSpace: undefined;
       isPrimarySpace: undefined;
       isTeamAdmin: undefined;
       isTeamEditor: undefined;
@@ -15,7 +14,6 @@ type WorkspaceAuthorizationReturn =
   | {
       isAdmin: boolean;
       isBillingManager: boolean;
-      isPersonalSpace: boolean;
       isPrimarySpace: boolean;
       isTeamAdmin: boolean;
       isTeamEditor: boolean;
@@ -39,7 +37,6 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
     return {
       isAdmin: undefined,
       isBillingManager: undefined,
-      isPersonalSpace: undefined,
       isPrimarySpace: undefined,
       isTeamAdmin: undefined,
       isTeamEditor: undefined,
@@ -63,7 +60,6 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
   return {
     isBillingManager: Boolean(teamManager) || isAdmin,
     isAdmin,
-    isPersonalSpace: activeTeamInfo?.type === TeamType.Personal,
     isPrimarySpace: activeTeam === primaryWorkspaceId,
     isTeamAdmin,
     isTeamEditor,

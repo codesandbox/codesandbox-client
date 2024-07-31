@@ -119,7 +119,6 @@ export const teamFragmentDashboard = gql`
   fragment teamFragmentDashboard on Team {
     id
     name
-    type
     description
     creatorId
     avatarUrl
@@ -181,7 +180,6 @@ export const currentTeamInfoFragment = gql`
     description
     inviteToken
     name
-    type
     avatarUrl
     legacy
     frozen
