@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/react-hooks';
 import {
   RecentAndWorkspaceTemplatesQuery,
   RecentAndWorkspaceTemplatesQueryVariables,
-  TemplateFragment,
 } from 'app/graphql/types';
 import { FETCH_TEAM_TEMPLATES } from '../utils/queries';
 import { SandboxToFork } from '../utils/types';
@@ -31,19 +30,13 @@ type State = BaseState &
 type UseTeamTemplatesParams = {
   teamId: string;
   hasLogIn: boolean;
-  type: 'devbox' | 'sandbox';
 };
 
 export const useTeamTemplates = ({
   teamId,
   hasLogIn,
-  type,
 }: UseTeamTemplatesParams): State => {
   const skip = !hasLogIn;
-
-  const respectBoxType = (t: TemplateFragment) =>
-    (type === 'sandbox' && !t.sandbox.isV2) ||
-    (type === 'devbox' && t.sandbox.isV2);
 
   const { data, error } = useQuery<
     RecentAndWorkspaceTemplatesQuery,
@@ -84,11 +77,11 @@ export const useTeamTemplates = ({
 
   return {
     state: 'ready',
-    recentTemplates: data.me.recentlyUsedTemplates
-      .filter(respectBoxType)
-      .map(mapTemplateGQLResponseToSandboxToFork),
-    teamTemplates: data.me.team.templates
-      .filter(respectBoxType)
-      .map(mapTemplateGQLResponseToSandboxToFork),
+    recentTemplates: data.me.recentlyUsedTemplates.map(
+      mapTemplateGQLResponseToSandboxToFork
+    ),
+    teamTemplates: data.me.team.templates.map(
+      mapTemplateGQLResponseToSandboxToFork
+    ),
   };
 };

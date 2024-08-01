@@ -64,7 +64,7 @@ export const RepositoriesPage = () => {
             codesandbox: 'V1',
             event_source: 'UI',
           });
-          actions.modalOpened({ modal: 'importRepository' });
+          actions.modalOpened({ modal: 'import' });
         },
       });
     }

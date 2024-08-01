@@ -68,6 +68,14 @@ export const TemplateCard = ({
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
           <TemplateIcon template={template} />
+          <Stack gap={1} direction="horizontal">
+            {(template.type === 'sandbox' || template.browserSandboxId) && (
+              <Icon color="#999" size={16} name="boxDevbox" />
+            )}
+            {template.type === 'devbox' && (
+              <Icon color="#999" size={16} name="server" />
+            )}
+          </Stack>
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text

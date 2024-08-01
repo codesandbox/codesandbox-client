@@ -7,6 +7,7 @@ import {
   Input,
   Icon,
   Select,
+  Radio,
 } from '@codesandbox/components';
 
 import { useActions, useAppState, useEffects } from 'app/overmind';
@@ -20,10 +21,10 @@ import {
   PathedSandboxesFoldersQuery,
   PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
-import { CreateParams, PrivacyLevel } from '../utils/types';
+import { CreateParams, PrivacyLevel, SandboxToFork } from '../utils/types';
 
 interface CreateBoxFormProps {
-  type: 'sandbox' | 'devbox';
+  template: SandboxToFork;
   initialPrivacy?: PrivacyLevel;
   collectionId: string | undefined;
   setCollectionId: (collectionId: string | undefined) => void;
@@ -33,15 +34,22 @@ interface CreateBoxFormProps {
 }
 
 export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
-  type,
+  template,
   initialPrivacy,
   collectionId,
   setCollectionId,
   onCancel,
   onSubmit,
-  onClose,
 }) => {
-  const label = type === 'sandbox' ? 'Sandbox' : 'Devbox';
+  const runsInTheBrowser =
+    template.type === 'sandbox' || template.browserSandboxId;
+  const runsOnVM = template.type === 'devbox';
+
+  const [runtime, setRuntime] = useState<'browser' | 'vm'>(
+    runsInTheBrowser ? 'browser' : 'vm'
+  );
+
+  const label = runtime === 'browser' ? 'Sandbox' : 'Devbox';
 
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
@@ -67,12 +75,10 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const [allVmTiers, setAllVmTiers] = useState<VMTier[]>([]);
 
   useEffect(() => {
-    if (type === 'devbox') {
-      effects.api.getVMSpecs().then(res => {
-        setAllVmTiers(res.vmTiers);
-      });
-    }
-  }, [type]);
+    effects.api.getVMSpecs().then(res => {
+      setAllVmTiers(res.vmTiers);
+    });
+  }, []);
 
   useEffect(() => {
     effects.api.getSandboxTitle().then(({ title }) => {
@@ -116,9 +122,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
         onSubmit({
           name,
-          createAs: type,
+          createAs: runtime === 'browser' ? 'sandbox' : 'devbox',
           permission,
-          editor: type === 'sandbox' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
+          editor: runtime === 'browser' ? 'csb' : editor, // ensure 'csb' is always passed when creating a sandbox
           customVMTier:
             // Only pass customVMTier if user selects something else than the default
             allVmTiers.length > 0 && selectedTier !== defaultTier
@@ -136,11 +142,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             margin: 0,
           }}
         >
-          Create {label}
+          Configure
         </Text>
         <Stack direction="vertical" gap={2}>
           <Text size={3} as="label">
-            {label} Name
+            Name
           </Text>
           <Input
             autoFocus
@@ -148,7 +154,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             name="sb-name"
             type="text"
             value={name}
-            placeholder={`Let's give this ${label} a name.`}
             onChange={e => setName(e.target.value)}
             aria-describedby="name-desc"
             ref={nameInputRef}
@@ -206,103 +211,115 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           </Stack>
         )}
 
-        <Stack direction="vertical" gap={2}>
-          <Text size={3} as="label">
-            Open in
-          </Text>
-          {type === 'sandbox' ? (
-            <>
-              <Input
-                css={{ cursor: 'not-allowed' }}
-                value="CodeSandbox Web Editor"
-                disabled
-              />
-              <Stack gap={1} css={{ color: '#A8BFFA' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>
-                  Sandboxes can only be opened in the web editor.
-                </Text>
-              </Stack>
-            </>
-          ) : (
-            <Select
-              icon={EDITOR_ICONS[editor]}
-              defaultValue={editor}
-              onChange={({ target: { value } }) => setEditor(value)}
-            >
-              <option value="csb">CodeSandbox Web Editor</option>
-              <option value="vscode">
-                VS Code Desktop (Using the CodeSandbox extension)
-              </option>
-            </Select>
-          )}
-        </Stack>
-
-        <Stack direction="vertical" align="flex-start" gap={2}>
+        <Stack
+          direction="vertical"
+          align="flex-start"
+          css={{ width: '100%' }}
+          gap={2}
+        >
           <Text size={3} as="label">
             Runtime
           </Text>
-          {type === 'sandbox' ? (
-            <>
-              <Input css={{ cursor: 'not-allowed' }} value="Browser" disabled />
-              <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
-                <Icon name="circleBang" />
-                <Text size={3}>Sandboxes run in your browser.</Text>
-              </Stack>
-            </>
-          ) : (
-            <>
-              <Select
-                value={selectedTier}
-                disabled={allVmTiers.length === 0}
-                onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
-              >
-                {allVmTiers.map(t => (
-                  <option
-                    disabled={t.tier > highestAllowedVMTier}
-                    key={t.shortid}
-                    value={t.tier}
-                  >
-                    {t.name} ({t.cpu} vCPUs, {t.memory} GiB RAM, {t.storage} GB
-                    Disk for {t.creditBasis} credits/hour)
-                  </option>
-                ))}
-              </Select>
-              {isFree && (
+
+          <Radio
+            disabled={!runsInTheBrowser}
+            checked={runtime === 'browser'}
+            css={{ cursor: 'inherit' }}
+            onChange={e => setRuntime(e.target.checked ? 'browser' : 'vm')}
+            label="Browser (Sandbox)"
+          />
+
+          <Radio
+            disabled={!runsOnVM}
+            checked={runtime === 'vm'}
+            label="Virtual Machine (Devbox)"
+            onChange={e => setRuntime(e.target.checked ? 'vm' : 'browser')}
+          />
+
+          <Stack
+            direction="vertical"
+            css={{ paddingLeft: '24px', paddingTop: '4px', width: '100%' }}
+            gap={1}
+          >
+            <Select
+              value={selectedTier}
+              disabled={runtime === 'browser'}
+              onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
+            >
+              {allVmTiers.map(t => (
+                <option
+                  disabled={t.tier > highestAllowedVMTier}
+                  key={t.shortid}
+                  value={t.tier}
+                >
+                  {t.name} ({t.cpu} vCPUs, {t.memory} GiB RAM, {t.storage} GB
+                  Disk for {t.creditBasis} credits/hour)
+                </option>
+              ))}
+            </Select>
+
+            <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
+              <Icon name="circleBang" />
+              <Text size={3}>
+                VMs use credits.{' '}
+                <Text
+                  as="a"
+                  color="inherit"
+                  href="/pricing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn more
+                </Text>
+                .
+              </Text>
+            </Stack>
+
+            {!activeTeamInfo?.featureFlags.ubbBeta &&
+              activeTeamInfo?.subscription.status && (
                 <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
                   <Icon name="circleBang" />
                   <Text size={3}>
-                    Better specs are available for{' '}
+                    Better specs are available for our new team plan, you can
+                    upgrade{' '}
                     <a
-                      href="/pricing"
+                      href="/upgrade"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Pro & Enterprise workspaces
+                      here
                     </a>
                     .
                   </Text>
                 </Stack>
               )}
-              {!activeTeamInfo?.featureFlags.ubbBeta &&
-                activeTeamInfo?.subscription.status && (
-                  <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
-                    <Icon name="circleBang" />
-                    <Text size={3}>
-                      Better specs are available for our new team plan, you can
-                      upgrade{' '}
-                      <a
-                        href="/upgrade"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        here
-                      </a>
-                      .
-                    </Text>
-                  </Stack>
-                )}
-            </>
+          </Stack>
+        </Stack>
+
+        <Stack direction="vertical" gap={2}>
+          <Text size={3} as="label">
+            Open in
+          </Text>
+
+          <Select
+            icon={EDITOR_ICONS[editor]}
+            defaultValue={editor}
+            onChange={({ target: { value } }) => setEditor(value)}
+            disabled={runtime === 'browser'}
+          >
+            <option value="csb">CodeSandbox Web Editor</option>
+            <option value="vscode">
+              VS Code Desktop (Using the CodeSandbox extension)
+            </option>
+          </Select>
+
+          {runtime === 'browser' && (
+            <Stack gap={1} css={{ color: '#A8BFFA' }}>
+              <Icon name="circleBang" />
+              <Text size={3}>
+                Sandboxes can only be opened in the web editor.
+              </Text>
+            </Stack>
           )}
         </Stack>
       </Stack>

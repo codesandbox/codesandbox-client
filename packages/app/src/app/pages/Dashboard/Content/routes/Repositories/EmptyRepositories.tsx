@@ -43,7 +43,7 @@ export const EmptyRepositories: React.FC = () => {
               tab: 'github',
             });
 
-            actions.modalOpened({ modal: 'importRepository' });
+            actions.modalOpened({ modal: 'import' });
           }}
         >
           Import from GitHub

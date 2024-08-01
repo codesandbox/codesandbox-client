@@ -50,6 +50,7 @@ export type SandboxToFork = {
   viewCount: number;
   iconUrl?: string;
   sourceTemplate?: string;
+  browserSandboxId?: string;
 };
 
 export interface TemplateCollection {

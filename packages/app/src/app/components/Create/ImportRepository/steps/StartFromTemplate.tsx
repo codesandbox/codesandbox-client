@@ -6,9 +6,9 @@ import { TemplateCard } from '../../TemplateCard';
 import { SandboxToFork } from '../../utils/types';
 
 export const StartFromTemplate = () => {
-  const { officialDevboxTemplates } = useAppState();
+  const { officialTemplates } = useAppState();
 
-  const starterTemplates = officialDevboxTemplates.filter(t =>
+  const starterTemplates = officialTemplates.filter(t =>
     t.tags.includes('starter')
   );
 

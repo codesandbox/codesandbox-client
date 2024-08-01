@@ -81,9 +81,7 @@ export const Header = ({
         )}
         {repositoriesListPage && dashboard.viewMode === 'list' && (
           <Button
-            onClick={() =>
-              !readOnly && modalOpened({ modal: 'importRepository' })
-            }
+            onClick={() => !readOnly && modalOpened({ modal: 'import' })}
             variant="ghost"
             disabled={readOnly}
             autoWidth

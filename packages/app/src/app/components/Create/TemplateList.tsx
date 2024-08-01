@@ -1,20 +1,14 @@
 import React from 'react';
 import { Text, Stack } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { TemplateCard } from './TemplateCard';
-import {
-  DevboxAlternative,
-  SandboxAlternative,
-  TemplateGrid,
-} from './elements';
+import { DevboxAlternative, TemplateGrid } from './elements';
 import { SandboxToFork } from './utils/types';
 
 interface TemplateListProps {
   title: string;
   showEmptyState?: boolean;
   searchQuery?: string;
-  type: 'sandbox' | 'devbox';
   templates: SandboxToFork[];
   onSelectTemplate: (template: SandboxToFork) => void;
   onOpenTemplate: (template: SandboxToFork) => void;
@@ -27,10 +21,7 @@ export const TemplateList = ({
   onOpenTemplate,
   showEmptyState = false,
   searchQuery,
-  type,
 }: TemplateListProps) => {
-  const actions = useActions();
-
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={4}>
       <Stack align="center" gap={2}>
@@ -71,29 +62,12 @@ export const TemplateList = ({
             Not finding what you need?
           </Text>
           <Text size={3} css={{ width: '300px', textAlign: 'center' }}>
-            {type === 'devbox' ? (
-              <DevboxAlternative
-                searchQuery={searchQuery}
-                onClick={() => {
-                  track(`Create ${type} - Open Community Search`, {
-                    codesandbox: 'V1',
-                    event_source: 'UI - Empty Template List',
-                  });
-                }}
-              />
-            ) : (
-              <SandboxAlternative
-                onClick={() => {
-                  track(`Create ${type} - Open Devboxes`, {
-                    codesandbox: 'V1',
-                    event_source: 'UI - Empty Template List',
-                  });
-                  actions.modalOpened({
-                    modal: 'createDevbox',
-                  });
-                }}
-              />
-            )}
+            <DevboxAlternative
+              searchQuery={searchQuery}
+              onClick={() => {
+                track(`Create - Open Community Search`);
+              }}
+            />
           </Text>
         </Stack>
       )}

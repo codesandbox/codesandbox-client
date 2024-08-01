@@ -112,43 +112,28 @@ export const Header: React.FC<HeaderProps> = React.memo(
             variant={highlightButtons ? 'primary' : 'secondary'}
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
-              track('Dashboard - Topbar - Import repository', {
+              track('Dashboard - Topbar - Import', {
                 highlightButtons,
               });
-              actions.modalOpened({ modal: 'importRepository' });
+              actions.modalOpened({ modal: 'import' });
             }}
             autoWidth
           >
-            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
-            Repository
+            <Icon name="github" size={16} css={{ marginRight: '4px' }} />
+            Import
           </Button>
 
           <Button
             variant={highlightButtons ? 'primary' : 'secondary'}
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
-              track('Dashboard - Topbar - Create Devbox', { highlightButtons });
-              actions.modalOpened({ modal: 'createDevbox' });
+              track('Dashboard - Topbar - Create', { highlightButtons });
+              actions.modalOpened({ modal: 'create' });
             }}
             autoWidth
           >
-            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
-            Devbox
-          </Button>
-
-          <Button
-            variant={highlightButtons ? 'light' : 'secondary'}
-            disabled={activeWorkspaceAuthorization === 'READ'}
-            onClick={() => {
-              track('Dashboard - Topbar - Create Sandbox', {
-                highlightButtons,
-              });
-              actions.modalOpened({ modal: 'createSandbox' });
-            }}
-            autoWidth
-          >
-            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
-            Sandbox
+            <Icon name="plus" size={16} css={{ marginRight: '4px' }} />
+            Create
           </Button>
 
           {hasLogIn && <Notifications dashboard />}
