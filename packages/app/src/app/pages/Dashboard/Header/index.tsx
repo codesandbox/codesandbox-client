@@ -36,17 +36,6 @@ export const Header: React.FC<HeaderProps> = React.memo(
     } = useAppState();
     const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
 
-    const [highlightButtons, setHighlightButtons] = useGlobalPersistedState<
-      boolean | undefined
-    >('PRIMARY_BUTTONS_ABTEST', undefined);
-
-    useEffect(() => {
-      if (highlightButtons === undefined) {
-        // 50% pseudo-random, good enough for a/b test
-        setHighlightButtons(Math.random() > 0.5);
-      }
-    }, [highlightButtons, setHighlightButtons]);
-
     return (
       <Stack
         as="header"
@@ -109,12 +98,10 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <Stack align="center" gap={2}>
           <SearchInputGroup />
           <Button
-            variant={highlightButtons ? 'primary' : 'secondary'}
+            variant="secondary"
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
-              track('Dashboard - Topbar - Import', {
-                highlightButtons,
-              });
+              track('Dashboard - Topbar - Import');
               actions.modalOpened({ modal: 'import' });
             }}
             autoWidth
@@ -124,15 +111,15 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
 
           <Button
-            variant={highlightButtons ? 'primary' : 'secondary'}
+            variant="primary"
             disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
             onClick={() => {
-              track('Dashboard - Topbar - Create', { highlightButtons });
+              track('Dashboard - Topbar - Create');
               actions.modalOpened({ modal: 'create' });
             }}
             autoWidth
           >
-            <Icon name="plus" size={16} css={{ marginRight: '4px' }} />
+            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
             Create
           </Button>
 

@@ -46,6 +46,7 @@ export const TemplateList = ({
               template={template}
               onSelectTemplate={onSelectTemplate}
               onOpenTemplate={onOpenTemplate}
+              forks={template.forkCount}
             />
           ))}
         </TemplateGrid>

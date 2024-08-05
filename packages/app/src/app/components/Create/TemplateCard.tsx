@@ -70,7 +70,14 @@ export const TemplateCard = ({
           <TemplateIcon template={template} />
           <Stack gap={1} direction="horizontal">
             {(template.type === 'sandbox' || template.browserSandboxId) && (
-              <Icon color="#999" size={16} name="boxDevbox" />
+              <Stack css={{ width: 16, height: 16 }}>
+                <Icon
+                  css={{ margin: 'auto' }}
+                  color="#999"
+                  size={14}
+                  name="boxDevbox"
+                />
+              </Stack>
             )}
             {template.type === 'devbox' && (
               <Icon color="#999" size={16} name="server" />
