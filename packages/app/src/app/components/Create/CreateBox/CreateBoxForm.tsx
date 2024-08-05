@@ -330,80 +330,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               </Stack>
             </CardButton>
           </Stack>
-
-          {/* <Radio
-            disabled={!runsInTheBrowser}
-            checked={runtime === 'browser'}
-            css={{ cursor: 'inherit' }}
-            onChange={e => setRuntime(e.target.checked ? 'browser' : 'vm')}
-            label="Browser (Sandbox)"
-          />
-
-          <Radio
-            disabled={!runsOnVM}
-            checked={runtime === 'vm'}
-            label="Virtual Machine (Devbox)"
-            onChange={e => setRuntime(e.target.checked ? 'vm' : 'browser')}
-          />
-
-          <Stack
-            direction="vertical"
-            css={{ paddingLeft: '24px', paddingTop: '4px', width: '100%' }}
-            gap={1}
-          >
-            <Select
-              value={selectedTier}
-              disabled={runtime === 'browser'}
-              onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
-            >
-              {allVmTiers.map(t => (
-                <option
-                  disabled={t.tier > highestAllowedVMTier}
-                  key={t.shortid}
-                  value={t.tier}
-                >
-                  {t.name} ({t.cpu} vCPUs, {t.memory} GiB RAM, {t.storage} GB
-                  Disk for {t.creditBasis} credits/hour)
-                </option>
-              ))}
-            </Select>
-
-            <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
-              <Icon name="circleBang" />
-              <Text size={3}>
-                VMs use credits.{' '}
-                <Text
-                  as="a"
-                  color="inherit"
-                  href="/pricing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Learn more
-                </Text>
-                .
-              </Text>
-            </Stack>
-
-            {!activeTeamInfo?.featureFlags.ubbBeta &&
-              activeTeamInfo?.subscription.status && (
-                <Stack gap={1} align="center" css={{ color: '#A8BFFA' }}>
-                  <Icon name="circleBang" />
-                  <Text size={3}>
-                    Better specs are available for our new team plan, you can
-                    upgrade{' '}
-                    <a
-                      href="/upgrade"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      here
-                    </a>
-                    .
-                  </Text>
-                </Stack>
-              )}
-          </Stack> */}
         </Stack>
 
         {runtime === 'vm' && (
@@ -493,6 +419,7 @@ const CardButton = styled.button`
 
   &:disabled {
     opacity: 0.4;
+    cursor: default;
   }
 
   &[data-selected='true'] {
