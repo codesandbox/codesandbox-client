@@ -280,8 +280,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 </Stack>
 
                 <Text size={3} variant="muted">
-                  Ideal for any type of project, regardless of its language or
-                  size. VMs credits are used.
+                  Ideal for any type of project, language or size. Runs in
+                  Virtual Machines and credits are used.
                 </Text>
 
                 {runsOnVM ? (
