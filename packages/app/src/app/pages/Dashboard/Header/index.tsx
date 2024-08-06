@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Link, useHistory } from 'react-router-dom';
 import { Combobox, ComboboxInput } from '@reach/combobox';
@@ -15,7 +15,6 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
-import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
