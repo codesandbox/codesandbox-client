@@ -255,8 +255,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 </Stack>
 
                 <Text size={3} variant="muted">
-                  Ideal for prototyping and sharing code snippets. Runs for free
-                  in the browser.
+                  Ideal for prototyping and sharing code snippets. Runs in the
+                  browser.
                 </Text>
 
                 {!runsInTheBrowser && (
@@ -280,30 +280,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 </Stack>
 
                 <Text size={3} variant="muted">
-                  Ideal for any type of project, language or size. Runs in
-                  Virtual Machines and credits are used.
+                  Ideal for any type of project, language or size. Runs on a
+                  server.
                 </Text>
 
-                {runsOnVM ? (
-                  <Select
-                    value={selectedTier}
-                    disabled={runtime === 'browser'}
-                    onChange={e =>
-                      setSelectedTier(parseInt(e.target.value, 10))
-                    }
-                  >
-                    {allVmTiers.map(t => (
-                      <option
-                        disabled={t.tier > highestAllowedVMTier}
-                        key={t.shortid}
-                        value={t.tier}
-                      >
-                        {t.name} ({t.cpu} vCPUs, {t.memory} GiB RAM, {t.storage}{' '}
-                        GB Disk for {t.creditBasis} credits/hour)
-                      </option>
-                    ))}
-                  </Select>
-                ) : (
+                {!runsOnVM && (
                   <Text size={3} css={{ color: '#F7CC66' }}>
                     Not available for this template.
                   </Text>
@@ -333,22 +314,45 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         </Stack>
 
         {runtime === 'vm' && (
-          <Stack direction="vertical" gap={2}>
-            <Text size={3} as="label">
-              Open in
-            </Text>
+          <>
+            <Stack direction="vertical" gap={2}>
+              <Text size={3} as="label">
+                VM specs
+              </Text>
+              <Select
+                value={selectedTier}
+                onChange={e => setSelectedTier(parseInt(e.target.value, 10))}
+              >
+                {allVmTiers.map(t => (
+                  <option
+                    disabled={t.tier > highestAllowedVMTier}
+                    key={t.shortid}
+                    value={t.tier}
+                  >
+                    {t.name} ({t.cpu} vCPUs, {t.memory} GiB RAM, {t.storage} GB
+                    Disk for {t.creditBasis} credits/hour)
+                  </option>
+                ))}
+              </Select>
+            </Stack>
 
-            <Select
-              icon={EDITOR_ICONS[editor]}
-              defaultValue={editor}
-              onChange={({ target: { value } }) => setEditor(value)}
-            >
-              <option value="csb">CodeSandbox Web Editor</option>
-              <option value="vscode">
-                VS Code Desktop (Using the CodeSandbox extension)
-              </option>
-            </Select>
-          </Stack>
+            <Stack direction="vertical" gap={2}>
+              <Text size={3} as="label">
+                Open in
+              </Text>
+
+              <Select
+                icon={EDITOR_ICONS[editor]}
+                defaultValue={editor}
+                onChange={({ target: { value } }) => setEditor(value)}
+              >
+                <option value="csb">CodeSandbox Web Editor</option>
+                <option value="vscode">
+                  VS Code Desktop (Using the CodeSandbox extension)
+                </option>
+              </Select>
+            </Stack>
+          </>
         )}
       </Stack>
 
