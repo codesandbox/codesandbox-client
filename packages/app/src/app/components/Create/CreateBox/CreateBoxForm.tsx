@@ -121,6 +121,10 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         e.preventDefault();
 
         onSubmit({
+          sandboxId:
+            runtime === 'browser'
+              ? template.browserSandboxId ?? template.id
+              : template.id,
           name,
           createAs: runtime === 'browser' ? 'sandbox' : 'devbox',
           permission,

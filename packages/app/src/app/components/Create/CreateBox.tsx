@@ -163,7 +163,14 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const createFromTemplate = (
     sandbox: SandboxToFork,
-    { name, createAs, permission, editor, customVMTier }: CreateParams
+    {
+      name,
+      createAs,
+      permission,
+      editor,
+      customVMTier,
+      sandboxId,
+    }: CreateParams
   ) => {
     const openInVSCode = editor === 'vscode';
 
@@ -177,7 +184,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
     actions.editor
       .forkExternalSandbox({
-        sandboxId: sandbox.browserSandboxId ?? sandbox.id,
+        sandboxId,
         openInNewWindow: false,
         openInVSCode,
         autoLaunchVSCode,
