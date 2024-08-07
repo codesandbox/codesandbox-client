@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Stack,
@@ -21,8 +22,6 @@ import {
   PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
 import { CreateParams, PrivacyLevel, SandboxToFork } from '../utils/types';
-
-import styled from 'styled-components';
 
 interface CreateBoxFormProps {
   template: SandboxToFork;
