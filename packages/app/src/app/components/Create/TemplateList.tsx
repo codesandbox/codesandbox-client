@@ -6,7 +6,7 @@ import { DevboxAlternative, TemplateGrid } from './elements';
 import { SandboxToFork } from './utils/types';
 
 interface TemplateListProps {
-  title: string;
+  title?: string;
   showEmptyState?: boolean;
   searchQuery?: string;
   templates: SandboxToFork[];
@@ -23,11 +23,12 @@ export const TemplateList = ({
   searchQuery,
 }: TemplateListProps) => {
   return (
-    <Stack direction="vertical" css={{ height: '100%' }} gap={4}>
+    <Stack direction="vertical" css={{ height: '100%' }} gap={3}>
       <Stack align="center" gap={2}>
         <Text
           as="h2"
-          size={4}
+          size={3}
+          variant="muted"
           css={{
             fontWeight: 500,
             lineHeight: '24px',

@@ -162,13 +162,13 @@ export const TemplateButton = styled.button`
 
 export const TemplateGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   overflow: auto;
   padding-bottom: 12px;
 
   @media screen and (max-width: 756px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   @media screen and (max-width: 485px) {
