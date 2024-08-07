@@ -261,10 +261,8 @@ type ModalName =
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
   | 'legacyPayment'
-  | 'importRepository'
-  | 'createSandbox'
-  | 'createDevbox'
-  | 'genericCreate';
+  | 'import'
+  | 'create';
 
 export const modalOpened = (
   { state, effects }: Context,
@@ -281,14 +279,14 @@ export const modalOpened = (
   if (props.modal === 'preferences' && props.itemId) {
     state.preferences.itemId = props.itemId;
   }
-  if (props.modal === 'createDevbox' || props.modal === 'createSandbox') {
+  if (props.modal === 'create') {
     state.currentModalItemId = props.itemId;
     state.sandboxIdToFork = props.sandboxIdToFork || null;
   } else {
     state.currentModalMessage = props.message || null;
   }
 
-  if (props.modal === 'importRepository') {
+  if (props.modal === 'import') {
     state.repoToImport = props.repoToImport || null;
   }
 };

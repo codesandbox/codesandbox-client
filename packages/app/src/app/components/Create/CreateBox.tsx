@@ -28,7 +28,6 @@ import {
   ModalSidebar,
   ModalBody,
   DevboxAlternative,
-  SandboxAlternative,
 } from './elements';
 import { TemplateList } from './TemplateList';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
@@ -48,7 +47,6 @@ import { FEATURED_IDS } from './utils/constants';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
-  type?: 'devbox' | 'sandbox';
   sandboxIdToFork?: string;
   isStandalone?: boolean;
 };
@@ -56,16 +54,10 @@ type CreateBoxProps = ModalContentProps & {
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
   sandboxIdToFork,
-  type = 'devbox',
   closeModal,
   isStandalone,
 }) => {
-  const {
-    hasLogIn,
-    activeTeam,
-    officialDevboxTemplates,
-    officialSandboxTemplates,
-  } = useAppState();
+  const { hasLogIn, activeTeam, officialTemplates } = useAppState();
   const effects = useEffects();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
@@ -79,12 +71,12 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
-  const showFeaturedTemplates = type === 'devbox';
-  const showCollections = type === 'devbox';
+  const showFeaturedTemplates = true;
+  const showCollections = true;
 
   const tabState = useTabState({
     orientation: mobileScreenSize ? 'horizontal' : 'vertical',
-    selectedId: type === 'devbox' ? 'featured' : 'all',
+    selectedId: 'featured',
   });
 
   const [viewState, setViewState] = useState<'select' | 'loading' | 'config'>(
@@ -97,9 +89,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     false
   );
 
-  const officialTemplates =
-    type === 'devbox' ? officialDevboxTemplates : officialSandboxTemplates;
-
   const collections = getTemplatesInCollections(officialTemplates, [
     { tag: 'frontend', title: 'Frontend frameworks' },
     { tag: 'backend', title: 'Backend frameworks' },
@@ -110,7 +99,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const { teamTemplates, recentTemplates } = useTeamTemplates({
     teamId: activeTeam,
     hasLogIn,
-    type,
   });
 
   const recentlyUsedTemplates = recentTemplates.slice(0, 3);
@@ -136,7 +124,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
    */
 
   const showTeamTemplates = teamTemplates.length > 0;
-  const showImportTemplates = hasLogIn && activeTeam && type === 'devbox';
+  const showImportTemplates = hasLogIn && activeTeam;
 
   useEffect(() => {
     if (!sandboxIdToFork) {
@@ -159,7 +147,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   useEffect(() => {
     if (searchQuery) {
-      track(`Create ${type} - Search Templates`, {
+      track(`Create - Search Templates`, {
         query: searchQuery,
       });
     }
@@ -179,7 +167,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   ) => {
     const openInVSCode = editor === 'vscode';
 
-    track(`Create ${type} - Create`, {
+    track(`Create - Submit form`, {
       type: 'fork',
       title: name,
       template_name: sandbox.title || sandbox.alias || sandbox.id,
@@ -235,7 +223,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     setSelectedTemplate(sandbox);
     setViewState('config');
 
-    track(`Create ${type} - Select template`, {
+    track(`Create - Select template`, {
       type: 'fork',
       tab_name: trackingSource,
       template_name: sandbox.title || sandbox.alias || sandbox.id,
@@ -247,7 +235,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
     window.open(url, '_blank');
 
-    track(`Create ${type} - Open template`, {
+    track(`Create - Open template`, {
       type: 'open',
       tab_name: trackingSource,
       template_name: sandbox.title || sandbox.alias || sandbox.id,
@@ -255,7 +243,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   };
 
   const trackTabClick = (tab: string) => {
-    track(`Create ${type} - Click Tab`, {
+    track(`Create - Click Tab`, {
       tab_name: tab,
     });
   };
@@ -272,11 +260,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
           }}
         >
           <HeaderInformation>
-            {viewState === 'select' && (
-              <Text size={4}>
-                Create {type === 'devbox' ? 'Devbox' : 'Sandbox'}
-              </Text>
-            )}
+            {viewState === 'select' && <Text size={4}>New</Text>}
             {viewState === 'config' && !sandboxIdToFork && (
               <IconButton
                 name="arrowDown"
@@ -358,9 +342,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                         All templates
                       </Tab>
 
-                      {type === 'devbox' && (
-                        <Element css={{ height: '16px' }} />
-                      )}
+                      <Element css={{ height: '16px' }} />
 
                       {showTeamTemplates ? (
                         <Tab
@@ -413,27 +395,14 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       gap={2}
                     >
                       <Text size={3} weight="600">
-                        {type === 'devbox'
-                          ? "There's even more"
-                          : 'Do more with Devboxes'}
+                        There&apos;s even more
                       </Text>
                       <Text size={2} color="#A6A6A6" lineHeight="1.35">
-                        {type === 'devbox' ? (
-                          <DevboxAlternative
-                            onClick={() => {
-                              track(`Create ${type} - Open Community Search`);
-                            }}
-                          />
-                        ) : (
-                          <SandboxAlternative
-                            onClick={() => {
-                              track(`Create ${type} - Open Devboxes`);
-                              actions.modalOpened({
-                                modal: 'createDevbox',
-                              });
-                            }}
-                          />
-                        )}
+                        <DevboxAlternative
+                          onClick={() => {
+                            track(`Create - Open Community Search`);
+                          }}
+                        />
                       </Text>
                     </Stack>
                   )}
@@ -446,7 +415,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       <TemplateList
                         title="Recently used"
                         templates={recentlyUsedTemplates}
-                        type={type}
                         onSelectTemplate={template => {
                           selectTemplate(template, 'featured');
                         }}
@@ -458,7 +426,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     <TemplateList
                       title="Popular"
                       templates={featuredTemplates}
-                      type={type}
                       onSelectTemplate={template => {
                         selectTemplate(template, 'featured');
                       }}
@@ -480,7 +447,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       }
                       templates={allTemplates}
                       searchQuery={searchQuery}
-                      type={type}
                       showEmptyState
                       onSelectTemplate={template => {
                         selectTemplate(template, 'all');
@@ -496,7 +462,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       <TemplateList
                         title="Workspace templates"
                         templates={teamTemplates}
-                        type={type}
                         onSelectTemplate={template => {
                           selectTemplate(template, 'workspace');
                         }}
@@ -517,7 +482,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     <TemplateList
                       title="Official templates"
                       templates={officialTemplates}
-                      type={type}
                       onSelectTemplate={template => {
                         selectTemplate(template, 'official');
                       }}
@@ -536,7 +500,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       <TemplateList
                         title={collection.title}
                         templates={collection.templates}
-                        type={type}
                         onSelectTemplate={template => {
                           selectTemplate(template, collection.title);
                         }}
@@ -569,7 +532,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
               <ModalContent>
                 <CreateBoxForm
-                  type={type}
+                  template={selectedTemplate}
                   collectionId={collectionId}
                   setCollectionId={setCollectionId}
                   initialPrivacy={initialPrivacy}

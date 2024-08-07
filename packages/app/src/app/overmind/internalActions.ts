@@ -92,46 +92,49 @@ export const signIn = async (
   }
 };
 
+// TODO: Replace this with a browserSandboxId field in the github repo
+const DEVBOX_SANDBOX_ID_MAP = {
+  '9qputt': 'react-ts',
+  '7rp8q9': 'vanilla-ts',
+  '3l5fg9': 'vanilla',
+  kmwy42: 'rjk9n4zj7m', // Html + CSS
+};
+
 export const prefetchOfficialTemplates = async ({ state }: Context) => {
   // Preload official devbox templates for the create modal
-  if (state.officialDevboxTemplates.length === 0) {
+  if (state.officialTemplates.length === 0) {
     try {
-      const response = (await fetch(
+      // First query the templates from github / sandbox-templates
+      const githubTemplatesResponse = (await fetch(
         'https://raw.githubusercontent.com/codesandbox/sandbox-templates/main/templates.json'
       ).then(res => res.json())) as GithubTemplate[];
 
-      const result: SandboxToFork[] = response.map(template => ({
-        id: template.id,
-        title: template.title,
-        alias: template.title,
-        description: template.description,
-        tags: template.tags,
-        editorUrl: template.editorUrl,
-        type: 'devbox',
-        forkCount: template.forkCount,
-        viewCount: template.viewCount,
-        iconUrl: template.iconUrl,
-        author: 'CodeSandbox',
-      }));
+      const githubTemplates: SandboxToFork[] = githubTemplatesResponse.map(
+        template => ({
+          id: template.id,
+          title: template.title,
+          alias: template.title,
+          description: template.description,
+          tags: template.tags,
+          editorUrl: template.editorUrl,
+          type: 'devbox',
+          forkCount: template.forkCount,
+          viewCount: template.viewCount,
+          iconUrl: template.iconUrl,
+          author: 'CodeSandbox',
+          browserSandboxId: DEVBOX_SANDBOX_ID_MAP[template.id],
+        })
+      );
 
-      // Sort templates by fork count
-      result.sort((s1, s2) => s2.forkCount - s1.forkCount);
-
-      state.officialDevboxTemplates = result;
-    } catch (e) {
-      // ignore errors
-    }
-  }
-
-  // Preload official sandbox templates for the create modal
-  if (state.officialSandboxTemplates.length === 0) {
-    try {
-      const response = (await fetch(
+      const apiResponse = (await fetch(
         '/api/v1/sandboxes/templates/official'
       ).then(res => res.json())) as OfficialTemplatesResponseType;
 
-      const result: SandboxToFork[] = response[0].sandboxes
+      // Query the db sandbox templates to fill in with templates that are browser-only
+      const browserOnlyTemplates: SandboxToFork[] = apiResponse[0].sandboxes
         .filter(s => !s.v2)
+        // Filter out sandbox templates that are associated with devboxes
+        .filter(s => !Object.values(DEVBOX_SANDBOX_ID_MAP).includes(s.id))
         .map(template => ({
           id: template.id,
           title: template.title,
@@ -146,10 +149,12 @@ export const prefetchOfficialTemplates = async ({ state }: Context) => {
           author: 'CodeSandbox',
         }));
 
-      // Sort templates by fork count
-      result.sort((s1, s2) => s2.forkCount - s1.forkCount);
+      const templates = [...githubTemplates, ...browserOnlyTemplates];
 
-      state.officialSandboxTemplates = result;
+      // Sort templates by fork count
+      templates.sort((s1, s2) => s2.forkCount - s1.forkCount);
+
+      state.officialTemplates = templates;
     } catch (e) {
       // ignore errors
     }

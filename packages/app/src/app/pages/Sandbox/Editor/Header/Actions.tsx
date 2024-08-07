@@ -222,10 +222,10 @@ export const Actions = () => {
         onClick={() => {
           if (!user) {
             signInClicked({
-              onCancel: () => modalOpened({ modal: 'genericCreate' }),
+              onCancel: () => modalOpened({ modal: 'create' }),
             });
           } else {
-            modalOpened({ modal: 'genericCreate' });
+            modalOpened({ modal: 'create' });
           }
         }}
         disabled={activeWorkspaceAuthorization === 'READ'}

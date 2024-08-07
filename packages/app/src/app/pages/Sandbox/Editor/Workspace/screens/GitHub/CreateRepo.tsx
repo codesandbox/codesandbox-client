@@ -65,7 +65,7 @@ export const CreateRepo: React.FC<CreateRepoProps> = ({ disabled }) => {
           want to rather import an existing repository,{' '}
           <Link
             css={{ color: 'white' }}
-            onClick={() => modalOpened({ modal: 'importRepository' })}
+            onClick={() => modalOpened({ modal: 'import' })}
           >
             open the GitHub import
           </Link>

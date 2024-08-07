@@ -13,7 +13,7 @@ export const EmptyCTAs: React.FC<{ isFrozen: boolean }> = ({ isFrozen }) => {
         <Button
           onClick={() => {
             track('Empty Recent - Explore templates');
-            actions.modalOpened({ modal: 'createDevbox' });
+            actions.modalOpened({ modal: 'create' });
           }}
           disabled={isFrozen}
           variant="secondary"
@@ -24,7 +24,7 @@ export const EmptyCTAs: React.FC<{ isFrozen: boolean }> = ({ isFrozen }) => {
         <Button
           onClick={() => {
             track('Empty Recent - Import repository');
-            actions.modalOpened({ modal: 'importRepository' });
+            actions.modalOpened({ modal: 'import' });
           }}
           disabled={isFrozen}
           variant="secondary"

@@ -7,7 +7,6 @@ import {
   Element,
   Stack,
 } from '@codesandbox/components';
-import { GenericCreate } from 'app/components/Create/GenericCreate';
 
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
@@ -246,14 +245,10 @@ export const Editor = ({ showModalOnTop }: EditorTypes) => {
                           },
                         })}
                       >
-                        {showModalOnTop === 'newSandbox' && (
-                          <CreateBox isModal={false} type="sandbox" />
-                        )}
-                        {showModalOnTop === 'newDevbox' && (
-                          <CreateBox isModal={false} type="devbox" />
-                        )}
-                        {showModalOnTop === 'new' && (
-                          <GenericCreate isModal={false} />
+                        {(showModalOnTop === 'new' ||
+                          showModalOnTop === 'newSandbox' ||
+                          showModalOnTop === 'newDevbox') && (
+                          <CreateBox isModal={false} />
                         )}
                       </Element>
                     </Element>

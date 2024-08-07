@@ -137,10 +137,11 @@ export const TemplateButton = styled.button`
   border: 1px solid transparent;
   text-align: left;
   font-family: inherit;
-  border-radius: 2px;
+  border-radius: 4px;
   color: #e5e5e5;
   animation: ${fadeIn} 0.15s ease-in;
   outline: none;
+  cursor: pointer;
 
   &:disabled {
     animation: none;
