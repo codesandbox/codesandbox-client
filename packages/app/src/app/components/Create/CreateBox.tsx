@@ -177,7 +177,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
     actions.editor
       .forkExternalSandbox({
-        sandboxId: sandbox.id,
+        sandboxId: sandbox.browserSandboxId ?? sandbox.id,
         openInNewWindow: false,
         openInVSCode,
         autoLaunchVSCode,
