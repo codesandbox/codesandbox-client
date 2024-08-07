@@ -10,9 +10,9 @@ const svg = (hover?: boolean) => css`
 `;
 
 export const SearchElement = styled.input`
-  background: #2a2a2a;
+  background: #2e2e2e;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: 4px;
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 25px;

@@ -44,6 +44,7 @@ import {
 } from './utils/api';
 import { WorkspaceSelect } from '../WorkspaceSelect';
 import { FEATURED_IDS } from './utils/constants';
+import { TemplateFilter } from './TemplateFilter';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -251,42 +252,16 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
           <HeaderInformation>
             <Text size={4}>Create</Text>
           </HeaderInformation>
-
-          {mobileScreenSize ? (
-            <SearchBox
-              value={searchQuery}
-              onChange={e => {
-                const query = e.target.value;
-                tabState.select('all');
-                setSearchQuery(query);
-              }}
-            />
-          ) : null}
         </Stack>
 
         <ModalBody>
-          <ModalSidebar>
+          {/* <ModalSidebar>
             <Stack
               css={{ height: '100%' }}
               direction="vertical"
               justify="space-between"
             >
               <Stack direction="vertical">
-                {!mobileScreenSize && (
-                  <>
-                    <SearchBox
-                      value={searchQuery}
-                      onChange={e => {
-                        const query = e.target.value;
-                        tabState.select('all');
-                        setSearchQuery(query);
-                      }}
-                    />
-
-                    <Element css={{ height: '16px' }} />
-                  </>
-                )}
-
                 <Tabs {...tabState} aria-label="Create new">
                   {showFeaturedTemplates && (
                     <Tab
@@ -371,8 +346,27 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                 </Stack>
               )}
             </Stack>
-          </ModalSidebar>
+          </ModalSidebar> */}
+
           <ModalContent>
+            <Stack
+              direction="horizontal"
+              gap={2}
+              justify="space-between"
+              css={{ marginBottom: 16 }}
+            >
+              <TemplateFilter onChange={() => {}} />
+
+              <SearchBox
+                value={searchQuery}
+                onChange={e => {
+                  const query = e.target.value;
+                  tabState.select('all');
+                  setSearchQuery(query);
+                }}
+              />
+            </Stack>
+
             <Stack direction="vertical" gap={2}>
               <Panel tab={tabState} id="featured">
                 {hasRecentlyUsedTemplates && (
