@@ -24,6 +24,9 @@ export const SearchElement = styled.input`
   display: flex;
   align-items: center;
   color: #999;
+  width: 100%;
+  box-sizing: border-box;
+
   ${svg()}
 
   &:focus-visible {

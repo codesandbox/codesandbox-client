@@ -6,7 +6,7 @@ import { DevboxAlternative, TemplateGrid } from './elements';
 import { SandboxToFork } from './utils/types';
 
 interface TemplateListProps {
-  title: string;
+  title?: string;
   showEmptyState?: boolean;
   searchQuery?: string;
   templates: SandboxToFork[];

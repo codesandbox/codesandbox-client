@@ -10,28 +10,46 @@ const OPTIONS = [
   'Server',
   'Frontend',
   'Backend',
-  'TypeScript',
+  'Starter',
   'Playground',
 ];
 
 const EXCLUDE: Record<typeof OPTIONS[number], Array<typeof OPTIONS[number]>> = {
-  Browser: ['Server', 'Backend', 'Frontend'],
+  Browser: ['Server', 'Backend'],
   Server: ['Browser'],
   Frontend: ['Backend'],
   Backend: ['Frontend', 'TypeScript', 'Browser'],
   TypeScript: ['Backend'],
+  Starter: ['Playground'],
 };
+
+const IGNORE_ADDITIONAL_TAGS = OPTIONS.concat(['Featured']);
 
 export const TemplateFilter: React.FC<{
   onChange: (selected: string[]) => void;
-}> = ({ onChange }) => {
+  showWorkspaceOption: boolean;
+  additionalTags: string[];
+}> = ({ onChange, additionalTags = [], showWorkspaceOption }) => {
   const [selected, setSelected] = useState<string[]>([]);
+  const ALL_OPTIONS = showWorkspaceOption
+    ? OPTIONS.slice(0, 2).concat('Workspace').concat(OPTIONS.slice(2))
+    : OPTIONS;
 
   useEffect(() => {
     onChange(selected);
   }, [selected]);
 
-  const optionAfterExcluded = OPTIONS.filter(option => {
+  const humanizeAdditionalTags = additionalTags
+    .map(tag => {
+      return tag
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+        .replace('script', 'Script');
+    })
+    .filter(tag => !IGNORE_ADDITIONAL_TAGS.includes(tag));
+
+  const filters = ALL_OPTIONS.filter(option => {
     const exclutionCriteria = Object.entries(EXCLUDE).reduce(
       (acc, [key, value]) => {
         if (selected.includes(key)) {
@@ -44,7 +62,14 @@ export const TemplateFilter: React.FC<{
     );
 
     return !exclutionCriteria.includes(option);
-  });
+  })
+    .concat(
+      selected.includes('Frontend') || selected.includes('Backend')
+        ? humanizeAdditionalTags
+        : []
+    )
+    .filter(item => !selected.includes(item))
+    .filter((item, index, arr) => arr.indexOf(item) === index);
 
   return (
     <Stack direction="horizontal" gap={2}>
@@ -55,7 +80,7 @@ export const TemplateFilter: React.FC<{
             onClick={() => setSelected([])}
             css={{
               marginRight: '8px !important',
-              width: 26,
+              width: 28,
               padding: '0 !important',
               svg: {
                 margin: 'auto',
@@ -95,17 +120,15 @@ export const TemplateFilter: React.FC<{
       </Stack>
 
       <Stack css={{ flex: 1 }} gap={2} direction="horizontal">
-        {optionAfterExcluded
-          .filter(item => !selected.includes(item))
-          .map(option => (
-            <Button
-              onClick={() => setSelected([...selected, option])}
-              key={option}
-              icon={fromOptionToIcon(option)}
-            >
-              {option}
-            </Button>
-          ))}
+        {filters.map(option => (
+          <Button
+            onClick={() => setSelected([...selected, option])}
+            key={option}
+            icon={fromOptionToIcon(option)}
+          >
+            {option}
+          </Button>
+        ))}
       </Stack>
     </Stack>
   );
@@ -155,7 +178,7 @@ const SelectedContainer = styled(Stack)`
 const Button = styled(({ ...props }) => (
   <Badge as={motion.button} layout textSize={13} iconSize={15} {...props} />
 ))`
-  height: 26px;
+  height: 28px;
   padding: 4px 14px;
   cursor: pointer;
   transition: background 0.2s ease;

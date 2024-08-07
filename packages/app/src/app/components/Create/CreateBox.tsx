@@ -1,50 +1,42 @@
 import {
   Text,
   Stack,
-  Element,
   Loading,
   IconButton,
   ThemeProvider,
 } from '@codesandbox/components';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import React, { useState, useEffect } from 'react';
-import { useTabState } from 'reakit/Tab';
-import slugify from '@codesandbox/common/lib/utils/slugify';
+
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
-import { pluralize } from 'app/utils/pluralize';
+
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+
 import {
   Container,
-  Tab,
-  Tabs,
-  Panel,
   HeaderInformation,
   ModalContent,
   ModalSidebar,
   ModalBody,
-  DevboxAlternative,
 } from './elements';
 import { TemplateList } from './TemplateList';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateParams, SandboxToFork } from './utils/types';
 import { SearchBox } from './SearchBox';
-import { ImportTemplate } from './ImportTemplate';
 import { CreateBoxForm } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
 import {
-  getTemplatesInCollections,
-  getAllMatchingTemplates,
   mapSandboxGQLResponseToSandboxToFork,
   parsePrivacy,
 } from './utils/api';
 import { WorkspaceSelect } from '../WorkspaceSelect';
 import { FEATURED_IDS } from './utils/constants';
 import { TemplateFilter } from './TemplateFilter';
+import styled from 'styled-components';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -63,36 +55,24 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const { hasLogIn, activeTeam, officialTemplates } = useAppState();
   const effects = useEffects();
 
-  const { isFrozen } = useWorkspaceLimits();
+  // TODO
+  // const { isFrozen } = useWorkspaceLimits();
+  // const showImportTemplates = hasLogIn && activeTeam;
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
-  const showFeaturedTemplates = true;
-  const showCollections = true;
-
-  const tabState = useTabState({
-    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
-    selectedId: 'featured',
-  });
-
   const [viewState, setViewState] = useState<ViewState>('select');
   const [selectedTemplate, setSelectedTemplate] = useState<SandboxToFork>();
   const [searchQuery, setSearchQuery] = useState<string>('');
-
-  const collections = getTemplatesInCollections(officialTemplates, [
-    { tag: 'frontend', title: 'Frontend frameworks' },
-    { tag: 'backend', title: 'Backend frameworks' },
-    { tag: 'playground', title: 'Code playgrounds' },
-    { tag: 'starter', title: 'Project starters' },
-  ]);
+  const [filters, setFilters] = useState<string[]>([]);
 
   const { teamTemplates, recentTemplates } = useTeamTemplates({
     teamId: activeTeam,
     hasLogIn,
   });
 
-  const recentlyUsedTemplates = recentTemplates.slice(0, 3);
+  const recentlyUsedTemplates = recentTemplates.slice(0, 4);
   const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
   const recentlyUsedTemplatesIds = recentlyUsedTemplates.map(t => t.id);
 
@@ -104,18 +84,40 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     .filter(Boolean)
     .slice(0, hasRecentlyUsedTemplates ? 6 : 9);
 
-  const allTemplates = getAllMatchingTemplates({
-    officialTemplates,
-    teamTemplates,
-    searchQuery,
-  });
+  let filteredTemplates = officialTemplates.concat(teamTemplates);
 
-  /**
-   * Only show the team templates if the list is populated.
-   */
+  if (searchQuery) {
+    filteredTemplates = filteredTemplates.filter(template => {
+      return (
+        template.title.toLowerCase().includes(searchQuery) ||
+        template.tags.some(tag => tag.includes(searchQuery))
+      );
+    });
+  }
 
-  const showTeamTemplates = teamTemplates.length > 0;
-  const showImportTemplates = hasLogIn && activeTeam;
+  if (filters.length > 0) {
+    filteredTemplates = filteredTemplates.filter(template => {
+      return filters
+        .map(item => item.toUpperCase())
+        .every(
+          item =>
+            template.tags.map(tag => tag.toUpperCase()).includes(item) || // by tag
+            template.title?.toUpperCase().split(' ').includes(item) // by keyword in title
+        );
+    });
+  }
+
+  const gatherTags = filteredTemplates
+    .map(t => t.tags)
+    .flat()
+    .reduce((acc, tag) => {
+      acc[tag] = (acc[tag] || 0) + 1;
+
+      return acc;
+    }, {});
+  const additionalTags = Object.keys(gatherTags).filter(
+    key => gatherTags[key] > 1
+  );
 
   useEffect(() => {
     if (!sandboxIdToFork) {
@@ -144,15 +146,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     }
   }, [searchQuery]);
 
-  useEffect(() => {
-    if (searchQuery && tabState.selectedId !== 'all') {
-      setSearchQuery('');
-    }
-  }, [searchQuery, tabState.selectedId]);
-
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
 
-  const selectTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
+  const selectTemplate = (sandbox: SandboxToFork) => {
     if (!hasLogIn) {
       // Open template in editor for anonymous users
       window.location.href =
@@ -165,26 +161,18 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
     track(`Create - Select template`, {
       type: 'fork',
-      tab_name: trackingSource,
       template_name: sandbox.title || sandbox.alias || sandbox.id,
     });
   };
 
-  const openTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
+  const openTemplate = (sandbox: SandboxToFork) => {
     const url =
       sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
     window.open(url, '_blank');
 
     track(`Create - Open template`, {
       type: 'open',
-      tab_name: trackingSource,
       template_name: sandbox.title || sandbox.alias || sandbox.id,
-    });
-  };
-
-  const trackTabClick = (tab: string) => {
-    track(`Create - Click Tab`, {
-      tab_name: tab,
     });
   };
 
@@ -215,17 +203,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             <HeaderInformation>
               <Text size={4}>Create</Text>
             </HeaderInformation>
-
-            {mobileScreenSize ? (
-              <SearchBox
-                value={searchQuery}
-                onChange={e => {
-                  const query = e.target.value;
-                  tabState.select('all');
-                  setSearchQuery(query);
-                }}
-              />
-            ) : null}
           </Stack>
 
           <ModalBody>
@@ -355,118 +332,53 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               justify="space-between"
               css={{ marginBottom: 16 }}
             >
-              <TemplateFilter onChange={() => {}} />
+              <ScrollView>
+                <TemplateFilter
+                  showWorkspaceOption={
+                    !!filteredTemplates.find(item =>
+                      item.tags.includes('workspace')
+                    )
+                  }
+                  onChange={setFilters}
+                  additionalTags={additionalTags}
+                />
+              </ScrollView>
 
               <SearchBox
                 value={searchQuery}
                 onChange={e => {
                   const query = e.target.value;
-                  tabState.select('all');
+
                   setSearchQuery(query);
                 }}
               />
             </Stack>
 
             <Stack direction="vertical" gap={2}>
-              <Panel tab={tabState} id="featured">
-                {hasRecentlyUsedTemplates && (
+              {filters.length === 0 ? (
+                <>
+                  {hasRecentlyUsedTemplates && (
+                    <TemplateList
+                      title="Recently used"
+                      templates={recentlyUsedTemplates}
+                      onSelectTemplate={selectTemplate}
+                      onOpenTemplate={openTemplate}
+                    />
+                  )}
                   <TemplateList
-                    title="Recently used"
-                    templates={recentlyUsedTemplates}
-                    onSelectTemplate={template => {
-                      selectTemplate(template, 'featured');
-                    }}
-                    onOpenTemplate={template => {
-                      openTemplate(template, 'featured');
-                    }}
+                    title="Popular"
+                    templates={featuredTemplates}
+                    onSelectTemplate={selectTemplate}
+                    onOpenTemplate={openTemplate}
                   />
-                )}
+                </>
+              ) : (
                 <TemplateList
-                  title="Popular"
-                  templates={featuredTemplates}
-                  onSelectTemplate={template => {
-                    selectTemplate(template, 'featured');
-                  }}
-                  onOpenTemplate={template => {
-                    openTemplate(template, 'featured');
-                  }}
+                  templates={filteredTemplates}
+                  onSelectTemplate={selectTemplate}
+                  onOpenTemplate={openTemplate}
                 />
-              </Panel>
-
-              <Panel tab={tabState} id="all">
-                <TemplateList
-                  title={
-                    searchQuery
-                      ? `${allTemplates.length} ${pluralize({
-                          word: 'result',
-                          count: allTemplates.length,
-                        })}`
-                      : 'All templates'
-                  }
-                  templates={allTemplates}
-                  searchQuery={searchQuery}
-                  showEmptyState
-                  onSelectTemplate={template => {
-                    selectTemplate(template, 'all');
-                  }}
-                  onOpenTemplate={template => {
-                    openTemplate(template, 'all');
-                  }}
-                />
-              </Panel>
-
-              {showTeamTemplates ? (
-                <Panel tab={tabState} id="workspace">
-                  <TemplateList
-                    title="Workspace templates"
-                    templates={teamTemplates}
-                    onSelectTemplate={template => {
-                      selectTemplate(template, 'workspace');
-                    }}
-                    onOpenTemplate={template => {
-                      openTemplate(template, 'workspace');
-                    }}
-                  />
-                </Panel>
-              ) : null}
-
-              {showImportTemplates ? (
-                <Panel tab={tabState} id="import-template">
-                  <ImportTemplate />
-                </Panel>
-              ) : null}
-
-              <Panel tab={tabState} id="official">
-                <TemplateList
-                  title="Official templates"
-                  templates={officialTemplates}
-                  onSelectTemplate={template => {
-                    selectTemplate(template, 'official');
-                  }}
-                  onOpenTemplate={template => {
-                    openTemplate(template, 'official');
-                  }}
-                />
-              </Panel>
-
-              {collections.map(collection => (
-                <Panel
-                  key={collection.key}
-                  tab={tabState}
-                  id={slugify(collection.title)}
-                >
-                  <TemplateList
-                    title={collection.title}
-                    templates={collection.templates}
-                    onSelectTemplate={template => {
-                      selectTemplate(template, collection.title);
-                    }}
-                    onOpenTemplate={template => {
-                      openTemplate(template, collection.title);
-                    }}
-                  />
-                </Panel>
-              ))}
+              )}
             </Stack>
           </ModalContent>
         </ModalBody>
@@ -474,6 +386,13 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     </ThemeProvider>
   );
 };
+
+const ScrollView = styled.div`
+  flex: 1;
+  overflow: auto;
+  padding-bottom: 8px;
+  white-space: nowrap;
+`;
 
 const CreateBoxConfig: React.FC<{
   selectedTemplate: SandboxToFork;
