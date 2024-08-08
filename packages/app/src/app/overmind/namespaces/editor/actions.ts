@@ -238,6 +238,16 @@ export const sandboxChanged = withLoadApp<{
     { state, actions, effects }: Context,
     { id, hasBetaEditorExperiment }
   ) => {
+    // We seem to force this flag now and rather set it to false when overriding to V1?
+    if (hasBetaEditorExperiment) {
+      const url = new URL(document.location.href);
+
+      const path = url.pathname.replace('/s/', '/sandbox/');
+
+      window.location.href = 'https://codesandbox.io/p' + path;
+      return;
+    }
+
     // This happens when we fork. This can be avoided with state first routing
     if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
       if (state.editor.currentModule.id) {
@@ -314,30 +324,6 @@ export const sandboxChanged = withLoadApp<{
         ? { teamId: state.activeTeam }
         : undefined;
       const sandbox = await effects.api.getSandbox(newId, params);
-
-      // Failsafe, in case someone types in the URL to load a v2 sandbox in v1
-      // or if they have the experimental v2 editor enabled
-      if (sandbox.v2 || (!sandbox.isSse && hasBetaEditorExperiment)) {
-        // Only pass githubInfo for the URL if the URL in v1 is based on GH
-        const githubInfoForURL =
-          sandbox.git && url.pathname.startsWith('/s/github')
-            ? sandbox.git
-            : undefined;
-
-        const sandboxV2Url = sandboxUrl(
-          {
-            id: sandbox.id,
-            alias: sandbox.alias,
-            git: githubInfoForURL,
-            isV2: sandbox.v2,
-            isSse: sandbox.isSse,
-            query: url.searchParams,
-          },
-          hasBetaEditorExperiment
-        );
-
-        window.location.href = sandboxV2Url;
-      }
 
       actions.internal.setCurrentSandbox(sandbox);
     } catch (error) {
