@@ -1,3 +1,4 @@
+import styled, { keyframes } from 'styled-components';
 import {
   Text,
   Stack,
@@ -36,7 +37,6 @@ import {
 import { WorkspaceSelect } from '../WorkspaceSelect';
 import { FEATURED_IDS } from './utils/constants';
 import { TemplateFilter } from './TemplateFilter';
-import styled from 'styled-components';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -101,7 +101,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
         .map(item => item.toUpperCase())
         .every(
           item =>
-            template.tags.map(tag => tag.toUpperCase()).includes(item) || // by tag
+            template.tags
+              .map(tag => tag.toUpperCase().replace('-', ' '))
+              .includes(item) || // by tag
             template.title?.toUpperCase().split(' ').includes(item) // by keyword in title
         );
     });
@@ -232,100 +234,15 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
         </Stack>
 
         <ModalBody>
-          {/* <ModalSidebar>
-            <Stack
-              css={{ height: '100%' }}
-              direction="vertical"
-              justify="space-between"
-            >
-              <Stack direction="vertical">
-                <Tabs {...tabState} aria-label="Create new">
-                  {showFeaturedTemplates && (
-                    <Tab
-                      {...tabState}
-                      onClick={() => trackTabClick('featured')}
-                      stopId="featured"
-                    >
-                      Featured templates
-                    </Tab>
-                  )}
-
-                  <Tab
-                    {...tabState}
-                    onClick={() => trackTabClick('all')}
-                    stopId="all"
-                  >
-                    All templates
-                  </Tab>
-
-                  <Element css={{ height: '16px' }} />
-
-                  {showTeamTemplates ? (
-                    <Tab
-                      {...tabState}
-                      onClick={() => trackTabClick('workspace')}
-                      stopId="workspace"
-                    >
-                      Workspace templates
-                    </Tab>
-                  ) : null}
-
-                  {showImportTemplates ? (
-                    <Tab
-                      {...tabState}
-                      onClick={() => trackTabClick('import-template')}
-                      stopId="import-template"
-                    >
-                      Import template
-                    </Tab>
-                  ) : null}
-
-                  <Tab
-                    {...tabState}
-                    onClick={() => trackTabClick('official')}
-                    stopId="official"
-                  >
-                    Official templates
-                  </Tab>
-
-                  <Element css={{ height: '16px' }} />
-
-                  {showCollections
-                    ? collections.map(collection => (
-                        <Tab
-                          key={collection.key}
-                          {...tabState}
-                          stopId={slugify(collection.title)}
-                          onClick={() => trackTabClick(collection.title)}
-                        >
-                          {collection.title}
-                        </Tab>
-                      ))
-                    : null}
-                </Tabs>
-              </Stack>
-              {!mobileScreenSize && !isFrozen && (
-                <Stack
-                  direction="vertical"
-                  css={{ paddingBottom: '16px' }}
-                  gap={2}
-                >
-                  <Text size={3} weight="600">
-                    There&apos;s even more
-                  </Text>
-                  <Text size={2} color="#A6A6A6" lineHeight="1.35">
-                    <DevboxAlternative
-                      onClick={() => {
-                        track(`Create - Open Community Search`);
-                      }}
-                    />
-                  </Text>
-                </Stack>
-              )}
-            </Stack>
-          </ModalSidebar> */}
-
-          <ModalContent>
+          <ModalContent
+            css={{
+              overflow: 'visible',
+              width: '100%',
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <Stack
               direction="horizontal"
               gap={2}
@@ -333,6 +250,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               css={{ marginBottom: 16 }}
             >
               <ScrollView>
+                <div className="sticky begin">
+                  <div />
+                </div>
                 <TemplateFilter
                   showWorkspaceOption={
                     !!filteredTemplates.find(item =>
@@ -342,6 +262,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   onChange={setFilters}
                   additionalTags={additionalTags}
                 />
+                <div className="sticky end">
+                  <div />
+                </div>
               </ScrollView>
 
               <SearchBox
@@ -353,33 +276,34 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                 }}
               />
             </Stack>
-
-            <Stack direction="vertical" gap={2}>
-              {filters.length === 0 ? (
-                <>
-                  {hasRecentlyUsedTemplates && (
+            <div style={{ overflow: 'auto' }}>
+              <Stack direction="vertical" gap={2}>
+                {filters.length === 0 ? (
+                  <>
+                    {hasRecentlyUsedTemplates && (
+                      <TemplateList
+                        title="Recently used"
+                        templates={recentlyUsedTemplates}
+                        onSelectTemplate={selectTemplate}
+                        onOpenTemplate={openTemplate}
+                      />
+                    )}
                     <TemplateList
-                      title="Recently used"
-                      templates={recentlyUsedTemplates}
+                      title="Popular"
+                      templates={featuredTemplates}
                       onSelectTemplate={selectTemplate}
                       onOpenTemplate={openTemplate}
                     />
-                  )}
+                  </>
+                ) : (
                   <TemplateList
-                    title="Popular"
-                    templates={featuredTemplates}
+                    templates={filteredTemplates}
                     onSelectTemplate={selectTemplate}
                     onOpenTemplate={openTemplate}
                   />
-                </>
-              ) : (
-                <TemplateList
-                  templates={filteredTemplates}
-                  onSelectTemplate={selectTemplate}
-                  onOpenTemplate={openTemplate}
-                />
-              )}
-            </Stack>
+                )}
+              </Stack>
+            </div>
           </ModalContent>
         </ModalBody>
       </Container>
@@ -392,6 +316,52 @@ const ScrollView = styled.div`
   overflow: auto;
   padding-bottom: 8px;
   white-space: nowrap;
+  position: relative;
+  display: flex;
+
+  .sticky {
+    position: sticky;
+    z-index: 9;
+    width: 0;
+    pointer-events: none;
+
+    --scroll-buffer: 2rem;
+    opacity: 0;
+    animation: ${keyframes`
+    to {
+      opacity: 1;
+    }
+    `} both linear;
+    animation-timeline: scroll(x);
+
+    > div {
+      position: absolute;
+      top: 0;
+      min-width: 20px;
+      height: 100%;
+    }
+  }
+
+  .begin {
+    animation-range: 0 var(--scroll-buffer);
+    left: 0;
+
+    > div {
+      left: 0;
+      background: linear-gradient(270deg, rgba(0, 0, 0, 0) 0%, #151515 100%);
+    }
+  }
+
+  .end {
+    animation-range: calc(100% - var(--scroll-buffer)) 100%;
+    animation-direction: reverse;
+    right: -1px;
+
+    > div {
+      right: 0;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, #151515 100%);
+    }
+  }
 `;
 
 const CreateBoxConfig: React.FC<{

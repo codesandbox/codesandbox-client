@@ -32,7 +32,7 @@ export const TemplateFilter: React.FC<{
 }> = ({ onChange, additionalTags = [], showWorkspaceOption }) => {
   const [selected, setSelected] = useState<string[]>([]);
   const ALL_OPTIONS = showWorkspaceOption
-    ? OPTIONS.slice(0, 2).concat('Workspace').concat(OPTIONS.slice(2))
+    ? OPTIONS.slice(0, 4).concat('Workspace').concat(OPTIONS.slice(4))
     : OPTIONS;
 
   useEffect(() => {
@@ -45,7 +45,8 @@ export const TemplateFilter: React.FC<{
         .split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
-        .replace('script', 'Script');
+        .replace('script', 'Script')
+        .replace('Http', 'HTTP');
     })
     .filter(tag => !IGNORE_ADDITIONAL_TAGS.includes(tag));
 
@@ -72,7 +73,7 @@ export const TemplateFilter: React.FC<{
     .filter((item, index, arr) => arr.indexOf(item) === index);
 
   return (
-    <Stack direction="horizontal" gap={2}>
+    <Stack direction="horizontal" gap={0} css={{ gap: 7 }}>
       <Stack direction="horizontal">
         {selected.length > 0 ? (
           <Button
@@ -119,7 +120,7 @@ export const TemplateFilter: React.FC<{
         </SelectedContainer>
       </Stack>
 
-      <Stack css={{ flex: 1 }} gap={2} direction="horizontal">
+      <Stack css={{ flex: 1, gap: 7 }} gap={0} direction="horizontal">
         {filters.map(option => (
           <Button
             onClick={() => setSelected([...selected, option])}
