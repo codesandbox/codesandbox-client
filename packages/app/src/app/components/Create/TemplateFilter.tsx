@@ -15,20 +15,32 @@ export const TemplateFilter: React.FC<{
     onChange(selected);
   }, [selected]);
 
-  const shouldUseAdditionalTags =
-    selected.includes('Frontend') || selected.includes('Backend');
-  const humanizeAdditionalTags = additionalTags
-    .map(humanizeTag)
-    .filter(tag => !IGNORE_ADDITIONAL_TAGS.includes(tag))
-    .sort();
-  const extraTags = shouldUseAdditionalTags
-    ? humanizeAdditionalTags
-    : ['Starter', 'Playground'];
+  const dynamicTags = [...ALWAYS_TAGS, ...additionalTags]
+    .map(humanizeTag) // convert tag to human-readable form
+    .filter(item => !selected.includes(item)) // filter out selected tags
+    .sort((a, b) => {
+      const priorities = ['Server', 'Browser', ...ALWAYS_TAGS];
 
-  const filters = OPTIONS.filter(a => excludeItems(a, selected))
-    .concat(extraTags)
-    .filter(item => !selected.includes(item))
-    .filter((item, index, arr) => arr.indexOf(item) === index);
+      const index1 = priorities.indexOf(a);
+      const index2 = priorities.indexOf(b);
+
+      /* eslint-disable no-nested-ternary */
+      return index1 === -1 ? 1 : index2 === -1 ? -1 : index1 - index2;
+    })
+    .filter((item, index, arr) => arr.indexOf(item) === index) // filter out duplicates
+    .filter((item, _, arr) => {
+      // Server/browser should be always together
+      if (item === 'Server') {
+        return arr.includes('Browser');
+      }
+      if (item === 'Browser') {
+        return arr.includes('Server');
+      }
+
+      return true;
+    });
+
+  const filters = selected.length > 0 ? dynamicTags : DEFAULT_OPTIONS;
 
   return (
     <Stack direction="horizontal" gap={0} css={{ gap: 7 }}>
@@ -104,7 +116,7 @@ const purpleColorPalette = {
   100: '#F2EFFF',
 };
 
-const fromOptionToIcon = (value: typeof OPTIONS[number]) => {
+const fromOptionToIcon = (value: typeof DEFAULT_OPTIONS[number]) => {
   switch (value) {
     case 'Server':
       return 'server';
@@ -115,32 +127,15 @@ const fromOptionToIcon = (value: typeof OPTIONS[number]) => {
   }
 };
 
-const OPTIONS = ['Browser', 'Server', 'Frontend', 'Backend', 'Workspace'];
+const ALWAYS_TAGS = ['Workspace'];
 
-const EXCLUDE: Record<typeof OPTIONS[number], Array<typeof OPTIONS[number]>> = {
-  Browser: ['Server', 'Backend'],
-  Server: ['Browser'],
-  Frontend: ['Backend'],
-  Backend: ['Frontend', 'TypeScript', 'Browser'],
-  TypeScript: ['Backend'],
-};
-
-const IGNORE_ADDITIONAL_TAGS = OPTIONS.concat(['Featured']);
-
-function excludeItems(option: string, selected: string[]) {
-  const exclutionCriteria = Object.entries(EXCLUDE).reduce(
-    (acc, [key, value]) => {
-      if (selected.includes(key)) {
-        return [...acc, ...value];
-      }
-
-      return acc;
-    },
-    []
-  );
-
-  return !exclutionCriteria.includes(option);
-}
+const DEFAULT_OPTIONS = [
+  'Browser',
+  'Server',
+  'Frontend',
+  'Backend',
+  ...ALWAYS_TAGS,
+];
 
 function humanizeTag(tag: string) {
   return tag

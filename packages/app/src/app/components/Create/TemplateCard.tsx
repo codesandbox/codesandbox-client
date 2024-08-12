@@ -5,6 +5,7 @@ import { TemplateButton } from './elements';
 import { SandboxToFork } from './utils/types';
 import { TemplateIcon } from './TemplateIcon';
 import { CODEIUM_ID } from './utils/constants';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 interface TemplateCardProps {
   disabled?: boolean;
@@ -70,17 +71,21 @@ export const TemplateCard = ({
           <TemplateIcon template={template} />
           <Stack gap={1} direction="horizontal">
             {(template.type === 'sandbox' || template.browserSandboxId) && (
-              <Stack css={{ width: 16, height: 16 }}>
-                <Icon
-                  css={{ margin: 'auto' }}
-                  color="#999"
-                  size={14}
-                  name="boxDevbox"
-                />
-              </Stack>
+              <Tooltip content="Runs on browser">
+                <Stack css={{ width: 16, height: 16 }}>
+                  <Icon
+                    css={{ margin: 'auto' }}
+                    color="#999"
+                    size={14}
+                    name="boxDevbox"
+                  />
+                </Stack>
+              </Tooltip>
             )}
             {template.type === 'devbox' && (
-              <Icon color="#999" size={16} name="server" />
+              <Tooltip content="Runs on server">
+                <Icon color="#999" size={16} name="server" />
+              </Tooltip>
             )}
           </Stack>
         </Stack>
