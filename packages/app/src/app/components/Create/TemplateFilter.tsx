@@ -5,70 +5,28 @@ import { motion } from 'framer-motion';
 import { Badge, Stack } from '@codesandbox/components';
 import styled from 'styled-components';
 
-const OPTIONS = [
-  'Browser',
-  'Server',
-  'Frontend',
-  'Backend',
-  'Starter',
-  'Playground',
-];
-
-const EXCLUDE: Record<typeof OPTIONS[number], Array<typeof OPTIONS[number]>> = {
-  Browser: ['Server', 'Backend'],
-  Server: ['Browser'],
-  Frontend: ['Backend'],
-  Backend: ['Frontend', 'TypeScript', 'Browser'],
-  TypeScript: ['Backend'],
-  Starter: ['Playground'],
-};
-
-const IGNORE_ADDITIONAL_TAGS = OPTIONS.concat(['Featured']);
-
 export const TemplateFilter: React.FC<{
   onChange: (selected: string[]) => void;
-  showWorkspaceOption: boolean;
   additionalTags: string[];
-}> = ({ onChange, additionalTags = [], showWorkspaceOption }) => {
+}> = ({ onChange, additionalTags }) => {
   const [selected, setSelected] = useState<string[]>([]);
-  const ALL_OPTIONS = showWorkspaceOption
-    ? OPTIONS.slice(0, 4).concat('Workspace').concat(OPTIONS.slice(4))
-    : OPTIONS;
 
   useEffect(() => {
     onChange(selected);
   }, [selected]);
 
+  const shouldUseAdditionalTags =
+    selected.includes('Frontend') || selected.includes('Backend');
   const humanizeAdditionalTags = additionalTags
-    .map(tag => {
-      return tag
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-        .replace('script', 'Script')
-        .replace('Http', 'HTTP');
-    })
-    .filter(tag => !IGNORE_ADDITIONAL_TAGS.includes(tag));
+    .map(humanizeTag)
+    .filter(tag => !IGNORE_ADDITIONAL_TAGS.includes(tag))
+    .sort();
+  const extraTags = shouldUseAdditionalTags
+    ? humanizeAdditionalTags
+    : ['Starter', 'Playground'];
 
-  const filters = ALL_OPTIONS.filter(option => {
-    const exclutionCriteria = Object.entries(EXCLUDE).reduce(
-      (acc, [key, value]) => {
-        if (selected.includes(key)) {
-          return [...acc, ...value];
-        }
-
-        return acc;
-      },
-      []
-    );
-
-    return !exclutionCriteria.includes(option);
-  })
-    .concat(
-      selected.includes('Frontend') || selected.includes('Backend')
-        ? humanizeAdditionalTags
-        : []
-    )
+  const filters = OPTIONS.filter(a => excludeItems(a, selected))
+    .concat(extraTags)
     .filter(item => !selected.includes(item))
     .filter((item, index, arr) => arr.indexOf(item) === index);
 
@@ -156,6 +114,42 @@ const fromOptionToIcon = (value: typeof OPTIONS[number]) => {
       return undefined;
   }
 };
+
+const OPTIONS = ['Browser', 'Server', 'Frontend', 'Backend', 'Workspace'];
+
+const EXCLUDE: Record<typeof OPTIONS[number], Array<typeof OPTIONS[number]>> = {
+  Browser: ['Server', 'Backend'],
+  Server: ['Browser'],
+  Frontend: ['Backend'],
+  Backend: ['Frontend', 'TypeScript', 'Browser'],
+  TypeScript: ['Backend'],
+};
+
+const IGNORE_ADDITIONAL_TAGS = OPTIONS.concat(['Featured']);
+
+function excludeItems(option: string, selected: string[]) {
+  const exclutionCriteria = Object.entries(EXCLUDE).reduce(
+    (acc, [key, value]) => {
+      if (selected.includes(key)) {
+        return [...acc, ...value];
+      }
+
+      return acc;
+    },
+    []
+  );
+
+  return !exclutionCriteria.includes(option);
+}
+
+function humanizeTag(tag: string) {
+  return tag
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+    .replace('script', 'Script')
+    .replace('Http', 'HTTP');
+}
 
 const SelectedContainer = styled(Stack)`
   background: ${props => props.theme.colors.purple700};

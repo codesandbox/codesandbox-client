@@ -55,10 +55,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   const { hasLogIn, activeTeam, officialTemplates } = useAppState();
   const effects = useEffects();
 
-  // TODO
-  // const { isFrozen } = useWorkspaceLimits();
-  // const showImportTemplates = hasLogIn && activeTeam;
-
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
@@ -89,7 +85,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   if (searchQuery) {
     filteredTemplates = filteredTemplates.filter(template => {
       return (
-        template.title.toLowerCase().includes(searchQuery) ||
+        template.title?.toLowerCase().includes(searchQuery) ||
         template.tags.some(tag => tag.includes(searchQuery))
       );
     });
@@ -254,11 +250,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   <div />
                 </div>
                 <TemplateFilter
-                  showWorkspaceOption={
-                    !!filteredTemplates.find(item =>
-                      item.tags.includes('workspace')
-                    )
-                  }
                   onChange={setFilters}
                   additionalTags={additionalTags}
                 />
@@ -278,10 +269,11 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
             </Stack>
             <div style={{ overflow: 'auto' }}>
               <Stack direction="vertical" gap={2}>
-                {filters.length === 0 ? (
+                {filters.length === 0 && searchQuery === '' ? (
                   <>
                     {hasRecentlyUsedTemplates && (
                       <TemplateList
+                        searchQuery={searchQuery}
                         title="Recently used"
                         templates={recentlyUsedTemplates}
                         onSelectTemplate={selectTemplate}
@@ -290,6 +282,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     )}
                     <TemplateList
                       title="Popular"
+                      searchQuery={searchQuery}
                       templates={featuredTemplates}
                       onSelectTemplate={selectTemplate}
                       onOpenTemplate={openTemplate}
@@ -297,6 +290,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   </>
                 ) : (
                   <TemplateList
+                    searchQuery={searchQuery}
                     templates={filteredTemplates}
                     onSelectTemplate={selectTemplate}
                     onOpenTemplate={openTemplate}
