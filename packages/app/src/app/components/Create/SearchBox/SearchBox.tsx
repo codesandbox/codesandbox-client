@@ -58,6 +58,7 @@ export const SearchBox = ({
       onSubmit={e => {
         e.preventDefault();
       }}
+      style={{ width: '160px' }}
     >
       <InputWrapper>
         <SearchElement

@@ -1,55 +1,50 @@
+import styled, { keyframes } from 'styled-components';
 import {
   Text,
   Stack,
-  Element,
   Loading,
   IconButton,
   ThemeProvider,
 } from '@codesandbox/components';
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import React, { useState, useEffect } from 'react';
-import { useTabState } from 'reakit/Tab';
-import slugify from '@codesandbox/common/lib/utils/slugify';
+
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
-import { pluralize } from 'app/utils/pluralize';
+
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+
 import {
   Container,
-  Tab,
-  Tabs,
-  Panel,
   HeaderInformation,
   ModalContent,
   ModalSidebar,
   ModalBody,
-  DevboxAlternative,
 } from './elements';
 import { TemplateList } from './TemplateList';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateParams, SandboxToFork } from './utils/types';
 import { SearchBox } from './SearchBox';
-import { ImportTemplate } from './ImportTemplate';
 import { CreateBoxForm } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
 import {
-  getTemplatesInCollections,
-  getAllMatchingTemplates,
   mapSandboxGQLResponseToSandboxToFork,
   parsePrivacy,
 } from './utils/api';
 import { WorkspaceSelect } from '../WorkspaceSelect';
 import { FEATURED_IDS } from './utils/constants';
+import { TemplateFilter } from './TemplateFilter';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
   sandboxIdToFork?: string;
   isStandalone?: boolean;
 };
+
+type ViewState = 'select' | 'loading' | 'config';
 
 export const CreateBox: React.FC<CreateBoxProps> = ({
   collectionId: initialCollectionId,
@@ -59,49 +54,21 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 }) => {
   const { hasLogIn, activeTeam, officialTemplates } = useAppState();
   const effects = useEffects();
-  const actions = useActions();
-  const { isFrozen } = useWorkspaceLimits();
-  const [collectionId, setCollectionId] = useState<string | undefined>(
-    initialCollectionId
-  );
-
-  const parsedUrl = new URL(window.location.href);
-  const initialPrivacy = parsePrivacy(parsedUrl.searchParams.get('privacy'));
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
-  const showFeaturedTemplates = true;
-  const showCollections = true;
-
-  const tabState = useTabState({
-    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
-    selectedId: 'featured',
-  });
-
-  const [viewState, setViewState] = useState<'select' | 'loading' | 'config'>(
-    'select'
-  );
+  const [viewState, setViewState] = useState<ViewState>('select');
   const [selectedTemplate, setSelectedTemplate] = useState<SandboxToFork>();
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [autoLaunchVSCode] = useGlobalPersistedState(
-    'AUTO_LAUNCH_VSCODE',
-    false
-  );
-
-  const collections = getTemplatesInCollections(officialTemplates, [
-    { tag: 'frontend', title: 'Frontend frameworks' },
-    { tag: 'backend', title: 'Backend frameworks' },
-    { tag: 'playground', title: 'Code playgrounds' },
-    { tag: 'starter', title: 'Project starters' },
-  ]);
+  const [filters, setFilters] = useState<string[]>([]);
 
   const { teamTemplates, recentTemplates } = useTeamTemplates({
     teamId: activeTeam,
     hasLogIn,
   });
 
-  const recentlyUsedTemplates = recentTemplates.slice(0, 3);
+  const recentlyUsedTemplates = recentTemplates.slice(0, 4);
   const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
   const recentlyUsedTemplatesIds = recentlyUsedTemplates.map(t => t.id);
 
@@ -113,18 +80,42 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     .filter(Boolean)
     .slice(0, hasRecentlyUsedTemplates ? 6 : 9);
 
-  const allTemplates = getAllMatchingTemplates({
-    officialTemplates,
-    teamTemplates,
-    searchQuery,
-  });
+  let filteredTemplates = officialTemplates.concat(teamTemplates);
 
-  /**
-   * Only show the team templates if the list is populated.
-   */
+  if (searchQuery) {
+    filteredTemplates = filteredTemplates.filter(template => {
+      return (
+        template.title?.toLowerCase().includes(searchQuery) ||
+        template.tags.some(tag => tag.includes(searchQuery))
+      );
+    });
+  }
 
-  const showTeamTemplates = teamTemplates.length > 0;
-  const showImportTemplates = hasLogIn && activeTeam;
+  if (filters.length > 0) {
+    filteredTemplates = filteredTemplates.filter(template => {
+      return filters
+        .map(item => item.toUpperCase())
+        .every(
+          item =>
+            template.tags
+              .map(tag => tag.toUpperCase().replace('-', ' '))
+              .includes(item) || // by tag
+            template.title?.toUpperCase().split(' ').includes(item) // by keyword in title
+        );
+    });
+  }
+
+  const gatherTags = filteredTemplates
+    .map(t => t.tags)
+    .flat()
+    .reduce((acc, tag) => {
+      acc[tag] = (acc[tag] || 0) + 1;
+
+      return acc;
+    }, {});
+  const additionalTags = Object.keys(gatherTags).filter(
+    key => gatherTags[key] > 1
+  );
 
   useEffect(() => {
     if (!sandboxIdToFork) {
@@ -153,13 +144,249 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     }
   }, [searchQuery]);
 
-  useEffect(() => {
-    if (searchQuery && tabState.selectedId !== 'all') {
-      setSearchQuery('');
-    }
-  }, [searchQuery, tabState.selectedId]);
-
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
+
+  const selectTemplate = (sandbox: SandboxToFork) => {
+    if (!hasLogIn) {
+      // Open template in editor for anonymous users
+      window.location.href =
+        sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
+      return;
+    }
+
+    setSelectedTemplate(sandbox);
+    setViewState('config');
+
+    track(`Create - Select template`, {
+      type: 'fork',
+      template_name: sandbox.title || sandbox.alias || sandbox.id,
+    });
+  };
+
+  const openTemplate = (sandbox: SandboxToFork) => {
+    const url =
+      sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
+    window.open(url, '_blank');
+
+    track(`Create - Open template`, {
+      type: 'open',
+      template_name: sandbox.title || sandbox.alias || sandbox.id,
+    });
+  };
+
+  if (viewState === 'config') {
+    return (
+      <CreateBoxConfig
+        selectedTemplate={selectedTemplate}
+        closeModal={closeModal}
+        isStandalone={isStandalone}
+        setViewState={setViewState}
+        initialCollectionId={initialCollectionId}
+      />
+    );
+  }
+
+  if (viewState === 'loading') {
+    return (
+      <ThemeProvider>
+        <Container>
+          <Stack
+            gap={4}
+            align="center"
+            css={{
+              width: '100%',
+              padding: mobileScreenSize ? '16px' : '24px',
+            }}
+          >
+            <HeaderInformation>
+              <Text size={4}>Create</Text>
+            </HeaderInformation>
+          </Stack>
+
+          <ModalBody>
+            <Stack css={{ width: '100%' }} align="center" justify="center">
+              <Loading size={12} />
+            </Stack>
+          </ModalBody>
+        </Container>
+      </ThemeProvider>
+    );
+  }
+
+  return (
+    <ThemeProvider>
+      <Container>
+        <Stack
+          gap={4}
+          align="center"
+          css={{
+            width: '100%',
+            padding: mobileScreenSize ? '16px' : '24px',
+          }}
+        >
+          <HeaderInformation>
+            <Text size={4}>Create</Text>
+          </HeaderInformation>
+        </Stack>
+
+        <ModalBody>
+          <ModalContent
+            css={{
+              overflow: 'visible',
+              width: '100%',
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <Stack
+              direction="horizontal"
+              gap={2}
+              justify="space-between"
+              css={{ marginBottom: 16 }}
+            >
+              <ScrollView>
+                <div className="sticky begin">
+                  <div />
+                </div>
+                <TemplateFilter
+                  onChange={setFilters}
+                  additionalTags={additionalTags}
+                />
+                <div className="sticky end">
+                  <div />
+                </div>
+              </ScrollView>
+
+              <SearchBox
+                value={searchQuery}
+                onChange={e => {
+                  const query = e.target.value;
+
+                  setSearchQuery(query);
+                }}
+              />
+            </Stack>
+            <div style={{ overflow: 'auto' }}>
+              <Stack direction="vertical" gap={2}>
+                {filters.length === 0 && searchQuery === '' ? (
+                  <>
+                    {hasRecentlyUsedTemplates && (
+                      <TemplateList
+                        searchQuery={searchQuery}
+                        title="Recently used"
+                        templates={recentlyUsedTemplates}
+                        onSelectTemplate={selectTemplate}
+                        onOpenTemplate={openTemplate}
+                      />
+                    )}
+                    <TemplateList
+                      title="Popular"
+                      searchQuery={searchQuery}
+                      templates={featuredTemplates}
+                      onSelectTemplate={selectTemplate}
+                      onOpenTemplate={openTemplate}
+                    />
+                  </>
+                ) : (
+                  <TemplateList
+                    searchQuery={searchQuery}
+                    templates={filteredTemplates}
+                    onSelectTemplate={selectTemplate}
+                    onOpenTemplate={openTemplate}
+                  />
+                )}
+              </Stack>
+            </div>
+          </ModalContent>
+        </ModalBody>
+      </Container>
+    </ThemeProvider>
+  );
+};
+
+const ScrollView = styled.div`
+  flex: 1;
+  overflow: auto;
+  padding-bottom: 8px;
+  white-space: nowrap;
+  position: relative;
+  display: flex;
+
+  .sticky {
+    position: sticky;
+    z-index: 9;
+    width: 0;
+    pointer-events: none;
+
+    --scroll-buffer: 2rem;
+    opacity: 0;
+    animation: ${keyframes`
+    to {
+      opacity: 1;
+    }
+    `} both linear;
+    animation-timeline: scroll(x);
+
+    > div {
+      position: absolute;
+      top: 0;
+      min-width: 20px;
+      height: 100%;
+    }
+  }
+
+  .begin {
+    animation-range: 0 var(--scroll-buffer);
+    left: 0;
+
+    > div {
+      left: 0;
+      background: linear-gradient(270deg, rgba(0, 0, 0, 0) 0%, #151515 100%);
+    }
+  }
+
+  .end {
+    animation-range: calc(100% - var(--scroll-buffer)) 100%;
+    animation-direction: reverse;
+    right: -1px;
+
+    > div {
+      right: 0;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, #151515 100%);
+    }
+  }
+`;
+
+const CreateBoxConfig: React.FC<{
+  selectedTemplate: SandboxToFork;
+  setViewState: (viewState: ViewState) => void;
+  closeModal: () => void;
+  initialCollectionId?: string;
+  isStandalone?: boolean;
+}> = ({
+  selectedTemplate,
+  initialCollectionId,
+  isStandalone,
+  setViewState,
+  closeModal,
+}) => {
+  const { hasLogIn, activeTeam } = useAppState();
+  const actions = useActions();
+
+  const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
+  const mobileScreenSize = mediaQuery.matches;
+  const parsedUrl = new URL(window.location.href);
+  const initialPrivacy = parsePrivacy(parsedUrl.searchParams.get('privacy'));
+
+  const [collectionId, setCollectionId] = useState<string | undefined>(
+    initialCollectionId
+  );
+  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
+  const [autoLaunchVSCode] = useGlobalPersistedState(
+    'AUTO_LAUNCH_VSCODE',
+    false
+  );
 
   const createFromTemplate = (
     sandbox: SandboxToFork,
@@ -219,42 +446,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     }
   };
 
-  const selectTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
-    if (!hasLogIn) {
-      // Open template in editor for anonymous users
-      window.location.href =
-        sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
-      return;
-    }
-
-    setSelectedTemplate(sandbox);
-    setViewState('config');
-
-    track(`Create - Select template`, {
-      type: 'fork',
-      tab_name: trackingSource,
-      template_name: sandbox.title || sandbox.alias || sandbox.id,
-    });
-  };
-
-  const openTemplate = (sandbox: SandboxToFork, trackingSource: string) => {
-    const url =
-      sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
-    window.open(url, '_blank');
-
-    track(`Create - Open template`, {
-      type: 'open',
-      tab_name: trackingSource,
-      template_name: sandbox.title || sandbox.alias || sandbox.id,
-    });
-  };
-
-  const trackTabClick = (tab: string) => {
-    track(`Create - Click Tab`, {
-      tab_name: tab,
-    });
-  };
-
   return (
     <ThemeProvider>
       <Container>
@@ -267,293 +458,54 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
           }}
         >
           <HeaderInformation>
-            {viewState === 'select' && <Text size={4}>New</Text>}
-            {viewState === 'config' && !sandboxIdToFork && (
-              <IconButton
-                name="arrowDown"
-                variant="square"
-                size={16}
-                title="Back to overview"
-                css={{
+            <IconButton
+              name="arrowDown"
+              variant="square"
+              size={16}
+              title="Back to overview"
+              css={{
+                transform: 'rotate(90deg)',
+                '&:active:not(:disabled)': {
                   transform: 'rotate(90deg)',
-                  '&:active:not(:disabled)': {
-                    transform: 'rotate(90deg)',
-                  },
-                }}
-                onClick={() => {
-                  setViewState('select');
-                }}
-              />
-            )}
-          </HeaderInformation>
-
-          {mobileScreenSize && viewState === 'select' ? (
-            <SearchBox
-              value={searchQuery}
-              onChange={e => {
-                const query = e.target.value;
-                tabState.select('all');
-                setSearchQuery(query);
+                },
+              }}
+              onClick={() => {
+                setViewState('select');
               }}
             />
-          ) : null}
+          </HeaderInformation>
         </Stack>
 
         <ModalBody>
-          {viewState === 'loading' && (
-            <Stack css={{ width: '100%' }} align="center" justify="center">
-              <Loading size={12} />
-            </Stack>
-          )}
+          <ModalSidebar>
+            <TemplateInfo template={selectedTemplate} />
 
-          {viewState === 'select' && (
-            <>
-              <ModalSidebar>
-                <Stack
-                  css={{ height: '100%' }}
-                  direction="vertical"
-                  justify="space-between"
-                >
-                  <Stack direction="vertical">
-                    {!mobileScreenSize && (
-                      <>
-                        <SearchBox
-                          value={searchQuery}
-                          onChange={e => {
-                            const query = e.target.value;
-                            tabState.select('all');
-                            setSearchQuery(query);
-                          }}
-                        />
+            {hasLogIn && (
+              <WorkspaceSelect
+                selectedTeamId={activeTeam}
+                onSelect={teamId => {
+                  actions.setActiveTeam({ id: teamId });
+                  setCollectionId(undefined);
+                }}
+              />
+            )}
+          </ModalSidebar>
 
-                        <Element css={{ height: '16px' }} />
-                      </>
-                    )}
-
-                    <Tabs {...tabState} aria-label="Create new">
-                      {showFeaturedTemplates && (
-                        <Tab
-                          {...tabState}
-                          onClick={() => trackTabClick('featured')}
-                          stopId="featured"
-                        >
-                          Featured templates
-                        </Tab>
-                      )}
-
-                      <Tab
-                        {...tabState}
-                        onClick={() => trackTabClick('all')}
-                        stopId="all"
-                      >
-                        All templates
-                      </Tab>
-
-                      <Element css={{ height: '16px' }} />
-
-                      {showTeamTemplates ? (
-                        <Tab
-                          {...tabState}
-                          onClick={() => trackTabClick('workspace')}
-                          stopId="workspace"
-                        >
-                          Workspace templates
-                        </Tab>
-                      ) : null}
-
-                      {showImportTemplates ? (
-                        <Tab
-                          {...tabState}
-                          onClick={() => trackTabClick('import-template')}
-                          stopId="import-template"
-                        >
-                          Import template
-                        </Tab>
-                      ) : null}
-
-                      <Tab
-                        {...tabState}
-                        onClick={() => trackTabClick('official')}
-                        stopId="official"
-                      >
-                        Official templates
-                      </Tab>
-
-                      <Element css={{ height: '16px' }} />
-
-                      {showCollections
-                        ? collections.map(collection => (
-                            <Tab
-                              key={collection.key}
-                              {...tabState}
-                              stopId={slugify(collection.title)}
-                              onClick={() => trackTabClick(collection.title)}
-                            >
-                              {collection.title}
-                            </Tab>
-                          ))
-                        : null}
-                    </Tabs>
-                  </Stack>
-                  {!mobileScreenSize && !isFrozen && (
-                    <Stack
-                      direction="vertical"
-                      css={{ paddingBottom: '16px' }}
-                      gap={2}
-                    >
-                      <Text size={3} weight="600">
-                        There&apos;s even more
-                      </Text>
-                      <Text size={2} color="#A6A6A6" lineHeight="1.35">
-                        <DevboxAlternative
-                          onClick={() => {
-                            track(`Create - Open Community Search`);
-                          }}
-                        />
-                      </Text>
-                    </Stack>
-                  )}
-                </Stack>
-              </ModalSidebar>
-              <ModalContent>
-                <Stack direction="vertical" gap={2}>
-                  <Panel tab={tabState} id="featured">
-                    {hasRecentlyUsedTemplates && (
-                      <TemplateList
-                        title="Recently used"
-                        templates={recentlyUsedTemplates}
-                        onSelectTemplate={template => {
-                          selectTemplate(template, 'featured');
-                        }}
-                        onOpenTemplate={template => {
-                          openTemplate(template, 'featured');
-                        }}
-                      />
-                    )}
-                    <TemplateList
-                      title="Popular"
-                      templates={featuredTemplates}
-                      onSelectTemplate={template => {
-                        selectTemplate(template, 'featured');
-                      }}
-                      onOpenTemplate={template => {
-                        openTemplate(template, 'featured');
-                      }}
-                    />
-                  </Panel>
-
-                  <Panel tab={tabState} id="all">
-                    <TemplateList
-                      title={
-                        searchQuery
-                          ? `${allTemplates.length} ${pluralize({
-                              word: 'result',
-                              count: allTemplates.length,
-                            })}`
-                          : 'All templates'
-                      }
-                      templates={allTemplates}
-                      searchQuery={searchQuery}
-                      showEmptyState
-                      onSelectTemplate={template => {
-                        selectTemplate(template, 'all');
-                      }}
-                      onOpenTemplate={template => {
-                        openTemplate(template, 'all');
-                      }}
-                    />
-                  </Panel>
-
-                  {showTeamTemplates ? (
-                    <Panel tab={tabState} id="workspace">
-                      <TemplateList
-                        title="Workspace templates"
-                        templates={teamTemplates}
-                        onSelectTemplate={template => {
-                          selectTemplate(template, 'workspace');
-                        }}
-                        onOpenTemplate={template => {
-                          openTemplate(template, 'workspace');
-                        }}
-                      />
-                    </Panel>
-                  ) : null}
-
-                  {showImportTemplates ? (
-                    <Panel tab={tabState} id="import-template">
-                      <ImportTemplate />
-                    </Panel>
-                  ) : null}
-
-                  <Panel tab={tabState} id="official">
-                    <TemplateList
-                      title="Official templates"
-                      templates={officialTemplates}
-                      onSelectTemplate={template => {
-                        selectTemplate(template, 'official');
-                      }}
-                      onOpenTemplate={template => {
-                        openTemplate(template, 'official');
-                      }}
-                    />
-                  </Panel>
-
-                  {collections.map(collection => (
-                    <Panel
-                      key={collection.key}
-                      tab={tabState}
-                      id={slugify(collection.title)}
-                    >
-                      <TemplateList
-                        title={collection.title}
-                        templates={collection.templates}
-                        onSelectTemplate={template => {
-                          selectTemplate(template, collection.title);
-                        }}
-                        onOpenTemplate={template => {
-                          openTemplate(template, collection.title);
-                        }}
-                      />
-                    </Panel>
-                  ))}
-                </Stack>
-              </ModalContent>
-            </>
-          )}
-
-          {viewState === 'config' && (
-            <>
-              <ModalSidebar>
-                <TemplateInfo template={selectedTemplate} />
-
-                {hasLogIn && (
-                  <WorkspaceSelect
-                    selectedTeamId={activeTeam}
-                    onSelect={teamId => {
-                      actions.setActiveTeam({ id: teamId });
-                      setCollectionId(undefined);
-                    }}
-                  />
-                )}
-              </ModalSidebar>
-
-              <ModalContent>
-                <CreateBoxForm
-                  template={selectedTemplate}
-                  collectionId={collectionId}
-                  setCollectionId={setCollectionId}
-                  initialPrivacy={initialPrivacy}
-                  onCancel={() => {
-                    setViewState('select');
-                  }}
-                  onSubmit={params => {
-                    createFromTemplate(selectedTemplate, params);
-                  }}
-                  onClose={() => closeModal()}
-                />
-              </ModalContent>
-            </>
-          )}
+          <ModalContent>
+            <CreateBoxForm
+              template={selectedTemplate}
+              collectionId={collectionId}
+              setCollectionId={setCollectionId}
+              initialPrivacy={initialPrivacy}
+              onCancel={() => {
+                setViewState('select');
+              }}
+              onSubmit={params => {
+                createFromTemplate(selectedTemplate, params);
+              }}
+              onClose={() => closeModal()}
+            />
+          </ModalContent>
         </ModalBody>
       </Container>
     </ThemeProvider>
