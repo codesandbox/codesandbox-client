@@ -337,9 +337,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 defaultValue={editor}
                 onChange={({ target: { value } }) => setEditor(value)}
               >
-                <option value="csb">CodeSandbox Web Editor</option>
+                <option value="csb">VS Code for the web (CodeSandbox.io)</option>
                 <option value="vscode">
-                  VS Code Desktop (Using the CodeSandbox extension)
+                  VS Code Desktop (CodeSandbox extension)
                 </option>
               </Select>
             </Stack>
