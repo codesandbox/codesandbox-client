@@ -139,7 +139,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         });
       }}
     >
-      <Stack direction="vertical" gap={6}>
+      <Stack direction="vertical" gap={5}>
         <Text
           as="h2"
           css={{
