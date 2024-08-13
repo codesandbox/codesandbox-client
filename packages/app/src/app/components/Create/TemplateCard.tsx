@@ -1,11 +1,12 @@
 import React from 'react';
 import { formatNumber, Icon, Stack, Text } from '@codesandbox/components';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
 import { SandboxToFork } from './utils/types';
 import { TemplateIcon } from './TemplateIcon';
 import { CODEIUM_ID } from './utils/constants';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 interface TemplateCardProps {
   disabled?: boolean;
