@@ -73,7 +73,9 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const featuredTemplates = FEATURED_IDS.map(id =>
     officialTemplates.find(t => t.id === id)
-  ).filter(Boolean);
+  )
+    .filter(Boolean)
+    .slice(0, hasRecentlyUsedTemplates ? 8 : 12);
 
   let filteredTemplates = officialTemplates.concat(teamTemplates);
 
