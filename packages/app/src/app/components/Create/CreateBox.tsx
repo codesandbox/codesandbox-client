@@ -70,15 +70,10 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const recentlyUsedTemplates = recentTemplates.slice(0, 4);
   const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
-  const recentlyUsedTemplatesIds = recentlyUsedTemplates.map(t => t.id);
 
   const featuredTemplates = FEATURED_IDS.map(id =>
-    officialTemplates.find(
-      t => t.id === id && !recentlyUsedTemplatesIds.includes(t.id)
-    )
-  )
-    .filter(Boolean)
-    .slice(0, hasRecentlyUsedTemplates ? 6 : 9);
+    officialTemplates.find(t => t.id === id)
+  ).filter(Boolean);
 
   let filteredTemplates = officialTemplates.concat(teamTemplates);
 
@@ -373,6 +368,7 @@ const CreateBoxConfig: React.FC<{
 }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const actions = useActions();
+  const [loading, setLoading] = useState(false);
 
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
@@ -409,6 +405,8 @@ const CreateBoxConfig: React.FC<{
       ...(customVMTier ? { vm_tier: customVMTier } : {}),
     });
 
+    setLoading(true);
+
     actions.editor
       .forkExternalSandbox({
         sandboxId,
@@ -439,11 +437,12 @@ const CreateBoxConfig: React.FC<{
             '*'
           );
         }
+      })
+      .finally(() => {
+        if (closeModal) {
+          closeModal();
+        }
       });
-
-    if (closeModal) {
-      closeModal();
-    }
   };
 
   return (
@@ -504,6 +503,7 @@ const CreateBoxConfig: React.FC<{
                 createFromTemplate(selectedTemplate, params);
               }}
               onClose={() => closeModal()}
+              loading={loading}
             />
           </ModalContent>
         </ModalBody>

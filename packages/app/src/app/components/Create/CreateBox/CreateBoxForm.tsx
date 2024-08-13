@@ -27,6 +27,7 @@ interface CreateBoxFormProps {
   template: SandboxToFork;
   initialPrivacy?: PrivacyLevel;
   collectionId: string | undefined;
+  loading: boolean;
   setCollectionId: (collectionId: string | undefined) => void;
   onCancel: () => void;
   onSubmit: (params: CreateParams) => void;
@@ -37,6 +38,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   template,
   initialPrivacy,
   collectionId,
+  loading,
   setCollectionId,
   onCancel,
   onSubmit,
@@ -337,7 +339,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 defaultValue={editor}
                 onChange={({ target: { value } }) => setEditor(value)}
               >
-                <option value="csb">VS Code for the web (CodeSandbox.io)</option>
+                <option value="csb">
+                  VS Code for the web (CodeSandbox.io)
+                </option>
                 <option value="vscode">
                   VS Code Desktop (CodeSandbox extension)
                 </option>
@@ -358,11 +362,16 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             Cancel
           </Button>
           {hasLogIn ? (
-            <Button type="submit" variant="primary" autoWidth>
+            <Button type="submit" variant="primary" autoWidth loading={loading}>
               Create {label}
             </Button>
           ) : (
-            <Button autoWidth onClick={() => signInClicked()} type="button">
+            <Button
+              autoWidth
+              onClick={() => signInClicked()}
+              type="button"
+              loading={loading}
+            >
               Sign in to create {label}
             </Button>
           )}
