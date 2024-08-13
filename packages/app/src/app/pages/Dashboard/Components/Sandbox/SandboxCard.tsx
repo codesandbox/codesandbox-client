@@ -15,6 +15,7 @@ import { StyledCard } from '../shared/StyledCard';
 import { useSandboxThumbnail } from './useSandboxThumbnail';
 import { Brightness } from './useImageBrightness';
 import { SandboxBadge } from './SandboxBadge';
+import { Sandbox } from 'app/pages/Sandbox';
 
 type SandboxTitleProps = {
   brightness?: Brightness;
@@ -136,16 +137,25 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = {
   isFrozen?: boolean;
+  username: string;
 } & Pick<
   SandboxItemComponentProps,
   'noDrag' | 'timeAgo' | 'PrivacyIcon' | 'sandbox' | 'restricted'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ isFrozen, noDrag, timeAgo, PrivacyIcon, sandbox, restricted }) => {
+  ({
+    username,
+    isFrozen,
+    noDrag,
+    timeAgo,
+    PrivacyIcon,
+    sandbox,
+    restricted,
+  }) => {
     const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
     const timeAgoText = (
       <Text size={12} truncate>
-        {shortDistance(timeAgo)}
+        {shortDistance(timeAgo)} by {username}
       </Text>
     );
 
@@ -184,7 +194,7 @@ export const SandboxCard = ({
   // drag preview
   thumbnailRef,
   isDragging,
-
+  username,
   'data-selection-id': dataSelectionId,
   ...props
 }: SandboxItemComponentProps) => {
@@ -287,6 +297,7 @@ export const SandboxCard = ({
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
             sandbox={sandbox}
+            username={username}
           />
         </CardContent>
       </StyledCard>

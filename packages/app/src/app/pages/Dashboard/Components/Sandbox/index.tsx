@@ -20,6 +20,7 @@ import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
+import { sandboxDeleted } from 'app/overmind/namespaces/workspace/actions';
 
 const MAP_SANDBOX_EVENT_TO_PAGE_TYPE: Partial<Record<PageTypes, string>> = {
   recent: 'Dashboard - Open Sandbox from Recent',
@@ -67,7 +68,7 @@ function getFolderName(item: GenericSandboxProps['item']): string | undefined {
 }
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
-  const { dashboard, activeWorkspaceAuthorization } = useAppState();
+  const { user, dashboard, activeWorkspaceAuthorization } = useAppState();
   const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const actions = useActions();
 
@@ -306,6 +307,11 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
         {...sandboxProps}
         {...interactionProps}
         isScrolling={isScrolling}
+        username={
+          sandboxProps.sandbox.author.username === user.username
+            ? 'you'
+            : sandboxProps.sandbox.author.username
+        }
       />
     </div>
   );
