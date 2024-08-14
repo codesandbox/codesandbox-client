@@ -55,7 +55,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
-  const { highestAllowedVMTier } = useWorkspaceLimits();
+  const { highestAllowedVMTier, isFrozen } = useWorkspaceLimits();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -351,8 +351,16 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         )}
       </Stack>
 
-      <Stack css={{ justifyContent: 'flex-end' }}>
-        <Stack gap={2}>
+      <Stack>
+        <Stack gap={2} css={{ alignItems: 'center', width: '100%' }}>
+          <Stack css={{ flex: 1 }}>
+            {isFrozen && runtime === 'vm' && (
+              <Text size={3} css={{ color: '#F7CC66' }}>
+                You have run our of credits.
+              </Text>
+            )}
+          </Stack>
+
           <Button
             type="button"
             variant="secondary"
@@ -362,7 +370,13 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             Cancel
           </Button>
           {hasLogIn ? (
-            <Button type="submit" variant="primary" autoWidth loading={loading}>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isFrozen && runtime === 'vm'}
+              autoWidth
+              loading={loading}
+            >
               Create {label}
             </Button>
           ) : (
