@@ -84,7 +84,7 @@ export const TemplateCard = ({
               </Tooltip>
             )}
             {template.type === 'devbox' && (
-              <Tooltip content="Runs on server">
+              <Tooltip content="Runs on Devbox">
                 <Icon color="#999" size={16} name="server" />
               </Tooltip>
             )}

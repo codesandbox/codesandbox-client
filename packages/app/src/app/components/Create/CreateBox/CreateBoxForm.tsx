@@ -274,7 +274,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
                 <Text size={3} variant="muted">
                   Ideal for any type of project, language or size. Runs on a
-                  server.
+                  MicroVM.
                 </Text>
 
                 {!runsOnVM && (
