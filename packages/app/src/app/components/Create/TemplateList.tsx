@@ -41,7 +41,7 @@ export const TemplateList = ({
         <TemplateGrid>
           {templates.map(template => (
             <TemplateCard
-              key={template.id + template.browserSandboxId}
+              key={template.id + template.browserSandboxId + template.title}
               template={template}
               onSelectTemplate={onSelectTemplate}
               onOpenTemplate={onOpenTemplate}

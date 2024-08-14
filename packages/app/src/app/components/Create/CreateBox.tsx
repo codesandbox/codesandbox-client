@@ -82,8 +82,10 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   if (searchQuery) {
     filteredTemplates = filteredTemplates.filter(template => {
       return (
-        template.title?.toLowerCase().includes(searchQuery) ||
-        template.tags.some(tag => tag.includes(searchQuery))
+        template.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        template.tags.some(tag =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        )
       );
     });
   }
@@ -272,6 +274,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                       <TemplateList
                         searchQuery={searchQuery}
                         title="Recently used"
+                        key="Recently used"
                         templates={recentlyUsedTemplates}
                         onSelectTemplate={selectTemplate}
                         onOpenTemplate={openTemplate}
@@ -279,6 +282,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     )}
                     <TemplateList
                       title="Popular"
+                      key="Popular"
                       searchQuery={searchQuery}
                       templates={featuredTemplates}
                       onSelectTemplate={selectTemplate}
@@ -287,6 +291,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   </>
                 ) : (
                   <TemplateList
+                    key={filters.join()}
                     searchQuery={searchQuery}
                     templates={filteredTemplates}
                     onSelectTemplate={selectTemplate}
