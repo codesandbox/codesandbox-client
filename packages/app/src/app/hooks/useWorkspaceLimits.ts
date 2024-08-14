@@ -45,16 +45,16 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
   const highestAllowedVMTier = limits.includedVmTier;
 
   return {
-    isOutOfCredits: true,
+    isOutOfCredits,
     isCloseToOutOfCredits,
     isAtSpendingLimit,
     isCloseToSpendingLimit,
-    showUsageLimitBanner: true,
-    // isOutOfCredits ||
-    // isCloseToOutOfCredits ||
-    // isAtSpendingLimit ||
-    // isCloseToSpendingLimit,
-    isFrozen: true, //applyUbbRestrictions && frozen,
+    showUsageLimitBanner:
+      isOutOfCredits ||
+      isCloseToOutOfCredits ||
+      isAtSpendingLimit ||
+      isCloseToSpendingLimit,
+    isFrozen: applyUbbRestrictions && frozen,
     highestAllowedVMTier,
   };
 };
