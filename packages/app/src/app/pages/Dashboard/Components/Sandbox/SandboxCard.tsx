@@ -15,7 +15,6 @@ import { StyledCard } from '../shared/StyledCard';
 import { useSandboxThumbnail } from './useSandboxThumbnail';
 import { Brightness } from './useImageBrightness';
 import { SandboxBadge } from './SandboxBadge';
-import { Sandbox } from 'app/pages/Sandbox';
 
 type SandboxTitleProps = {
   brightness?: Brightness;
@@ -137,25 +136,16 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = {
   isFrozen?: boolean;
-  username: string;
 } & Pick<
   SandboxItemComponentProps,
   'noDrag' | 'timeAgo' | 'PrivacyIcon' | 'sandbox' | 'restricted'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({
-    username,
-    isFrozen,
-    noDrag,
-    timeAgo,
-    PrivacyIcon,
-    sandbox,
-    restricted,
-  }) => {
+  ({ isFrozen, noDrag, timeAgo, PrivacyIcon, sandbox, restricted }) => {
     const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
     const timeAgoText = (
       <Text size={12} truncate>
-        {shortDistance(timeAgo)} by {username}
+        {shortDistance(timeAgo)}
       </Text>
     );
 
@@ -203,11 +193,14 @@ export const SandboxCard = ({
   });
 
   let textColor = '#EBEBEB'; // default
+  let userNameTextColor = '#A6A6A6';
 
   if (restricted) {
     textColor = thumbnail.isCustom ? textColor : '#999999';
+    userNameTextColor = textColor;
   } else if (thumbnail?.brightness && thumbnail.isCustom) {
     textColor = thumbnail.brightness === 'light' ? '#0E0E0E' : '#FFFFFF';
+    userNameTextColor = textColor;
   }
 
   return (
@@ -289,7 +282,16 @@ export const SandboxCard = ({
         ) : null}
 
         <CardContent selected={selected}>
-          <SandboxTitle brightness={thumbnail.brightness} {...props} />
+          <Stack direction="vertical" gap={0}>
+            <SandboxTitle brightness={thumbnail.brightness} {...props} />
+            <Text
+              size={12}
+              truncate
+              css={{ marginLeft: 28, color: userNameTextColor }}
+            >
+              Created by {username}
+            </Text>
+          </Stack>
           <SandboxStats
             noDrag={noDrag}
             timeAgo={timeAgo}
@@ -297,7 +299,6 @@ export const SandboxCard = ({
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
             sandbox={sandbox}
-            username={username}
           />
         </CardContent>
       </StyledCard>
