@@ -7,7 +7,10 @@ import { useAppState, useActions } from 'app/overmind';
 import Fuse from 'fuse.js';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-import type { ProjectFragment as Repository } from 'app/graphql/types';
+import {
+  SandboxFragmentDashboardFragment as Sandbox,
+  ProjectFragment as Repository,
+} from 'app/graphql/types';
 
 const useSearchedSandboxes = (query: string) => {
   const state = useAppState();
@@ -85,7 +88,20 @@ const calculateSearchIndex = (dashboard: any, activeTeam: string) => {
   });
 };
 
-export const useGetItems = ({ query, getFilteredSandboxes }) => {
+export const useGetItems = ({
+  query,
+  username,
+  getFilteredSandboxes,
+}: {
+  query: string;
+  username: string;
+  getFilteredSandboxes: (
+    sandboxes: (
+      | SandboxFragmentDashboardFragment
+      | SidebarCollectionDashboardFragment
+    )[]
+  ) => Sandbox[];
+}) => {
   const foundResults: Array<
     SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment
   > = useSearchedSandboxes(query) || [];
@@ -99,7 +115,19 @@ export const useGetItems = ({ query, getFilteredSandboxes }) => {
     sandboxesInSearch
   );
 
-  const orderedSandboxes = [...foldersInSearch, ...filteredSandboxes];
+  const orderedSandboxes = [...foldersInSearch, ...filteredSandboxes].filter(
+    item => {
+      // @ts-ignore
+      if (item.path || item.repository) {
+        return true;
+      }
+
+      const sandbox = item as SandboxFragmentDashboardFragment;
+
+      // Remove draft sandboxes from other authors
+      return sandbox.draft && sandbox.author.username === username;
+    }
+  );
 
   // @ts-ignore
   const items: DashboardGridItem[] =
