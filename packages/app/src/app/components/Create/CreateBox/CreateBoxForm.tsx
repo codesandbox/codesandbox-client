@@ -27,6 +27,7 @@ interface CreateBoxFormProps {
   template: SandboxToFork;
   initialPrivacy?: PrivacyLevel;
   collectionId: string | undefined;
+  loading: boolean;
   setCollectionId: (collectionId: string | undefined) => void;
   onCancel: () => void;
   onSubmit: (params: CreateParams) => void;
@@ -37,6 +38,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   template,
   initialPrivacy,
   collectionId,
+  loading,
   setCollectionId,
   onCancel,
   onSubmit,
@@ -53,7 +55,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
-  const { highestAllowedVMTier } = useWorkspaceLimits();
+  const { highestAllowedVMTier, isFrozen } = useWorkspaceLimits();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -137,7 +139,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         });
       }}
     >
-      <Stack direction="vertical" gap={6}>
+      <Stack direction="vertical" gap={5}>
         <Text
           as="h2"
           css={{
@@ -225,19 +227,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             Runtime
           </Text>
 
-          <Stack
-            gap={4}
-            css={{
-              '&:hover': {
-                '> *': {
-                  border:
-                    runsInTheBrowser &&
-                    runsOnVM &&
-                    '1px solid transparent !important',
-                },
-              },
-            }}
-          >
+          <Stack gap={4}>
             <CardButton
               type="button"
               data-selected={runtime === 'browser'}
@@ -258,7 +248,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 </Stack>
 
                 <Text size={3} variant="muted">
-                  Ideal for prototyping and sharing code snippets. Runs in the
+                  Ideal for prototyping and sharing code snippets. Runs on the
                   browser.
                 </Text>
 
@@ -349,9 +339,11 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 defaultValue={editor}
                 onChange={({ target: { value } }) => setEditor(value)}
               >
-                <option value="csb">CodeSandbox Web Editor</option>
+                <option value="csb">
+                  VS Code for the web (CodeSandbox.io)
+                </option>
                 <option value="vscode">
-                  VS Code Desktop (Using the CodeSandbox extension)
+                  VS Code Desktop (CodeSandbox extension)
                 </option>
               </Select>
             </Stack>
@@ -359,8 +351,16 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         )}
       </Stack>
 
-      <Stack css={{ justifyContent: 'flex-end' }}>
-        <Stack gap={2}>
+      <Stack>
+        <Stack gap={2} css={{ alignItems: 'center', width: '100%' }}>
+          <Stack css={{ flex: 1 }}>
+            {isFrozen && runtime === 'vm' && (
+              <Text size={3} css={{ color: '#F7CC66' }}>
+                You have run our of credits.
+              </Text>
+            )}
+          </Stack>
+
           <Button
             type="button"
             variant="secondary"
@@ -370,11 +370,22 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             Cancel
           </Button>
           {hasLogIn ? (
-            <Button type="submit" variant="primary" autoWidth>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isFrozen && runtime === 'vm'}
+              autoWidth
+              loading={loading}
+            >
               Create {label}
             </Button>
           ) : (
-            <Button autoWidth onClick={() => signInClicked()} type="button">
+            <Button
+              autoWidth
+              onClick={() => signInClicked()}
+              type="button"
+              loading={loading}
+            >
               Sign in to create {label}
             </Button>
           )}
@@ -421,7 +432,7 @@ const CardButton = styled.button`
   transition: all 100ms ease;
 
   &:hover:not(:disabled) {
-    border-color: ${props => props.theme.colors.purple} !important;
+    background: #252525;
   }
 
   &:disabled {

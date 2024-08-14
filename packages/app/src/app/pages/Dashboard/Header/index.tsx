@@ -111,7 +111,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
           <Button
             variant="primary"
-            disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
+            disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               track('Dashboard - Topbar - Create');
               actions.modalOpened({ modal: 'create' });

@@ -36,6 +36,7 @@ import { ConfigureRepo } from './ImportRepository/steps/ConfigureRepo';
 import { FindByURL } from './ImportRepository/steps/FindByURL';
 import { StartFromTemplate } from './ImportRepository/steps/StartFromTemplate';
 import { ForkRepo } from './ImportRepository/steps/ForkRepo';
+import { ImportTemplate } from './ImportTemplate';
 
 type View = 'signin' | 'permissions' | 'select' | 'loading' | 'config';
 
@@ -220,6 +221,14 @@ export const ImportRepository: React.FC<
                     >
                       Start from a template
                     </Tab>
+
+                    <Tab
+                      {...tabState}
+                      onClick={() => trackTabClick('import-template')}
+                      stopId="import-template"
+                    >
+                      Import template
+                    </Tab>
                   </Tabs>
                   {restrictsPrivateRepos && <RestrictedPrivateReposInfo />}
                 </Stack>
@@ -237,6 +246,9 @@ export const ImportRepository: React.FC<
                 </Panel>
                 <Panel tab={tabState} id="from-template">
                   <StartFromTemplate />
+                </Panel>
+                <Panel tab={tabState} id="import-template">
+                  <ImportTemplate />
                 </Panel>
               </ModalContent>
             </>

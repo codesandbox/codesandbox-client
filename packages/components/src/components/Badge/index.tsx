@@ -6,6 +6,9 @@ import { Text } from '../Text';
 export interface BadgeProps {
   variant?: 'trial' | 'pro' | 'neutral' | 'warning' | 'highlight' | 'error';
   icon?: IconNames;
+  css?: React.CSSProperties;
+  textSize?: number;
+  iconSize?: number;
 }
 
 const BG_MAP: Record<BadgeProps['variant'], string> = {
@@ -30,6 +33,10 @@ export const Badge: React.FC<BadgeProps> = ({
   variant = 'neutral',
   icon,
   children,
+  css,
+  textSize = 12,
+  iconSize = 12,
+  ...props
 }) => {
   return (
     <Stack
@@ -40,13 +47,17 @@ export const Badge: React.FC<BadgeProps> = ({
         borderRadius: '999px',
         backgroundColor: BG_MAP[variant],
         color: COLOR_MAP[variant],
+        ...css,
       }}
       gap={1}
+      {...props}
     >
-      {icon && <Icon size={12} name={icon} />}
-      <Text size={12} lineHeight="16px">
-        {children}
-      </Text>
+      {icon && <Icon size={iconSize} name={icon} />}
+      {children && (
+        <Text size={textSize} lineHeight="16px">
+          {children}
+        </Text>
+      )}
     </Stack>
   );
 };

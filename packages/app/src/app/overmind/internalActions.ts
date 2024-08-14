@@ -115,7 +115,17 @@ export const prefetchOfficialTemplates = async ({ state }: Context) => {
           title: template.title,
           alias: template.title,
           description: template.description,
-          tags: template.tags,
+          tags: [...template.tags, 'server']
+            .concat(
+              DEVBOX_SANDBOX_ID_MAP[template.id]
+                ? ['browser', 'playground', 'frontend']
+                : []
+            )
+            .concat(
+              DEVBOX_SANDBOX_ID_MAP[template.id]?.endsWith('-ts')
+                ? ['typescript']
+                : []
+            ),
           editorUrl: template.editorUrl,
           type: 'devbox',
           forkCount: template.forkCount,
@@ -140,7 +150,9 @@ export const prefetchOfficialTemplates = async ({ state }: Context) => {
           title: template.title,
           alias: template.alias,
           description: template.description,
-          tags: [],
+          tags: ['browser', 'playground', 'frontend'].concat(
+            template.id.endsWith('-ts') ? ['typescript'] : []
+          ),
           type: 'sandbox',
           forkCount: template.fork_count,
           viewCount: template.view_count,
