@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@codesandbox/common": "^1.0.12",
-    "axios": ">=1.6.0",
+    "axios": ">=1.7.4",
     "babel-plugin-emotion": "^9.2.10",
     "emotion": "^9.2.10",
     "gsap": "^3.6.0",
