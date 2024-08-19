@@ -138,10 +138,11 @@ export const TemplateButton = styled.button`
   border: 1px solid transparent;
   text-align: left;
   font-family: inherit;
-  border-radius: 2px;
+  border-radius: 4px;
   color: #e5e5e5;
   animation: ${fadeIn} 0.15s ease-in;
   outline: none;
+  cursor: pointer;
 
   &:disabled {
     animation: none;
@@ -162,13 +163,13 @@ export const TemplateButton = styled.button`
 
 export const TemplateGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   overflow: auto;
   padding-bottom: 12px;
 
   @media screen and (max-width: 756px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   @media screen and (max-width: 485px) {

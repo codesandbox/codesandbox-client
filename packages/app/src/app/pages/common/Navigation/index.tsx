@@ -87,7 +87,7 @@ const NavigationComponent = ({ title, match, showActions = true }: Props) => {
                   variant="ghost"
                   css={{ width: 'auto' }}
                   onClick={() => {
-                    modalOpened({ modal: 'genericCreate' });
+                    modalOpened({ modal: 'create' });
                   }}
                 >
                   <Icon

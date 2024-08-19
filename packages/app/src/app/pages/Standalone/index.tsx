@@ -5,7 +5,6 @@ import { useActions } from 'app/overmind';
 import { useParams } from 'react-router-dom';
 import { CreateBox } from 'app/components/Create/CreateBox';
 import { ImportRepository } from 'app/components/Create/ImportRepository';
-import { GenericCreate } from 'app/components/Create/GenericCreate';
 
 import { CreateRepoFiles } from 'app/components/Create/CreateRepoFiles';
 import { Preferences } from '../common/Modals/PreferencesModal';
@@ -13,26 +12,12 @@ import { NotFound } from '../common/NotFound';
 
 const COMPONENT_MAP = {
   preferences: Preferences,
-  create: GenericCreate,
-  createSandbox: () => {
+  create: () => {
     const parsedUrl = new URL(window.location.href);
     const sandboxIdToFork = parsedUrl.searchParams.get('sandbox');
     return (
       <CreateBox
         isStandalone
-        type="sandbox"
-        sandboxIdToFork={sandboxIdToFork}
-        isModal={false}
-      />
-    );
-  },
-  createDevbox: () => {
-    const parsedUrl = new URL(window.location.href);
-    const sandboxIdToFork = parsedUrl.searchParams.get('sandbox');
-    return (
-      <CreateBox
-        isStandalone
-        type="devbox"
         sandboxIdToFork={sandboxIdToFork}
         isModal={false}
       />

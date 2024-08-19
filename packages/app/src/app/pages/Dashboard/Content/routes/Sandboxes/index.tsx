@@ -63,17 +63,7 @@ export const SandboxesPage = () => {
         currentCollection
           ? () => {
               actions.modalOpened({
-                modal: 'createSandbox',
-                itemId: currentCollection.id,
-              });
-            }
-          : undefined
-      }
-      createNewDevbox={
-        currentCollection
-          ? () => {
-              actions.modalOpened({
-                modal: 'createDevbox',
+                modal: 'create',
                 itemId: currentCollection.id,
               });
             }
@@ -98,7 +88,7 @@ export const SandboxesPage = () => {
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledGrid>
             <ActionCard
-              icon="boxDevbox"
+              icon="plus"
               disabled={isFrozen}
               onClick={() => {
                 track('Empty Folder - Create devbox', {
@@ -107,30 +97,12 @@ export const SandboxesPage = () => {
                 });
 
                 actions.modalOpened({
-                  modal: 'createDevbox',
+                  modal: 'create',
                   itemId: currentCollection.id,
                 });
               }}
             >
-              Create devbox
-            </ActionCard>
-            <ActionCard
-              icon="boxSandbox"
-              onClick={() => {
-                track('Empty Folder - Create sandbox', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                  card_type: 'get-started-action',
-                  tab: 'default',
-                });
-
-                actions.modalOpened({
-                  modal: 'createSandbox',
-                  itemId: currentCollection.id,
-                });
-              }}
-            >
-              Create sandbox
+              Create
             </ActionCard>
           </EmptyPage.StyledGrid>
         </EmptyPage.StyledWrapper>

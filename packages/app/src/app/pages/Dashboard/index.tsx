@@ -75,14 +75,14 @@ export const Dashboard: FunctionComponent = () => {
     if (searchParams.get('import_repo')) {
       const [owner, name] = searchParams.get('import_repo').split('/');
       actions.modalOpened({
-        modal: 'importRepository',
+        modal: 'import',
         repoToImport: owner && name ? { owner, name } : undefined,
       });
       searchParams.delete('import_repo');
     } else if (searchParams.get('create_sandbox')) {
       const sandboxId = searchParams.get('create_sandbox');
       actions.modalOpened({
-        modal: 'createSandbox',
+        modal: 'create',
         sandboxIdToFork:
           !!sandboxId && sandboxId !== 'true' ? sandboxId : undefined,
       });
@@ -90,13 +90,13 @@ export const Dashboard: FunctionComponent = () => {
     } else if (searchParams.get('create_devbox')) {
       const sandboxId = searchParams.get('create_devbox');
       actions.modalOpened({
-        modal: 'createDevbox',
+        modal: 'create',
         sandboxIdToFork:
           !!sandboxId && sandboxId !== 'true' ? sandboxId : undefined,
       });
       searchParams.delete('create_devbox');
     } else if (JSON.parse(searchParams.get('create'))) {
-      actions.modalOpened({ modal: 'genericCreate' });
+      actions.modalOpened({ modal: 'create' });
     } else if (searchParams.get('preferences')) {
       const toToOpen = searchParams.get('preferences');
       actions.preferences.openPreferencesModal(toToOpen);

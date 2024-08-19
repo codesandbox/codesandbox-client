@@ -2,6 +2,7 @@ import { GetGithubRepoQuery } from 'app/graphql/types';
 import { TemplateType } from '@codesandbox/common/lib/templates';
 
 export type CreateParams = {
+  sandboxId: string;
   name?: string;
   createAs: 'devbox' | 'sandbox';
   permission: 0 | 1 | 2;
@@ -50,6 +51,7 @@ export type SandboxToFork = {
   viewCount: number;
   iconUrl?: string;
   sourceTemplate?: string;
+  browserSandboxId?: string;
 };
 
 export interface TemplateCollection {

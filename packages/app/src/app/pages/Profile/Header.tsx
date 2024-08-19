@@ -87,7 +87,7 @@ export const Header: React.FC = () => {
           variant="secondary"
           css={css({ width: 'auto', paddingX: 3 })}
           onClick={() => {
-            modalOpened({ modal: 'genericCreate' });
+            modalOpened({ modal: 'create' });
           }}
         >
           <Icon

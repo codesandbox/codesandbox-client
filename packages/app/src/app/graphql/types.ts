@@ -3349,6 +3349,7 @@ export type SandboxFragmentDashboardFragment = {
     path: string;
     id: any | null;
   } | null;
+  author: { __typename?: 'User'; username: string } | null;
   permissions: {
     __typename?: 'SandboxProtectionSettings';
     preventSandboxLeaving: boolean;
@@ -3412,6 +3413,7 @@ export type RepoFragmentDashboardFragment = {
     path: string;
     id: any | null;
   } | null;
+  author: { __typename?: 'User'; username: string } | null;
   permissions: {
     __typename?: 'SandboxProtectionSettings';
     preventSandboxLeaving: boolean;
@@ -3671,6 +3673,7 @@ export type BranchFragment = {
   contribution: boolean;
   lastAccessedAt: string | null;
   upstream: boolean;
+  owner: { __typename?: 'User'; username: string } | null;
   project: {
     __typename?: 'Project';
     repository: {
@@ -3691,6 +3694,7 @@ export type BranchWithPrFragment = {
   contribution: boolean;
   lastAccessedAt: string | null;
   upstream: boolean;
+  owner: { __typename?: 'User'; username: string } | null;
   project: {
     __typename?: 'Project';
     repository: {
@@ -3736,6 +3740,7 @@ export type ProjectWithBranchesFragment = {
     contribution: boolean;
     lastAccessedAt: string | null;
     upstream: boolean;
+    owner: { __typename?: 'User'; username: string } | null;
     project: {
       __typename?: 'Project';
       repository: {
@@ -3943,6 +3948,7 @@ export type AddToFolderMutation = {
       path: string;
       id: any | null;
     } | null;
+    author: { __typename?: 'User'; username: string } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -3996,6 +4002,7 @@ export type MoveToTrashMutation = {
       path: string;
       id: any | null;
     } | null;
+    author: { __typename?: 'User'; username: string } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -4050,6 +4057,7 @@ export type ChangePrivacyMutation = {
       path: string;
       id: any | null;
     } | null;
+    author: { __typename?: 'User'; username: string } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -4104,6 +4112,7 @@ export type ChangeFrozenMutation = {
       path: string;
       id: any | null;
     } | null;
+    author: { __typename?: 'User'; username: string } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -4158,6 +4167,7 @@ export type _RenameSandboxMutation = {
       path: string;
       id: any | null;
     } | null;
+    author: { __typename?: 'User'; username: string } | null;
     permissions: {
       __typename?: 'SandboxProtectionSettings';
       preventSandboxLeaving: boolean;
@@ -4651,6 +4661,7 @@ export type RecentlyDeletedTeamSandboxesQuery = {
           path: string;
           id: any | null;
         } | null;
+        author: { __typename?: 'User'; username: string } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -4719,6 +4730,7 @@ export type SandboxesByPathQuery = {
           path: string;
           id: any | null;
         } | null;
+        author: { __typename?: 'User'; username: string } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -4779,6 +4791,7 @@ export type TeamDraftsQuery = {
           path: string;
           id: any | null;
         } | null;
+        author: { __typename?: 'User'; username: string } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -4872,6 +4885,7 @@ export type GetTeamReposQuery = {
           path: string;
           id: any | null;
         } | null;
+        author: { __typename?: 'User'; username: string } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -5078,6 +5092,7 @@ export type _SearchTeamSandboxesQuery = {
           path: string;
           id: any | null;
         } | null;
+        author: { __typename?: 'User'; username: string } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;
@@ -5136,6 +5151,7 @@ export type RecentlyAccessedSandboxesQuery = {
         path: string;
         id: any | null;
       } | null;
+      author: { __typename?: 'User'; username: string } | null;
       permissions: {
         __typename?: 'SandboxProtectionSettings';
         preventSandboxLeaving: boolean;
@@ -5161,6 +5177,7 @@ export type RecentlyAccessedBranchesQuery = {
       contribution: boolean;
       lastAccessedAt: string | null;
       upstream: boolean;
+      owner: { __typename?: 'User'; username: string } | null;
       project: {
         __typename?: 'Project';
         repository: {
@@ -5223,6 +5240,7 @@ export type SharedWithMeSandboxesQuery = {
         path: string;
         id: any | null;
       } | null;
+      author: { __typename?: 'User'; username: string } | null;
       permissions: {
         __typename?: 'SandboxProtectionSettings';
         preventSandboxLeaving: boolean;
@@ -5372,6 +5390,7 @@ export type ContributionBranchesQuery = {
       contribution: boolean;
       lastAccessedAt: string | null;
       upstream: boolean;
+      owner: { __typename?: 'User'; username: string } | null;
       project: {
         __typename?: 'Project';
         repository: {
@@ -5436,6 +5455,7 @@ export type RepositoryByDetailsQuery = {
       contribution: boolean;
       lastAccessedAt: string | null;
       upstream: boolean;
+      owner: { __typename?: 'User'; username: string } | null;
       project: {
         __typename?: 'Project';
         repository: {
@@ -5817,6 +5837,7 @@ export type TeamSidebarDataQuery = {
           path: string;
           id: any | null;
         } | null;
+        author: { __typename?: 'User'; username: string } | null;
         permissions: {
           __typename?: 'SandboxProtectionSettings';
           preventSandboxLeaving: boolean;

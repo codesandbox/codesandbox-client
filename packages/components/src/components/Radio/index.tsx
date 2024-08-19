@@ -34,7 +34,6 @@ export const RadioElement = styled.input(
 const Label = styled(Text)(
   css({
     display: 'block',
-    cursor: 'pointer',
     paddingLeft: 6,
     '&::before': {
       boxSizing: 'border-box',
@@ -71,6 +70,7 @@ export const Radio: FunctionComponent<IRadioProps> = ({
   checked,
   id,
   label,
+  disabled,
   ...props
 }) => {
   const inputId = useId(id);
@@ -81,6 +81,7 @@ export const Radio: FunctionComponent<IRadioProps> = ({
         id={inputId}
         name={inputId}
         type="radio"
+        disabled={disabled}
         {...props}
       />
       <Label
@@ -88,6 +89,7 @@ export const Radio: FunctionComponent<IRadioProps> = ({
         size={3}
         htmlFor={inputId}
         variant={checked ? 'body' : 'muted'}
+        css={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
       >
         {label}
       </Label>

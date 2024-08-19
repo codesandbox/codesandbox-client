@@ -15,11 +15,13 @@ export const SearchComponent = () => {
   const {
     activeTeam,
     dashboard: { getFilteredSandboxes },
+    user,
   } = useAppState();
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
   const [items] = useGetItems({
     query,
+    username: user?.username,
     getFilteredSandboxes,
   });
   const pageType: PageTypes = 'search';

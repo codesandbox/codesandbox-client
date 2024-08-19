@@ -15,8 +15,7 @@ export const SandboxBadge: React.FC<SandboxBadgeProps> = ({
   const isRestricted = restricted;
   const isTemplate = !!sandbox.customTemplate;
 
-  const boxIcon = isDevbox ? 'boxDevbox' : 'boxSandbox';
-  let boxTypeColor = isDevbox ? '#FFFFFF' : '#A6A6A6';
+  const boxIcon = isDevbox ? 'server' : 'boxDevbox';
   let boxTypeLabel = isDevbox ? 'Devbox' : 'Sandbox';
 
   if (isTemplate) {
@@ -24,14 +23,13 @@ export const SandboxBadge: React.FC<SandboxBadgeProps> = ({
   }
 
   if (isRestricted) {
-    boxTypeColor = '#F7CC66';
     boxTypeLabel += ' (Restricted)';
   }
 
   return (
     <Stack align="center" gap={1}>
-      <Icon name={boxIcon} color={boxTypeColor} />
-      <Text size={2} color={boxTypeColor}>
+      <Icon name={boxIcon} color="#A6A6A6" />
+      <Text size={2} color="#A6A6A6">
         {boxTypeLabel}
       </Text>
     </Stack>
