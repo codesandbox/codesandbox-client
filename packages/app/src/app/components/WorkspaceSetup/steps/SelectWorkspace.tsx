@@ -35,11 +35,6 @@ export const SelectWorkspace: React.FC<StepProps> = ({
       )
     )
     .filter(
-      // Filter out paddle teams (legacy)
-      t =>
-        t.subscription?.paymentProvider !== SubscriptionPaymentProvider.Paddle
-    )
-    .filter(
       // Filter out teams that are on ubb pro already
       t =>
         !(
