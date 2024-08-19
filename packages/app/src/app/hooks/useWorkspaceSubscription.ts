@@ -1,6 +1,5 @@
 import {
   CurrentTeamInfoFragmentFragment,
-  SubscriptionPaymentProvider,
   SubscriptionStatus,
 } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
