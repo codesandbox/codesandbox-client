@@ -42,6 +42,9 @@ export const sandboxFragmentDashboard = gql`
     }
 
     authorId
+    author {
+      username
+    }
     teamId
 
     permissions {
@@ -295,6 +298,9 @@ export const branchFragment = gql`
     contribution
     lastAccessedAt
     upstream
+    owner {
+      username
+    }
     project {
       repository {
         ... on GitHubRepository {
@@ -317,6 +323,9 @@ export const branchWithPRFragment = gql`
     name
     contribution
     lastAccessedAt
+    owner {
+      username
+    }
     upstream
     project {
       repository {
