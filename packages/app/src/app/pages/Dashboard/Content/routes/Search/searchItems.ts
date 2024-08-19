@@ -2,15 +2,12 @@ import {
   Collection,
   SandboxFragmentDashboardFragment,
   SidebarCollectionDashboardFragment,
+  ProjectFragment as Repository,
 } from 'app/graphql/types';
 import { useAppState, useActions } from 'app/overmind';
 import Fuse from 'fuse.js';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-import {
-  SandboxFragmentDashboardFragment as Sandbox,
-  ProjectFragment as Repository,
-} from 'app/graphql/types';
 
 const useSearchedSandboxes = (query: string) => {
   const state = useAppState();
@@ -100,7 +97,7 @@ export const useGetItems = ({
       | SandboxFragmentDashboardFragment
       | SidebarCollectionDashboardFragment
     )[]
-  ) => Sandbox[];
+  ) => SandboxFragmentDashboardFragment[];
 }) => {
   const foundResults: Array<
     SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment
