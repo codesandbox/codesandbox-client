@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Stack } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import {
-  SubscriptionPaymentProvider,
-  SubscriptionStatus,
-  TeamMemberAuthorization,
-} from 'app/graphql/types';
+import { SubscriptionStatus, TeamMemberAuthorization } from 'app/graphql/types';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
 import { useHistory } from 'react-router-dom';
