@@ -5,7 +5,6 @@ import React, { FunctionComponent, useState } from 'react';
 
 import { ImportRepository } from 'app/components/Create/ImportRepository';
 import { CreateBox } from 'app/components/Create/CreateBox';
-import { GenericCreate } from 'app/components/Create/GenericCreate';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import { EmptyTrash } from './EmptyTrash';
 import { FeedbackModal } from './FeedbackModal';
@@ -28,25 +27,11 @@ const modals = {
     Component: Preferences,
     width: 900,
   },
-  createDevbox: {
+  create: {
     Component: CreateBox,
     width: 950,
-    props: {
-      type: 'devbox',
-    },
   },
-  createSandbox: {
-    Component: CreateBox,
-    width: 950,
-    props: {
-      type: 'sandbox',
-    },
-  },
-  genericCreate: {
-    Component: GenericCreate,
-    width: 950,
-  },
-  importRepository: {
+  import: {
     Component: ImportRepository,
     width: 950,
   },
@@ -121,7 +106,7 @@ const Modals: FunctionComponent = () => {
   } = useAppState();
 
   const modal = currentModal && modals[currentModal];
-  if (currentModal === 'createDevbox' || currentModal === 'createSandbox') {
+  if (currentModal === 'create') {
     modal.props = {
       ...modal.props,
       ...(currentModalItemId ? { collectionId: currentModalItemId } : {}),
@@ -129,7 +114,7 @@ const Modals: FunctionComponent = () => {
     };
   }
 
-  if (currentModal === 'importRepository') {
+  if (currentModal === 'import') {
     modal.props = {
       ...modal.props,
       preSelectedRepo: repoToImport,

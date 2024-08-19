@@ -11,6 +11,7 @@ import track, {
 } from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
+
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -65,7 +66,7 @@ function getFolderName(item: GenericSandboxProps['item']): string | undefined {
 }
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
-  const { dashboard, activeWorkspaceAuthorization } = useAppState();
+  const { user, dashboard, activeWorkspaceAuthorization } = useAppState();
   const actions = useActions();
 
   const { sandbox } = item;
@@ -297,6 +298,11 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
         {...sandboxProps}
         {...interactionProps}
         isScrolling={isScrolling}
+        username={
+          sandboxProps.sandbox.author.username === user.username
+            ? 'you'
+            : sandboxProps.sandbox.author.username
+        }
       />
     </div>
   );
