@@ -13,6 +13,7 @@ import track, {
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
+
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -20,7 +21,6 @@ import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
-import { sandboxDeleted } from 'app/overmind/namespaces/workspace/actions';
 
 const MAP_SANDBOX_EVENT_TO_PAGE_TYPE: Partial<Record<PageTypes, string>> = {
   recent: 'Dashboard - Open Sandbox from Recent',
