@@ -15,7 +15,7 @@ export interface SandboxItemComponentProps {
   PrivacyIcon: React.FC;
   screenshotUrl: string | null;
   restricted: boolean;
-
+  username: string;
   interaction: 'button' | 'link';
   isScrolling: boolean;
   selected: boolean;

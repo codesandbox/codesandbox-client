@@ -19,6 +19,7 @@ export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
   sandboxLocation,
+  username,
   timeAgo,
   viewCount,
   TemplateIcon,
@@ -174,7 +175,7 @@ export const SandboxListItem = ({
               variant={selected ? 'body' : 'muted'}
               maxWidth="100%"
             >
-              {timeAgo}
+              {timeAgo} by {username}
             </Text>
           )}
         </Column>

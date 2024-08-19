@@ -184,7 +184,7 @@ export const SandboxCard = ({
   // drag preview
   thumbnailRef,
   isDragging,
-
+  username,
   'data-selection-id': dataSelectionId,
   ...props
 }: SandboxItemComponentProps) => {
@@ -193,11 +193,14 @@ export const SandboxCard = ({
   });
 
   let textColor = '#EBEBEB'; // default
+  let userNameTextColor = '#A6A6A6';
 
   if (restricted) {
     textColor = thumbnail.isCustom ? textColor : '#999999';
+    userNameTextColor = textColor;
   } else if (thumbnail?.brightness && thumbnail.isCustom) {
     textColor = thumbnail.brightness === 'light' ? '#0E0E0E' : '#FFFFFF';
+    userNameTextColor = textColor;
   }
 
   return (
@@ -279,7 +282,16 @@ export const SandboxCard = ({
         ) : null}
 
         <CardContent selected={selected}>
-          <SandboxTitle brightness={thumbnail.brightness} {...props} />
+          <Stack direction="vertical" gap={0}>
+            <SandboxTitle brightness={thumbnail.brightness} {...props} />
+            <Text
+              size={12}
+              truncate
+              css={{ marginLeft: 28, color: userNameTextColor }}
+            >
+              Created by {username}
+            </Text>
+          </Stack>
           <SandboxStats
             noDrag={noDrag}
             timeAgo={timeAgo}
