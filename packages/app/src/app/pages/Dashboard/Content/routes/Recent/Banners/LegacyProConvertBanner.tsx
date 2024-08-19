@@ -13,7 +13,6 @@ import { upgradeUrl } from '@codesandbox/common/lib/utils/url-generator/dashboar
 import { useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { docsUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { BannerProps } from './types';
 
 export const LegacyProConvertBanner: React.FC<BannerProps> = ({
