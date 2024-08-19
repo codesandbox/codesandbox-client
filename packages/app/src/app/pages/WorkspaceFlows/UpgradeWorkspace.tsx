@@ -16,7 +16,7 @@ export const UpgradeWorkspace = () => {
   const { hasLogIn, checkout } = useAppState();
   const actions = useActions();
   const { isAdmin } = useWorkspaceAuthorization();
-  const { isPro, isPaddle } = useWorkspaceSubscription();
+  const { isPro } = useWorkspaceSubscription();
   const { ubbBeta } = useWorkspaceFeatureFlags();
   const { getQueryParam } = useURLSearchParams();
   const workspaceId = getQueryParam('workspace');
@@ -29,8 +29,7 @@ export const UpgradeWorkspace = () => {
     (interval === 'month' || interval === 'year') &&
     workspaceId;
 
-  // Cannot upgrade if already on ubb or legacy paddle
-  const cannotUpgradeToUbb = (ubbBeta && isPro) || isPaddle;
+  const cannotUpgradeToUbb = ubbBeta && isPro;
 
   if (proPlanPreSelected && !checkout.newSubscription) {
     actions.checkout.selectPlan({

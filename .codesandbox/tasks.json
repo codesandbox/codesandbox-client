@@ -35,7 +35,7 @@
     "app:fast:stream": {
       "name": "Application (fast + stream)",
       "command": "yarn start:fast:stream",
-      "runAtStart": true,
+      "runAtStart": false,
       "preview": {
         "port": 3000
       },
