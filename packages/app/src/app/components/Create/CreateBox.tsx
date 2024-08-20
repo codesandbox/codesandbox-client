@@ -224,7 +224,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
         <ModalBody>
           <ModalContent
-            css={{
+            style={{
               overflow: 'visible',
               width: '100%',
               boxSizing: 'border-box',

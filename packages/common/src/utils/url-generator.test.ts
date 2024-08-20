@@ -53,14 +53,8 @@ describe('url-generator', () => {
       );
     });
 
-    test(`legacy sandbox link`, () => {
-      expect(sandboxUrl({ id: 'sandbox-id' }, true)).toBe(
-        '/p/sandbox/sandbox-id'
-      );
-    });
-
-    test(`legacy sandbox link`, () => {
-      expect(sandboxUrl({ id: 'sandbox-id' })).toBe('/s/sandbox-id');
+    test(`sandbox link`, () => {
+      expect(sandboxUrl({ id: 'sandbox-id' })).toBe('/p/sandbox/sandbox-id');
     });
 
     test(`handles query params`, () => {
