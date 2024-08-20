@@ -308,9 +308,10 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
         {...interactionProps}
         isScrolling={isScrolling}
         username={
+          sandboxProps.sandbox.author &&
           sandboxProps.sandbox.author.username === user?.username
             ? 'you'
-            : sandboxProps.sandbox.author.username
+            : sandboxProps.sandbox.author?.username || null
         }
       />
     </div>

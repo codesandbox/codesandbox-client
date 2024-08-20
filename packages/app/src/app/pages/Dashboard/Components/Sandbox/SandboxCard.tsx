@@ -284,13 +284,15 @@ export const SandboxCard = ({
         <CardContent selected={selected}>
           <Stack direction="vertical" gap={0}>
             <SandboxTitle brightness={thumbnail.brightness} {...props} />
-            <Text
-              size={12}
-              truncate
-              css={{ marginLeft: 28, color: userNameTextColor }}
-            >
-              Created by {username}
-            </Text>
+            {username ? (
+              <Text
+                size={12}
+                truncate
+                css={{ marginLeft: 28, color: userNameTextColor }}
+              >
+                Created by {username}
+              </Text>
+            ) : null}
           </Stack>
           <SandboxStats
             noDrag={noDrag}
