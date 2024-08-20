@@ -175,7 +175,7 @@ export const SandboxListItem = ({
               variant={selected ? 'body' : 'muted'}
               maxWidth="100%"
             >
-              {timeAgo} by {username}
+              {timeAgo} {username ? `by ${username}` : ''}
             </Text>
           )}
         </Column>
