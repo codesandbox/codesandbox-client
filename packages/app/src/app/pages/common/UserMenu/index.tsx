@@ -7,7 +7,6 @@ import { Menu, Stack, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
-import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
 import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
@@ -15,7 +14,6 @@ export const UserMenu: FunctionComponent & {
 } = props => {
   const { modalOpened, signOutClicked, gotUploadedFiles } = useActions();
   const { user, environment } = useAppState();
-  const isEditorPage = useIsEditorPage();
 
   if (!user) {
     return (
@@ -70,7 +68,7 @@ export const UserMenu: FunctionComponent & {
             onClick={() =>
               modalOpened({
                 modal: 'preferences',
-                itemId: isEditorPage ? 'appearance' : 'account',
+                itemId: 'account',
               })
             }
           >

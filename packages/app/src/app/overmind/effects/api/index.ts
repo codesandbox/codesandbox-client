@@ -6,7 +6,6 @@ import {
   UploadedFilesInfo,
   UserQuery,
   UserSandbox,
-  SettingsSync,
   ForkSandboxBody,
 } from '@codesandbox/common/lib/types';
 import { FETCH_TEAM_TEMPLATES } from 'app/components/Create/utils/queries';
@@ -183,27 +182,6 @@ export default {
         featuredSandboxes: featuredSandboxIds,
       },
     });
-  },
-  createUserSettings({
-    name,
-    settings,
-  }: {
-    name: string;
-    settings: string;
-  }): Promise<SettingsSync> {
-    return api.post(`/users/current_user/editor_settings`, {
-      name,
-      settings,
-    });
-  },
-  getUserSettings(): Promise<SettingsSync[]> {
-    return api.get(`/users/current_user/editor_settings`);
-  },
-  editUserSettings(body: any, id: string): Promise<SettingsSync> {
-    return api.patch(`/users/current_user/editor_settings/${id}`, body);
-  },
-  removeUserSetting(id: string): Promise<SettingsSync> {
-    return api.delete(`/users/current_user/editor_settings`);
   },
   sandboxesLimits() {
     return api.get<{
