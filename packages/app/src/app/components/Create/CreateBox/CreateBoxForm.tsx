@@ -198,10 +198,12 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                   icon={() => <Icon name="folder" size={12} />}
                   value={collectionId}
                   onChange={({ target: { value } }) => {
-                    setCollectionId(value);
+                    value === 'drafts'
+                      ? setCollectionId(undefined)
+                      : setCollectionId(value);
                   }}
                 >
-                  <option key="drafts" value={null}>
+                  <option key="drafts" value="drafts">
                     Drafts
                   </option>
                   {collectionsData?.me?.collections?.map(collection => (
