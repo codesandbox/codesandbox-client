@@ -21,7 +21,7 @@ export const SyncedSandboxCard = ({ name, path, url, ...props }) => {
               <InteractiveOverlay.Item>
                 <Link
                   to={url}
-                  css={{
+                  style={{
                     display: 'flex',
                     overflow: 'hidden',
                     textDecoration: 'none',

@@ -1,8 +1,6 @@
 import { Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
-import { VercelIntegration } from 'app/pages/common/VercelIntegration';
-
 import { GitHubPermissions } from './GitHubPermissions';
 import { Container } from './elements';
 
@@ -14,7 +12,6 @@ export const Integrations: FunctionComponent = () => (
 
     <Container>
       <GitHubPermissions />
-      <VercelIntegration />
     </Container>
   </div>
 );

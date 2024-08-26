@@ -12,8 +12,6 @@ import React, { useState, useEffect } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
-
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 
@@ -143,13 +141,10 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     }
   }, [searchQuery]);
 
-  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
-
   const selectTemplate = (sandbox: SandboxToFork) => {
     if (!hasLogIn) {
       // Open template in editor for anonymous users
-      window.location.href =
-        sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
+      window.location.href = sandbox.editorUrl || sandboxUrl(sandbox);
       return;
     }
 
@@ -163,8 +158,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
   };
 
   const openTemplate = (sandbox: SandboxToFork) => {
-    const url =
-      sandbox.editorUrl || sandboxUrl(sandbox, hasBetaEditorExperiment);
+    const url = sandbox.editorUrl || sandboxUrl(sandbox);
     window.open(url, '_blank');
 
     track(`Create - Open template`, {
@@ -230,7 +224,7 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
         <ModalBody>
           <ModalContent
-            css={{
+            style={{
               overflow: 'visible',
               width: '100%',
               boxSizing: 'border-box',
@@ -385,7 +379,6 @@ const CreateBoxConfig: React.FC<{
   const [collectionId, setCollectionId] = useState<string | undefined>(
     initialCollectionId
   );
-  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
   const [autoLaunchVSCode] = useGlobalPersistedState(
     'AUTO_LAUNCH_VSCODE',
     false
@@ -414,13 +407,12 @@ const CreateBoxConfig: React.FC<{
 
     setLoading(true);
 
-    actions.editor
-      .forkExternalSandbox({
+    actions.dashboard
+      .forkSandbox({
         sandboxId,
         openInNewWindow: false,
         openInVSCode,
         autoLaunchVSCode,
-        hasBetaEditorExperiment,
         customVMTier,
         redirectAfterFork: !isStandalone,
         body: {
@@ -438,7 +430,7 @@ const CreateBoxConfig: React.FC<{
               data: {
                 id: forkedSandbox.id,
                 alias: forkedSandbox.alias,
-                url: sandboxUrl(forkedSandbox, hasBetaEditorExperiment),
+                url: sandboxUrl(forkedSandbox),
               },
             },
             '*'

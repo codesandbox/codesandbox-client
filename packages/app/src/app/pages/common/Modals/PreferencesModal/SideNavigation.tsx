@@ -4,8 +4,6 @@ import React, { ComponentType, FunctionComponent } from 'react';
 
 import { useActions } from 'app/overmind';
 
-import { useIsEditorPage } from 'app/hooks/useIsEditorPage';
-
 type MenuItem = {
   Icon: ComponentType;
   id: string;
@@ -20,7 +18,6 @@ export const SideNavigation: FunctionComponent<Props> = ({
   selectedTab,
 }) => {
   const { itemIdChanged } = useActions().preferences;
-  const isEditorPage = useIsEditorPage();
 
   return (
     <Element css={css({ width: 200 })} paddingBottom={8}>
@@ -32,7 +29,7 @@ export const SideNavigation: FunctionComponent<Props> = ({
         size={4}
         weight="regular"
       >
-        {isEditorPage ? 'Preferences' : 'User settings'}
+        User settings
       </Text>
 
       <Element style={{ position: 'relative' }}>

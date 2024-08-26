@@ -7,7 +7,7 @@ export function CreateRepoFiles() {
   useEffect(() => {
     window.addEventListener('message', event => {
       if (event.data.type === 'create-repo-files') {
-        actions.git
+        actions
           .createRepoFiles(event.data.sandbox)
           .then(data => {
             window.parent.postMessage(

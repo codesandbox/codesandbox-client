@@ -1,1 +1,0 @@
-export { WorkspaceName } from './WorkspaceName';

@@ -1,7 +1,6 @@
-import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
+import { Contributor } from '@codesandbox/common/lib/types';
 import { identify } from '@codesandbox/common/lib/utils/analytics';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { IState, derived, ContextFunction } from 'overmind';
 import { Context } from '.';
@@ -29,7 +28,6 @@ export const withLoadApp = <I>(
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
   actions.internal.prefetchOfficialTemplates();
-  effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
   if (localStorage.jwt) {
     // We've introduced a new way of signing in to CodeSandbox, and we should let the user know to
@@ -104,61 +102,6 @@ export const withLoadApp = <I>(
   } catch (error) {
     // Something wrong in the parsing probably, make sure the file is JSON valid
   }
-};
-
-export const withOwnedSandbox = <I>(
-  continueAction: ContextFunction<I, void>,
-  cancelAction: ContextFunction<I, void> = () => Promise.resolve(),
-  requiredPermission?: PermissionType
-): ContextFunction<I, void> => async (context: Context, payload: I) => {
-  const { state, actions } = context;
-
-  const sandbox = state.editor.currentSandbox;
-
-  if (sandbox) {
-    if (
-      typeof requiredPermission === 'undefined'
-        ? !sandbox.owned
-        : !hasPermission(sandbox.authorization, requiredPermission)
-    ) {
-      if (state.editor.isForkingSandbox) {
-        return cancelAction(context, payload);
-      }
-
-      try {
-        await actions.editor.internal.forkSandbox({
-          sandboxId: sandbox.id,
-        });
-      } catch (e) {
-        // If we know the error is caused by an anonymous user trying to save a
-        // file and fork a server sandbox, we don't want to show the vscode error
-        // with the cancelAction and we don't want to continue either.
-        if (e.message === 'ERR_ANON_SSE_FORK') {
-          return () => {};
-        }
-
-        return cancelAction(context, payload);
-      }
-    } else if (sandbox.isFrozen && state.editor.sessionFrozen) {
-      const modalResponse = await actions.modals.forkFrozenModal.open();
-
-      if (modalResponse === 'fork') {
-        try {
-          await actions.editor.internal.forkSandbox({
-            sandboxId: sandbox.id,
-          });
-        } catch (e) {
-          return cancelAction(context, payload);
-        }
-      } else if (modalResponse === 'unfreeze') {
-        state.editor.sessionFrozen = false;
-      } else if (modalResponse === 'cancel') {
-        return cancelAction(context, payload);
-      }
-    }
-  }
-
-  return continueAction(context, payload);
 };
 
 export const createModals = <

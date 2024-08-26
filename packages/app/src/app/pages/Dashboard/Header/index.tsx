@@ -14,7 +14,7 @@ import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-ge
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
-import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
+import { SkeletonTextBlock } from 'app/components/Skeleton/elements';
 
 interface HeaderProps {
   onSidebarToggle: () => void;

@@ -1,3 +1,4 @@
+import { Element } from '@codesandbox/components';
 import styled, { keyframes, css } from 'styled-components';
 
 export const fadeIn = keyframes`
@@ -10,6 +11,6 @@ export const fadeAnimation = () =>
     ${fadeIn} 0.2s ease-out;
   `;
 
-export const AnimatedStep = styled.div`
+export const AnimatedStep = styled(Element)`
   animation: ${fadeAnimation};
 `;

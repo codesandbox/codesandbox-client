@@ -9,7 +9,6 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useBetaSandboxEditor } from 'app/hooks/useBetaSandboxEditor';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
@@ -26,7 +25,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const { activeTeam } = useAppState();
 
   const { isPro } = useWorkspaceSubscription();
-  const [hasBetaEditorExperiment] = useBetaSandboxEditor();
 
   const {
     browser: { copyToClipboard },
@@ -40,8 +38,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const { userRole, isTeamAdmin, isTeamViewer } = useWorkspaceAuthorization();
   const { isFrozen } = useWorkspaceLimits();
 
-  const url = sandboxUrl(sandbox, hasBetaEditorExperiment);
-  const linksToV2 = sandbox.isV2 || (!sandbox.isSse && hasBetaEditorExperiment);
+  const url = sandboxUrl(sandbox);
   const folderUrl = getFolderUrl(item, activeTeam);
   const boxType = sandbox.isV2 ? 'devbox' : 'sandbox';
 
@@ -99,10 +96,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {isTemplate && hasWriteAccess ? (
         <MenuItem
           onSelect={() => {
-            actions.editor.forkExternalSandbox({
+            actions.dashboard.forkSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
-              hasBetaEditorExperiment,
               redirectAfterFork: true,
             });
           }}
@@ -112,11 +108,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       ) : null}
       <MenuItem
         onSelect={() => {
-          if (linksToV2) {
-            window.location.href = url;
-          } else {
-            history.push(url);
-          }
+          window.location.href = url;
         }}
       >
         Open
@@ -150,13 +142,12 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {hasWriteAccess && !isTemplate ? (
         <MenuItem
           onSelect={() => {
-            actions.editor.forkExternalSandbox({
+            actions.dashboard.forkSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
-              hasBetaEditorExperiment,
               redirectAfterFork: true,
               body: {
-                privacy: sandbox.draft ? 2 : (sandbox.privacy as 2 | 1 | 0),
+                privacy: sandbox.privacy as 2 | 1 | 0,
                 collectionId: sandbox.draft ? undefined : sandbox.collection.id,
               },
             });

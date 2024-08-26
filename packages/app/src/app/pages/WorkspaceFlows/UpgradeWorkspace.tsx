@@ -29,6 +29,7 @@ export const UpgradeWorkspace = () => {
     (interval === 'month' || interval === 'year') &&
     workspaceId;
 
+  // Cannot upgrade if already on ubb
   const cannotUpgradeToUbb = ubbBeta && isPro;
 
   if (proPlanPreSelected && !checkout.newSubscription) {

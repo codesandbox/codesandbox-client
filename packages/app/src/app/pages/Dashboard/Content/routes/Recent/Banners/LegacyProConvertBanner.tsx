@@ -60,7 +60,15 @@ export const LegacyProConvertBanner: React.FC<BannerProps> = ({
                 </Button>
               </RouterLink>
             )}
-
+            {isAdmin && (
+              <Button
+                as="a"
+                href="mailto:support@codesandbox.io?subject=Convert to usage based billing"
+                autoWidth
+              >
+                Contact us
+              </Button>
+            )}
             <Link
               href={docsUrl(
                 '/learn/plans/workspace#managing-teams-and-subscriptions'

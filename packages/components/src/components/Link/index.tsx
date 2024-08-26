@@ -2,9 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Text, ITextProps } from '../Text';
+import { IElementProps } from '../Element';
 
 type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
   React.AnchorHTMLAttributes<HTMLSpanElement> &
+  IElementProps &
   ITextProps & {
     as?: any;
     to?: string;

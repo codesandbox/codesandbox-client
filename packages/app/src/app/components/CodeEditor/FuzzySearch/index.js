@@ -4,7 +4,7 @@ import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import Input from '@codesandbox/common/lib/components/Input';
-import { EntryIcons } from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import { EntryIcons } from 'app/components/EntryIcons';
 // eslint-disable-next-line import/extensions
 import { getType } from 'app/utils/get-type.ts';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
