@@ -126,7 +126,6 @@ export const teamFragmentDashboard = gql`
     description
     creatorId
     avatarUrl
-    legacy
     frozen
     insertedAt
     settings {
