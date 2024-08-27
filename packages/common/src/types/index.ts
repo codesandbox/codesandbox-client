@@ -445,7 +445,6 @@ export type Sandbox = {
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
-  isSse?: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;
@@ -779,7 +778,6 @@ export type SandboxUrlSourceData = {
   alias?: string | null;
   git?: GitInfo | null;
   isV2?: boolean;
-  isSse?: boolean;
   query?: Record<string, string> | URLSearchParams;
 };
 

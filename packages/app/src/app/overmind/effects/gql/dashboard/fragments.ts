@@ -12,7 +12,6 @@ export const sandboxFragmentDashboard = gql`
     removedAt
     privacy
     isFrozen
-    isSse
     screenshotUrl
     screenshotOutdated
     viewCount

@@ -3172,7 +3172,6 @@ export type TemplateFragment = {
     insertedAt: string;
     updatedAt: string;
     isV2: boolean;
-    isSse: boolean | null;
     forkCount: number;
     viewCount: number;
     team: { __typename?: 'TeamPreview'; name: string } | null;
@@ -3204,7 +3203,6 @@ export type RecentAndWorkspaceTemplatesQuery = {
         insertedAt: string;
         updatedAt: string;
         isV2: boolean;
-        isSse: boolean | null;
         forkCount: number;
         viewCount: number;
         team: { __typename?: 'TeamPreview'; name: string } | null;
@@ -3229,7 +3227,6 @@ export type RecentAndWorkspaceTemplatesQuery = {
           insertedAt: string;
           updatedAt: string;
           isV2: boolean;
-          isSse: boolean | null;
           forkCount: number;
           viewCount: number;
           team: { __typename?: 'TeamPreview'; name: string } | null;
@@ -3322,7 +3319,6 @@ export type SandboxFragmentDashboardFragment = {
   removedAt: string | null;
   privacy: number;
   isFrozen: boolean;
-  isSse: boolean | null;
   screenshotUrl: string | null;
   screenshotOutdated: boolean;
   viewCount: number;
@@ -3370,7 +3366,6 @@ export type RepoFragmentDashboardFragment = {
   removedAt: string | null;
   privacy: number;
   isFrozen: boolean;
-  isSse: boolean | null;
   screenshotUrl: string | null;
   screenshotOutdated: boolean;
   viewCount: number;
@@ -3446,7 +3441,6 @@ export type TemplateFragmentDashboardFragment = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -3917,7 +3911,6 @@ export type AddToFolderMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -3971,7 +3964,6 @@ export type MoveToTrashMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4026,7 +4018,6 @@ export type ChangePrivacyMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4081,7 +4072,6 @@ export type ChangeFrozenMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4136,7 +4126,6 @@ export type _RenameSandboxMutation = {
     removedAt: string | null;
     privacy: number;
     isFrozen: boolean;
-    isSse: boolean | null;
     screenshotUrl: string | null;
     screenshotOutdated: boolean;
     viewCount: number;
@@ -4624,7 +4613,6 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -4693,7 +4681,6 @@ export type SandboxesByPathQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -4754,7 +4741,6 @@ export type TeamDraftsQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -4832,7 +4818,6 @@ export type GetTeamReposQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -4916,7 +4901,6 @@ export type TeamTemplatesQuery = {
           removedAt: string | null;
           privacy: number;
           isFrozen: boolean;
-          isSse: boolean | null;
           screenshotUrl: string | null;
           screenshotOutdated: boolean;
           viewCount: number;
@@ -5053,7 +5037,6 @@ export type _SearchTeamSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
@@ -5112,7 +5095,6 @@ export type RecentlyAccessedSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
-      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -5201,7 +5183,6 @@ export type SharedWithMeSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       isFrozen: boolean;
-      isSse: boolean | null;
       screenshotUrl: string | null;
       screenshotOutdated: boolean;
       viewCount: number;
@@ -5798,7 +5779,6 @@ export type TeamSidebarDataQuery = {
         removedAt: string | null;
         privacy: number;
         isFrozen: boolean;
-        isSse: boolean | null;
         screenshotUrl: string | null;
         screenshotOutdated: boolean;
         viewCount: number;
