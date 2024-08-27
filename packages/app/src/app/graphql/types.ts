@@ -3496,11 +3496,9 @@ export type TeamFragmentDashboardFragment = {
   __typename?: 'Team';
   id: any;
   name: string;
-  type: TeamType;
   description: string | null;
   creatorId: any | null;
   avatarUrl: string | null;
-  legacy: boolean;
   frozen: boolean;
   insertedAt: string;
   settings: {
@@ -3797,11 +3795,9 @@ export type _CreateTeamMutation = {
     __typename?: 'Team';
     id: any;
     name: string;
-    type: TeamType;
     description: string | null;
     creatorId: any | null;
     avatarUrl: string | null;
-    legacy: boolean;
     frozen: boolean;
     insertedAt: string;
     settings: {
@@ -4195,11 +4191,9 @@ export type _AcceptTeamInvitationMutation = {
     __typename?: 'Team';
     id: any;
     name: string;
-    type: TeamType;
     description: string | null;
     creatorId: any | null;
     avatarUrl: string | null;
-    legacy: boolean;
     frozen: boolean;
     insertedAt: string;
     settings: {
@@ -4289,11 +4283,9 @@ export type _SetTeamNameMutation = {
     __typename?: 'Team';
     id: any;
     name: string;
-    type: TeamType;
     description: string | null;
     creatorId: any | null;
     avatarUrl: string | null;
-    legacy: boolean;
     frozen: boolean;
     insertedAt: string;
     settings: {
@@ -4547,11 +4539,9 @@ export type SetTeamMetadataMutation = {
     __typename?: 'Team';
     id: any;
     name: string;
-    type: TeamType;
     description: string | null;
     creatorId: any | null;
     avatarUrl: string | null;
-    legacy: boolean;
     frozen: boolean;
     insertedAt: string;
     settings: {
@@ -4986,11 +4976,9 @@ export type AllTeamsQuery = {
       __typename?: 'Team';
       id: any;
       name: string;
-      type: TeamType;
       description: string | null;
       creatorId: any | null;
       avatarUrl: string | null;
-      legacy: boolean;
       frozen: boolean;
       insertedAt: string;
       settings: {
