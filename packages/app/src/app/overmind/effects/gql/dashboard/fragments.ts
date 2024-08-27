@@ -123,7 +123,6 @@ export const teamFragmentDashboard = gql`
   fragment teamFragmentDashboard on Team {
     id
     name
-    type
     description
     creatorId
     avatarUrl
