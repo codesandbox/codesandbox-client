@@ -1,7 +1,6 @@
 import { Button, Stack, Text } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
 import React from 'react';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 export const EmptyCTAs: React.FC<{ isFrozen: boolean }> = ({ isFrozen }) => {
   const actions = useActions();
@@ -12,7 +11,6 @@ export const EmptyCTAs: React.FC<{ isFrozen: boolean }> = ({ isFrozen }) => {
       <Stack gap={2}>
         <Button
           onClick={() => {
-            track('Empty Recent - Explore templates');
             actions.modalOpened({ modal: 'create' });
           }}
           disabled={isFrozen}
@@ -23,7 +21,6 @@ export const EmptyCTAs: React.FC<{ isFrozen: boolean }> = ({ isFrozen }) => {
         </Button>
         <Button
           onClick={() => {
-            track('Empty Recent - Import repository');
             actions.modalOpened({ modal: 'import' });
           }}
           disabled={isFrozen}

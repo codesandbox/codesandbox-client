@@ -9,7 +9,7 @@ export type RepositoryProps = {
     repository: string;
   };
   onContextMenu: (evt: React.MouseEvent) => void;
-  onClick: (evt: React.MouseEvent) => void;
+  onClick?: (evt: React.MouseEvent) => void;
   selected: boolean;
   isBeingRemoved: boolean;
   appInstalled: boolean;

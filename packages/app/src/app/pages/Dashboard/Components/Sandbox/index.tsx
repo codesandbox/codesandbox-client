@@ -6,9 +6,7 @@ import { zonedTimeToUtc } from 'date-fns-tz';
 import { useActions, useAppState } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import track, {
-  trackImprovedDashboardEvent,
-} from '@codesandbox/common/lib/utils/analytics';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 
@@ -19,12 +17,6 @@ import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
-
-const MAP_SANDBOX_EVENT_TO_PAGE_TYPE: Partial<Record<PageTypes, string>> = {
-  recent: 'Dashboard - Open Sandbox from Recent',
-  drafts: 'Dashboard - Open Sandbox from My Drafts',
-  sandboxes: 'Dashboard - Open Sandbox from Sandboxes',
-};
 
 const PrivacyIcons = {
   0: () => null,
@@ -172,14 +164,10 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
       // Can't open deleted items, they don't exist anymore so we open
       // the context menu instead.
       onContextMenu(event);
+    } else if (event.ctrlKey || event.metaKey) {
+      window.open(url, '_blank');
     } else {
-      trackImprovedDashboardEvent(MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]);
-
-      if (event.ctrlKey || event.metaKey) {
-        window.open(url, '_blank');
-      } else {
-        window.location.href = url;
-      }
+      window.location.href = url;
     }
   };
 
@@ -235,12 +223,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
           interaction: 'link' as const,
           as: 'a',
           href: url,
-          onClick: () => {
-            // On the recent page the sandbox card is an anchor, so we only have
-            // to track using onclick, the sandbox is opened through native anchor
-            // functionality (including pressing meta keys for new tab).
-            trackImprovedDashboardEvent(MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]);
-          },
           style: {
             textDecoration: 'none',
           },

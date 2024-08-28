@@ -11,7 +11,7 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Container, ContentContainer } from './elements';
 
 interface IOverlayProps {
-  event: string;
+  event?: string;
   isOpen?: boolean;
   onOpen?: () => void;
   onClose?: () => void;

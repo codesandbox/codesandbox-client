@@ -139,8 +139,6 @@ export const newSandboxShowcaseSelected = async (
   await effects.api.updateShowcasedSandbox(state.user.username, id);
 
   state.profile.isLoadingProfile = false;
-
-  effects.analytics.track('Profile - Showcase Sandbox selected');
 };
 
 export const deleteSandboxClicked = ({ state }: Context, id: string) => {
@@ -338,8 +336,6 @@ export const addFeaturedSandboxes = async (
     );
 
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
-
-    effects.analytics.track('Profile - Sandbox pinned');
   } catch (error) {
     // rollback optimisic update
     actions.profile.removeFeaturedSandboxesInState({ sandboxId });
@@ -426,7 +422,6 @@ export const saveFeaturedSandboxesOrder = async ({
       featuredSandboxIds
     );
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
-    effects.analytics.track('Profile - Pinnned sandboxes reorderd');
   } catch (error) {
     // TODO: rollback optimisic update
 
@@ -471,7 +466,6 @@ export const changeSandboxPrivacy = async (
 
   try {
     await effects.api.updatePrivacy(id, privacy);
-    effects.analytics.track('Profile - Sandbox privacy changed');
   } catch (error) {
     // rollback optimistic update
     // it is safe to assume that the sandbox was public (privacy:0)

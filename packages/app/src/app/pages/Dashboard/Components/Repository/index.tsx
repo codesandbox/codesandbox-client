@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAppState } from 'app/overmind';
-import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { DashboardRepository } from '../../types';
 import { RepositoryCard } from './RepositoryCard';
@@ -45,7 +44,6 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
       branches: `${branchCount}`,
     },
     selected: selectedIds.includes(repositoryId),
-    onClick: () => trackImprovedDashboardEvent('Dashboard - Open Repository'),
     onContextMenu: handleContextMenu,
     isBeingRemoved:
       removingRepository?.owner === providerRepository.owner &&

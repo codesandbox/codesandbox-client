@@ -85,7 +85,6 @@ export const FindByURL: React.FC<FindByURLProps> = ({ onSelected }) => {
           isImported={isImported}
           onClicked={() => {
             if (isImported) {
-              track('Import repository - Find by URL - Open already imported');
               window.location.href = v2DefaultBranchUrl({
                 owner: githubRepo.data.owner.login,
                 repoName: githubRepo.data.name,
