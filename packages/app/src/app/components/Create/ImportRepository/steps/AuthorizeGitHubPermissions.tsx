@@ -1,14 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, Icon, Stack, Text } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 export const AuthorizeGitHubPermissions = () => {
   const { signInGithubClicked } = useActions();
-
-  useEffect(() => {
-    track('Import repository - Permissions - Display');
-  }, []);
 
   return (
     <Stack
@@ -31,7 +26,6 @@ export const AuthorizeGitHubPermissions = () => {
           size="large"
           onClick={() => {
             signInGithubClicked('private_repos');
-            track('Import repository - Permissions - Authorize all');
           }}
         >
           Authorize access to public and private repositories
@@ -41,7 +35,6 @@ export const AuthorizeGitHubPermissions = () => {
           size="large"
           onClick={() => {
             signInGithubClicked('public_repos');
-            track('Import repository - Permissions - Authorize public');
           }}
         >
           Authorize access to public repositories only

@@ -8,8 +8,6 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useTabState } from 'reakit/Tab';
 
-import track from '@codesandbox/common/lib/utils/analytics';
-
 import { ModalContentProps } from 'app/pages/common/Modals';
 import { SignIn } from 'app/pages/SignIn/SignIn';
 import { useAppState, useEffects } from 'app/overmind';
@@ -140,12 +138,6 @@ export const ImportRepository: React.FC<
     handleFetchFullGithubRepo({ owner: repo.owner.login, name: repo.name });
   };
 
-  const trackTabClick = (tab: string) => {
-    track(`Import repository - Select - Click Tab`, {
-      tab_name: tab,
-    });
-  };
-
   const forkMode = selectedRepo?.authorization === GithubRepoAuthorization.Read;
 
   return (
@@ -198,35 +190,19 @@ export const ImportRepository: React.FC<
                   }}
                 >
                   <Tabs {...tabState} aria-label="Create new">
-                    <Tab
-                      {...tabState}
-                      onClick={() => trackTabClick('search-in-org')}
-                      stopId="search-in-org"
-                    >
+                    <Tab {...tabState} stopId="search-in-org">
                       Search in organizations
                     </Tab>
 
-                    <Tab
-                      {...tabState}
-                      onClick={() => trackTabClick('find-by-url')}
-                      stopId="find-by-url"
-                    >
+                    <Tab {...tabState} stopId="find-by-url">
                       Find by URL
                     </Tab>
 
-                    <Tab
-                      {...tabState}
-                      onClick={() => trackTabClick('from-template')}
-                      stopId="from-template"
-                    >
+                    <Tab {...tabState} stopId="from-template">
                       Start from a template
                     </Tab>
 
-                    <Tab
-                      {...tabState}
-                      onClick={() => trackTabClick('import-template')}
-                      stopId="import-template"
-                    >
+                    <Tab {...tabState} stopId="import-template">
                       Import template
                     </Tab>
                   </Tabs>

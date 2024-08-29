@@ -103,7 +103,6 @@ export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
             value={selectedAccount}
             variant="solid"
             onChange={(account: string) => {
-              track('Import repository - Select - Change GH Org');
               setSelectedAccount(account);
             }}
           />
@@ -136,7 +135,6 @@ export const SearchInOrganizations: React.FC<SearchInOrganizationsProps> = ({
                 repo={repo}
                 onClicked={() => {
                   if (isImported) {
-                    track('Import repository - Select - Open already imported');
                     window.location.href = v2DefaultBranchUrl({
                       owner: repo.owner.login,
                       repoName: repo.name,

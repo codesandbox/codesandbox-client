@@ -133,14 +133,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
       });
   }, [sandboxIdToFork]);
 
-  useEffect(() => {
-    if (searchQuery) {
-      track(`Create - Search Templates`, {
-        query: searchQuery,
-      });
-    }
-  }, [searchQuery]);
-
   const selectTemplate = (sandbox: SandboxToFork) => {
     if (!hasLogIn) {
       // Open template in editor for anonymous users

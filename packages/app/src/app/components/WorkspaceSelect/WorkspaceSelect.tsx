@@ -4,7 +4,6 @@ import { Badge, Text, Menu, Stack, Icon } from '@codesandbox/components';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
-import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useHistory } from 'react-router-dom';
 
@@ -37,19 +36,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
       ),
     ];
 
-    // The <Menu /> component doesn't have a callback like `onOpenChange`
-    // that we find in Radix. The "appropriate" solution would be to use
-    // a render callback to tell if the menu is expanded or not. Since
-    // our current implementation does not support render callbacks,
-    // the easiest solution is to check for the `aria-expanded` attr
-    // on the menu button.
-    const trackOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
-      const isExpanded = e.currentTarget?.getAttribute('aria-expanded');
-      if (JSON.parse(isExpanded) === true) {
-        track('Workspace Selector - open menu');
-      }
-    };
-
     return (
       <Menu>
         <Stack
@@ -76,7 +62,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               },
             },
           }}
-          onClick={trackOpen}
         >
           <Stack align="center" gap={2}>
             <Text
@@ -117,10 +102,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 align="center"
                 gap={2}
                 css={{ borderBottom: '1px solid #343434' }}
-                onSelect={() => {
-                  track('Workspace Selector - Change Active Team');
-                  onSelect(team.id);
-                }}
+                onSelect={() => onSelect(team.id)}
               >
                 <TeamAvatar
                   avatar={team.avatarUrl}
@@ -153,7 +135,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             }}
             onSelect={() => {
               history.push('/create-workspace');
-              track('Workspace Selector - Create Workspace');
             }}
           >
             <Stack

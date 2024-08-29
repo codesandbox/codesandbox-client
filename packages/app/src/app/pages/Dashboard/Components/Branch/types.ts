@@ -9,7 +9,7 @@ export type BranchProps = {
   isBeingRemoved: boolean;
   selected: boolean;
   onContextMenu: (evt: React.MouseEvent) => void;
-  onClick: (evt: React.MouseEvent) => void;
+  onClick?: (evt: React.MouseEvent) => void;
   showRepo: boolean;
   lastAccessed: string;
 };

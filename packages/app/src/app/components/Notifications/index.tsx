@@ -22,7 +22,6 @@ export const Notifications = ({ dashboard }: { dashboard?: boolean }) => {
   return (
     <Overlay
       content={NotificationsContent}
-      event="Notifications"
       isOpen={notificationsMenuOpened}
       onClose={notificationsClosed}
       onOpen={notificationsOpened}

@@ -11,7 +11,7 @@ export const useNewControlledWindow = ({
   onCloseWindow,
 }: {
   url: string;
-  trackEvents: {
+  trackEvents?: {
     open: string;
     close: string;
   };
@@ -56,7 +56,9 @@ export const useNewControlledWindow = ({
 
         if (popupRef.current) {
           if (popupRef.current.closed) {
-            track(trackEvents.close);
+            if (trackEvents) {
+              track(trackEvents.close);
+            }
 
             if (onCloseWindow) {
               onCloseWindow();
@@ -103,7 +105,9 @@ export const useNewControlledWindow = ({
         },left=${window.screen.width / 2 - popupW / 2}`
       );
 
-      track(trackEvents.open);
+      if (trackEvents) {
+        track(trackEvents.open);
+      }
 
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       (popupRef.current as any) = windowRef;
