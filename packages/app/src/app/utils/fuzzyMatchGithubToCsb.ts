@@ -1,6 +1,5 @@
 import { OrganizationFragment, ProfileFragment } from 'app/graphql/types';
 import { findBestMatch } from 'string-similarity';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 export const fuzzyMatchGithubToCsb = (
   teamName: string,
@@ -16,14 +15,8 @@ export const fuzzyMatchGithubToCsb = (
   );
 
   if (bestMatch) {
-    track('Match GH to CSB - success', {
-      match: bestMatch.login,
-    });
-
     return bestMatch;
   }
-
-  track('Match GH to CSB - fail');
 
   return accounts[0];
 };
