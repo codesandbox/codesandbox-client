@@ -16,7 +16,7 @@ interface Props {
 export const Sandbox: React.FC<Props> = ({ showModalOnTop, match }) => {
   const state = useAppState();
 
-  if (match.params.id) {
+  if (match?.params.id) {
     window.location.href = sandboxUrl({ id: match.params.id });
     return null;
   }
