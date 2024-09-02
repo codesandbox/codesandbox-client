@@ -12,7 +12,6 @@ export const sandboxFragmentDashboard = gql`
     removedAt
     privacy
     isFrozen
-    isSse
     screenshotUrl
     screenshotOutdated
     viewCount
@@ -123,11 +122,9 @@ export const teamFragmentDashboard = gql`
   fragment teamFragmentDashboard on Team {
     id
     name
-    type
     description
     creatorId
     avatarUrl
-    legacy
     frozen
     insertedAt
     settings {
