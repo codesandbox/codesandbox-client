@@ -20,6 +20,17 @@ export const profileMounted = withLoadApp(
 
     state.profile.profiles[profile.id] = profile;
     state.profile.currentProfileId = profile.id;
+
+    if (profile.showcasedSandboxShortid) {
+      try {
+        state.profile.showcasedSandbox = await effects.api.getSandbox(
+          profile.showcasedSandboxShortid
+        );
+      } catch (e) {
+        // Ignore it
+      }
+    }
+
     state.profile.isLoadingProfile = false;
   }
 );
