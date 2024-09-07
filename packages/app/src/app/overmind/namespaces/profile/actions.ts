@@ -147,8 +147,11 @@ export const newSandboxShowcaseSelected = async (
     return;
   }
 
-  await effects.api.updateShowcasedSandbox(state.user.username, id);
-
+  const sandbox = await effects.api.updateShowcasedSandbox(
+    state.user.username,
+    id
+  );
+  state.profile.showcasedSandbox = sandbox as Sandbox;
   state.profile.isLoadingProfile = false;
 };
 
