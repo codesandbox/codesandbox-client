@@ -20,6 +20,17 @@ export const profileMounted = withLoadApp(
 
     state.profile.profiles[profile.id] = profile;
     state.profile.currentProfileId = profile.id;
+
+    if (profile.showcasedSandboxShortid) {
+      try {
+        state.profile.showcasedSandbox = await effects.api.getSandbox(
+          profile.showcasedSandboxShortid
+        );
+      } catch (e) {
+        // Ignore it
+      }
+    }
+
     state.profile.isLoadingProfile = false;
   }
 );
@@ -136,8 +147,11 @@ export const newSandboxShowcaseSelected = async (
     return;
   }
 
-  await effects.api.updateShowcasedSandbox(state.user.username, id);
-
+  const sandbox = await effects.api.updateShowcasedSandbox(
+    state.user.username,
+    id
+  );
+  state.profile.showcasedSandbox = sandbox as Sandbox;
   state.profile.isLoadingProfile = false;
 };
 
