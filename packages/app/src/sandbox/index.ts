@@ -30,7 +30,7 @@ endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 
 requirePolyfills().then(() => {
   if (withServiceWorker) {
-    registerServiceWorker('/sandbox-service-worker.js', {});
+    // registerServiceWorker('/sandbox-service-worker.js', {});
   }
 
   function sendReady() {
@@ -69,6 +69,15 @@ requirePolyfills().then(() => {
           dispatch({
             type: 'transpiler-context',
             data: {},
+          });
+        }
+      } else if (data.type === 'get-modules') {
+        const manager = getCurrentManager();
+
+        if (manager) {
+          dispatch({
+            type: 'all-modules',
+            data: manager.getModules(),
           });
         }
       } else if (data.type === 'sign-in') {

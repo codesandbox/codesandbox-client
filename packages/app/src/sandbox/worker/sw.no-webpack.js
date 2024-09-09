@@ -127,12 +127,14 @@ function createRelayPortPromise() {
 let relayPortPromise = createRelayPortPromise();
 
 async function sendToRelay(message) {
+  console.log(('wait:', message));
   const relayPort = await relayPortPromise;
   invariant(
     relayPort,
     'Failed to send message to the relay: relay message port is not defined',
     message
   );
+  console.log(('send:', message));
   relayPort.postMessage(message);
 }
 
@@ -232,26 +234,28 @@ self.addEventListener('fetch', event => {
    * TODO: figure out a way to filter bundler requests and
    * local requests. Now, it only supports `public`
    */
+
   if (
-    parsedUrl.origin !== self.location.origin ||
-    !parsedUrl.pathname.startsWith('/public')
+    parsedUrl.origin === self.location.origin &&
+    (parsedUrl.pathname.startsWith('/public') ||
+      parsedUrl.pathname.startsWith('/fonts/'))
   ) {
-    return;
+    console.log(parsedUrl.pathname);
+
+    const handleRequest = async () => {
+      debug(`[SW]: request `, req);
+
+      const response = await getResponse(req);
+      const swResponse = new Response(response.body, {
+        headers: response.headers,
+        status: response.status,
+      });
+
+      debug(`[SW]: response`, response);
+      return swResponse;
+    };
+
+    // eslint-disable-next-line
+    return event.respondWith(handleRequest());
   }
-
-  const handleRequest = async () => {
-    debug(`[SW]: request `, req);
-
-    const response = await getResponse(req);
-    const swResponse = new Response(response.body, {
-      headers: response.headers,
-      status: response.status,
-    });
-
-    debug(`[SW]: response`, response);
-    return swResponse;
-  };
-
-  // eslint-disable-next-line
-  return event.respondWith(handleRequest());
 });
