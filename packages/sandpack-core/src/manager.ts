@@ -1485,8 +1485,6 @@ export default class Manager implements IEvaluator {
   async getTranspilerContext(): Promise<TranspilerContext> {
     const info: TranspilerContext = {};
 
-    debugger;
-
     const data = await Promise.all(
       this.preset
         .getTranspilers()

@@ -26,7 +26,13 @@ export class TarStore implements FetchProtocol {
     tarContents.forEach(tar => {
       normalized[tar.name.replace(/^[^/]+/, '')] = {
         // TODO(@CompuIves): store buffers rather than strings for binary files
-        content: Buffer.from(tar.buffer).toString(),
+        content: Buffer.from(tar.buffer).toString(
+          tar.name.endsWith('.woff2') ||
+            tar.name.endsWith('.woff') ||
+            tar.name.endsWith('.ttf')
+            ? 'base64'
+            : undefined
+        ),
       };
     });
     return normalized;

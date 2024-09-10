@@ -238,15 +238,21 @@ self.addEventListener('fetch', event => {
   if (
     parsedUrl.origin === self.location.origin &&
     (parsedUrl.pathname.startsWith('/public') ||
-      parsedUrl.pathname.startsWith('/fonts/'))
+      parsedUrl.pathname.startsWith('/node_modules/'))
   ) {
-    console.log(parsedUrl.pathname);
-
     const handleRequest = async () => {
       debug(`[SW]: request `, req);
 
       const response = await getResponse(req);
-      const swResponse = new Response(response.body, {
+      const pathname = parsedUrl.pathname;
+      const responseBody =
+        pathname.endsWith('.woff2') ||
+        pathname.endsWith('.woff') ||
+        pathname.endsWith('.ttf')
+          ? base64ToUint8Array(response.body)
+          : response.body;
+
+      const swResponse = new Response(responseBody, {
         headers: response.headers,
         status: response.status,
       });
@@ -259,3 +265,12 @@ self.addEventListener('fetch', event => {
     return event.respondWith(handleRequest());
   }
 });
+
+function base64ToUint8Array(base64String) {
+  const binaryString = atob(base64String);
+  const uint8Array = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    uint8Array[i] = binaryString.charCodeAt(i);
+  }
+  return uint8Array;
+}
