@@ -68,7 +68,7 @@
     "react": "^16.8.6",
     "react-icons": "^2.2.7",
     "react-input-autosize": "2.2.1",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^6.0.0",
     "react-scrollbars-custom": "^4.0.20",
     "react-spring": "^8.0.25",
     "react-textarea-autosize": "^6.1.0",
