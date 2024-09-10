@@ -127,14 +127,12 @@ function createRelayPortPromise() {
 let relayPortPromise = createRelayPortPromise();
 
 async function sendToRelay(message) {
-  console.log(('wait:', message));
   const relayPort = await relayPortPromise;
   invariant(
     relayPort,
     'Failed to send message to the relay: relay message port is not defined',
     message
   );
-  console.log(('send:', message));
   relayPort.postMessage(message);
 }
 
