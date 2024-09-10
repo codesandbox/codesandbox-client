@@ -76,7 +76,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "postcss-url": "^10.1.3",
     "postinstall-postinstall": "^2.1.0"
   },
   "devDependencies": {

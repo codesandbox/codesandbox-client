@@ -24,15 +24,21 @@ export class TarStore implements FetchProtocol {
   private normalizeTar(tarContents: UntarredFiles) {
     const normalized: { [path: string]: DeserializedFetchedTar } = {};
     tarContents.forEach(tar => {
+      /**
+       * TODO: it's necessary to encode the font files as base64,
+       * otherwise they will be corrupted when fetched by the sandpack service worker.
+       *
+       * Ideally, in the future, we should use ArrayBuffer instead of strings
+       */
+      const encode =
+        tar.name.endsWith('.woff2') ||
+        tar.name.endsWith('.woff') ||
+        tar.name.endsWith('.ttf')
+          ? 'base64'
+          : undefined;
+
       normalized[tar.name.replace(/^[^/]+/, '')] = {
-        // TODO(@CompuIves): store buffers rather than strings for binary files
-        content: Buffer.from(tar.buffer).toString(
-          tar.name.endsWith('.woff2') ||
-            tar.name.endsWith('.woff') ||
-            tar.name.endsWith('.ttf')
-            ? 'base64'
-            : undefined
-        ),
+        content: Buffer.from(tar.buffer).toString(encode),
       };
     });
     return normalized;
