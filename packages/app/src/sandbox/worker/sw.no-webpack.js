@@ -232,26 +232,43 @@ self.addEventListener('fetch', event => {
    * TODO: figure out a way to filter bundler requests and
    * local requests. Now, it only supports `public`
    */
+
   if (
-    parsedUrl.origin !== self.location.origin ||
-    !parsedUrl.pathname.startsWith('/public')
+    parsedUrl.origin === self.location.origin &&
+    (parsedUrl.pathname.startsWith('/public') ||
+      parsedUrl.pathname.startsWith('/node_modules/'))
   ) {
-    return;
+    const handleRequest = async () => {
+      debug(`[SW]: request `, req);
+
+      const response = await getResponse(req);
+      const pathname = parsedUrl.pathname;
+      const responseBody =
+        pathname.endsWith('.woff2') ||
+        pathname.endsWith('.woff') ||
+        pathname.endsWith('.ttf')
+          ? base64ToUint8Array(response.body)
+          : response.body;
+
+      const swResponse = new Response(responseBody, {
+        headers: response.headers,
+        status: response.status,
+      });
+
+      debug(`[SW]: response`, response);
+      return swResponse;
+    };
+
+    // eslint-disable-next-line
+    return event.respondWith(handleRequest());
   }
-
-  const handleRequest = async () => {
-    debug(`[SW]: request `, req);
-
-    const response = await getResponse(req);
-    const swResponse = new Response(response.body, {
-      headers: response.headers,
-      status: response.status,
-    });
-
-    debug(`[SW]: response`, response);
-    return swResponse;
-  };
-
-  // eslint-disable-next-line
-  return event.respondWith(handleRequest());
 });
+
+function base64ToUint8Array(base64String) {
+  const binaryString = atob(base64String);
+  const uint8Array = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    uint8Array[i] = binaryString.charCodeAt(i);
+  }
+  return uint8Array;
+}

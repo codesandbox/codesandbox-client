@@ -1,5 +1,6 @@
 import postcss, { ProcessOptions } from 'postcss';
 import postcssImportPlugin from 'postcss-import';
+import postcssUrl from 'postcss-url';
 import { join } from 'path';
 import { isDependencyPath } from 'sandbox/eval/utils/is-dependency-path';
 
@@ -58,6 +59,9 @@ export default async function (
 
         return tModule.module.code;
       },
+    }),
+    postcssUrl({
+      url: 'rebase',
     }),
   ];
 

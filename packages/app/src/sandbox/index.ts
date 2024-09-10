@@ -71,6 +71,15 @@ requirePolyfills().then(() => {
             data: {},
           });
         }
+      } else if (data.type === 'get-modules') {
+        const manager = getCurrentManager();
+
+        if (manager) {
+          dispatch({
+            type: 'all-modules',
+            data: manager.getModules(),
+          });
+        }
       } else if (data.type === 'sign-in') {
         await requestSandpackSecretFromApp(data.teamId);
 
