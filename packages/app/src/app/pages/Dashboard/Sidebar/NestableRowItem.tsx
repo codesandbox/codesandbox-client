@@ -27,6 +27,7 @@ import {
 } from './utils';
 import { NEW_FOLDER_ID } from './constants';
 import { RowItem } from './RowItem';
+import { getParentPath } from '../utils/path';
 
 interface NestableRowItemProps {
   name: string;
@@ -110,7 +111,7 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
     });
   } else {
     subFolders = folders.filter(folder => {
-      const parentPath = folder.path.split('/').slice(0, -1).join('/');
+      const parentPath = getParentPath(folder.path);
 
       return parentPath === folderPath;
     });
