@@ -205,7 +205,7 @@ function getResponse(request) {
         `Failed to handle ${request.method} ${request.url} request: no response received from the BroadcastChannel within timeout. There's likely an issue with the relay/worker communication.`
       )
     );
-  }, 3000);
+  }, 5000);
 
   const requestMessage = {
     $channel: CHANNEL_NAME,
