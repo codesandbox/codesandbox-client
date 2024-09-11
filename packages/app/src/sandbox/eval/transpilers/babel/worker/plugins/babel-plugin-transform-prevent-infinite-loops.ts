@@ -9,7 +9,7 @@
 
 // Based on https://repl.it/site/blog/infinite-loops.
 
-const MAX_ITERATIONS = 10001;
+const MAX_ITERATIONS = 100001;
 
 export default function infiniteLoopDetector({ types: t, template }) {
   // We set a global so that we can later fail the test

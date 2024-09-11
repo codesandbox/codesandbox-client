@@ -238,8 +238,8 @@ export default function initialize() {
 
   const styles = {
     css: [postcssWithConfig],
-    scss: [sassWithConfig],
-    sass: [sassWithConfig],
+    scss: [sassWithConfig, postcssWithConfig],
+    sass: [sassWithConfig, postcssWithConfig],
     less: [lessWithConfig],
     styl: [stylusWithConfig],
   };
@@ -253,7 +253,7 @@ export default function initialize() {
     return Object.keys(styles).forEach(type => {
       preset.registerTranspiler(
         module => new RegExp(`\\.${type}$`).test(module.path),
-        [...styles[type], { transpiler: stylesTranspiler }]
+        [...styles[type], { transpiler: stylesTranspiler, options: {} }]
       );
     });
   }
