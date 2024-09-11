@@ -238,8 +238,8 @@ export default function initialize() {
 
   const styles = {
     css: [postcssWithConfig],
-    scss: [sassWithConfig],
-    sass: [sassWithConfig],
+    sass: [sassWithConfig, postcssTranspiler],
+    scss: [sassWithConfig, postcssTranspiler],
     less: [lessWithConfig],
     styl: [stylusWithConfig],
   };
