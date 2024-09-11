@@ -102,7 +102,6 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
   };
 
   let subFolders: DashboardBaseFolder[];
-  console.log({ folders });
   if (folderPath === '/') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
