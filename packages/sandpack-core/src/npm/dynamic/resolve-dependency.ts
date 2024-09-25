@@ -1,5 +1,6 @@
 import minimatch from 'minimatch';
 import * as semver from 'semver';
+import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 
 import { ILambdaResponse } from '../merge-dependency';
 import {
@@ -13,7 +14,10 @@ export async function getPackageJSON(dep: string, version: string) {
   return m.code;
 }
 
-async function getLatestVersionForSemver(dep: string, version: string) {
+async function getLatestVersionForSemver(
+  dep: string,
+  version: string
+): Promise<string> {
   const p = await getPackageJSON(dep, version);
   return JSON.parse(p).version;
 }
@@ -32,7 +36,11 @@ function getAbsoluteVersion(
   depName: string,
   depVersion: string,
   parsedResolutions: { [name: string]: IParsedResolution[] }
-) {
+): Promise<string> {
+  if (isAbsoluteVersion(depVersion)) {
+    return Promise.resolve(depVersion);
+  }
+
   // Try getting it from the resolutions field first, if that doesn't work
   // we try to get the latest version from the semver.
   const applicableResolutions = parsedResolutions[depName];
@@ -49,7 +57,7 @@ function getAbsoluteVersion(
         return getLatestVersionForSemver(depName, range);
       }
 
-      return range;
+      return Promise.resolve(range);
     }
   }
 
