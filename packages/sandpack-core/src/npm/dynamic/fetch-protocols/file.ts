@@ -17,7 +17,7 @@ export class FileFetcher implements FetchProtocol {
   private async getUrlFromFileProtocol(version: string) {
     const tarLocation = normalizePath(version.replace(/^file:/, ''));
 
-    const module = this.manager.transpiledModules['/' + tarLocation];
+    const module = this.manager.transpiledModules[tarLocation];
 
     if (!module) {
       throw new Error(`Could not find ${version} while resolving dependency`);
