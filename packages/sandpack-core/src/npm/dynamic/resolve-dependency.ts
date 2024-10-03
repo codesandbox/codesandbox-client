@@ -18,6 +18,10 @@ async function getLatestVersionForSemver(
   dep: string,
   version: string
 ): Promise<string> {
+  if (isAbsoluteVersion(version)) {
+    return Promise.resolve(version);
+  }
+
   const p = await getPackageJSON(dep, version);
   return JSON.parse(p).version;
 }
@@ -37,10 +41,6 @@ function getAbsoluteVersion(
   depVersion: string,
   parsedResolutions: { [name: string]: IParsedResolution[] }
 ): Promise<string> {
-  if (isAbsoluteVersion(depVersion)) {
-    return Promise.resolve(depVersion);
-  }
-
   // Try getting it from the resolutions field first, if that doesn't work
   // we try to get the latest version from the semver.
   const applicableResolutions = parsedResolutions[depName];
@@ -106,7 +106,7 @@ async function getDependencyDependencies(
         };
         await getDependencyDependencies(
           depName,
-          depVersion,
+          absoluteVersion,
           parsedResolutions,
           peerDependencyResult
         );
