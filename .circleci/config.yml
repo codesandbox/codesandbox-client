@@ -270,7 +270,7 @@ commands:
         default: '$DOCKER_PWD'
     steps:
       - setup_remote_docker:
-          version: 20.10.23
+          version: default
           docker_layer_caching: true
       - restore_cache: *restore_prod_result
       - run:
