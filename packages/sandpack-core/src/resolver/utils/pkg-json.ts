@@ -1,16 +1,23 @@
 import { normalizeAliasFilePath } from './alias';
 import { extractPathFromExport } from './exports';
 import { EMPTY_SHIM } from './constants';
+import { extractSpecifierFromImport } from './imports';
 
 // alias/exports/main keys, sorted from high to low priority
 const MAIN_PKG_FIELDS = ['module', 'browser', 'main', 'jsnext:main'];
 const PKG_ALIAS_FIELDS = ['browser', 'alias'];
+const IMPORTS_KEYS = ['browser', 'development', 'default', 'require', 'import'];
+
+function sortDescending(a: string, b: string) {
+  return b.length - a.length;
+}
 
 type AliasesDict = { [key: string]: string };
 
 export interface ProcessedPackageJSON {
   aliases: AliasesDict;
   hasExports: boolean;
+  imports: AliasesDict;
 }
 
 // See https://webpack.js.org/guides/package-exports/ for a good reference on how this should work
@@ -20,7 +27,7 @@ export function processPackageJSON(
   pkgRoot: string
 ): ProcessedPackageJSON {
   if (!content || typeof content !== 'object') {
-    return { aliases: {}, hasExports: false };
+    return { aliases: {}, hasExports: false, imports: {} };
   }
 
   const aliases: AliasesDict = {};
@@ -83,5 +90,26 @@ export function processPackageJSON(
     }
   }
 
-  return { aliases, hasExports };
+  // load imports
+  const imports: AliasesDict = {};
+  if (content.imports) {
+    if (typeof content.imports === 'object') {
+      for (const importKey of Object.keys(content.imports).sort(
+        sortDescending
+      )) {
+        const value = extractSpecifierFromImport(
+          content.imports[importKey],
+          pkgRoot,
+          IMPORTS_KEYS
+        );
+        imports[importKey] = value || EMPTY_SHIM;
+      }
+    }
+  }
+
+  return {
+    aliases,
+    hasExports,
+    imports,
+  };
 }
