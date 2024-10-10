@@ -4,6 +4,14 @@ import * as semver from 'semver';
 
 const VERSIONED_MODULE_RE = /^.+\/\d+\.\d+\.\d+\/.+$/;
 
+function safeSemverGt(v1: string, v2: string): boolean {
+  try {
+    return semver.gt(v1, v2);
+  } catch {
+    return true;
+  }
+}
+
 export interface ILambdaResponse {
   contents: {
     [path: string]: { content: string };
@@ -219,7 +227,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
       } else if (response.dependencyDependencies[depDepName]) {
         const exDepDep = response.dependencyDependencies[depDepName];
         // Determine which version is newer, needed for some checks later.
-        const [newerVersionDepDep, olderVersionDepDep] = semver.gt(
+        const [newerVersionDepDep, olderVersionDepDep] = safeSemverGt(
           newDepDep.resolved,
           exDepDep.resolved
         )
