@@ -31,6 +31,7 @@ import docusaurus from './docusaurus';
 import esmReact from './esmodule-react';
 import remix from './remix';
 import solid from './solid';
+import tramvai from './tramvai';
 
 export {
   adonis,
@@ -66,6 +67,7 @@ export {
   unibit,
   remix,
   solid,
+  tramvai,
 };
 
 export type TemplateType =
@@ -101,7 +103,8 @@ export type TemplateType =
   | 'babel-repl'
   | 'esm-react'
   | 'remix-starter'
-  | 'solid';
+  | 'solid'
+  | 'tramvai';
 
 export default function getDefinition(theme?: TemplateType | null) {
   switch (theme) {
@@ -171,6 +174,8 @@ export default function getDefinition(theme?: TemplateType | null) {
       return remix;
     case solid.name:
       return solid;
+    case tramvai.name:
+      return tramvai;
     default:
       return react;
   }
