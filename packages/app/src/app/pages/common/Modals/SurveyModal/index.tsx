@@ -16,7 +16,7 @@ export const SurveyModal: FunctionComponent = () => {
     if (el) {
       typeformEmbed.makeWidget(
         el,
-        `https://codesandbox.typeform.com/to/LYbjII?userid=${hash(
+        `https://form.typeform.com/to/LYbjII?userid=${hash(
           user.id
         )}&ispro=${isPro}`,
         {
