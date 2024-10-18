@@ -12,6 +12,7 @@ import {
   processTSConfig,
   getPotentialPathsFromTSConfig,
 } from './utils/tsconfig';
+import { replaceGlob } from './utils/glob';
 
 export type ResolverCache = Map<string, any>;
 
@@ -219,17 +220,20 @@ function* resolveNodeModule(
             : yield* loadNearestPackageJSON(pkgFilePath, opts, rootDir);
         if (pkgJson) {
           try {
-            return yield* resolve(pkgFilePath, {
+            return yield* internalResolve(pkgFilePath, {
               ...opts,
               filename: pkgJson.filepath,
               pkgJson,
             });
           } catch (err) {
             if (!pkgSpecifierParts.filepath) {
-              return yield* resolve(pathUtils.join(pkgFilePath, 'index'), {
-                ...opts,
-                filename: pkgJson.filepath,
-              });
+              return yield* internalResolve(
+                pathUtils.join(pkgFilePath, 'index'),
+                {
+                  ...opts,
+                  filename: pkgJson.filepath,
+                }
+              );
             }
 
             throw err;
@@ -264,6 +268,7 @@ function* findPackageJSON(
         content: {
           aliases: {},
           hasExports: false,
+          imports: {},
         },
       };
     }
@@ -343,14 +348,54 @@ function* getTSConfig(
   return config;
 }
 
-function* resolve(
+function resolvePkgImport(
+  specifier: string,
+  pkgJson: IFoundPackageJSON
+): string {
+  const pkgImports = pkgJson.content.imports;
+  if (!pkgImports) return specifier;
+
+  if (pkgImports[specifier]) {
+    return pkgImports[specifier] as string;
+  }
+
+  for (const [importKey, importValue] of Object.entries(pkgImports)) {
+    if (!importKey.includes('*')) {
+      continue;
+    }
+
+    const match = replaceGlob(importKey, importValue, specifier);
+    if (match) {
+      return match;
+    }
+  }
+
+  return specifier;
+}
+
+function* resolvePkgImports(
+  specifier: string,
+  opts: IResolveOptions
+): Generator<any, string, any> {
+  // Imports always have the `#` prefix
+  if (specifier[0] !== '#') {
+    return specifier;
+  }
+
+  const pkgJson = yield* findPackageJSON(opts.filename, opts);
+  const resolved = resolvePkgImport(specifier, pkgJson);
+  if (resolved !== specifier) {
+    opts.filename = pkgJson.filepath;
+  }
+  return resolved;
+}
+
+function* internalResolve(
   moduleSpecifier: string,
-  inputOpts: IResolveOptionsInput,
+  opts: IResolveOptions,
   skipIndexExpansion: boolean = false
 ): Generator<any, string, any> {
   const normalizedSpecifier = normalizeModuleSpecifier(moduleSpecifier);
-  const opts = normalizeResolverOptions(inputOpts);
-
   const modulePath = yield* resolveModule(normalizedSpecifier, opts);
 
   if (modulePath[0] !== '/') {
@@ -364,7 +409,7 @@ function* resolve(
         );
         for (const potentialPath of potentialPaths) {
           try {
-            return yield* resolve(potentialPath, opts);
+            return yield* internalResolve(potentialPath, opts);
           } catch {
             // do nothing, it's probably a node_module in this case
           }
@@ -390,7 +435,11 @@ function* resolve(
       try {
         const parts = moduleSpecifier.split('/');
         if (!parts.length || !parts[parts.length - 1].startsWith('index')) {
-          foundFile = yield* resolve(moduleSpecifier + '/index', opts, true);
+          foundFile = yield* internalResolve(
+            moduleSpecifier + '/index',
+            opts,
+            true
+          );
         }
       } catch (err) {
         // should throw ModuleNotFound for original specifier, not new one
@@ -403,6 +452,16 @@ function* resolve(
   }
 
   return foundFile;
+}
+
+function* resolve(
+  moduleSpecifier: string,
+  inputOpts: IResolveOptionsInput,
+  skipIndexExpansion: boolean = false
+): Generator<any, string, any> {
+  const opts = normalizeResolverOptions(inputOpts);
+  const specifier = yield* resolvePkgImports(moduleSpecifier, opts);
+  return yield* internalResolve(specifier, opts, skipIndexExpansion);
 }
 
 export const resolver = gensync<
