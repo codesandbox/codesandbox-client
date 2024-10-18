@@ -4,9 +4,9 @@ import configurations from './configuration';
 
 export default new Template(
   'nuxt',
-  'Nuxt 3',
-  'https://v3.nuxtjs.org/',
-  'github/nuxt/starter/tree/v3-codesandbox',
+  'Nuxt 2',
+  'https://nuxtjs.org/',
+  'github/nuxt/codesandbox-nuxt',
   decorateSelector(() => '#00DC82'),
   {
     extraConfigurations: {
@@ -14,7 +14,7 @@ export default new Template(
     },
     distDir: 'dist',
     popular: true,
-    mainFile: ['/app.vue'],
+    mainFile: ['/pages/index.vue'],
     showOnHomePage: true,
     main: true,
     showCube: false,
