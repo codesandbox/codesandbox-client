@@ -48,10 +48,8 @@ const useSearchedSandboxes = (query: string) => {
 };
 
 const calculateSearchIndex = (dashboard: any, activeTeam: string) => {
-  const sandboxes = dashboard.sandboxes.SEARCH;
-  if (sandboxes == null) {
-    return null;
-  }
+  const sandboxes = dashboard.sandboxes.SEARCH || [];
+
   const folders: Collection[] = (dashboard.allCollections || [])
     .map(collection => ({
       ...collection,
@@ -60,7 +58,7 @@ const calculateSearchIndex = (dashboard: any, activeTeam: string) => {
     .filter(f => f.title);
 
   const teamRepos = dashboard.repositoriesByTeamId[activeTeam] ?? [];
-  const repositories = teamRepos.map((repo: Repository) => {
+  const repositories = (teamRepos || []).map((repo: Repository) => {
     return {
       title: repo.repository.name,
       /**
@@ -72,7 +70,7 @@ const calculateSearchIndex = (dashboard: any, activeTeam: string) => {
     };
   });
 
-  return new Fuse([...sandboxes, ...folders, ...(repositories || [])], {
+  return new Fuse([...sandboxes, ...folders, ...repositories], {
     threshold: 0.1,
     distance: 1000,
     keys: [
@@ -122,7 +120,10 @@ export const useGetItems = ({
       const sandbox = item as SandboxFragmentDashboardFragment;
 
       // Remove draft sandboxes from other authors
-      return sandbox.draft && sandbox.author.username === username;
+      return (
+        !sandbox.draft ||
+        (sandbox.draft && sandbox.author.username === username)
+      );
     }
   );
 
