@@ -39,9 +39,11 @@ export const useFilteredItems = (
   useEffect(() => {
     const sandboxesForPath = getFilteredSandboxes(folderSandboxes || []);
     const normalizedPath = normalizePath(path);
+
     const folderFolders =
       allCollections?.filter(
-        collection => getParentPath(collection.path) === normalizedPath
+        collection =>
+          normalizePath(getParentPath(collection.path)) === normalizedPath
       ) || [];
 
     const sortedFolders = orderBy(folderFolders, 'name').sort(a => 1);
