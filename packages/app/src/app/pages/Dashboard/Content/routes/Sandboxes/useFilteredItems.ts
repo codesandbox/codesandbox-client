@@ -40,9 +40,6 @@ export const useFilteredItems = (
     const sandboxesForPath = getFilteredSandboxes(folderSandboxes || []);
     const normalizedPath = normalizePath(path);
 
-    console.log(normalizedPath);
-    console.log(allCollections);
-
     const folderFolders =
       allCollections?.filter(
         collection =>
