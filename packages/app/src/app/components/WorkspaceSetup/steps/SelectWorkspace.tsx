@@ -23,11 +23,12 @@ export const SelectWorkspace: React.FC<StepProps> = ({
 
   const workspacesEligibleForUpgrade = dashboard.teams
     .filter(t =>
-      // Only teams where you are admin
+      // Only teams where you are billing manager or admin
       t.userAuthorizations.find(
         ua =>
           ua.userId === user?.id &&
-          ua.authorization === TeamMemberAuthorization.Admin
+          (ua.teamManager === true ||
+            ua.authorization === TeamMemberAuthorization.Admin)
       )
     )
     .filter(
