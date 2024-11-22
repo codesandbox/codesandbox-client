@@ -18,6 +18,19 @@ import { SignIn } from 'app/pages/SignIn/SignIn';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Buttons, Container } from './elements';
 
+type OpenEditorType = 'vscode' | 'vscode-insiders' | 'cursor';
+export const editorInfoMapping: Record<
+  OpenEditorType,
+  { name: string; installUrl: string }
+> = {
+  vscode: { name: 'VS Code', installUrl: 'https://code.visualstudio.com/' },
+  'vscode-insiders': {
+    name: 'VS Code Insiders',
+    installUrl: 'https://code.visualstudio.com/insiders/',
+  },
+  cursor: { name: 'Cursor', installUrl: 'https://www.cursor.com/' },
+};
+
 export const Prompt: FunctionComponent = () => {
   const {
     authToken,
@@ -30,7 +43,8 @@ export const Prompt: FunctionComponent = () => {
   const query = useMemo(() => new URLSearchParams(location.search), [
     location.search,
   ]);
-  const isInsiders = query.get('insiders') === 'true';
+  const editorType = query.get('type') || ('vscode' as OpenEditorType);
+  const editorInfo = editorInfoMapping[editorType];
 
   const actions = useActions();
   useEffect(() => {
@@ -42,16 +56,12 @@ export const Prompt: FunctionComponent = () => {
   const vscodeUrl = useMemo(() => {
     const url = new URL(
       'auth-completion',
-      'vscode://CodeSandbox-io.codesandbox-projects/'
+      `${editorType}://CodeSandbox-io.codesandbox-projects/`
     );
     url.searchParams.set('token', authToken);
 
-    if (isInsiders) {
-      url.protocol = 'vscode-insiders://';
-    }
-
     return url;
-  }, [authToken, isInsiders]);
+  }, [authToken, editorType]);
 
   const openInVsCode = useCallback(() => {
     if (!authToken) {
@@ -62,13 +72,13 @@ export const Prompt: FunctionComponent = () => {
       if (openVsCodeError instanceof UnsupportedProtocolError) {
         notificationState.addNotification({
           status: NotificationStatus.WARNING,
-          message: 'Visual Studio Insiders is not installed',
+          message: `${editorInfo.name} is not installed`,
           actions: {
             primary: {
               label: 'Install',
               run: () => {
                 window.open(
-                  'https://code.visualstudio.com/insiders/',
+                  editorInfo.installUrl,
                   '_blank',
                   'noopener,noreferrer'
                 );
@@ -81,7 +91,7 @@ export const Prompt: FunctionComponent = () => {
 
       notificationState.addNotification({
         status: NotificationStatus.ERROR,
-        message: 'Failed to launch Visual Studio Code',
+        message: `Failed to launch ${editorInfo.name}`,
         actions: {
           primary: {
             label: 'Try again',
@@ -91,6 +101,36 @@ export const Prompt: FunctionComponent = () => {
       });
     });
   }, [vscodeUrl, authToken]);
+
+  if (
+    editorType !== 'vscode' &&
+    editorType !== 'vscode-insiders' &&
+    editorType !== 'cursor'
+  ) {
+    return (
+      <Container>
+        <LogoFull style={{ paddingBottom: 32 }} />
+
+        <Title>An error occured:</Title>
+        <SubTitle>Editor type not supported</SubTitle>
+
+        <Buttons>
+          <Button
+            autoWidth
+            href="/?from-app=1"
+            style={{
+              fontSize: 16,
+              height: 40,
+              width: '100%',
+              marginTop: '1rem',
+            }}
+          >
+            Go to homepage
+          </Button>
+        </Buttons>
+      </Container>
+    );
+  }
 
   if (error) {
     return (
@@ -147,10 +187,7 @@ export const Prompt: FunctionComponent = () => {
     <Container>
       <LogoFull style={{ paddingBottom: 32 }} />
 
-      <Title style={{ paddingBottom: 4 }}>
-        Hello <br />
-        {user.username}!
-      </Title>
+      <Title style={{ paddingBottom: 4 }}>Hello {user.username}!</Title>
 
       <SubTitle>
         Click the button below to continue and finish signing in.
@@ -162,9 +199,7 @@ export const Prompt: FunctionComponent = () => {
           style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
           onClick={openInVsCode}
         >
-          {isInsiders
-            ? 'Open Visual Studio Code Insiders'
-            : 'Open Visual Studio Code'}
+          {`Open ${editorInfo.name}`}
         </Button>
       </Buttons>
     </Container>
