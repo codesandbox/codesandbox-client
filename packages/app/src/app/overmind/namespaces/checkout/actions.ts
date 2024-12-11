@@ -11,9 +11,12 @@ import { DEFAULT_SPENDING_LIMIT } from './constants';
 
 export const fetchPrices = async ({ state, effects }: Context) => {
   try {
-    const result = await effects.api.getPrices('2024-02-01');
+    const result = await effects.api.getPrices('2024-12-09');
 
     const proPricing = result.base.flex;
+    const builderPricing = result.base.builder;
+
+    // Deprecated
     const proAddons = result.addons;
 
     state.checkout.availableBasePlans.flex = {
@@ -22,6 +25,14 @@ export const fetchPrices = async ({ state, effects }: Context) => {
       priceMonthly: proPricing.cost_month / 100,
       priceYearly: proPricing.cost_year / 100,
       storage: proPricing.storage,
+    };
+
+    state.checkout.availableBasePlans.builder = {
+      ...state.checkout.availableBasePlans.builder,
+      credits: builderPricing.credits,
+      priceMonthly: builderPricing.cost_month / 100,
+      priceYearly: builderPricing.cost_year / 100,
+      storage: builderPricing.storage,
     };
 
     Object.values(state.checkout.availableCreditAddons).forEach(creditAddon => {

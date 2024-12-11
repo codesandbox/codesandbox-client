@@ -206,7 +206,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/standalone/:componentId" component={StandalonePage} />
             <Route path="/create-workspace" component={CreateWorkspace} />
             <Route path="/upgrade" component={UpgradeWorkspace} />
-            <Route path="/manage-addons" component={ManageAddons} />
+            <Route path="/manage-subscription" component={UpgradeWorkspace} />
 
             {environment.isOnPrem ? (
               <Redirect from="/pro" to="/dashboard" />

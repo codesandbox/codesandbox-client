@@ -24,14 +24,7 @@ export const CreateWorkspace = () => {
 
   return (
     <WorkspaceSetup
-      steps={[
-        'create',
-        'usecases',
-        'plans',
-        'addons',
-        'spending-limit',
-        'finalize',
-      ]}
+      steps={['create', 'usecases', 'plans', 'spending-limit', 'finalize']}
       flow="create-workspace"
       onComplete={() => {
         clearFreshWorkspaceId();

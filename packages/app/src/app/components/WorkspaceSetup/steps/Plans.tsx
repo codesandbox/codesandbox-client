@@ -22,6 +22,7 @@ import { StepHeader } from '../StepHeader';
 import { AnimatedStep } from '../elements';
 import { FAQ } from './FAQ';
 import {
+  BUILDER_FEATURES,
   ENTERPRISE_FEATURES,
   FREE_FEATURES,
   PRO_FEATURES,
@@ -44,7 +45,8 @@ export const Plans: React.FC<StepProps> = ({
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
   const [tiers, setTiers] = useState<VMTier[]>([]);
-  const { isFree } = useWorkspaceSubscription();
+  const { isFree, subscription } = useWorkspaceSubscription();
+
   const showFreePlan = isFree;
   const [billingInterval, setBillingInterval] = useState(
     SubscriptionInterval.Monthly
@@ -54,6 +56,7 @@ export const Plans: React.FC<StepProps> = ({
     availableBasePlans: {
       enterprise: enterprisePlan,
       flex: proPlan,
+      builder: builderPlan,
       free: freePlan,
     },
   } = checkout;
@@ -82,12 +85,25 @@ export const Plans: React.FC<StepProps> = ({
     onNextStep();
   };
 
+  const handleBuilderPlanSelection = async () => {
+    actions.checkout.selectPlan({ plan: builderPlan.id, billingInterval });
+    track('Checkout - Select Builder Plan', {
+      from: flow,
+      currentPlan: isFree ? 'free' : 'pro',
+    });
+    onNextStep();
+  };
+
   return (
     <AnimatedStep css={{ width: '100%' }}>
       <Stack
         direction="vertical"
         gap={64}
-        css={{ maxWidth: '1188px', margin: 'auto', paddingBottom: 120 }}
+        css={{
+          maxWidth: isFree ? '1368px' : '1026px',
+          margin: 'auto',
+          paddingBottom: 120,
+        }}
       >
         <StepHeader
           onPrevStep={onPrevStep}
@@ -113,7 +129,7 @@ export const Plans: React.FC<StepProps> = ({
           </Stack>
 
           <HorizontalScroller css={{ width: '100%' }}>
-            <Stack gap={6} justify="center">
+            <Stack gap={4}>
               {showFreePlan && (
                 <StyledCard
                   direction="vertical"
@@ -184,7 +200,7 @@ export const Plans: React.FC<StepProps> = ({
                   size="large"
                   onClick={handleProPlanSelection}
                 >
-                  Build your Pro plan
+                  Start your Pro plan
                 </Button>
                 <PlanFeatures
                   heading="Usage"
@@ -192,10 +208,39 @@ export const Plans: React.FC<StepProps> = ({
                   includeTooltips
                 />
                 <PlanFeatures heading="Features" features={proPlan.features} />
+              </StyledCard>
+              <StyledCard
+                direction="vertical"
+                align="center"
+                gap={8}
+                css={{ borderColor: '#6BAAF7' }}
+              >
+                <Text size={7} fontFamily="everett" weight="medium">
+                  {builderPlan.name}
+                </Text>
+                <CardHeading>
+                  Use CodeSandbox SDK with higher limits
+                </CardHeading>
+                <PlanPricing plan={builderPlan} interval={billingInterval} />
+                <Button
+                  variant="dark"
+                  css={{
+                    background: '#6BAAF7',
+                    '&:hover': { background: '#7B61FF' },
+                  }}
+                  size="large"
+                  onClick={handleBuilderPlanSelection}
+                >
+                  Start your Builder plan
+                </Button>
                 <PlanFeatures
-                  itemIcon="plus"
-                  heading="Add-ons"
-                  features={['More VM credits']}
+                  heading="Usage"
+                  features={builderPlan.usage}
+                  includeTooltips
+                />
+                <PlanFeatures
+                  heading="Features"
+                  features={builderPlan.features}
                 />
               </StyledCard>
               <StyledCard
@@ -239,7 +284,12 @@ export const Plans: React.FC<StepProps> = ({
           <CodeSandboxFriendsCard />
         </Stack>
         <FeaturesComparison
-          plans={[FREE_FEATURES, PRO_FEATURES, ENTERPRISE_FEATURES]}
+          plans={[
+            FREE_FEATURES,
+            PRO_FEATURES,
+            BUILDER_FEATURES,
+            ENTERPRISE_FEATURES,
+          ]}
         />
         <VMSpecs tiers={tiers} />
 
@@ -256,7 +306,7 @@ const StyledCard = styled(Stack)`
   padding: 40px 32px;
   border-radius: 8px;
   flex-shrink: 0;
-  width: 380px;
+  width: 330px;
 
   @media (max-width: 1400px) {
     padding: 40px 20px;
@@ -312,7 +362,7 @@ const PlanPricing: React.FC<{
   interval?: SubscriptionInterval;
   overridePrice?: string;
 }> = ({ plan, interval = SubscriptionInterval.Monthly, overridePrice }) => {
-  const isPro = plan.id === 'flex';
+  const isPro = plan.id === 'flex' || plan.id === 'builder';
 
   return (
     <Stack direction="vertical" align="center" gap={2}>
@@ -575,8 +625,8 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
       <Element
         css={{
           display: 'grid',
-          gridTemplateColumns: `repeat(4, 1fr)`,
-          '& > *:not(:nth-child(-n+4))': {
+          gridTemplateColumns: `repeat(5, 1fr)`,
+          '& > *:not(:nth-child(-n+5))': {
             borderTop: '1px solid #252525',
           },
           borderBottom: '1px solid #252525',
@@ -595,6 +645,11 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
         </GridCell>
         <GridCell>
           <Text weight="medium" size={5}>
+            Builder
+          </Text>
+        </GridCell>
+        <GridCell>
+          <Text weight="medium" size={5}>
             Enterprise
           </Text>
         </GridCell>
@@ -606,16 +661,10 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           property="members"
         />
         <FeatureComparisonNumbersRow
-          title="Storage"
-          description="The maximum amount of storage space available."
-          plans={plans}
-          property="storage"
-        />
-        <FeatureComparisonNumbersRow
-          title="Private Sandboxes"
+          title="Sandboxes"
           description={
             <>
-              The maximum number of private Sandboxes in a workspace. <br />
+              The maximum number of Sandboxes in a workspace. <br />
               <a
                 target="_blank"
                 rel="noreferrer"
@@ -626,24 +675,7 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
             </>
           }
           plans={plans}
-          property="privateSandboxes"
-        />
-        <FeatureComparisonNumbersRow
-          title="Public Sandboxes"
-          description={
-            <>
-              The maximum number of public Sandboxes in a workspace. <br />
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://codesandbox.io/docs/learn/devboxes/editors?tab=sandbox"
-              >
-                Learn more about Sandboxes.
-              </a>
-            </>
-          }
-          plans={plans}
-          property="publicSandboxes"
+          property="sandboxes"
         />
         <FeatureComparisonNumbersRow
           title="Devboxes"
@@ -664,6 +696,18 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           property="devboxes"
         />
         <FeatureComparisonNumbersRow
+          title="Concurrent Devboxes"
+          description="The maximum number of concurrently running Devboxes for CodeSandbox SDK."
+          plans={plans}
+          property="concurrentDevboxes"
+        />
+        <FeatureComparisonNumbersRow
+          title="Session Length"
+          description="How long you can run your Sandboxes and Devboxes for."
+          plans={plans}
+          property="sessionLength"
+        />
+        <FeatureComparisonNumbersRow
           title="Repositories"
           description="Maximum number of repositories that can be imported in the workspace."
           plans={plans}
@@ -674,6 +718,12 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           description="Specs for the best virtual machines that can be used."
           plans={plans}
           property="vmType"
+        />
+        <FeatureComparisonBooleanRow
+          title="CodeSandbox SDK"
+          description="Programmatically create and manage Devboxes at scale."
+          plans={plans}
+          property="sdk"
         />
         <FeatureComparisonBooleanRow
           title="Private projects"

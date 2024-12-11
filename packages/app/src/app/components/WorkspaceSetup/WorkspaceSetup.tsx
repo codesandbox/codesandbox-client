@@ -63,9 +63,9 @@ const STEP_COMPONENTS: Record<WorkspaceSetupStep, React.FC<StepProps>> = {
   usecases: SelectUsecases,
   plans: Plans,
   'spending-limit': SpendingLimit,
-  addons: Addons,
+  addons: Addons, // Deprecated
   finalize: Finalize,
-  'change-addons-confirmation': ChangeAddons,
+  'change-addons-confirmation': ChangeAddons, // Deprecated
 };
 
 const STEPS_WITH_CHECKOUT: WorkspaceSetupStep[] = [

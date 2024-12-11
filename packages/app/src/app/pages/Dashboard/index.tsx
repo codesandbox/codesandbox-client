@@ -24,6 +24,8 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
+import { AcquisitionAnnouncement } from 'app/components/StripeMessages/AcquisitionAnnouncement';
+import { useDismissible } from 'app/hooks';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
@@ -39,6 +41,10 @@ export const Dashboard: FunctionComponent = () => {
   const { subscription } = useWorkspaceSubscription();
   const { showUsageLimitBanner } = useWorkspaceLimits();
   const { trackVisit } = useDashboardVisit();
+  const [
+    isAnnouncementBannerDismissed,
+    dismissAnnouncementBanner,
+  ] = useDismissible('ACQ_ANNOUNCEMENT');
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -63,7 +69,15 @@ export const Dashboard: FunctionComponent = () => {
   const hasPaymentProblems =
     subscription?.status === SubscriptionStatus.Unpaid ||
     subscription?.status === SubscriptionStatus.Incomplete;
-  const hasTopBarBanner = hasPaymentProblems || showUsageLimitBanner;
+
+  // Only show this when no other relevant banner is present
+  const showAcquisitionBanner =
+    !isAnnouncementBannerDismissed &&
+    !hasPaymentProblems &&
+    !showUsageLimitBanner;
+
+  const hasTopBarBanner =
+    showAcquisitionBanner || showUsageLimitBanner || hasPaymentProblems;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -136,6 +150,10 @@ export const Dashboard: FunctionComponent = () => {
             <PaymentPending status={subscription?.status} />
           )}
           {showUsageLimitBanner && <UsageLimitMessageStripe />}
+          {showAcquisitionBanner && (
+            <AcquisitionAnnouncement onDismiss={dismissAnnouncementBanner} />
+          )}
+
           <Header onSidebarToggle={onSidebarToggle} />
           <Media
             query={theme.media
