@@ -11,8 +11,7 @@ export const FREE_PLAN: PricingPlan = {
   credits: 400,
   storage: 20,
   usage: [
-    'Up to 40 hours worth of VM credits per month',
-
+    'Up to 40 hours of monthly VM credits',
     'Unlimited Sandboxes & Devboxes',
     '5 members',
   ],
@@ -33,7 +32,7 @@ export const PRO_PLAN: PricingPlan = {
   storage: 50,
   features: ['All free features', 'VMs up to 16 vCPUs + 32 GiB RAM'],
   usage: [
-    'Start from 100 hours worth of VM credits per month',
+    'Start from 100 hours of monthly VM credits',
     'Unlimited Sandboxes & Devboxes',
     '20 members',
     'Access on-demand VM credits for $0.18 per hour',
@@ -49,7 +48,7 @@ export const BUILDER_PLAN: PricingPlan = {
   storage: 50,
   features: ['All Pro features', 'CodeSandbox SDK', 'More VM tiers'],
   usage: [
-    'Start from 160 hours worth of VM credits per month',
+    'Start from 160 hours of monthly VM credits',
     'Unlimited Sandboxes & Devboxes',
     '20 members',
     '100 concurrent VMs',
@@ -66,8 +65,8 @@ export const ENTERPRISE_PLAN: PricingPlan = {
   storage: 0,
   usage: [],
   features: [
+    'Bulk VM credit packs up to 50% off',
     'Unlimited members',
-    'Unlimited API',
     'VMs up to 64 vCPUs + 128 GiB RAM',
     'On-premise options',
     'Private managed cloud',

@@ -6,6 +6,7 @@ interface StepHeaderProps {
   numberOfSteps: number;
   currentStep: number;
   title: string;
+  headerNote?: React.ReactNode;
   workspaceId?: string;
   onPrevStep: () => void;
   onDismiss: () => void;
@@ -15,12 +16,12 @@ export const StepHeader = ({
   currentStep,
   numberOfSteps,
   title,
+  headerNote,
   onDismiss,
   onPrevStep,
   workspaceId,
 }: StepHeaderProps) => {
   const { dashboard } = useAppState();
-  const workspaceName = dashboard.teams.find(t => t.id === workspaceId)?.name;
 
   return (
     <Stack direction="vertical" gap={8}>
@@ -65,7 +66,7 @@ export const StepHeader = ({
           {title}
         </Text>
 
-        {workspaceName && <Text>Upgrade {workspaceName}&apos;s workspace</Text>}
+        {headerNote && <Text>{headerNote}</Text>}
       </Stack>
     </Stack>
   );

@@ -39,7 +39,7 @@ export const Plans: React.FC<StepProps> = ({
   flow,
 }) => {
   const { getQueryParam } = useURLSearchParams();
-  const { activeTeam, checkout } = useAppState();
+  const { activeTeam, checkout, dashboard } = useAppState();
 
   const actions = useActions();
   const effects = useEffects();
@@ -47,7 +47,11 @@ export const Plans: React.FC<StepProps> = ({
   const [tiers, setTiers] = useState<VMTier[]>([]);
   const { isFree, proPlanType } = useWorkspaceSubscription();
 
+  const planDisplayName = proPlanType === 'flex' ? 'Pro' : 'Builder';
   const showFreePlan = isFree;
+  const workspaceName = dashboard.teams.find(t => t.id === urlWorkspaceId)
+    ?.name;
+  const headerSuffix = workspaceName ? `for ${workspaceName}` : '';
   const [billingInterval, setBillingInterval] = useState(
     SubscriptionInterval.Monthly
   );
@@ -122,8 +126,15 @@ export const Plans: React.FC<StepProps> = ({
           onDismiss={onDismiss}
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
-          title="Choose a plan"
+          title={`Choose a plan ${headerSuffix}`}
           workspaceId={urlWorkspaceId}
+          headerNote={
+            <>
+              Your workspace is currently on the{' '}
+              <Text color="#fff">{proPlanType ? planDisplayName : 'Free'}</Text>{' '}
+              plan.
+            </>
+          }
         />
 
         <Stack gap={4} direction="vertical">
@@ -273,7 +284,7 @@ export const Plans: React.FC<StepProps> = ({
                   {enterprisePlan.name}
                 </Text>
                 <CardHeading>
-                  The future of Cloud Development Environments
+                  Cloud development & code execution at scale
                 </CardHeading>
                 <PlanPricing plan={enterprisePlan} overridePrice="Custom" />
                 <Button
@@ -294,7 +305,10 @@ export const Plans: React.FC<StepProps> = ({
                 </Button>
                 <Stack direction="vertical" gap={4}>
                   <Text>Everything in Pro, plus:</Text>
-                  <PlanFeatures features={enterprisePlan.features} />
+                  <PlanFeatures
+                    features={enterprisePlan.features}
+                    includeTooltips
+                  />
                 </Stack>
               </StyledCard>
             </Stack>
@@ -337,7 +351,7 @@ const CardHeading = styled(Text)`
 `;
 
 const GridCell = styled(Stack)`
-  padding: 24px 16px;
+  padding: 16px 8px;
   max-height: 80px;
   width: 100%;
   min-width: 160px;
@@ -463,6 +477,8 @@ const PlanFeatures: React.FC<{
 
 export const EXPLAINED_FEATURES: Record<string, string> = {
   'VM credits':
+    'Credits measure VM runtime and apply to Devboxes and Repositories.',
+  'VM credit':
     'Credits measure VM runtime and apply to Devboxes and Repositories.',
   Devboxes:
     'Devboxes are our Cloud Development Environment, which runs in virtual machines and requires VM credits.',
@@ -755,35 +771,12 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           property="privateProject"
         />
         <FeatureComparisonBooleanRow
-          title="Shareable links"
-          description="Share your devboxes and sandboxes with users outside of your workspace."
-          plans={plans}
-          property="shareableLinks"
-        />
-        <FeatureComparisonBooleanRow
           title="Live sessions"
           description="Collaborate with others on your devboxes and repositories."
           plans={plans}
           property="liveSessions"
         />
-        <FeatureComparisonBooleanRow
-          title="API access"
-          description="Automatically create, share and delete sandboxes and branches."
-          plans={plans}
-          property="apiAccess"
-        />
-        <FeatureComparisonBooleanRow
-          title="Instant environment resume"
-          description="Load an existing Devbox in seconds without having to rebuild all assets."
-          plans={plans}
-          property="instantEnvironmentResume"
-        />
-        <FeatureComparisonBooleanRow
-          title="Instant environment share"
-          description="Share your Devbox with the same VM and settings with your team in seconds."
-          plans={plans}
-          property="instantEnvironmentShare"
-        />
+
         <FeatureComparisonBooleanRow
           title="Private NPM"
           description="Use private npm packages from your own custom registry."
@@ -791,12 +784,6 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           property="privateNPM"
         />
 
-        <FeatureComparisonBooleanRow
-          title="Protected previews"
-          description="Protect who can view your dev server preview. (Coming soon)."
-          plans={plans}
-          property="protectedPreviews"
-        />
         <FeatureComparisonBooleanRow
           title="SSO"
           description="Single Sign-On support for Okta and more."
@@ -843,7 +830,7 @@ const FeatureComparisonNumbersRow: React.FC<FeatureComparisonRowProps> = ({
 }) => (
   <>
     <GridCellDetails css={{ alignItems: 'flex-start' }}>
-      <Text weight="medium" size={5}>
+      <Text weight="medium" size={4}>
         {title}
       </Text>
       <Text
