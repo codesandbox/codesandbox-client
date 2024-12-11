@@ -187,6 +187,7 @@ export const Plans: React.FC<StepProps> = ({
                     heading="Features"
                     secondaryColor="#a6a6a6"
                     features={freePlan.features}
+                    includeTooltips
                   />
                 </StyledCard>
               )}
@@ -219,7 +220,11 @@ export const Plans: React.FC<StepProps> = ({
                   features={proPlan.usage}
                   includeTooltips
                 />
-                <PlanFeatures heading="Features" features={proPlan.features} />
+                <PlanFeatures
+                  heading="Features"
+                  features={proPlan.features}
+                  includeTooltips
+                />
               </StyledCard>
               <StyledCard
                 direction="vertical"
@@ -253,6 +258,7 @@ export const Plans: React.FC<StepProps> = ({
                 <PlanFeatures
                   heading="Features"
                   features={builderPlan.features}
+                  includeTooltips
                 />
               </StyledCard>
               <StyledCard
@@ -462,6 +468,11 @@ export const EXPLAINED_FEATURES: Record<string, string> = {
     'Devboxes are our Cloud Development Environment, which runs in virtual machines and requires VM credits.',
   Sandboxes:
     "Sandboxes are powered by your browser and don't require credits to run.",
+  'concurrent VMs':
+    'Maximum number of VMs you can run simultaneously with CodeSandbox SDK.',
+  'CodeSandbox SDK lite':
+    'Programmatically create and manage Devboxes at scale, but limited to 10 concurrent Devboxes.',
+  'CodeSandbox SDK': 'Programmatically create and manage Devboxes at scale.',
 };
 
 const TextWithTooltips = ({ text }: { text: string }) => {

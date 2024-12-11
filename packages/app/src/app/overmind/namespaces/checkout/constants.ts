@@ -12,17 +12,15 @@ export const FREE_PLAN: PricingPlan = {
   storage: 20,
   usage: [
     'Up to 40 hours worth of VM credits per month',
-    'VMs up to 4 vCPUs + 8 GiB RAM',
+
     'Unlimited Sandboxes & Devboxes',
     '5 members',
   ],
   features: [
+    'CodeSandbox SDK lite',
     'Private Sandboxes, Devboxes & repos',
-    '100 Codeium AI code completions',
-    'Live collaboration',
+    'VMs up to 4 vCPUs + 8 GiB RAM',
     'VS Code extension',
-    'Instant environment resume',
-    'Instant environment share',
   ],
 };
 
@@ -33,10 +31,9 @@ export const PRO_PLAN: PricingPlan = {
   priceYearly: 9,
   credits: 1000,
   storage: 50,
-  features: ['All free features', 'Unlimited Codeium AI code completions'],
+  features: ['All free features', 'VMs up to 16 vCPUs + 32 GiB RAM'],
   usage: [
     'Start from 100 hours worth of VM credits per month',
-    'VMs up to 16 vCPUs + 32 GB RAM',
     'Unlimited Sandboxes & Devboxes',
     '20 members',
     'Access on-demand VM credits for $0.18 per hour',
@@ -53,7 +50,6 @@ export const BUILDER_PLAN: PricingPlan = {
   features: ['All Pro features', 'CodeSandbox SDK', 'More VM tiers'],
   usage: [
     'Start from 160 hours worth of VM credits per month',
-    'VMs up to 16 vCPUs + 32 GB RAM',
     'Unlimited Sandboxes & Devboxes',
     '20 members',
     '100 concurrent VMs',
