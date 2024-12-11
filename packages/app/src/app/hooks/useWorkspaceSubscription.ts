@@ -50,12 +50,19 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isFree = !isPro;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
+  const basePlanItem = activeTeamInfo.subscriptionSchedule.current.items.find(
+    item => item.name.includes('builder') || item.name.includes('flex')
+  );
+
+  // Yearly plans have an annual suffix which is not relevant for us here
+  const proPlanType = basePlanItem?.name.replace('_annual', '') || 'flex';
 
   return {
     subscription,
     isPro,
     isFree,
     hasPaymentMethod,
+    proPlanType,
   };
 };
 
@@ -64,6 +71,7 @@ const NO_WORKSPACE = {
   isPro: undefined,
   isFree: undefined,
   hasPaymentMethod: undefined,
+  proPlanType: undefined,
 };
 
 const NO_SUBSCRIPTION = {
@@ -71,6 +79,7 @@ const NO_SUBSCRIPTION = {
   isPro: false,
   isFree: true,
   hasPaymentMethod: false,
+  proPlanType: null,
 };
 
 export type WorkspaceSubscriptionReturn =
@@ -81,4 +90,5 @@ export type WorkspaceSubscriptionReturn =
       isPro: boolean;
       isFree: boolean;
       hasPaymentMethod: boolean;
+      proPlanType: 'flex' | 'builder';
     };

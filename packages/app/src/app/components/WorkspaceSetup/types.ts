@@ -4,7 +4,6 @@ export type WorkspaceSetupStep =
   | 'usecases'
   | 'plans'
   | 'addons'
-  | 'change-addons-confirmation'
   | 'spending-limit'
   | 'finalize';
 

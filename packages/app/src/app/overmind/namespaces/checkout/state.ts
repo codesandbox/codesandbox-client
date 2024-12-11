@@ -24,7 +24,8 @@ export interface State {
   currentSubscription: SubscriptionPackage | null;
   hasUpcomingChange: boolean;
   addonChanges: Array<AddonItem>;
-  convertProToUBBCharge: InvoicePreview | null;
+  convertLegacyPlanToUBBCharge: Omit<InvoicePreview, 'updateMoment'> | null;
+  convertPlanCharge: Omit<InvoicePreview, 'updateMoment'> | null;
   availableBasePlans: Record<PlanType, PricingPlan>;
   availableCreditAddons: Record<CreditAddonType, CreditAddon>;
 }
@@ -38,7 +39,8 @@ export const state: State = {
 
   addonChanges: [], // Recomputed everytime an addon is changed
 
-  convertProToUBBCharge: null,
+  convertLegacyPlanToUBBCharge: null,
+  convertPlanCharge: null,
   availableBasePlans: {
     free: FREE_PLAN,
     flex: PRO_PLAN,

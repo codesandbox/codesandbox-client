@@ -45,7 +45,7 @@ export const Plans: React.FC<StepProps> = ({
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
   const [tiers, setTiers] = useState<VMTier[]>([]);
-  const { isFree, subscription } = useWorkspaceSubscription();
+  const { isFree, proPlanType } = useWorkspaceSubscription();
 
   const showFreePlan = isFree;
   const [billingInterval, setBillingInterval] = useState(
@@ -64,6 +64,18 @@ export const Plans: React.FC<StepProps> = ({
   // For new workspaces
   const freeButtonCTA =
     flow === 'create-workspace' ? 'Get started for free' : 'Continue on Free';
+
+  const proButtonCTA = isFree
+    ? 'Start your Pro plan'
+    : proPlanType === 'flex'
+    ? 'Continue on Pro'
+    : 'Downgrade to Pro';
+
+  const builderButtonCTA = isFree
+    ? 'Start your Builder plan'
+    : proPlanType === 'builder'
+    ? 'Continue on Builder'
+    : 'Upgrade to Builder';
 
   useEffect(() => {
     actions.checkout.fetchPrices();
@@ -200,7 +212,7 @@ export const Plans: React.FC<StepProps> = ({
                   size="large"
                   onClick={handleProPlanSelection}
                 >
-                  Start your Pro plan
+                  {proButtonCTA}
                 </Button>
                 <PlanFeatures
                   heading="Usage"
@@ -231,7 +243,7 @@ export const Plans: React.FC<StepProps> = ({
                   size="large"
                   onClick={handleBuilderPlanSelection}
                 >
-                  Start your Builder plan
+                  {builderButtonCTA}
                 </Button>
                 <PlanFeatures
                   heading="Usage"

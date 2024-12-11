@@ -28,7 +28,9 @@ export const Addons: React.FC<StepProps> = ({
 
   const handleSubmit = () => {
     if (isPro) {
-      checkout.calculateConversionCharge({ workspaceId: urlWorkspaceId });
+      checkout.calculateLegacyToUBBConversionCharge({
+        workspaceId: urlWorkspaceId,
+      });
     }
 
     track('Checkout - Next from addons', {

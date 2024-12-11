@@ -1,5 +1,8 @@
 import type { Context } from 'app/overmind';
-import { SubscriptionInterval } from 'app/graphql/types';
+import {
+  SubscriptionInterval,
+  SubscriptionUpdateMoment,
+} from 'app/graphql/types';
 import {
   AddonItem,
   CreditAddonType,
@@ -351,7 +354,7 @@ export const setSpendingLimit = async (
   }
 };
 
-export const calculateConversionCharge = async (
+export const calculateLegacyToUBBConversionCharge = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ) => {
@@ -370,7 +373,7 @@ export const calculateConversionCharge = async (
     });
 
     // Cap the values to a min of 0
-    state.checkout.convertProToUBBCharge = {
+    state.checkout.convertLegacyPlanToUBBCharge = {
       total: Math.max(
         (result.previewConvertToUsageBilling?.total ?? 0) / 100,
         0
@@ -381,7 +384,7 @@ export const calculateConversionCharge = async (
       ),
     };
   } catch (e) {
-    state.checkout.convertProToUBBCharge = null;
+    state.checkout.convertLegacyPlanToUBBCharge = null;
   }
 };
 
@@ -403,6 +406,72 @@ export const convertToUsageBilling = async (
       teamId: workspaceId,
       plan: newSubscription.basePlan.id,
       addons: actions.checkout.getFlatAddonsList(),
+      billingInterval: newSubscription.billingInterval,
+    });
+
+    return { success: true };
+  } catch (e) {
+    if (e.response && e.response.errors) {
+      return { success: false, error: e.response.errors[0].message };
+    }
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
+};
+
+export const calculateSubscriptionUpdateCharge = async (
+  { state, effects }: Context,
+  { workspaceId }: { workspaceId: string }
+) => {
+  const { newSubscription } = state.checkout;
+
+  if (!newSubscription) {
+    return;
+  }
+
+  try {
+    const result = await effects.gql.mutations.previewUpdateSubscriptionPlan({
+      teamId: workspaceId,
+      plan: newSubscription.basePlan.id,
+      billingInterval: newSubscription.billingInterval,
+    });
+
+    // Cap the values to a min of 0
+    state.checkout.convertPlanCharge = {
+      total: Math.max(
+        (result.previewUpdateUsageSubscriptionPlan?.total ?? 0) / 100,
+        0
+      ),
+      totalExcludingTax: Math.max(
+        (result.previewUpdateUsageSubscriptionPlan?.totalExcludingTax ?? 0) /
+          100,
+        0
+      ),
+    };
+  } catch (e) {
+    state.checkout.convertPlanCharge = null;
+  }
+};
+
+export const updateSubscriptionPlan = async (
+  { state, effects }: Context,
+  { workspaceId }: { workspaceId: string }
+): Promise<{ success: boolean; error?: string }> => {
+  const { newSubscription } = state.checkout;
+
+  if (!newSubscription) {
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
+
+  try {
+    await effects.gql.mutations.updateSubscriptionPlan({
+      teamId: workspaceId,
+      plan: newSubscription.basePlan.id,
       billingInterval: newSubscription.billingInterval,
     });
 
@@ -466,26 +535,4 @@ export const recomputeAddonChanges = ({ state }: Context): void => {
   });
 
   state.checkout.addonChanges = changes;
-};
-
-export const updateSubscriptionAddons = async (
-  { effects, actions }: Context,
-  { workspaceId }: { workspaceId: string }
-): Promise<{ success: boolean; error?: string }> => {
-  try {
-    await effects.gql.mutations.updateSubscriptionAddons({
-      teamId: workspaceId,
-      addons: actions.checkout.getFlatAddonsList(),
-    });
-
-    return { success: true };
-  } catch (e) {
-    if (e.response && e.response.errors) {
-      return { success: false, error: e.response.errors[0].message };
-    }
-    return {
-      success: false,
-      error: 'Unexpected error. Please try again later',
-    };
-  }
 };
