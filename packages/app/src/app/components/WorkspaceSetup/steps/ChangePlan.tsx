@@ -3,7 +3,10 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Button, Text, Icon } from '@codesandbox/components';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
-import { SubscriptionInterval } from 'app/graphql/types';
+import {
+  SubscriptionInterval,
+  SubscriptionUpdateMoment,
+} from 'app/graphql/types';
 import { useURLSearchParams } from 'app/hooks/useURLSearchParams';
 import { useActions, useAppState } from 'app/overmind';
 import { StepProps } from '../types';
@@ -107,7 +110,10 @@ export const ChangePlan: React.FC<StepProps> = ({
               <Text>
                 The charge has been prorated based on your existing plan.
                 <br />
-                Your new billing cycle will start now.
+                {checkout.convertPlanCharge.updateMoment ===
+                SubscriptionUpdateMoment.Immediately
+                  ? 'Your new billing cycle will start now.'
+                  : 'The change will take effect when your current billing cycle will end.'}
               </Text>
             </Stack>
           </Stack>

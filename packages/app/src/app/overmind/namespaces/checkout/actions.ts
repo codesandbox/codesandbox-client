@@ -449,6 +449,7 @@ export const calculateSubscriptionUpdateCharge = async (
           100,
         0
       ),
+      updateMoment: result.previewUpdateUsageSubscriptionPlan?.updateMoment,
     };
   } catch (e) {
     state.checkout.convertPlanCharge = null;

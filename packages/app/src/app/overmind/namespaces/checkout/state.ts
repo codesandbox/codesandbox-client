@@ -25,7 +25,7 @@ export interface State {
   hasUpcomingChange: boolean;
   addonChanges: Array<AddonItem>;
   convertLegacyPlanToUBBCharge: Omit<InvoicePreview, 'updateMoment'> | null;
-  convertPlanCharge: Omit<InvoicePreview, 'updateMoment'> | null;
+  convertPlanCharge: InvoicePreview | null;
   availableBasePlans: Record<PlanType, PricingPlan>;
   availableCreditAddons: Record<CreditAddonType, CreditAddon>;
 }
