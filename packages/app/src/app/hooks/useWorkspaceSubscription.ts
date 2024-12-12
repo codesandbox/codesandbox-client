@@ -55,7 +55,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   );
 
   // Yearly plans have an annual suffix which is not relevant for us here
-  const proPlanType = basePlanItem?.name.replace('_annual', '') || 'flex';
+  const proPlanType =
+    basePlanItem?.name.replace('_annual', '') === 'flex' ? 'flex' : 'builder';
 
   return {
     subscription,
