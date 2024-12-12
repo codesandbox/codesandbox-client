@@ -16,10 +16,13 @@ import css from '@styled-system/css';
 
 import { PaymentPending } from 'app/components/StripeMessages/PaymentPending';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useDismissible } from 'app/hooks';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { UsageLimitMessageStripe } from 'app/components/StripeMessages/UsageLimitMessageStripe';
+import { AcquisitionAnnouncement } from 'app/components/StripeMessages/AcquisitionAnnouncement';
+
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
@@ -39,6 +42,10 @@ export const Dashboard: FunctionComponent = () => {
   const { subscription } = useWorkspaceSubscription();
   const { showUsageLimitBanner } = useWorkspaceLimits();
   const { trackVisit } = useDashboardVisit();
+  const [
+    isAnnouncementBannerDismissed,
+    dismissAnnouncementBanner,
+  ] = useDismissible('ACQ_ANNOUNCEMENT');
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -63,7 +70,15 @@ export const Dashboard: FunctionComponent = () => {
   const hasPaymentProblems =
     subscription?.status === SubscriptionStatus.Unpaid ||
     subscription?.status === SubscriptionStatus.Incomplete;
-  const hasTopBarBanner = hasPaymentProblems || showUsageLimitBanner;
+
+  // Only show this when no other relevant banner is present
+  const showAcquisitionBanner =
+    !isAnnouncementBannerDismissed &&
+    !hasPaymentProblems &&
+    !showUsageLimitBanner;
+
+  const hasTopBarBanner =
+    showAcquisitionBanner || showUsageLimitBanner || hasPaymentProblems;
 
   useEffect(() => {
     if (!hasLogIn) {
@@ -136,6 +151,10 @@ export const Dashboard: FunctionComponent = () => {
             <PaymentPending status={subscription?.status} />
           )}
           {showUsageLimitBanner && <UsageLimitMessageStripe />}
+          {showAcquisitionBanner && (
+            <AcquisitionAnnouncement onDismiss={dismissAnnouncementBanner} />
+          )}
+
           <Header onSidebarToggle={onSidebarToggle} />
           <Media
             query={theme.media

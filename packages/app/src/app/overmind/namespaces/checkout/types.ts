@@ -2,7 +2,7 @@ import { SubscriptionInterval } from 'app/graphql/types';
 
 export type VMType = 'vm-1' | 'vm-2' | 'vm-3' | 'vm-4' | 'vm-5' | 'vm-6';
 
-export type PlanType = 'free' | 'flex' | 'enterprise';
+export type PlanType = 'free' | 'flex' | 'builder' | 'enterprise';
 export type CreditAddonType = 'credits_500' | 'credits_4000' | 'credits_24000';
 
 export type PricingPlan = {
@@ -11,7 +11,6 @@ export type PricingPlan = {
   priceMonthly: number;
   priceYearly: number;
   credits: number;
-  creditsNote?: string;
   storage?: number;
   features: string[];
   usage: string[];

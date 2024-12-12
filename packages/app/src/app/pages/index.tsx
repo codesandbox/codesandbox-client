@@ -13,11 +13,7 @@ import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
 import { StandalonePage } from './Standalone';
-import {
-  CreateWorkspace,
-  UpgradeWorkspace,
-  ManageAddons,
-} from './WorkspaceFlows';
+import { CreateWorkspace, UpgradeWorkspace } from './WorkspaceFlows';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
@@ -206,7 +202,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/standalone/:componentId" component={StandalonePage} />
             <Route path="/create-workspace" component={CreateWorkspace} />
             <Route path="/upgrade" component={UpgradeWorkspace} />
-            <Route path="/manage-addons" component={ManageAddons} />
+            <Route path="/manage-subscription" component={UpgradeWorkspace} />
 
             {environment.isOnPrem ? (
               <Redirect from="/pro" to="/dashboard" />

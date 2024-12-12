@@ -10,6 +10,7 @@ import {
 import {
   FREE_PLAN,
   PRO_PLAN,
+  BUILDER_PLAN,
   ENTERPRISE_PLAN,
   ADDON_CREDITS_500,
   ADDON_CREDITS_4000,
@@ -23,7 +24,8 @@ export interface State {
   currentSubscription: SubscriptionPackage | null;
   hasUpcomingChange: boolean;
   addonChanges: Array<AddonItem>;
-  convertProToUBBCharge: InvoicePreview | null;
+  convertLegacyPlanToUBBCharge: Omit<InvoicePreview, 'updateMoment'> | null;
+  convertPlanCharge: InvoicePreview | null;
   availableBasePlans: Record<PlanType, PricingPlan>;
   availableCreditAddons: Record<CreditAddonType, CreditAddon>;
 }
@@ -37,10 +39,12 @@ export const state: State = {
 
   addonChanges: [], // Recomputed everytime an addon is changed
 
-  convertProToUBBCharge: null,
+  convertLegacyPlanToUBBCharge: null,
+  convertPlanCharge: null,
   availableBasePlans: {
     free: FREE_PLAN,
     flex: PRO_PLAN,
+    builder: BUILDER_PLAN,
     enterprise: ENTERPRISE_PLAN,
   },
   availableCreditAddons: {

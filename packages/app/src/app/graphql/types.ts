@@ -1161,7 +1161,7 @@ export type SubscriptionSchedulePhase = {
 export type SubscriptionItem = {
   __typename?: 'SubscriptionItem';
   name: Scalars['String'];
-  /** Quanity is null for metered items, such as the on-demand credit usage. */
+  /** Quantity is null for metered items, such as the on-demand credit usage. */
   quantity: Maybe<Scalars['Int']>;
   unitAmount: Maybe<Scalars['Int']>;
   unitAmountDecimal: Maybe<Scalars['String']>;
@@ -2014,6 +2014,7 @@ export type RootMutationType = {
   previewConvertToUsageBilling: InvoicePreview;
   /** @deprecated Subscription management no longer supported via GraphQL */
   previewUpdateSubscriptionBillingInterval: BillingPreview;
+  previewUpdateUsageSubscriptionPlan: InvoicePreview;
   reactivateSubscription: ProSubscription;
   redeemSandboxInvitation: Invitation;
   /** Redeem an invite token from a team */
@@ -2175,13 +2176,17 @@ export type RootMutationType = {
   /** @deprecated Subscription management no longer supported via GraphQL */
   updateSubscriptionBillingInterval: ProSubscription;
   /**
-   * Update an active usage-based billing subscription.
+   * Update addons for usage-based billing subscription.
    *
    * This mutation requires the caller to be an admin of the team. Otherwise, an error will be
    * returned `"Not an admin"`. This return value will always be `true`. Clients should observe
    * the `teamEvents` subscription for updates to the workspace subscription.
+   *
+   * After the upcoming pricing change anything other than an empty list to cancel all add-ons
+   * will return an error.
    */
   updateUsageSubscription: Scalars['Boolean'];
+  updateUsageSubscriptionPlan: Scalars['Boolean'];
 };
 
 export type RootMutationTypeAcceptTeamInvitationArgs = {
@@ -2488,6 +2493,12 @@ export type RootMutationTypePreviewUpdateSubscriptionBillingIntervalArgs = {
   teamId: Scalars['UUID4'];
 };
 
+export type RootMutationTypePreviewUpdateUsageSubscriptionPlanArgs = {
+  billingInterval: InputMaybe<SubscriptionInterval>;
+  plan: InputMaybe<Scalars['String']>;
+  teamId: Scalars['UUID4'];
+};
+
 export type RootMutationTypeReactivateSubscriptionArgs = {
   subscriptionId: Scalars['UUID4'];
   teamId: Scalars['UUID4'];
@@ -2774,6 +2785,12 @@ export type RootMutationTypeUpdateUsageSubscriptionArgs = {
   teamId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeUpdateUsageSubscriptionPlanArgs = {
+  billingInterval: InputMaybe<SubscriptionInterval>;
+  plan: InputMaybe<Scalars['String']>;
+  teamId: Scalars['UUID4'];
+};
+
 export type MemberAuthorization = {
   authorization: TeamMemberAuthorization;
   teamManager: InputMaybe<Scalars['Boolean']>;
@@ -2843,7 +2860,13 @@ export type InvoicePreview = {
   __typename?: 'InvoicePreview';
   total: Scalars['Int'];
   totalExcludingTax: Maybe<Scalars['Int']>;
+  updateMoment: Maybe<SubscriptionUpdateMoment>;
 };
+
+export enum SubscriptionUpdateMoment {
+  Immediately = 'IMMEDIATELY',
+  NextBillDate = 'NEXT_BILL_DATE',
+}
 
 /** DEPRECATED: Conversion to usage-based billing uses InvoicePreview instead */
 export type BillingPreview = {
@@ -4492,14 +4515,31 @@ export type ConvertToUsageBillingMutation = {
   convertToUsageBilling: boolean;
 };
 
-export type UpdateUsageSubscriptionMutationVariables = Exact<{
+export type PreviewUpdateUsageSubscriptionPlanMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
-  addons: Array<Scalars['String']> | Scalars['String'];
+  plan: Scalars['String'];
+  billingInterval: InputMaybe<SubscriptionInterval>;
 }>;
 
-export type UpdateUsageSubscriptionMutation = {
+export type PreviewUpdateUsageSubscriptionPlanMutation = {
   __typename?: 'RootMutationType';
-  updateUsageSubscription: boolean;
+  previewUpdateUsageSubscriptionPlan: {
+    __typename?: 'InvoicePreview';
+    total: number;
+    totalExcludingTax: number | null;
+    updateMoment: SubscriptionUpdateMoment | null;
+  };
+};
+
+export type UpdateSubscriptionPlanMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  plan: Scalars['String'];
+  billingInterval: InputMaybe<SubscriptionInterval>;
+}>;
+
+export type UpdateSubscriptionPlanMutation = {
+  __typename?: 'RootMutationType';
+  updateUsageSubscriptionPlan: boolean;
 };
 
 export type UpdateProjectVmTierMutationVariables = Exact<{

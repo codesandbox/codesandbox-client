@@ -9,23 +9,17 @@ export const FREE_PLAN: PricingPlan = {
   priceMonthly: 0,
   priceYearly: 0,
   credits: 400,
-  creditsNote: 'Ideal for hobbyists using Devboxes up to 40 hours a month.',
   storage: 20,
   usage: [
-    'Up to 40 hours worth of VM credits per month',
-    'VMs up to 4 vCPUs + 8 GiB RAM',
-    '5 private Sandboxes',
-    'Unlimited public Sandboxes',
-    'Unlimited Devboxes and repositories',
+    'Up to 40 hours of monthly VM credits',
+    'Unlimited Sandboxes & Devboxes',
     '5 members',
   ],
   features: [
+    'CodeSandbox SDK lite',
     'Private Sandboxes, Devboxes & repos',
-    '100 Codeium AI code completions',
-    'Live collaboration',
+    'VMs up to 4 vCPUs + 8 GiB RAM',
     'VS Code extension',
-    'Instant environment resume',
-    'Instant environment share',
   ],
 };
 
@@ -35,18 +29,29 @@ export const PRO_PLAN: PricingPlan = {
   priceMonthly: 12,
   priceYearly: 9,
   credits: 1000,
-  creditsNote:
-    'Ideal to get started with cloud development and understand your usage needs.',
   storage: 50,
-  features: ['All free features', 'Unlimited Codeium AI code completions'],
+  features: ['All free features', 'VMs up to 16 vCPUs + 32 GiB RAM'],
   usage: [
-    'Start from 100 hours worth of VM credits per month',
-    '50 GB storage per VM',
-    'VMs up to 16 vCPUs + 32 GB RAM',
-    'Unlimited public Sandboxes',
-    'Unlimited private Sandboxes',
-    'Unlimited Devboxes and repositories',
+    'Start from 100 hours of monthly VM credits',
+    'Unlimited Sandboxes & Devboxes',
     '20 members',
+    'Access on-demand VM credits for $0.18 per hour',
+  ],
+};
+
+export const BUILDER_PLAN: PricingPlan = {
+  id: 'builder',
+  name: 'Builder',
+  priceMonthly: 170,
+  priceYearly: 119,
+  credits: 1600,
+  storage: 50,
+  features: ['All Pro features', 'CodeSandbox SDK', 'More VM tiers'],
+  usage: [
+    'Start from 160 hours of monthly VM credits',
+    'Unlimited Sandboxes & Devboxes',
+    '20 members',
+    '100 concurrent VMs',
     'Access on-demand VM credits for $0.18 per hour',
   ],
 };
@@ -60,8 +65,8 @@ export const ENTERPRISE_PLAN: PricingPlan = {
   storage: 0,
   usage: [],
   features: [
+    'Bulk VM credit packs up to 50% off',
     'Unlimited members',
-    'Unlimited API',
     'VMs up to 64 vCPUs + 128 GiB RAM',
     'On-premise options',
     'Private managed cloud',

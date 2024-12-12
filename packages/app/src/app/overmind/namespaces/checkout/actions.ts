@@ -11,9 +11,12 @@ import { DEFAULT_SPENDING_LIMIT } from './constants';
 
 export const fetchPrices = async ({ state, effects }: Context) => {
   try {
-    const result = await effects.api.getPrices('2024-02-01');
+    const result = await effects.api.getPrices('2024-12-09');
 
     const proPricing = result.base.flex;
+    const builderPricing = result.base.builder;
+
+    // Deprecated
     const proAddons = result.addons;
 
     state.checkout.availableBasePlans.flex = {
@@ -22,6 +25,14 @@ export const fetchPrices = async ({ state, effects }: Context) => {
       priceMonthly: proPricing.cost_month / 100,
       priceYearly: proPricing.cost_year / 100,
       storage: proPricing.storage,
+    };
+
+    state.checkout.availableBasePlans.builder = {
+      ...state.checkout.availableBasePlans.builder,
+      credits: builderPricing.credits,
+      priceMonthly: builderPricing.cost_month / 100,
+      priceYearly: builderPricing.cost_year / 100,
+      storage: builderPricing.storage,
     };
 
     Object.values(state.checkout.availableCreditAddons).forEach(creditAddon => {
@@ -340,7 +351,7 @@ export const setSpendingLimit = async (
   }
 };
 
-export const calculateConversionCharge = async (
+export const calculateLegacyToUBBConversionCharge = async (
   { state, effects, actions }: Context,
   { workspaceId }: { workspaceId: string }
 ) => {
@@ -359,7 +370,7 @@ export const calculateConversionCharge = async (
     });
 
     // Cap the values to a min of 0
-    state.checkout.convertProToUBBCharge = {
+    state.checkout.convertLegacyPlanToUBBCharge = {
       total: Math.max(
         (result.previewConvertToUsageBilling?.total ?? 0) / 100,
         0
@@ -370,7 +381,7 @@ export const calculateConversionCharge = async (
       ),
     };
   } catch (e) {
-    state.checkout.convertProToUBBCharge = null;
+    state.checkout.convertLegacyPlanToUBBCharge = null;
   }
 };
 
@@ -392,6 +403,73 @@ export const convertToUsageBilling = async (
       teamId: workspaceId,
       plan: newSubscription.basePlan.id,
       addons: actions.checkout.getFlatAddonsList(),
+      billingInterval: newSubscription.billingInterval,
+    });
+
+    return { success: true };
+  } catch (e) {
+    if (e.response && e.response.errors) {
+      return { success: false, error: e.response.errors[0].message };
+    }
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
+};
+
+export const calculateSubscriptionUpdateCharge = async (
+  { state, effects }: Context,
+  { workspaceId }: { workspaceId: string }
+) => {
+  const { newSubscription } = state.checkout;
+
+  if (!newSubscription) {
+    return;
+  }
+
+  try {
+    const result = await effects.gql.mutations.previewUpdateSubscriptionPlan({
+      teamId: workspaceId,
+      plan: newSubscription.basePlan.id,
+      billingInterval: newSubscription.billingInterval,
+    });
+
+    // Cap the values to a min of 0
+    state.checkout.convertPlanCharge = {
+      total: Math.max(
+        (result.previewUpdateUsageSubscriptionPlan?.total ?? 0) / 100,
+        0
+      ),
+      totalExcludingTax: Math.max(
+        (result.previewUpdateUsageSubscriptionPlan?.totalExcludingTax ?? 0) /
+          100,
+        0
+      ),
+      updateMoment: result.previewUpdateUsageSubscriptionPlan?.updateMoment,
+    };
+  } catch (e) {
+    state.checkout.convertPlanCharge = null;
+  }
+};
+
+export const updateSubscriptionPlan = async (
+  { state, effects }: Context,
+  { workspaceId }: { workspaceId: string }
+): Promise<{ success: boolean; error?: string }> => {
+  const { newSubscription } = state.checkout;
+
+  if (!newSubscription) {
+    return {
+      success: false,
+      error: 'Unexpected error. Please try again later',
+    };
+  }
+
+  try {
+    await effects.gql.mutations.updateSubscriptionPlan({
+      teamId: workspaceId,
+      plan: newSubscription.basePlan.id,
       billingInterval: newSubscription.billingInterval,
     });
 
@@ -455,26 +533,4 @@ export const recomputeAddonChanges = ({ state }: Context): void => {
   });
 
   state.checkout.addonChanges = changes;
-};
-
-export const updateSubscriptionAddons = async (
-  { effects, actions }: Context,
-  { workspaceId }: { workspaceId: string }
-): Promise<{ success: boolean; error?: string }> => {
-  try {
-    await effects.gql.mutations.updateSubscriptionAddons({
-      teamId: workspaceId,
-      addons: actions.checkout.getFlatAddonsList(),
-    });
-
-    return { success: true };
-  } catch (e) {
-    if (e.response && e.response.errors) {
-      return { success: false, error: e.response.errors[0].message };
-    }
-    return {
-      success: false,
-      error: 'Unexpected error. Please try again later',
-    };
-  }
 };

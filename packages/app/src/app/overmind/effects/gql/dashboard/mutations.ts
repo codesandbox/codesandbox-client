@@ -59,12 +59,14 @@ import {
   ConvertToUsageBillingMutationVariables,
   UpdateProjectVmTierMutationVariables,
   UpdateProjectVmTierMutation,
-  UpdateUsageSubscriptionMutationVariables,
-  UpdateUsageSubscriptionMutation,
+  UpdateSubscriptionPlanMutationVariables,
+  UpdateSubscriptionPlanMutation,
   SetTeamMetadataMutation,
   SetTeamMetadataMutationVariables,
   JoinEligibleWorkspaceMutation,
   JoinEligibleWorkspaceMutationVariables,
+  PreviewUpdateUsageSubscriptionPlanMutationVariables,
+  PreviewUpdateUsageSubscriptionPlanMutation,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -469,12 +471,41 @@ export const convertToUsageBilling: Query<
   }
 `;
 
-export const updateSubscriptionAddons: Query<
-  UpdateUsageSubscriptionMutation,
-  UpdateUsageSubscriptionMutationVariables
+export const previewUpdateSubscriptionPlan: Query<
+  PreviewUpdateUsageSubscriptionPlanMutation,
+  PreviewUpdateUsageSubscriptionPlanMutationVariables
 > = gql`
-  mutation UpdateUsageSubscription($teamId: UUID4!, $addons: [String!]!) {
-    updateUsageSubscription(addons: $addons, teamId: $teamId)
+  mutation PreviewUpdateUsageSubscriptionPlan(
+    $teamId: UUID4!
+    $plan: String!
+    $billingInterval: SubscriptionInterval
+  ) {
+    previewUpdateUsageSubscriptionPlan(
+      plan: $plan
+      teamId: $teamId
+      billingInterval: $billingInterval
+    ) {
+      total
+      totalExcludingTax
+      updateMoment
+    }
+  }
+`;
+
+export const updateSubscriptionPlan: Query<
+  UpdateSubscriptionPlanMutation,
+  UpdateSubscriptionPlanMutationVariables
+> = gql`
+  mutation UpdateSubscriptionPlan(
+    $teamId: UUID4!
+    $plan: String!
+    $billingInterval: SubscriptionInterval
+  ) {
+    updateUsageSubscriptionPlan(
+      plan: $plan
+      teamId: $teamId
+      billingInterval: $billingInterval
+    )
   }
 `;
 
