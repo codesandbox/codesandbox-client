@@ -1,8 +1,5 @@
 import type { Context } from 'app/overmind';
-import {
-  SubscriptionInterval,
-  SubscriptionUpdateMoment,
-} from 'app/graphql/types';
+import { SubscriptionInterval } from 'app/graphql/types';
 import {
   AddonItem,
   CreditAddonType,

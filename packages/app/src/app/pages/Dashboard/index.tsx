@@ -16,16 +16,17 @@ import css from '@styled-system/css';
 
 import { PaymentPending } from 'app/components/StripeMessages/PaymentPending';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useDismissible } from 'app/hooks';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { UsageLimitMessageStripe } from 'app/components/StripeMessages/UsageLimitMessageStripe';
+import { AcquisitionAnnouncement } from 'app/components/StripeMessages/AcquisitionAnnouncement';
+
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
-import { AcquisitionAnnouncement } from 'app/components/StripeMessages/AcquisitionAnnouncement';
-import { useDismissible } from 'app/hooks';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },

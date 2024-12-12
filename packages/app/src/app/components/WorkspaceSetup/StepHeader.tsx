@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon, Stack, Text, Button } from '@codesandbox/components';
-import { useAppState } from 'app/overmind';
 
 interface StepHeaderProps {
   numberOfSteps: number;
@@ -19,10 +18,7 @@ export const StepHeader = ({
   headerNote,
   onDismiss,
   onPrevStep,
-  workspaceId,
 }: StepHeaderProps) => {
-  const { dashboard } = useAppState();
-
   return (
     <Stack direction="vertical" gap={8}>
       {currentStep === 0 ? (

@@ -50,7 +50,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const isFree = !isPro;
 
   const hasPaymentMethod = subscription.paymentMethodAttached;
-  const basePlanItem = activeTeamInfo.subscriptionSchedule.current.items.find(
+  const basePlanItem = activeTeamInfo.subscriptionSchedule?.current?.items.find(
     item => item.name.includes('builder') || item.name.includes('flex')
   );
 

@@ -13,11 +13,7 @@ import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
 import { StandalonePage } from './Standalone';
-import {
-  CreateWorkspace,
-  UpgradeWorkspace,
-  ManageAddons,
-} from './WorkspaceFlows';
+import { CreateWorkspace, UpgradeWorkspace } from './WorkspaceFlows';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';

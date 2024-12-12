@@ -1,10 +1,10 @@
 import React from 'react';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
 import { StepProps } from '../types';
 import { Payment } from './Payment';
 import { ChangePlan } from './ChangePlan';
-import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { ChangeLegacyPlan } from './ChangeLegacyPlan';
 
 export const Finalize: React.FC<StepProps> = props => {

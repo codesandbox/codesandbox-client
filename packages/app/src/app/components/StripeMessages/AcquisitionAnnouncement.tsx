@@ -15,12 +15,18 @@ export const AcquisitionAnnouncement: React.FC<{ onDismiss: () => void }> = ({
       <a
         style={{ color: 'inherit' }}
         href="https://together.ai"
+        rel="noreferrer"
         target="_blank"
       >
         Together AI!
       </a>{' '}
       We have joined forces to launch{' '}
-      <a style={{ color: 'inherit' }} href="https://codesandbox.io/sdk">
+      <a
+        style={{ color: 'inherit' }}
+        href="https://codesandbox.io/sdk"
+        rel="noreferrer"
+        target="_blank"
+      >
         CodeSandbox SDK
       </a>{' '}
       and bring code interpretation to generative AI.
@@ -28,6 +34,7 @@ export const AcquisitionAnnouncement: React.FC<{ onDismiss: () => void }> = ({
     <MessageStripe.Action
       as="a"
       target="_blank"
+      rel="noreferrer"
       href="https://codesandbox.io/blog/joining-forces-with-together-ai-introducing-codesandbox-sdk"
     >
       See full announcement
