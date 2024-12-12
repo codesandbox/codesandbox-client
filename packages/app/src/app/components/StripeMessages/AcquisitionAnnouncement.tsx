@@ -35,7 +35,7 @@ export const AcquisitionAnnouncement: React.FC<{ onDismiss: () => void }> = ({
       as="a"
       target="_blank"
       rel="noreferrer"
-      href="https://codesandbox.io/blog/joining-forces-with-together-ai-introducing-codesandbox-sdk"
+      href="https://codesandbox.io/blog/joining-together-ai-introducing-codesandbox-sdk"
     >
       See full announcement
     </MessageStripe.Action>
