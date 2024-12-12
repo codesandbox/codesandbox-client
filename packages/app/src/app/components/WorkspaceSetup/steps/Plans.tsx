@@ -734,6 +734,12 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           plans={plans}
           property="devboxes"
         />
+        <FeatureComparisonBooleanRow
+          title="CodeSandbox SDK"
+          description="Programmatically create and manage Devboxes at scale."
+          plans={plans}
+          property="sdk"
+        />
         <FeatureComparisonNumbersRow
           title="Concurrent Devboxes"
           description="The maximum number of concurrently running Devboxes for CodeSandbox SDK."
@@ -757,12 +763,6 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
           description="Specs for the best virtual machines that can be used."
           plans={plans}
           property="vmType"
-        />
-        <FeatureComparisonBooleanRow
-          title="CodeSandbox SDK"
-          description="Programmatically create and manage Devboxes at scale."
-          plans={plans}
-          property="sdk"
         />
         <FeatureComparisonBooleanRow
           title="Private projects"
