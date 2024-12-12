@@ -6,7 +6,6 @@ interface StepHeaderProps {
   currentStep: number;
   title: string;
   headerNote?: React.ReactNode;
-  workspaceId?: string;
   onPrevStep: () => void;
   onDismiss: () => void;
 }

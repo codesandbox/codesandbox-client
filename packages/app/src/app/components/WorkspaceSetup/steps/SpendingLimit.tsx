@@ -78,7 +78,6 @@ export const SpendingLimit: React.FC<StepProps> = ({
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
           title="Set a spending limit"
-          workspaceId={urlWorkspaceId}
         />
 
         <Text color="#a6a6a6">

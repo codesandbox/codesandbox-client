@@ -55,7 +55,6 @@ export const Addons: React.FC<StepProps> = ({
               ? 'Update plan'
               : 'Choose your add-ons (optional)'
           }
-          workspaceId={urlWorkspaceId}
         />
 
         <Stack direction="vertical" gap={8}>

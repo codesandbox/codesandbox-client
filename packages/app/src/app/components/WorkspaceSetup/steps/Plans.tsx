@@ -127,7 +127,6 @@ export const Plans: React.FC<StepProps> = ({
           currentStep={currentStep}
           numberOfSteps={numberOfSteps}
           title={`Choose a plan ${headerSuffix}`}
-          workspaceId={urlWorkspaceId}
           headerNote={
             <>
               Your workspace is currently on the{' '}
