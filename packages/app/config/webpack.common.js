@@ -159,6 +159,10 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*babel-plugin-macros`),
           new RegExp(`sandbox-hooks`),
           new RegExp(`template-icons`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*react-devtools-inline`),
+          new RegExp(
+            `${sepRe}node_modules${sepRe}.*@codesandbox${sepRe}sandpack-react`
+          ),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),
@@ -189,6 +193,9 @@ module.exports = {
             '@babel/plugin-proposal-object-rest-spread',
             '@babel/plugin-proposal-class-properties',
             '@babel/plugin-transform-runtime',
+            '@babel/plugin-proposal-optional-chaining',
+            '@babel/plugin-proposal-numeric-separator',
+            '@babel/plugin-proposal-nullish-coalescing-operator',
           ],
         },
       },
