@@ -1,7 +1,7 @@
 import { normalizeAliasFilePath } from './alias';
 
 // exports keys, sorted from high to low priority
-const EXPORTS_KEYS = ['browser', 'development', 'default', 'require', 'import'];
+const EXPORTS_KEYS = ['browser', 'development', 'default', 'import', 'require'];
 
 type PackageExportType =
   | string
