@@ -58,6 +58,7 @@ type State = {
   highlightedLines: Array<number>,
   tabs?: Array<number>,
   theme: string,
+  hideSplitPane: boolean,
 };
 
 export default class App extends React.PureComponent<
@@ -119,6 +120,7 @@ export default class App extends React.PureComponent<
       runOnClick: runOnClick === undefined ? isAndroid || isIOS : runOnClick,
       verticalMode,
       highlightedLines: highlightedLines || [],
+      hideSplitPane: hideNavigation,
     };
   }
 
@@ -472,6 +474,7 @@ export default class App extends React.PureComponent<
             sidebarOpen={this.state.sidebarOpen}
             toggleSidebar={this.toggleSidebar}
             toggleLike={this.jwt() && this.toggleLike}
+            hideSplitPane={this.state.hideSplitPane}
           />
         </Container>
       </ThemeProvider>
@@ -506,7 +509,7 @@ export default class App extends React.PureComponent<
           )}
           <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
         </Fullscreen>
-      </ThemeProvider>
-    );
+      );
+    }
   }
 }
