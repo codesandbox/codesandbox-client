@@ -25,7 +25,8 @@ export function normalizePackageExport(
 
 export function extractPathFromExport(
   exportValue: PackageExportType,
-  pkgRoot: string
+  pkgRoot: string,
+  checkedExportKeys: string[] = EXPORTS_KEYS
 ): string | false {
   if (!exportValue) {
     return false;
@@ -46,13 +47,17 @@ export function extractPathFromExport(
   }
 
   if (typeof exportValue === 'object') {
-    for (const key of EXPORTS_KEYS) {
+    for (const key of checkedExportKeys) {
       const exportFilename = exportValue[key];
       if (exportFilename !== undefined) {
         if (typeof exportFilename === 'string') {
           return normalizePackageExport(exportFilename, pkgRoot);
         }
-        return extractPathFromExport(exportFilename, pkgRoot);
+        return extractPathFromExport(
+          exportFilename,
+          pkgRoot,
+          checkedExportKeys
+        );
       }
     }
     return false;
