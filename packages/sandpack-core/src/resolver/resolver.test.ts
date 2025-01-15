@@ -191,7 +191,7 @@ describe('resolve', () => {
         isFile,
         readFile,
       });
-      expect(resolved).toBe('/node_modules/solid-js/dist/solid.cjs');
+      expect(resolved).toBe('/node_modules/solid-js/dist/solid.js');
     });
 
     it('should fall back to index.js when it cannot find package.main', () => {
@@ -535,7 +535,7 @@ describe('resolve', () => {
         isFile,
         readFile,
       });
-      expect(resolved).toBe('/node_modules/its-fine/out/index.cjs');
+      expect(resolved).toBe('/node_modules/its-fine/out/index.js');
     });
 
     it('resolve fflate correctly', () => {
@@ -545,7 +545,7 @@ describe('resolve', () => {
         isFile,
         readFile,
       });
-      expect(resolved).toBe('/node_modules/fflate/lib/index.cjs');
+      expect(resolved).toBe('/node_modules/fflate/esm/browser.js');
     });
 
     // We should still post process imports using the browser field even when a package has exports
