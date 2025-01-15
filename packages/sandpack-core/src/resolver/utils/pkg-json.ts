@@ -8,6 +8,11 @@ const PKG_ALIAS_FIELDS = ['browser', 'alias'];
 
 type AliasesDict = { [key: string]: string };
 
+const COMMONJS_EXPORT_KEYS = ['browser', 'development', 'default', 'require'];
+function forceCommonJs(name: string, version: string): boolean {
+  return name === 'chevrotain' && version.startsWith('10.');
+}
+
 export interface ProcessedPackageJSON {
   aliases: AliasesDict;
   hasExports: boolean;
@@ -43,7 +48,15 @@ export function processPackageJSON(
     } else if (typeof content.exports === 'object') {
       const exportKeys = Object.keys(content.exports);
       if (!exportKeys[0].startsWith('.')) {
-        const resolvedExport = extractPathFromExport(content.exports, pkgRoot);
+        const checkedExportKeys = forceCommonJs(content.name, content.version)
+          ? COMMONJS_EXPORT_KEYS
+          : undefined;
+
+        const resolvedExport = extractPathFromExport(
+          content.exports,
+          pkgRoot,
+          checkedExportKeys
+        );
         if (!resolvedExport) {
           throw new Error(`Could not find a valid export for ${pkgRoot}`);
         }
