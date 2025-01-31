@@ -45,7 +45,13 @@ export default async function (
     postcssImportPlugin({
       resolve: async (id: string, root: string) => {
         try {
-          const result = await resolveCSSFile(loaderContext, id, root);
+          // Angular specific, remove the ~ from the path to determine if it's a dependency
+          const sanitizedPath = id.replace(/^~/, '');
+          const result = await resolveCSSFile(
+            loaderContext,
+            sanitizedPath,
+            root
+          );
 
           return result.module.path;
         } catch (e) {
