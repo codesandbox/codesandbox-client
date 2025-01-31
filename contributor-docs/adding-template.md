@@ -87,12 +87,12 @@ add (**sandbox** vs. **container**).
 
 To get started, you should first follow the steps in our contribution guidelines
 in order to
-[set up CodeSandbox locally](https://github.com/codesandbox/codesandbox-client/blob/master/CONTRIBUTING.md#setting-up-the-project-locally).
+[set up CodeSandbox locally](https://github.com/codesandbox/codesandbox-client/blob/main/CONTRIBUTING.md#setting-up-the-project-locally).
 
 ### 1. Add template logo
 
 Add the logo for your template in the
-[templates repo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src)
+[templates repo](https://github.com/codesandbox/codesandbox-client/tree/main/packages/template-icons/src)
 (`codesandbox-templates/packages/template-icons/src`).
 
 #### SVG logos
@@ -102,24 +102,24 @@ content. If your template's name is "Banana", name your logo file "BananaIcon".
 
 Examples:
 
-- [Vue logo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src/VueIcon.tsx)
-- [React logo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src/ReactIcon.tsx)
+- [Vue logo](https://github.com/codesandbox/codesandbox-client/tree/main/packages/template-icons/src/VueIcon.tsx)
+- [React logo](https://github.com/codesandbox/codesandbox-client/tree/main/packages/template-icons/src/ReactIcon.tsx)
 
 ### 2. Add template definition
 
 In order for CodeSandbox to recognise your template, you need to add a new
 definition of it in the `codesandbox-client/packages/common/src/templates`
-[directory](https://github.com/codesandbox/codesandbox-client/tree/master/packages/common/src/templates).
+[directory](https://github.com/codesandbox/codesandbox-client/tree/main/packages/common/src/templates).
 You do this by creating a new `.ts` file with the name of your template.
 
 Examples:
 
-- [Parcel](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/parcel.ts)
-- [Gatsby](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/gatsby.ts)
+- [Parcel](https://github.com/codesandbox/codesandbox-client/blob/main/packages/common/src/templates/parcel.ts)
+- [Gatsby](https://github.com/codesandbox/codesandbox-client/blob/main/packages/common/src/templates/gatsby.ts)
 
 The template definition can have various options, which you can find more
 information about in
-[template.ts](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/template.ts).
+[template.ts](https://github.com/codesandbox/codesandbox-client/blob/main/packages/common/src/templates/template.ts).
 
 We encourage you to improve the user experience of your templates by taking
 advantage of the options you have available while writing your template
@@ -133,7 +133,7 @@ Examples:
 <!-- TODO: Add more examples -->
 
 After writing your template definition, you also need to add it to the
-[index.js](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/index.ts)
+[index.js](https://github.com/codesandbox/codesandbox-client/blob/main/packages/common/src/templates/index.ts)
 file in the same directory (`codesandbox-client/packages/common/src/templates`)
 in order for CodeSandbox to be able to retrieve your template.
 
@@ -148,7 +148,7 @@ preset.
 
 We call a template configuration for the bundler in CodeSandbox a 'Preset'. All
 currently installed presets are defined in the
-[index.ts](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/index.ts)
+[index.ts](https://github.com/codesandbox/codesandbox-client/blob/main/packages/app/src/sandbox/eval/index.ts)
 file under `codesandbox-client/packages/app/src/sandbox/eval/presets`.
 
 In order to understand how this configuration works, we recommend you to take a
@@ -156,10 +156,10 @@ look at templates that have already been implemented and their presets.
 
 Examples:
 
-- [create-react-app-typescript](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/create-react-app-typescript/index.js)
+- [create-react-app-typescript](https://github.com/codesandbox/codesandbox-client/blob/main/packages/app/src/sandbox/eval/presets/create-react-app-typescript/index.js)
   (most basic one)
-- [CxJS](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/cxjs/index.js)
-- [vue-cli](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/vue-cli/index.js)
+- [CxJS](https://github.com/codesandbox/codesandbox-client/blob/main/packages/app/src/sandbox/eval/presets/cxjs/index.js)
+- [vue-cli](https://github.com/codesandbox/codesandbox-client/blob/main/packages/app/src/sandbox/eval/presets/vue-cli/index.js)
 
 ### 4. Add the importer
 
@@ -169,7 +169,7 @@ template for every template. This logic is **not** found in `codesanbox-client`.
 
 This means you that you also have to add your template in another file in the
 `codesandbox-importers` repository called
-[templates.ts](https://github.com/codesandbox/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts).
+[templates.ts](https://github.com/codesandbox/codesandbox-importers/blob/main/packages/import-utils/src/create-sandbox/templates.ts).
 
 When you create your Pull Request in `codesanbox-client`, you also need to
 create a Pull Request in `codesandbox-importer` and reference it in your Pull
@@ -190,7 +190,7 @@ functionality of templates using containers.
 
 To test your new template, you need to create a mock response from the API and
 force the new template specification. To do this, you uncomment
-[this line](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/app/store/actions.js#L17)
+[this line](https://github.com/codesandbox/codesandbox-client/blob/main/packages/app/src/app/store/actions.js#L17)
 and change `'custom'` to the id/name of your template:
 
 ```diff

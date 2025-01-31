@@ -31,7 +31,7 @@ async function test(prId) {
   const branchName = `pr-${username.sync()}-${prId}`;
 
   Promise.resolve()
-    .then(() => spawnPromise('git', ['checkout', 'master']))
+    .then(() => spawnPromise('git', ['checkout', 'main']))
     .then(() => spawnPromise('git', ['branch', '-D', branchName]))
     .catch(() => {
       /* Do not care if this fails */
@@ -45,7 +45,7 @@ async function test(prId) {
       ])
     )
     .then(() => spawnPromise('git', ['checkout', branchName]))
-    .then(() => spawnPromise('git', ['merge', 'master']))
+    .then(() => spawnPromise('git', ['merge', 'main']))
     .then(() => spawnPromise('yarn', ['install']))
     .then(() => spawnPromise('yarn', ['build:deps']))
     .then(() => spawnPromise('yarn', ['typecheck']))

@@ -93,7 +93,7 @@ export const withLoadApp = <I>(
     const response = await effects.http.get<{
       contributors: Contributor[];
     }>(
-      'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
+      'https://raw.githubusercontent.com/codesandbox/codesandbox-client/main/.all-contributorsrc'
     );
 
     state.contributors = response.data.contributors.map(
