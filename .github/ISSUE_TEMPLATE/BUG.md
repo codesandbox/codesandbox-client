@@ -36,6 +36,6 @@ Your best chance of getting this bug looked at quickly is to provide an example.
 | Operating System |              |
 
 <!-- prettier-ignore-start -->
-[code_of_conduct]: https://github.com/codesandbox/codesandbox-client/blob/master/CODE_OF_CONDUCT.md
-[contributing]: https://github.com/codesandbox/codesandbox-client/blob/master/CONTRIBUTING.md
+[code_of_conduct]: https://github.com/codesandbox/codesandbox-client/blob/main/CODE_OF_CONDUCT.md
+[contributing]: https://github.com/codesandbox/codesandbox-client/blob/main/CONTRIBUTING.md
 <!-- prettier-ignore-end -->

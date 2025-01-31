@@ -61,7 +61,9 @@ export const SyncedSandboxListItem = ({ name, path, url, ...props }) => {
               <Stack justify="space-between" align="center">
                 <Text size={3} weight="medium" css={{ color: '#E5E5E5' }}>
                   {name}
-                  {props.branch !== 'master' ? `:${props.branch}` : ''}
+                  {['main', 'master'].includes(props.branch)
+                    ? ''
+                    : `:${props.branch}`}
                 </Text>
               </Stack>
             </Stack>
