@@ -20,6 +20,7 @@ export default function SplitView({
   hideDevTools,
   setEditorSize,
   setDragging: setDraggingProp,
+  hideSplitPane, // Pae72
   ...props
 }) {
   /* Things this component should do
