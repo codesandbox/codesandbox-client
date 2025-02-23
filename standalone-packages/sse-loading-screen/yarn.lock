@@ -3877,10 +3877,10 @@ xmlhttprequest-ssl@~1.6.2:
   resolved "https://registry.yarnpkg.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-1.6.3.tgz#03b713873b01659dfa2c1c5d056065b27ddc2de6"
   integrity sha512-3XfeQE/wNkvrIktn2Kf0869fC0BN6UpydVasGIeSm2B1Llihf7/0UfZM+eCkOw3P7bP4+qPgqhm7ZoxuJtFU0Q==
 
-xterm-webfont@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/xterm-webfont/-/xterm-webfont-1.1.1.tgz#8cf008b01ab5281af17b5b703f53f4ae53acb299"
-  integrity sha512-Afz13ctmi8AiDNnlroL32mBmBIPpI4ECYWawHEOMDF9bcgJo4oETGfUbI9XMNvVv+t/wAWPr7eQzzcxwbq3GMw==
+xterm-webfont@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/xterm-webfont/-/xterm-webfont-2.0.0.tgz#c4d730bd36121d193c1c9ea8744f529b368c0154"
+  integrity sha512-i0MMpWvpvl56VJDF34WPieTAgAM0dPVpTQ4odGFy3nlo8aQVnu5jdAfMf02eSqG03tBg0gdlY00PjGXDA/I2Yw==
   dependencies:
     fontfaceobserver "2.*"
 
