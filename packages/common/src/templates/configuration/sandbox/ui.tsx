@@ -193,7 +193,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
               title="Node Version"
               type="dropdown"
               options={['10', '12', '14', '16']}
-              {...bindValue(parsedFile, 'container.node')}
+              {...bindValue(parsedFile, 'container.node', '14')}
             />
             <ConfigDescription>
               Which node version to use for this sandbox. Please restart the
