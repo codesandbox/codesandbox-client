@@ -644,7 +644,7 @@ class BasePreview extends React.PureComponent<Props, State> {
               <>
                 <StyledFrame
                   key="PREVIEW"
-                  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+                  allow="accelerometer; ambient-light-sensor; camera; clipboard-read; clipboard-write; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
                   sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-downloads allow-pointer-lock"
                   src={this.state.url}
                   ref={this.setIframeElement}
