@@ -231,7 +231,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "sandpack-core": "1.0.0",
     "sha1": "^1.1.1",
-    "shelljs": "^0.8.5",
+    "shelljs": "^0.9.0",
     "shortid": "^2.2.16",
     "store": "^2.0.12",
     "string-replace-loader": "^2.1.1",
