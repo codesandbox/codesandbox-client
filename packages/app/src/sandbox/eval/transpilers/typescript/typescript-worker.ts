@@ -15,7 +15,7 @@ async function compile(data) {
 
   if (typescriptVersion !== '3.4.1') {
     self.importScripts(
-      `https://unpkg.com/typescript@${typescriptVersion}/lib/typescript.js`
+      `https://cdn.jsdelivr.net/npm/typescript@${typescriptVersion}/lib/typescript.js`
     );
   }
 

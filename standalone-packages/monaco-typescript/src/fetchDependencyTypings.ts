@@ -430,7 +430,7 @@ export async function fetchAndAddDependencies(
       let depVersion = version;
 
       try {
-        await doFetch(`https://unpkg.com/${dep}@${version}/package.json`)
+        await doFetch(`https://cdn.jsdelivr.net/npm/${dep}@${version}/package.json`)
           .then(x => JSON.parse(x))
           .then(x => {
             depVersion = x.version;
