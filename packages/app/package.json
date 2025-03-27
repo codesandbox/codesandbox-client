@@ -96,7 +96,7 @@
     "apollo-link-batch-http": "^1.2.12",
     "apollo-link-context": "^1.0.18",
     "astring": "^1.7.4",
-    "axios": ">=0.21.2",
+    "axios": ">=1.8.3",
     "babel-code-frame": "^6.26.0",
     "babel-macros": "^2.0.0",
     "babel-plugin-jsx-pragmatic": "^1.0.2",
