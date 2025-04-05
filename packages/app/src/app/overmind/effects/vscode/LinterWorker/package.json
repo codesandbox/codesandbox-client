@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^4.2.0",
-    "@typescript-eslint/parser": "^4.2.0",
+    "@typescript-eslint/parser": "^8.24.0",
     "babel-eslint": "10.0.2",
     "eslint": "5.16.0",
     "esquery": "1.0.1",
