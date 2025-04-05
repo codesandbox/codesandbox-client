@@ -12,6 +12,6 @@
     "compile": "cd out/extensions/ && node ../../../codesandbox-browserfs/build/scripts/make_http_index.js > index.json"
   },
   "dependencies": {
-    "rimraf": "^2.6.3"
+    "rimraf": "^6.0.1"
   }
 }
