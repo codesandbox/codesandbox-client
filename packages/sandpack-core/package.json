@@ -21,7 +21,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "^7.26.10",
     "@codesandbox/common": "^1.0.8",
     "codesandbox-api": "0.0.32",
     "fs-extra": "^9.1.0",
