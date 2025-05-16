@@ -16,6 +16,6 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@vue/compiler-sfc": "^3.2.45"
+    "@vue/compiler-sfc": "^3.5.14"
   }
 }
