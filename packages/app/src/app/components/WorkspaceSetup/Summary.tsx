@@ -28,7 +28,9 @@ export const Summary: React.FC<{
 
   const isAnnual =
     newSubscription?.billingInterval === SubscriptionInterval.Yearly;
-  const allowAnnualSwitch = flow !== 'manage-addons';
+
+  // This will enable annual switch if we decide to bring it back
+  const allowAnnualSwitch = false;
 
   return (
     <Stack

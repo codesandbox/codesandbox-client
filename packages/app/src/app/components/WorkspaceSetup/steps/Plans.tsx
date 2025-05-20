@@ -40,21 +40,25 @@ export const Plans: React.FC<StepProps> = ({
 }) => {
   const { getQueryParam } = useURLSearchParams();
   const { activeTeam, checkout, dashboard } = useAppState();
+  const [planCategory, setPlanCategory] = useState<'Editor' | 'SDK'>('SDK');
+  const { isFree, proPlanType } = useWorkspaceSubscription();
+
+  const showFreePlan = isFree;
+  const showPro = planCategory === 'Editor';
+  const showScale = planCategory === 'SDK';
+  const showEnterprise = planCategory === 'SDK';
 
   const actions = useActions();
   const effects = useEffects();
   const urlWorkspaceId = getQueryParam('workspace');
   const [tiers, setTiers] = useState<VMTier[]>([]);
-  const { isFree, proPlanType } = useWorkspaceSubscription();
 
-  const planDisplayName = proPlanType === 'flex' ? 'Pro' : 'Builder';
-  const showFreePlan = isFree;
+  const planDisplayName = proPlanType === 'flex' ? 'Pro' : 'Scale';
+
   const workspaceName = dashboard.teams.find(t => t.id === urlWorkspaceId)
     ?.name;
   const headerSuffix = workspaceName ? `for ${workspaceName}` : '';
-  const [billingInterval, setBillingInterval] = useState(
-    SubscriptionInterval.Monthly
-  );
+  const billingInterval = SubscriptionInterval.Monthly;
 
   const {
     availableBasePlans: {
@@ -67,7 +71,7 @@ export const Plans: React.FC<StepProps> = ({
 
   // For new workspaces
   const freeButtonCTA =
-    flow === 'create-workspace' ? 'Get started for free' : 'Continue on Free';
+    flow === 'create-workspace' ? 'Get started for free' : 'Continue on Build';
 
   const proButtonCTA = isFree
     ? 'Start your Pro plan'
@@ -76,10 +80,10 @@ export const Plans: React.FC<StepProps> = ({
     : 'Downgrade to Pro';
 
   const builderButtonCTA = isFree
-    ? 'Start your Builder plan'
+    ? 'Start your Scale plan'
     : proPlanType === 'builder'
-    ? 'Continue on Builder'
-    : 'Upgrade to Builder';
+    ? 'Continue on Scale'
+    : 'Upgrade to Scale';
 
   useEffect(() => {
     actions.checkout.fetchPrices();
@@ -116,7 +120,7 @@ export const Plans: React.FC<StepProps> = ({
         direction="vertical"
         gap={64}
         css={{
-          maxWidth: isFree ? '1368px' : '1026px',
+          maxWidth: isFree ? '1232px' : '1024px',
           margin: 'auto',
           paddingBottom: 120,
         }}
@@ -130,7 +134,9 @@ export const Plans: React.FC<StepProps> = ({
           headerNote={
             <>
               Your workspace is currently on the{' '}
-              <Text color="#fff">{proPlanType ? planDisplayName : 'Free'}</Text>{' '}
+              <Text color="#fff">
+                {proPlanType ? planDisplayName : 'Build'}
+              </Text>{' '}
               plan.
             </>
           }
@@ -138,20 +144,14 @@ export const Plans: React.FC<StepProps> = ({
 
         <Stack gap={4} direction="vertical">
           <Stack css={{ justifyContent: 'center' }}>
-            <RecurringType
-              current={billingInterval}
-              onChangeValue={interval => {
-                setBillingInterval(interval);
-                actions.checkout.selectPlan({
-                  plan: proPlan.id,
-                  billingInterval: interval,
-                });
-              }}
+            <PlanCategory
+              current={planCategory}
+              onChangeValue={setPlanCategory}
             />
           </Stack>
 
           <HorizontalScroller css={{ width: '100%' }}>
-            <Stack gap={4}>
+            <Stack gap={4} justify="center">
               {showFreePlan && (
                 <StyledCard
                   direction="vertical"
@@ -201,115 +201,121 @@ export const Plans: React.FC<StepProps> = ({
                   />
                 </StyledCard>
               )}
-              <StyledCard
-                direction="vertical"
-                align="center"
-                gap={8}
-                css={{ borderColor: '#9581FF' }}
-              >
-                <Text size={7} fontFamily="everett" weight="medium">
-                  {proPlan.name}
-                </Text>
-                <CardHeading>
-                  Pay as you go with a monthly subscription
-                </CardHeading>
-                <PlanPricing plan={proPlan} interval={billingInterval} />
-                <Button
-                  variant="dark"
-                  css={{
-                    background: '#644ED7',
-                    '&:hover': { background: '#7B61FF' },
-                  }}
-                  size="large"
-                  onClick={handleProPlanSelection}
+              {showPro && (
+                <StyledCard
+                  direction="vertical"
+                  align="center"
+                  gap={8}
+                  css={{ borderColor: '#9581FF' }}
                 >
-                  {proButtonCTA}
-                </Button>
-                <PlanFeatures
-                  heading="Usage"
-                  features={proPlan.usage}
-                  includeTooltips
-                />
-                <PlanFeatures
-                  heading="Features"
-                  features={proPlan.features}
-                  includeTooltips
-                />
-              </StyledCard>
-              <StyledCard
-                direction="vertical"
-                align="center"
-                gap={8}
-                css={{ borderColor: '#6BAAF7' }}
-              >
-                <Text size={7} fontFamily="everett" weight="medium">
-                  {builderPlan.name}
-                </Text>
-                <CardHeading>
-                  Use CodeSandbox SDK with higher limits
-                </CardHeading>
-                <PlanPricing plan={builderPlan} interval={billingInterval} />
-                <Button
-                  variant="dark"
-                  css={{
-                    background: '#6BAAF7',
-                    '&:hover': { background: '#7B61FF' },
-                  }}
-                  size="large"
-                  onClick={handleBuilderPlanSelection}
-                >
-                  {builderButtonCTA}
-                </Button>
-                <PlanFeatures
-                  heading="Usage"
-                  features={builderPlan.usage}
-                  includeTooltips
-                />
-                <PlanFeatures
-                  heading="Features"
-                  features={builderPlan.features}
-                  includeTooltips
-                />
-              </StyledCard>
-              <StyledCard
-                direction="vertical"
-                align="center"
-                gap={8}
-                css={{
-                  borderColor: '#E3FF73',
-                }}
-              >
-                <Text size={7} fontFamily="everett" weight="medium">
-                  {enterprisePlan.name}
-                </Text>
-                <CardHeading>
-                  Cloud development & code execution at scale
-                </CardHeading>
-                <PlanPricing plan={enterprisePlan} overridePrice="Custom" />
-                <Button
-                  as="a"
-                  href={ORGANIZATION_CONTACT_LINK}
-                  onClick={() => {
-                    track('Checkout - Select Enterprise Plan', {
-                      from: flow,
-                      currentPlan: isFree ? 'free' : 'pro',
-                    });
-                  }}
-                  variant="primary"
-                  size="large"
-                  target="_blank"
-                  style={{ backgroundColor: '#DCFF50' }}
-                >
-                  Contact us
-                </Button>
-                <Stack direction="vertical" gap={4}>
-                  <Text>Everything in Pro, plus:</Text>
+                  <Text size={7} fontFamily="everett" weight="medium">
+                    {proPlan.name}
+                  </Text>
+                  <CardHeading>
+                    Pay as you go with a monthly subscription
+                  </CardHeading>
+                  <PlanPricing plan={proPlan} interval={billingInterval} />
+                  <Button
+                    variant="dark"
+                    css={{
+                      background: '#644ED7',
+                      '&:hover': { background: '#7B61FF' },
+                    }}
+                    size="large"
+                    onClick={handleProPlanSelection}
+                  >
+                    {proButtonCTA}
+                  </Button>
                   <PlanFeatures
-                    features={enterprisePlan.features}
+                    heading="Usage"
+                    features={proPlan.usage}
                     includeTooltips
                   />
-                </Stack>
-              </StyledCard>
+                  <PlanFeatures
+                    heading="Features"
+                    features={proPlan.features}
+                    includeTooltips
+                  />
+                </StyledCard>
+              )}
+              {showScale && (
+                <StyledCard
+                  direction="vertical"
+                  align="center"
+                  gap={8}
+                  css={{ borderColor: '#6BAAF7' }}
+                >
+                  <Text size={7} fontFamily="everett" weight="medium">
+                    {builderPlan.name}
+                  </Text>
+                  <CardHeading>
+                    Use CodeSandbox SDK with higher limits
+                  </CardHeading>
+                  <PlanPricing plan={builderPlan} interval={billingInterval} />
+                  <Button
+                    variant="dark"
+                    css={{
+                      background: '#6BAAF7',
+                      '&:hover': { background: '#7B61FF' },
+                    }}
+                    size="large"
+                    onClick={handleBuilderPlanSelection}
+                  >
+                    {builderButtonCTA}
+                  </Button>
+                  <PlanFeatures
+                    heading="Usage"
+                    features={builderPlan.usage}
+                    includeTooltips
+                  />
+                  <PlanFeatures
+                    heading="Features"
+                    features={builderPlan.features}
+                    includeTooltips
+                  />
+                </StyledCard>
+              )}
+              {showEnterprise && (
+                <StyledCard
+                  direction="vertical"
+                  align="center"
+                  gap={8}
+                  css={{
+                    borderColor: '#E3FF73',
+                  }}
+                >
+                  <Text size={7} fontFamily="everett" weight="medium">
+                    {enterprisePlan.name}
+                  </Text>
+                  <CardHeading>
+                    Cloud development & code execution at scale
+                  </CardHeading>
+                  <PlanPricing plan={enterprisePlan} overridePrice="Custom" />
+                  <Button
+                    as="a"
+                    href={ORGANIZATION_CONTACT_LINK}
+                    onClick={() => {
+                      track('Checkout - Select Enterprise Plan', {
+                        from: flow,
+                        currentPlan: isFree ? 'free' : 'pro',
+                      });
+                    }}
+                    variant="primary"
+                    size="large"
+                    target="_blank"
+                    style={{ backgroundColor: '#DCFF50' }}
+                  >
+                    Contact us
+                  </Button>
+                  <Stack direction="vertical" gap={4}>
+                    <Text>Everything in Pro, plus:</Text>
+                    <PlanFeatures
+                      features={enterprisePlan.features}
+                      includeTooltips
+                    />
+                  </Stack>
+                </StyledCard>
+              )}
             </Stack>
           </HorizontalScroller>
           <CodeSandboxFriendsCard />
@@ -337,7 +343,7 @@ const StyledCard = styled(Stack)`
   padding: 40px 32px;
   border-radius: 8px;
   flex-shrink: 0;
-  width: 330px;
+  width: 400px;
 
   @media (max-width: 1400px) {
     padding: 40px 20px;
@@ -671,26 +677,13 @@ const FeaturesComparison: React.FC<{ plans: PricingPlanFeatures[] }> = ({
         }}
       >
         <GridCell />
-        <GridCell>
-          <Text weight="medium" size={5}>
-            Free
-          </Text>
-        </GridCell>
-        <GridCell>
-          <Text weight="medium" size={5}>
-            Pro
-          </Text>
-        </GridCell>
-        <GridCell>
-          <Text weight="medium" size={5}>
-            Builder
-          </Text>
-        </GridCell>
-        <GridCell>
-          <Text weight="medium" size={5}>
-            Enterprise
-          </Text>
-        </GridCell>
+        {plans.map(plan => (
+          <GridCell key={plan.id}>
+            <Text weight="medium" size={5}>
+              {plan.name}
+            </Text>
+          </GridCell>
+        ))}
 
         <FeatureComparisonNumbersRow
           title="Members"
@@ -882,12 +875,12 @@ const FeatureComparisonBooleanRow: React.FC<FeatureComparisonRowProps> = ({
   </>
 );
 
-type RecurringTypeProps = {
-  current: SubscriptionInterval;
-  onChangeValue: (value: SubscriptionInterval) => void;
+type PlanCategoryProps = {
+  current: 'Editor' | 'SDK';
+  onChangeValue: (value: 'Editor' | 'SDK') => void;
 };
 
-const RecurringType: React.FC<RecurringTypeProps> = ({
+const PlanCategory: React.FC<PlanCategoryProps> = ({
   current,
   onChangeValue,
 }) => {
@@ -900,25 +893,25 @@ const RecurringType: React.FC<RecurringTypeProps> = ({
         border: '1px solid #323232',
       }}
     >
-      <RecurringTypeButton
+      <PlanCategoryButton
         type="button"
-        data-active={current === SubscriptionInterval.Yearly}
-        onClick={() => onChangeValue(SubscriptionInterval.Yearly)}
+        data-active={current === 'SDK'}
+        onClick={() => onChangeValue('SDK')}
       >
-        <Text>Annual (Save 30%)</Text>
-      </RecurringTypeButton>
-      <RecurringTypeButton
+        <Text>SDK</Text>
+      </PlanCategoryButton>
+      <PlanCategoryButton
         type="button"
-        data-active={current === SubscriptionInterval.Monthly}
-        onClick={() => onChangeValue(SubscriptionInterval.Monthly)}
+        data-active={current === 'Editor'}
+        onClick={() => onChangeValue('Editor')}
       >
-        <Text>Monthly</Text>
-      </RecurringTypeButton>
+        <Text>Editor</Text>
+      </PlanCategoryButton>
     </Stack>
   );
 };
 
-const RecurringTypeButton = styled.button`
+const PlanCategoryButton = styled.button`
   border: none;
   height: 34px;
   padding: 0 21px 0 22px;
