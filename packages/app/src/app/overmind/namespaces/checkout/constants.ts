@@ -5,7 +5,7 @@ import { PricingPlan, CreditAddon } from './types';
 
 export const FREE_PLAN: PricingPlan = {
   id: 'free',
-  name: 'Free',
+  name: 'Build',
   priceMonthly: 0,
   priceYearly: 0,
   credits: 400,
@@ -30,18 +30,19 @@ export const PRO_PLAN: PricingPlan = {
   priceYearly: 9,
   credits: 1000,
   storage: 50,
-  features: ['All free features', 'VMs up to 16 vCPUs + 32 GiB RAM'],
+  features: ['All Build features', 'VMs up to 16 vCPUs + 32 GiB RAM'],
   usage: [
     'Start from 100 hours of monthly VM credits',
     'Unlimited Sandboxes & Devboxes',
     '20 members',
-    'Access on-demand VM credits for $0.18 per hour',
+    '10 concurrent VMs',
+    'Access on-demand VM credits for $0.15 per hour',
   ],
 };
 
 export const BUILDER_PLAN: PricingPlan = {
   id: 'builder',
-  name: 'Builder',
+  name: 'Scale',
   priceMonthly: 170,
   priceYearly: 119,
   credits: 1600,
@@ -51,8 +52,8 @@ export const BUILDER_PLAN: PricingPlan = {
     'Start from 160 hours of monthly VM credits',
     'Unlimited Sandboxes & Devboxes',
     '20 members',
-    '100 concurrent VMs',
-    'Access on-demand VM credits for $0.18 per hour',
+    '250 concurrent VMs',
+    'Access on-demand VM credits for $0.15 per hour',
   ],
 };
 

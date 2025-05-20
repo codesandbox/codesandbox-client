@@ -77,7 +77,7 @@ export const ChangePlan: React.FC<StepProps> = ({
         </Stack>
 
         <Text>
-          Additional VM credits are available on-demand for $0.018/credit.
+          Additional VM credits are available on-demand for $0.015/credit.
           <br />
           Spending limit: ${checkout.spendingLimit} / month
         </Text>

@@ -83,7 +83,7 @@ export const SpendingLimit: React.FC<StepProps> = ({
         <Text color="#a6a6a6">
           Your plan will include {checkout.newSubscription.totalCredits}{' '}
           credits/month. If your usage exceeds that amount, we will
-          automatically bill you for on-demand credits at $0.018/credit. You can
+          automatically bill you for on-demand credits at $0.015/credit. You can
           set a monthly spend limit for on-demand credits to control your spend.
           You can change this limit at any time.
         </Text>

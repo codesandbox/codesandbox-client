@@ -123,7 +123,7 @@ const content = {
     {
       question:
         'How much do credits cost and how can I add more to my workspace?',
-      answer: `VM credits are only used on Devboxes and repositories, to translate virtual machine (VM) runtime per hour into precise costs. They are priced at $0.018 each.
+      answer: `VM credits are only used on Devboxes and repositories, to translate virtual machine (VM) runtime per hour into precise costs. They are priced at $0.015 each.
         
         You can conveniently purchase credits as add-ons to your base package. Adding more credits is a breeze. From your workspace dashboard, go to the settings and navigate to billing. You'll find the option to add to or upgrade your plan effortlessly.`,
     },
@@ -131,7 +131,7 @@ const content = {
       question: 'What is the ideal plan for my team size?',
       answer: `The base Pro plan includes up to 40 hours of runtime per month in our Nano VMs (2 vCPU + 4 GB RAM), which is an excellent place to start if you're an individual developer or a small team.
   
-        If you have a larger team or require additional VM usage, you can either rely on on-demand credits ($0.018/credit) or purchase a discounted add-on package of VM credits.
+        If you have a larger team or require additional VM usage, you can either rely on on-demand credits ($0.015/credit) or purchase a discounted add-on package of VM credits.
         
         For example, a team with 7 collaborators, each using 2 hours of VM runtime per day on our default VM size (Micro) would require 8400 credits. The 7400 credits required on top of the 1000 included in the base Pro plan can be obtained either on-demand or by purchasing two add-on packages of 4000 VM credits each.`,
     },
