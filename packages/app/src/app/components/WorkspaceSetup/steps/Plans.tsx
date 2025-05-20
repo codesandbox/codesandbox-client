@@ -637,7 +637,7 @@ const VMSpecs: React.FC<{ tiers: VMTier[] }> = ({ tiers }) => (
               <Text>{tier.creditBasis} credits</Text>
             </GridCell>
             <GridCell>
-              <Text>${tier.creditBasis * 0.018}</Text>
+              <Text>${tier.creditBasis * 0.015}</Text>
             </GridCell>
             <GridCell>
               <Text>{tier.cpu} cores</Text>

@@ -103,7 +103,7 @@ export const Summary: React.FC<{
       )}
 
       <Text size={3}>
-        Additional VM credits are available on-demand for $0.018/credit.
+        Additional VM credits are available on-demand for $0.015/credit.
         <br />
         Spending limit: ${spendingLimit}
       </Text>

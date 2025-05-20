@@ -36,7 +36,7 @@ export const PRO_PLAN: PricingPlan = {
     'Unlimited Sandboxes & Devboxes',
     '20 members',
     '10 concurrent VMs',
-    'Access on-demand VM credits for $0.18 per hour',
+    'Access on-demand VM credits for $0.15 per hour',
   ],
 };
 
@@ -53,7 +53,7 @@ export const BUILDER_PLAN: PricingPlan = {
     'Unlimited Sandboxes & Devboxes',
     '20 members',
     '100 concurrent VMs',
-    'Access on-demand VM credits for $0.18 per hour',
+    'Access on-demand VM credits for $0.15 per hour',
   ],
 };
 
