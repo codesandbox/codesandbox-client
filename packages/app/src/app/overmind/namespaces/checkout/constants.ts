@@ -52,7 +52,7 @@ export const BUILDER_PLAN: PricingPlan = {
     'Start from 160 hours of monthly VM credits',
     'Unlimited Sandboxes & Devboxes',
     '20 members',
-    '100 concurrent VMs',
+    '250 concurrent VMs',
     'Access on-demand VM credits for $0.15 per hour',
   ],
 };

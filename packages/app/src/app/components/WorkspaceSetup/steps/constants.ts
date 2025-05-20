@@ -81,7 +81,7 @@ export const BUILDER_FEATURES: PricingPlanFeatures = {
   members: 20,
   sandboxes: Number.MAX_SAFE_INTEGER,
   devboxes: Number.MAX_SAFE_INTEGER,
-  concurrentDevboxes: 100,
+  concurrentDevboxes: 250,
   sessionLength: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
   vmType: `16 vCPUs<br />32 GB RAM`,
