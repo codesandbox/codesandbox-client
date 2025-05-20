@@ -16,7 +16,6 @@ import css from '@styled-system/css';
 
 import { PaymentPending } from 'app/components/StripeMessages/PaymentPending';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useDismissible } from 'app/hooks';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
