@@ -104,7 +104,7 @@ export const ImportTemplate = () => {
             <a
               target="_blank"
               rel="noreferrer noopener"
-              href={docsUrl('/learn/sandboxes/synced-templates')}
+              href={docsUrl('/learn/vm-sandboxes/synced-templates#what-are-synced-templates')}
             >
               here
             </a>
