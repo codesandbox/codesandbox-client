@@ -148,25 +148,15 @@ const content = {
       question:
         'What will happen when I hit my workspace member limit on a Pro plan? Will I have the option to pay for more members individually?',
       answer:
-        'If you hit the workspace member limit, please reach out to our <a href=mailto:sales@codesandbox.io>customer team</a> to discuss a custom plan to suit your needs.',
+        'If you hit the workspace member limit, please reach out to our <a href=https://www.together.ai/contact-sales>sales team</a> to discuss a custom plan to suit your needs.',
     },
     {
-      question:
-        'I’m currently on a plan with annual billing. Do your new plans have an annual option?',
-      answer:
-        'We can offer annual billing for custom <a href=https://codesandbox.io/enterprise>Enterprise plans</a>. However, at the moment, our new Pro plan is only available with monthly billing. We will introduce annual billing in the near future. ',
-    },
-    {
-      question: 'My Sandbox or Devbox is frozen. What does that mean?',
-      answer: `In Devboxes and repositories, the VM will become frozen if the workspace does not have enough available credits to run a VM. You may encounter a frozen state if:
+      question: 'My Sandbox is frozen. What does that mean?',
+      answer: `In VM Sandboxes and repositories, the VM will become frozen if the workspace does not have enough available credits to run a VM. You may encounter a frozen state if:
             - you are on a Free workspace and have run out of credits;
             - you are on a Pro workspace but your credit spend has hit the spending limit.
         
-        To get out of the frozen state, you can either <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or adjust your spending limit. Otherwise, you must wait until the start of the next billing cycle for your credits to renew.
-  
-        You may also experience a similar “frozen” state with Sandboxes. When the Sandbox limit included in your workspace is exceeded, Sandboxes over the limit will become read-only.
-            
-        To regain edit access to Sandboxes over the limit, you can either <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or increase your Sandbox limit with <a href=/docs/learn/plans/plans#add-ons>add-ons</a>.`,
+        To get out of the frozen state, you can either <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or adjust your spending limit. Otherwise, you must wait until the start of the next billing cycle for your credits to renew.`,
     },
     {
       question: 'What is your cancelation and refund policy?',
