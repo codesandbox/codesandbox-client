@@ -34,7 +34,7 @@ const video = {
 const thumbless = {
   title: 'Uploading Static Files',
   url:
-    'https://codesandbox.io/docs/learn/sandboxes/editors#uploading-static-files',
+    'https://codesandbox.io/docs/learn/vm-sandboxes/upload',
   thumbnail: 'https://malformed-url.com',
 };
 
