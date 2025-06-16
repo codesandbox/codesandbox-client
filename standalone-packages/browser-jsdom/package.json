@@ -9,7 +9,7 @@
     "move": "cp -R out/* ../../packages/app/static/js"
   },
   "dependencies": {
-    "jsdom": "^16.2.2"
+    "jsdom": "^26.0.0"
   },
   "devDependencies": {
     "browserify": "^16.5.1",
