@@ -19,7 +19,7 @@ export const SearchComponent = () => {
   } = useAppState();
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
-  const [items] = useGetItems({
+  const [items, _, isLoadingQuery] = useGetItems({
     query,
     username: user?.username,
     getFilteredSandboxes,
@@ -48,8 +48,9 @@ export const SearchComponent = () => {
         ) : (
           <Stack justify="center" align="center" marginTop={120}>
             <Text variant="muted">
-              There are no sandboxes, branches or repositories that match your
-              query
+              {isLoadingQuery
+                ? 'Loading index...'
+                : 'There are no sandboxes, branches or repositories that match your query'}
             </Text>
           </Stack>
         )}

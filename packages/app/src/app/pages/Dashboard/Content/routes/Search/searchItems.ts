@@ -9,15 +9,17 @@ import Fuse from 'fuse.js';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 
-type DashboardItem = SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment;
+type DashboardItem =
+  | SandboxFragmentDashboardFragment
+  | SidebarCollectionDashboardFragment;
 
 // define which fields to search, with per-key thresholds & weights
 const SEARCH_KEYS = [
-  { name: 'title',            threshold: 0.2, weight: 0.4 },
-  { name: 'description',      threshold: 0.3, weight: 0.2 },
-  { name: 'alias',            threshold: 0.3, weight: 0.2 },
-  { name: 'source.template',  threshold: 0.4, weight: 0.1 },
-  { name: 'id',               threshold: 0.0, weight: 0.1 }, // exact-only
+  { name: 'title', threshold: 0.2, weight: 0.4 },
+  { name: 'description', threshold: 0.3, weight: 0.2 },
+  { name: 'alias', threshold: 0.3, weight: 0.2 },
+  { name: 'source.template', threshold: 0.4, weight: 0.1 },
+  { name: 'id', threshold: 0.0, weight: 0.1 }, // exact-only
 ] as const;
 
 interface SearchIndex {
@@ -26,28 +28,23 @@ interface SearchIndex {
   items: DashboardItem[];
 }
 
-const buildSearchIndex = (
-  dashboard: any,
-  activeTeam: string
-): SearchIndex => {
-  const sandboxes: DashboardItem[] =
-    dashboard.sandboxes.SEARCH || [];
+const buildSearchIndex = (dashboard: any, activeTeam: string): SearchIndex => {
+  const sandboxes: DashboardItem[] = dashboard.sandboxes.SEARCH || [];
 
   const folders: DashboardItem[] = (dashboard.allCollections || [])
     .map((c: Collection) => ({
       ...c,
       title: c.name,
     }))
-    .filter((f) => f.title);
+    .filter(f => f.title);
 
-  const repos: DashboardItem[] =
-    (dashboard.repositoriesByTeamId[activeTeam] || []).map(
-      (r: Repository) => ({
-        title:       r.repository.name,
-        description: r.repository.owner,
-        ...r,
-      })
-    );
+  const repos: DashboardItem[] = (
+    dashboard.repositoriesByTeamId[activeTeam] || []
+  ).map((r: Repository) => ({
+    title: r.repository.name,
+    description: r.repository.owner,
+    ...r,
+  }));
 
   const items = [...sandboxes, ...folders, ...repos];
 
@@ -57,9 +54,9 @@ const buildSearchIndex = (
 
   for (const { name, threshold, weight } of SEARCH_KEYS) {
     fuses[name] = new Fuse(items, {
-      keys:      [name],
+      keys: [name],
       threshold: threshold,
-      distance:  1000,
+      distance: 1000,
     });
     weights[name] = weight;
   }
@@ -72,29 +69,26 @@ const mergeSearchResults = (
   index: SearchIndex,
   query: string
 ): DashboardItem[] => {
-  const hits: Array<{ item: DashboardItem; score: number }> = [];
+  const hits: Array<DashboardItem> = [];
 
   for (const key of Object.keys(index.fuses)) {
     const fuse = index.fuses[key];
-    const weight = index.weights[key]!;
-    for (const { item, score } of fuse.search(query)) {
-      hits.push({ item, score: score * weight });
+    for (const item of fuse.search(query)) {
+      hits.push(item);
     }
   }
 
   // dedupe by item.id, keep the best (lowest) weighted score
-  const bestById: Record<string, { item: DashboardItem; score: number }> = {};
-  for (const { item, score } of hits) {
+  const byId: Record<string, DashboardItem> = {};
+  for (const item of hits) {
     const id = (item as any).id as string;
-    if (!bestById[id] || score < bestById[id].score) {
-      bestById[id] = { item, score };
+    if (!byId[id]) {
+      byId[id] = item;
     }
   }
 
   // sort & return
-  return Object.values(bestById)
-    .sort((a, b) => a.score - b.score)
-    .map((r) => r.item);
+  return Object.values(byId);
 };
 
 export const useGetItems = ({
@@ -121,6 +115,8 @@ export const useGetItems = ({
     null
   );
   useEffect(() => {
+    if (!state.dashboard.sandboxes.SEARCH || !state.dashboard.allCollections)
+      return;
     const idx = buildSearchIndex(state.dashboard, state.activeTeam);
     setSearchIndex(idx);
   }, [
@@ -131,9 +127,7 @@ export const useGetItems = ({
   ]);
 
   // run the merged search whenever query or index changes
-  const [foundResults, setFoundResults] = React.useState<DashboardItem[]>(
-    []
-  );
+  const [foundResults, setFoundResults] = React.useState<DashboardItem[]>([]);
   useEffect(() => {
     if (searchIndex && query) {
       setFoundResults(mergeSearchResults(searchIndex, query));
@@ -143,20 +137,18 @@ export const useGetItems = ({
   }, [query, searchIndex]);
 
   // then the rest is just your existing filtering / mapping logic:
-  const sandboxesInSearch = foundResults.filter((s) => !(s as any).path);
-  const foldersInSearch  = foundResults.filter((s) =>   (s as any).path);
+  const sandboxesInSearch = foundResults.filter(s => !(s as any).path);
+  const foldersInSearch = foundResults.filter(s => (s as any).path);
   const filteredSandboxes = getFilteredSandboxes(sandboxesInSearch);
+  const isLoadingQuery = query && !searchIndex;
 
-  const ordered = [...foldersInSearch, ...filteredSandboxes].filter((item) => {
+  const ordered = [...foldersInSearch, ...filteredSandboxes].filter(item => {
     if ((item as any).path || (item as any).repository) return true;
     const sb = item as SandboxFragmentDashboardFragment;
-    return (
-      !sb.draft ||
-      (sb.draft && sb.author.username === username)
-    );
+    return !sb.draft || (sb.draft && sb.author.username === username);
   });
 
-  const items = ordered.map((found) => {
+  const items = ordered.map(found => {
     if ((found as any).path) {
       return { type: 'folder', ...(found as object) } as any;
     }
@@ -166,12 +158,12 @@ export const useGetItems = ({
         type: 'repository',
         repository: {
           branchCount: f.branchCount,
-          repository:  f.repository,
+          repository: f.repository,
         },
       } as any;
     }
     return { type: 'sandbox', sandbox: found } as any;
   });
 
-  return [items, sandboxesInSearch] as const;
+  return [items, sandboxesInSearch, isLoadingQuery] as const;
 };
