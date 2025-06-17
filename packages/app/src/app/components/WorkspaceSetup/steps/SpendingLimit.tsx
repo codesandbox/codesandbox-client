@@ -23,17 +23,18 @@ export const SpendingLimit: React.FC<StepProps> = ({
   const urlWorkspaceId = getQueryParam('workspace');
   const [error, setError] = React.useState<React.ReactNode>('');
   const { isPro } = useWorkspaceSubscription();
+  const maxSpendingLimit = isPro ? 1000 : 100;
 
   const handleChange = e => {
     setError('');
     const value = Number(e.target.value);
     if (Number.isNaN(value) || value < 0) {
-      setError('Please enter a valid amount between 0 and 100');
-    } else if (value > 100) {
+      setError(`Please enter a valid amount between 0 and ${maxSpendingLimit}`);
+    } else if (value > maxSpendingLimit) {
       setError(
         <>
-          For the first two billing cycles, the maximum limit is $100. If you
-          need a higher limit,{' '}
+          For the first two billing cycles, the maximum limit is $
+          {maxSpendingLimit}. If you need a higher limit,{' '}
           <Text as="a" href="mailto:support@codesandbox.io">
             contact us
           </Text>
@@ -95,7 +96,7 @@ export const SpendingLimit: React.FC<StepProps> = ({
             id="spending-limit"
             name="spending-limit"
             required
-            max={100}
+            max={maxSpendingLimit}
             min={0}
             defaultValue={checkout.spendingLimit}
             type="number"
