@@ -158,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.getStarted(activeTeam)}
             icon="documentation"
           />
-          {isFree && isTeamAdmin && (
+          {isTeamAdmin && (
             <RowItem
               name="Upgrade"
               page="external"
