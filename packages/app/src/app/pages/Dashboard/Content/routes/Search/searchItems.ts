@@ -23,7 +23,7 @@ const SEARCH_KEYS = [
 ] as const;
 
 interface SearchIndex {
-  fuses: Record<string, Fuse<DashboardItem>>;
+  fuses: Record<string, Fuse<DashboardItem, any>>;
   weights: Record<string, number>;
   items: DashboardItem[];
 }
@@ -34,7 +34,7 @@ const buildSearchIndex = (dashboard: any, activeTeam: string): SearchIndex => {
   const folders: DashboardItem[] = (dashboard.allCollections || [])
     .map((c: Collection) => ({
       ...c,
-      title: c.name,
+      title: c.path,
     }))
     .filter(f => f.title);
 
@@ -49,13 +49,13 @@ const buildSearchIndex = (dashboard: any, activeTeam: string): SearchIndex => {
   const items = [...sandboxes, ...folders, ...repos];
 
   // build a Fuse instance per key
-  const fuses: Record<string, Fuse<DashboardItem>> = {};
+  const fuses: Record<string, Fuse<DashboardItem, any>> = {};
   const weights: Record<string, number> = {};
 
   for (const { name, threshold, weight } of SEARCH_KEYS) {
     fuses[name] = new Fuse(items, {
       keys: [name],
-      threshold: threshold,
+      threshold,
       distance: 1000,
     });
     weights[name] = weight;
@@ -74,7 +74,7 @@ const mergeSearchResults = (
   for (const key of Object.keys(index.fuses)) {
     const fuse = index.fuses[key];
     for (const item of fuse.search(query)) {
-      hits.push(item);
+      hits.push(item as DashboardItem);
     }
   }
 

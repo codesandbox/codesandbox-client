@@ -80,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const { ubbBeta } = useWorkspaceFeatureFlags();
   const { isPrimarySpace, isTeamAdmin } = useWorkspaceAuthorization();
-  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isPro } = useWorkspaceSubscription();
 
   const showTemplates = state.activeTeam
     ? state.sidebar[state.activeTeam]?.hasTemplates
