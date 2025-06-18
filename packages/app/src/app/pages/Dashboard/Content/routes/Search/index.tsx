@@ -19,7 +19,7 @@ export const SearchComponent = () => {
   } = useAppState();
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
-  const [items, _, isLoadingQuery] = useGetItems({
+  const [items, , isLoadingQuery] = useGetItems({
     query,
     username: user?.username,
     getFilteredSandboxes,
