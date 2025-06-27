@@ -33,3 +33,6 @@ standalone-packages/monaco-editor-core
 .cache-loader
 
 packages/app/static/js/env-config.js
+
+# zeroheight
+/certs/
