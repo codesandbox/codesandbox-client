@@ -1,0 +1,76 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "workspaces": {
+    "packages/@styled-system/css": {
+      "entry": ["dist/index.js"]
+    },
+    "packages/app": {
+      "entry": ["src/app/index.js"],
+      "project": ["src/app/**/*.js", "src/app/**/*.tsx", "src/app/**/*.ts"]
+    },
+    "packages/browser-dart-sass": {
+      "entry": ["index.js"],
+      "project": ["*.js"]
+    },
+    "packages/browser-eslint-rules": {
+      "entry": ["index.js"],
+      "project": ["*.js"]
+    },
+    "packages/chrome-extension": {
+      "entry": ["background.js", "content.js", "popup.js"],
+      "project": ["*.js"]
+    },
+    "packages/codesandbox-api": {
+      "entry": ["src/codesandbox.ts"],
+      "project": ["src/**/*.ts"]
+    },
+    "packages/common": {
+      "entry": ["src/index.js"],
+      "project": ["src/**/*.js", "src/**/*.ts", "src/**/*.tsx"]
+    },
+    "packages/components": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts", "src/**/*.tsx"]
+    },
+    "packages/executors": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"]
+    },
+    "packages/node-services": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"]
+    },
+    "packages/notifications": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts", "src/**/*.tsx"]
+    },
+    "packages/react-embed": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.js", "src/**/*.ts", "src/**/*.tsx"]
+    },
+    "packages/sandbox-hooks": {
+      "entry": ["console/index.js", "errors/index.js", "html2canvas-lib/index.js", "not-found-screen/index.js", "sandbox-hooks/index.js", "react-error-overlay/overlay.js"],
+      "project": ["**/*.js"]
+    },
+    "packages/sandpack-core": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.js", "src/**/*.ts", "src/**/*.tsx"]
+    },
+    "packages/sse-hooks": {
+      "entry": ["index.js"],
+      "project": ["**/*.js"]
+    },
+    "packages/template-icons": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.js", "src/**/*.tsx", "src/**/*.ts"]
+    },
+    "packages/vue3-browser-compiler": {
+      "entry": ["src/index.ts"],
+      "project": ["**/*.js", "**/*.ts"]
+    },
+    "packages/vue3-transpiler": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"]
+    }
+  }
+}

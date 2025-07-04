@@ -73,7 +73,8 @@
     "chromatic": "lerna run chromatic --scope=@codesandbox/components --stream",
     "typecheck": "lerna run typecheck",
     "prettify": "prettier -w .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "knip": "knip"
   },
   "dependencies": {
     "postinstall-postinstall": "^2.1.0"
@@ -97,6 +98,7 @@
     "gulp": "^4.0.2",
     "husky": "^8.0.3",
     "jest-environment-jsdom": "^29.7.0",
+    "knip": "^5.61.3",
     "lerna": "^6",
     "lint-staged": "10.5.4",
     "prettier": "2.1.1",
