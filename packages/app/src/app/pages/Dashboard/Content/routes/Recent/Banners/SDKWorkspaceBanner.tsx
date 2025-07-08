@@ -7,7 +7,7 @@ export const SDKWorkspaceBanner: React.FC<BannerProps> = ({ onDismiss }) => {
   return (
     <Banner
       onDismiss={() => {
-        track('SDK Workspace Bzanner - Dismiss');
+        track('SDK Workspace Banner - Dismiss');
         onDismiss();
       }}
     >
