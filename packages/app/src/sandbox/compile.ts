@@ -45,6 +45,12 @@ import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
 import { startServiceWorker } from './worker';
+import {
+  dispatchCompiledCode,
+  getZhExampleBuildVar,
+  getZhSandpackMode,
+  makeZhRequest,
+} from './zh-utils';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -333,6 +339,8 @@ async function initializeManager(
     teamId?: string;
   } = {}
 ) {
+  makeZhRequest(customNpmRegistries, 'bundle');
+
   const newManager = new Manager(
     sandboxId,
     await getPreset(template, configurations.package.parsed),
@@ -540,6 +548,11 @@ interface CompileOptions {
 }
 
 async function compile(opts: CompileOptions) {
+  // get zeroheight root domain from build var
+  console.log({
+    modeFromSubdomain: getZhSandpackMode(),
+    exampleVar: getZhExampleBuildVar(),
+  });
   const {
     sandboxId,
     modules,
@@ -772,6 +785,8 @@ async function compile(opts: CompileOptions) {
     metrics.endMeasure('transpilation', { displayName: 'Transpilation' });
 
     dispatch({ type: 'status', status: 'evaluating' });
+
+    dispatchCompiledCode('uniqueHash', 'somethingsomethingtranspiled');
     manager.setStage('evaluation');
 
     if (!skipEval) {
