@@ -16,6 +16,7 @@ import {
   removeSandpackSecret,
 } from 'sandpack-core/lib/sandpack-secret';
 import compile, { getCurrentManager } from './compile';
+import { setZhToken } from './zh-utils';
 
 const withServiceWorker = !process.env.SANDPACK;
 const debug = _debug('cs:sandbox');
@@ -40,6 +41,9 @@ requirePolyfills().then(() => {
   let isInitializationCompile = true;
   async function handleMessage(data, source) {
     if (source) {
+      if (data.type === 'zh_cache_config') {
+        setZhToken(data.token, data.url);
+      }
       if (data.type === 'compile') {
         // In sandpack we always broadcast a compile message from every manager whenever 1 frame reconnects.
         // We do this because the initialized message does comes before the handshake is done, so there's no channel id.

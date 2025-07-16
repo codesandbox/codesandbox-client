@@ -1,30 +1,28 @@
-import { NpmRegistry } from '@codesandbox/common/lib/types';
 import { dispatch } from 'codesandbox-api';
 
-export const getZhSandpackMode = (): 'editor' | 'viewer' => {
-  return window.location.host.split('.')[0] === 'editor' ? 'editor' : 'viewer';
-};
+// keep a ref to the promise resolution so we can wait for or access the token
+let resolvedConfig: (data: { token: string; zhUrl: string }) => void = null;
+const configPromise = new Promise<{ token: string; zhUrl: string }>(
+  (resolve, _reject) => {
+    resolvedConfig = resolve;
+  }
+);
 
 export const getZhExampleBuildVar = () => {
   // example variable we can get from build variables
   return process.env.ZH_EXAMPLE_VAR;
 };
 
-export const makeZhRequest = async (
-  registries: NpmRegistry[],
-  path: string,
-  init: RequestInit = {}
-) => {
-  // example using the custom registries data to pass specific
-  const sandpackDetails = registries.find(
-    registry =>
-      registry.enabledScopes.length === 1 &&
-      registry.enabledScopes[0] === '@zh-engineer/livecode'
-  );
+export const setZhToken = (token: string, url: string) => {
+  resolvedConfig?.({ token, zhUrl: url });
+};
 
-  if (sandpackDetails) {
-    await fetch(`${sandpackDetails.registryUrl}${path}`, {
-      headers: { authorization: `Bearer ${sandpackDetails.registryAuthToken}` },
+export const makeZhRequest = async (path: string, init: RequestInit = {}) => {
+  const { token, zhUrl } = await configPromise;
+
+  if (token) {
+    await fetch(`${zhUrl}${path}`, {
+      headers: { authorization: `Bearer ${token}` },
       ...init,
     });
   }

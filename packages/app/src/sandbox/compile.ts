@@ -48,7 +48,6 @@ import { startServiceWorker } from './worker';
 import {
   dispatchCompiledCode,
   getZhExampleBuildVar,
-  getZhSandpackMode,
   makeZhRequest,
 } from './zh-utils';
 
@@ -339,7 +338,9 @@ async function initializeManager(
     teamId?: string;
   } = {}
 ) {
-  makeZhRequest(customNpmRegistries, 'bundle');
+  // zeroheight request to confirm CORS is set up correctly
+  // and token is providing auth
+  makeZhRequest('bundle');
 
   const newManager = new Manager(
     sandboxId,
@@ -550,7 +551,6 @@ interface CompileOptions {
 async function compile(opts: CompileOptions) {
   // get zeroheight root domain from build var
   console.log({
-    modeFromSubdomain: getZhSandpackMode(),
     exampleVar: getZhExampleBuildVar(),
   });
   const {
