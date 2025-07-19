@@ -10,7 +10,7 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
-    "eslint": "^7.9.0",
+    "eslint": "^9.0.0",
     "eslint-plugin-vue": "next",
     "vue-eslint-parser": "7.1.0"
   },
