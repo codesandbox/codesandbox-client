@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@codesandbox/components": "^0.0.7",
-    "react-spring": "^8.0.25",
+    "react-spring": "^9.0.0",
     "styled-components": "^5.2.0",
     "uuid": "^3.3.2"
   },
