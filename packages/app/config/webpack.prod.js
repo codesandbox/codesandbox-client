@@ -85,6 +85,11 @@ module.exports = merge(commonConfig, {
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
       }),
+    new webpack.DefinePlugin({
+      'process.env.ZH_EXAMPLE_VAR': JSON.stringify(
+        process.env.ZH_EXAMPLE_VAR || ''
+      ),
+    }),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
