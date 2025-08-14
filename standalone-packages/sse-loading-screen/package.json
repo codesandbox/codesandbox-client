@@ -8,7 +8,7 @@
     "axios": ">=1.7.4",
     "babel-plugin-emotion": "^11.0.0",
     "emotion": "^11.0.0",
-    "gsap": "^3.6.0",
+    "gsap": "^3.13.0",
     "preact": "^8.3.1",
     "preact-emotion": "^9.2.10",
     "socket.io-client": "^2.3.0",
