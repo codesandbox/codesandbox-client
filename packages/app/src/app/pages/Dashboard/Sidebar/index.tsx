@@ -80,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const { ubbBeta } = useWorkspaceFeatureFlags();
   const { isPrimarySpace, isTeamAdmin } = useWorkspaceAuthorization();
-  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isPro } = useWorkspaceSubscription();
 
   const showTemplates = state.activeTeam
     ? state.sidebar[state.activeTeam]?.hasTemplates
@@ -158,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.getStarted(activeTeam)}
             icon="documentation"
           />
-          {isFree && isTeamAdmin && (
+          {isTeamAdmin && (
             <RowItem
               name="Upgrade"
               page="external"
