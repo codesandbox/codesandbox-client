@@ -34,5 +34,4 @@ export const getTeamSidebarData: Query<
   ${sidebarSyncedSandboxFragment}
   ${sidebarTemplateFragment}
   ${sidebarProjectFragment}
-  ${sandboxFragmentDashboard}
 `;

@@ -5,7 +5,6 @@ type SidebarState = {
   hasSyncedSandboxes: boolean | null;
   hasTemplates: boolean | null;
   repositories: Array<RepoInfo>;
-  sandboxes: Array<Sandbox>;
 };
 
 export type State = Record<string, SidebarState>;
