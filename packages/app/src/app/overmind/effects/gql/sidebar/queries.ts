@@ -28,9 +28,6 @@ export const getTeamSidebarData: Query<
         projects(syncData: false) {
           ...sidebarProjectFragment
         }
-        sandboxes(limit: 10, orderBy: { field: "updatedAt", direction: DESC }) {
-          ...sandboxFragmentDashboard
-        }
       }
     }
   }
