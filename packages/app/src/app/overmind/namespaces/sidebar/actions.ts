@@ -31,8 +31,7 @@ export const getSidebarData = async (
       hasTemplates,
       repositories,
     };
-  } catch (error) {
-    console.error(error);
+  } catch {
     effects.notificationToast.error(
       `There was a problem getting your data for the sidebar.`
     );
