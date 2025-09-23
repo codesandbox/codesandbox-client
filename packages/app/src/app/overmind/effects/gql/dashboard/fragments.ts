@@ -15,7 +15,6 @@ export const sandboxFragmentDashboard = gql`
     screenshotUrl
     screenshotOutdated
     viewCount
-    likeCount
     isV2
     draft
     restricted
