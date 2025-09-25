@@ -375,7 +375,7 @@ async function initializeManager(
       enabled_scopes: string[];
       limit_to_scopes: true;
       proxy_enabled: false;
-      registry_auth_key: string;
+      registry_auth_key_configured: boolean;
       registry_type: string;
       registry_url: string;
     };
@@ -386,7 +386,7 @@ async function initializeManager(
       proxyEnabled: registry.proxy_enabled,
       registryUrl:
         registry.registry_url || `${domain}/api/v1/sandpack/registry/`,
-      registryAuthToken: registry.registry_auth_key || sandpackToken,
+      registryAuthTokenConfigured: registry.registry_auth_key_configured,
       registryAuthType: registry.auth_type,
     });
   }
@@ -416,10 +416,6 @@ async function initializeManager(
       // the tarball. So we proxy it.
       options.provideTarballUrl = (name: string, version: string) =>
         `${cleanUrl}/${name.replace('/', '%2f')}/${version}`;
-    }
-
-    if (registry.registryAuthToken) {
-      options.authToken = registry.registryAuthToken;
     }
 
     const protocol = new NpmRegistryFetcher(cleanUrl, options);
