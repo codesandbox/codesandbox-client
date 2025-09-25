@@ -109,7 +109,7 @@
     "base64-loader": "^1.0.0",
     "browser-detect": "^0.2.28",
     "circular-json": "^0.4.0",
-    "codemirror": "^5.58.2",
+    "codemirror": "^6.0.0",
     "codesandbox-api": "0.0.32",
     "codesandbox-import-utils": "^2.2.2",
     "color": "^3.2.0",
