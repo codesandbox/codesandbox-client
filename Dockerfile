@@ -1,4 +1,4 @@
-FROM nginx:1.26.3-alpine
+FROM nginx:1.29.1-alpine
 
 WORKDIR /var/www/codesandbox
 COPY www ./
