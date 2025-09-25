@@ -177,7 +177,7 @@
     "ot": "^0.0.15",
     "outvariant": "^1.4.2",
     "overmind": "^27.0.0-1624124645626",
-    "overmind-graphql": "^8.0.0-1615750082257",
+    "overmind-graphql": "^8.0.0",
     "overmind-react": "^28.0.0-1624124645626",
     "path-browserify": "1.0.1",
     "phoenix": "^1.7.0",
