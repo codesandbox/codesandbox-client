@@ -58,10 +58,14 @@ export type ViewConfig = {
   views: ViewTab[];
 };
 
+const BROWSER_VIEW: ViewTab = { id: 'codesandbox.browser' };
+const CONSOLE_VIEW: ViewTab = { id: 'codesandbox.console' };
+const PROBLEMS_VIEW: ViewTab = { id: 'codesandbox.problems' };
+
 const CLIENT_VIEWS: ViewConfig[] = [
   {
     views: [
-      { id: 'codesandbox.browser' },
+      BROWSER_VIEW,
       { id: 'codesandbox.tests' },
       {
         id: 'codesandbox.terminalUpgrade',
@@ -71,20 +75,20 @@ const CLIENT_VIEWS: ViewConfig[] = [
     ],
   },
   {
-    views: [{ id: 'codesandbox.console' }, { id: 'codesandbox.problems' }],
+    views: [CONSOLE_VIEW, PROBLEMS_VIEW],
   },
 ];
 
 const SERVER_VIEWS: ViewConfig[] = [
   {
-    views: [{ id: 'codesandbox.browser' }],
+    views: [BROWSER_VIEW],
   },
   {
     open: true,
     views: [
       { id: 'codesandbox.terminal' },
-      { id: 'codesandbox.console' },
-      { id: 'codesandbox.problems' },
+      CONSOLE_VIEW,
+      PROBLEMS_VIEW,
     ],
   },
 ];
