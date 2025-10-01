@@ -46,7 +46,7 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
 
   const history = useHistory();
 
-  const canRemoveBranch = name !== defaultBranch;
+  const canRemoveBranch = name !== defaultBranch && !branch.protected;
   const branchIsOnGitHub = branch.upstream;
 
   return (

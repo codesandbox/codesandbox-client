@@ -295,6 +295,7 @@ export const branchFragment = gql`
     contribution
     lastAccessedAt
     upstream
+    protected
     owner {
       username
     }
@@ -324,6 +325,7 @@ export const branchWithPRFragment = gql`
       username
     }
     upstream
+    protected
     project {
       repository {
         ... on GitHubRepository {
