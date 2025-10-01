@@ -3688,6 +3688,7 @@ export type BranchFragment = {
   contribution: boolean;
   lastAccessedAt: string | null;
   upstream: boolean;
+  protected: boolean;
   owner: { __typename?: 'User'; username: string } | null;
   project: {
     __typename?: 'Project';
@@ -3709,6 +3710,7 @@ export type BranchWithPrFragment = {
   contribution: boolean;
   lastAccessedAt: string | null;
   upstream: boolean;
+  protected: boolean;
   owner: { __typename?: 'User'; username: string } | null;
   project: {
     __typename?: 'Project';
