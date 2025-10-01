@@ -1,0 +1,155 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    # Run weekly on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+jobs:
+  dependency-audit:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        cache: 'yarn'
+        
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+      continue-on-error: true
+      
+    - name: Run yarn audit
+      run: |
+        yarn audit --json > audit-report.json || true
+        echo "## Dependency Audit Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        yarn audit || true
+      continue-on-error: true
+      
+    - name: Count vulnerabilities
+      run: |
+        CRITICAL=$(cat audit-report.json | grep -c '"severity":"critical"' || echo "0")
+        HIGH=$(cat audit-report.json | grep -c '"severity":"high"' || echo "0")
+        MODERATE=$(cat audit-report.json | grep -c '"severity":"moderate"' || echo "0")
+        LOW=$(cat audit-report.json | grep -c '"severity":"low"' || echo "0")
+        
+        echo "### Vulnerability Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔴 Critical: $CRITICAL" >> $GITHUB_STEP_SUMMARY
+        echo "- 🟠 High: $HIGH" >> $GITHUB_STEP_SUMMARY
+        echo "- 🟡 Moderate: $MODERATE" >> $GITHUB_STEP_SUMMARY
+        echo "- 🟢 Low: $LOW" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "$CRITICAL" -gt "0" ] || [ "$HIGH" -gt "10" ]; then
+          echo "⚠️ **Warning**: Critical or high severity vulnerabilities detected!" >> $GITHUB_STEP_SUMMARY
+        fi
+      continue-on-error: true
+      
+    - name: Upload audit report
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-audit-report
+        path: audit-report.json
+      if: always()
+
+  code-security-scan:
+    name: Code Security Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Check for dangerous patterns
+      run: |
+        echo "## Code Security Scan" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for eval usage
+        EVAL_COUNT=$(grep -r "eval(" packages/ --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" 2>/dev/null | grep -v "\.min\.js" | grep -v "node_modules" | wc -l || echo "0")
+        echo "- Direct eval() calls found: $EVAL_COUNT" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for dangerouslySetInnerHTML
+        DANGEROUS_HTML=$(grep -r "dangerouslySetInnerHTML" packages/ --include="*.tsx" --include="*.jsx" 2>/dev/null | wc -l || echo "0")
+        echo "- dangerouslySetInnerHTML usage: $DANGEROUS_HTML" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for hardcoded secrets patterns
+        SECRET_PATTERNS=$(grep -rE "(password|secret|key|token)\s*=\s*['\"][^'\"]{8,}" packages/ --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" 2>/dev/null | grep -v "node_modules" | grep -v "test" | wc -l || echo "0")
+        echo "- Potential hardcoded secrets: $SECRET_PATTERNS" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "$EVAL_COUNT" -gt "20" ] || [ "$DANGEROUS_HTML" -gt "10" ]; then
+          echo "⚠️ **Warning**: High usage of potentially dangerous patterns detected!" >> $GITHUB_STEP_SUMMARY
+        fi
+      continue-on-error: true
+
+  docker-security-scan:
+    name: Docker Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Check Dockerfile security
+      run: |
+        echo "## Docker Security Scan" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for outdated base images
+        for dockerfile in $(find . -name "Dockerfile"); do
+          echo "### $dockerfile" >> $GITHUB_STEP_SUMMARY
+          
+          # Extract base image
+          BASE_IMAGE=$(grep "^FROM" "$dockerfile" | head -1 | awk '{print $2}')
+          echo "- Base Image: \`$BASE_IMAGE\`" >> $GITHUB_STEP_SUMMARY
+          
+          # Check for apt/yum update
+          if grep -q "apt.*update\|yum.*update" "$dockerfile"; then
+            echo "  ✅ Package manager update found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "  ⚠️ No package manager update found" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Check for cleanup
+          if grep -q "rm -rf.*apt\|yum clean" "$dockerfile"; then
+            echo "  ✅ Cleanup commands found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "  ⚠️ No cleanup commands found" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+        done
+      continue-on-error: true
+
+  security-report:
+    name: Generate Security Report
+    runs-on: ubuntu-latest
+    needs: [dependency-audit, code-security-scan, docker-security-scan]
+    if: always()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Create security summary
+      run: |
+        echo "# 🔒 Security Audit Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "For detailed security information, see [SECURITY_AUDIT.md](./SECURITY_AUDIT.md)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "💡 **Tip**: Run \`yarn audit\` locally to see detailed vulnerability information." >> $GITHUB_STEP_SUMMARY

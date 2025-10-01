@@ -33,3 +33,10 @@ standalone-packages/monaco-editor-core
 .cache-loader
 
 packages/app/static/js/env-config.js
+# Security
+audit-report.json
+security-report.json
+*.env.local
+*.env.production
+secrets.json
+.secrets
