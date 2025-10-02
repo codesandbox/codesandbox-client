@@ -1,0 +1,1 @@
+{"extends":["config:base"],"packageRules":[{"updateTypes":["major","minor","patch"],"automerge":true,"automergeType":"branch"}],"labels":["renovate"],"dependencyDashboard":true}
