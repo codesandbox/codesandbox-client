@@ -2,6 +2,7 @@ import React from 'react';
 import { useActions } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardBaseFolder } from '../../../types';
 
@@ -14,7 +15,12 @@ export const FolderMenu = ({ folder, setRenaming }: FolderMenuProps) => {
   const {
     dashboard: { deleteFolder },
   } = useActions();
+  const { isTeamEditor } = useWorkspaceAuthorization();
   const { visible, setVisibility, position } = React.useContext(Context);
+
+  if (!isTeamEditor) {
+    return null;
+  }
 
   return (
     <Menu.ContextMenu

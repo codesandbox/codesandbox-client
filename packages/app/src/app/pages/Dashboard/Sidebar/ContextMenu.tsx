@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Position } from '../Components/Selection';
 import { DashboardBaseFolder } from '../types';
 import { NEW_FOLDER_ID } from './constants';
@@ -14,7 +15,6 @@ const Context = React.createContext({
 
 interface ContextMenuProps {
   activeTeam: string | null;
-  authorization: string | null;
   visible: boolean;
   setVisibility: (val: boolean) => void;
   position: Position;
@@ -25,7 +25,6 @@ interface ContextMenuProps {
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({
   activeTeam,
-  authorization,
   visible,
   position,
   setVisibility,
@@ -34,15 +33,18 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   setNewFolderPath,
 }) => {
   const { deleteFolder } = useActions().dashboard;
+  const { isTeamEditor } = useWorkspaceAuthorization();
 
   const history = useHistory();
   const location = useLocation();
 
-  if (!visible || !folder) return null;
+  if (!visible || !folder || !isTeamEditor) {
+    return null
+  };
 
   let menuOptions;
 
-  if (folder.name === 'Drafts' || authorization === 'READ') {
+  if (folder.name === 'Drafts') {
     menuOptions = (
       <MenuItem onSelect={() => {}}>
         <Stack gap={1}>
