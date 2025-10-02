@@ -1,0 +1,17 @@
+pull_request_rules:
+  - name: automatic merge on CI success
+    conditions:
+      - "status-success=CI"
+      - "label!=do-not-merge"
+      - "author!=dependabot[bot]"
+      - "#approved-reviews-by>=1"
+    actions:
+      merge:
+        method: squash
+  - name: assign reviewers
+    conditions:
+      - "label=needs-review"
+    actions:
+      request_reviews:
+        users:
+          - ivan09069
