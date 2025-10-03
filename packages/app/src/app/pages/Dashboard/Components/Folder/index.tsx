@@ -113,7 +113,8 @@ export const Folder = (folderItem: DashboardFolder) => {
   /* Drag logic */
 
   const [, dragRef, preview] = useDrag({
-    item: isTeamEditor ? folderItem : null,
+    item: folderItem,
+    canDrag: isTeamEditor,
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
