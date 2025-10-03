@@ -53,9 +53,9 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
 
   const isTeamAdmin = isAdmin;
 
-  const isTeamEditor = authorization === TeamMemberAuthorization.Write;
+  const isTeamEditor = authorization === TeamMemberAuthorization.Write || isTeamAdmin;
 
-  const isTeamViewer = authorization === TeamMemberAuthorization.Read;
+  const isTeamViewer = authorization === TeamMemberAuthorization.Read || isTeamEditor || isTeamAdmin;
 
   return {
     isBillingManager: Boolean(teamManager) || isAdmin,
