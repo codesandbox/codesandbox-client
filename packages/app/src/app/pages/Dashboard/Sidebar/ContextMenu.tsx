@@ -39,7 +39,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   const location = useLocation();
 
   if (!visible || !folder || !isTeamEditor) {
-    return null
+    return null;
   };
 
   let menuOptions;
