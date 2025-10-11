@@ -1,4 +1,4 @@
-FROM node:24.7.0
+FROM node:24.10.0
 LABEL maintainer "Ives van Hoorne"
 
 COPY package.json /app/package.json
