@@ -7,6 +7,7 @@ import {
   IconButton,
   InteractiveOverlay,
 } from '@codesandbox/components';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { FolderItemComponentProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
 
@@ -35,7 +36,10 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
 
   'data-selection-id': dataSelectionId,
   ...props
-}) => (
+}) => {
+  const { isTeamEditor } = useWorkspaceAuthorization();
+
+  return (
   <InteractiveOverlay>
     <StyledCard
       data-selection-id={dataSelectionId}
@@ -44,7 +48,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     >
       <Stack justify="space-between">
         <Icon size={20} name="folder" color="#E3FF73" />
-        {!isNewFolder ? (
+        {!isNewFolder && isTeamEditor ? (
           <IconButton
             css={{
               marginRight: '-4px',
@@ -99,4 +103,4 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
       </Stack>
     </StyledCard>
   </InteractiveOverlay>
-);
+)};

@@ -93,10 +93,18 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
   }
 
+  /** Access restrictions */
+  let { noDrag } = item;
+
+  if (activeWorkspaceAuthorization === 'READ') {
+    noDrag = true;
+  }
+
   /* Drag logic */
 
   const [, dragRef, preview] = useDrag({
     item,
+    canDrag: !noDrag,
     end: (_item, monitor) => {
       const dropResult = monitor.getDropResult();
 
@@ -119,13 +127,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const Component: React.FC<SandboxItemComponentProps> =
     viewMode === 'list' ? SandboxListItem : SandboxCard;
-
-  /** Access restrictions */
-  let { noDrag } = item;
-
-  if (activeWorkspaceAuthorization === 'READ') {
-    noDrag = true;
-  }
 
   // interactions
   const {

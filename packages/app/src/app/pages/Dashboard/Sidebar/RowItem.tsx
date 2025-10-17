@@ -60,6 +60,7 @@ interface RowItemProps {
   folderPath?: string;
   nestingLevel?: number;
   style?: CSSProperties;
+  canEdit?: boolean;
 }
 
 export const RowItem: React.FC<RowItemProps> = ({
@@ -71,14 +72,18 @@ export const RowItem: React.FC<RowItemProps> = ({
   icon,
   setFoldersVisibility = null,
   style = {},
+  canEdit = true,
   ...props
 }) => {
   const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
-  if (!canNotAcceptSandboxes.includes(page)) {
-    accepts.push('template');
-    accepts.push('sandbox');
+  
+  if (canEdit && !canNotAcceptSandboxes.includes(page)) {
+    accepts.push('template', 'sandbox');
   }
-  if (!canNotAcceptFolders.includes(page)) accepts.push('folder');
+  
+  if (canEdit && !canNotAcceptFolders.includes(page)) {
+    accepts.push('folder');
+  }
 
   const usedPath = folderPath || path;
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
