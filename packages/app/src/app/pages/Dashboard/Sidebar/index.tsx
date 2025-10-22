@@ -7,6 +7,7 @@ import css from '@styled-system/css';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { useActiveTeamInfo } from 'app/hooks/useActiveTeamInfo';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -76,7 +77,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setNewFolderPath,
   };
 
-  const showRespositories = !state.environment.isOnPrem;
+  const { sdkWorkspace } = useActiveTeamInfo();
+  
+  const hasRepositories = state.activeTeam && state.sidebar[state.activeTeam]
+    ? state.sidebar[state.activeTeam].repositories.length > 0
+    : false;
+  
+  const showRespositories = !state.environment.isOnPrem && (!sdkWorkspace || hasRepositories);
 
   const { ubbBeta } = useWorkspaceFeatureFlags();
   const { isPrimarySpace, isTeamAdmin, isTeamEditor } = useWorkspaceAuthorization();
@@ -204,15 +211,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
               size={2}
               css={css({ color: 'sideBarSectionHeader.foreground' })}
             >
-              Devboxes and Sandboxes
+              {sdkWorkspace ? 'Sandboxes' : 'Devboxes and Sandboxes'}
             </Text>
           </Element>
-          <RowItem
-            name="Drafts"
-            page="drafts"
-            path={dashboardUrls.drafts(activeTeam)}
-            icon="file"
-          />
+          {!sdkWorkspace && (
+            <RowItem
+              name="Drafts"
+              page="drafts"
+              path={dashboardUrls.drafts(activeTeam)}
+              icon="file"
+            />
+          )}
 
           <NestableRowItem
             name={ROOT_COLLECTION_NAME}
@@ -252,13 +261,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
-          <Element marginTop={4} />
-          <RowItem
-            name="Shared with me"
-            page="shared"
-            path={dashboardUrls.shared(activeTeam)}
-            icon="sharing"
-          />
+          {!sdkWorkspace && (
+            <>
+              <Element marginTop={4} />
+              <RowItem
+                name="Shared with me"
+                page="shared"
+                path={dashboardUrls.shared(activeTeam)}
+                icon="sharing"
+              />
+            </>
+          )}
         </List>
         {ubbBeta && state.activeTeamInfo && (
           <UsageProgress
