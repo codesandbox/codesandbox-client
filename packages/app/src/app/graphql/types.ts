@@ -427,6 +427,7 @@ export type Team = {
    */
   projects: Array<Project>;
   sandboxes: Array<Sandbox>;
+  sdkWorkspace: Scalars['Boolean'];
   settings: Maybe<WorkspaceSandboxSettings>;
   shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
@@ -3578,6 +3579,7 @@ export type CurrentTeamInfoFragmentFragment = {
   legacy: boolean;
   frozen: boolean;
   insertedAt: string;
+  sdkWorkspace: boolean;
   users: Array<{
     __typename?: 'User';
     id: any;
@@ -5279,6 +5281,7 @@ export type GetTeamQuery = {
       legacy: boolean;
       frozen: boolean;
       insertedAt: string;
+      sdkWorkspace: boolean;
       users: Array<{
         __typename?: 'User';
         id: any;
