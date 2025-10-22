@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@types/mocha": "2.2.39",
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.6.1",
     "coveralls": "^3.0.2",
     "durations": "^3.4.1",
     "istanbul": "^0.4.4",
