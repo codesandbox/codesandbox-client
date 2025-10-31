@@ -84,7 +84,7 @@ export const GitHub: FunctionComponent = withTheme(({ theme }) => {
                       repository.
                       <br />
                       <a
-                        href="/docs/importing#import-from-github"
+                        href="/docs/learn/repositories/getting-started/repo-import"
                         rel="noopener norefereer"
                         target="_blank"
                       >

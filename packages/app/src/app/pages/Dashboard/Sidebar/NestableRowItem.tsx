@@ -35,6 +35,7 @@ interface NestableRowItemProps {
   path: string;
   page: PageTypes;
   folders: DashboardBaseFolder[];
+  canEdit?: boolean;
 }
 
 export const NestableRowItem: React.FC<NestableRowItemProps> = ({
@@ -43,6 +44,7 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
   page,
   folderPath,
   folders,
+  canEdit = true,
 }) => {
   const actions = useActions();
   const state = useAppState();
@@ -96,6 +98,11 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
   const onContextMenu = event => {
     event.preventDefault();
+
+    if (!canEdit) {
+      return;
+    };
+    
     setMenuVisibility(true);
     setMenuFolder({ name, path: folderPath });
     setMenuPosition({ x: event.clientX, y: event.clientY });
@@ -206,6 +213,7 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
         icon="folder"
         nestingLevel={nestingLevel}
         setFoldersVisibility={setFoldersVisibility}
+        canEdit={canEdit}
       >
         <Link
           to={folderUrl}
@@ -315,6 +323,7 @@ export const NestableRowItem: React.FC<NestableRowItemProps> = ({
                   path={dashboardUrls.sandboxes(folder.path, state.activeTeam)}
                   folderPath={folder.path}
                   folders={folders}
+                  canEdit={canEdit}
                 />
               ))}
           </motion.ul>

@@ -123,7 +123,7 @@ const content = {
     {
       question:
         'How much do credits cost and how can I add more to my workspace?',
-      answer: `VM credits are only used on Devboxes and repositories, to translate virtual machine (VM) runtime per hour into precise costs. They are priced at $0.018 each.
+      answer: `VM credits are only used on Devboxes and repositories, to translate virtual machine (VM) runtime per hour into precise costs. They are priced at $0.015 each.
         
         You can conveniently purchase credits as add-ons to your base package. Adding more credits is a breeze. From your workspace dashboard, go to the settings and navigate to billing. You'll find the option to add to or upgrade your plan effortlessly.`,
     },
@@ -131,7 +131,7 @@ const content = {
       question: 'What is the ideal plan for my team size?',
       answer: `The base Pro plan includes up to 40 hours of runtime per month in our Nano VMs (2 vCPU + 4 GB RAM), which is an excellent place to start if you're an individual developer or a small team.
   
-        If you have a larger team or require additional VM usage, you can either rely on on-demand credits ($0.018/credit) or purchase a discounted add-on package of VM credits.
+        If you have a larger team or require additional VM usage, you can either rely on on-demand credits ($0.015/credit) or purchase a discounted add-on package of VM credits.
         
         For example, a team with 7 collaborators, each using 2 hours of VM runtime per day on our default VM size (Micro) would require 8400 credits. The 7400 credits required on top of the 1000 included in the base Pro plan can be obtained either on-demand or by purchasing two add-on packages of 4000 VM credits each.`,
     },
@@ -148,25 +148,15 @@ const content = {
       question:
         'What will happen when I hit my workspace member limit on a Pro plan? Will I have the option to pay for more members individually?',
       answer:
-        'If you hit the workspace member limit, please reach out to our <a href=mailto:sales@codesandbox.io>customer team</a> to discuss a custom plan to suit your needs.',
+        'If you hit the workspace member limit, please reach out to our <a href=https://www.together.ai/contact-sales>sales team</a> to discuss a custom plan to suit your needs.',
     },
     {
-      question:
-        'I’m currently on a plan with annual billing. Do your new plans have an annual option?',
-      answer:
-        'We can offer annual billing for custom <a href=https://codesandbox.io/enterprise>Enterprise plans</a>. However, at the moment, our new Pro plan is only available with monthly billing. We will introduce annual billing in the near future. ',
-    },
-    {
-      question: 'My Sandbox or Devbox is frozen. What does that mean?',
-      answer: `In Devboxes and repositories, the VM will become frozen if the workspace does not have enough available credits to run a VM. You may encounter a frozen state if:
+      question: 'My Sandbox is frozen. What does that mean?',
+      answer: `In VM Sandboxes and repositories, the VM will become frozen if the workspace does not have enough available credits to run a VM. You may encounter a frozen state if:
             - you are on a Free workspace and have run out of credits;
             - you are on a Pro workspace but your credit spend has hit the spending limit.
         
-        To get out of the frozen state, you can either <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or adjust your spending limit. Otherwise, you must wait until the start of the next billing cycle for your credits to renew.
-  
-        You may also experience a similar “frozen” state with Sandboxes. When the Sandbox limit included in your workspace is exceeded, Sandboxes over the limit will become read-only.
-            
-        To regain edit access to Sandboxes over the limit, you can either <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or increase your Sandbox limit with <a href=/docs/learn/plans/plans#add-ons>add-ons</a>.`,
+        To get out of the frozen state, you can either <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or adjust your spending limit. Otherwise, you must wait until the start of the next billing cycle for your credits to renew.`,
     },
     {
       question: 'What is your cancelation and refund policy?',

@@ -9,6 +9,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -21,6 +22,7 @@ export const SandboxesPage = () => {
   const items = useFilteredItems(currentPath, cleanParam, level);
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
+  const { isTeamEditor } = useWorkspaceAuthorization();
   const {
     dashboard: { allCollections },
     activeTeam,
@@ -87,23 +89,25 @@ export const SandboxesPage = () => {
       {isEmpty ? (
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledGrid>
-            <ActionCard
-              icon="plus"
-              disabled={isFrozen}
-              onClick={() => {
-                track('Empty Folder - Create devbox', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
+            {(isTeamEditor) && (
+              <ActionCard
+                icon="plus"
+                disabled={isFrozen}
+                onClick={() => {
+                  track('Empty Folder - Create devbox', {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  });
 
-                actions.modalOpened({
-                  modal: 'create',
-                  itemId: currentCollection.id,
-                });
-              }}
-            >
-              Create
-            </ActionCard>
+                  actions.modalOpened({
+                    modal: 'create',
+                    itemId: currentCollection.id,
+                  });
+                }}
+              >
+                Create
+              </ActionCard>
+            )}
           </EmptyPage.StyledGrid>
         </EmptyPage.StyledWrapper>
       ) : (

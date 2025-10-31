@@ -7,6 +7,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useAppState, useActions } from 'app/overmind';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 import { useSelection } from '../Selection';
@@ -18,6 +19,7 @@ export const Folder = (folderItem: DashboardFolder) => {
   const {
     dashboard: { renameFolder },
   } = useActions();
+  const { isTeamEditor } = useWorkspaceAuthorization();
 
   const {
     name = '',
@@ -93,7 +95,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   /* Drop target logic */
 
-  const accepts = ['sandbox'];
+  const accepts = isTeamEditor ? ['sandbox'] : [];
 
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: accepts,
@@ -112,6 +114,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   const [, dragRef, preview] = useDrag({
     item: folderItem,
+    canDrag: isTeamEditor,
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
@@ -124,7 +127,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   const dragProps = {
     ref: dragRef,
-    onDragStart: event => onDragStart(event, path, 'folder'),
+    onDragStart: isTeamEditor ? (event => onDragStart(event, path, 'folder')) : undefined,
   };
 
   React.useEffect(() => {
@@ -185,7 +188,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     onClick,
     onDoubleClick,
     // edit mode
-    editing: isRenaming && selected,
+    editing: isRenaming && selected && isTeamEditor,
     isNewFolder: false,
     isDragging,
     newName,

@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   React.useEffect(() => {
     // Used to fetch collections
     actions.dashboard.getAllFolders();
-  }, [state.activeTeam]);
+  }, [state.activeTeam, actions.dashboard]);
 
   React.useEffect(() => {
     if (state.hasLoadedApp && state.activeTeam) {
@@ -79,8 +79,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const showRespositories = !state.environment.isOnPrem;
 
   const { ubbBeta } = useWorkspaceFeatureFlags();
-  const { isPrimarySpace, isTeamAdmin } = useWorkspaceAuthorization();
-  const { isFree, isPro } = useWorkspaceSubscription();
+  const { isPrimarySpace, isTeamAdmin, isTeamEditor } = useWorkspaceAuthorization();
+  const { isPro } = useWorkspaceSubscription();
 
   const showTemplates = state.activeTeam
     ? state.sidebar[state.activeTeam]?.hasTemplates
@@ -158,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.getStarted(activeTeam)}
             icon="documentation"
           />
-          {isFree && isTeamAdmin && (
+          {isTeamAdmin && (
             <RowItem
               name="Upgrade"
               page="external"
@@ -225,6 +225,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 ? [{ path: newFolderPath, name: '', parent: null }]
                 : []),
             ]}
+            canEdit={isTeamEditor}
           />
 
           {showTemplates ? (
@@ -288,7 +289,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </AnimatePresence>
       <ContextMenu
         activeTeam={activeTeam}
-        authorization={state.activeWorkspaceAuthorization}
         visible={menuVisible}
         setVisibility={setMenuVisibility}
         position={menuPosition}

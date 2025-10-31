@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
@@ -35,6 +36,7 @@ export const Header = ({
   const location = useLocation();
   const { modalOpened, dashboard: dashboardActions } = useActions();
   const { dashboard } = useAppState();
+  const { isTeamEditor } = useWorkspaceAuthorization();
 
   const repositoriesListPage =
     location.pathname.includes('/repositories') &&
@@ -68,7 +70,7 @@ export const Header = ({
         )}
       </Stack>
       <Stack gap={1} align="center">
-        {location.pathname.includes('/sandboxes') && (
+        {location.pathname.includes('/sandboxes') && isTeamEditor && (
           <Button onClick={createNewFolder} variant="ghost" autoWidth>
             <Icon
               name="folder"

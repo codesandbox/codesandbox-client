@@ -27,7 +27,7 @@ export type PricingPlanFeatures = {
 
 export const FREE_FEATURES: PricingPlanFeatures = {
   id: 'free',
-  name: 'Free',
+  name: 'Build',
   members: 5,
   sandboxes: Number.MAX_SAFE_INTEGER,
   devboxes: Number.MAX_SAFE_INTEGER,
@@ -56,7 +56,7 @@ export const PRO_FEATURES: PricingPlanFeatures = {
   members: 20,
   sandboxes: Number.MAX_SAFE_INTEGER,
   devboxes: Number.MAX_SAFE_INTEGER,
-  concurrentDevboxes: 20,
+  concurrentDevboxes: 10,
   sessionLength: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
   vmType: `16 vCPUs<br />32 GB RAM`,
@@ -77,11 +77,11 @@ export const PRO_FEATURES: PricingPlanFeatures = {
 
 export const BUILDER_FEATURES: PricingPlanFeatures = {
   id: 'builder',
-  name: 'Builder',
+  name: 'Scale',
   members: 20,
   sandboxes: Number.MAX_SAFE_INTEGER,
   devboxes: Number.MAX_SAFE_INTEGER,
-  concurrentDevboxes: 100,
+  concurrentDevboxes: 250,
   sessionLength: Number.MAX_SAFE_INTEGER,
   repositories: Number.MAX_SAFE_INTEGER,
   vmType: `16 vCPUs<br />32 GB RAM`,

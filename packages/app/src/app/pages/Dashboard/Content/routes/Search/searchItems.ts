@@ -9,78 +9,86 @@ import Fuse from 'fuse.js';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 
-const useSearchedSandboxes = (query: string) => {
-  const state = useAppState();
-  const actions = useActions();
-  const [foundResults, setFoundResults] = React.useState<
-    | (SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment)[]
-    | null
-  >(null);
-  const [searchIndex, setSearchindex] = React.useState<Fuse<
-    SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment,
-    unknown
-  > | null>(null);
+type DashboardItem =
+  | SandboxFragmentDashboardFragment
+  | SidebarCollectionDashboardFragment;
 
-  useEffect(() => {
-    actions.dashboard.getPage(sandboxesTypes.SEARCH);
-  }, [actions.dashboard, state.activeTeam]);
+// define which fields to search, with per-key thresholds & weights
+const SEARCH_KEYS = [
+  { name: 'title', threshold: 0.2, weight: 0.4 },
+  { name: 'description', threshold: 0.3, weight: 0.2 },
+  { name: 'alias', threshold: 0.3, weight: 0.2 },
+  { name: 'source.template', threshold: 0.4, weight: 0.1 },
+  { name: 'id', threshold: 0.0, weight: 0.1 }, // exact-only
+] as const;
 
-  useEffect(
-    () => {
-      setSearchindex(calculateSearchIndex(state.dashboard, state.activeTeam));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      state.dashboard.sandboxes.SEARCH,
-      state.dashboard.repositoriesByTeamId,
-      state.activeTeam,
-    ]
-  );
+interface SearchIndex {
+  fuses: Record<string, Fuse<DashboardItem, any>>;
+  weights: Record<string, number>;
+  items: DashboardItem[];
+}
 
-  useEffect(() => {
-    if (searchIndex) {
-      setFoundResults(searchIndex.search(query));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, searchIndex]);
+const buildSearchIndex = (dashboard: any, activeTeam: string): SearchIndex => {
+  const sandboxes: DashboardItem[] = dashboard.sandboxes.SEARCH || [];
 
-  return foundResults;
-};
-
-const calculateSearchIndex = (dashboard: any, activeTeam: string) => {
-  const sandboxes = dashboard.sandboxes.SEARCH || [];
-
-  const folders: Collection[] = (dashboard.allCollections || [])
-    .map(collection => ({
-      ...collection,
-      title: collection.name,
+  const folders: DashboardItem[] = (dashboard.allCollections || [])
+    .map((c: Collection) => ({
+      ...c,
+      title: c.path,
     }))
     .filter(f => f.title);
 
-  const teamRepos = dashboard.repositoriesByTeamId[activeTeam] ?? [];
-  const repositories = (teamRepos || []).map((repo: Repository) => {
-    return {
-      title: repo.repository.name,
-      /**
-       * Due to the lack of description we add the owner so we can at least
-       * include that in the search query.
-       */
-      description: repo.repository.owner,
-      ...repo,
-    };
-  });
+  const repos: DashboardItem[] = (
+    dashboard.repositoriesByTeamId[activeTeam] || []
+  ).map((r: Repository) => ({
+    title: r.repository.name,
+    description: r.repository.owner,
+    ...r,
+  }));
 
-  return new Fuse([...sandboxes, ...folders, ...repositories], {
-    threshold: 0.1,
-    distance: 1000,
-    keys: [
-      { name: 'title', weight: 0.4 },
-      { name: 'description', weight: 0.2 },
-      { name: 'alias', weight: 0.2 },
-      { name: 'source.template', weight: 0.1 },
-      { name: 'id', weight: 0.1 },
-    ],
-  });
+  const items = [...sandboxes, ...folders, ...repos];
+
+  // build a Fuse instance per key
+  const fuses: Record<string, Fuse<DashboardItem, any>> = {};
+  const weights: Record<string, number> = {};
+
+  for (const { name, threshold, weight } of SEARCH_KEYS) {
+    fuses[name] = new Fuse(items, {
+      keys: [name],
+      threshold,
+      distance: 1000,
+    });
+    weights[name] = weight;
+  }
+
+  return { fuses, weights, items };
+};
+
+// merge+dedupe results from every key
+const mergeSearchResults = (
+  index: SearchIndex,
+  query: string
+): DashboardItem[] => {
+  const hits: Array<DashboardItem> = [];
+
+  for (const key of Object.keys(index.fuses)) {
+    const fuse = index.fuses[key];
+    for (const item of fuse.search(query)) {
+      hits.push(item as DashboardItem);
+    }
+  }
+
+  // dedupe by item.id, keep the best (lowest) weighted score
+  const byId: Record<string, DashboardItem> = {};
+  for (const item of hits) {
+    const id = (item as any).id as string;
+    if (!byId[id]) {
+      byId[id] = item;
+    }
+  }
+
+  // sort & return
+  return Object.values(byId);
 };
 
 export const useGetItems = ({
@@ -91,73 +99,71 @@ export const useGetItems = ({
   query: string;
   username: string;
   getFilteredSandboxes: (
-    sandboxes: (
-      | SandboxFragmentDashboardFragment
-      | SidebarCollectionDashboardFragment
-    )[]
+    list: DashboardItem[]
   ) => SandboxFragmentDashboardFragment[];
 }) => {
-  const foundResults: Array<
-    SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment
-  > = useSearchedSandboxes(query) || [];
+  const state = useAppState();
+  const actions = useActions();
 
-  // @ts-ignore
-  const sandboxesInSearch = foundResults.filter(s => !s.path);
-  // @ts-ignore
-  const foldersInSearch = foundResults.filter(s => s.path);
+  // load page once
+  useEffect(() => {
+    actions.dashboard.getPage(sandboxesTypes.SEARCH);
+  }, [actions.dashboard, state.activeTeam]);
 
-  const filteredSandboxes: SandboxFragmentDashboardFragment[] = getFilteredSandboxes(
-    sandboxesInSearch
+  // keep a SearchIndex in state
+  const [searchIndex, setSearchIndex] = React.useState<SearchIndex | null>(
+    null
   );
+  useEffect(() => {
+    if (!state.dashboard.sandboxes.SEARCH || !state.dashboard.allCollections)
+      return;
+    const idx = buildSearchIndex(state.dashboard, state.activeTeam);
+    setSearchIndex(idx);
+  }, [
+    state.dashboard.sandboxes.SEARCH,
+    state.dashboard.allCollections,
+    state.dashboard.repositoriesByTeamId,
+    state.activeTeam,
+  ]);
 
-  const orderedSandboxes = [...foldersInSearch, ...filteredSandboxes].filter(
-    item => {
-      // @ts-ignore
-      if (item.path || item.repository) {
-        return true;
-      }
-
-      const sandbox = item as SandboxFragmentDashboardFragment;
-
-      // Remove draft sandboxes from other authors
-      return (
-        !sandbox.draft ||
-        (sandbox.draft && sandbox.author.username === username)
-      );
+  // run the merged search whenever query or index changes
+  const [foundResults, setFoundResults] = React.useState<DashboardItem[]>([]);
+  useEffect(() => {
+    if (searchIndex && query) {
+      setFoundResults(mergeSearchResults(searchIndex, query));
+    } else {
+      setFoundResults([]);
     }
-  );
+  }, [query, searchIndex]);
 
-  // @ts-ignore
-  const items: DashboardGridItem[] =
-    foundResults != null
-      ? orderedSandboxes.map(found => {
-          // @ts-ignore
-          if (found.path) {
-            return {
-              type: 'folder',
-              ...found,
-            };
-          }
+  // then the rest is just your existing filtering / mapping logic:
+  const sandboxesInSearch = foundResults.filter(s => !(s as any).path);
+  const foldersInSearch = foundResults.filter(s => (s as any).path);
+  const filteredSandboxes = getFilteredSandboxes(sandboxesInSearch);
+  const isLoadingQuery = query && !searchIndex;
 
-          // @ts-ignore
-          if (found.repository) {
-            return {
-              type: 'repository',
-              repository: {
-                // @ts-ignore
-                branchCount: found.branchCount,
-                // @ts-ignore
-                repository: found.repository,
-              },
-            };
-          }
+  const ordered = [...foldersInSearch, ...filteredSandboxes].filter(item => {
+    if ((item as any).path || (item as any).repository) return true;
+    const sb = item as SandboxFragmentDashboardFragment;
+    return !sb.draft || (sb.draft && sb.author.username === username);
+  });
 
-          return {
-            type: 'sandbox',
-            sandbox: found,
-          };
-        })
-      : [{ type: 'skeleton-row' }];
+  const items = ordered.map(found => {
+    if ((found as any).path) {
+      return { type: 'folder', ...(found as object) } as any;
+    }
+    if ((found as any).repository) {
+      const f = found as any;
+      return {
+        type: 'repository',
+        repository: {
+          branchCount: f.branchCount,
+          repository: f.repository,
+        },
+      } as any;
+    }
+    return { type: 'sandbox', sandbox: found } as any;
+  });
 
-  return [items, sandboxesInSearch];
+  return [items, sandboxesInSearch, isLoadingQuery] as const;
 };

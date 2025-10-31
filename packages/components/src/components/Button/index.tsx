@@ -175,7 +175,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ]);
     const usedAs = pAs || (props.to ? Link : 'button');
     // default type is button unless props.as was changed
-    const type = usedAs === 'button' && 'button';
+    const type = usedAs === 'button' ? 'button' : undefined;
 
     return (
       <Element
