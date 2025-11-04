@@ -1,0 +1,55 @@
+name: "CodeQL Config"
+
+# Exclude paths to reduce disk space usage during CodeQL analysis
+# This prevents analyzing unnecessary files that consume disk space
+paths-ignore:
+  # Dependencies - don't analyze third-party code
+  - "**/node_modules"
+  - "**/yarn.lock"
+  - "**/package-lock.json"
+  
+  # Build artifacts - generated code doesn't need analysis
+  - "**/dist"
+  - "**/lib"
+  - "**/compiled"
+  - "**/build"
+  - "**/www"
+  - "**/release"
+  
+  # Test fixtures and snapshots
+  - "**/__mocks__"
+  - "**/__image_snapshots__"
+  - "**/_fixtures"
+  - "**/fixture"
+  - "**/test/**/*.png"
+  - "**/test/**/*.jpg"
+  - "**/test/**/*.svg"
+  - "**/integration-tests/**/*.png"
+  
+  # Example and playground files - not production code
+  - "**/example"
+  - "**/examples"
+  - "**/playground"
+  - "**/website"
+  - "**/docs"
+  
+  # Generated files
+  - "**/*.map"
+  - "**/*.min.js"
+  - "**/*.min.css"
+  
+  # Large standalone packages - exclude website and release directories
+  - "standalone-packages/monaco-editor/website"
+  - "standalone-packages/monaco-editor/release"
+  - "standalone-packages/vscode-editor/release"
+  - "standalone-packages/vscode-textmate/**/*.result"
+  - "standalone-packages/vscode-textmate/**/*.patch"
+  
+  # Static assets
+  - "**/static/fonts"
+  - "**/static/img"
+  - "**/public"
+  
+  # CI/CD files
+  - "**/Dockerfile*"
+  - "**/.circleci"
