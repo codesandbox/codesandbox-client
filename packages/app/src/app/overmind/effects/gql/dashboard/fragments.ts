@@ -180,6 +180,7 @@ export const currentTeamInfoFragment = gql`
     name
     type
     avatarUrl
+    frozen
     insertedAt
     users {
       id

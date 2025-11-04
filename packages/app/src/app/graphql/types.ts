@@ -3592,6 +3592,7 @@ export type CurrentTeamInfoFragmentFragment = {
   name: string;
   type: TeamType;
   avatarUrl: string | null;
+  frozen: boolean;
   insertedAt: string;
   users: Array<{
     __typename?: 'User';
@@ -5267,6 +5268,7 @@ export type GetTeamQuery = {
       name: string;
       type: TeamType;
       avatarUrl: string | null;
+      frozen: boolean;
       insertedAt: string;
       users: Array<{
         __typename?: 'User';
