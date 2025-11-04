@@ -13,7 +13,6 @@ export const sandboxFragmentDashboard = gql`
     privacy
     isFrozen
     screenshotUrl
-    screenshotOutdated
     viewCount
     likeCount
     isV2
@@ -123,9 +122,7 @@ export const teamFragmentDashboard = gql`
     id
     name
     description
-    creatorId
     avatarUrl
-    frozen
     insertedAt
     settings {
       minimumPrivacy
@@ -178,14 +175,11 @@ export const teamFragmentDashboard = gql`
 export const currentTeamInfoFragment = gql`
   fragment currentTeamInfoFragment on Team {
     id
-    creatorId
     description
     inviteToken
     name
     type
     avatarUrl
-    legacy
-    frozen
     insertedAt
     users {
       id
