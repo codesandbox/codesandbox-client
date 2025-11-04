@@ -285,6 +285,7 @@ export type Sandbox = {
   insertedAt: Scalars['String'];
   invitations: Array<Invitation>;
   isFrozen: Scalars['Boolean'];
+  isSdk: Scalars['Boolean'];
   /** @deprecated No longer supported */
   isSse: Maybe<Scalars['Boolean']>;
   isV2: Scalars['Boolean'];
@@ -427,6 +428,8 @@ export type Team = {
    */
   projects: Array<Project>;
   sandboxes: Array<Sandbox>;
+  sdkTemplates: Array<SdkTemplate>;
+  sdkWorkspace: Scalars['Boolean'];
   settings: Maybe<WorkspaceSandboxSettings>;
   shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
@@ -1062,6 +1065,26 @@ export type ProjectSettings = {
   __typename?: 'ProjectSettings';
   /** Whether AI features are explicitly enabled or disabled for this project. If `null`, the team-wide setting applies. */
   aiConsent: Maybe<Scalars['Boolean']>;
+};
+
+export type SdkTemplate = {
+  __typename?: 'SdkTemplate';
+  aliases: Array<SdkTemplateAlias>;
+  id: Scalars['UUID4'];
+  insertedAt: Scalars['DateTime'];
+  sandboxes: Array<SdkTemplateSandbox>;
+};
+
+export type SdkTemplateAlias = {
+  __typename?: 'SdkTemplateAlias';
+  alias: Scalars['String'];
+  namespace: Scalars['String'];
+};
+
+export type SdkTemplateSandbox = {
+  __typename?: 'SdkTemplateSandbox';
+  cluster: Scalars['String'];
+  shortid: Scalars['String'];
 };
 
 export type WorkspaceSandboxSettings = {
@@ -3343,7 +3366,6 @@ export type SandboxFragmentDashboardFragment = {
   privacy: number;
   isFrozen: boolean;
   screenshotUrl: string | null;
-  screenshotOutdated: boolean;
   viewCount: number;
   likeCount: number;
   isV2: boolean;
@@ -3390,7 +3412,6 @@ export type RepoFragmentDashboardFragment = {
   privacy: number;
   isFrozen: boolean;
   screenshotUrl: string | null;
-  screenshotOutdated: boolean;
   viewCount: number;
   likeCount: number;
   isV2: boolean;
@@ -3465,7 +3486,6 @@ export type TemplateFragmentDashboardFragment = {
     privacy: number;
     isFrozen: boolean;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
     isV2: boolean;
@@ -3514,9 +3534,7 @@ export type TeamFragmentDashboardFragment = {
   id: any;
   name: string;
   description: string | null;
-  creatorId: any | null;
   avatarUrl: string | null;
-  frozen: boolean;
   insertedAt: string;
   settings: {
     __typename?: 'WorkspaceSandboxSettings';
@@ -3569,13 +3587,11 @@ export type TeamFragmentDashboardFragment = {
 export type CurrentTeamInfoFragmentFragment = {
   __typename?: 'Team';
   id: any;
-  creatorId: any | null;
   description: string | null;
   inviteToken: string;
   name: string;
   type: TeamType;
   avatarUrl: string | null;
-  legacy: boolean;
   frozen: boolean;
   insertedAt: string;
   users: Array<{
@@ -3813,9 +3829,7 @@ export type _CreateTeamMutation = {
     id: any;
     name: string;
     description: string | null;
-    creatorId: any | null;
     avatarUrl: string | null;
-    frozen: boolean;
     insertedAt: string;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
@@ -3935,7 +3949,6 @@ export type AddToFolderMutation = {
     privacy: number;
     isFrozen: boolean;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
     isV2: boolean;
@@ -3988,7 +4001,6 @@ export type MoveToTrashMutation = {
     privacy: number;
     isFrozen: boolean;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
     isV2: boolean;
@@ -4042,7 +4054,6 @@ export type ChangePrivacyMutation = {
     privacy: number;
     isFrozen: boolean;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
     isV2: boolean;
@@ -4096,7 +4107,6 @@ export type ChangeFrozenMutation = {
     privacy: number;
     isFrozen: boolean;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
     isV2: boolean;
@@ -4150,7 +4160,6 @@ export type _RenameSandboxMutation = {
     privacy: number;
     isFrozen: boolean;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     viewCount: number;
     likeCount: number;
     isV2: boolean;
@@ -4204,9 +4213,7 @@ export type _AcceptTeamInvitationMutation = {
     id: any;
     name: string;
     description: string | null;
-    creatorId: any | null;
     avatarUrl: string | null;
-    frozen: boolean;
     insertedAt: string;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
@@ -4296,9 +4303,7 @@ export type _SetTeamNameMutation = {
     id: any;
     name: string;
     description: string | null;
-    creatorId: any | null;
     avatarUrl: string | null;
-    frozen: boolean;
     insertedAt: string;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
@@ -4569,9 +4574,7 @@ export type SetTeamMetadataMutation = {
     id: any;
     name: string;
     description: string | null;
-    creatorId: any | null;
     avatarUrl: string | null;
-    frozen: boolean;
     insertedAt: string;
     settings: {
       __typename?: 'WorkspaceSandboxSettings';
@@ -4654,7 +4657,6 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         privacy: number;
         isFrozen: boolean;
         screenshotUrl: string | null;
-        screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
         isV2: boolean;
@@ -4722,7 +4724,6 @@ export type SandboxesByPathQuery = {
         privacy: number;
         isFrozen: boolean;
         screenshotUrl: string | null;
-        screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
         isV2: boolean;
@@ -4782,7 +4783,6 @@ export type TeamDraftsQuery = {
         privacy: number;
         isFrozen: boolean;
         screenshotUrl: string | null;
-        screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
         isV2: boolean;
@@ -4859,7 +4859,6 @@ export type GetTeamReposQuery = {
         privacy: number;
         isFrozen: boolean;
         screenshotUrl: string | null;
-        screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
         isV2: boolean;
@@ -4942,7 +4941,6 @@ export type TeamTemplatesQuery = {
           privacy: number;
           isFrozen: boolean;
           screenshotUrl: string | null;
-          screenshotOutdated: boolean;
           viewCount: number;
           likeCount: number;
           isV2: boolean;
@@ -5001,9 +4999,7 @@ export type AllTeamsQuery = {
       id: any;
       name: string;
       description: string | null;
-      creatorId: any | null;
       avatarUrl: string | null;
-      frozen: boolean;
       insertedAt: string;
       settings: {
         __typename?: 'WorkspaceSandboxSettings';
@@ -5078,7 +5074,6 @@ export type _SearchTeamSandboxesQuery = {
         privacy: number;
         isFrozen: boolean;
         screenshotUrl: string | null;
-        screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
         isV2: boolean;
@@ -5136,7 +5131,6 @@ export type RecentlyAccessedSandboxesQuery = {
       privacy: number;
       isFrozen: boolean;
       screenshotUrl: string | null;
-      screenshotOutdated: boolean;
       viewCount: number;
       likeCount: number;
       isV2: boolean;
@@ -5224,7 +5218,6 @@ export type SharedWithMeSandboxesQuery = {
       privacy: number;
       isFrozen: boolean;
       screenshotUrl: string | null;
-      screenshotOutdated: boolean;
       viewCount: number;
       likeCount: number;
       isV2: boolean;
@@ -5270,13 +5263,11 @@ export type GetTeamQuery = {
     team: {
       __typename?: 'Team';
       id: any;
-      creatorId: any | null;
       description: string | null;
       inviteToken: string;
       name: string;
       type: TeamType;
       avatarUrl: string | null;
-      legacy: boolean;
       frozen: boolean;
       insertedAt: string;
       users: Array<{
@@ -5820,7 +5811,6 @@ export type TeamSidebarDataQuery = {
         privacy: number;
         isFrozen: boolean;
         screenshotUrl: string | null;
-        screenshotOutdated: boolean;
         viewCount: number;
         likeCount: number;
         isV2: boolean;
@@ -5883,7 +5873,6 @@ export type SandboxFragment = {
   removedAt: string | null;
   privacy: number;
   screenshotUrl: string | null;
-  screenshotOutdated: boolean;
   teamId: any | null;
   source: { __typename?: 'Source'; template: string | null };
   customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -5905,7 +5894,6 @@ export type TeamFragment = {
   name: string;
   inviteToken: string;
   description: string | null;
-  creatorId: any | null;
   users: Array<{
     __typename?: 'User';
     id: any;
@@ -6007,7 +5995,6 @@ export type AddToCollectionMutation = {
     removedAt: string | null;
     privacy: number;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
     customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -6041,7 +6028,6 @@ export type DeleteSandboxesMutation = {
     removedAt: string | null;
     privacy: number;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
     customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -6076,7 +6062,6 @@ export type SetSandboxesPrivacyMutation = {
     removedAt: string | null;
     privacy: number;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
     customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -6111,7 +6096,6 @@ export type RenameSandboxMutation = {
     removedAt: string | null;
     privacy: number;
     screenshotUrl: string | null;
-    screenshotOutdated: boolean;
     teamId: any | null;
     source: { __typename?: 'Source'; template: string | null };
     customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -6166,7 +6150,6 @@ export type PathedSandboxesQuery = {
         removedAt: string | null;
         privacy: number;
         screenshotUrl: string | null;
-        screenshotOutdated: boolean;
         teamId: any | null;
         source: { __typename?: 'Source'; template: string | null };
         customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -6205,7 +6188,6 @@ export type RecentSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       screenshotUrl: string | null;
-      screenshotOutdated: boolean;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
       customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -6240,7 +6222,6 @@ export type SearchSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       screenshotUrl: string | null;
-      screenshotOutdated: boolean;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
       customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -6275,7 +6256,6 @@ export type DeletedSandboxesQuery = {
       removedAt: string | null;
       privacy: number;
       screenshotUrl: string | null;
-      screenshotOutdated: boolean;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
       customTemplate: { __typename?: 'Template'; id: any | null } | null;
@@ -6307,7 +6287,6 @@ export type TeamQuery = {
       name: string;
       inviteToken: string;
       description: string | null;
-      creatorId: any | null;
       users: Array<{
         __typename?: 'User';
         id: any;
@@ -6338,7 +6317,6 @@ export type AcceptTeamInvitationMutation = {
     name: string;
     inviteToken: string;
     description: string | null;
-    creatorId: any | null;
     users: Array<{
       __typename?: 'User';
       id: any;
