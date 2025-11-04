@@ -1,0 +1,77 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+
+    steps:
+    - name: Clean up disk space
+      run: |
+        echo "Disk space before cleanup:"
+        df -h
+        echo ""
+        echo "Cleaning up unnecessary files to free disk space..."
+        
+        # Remove large tool directories that aren't needed for JavaScript CodeQL analysis
+        # These tools will be re-downloaded by GitHub Actions if needed for other jobs
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /opt/ghc
+        sudo rm -rf /usr/local/share/boost
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /opt/az
+        
+        # Remove large tool caches (CodeQL will re-download only what it needs)
+        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+        
+        # Clean up system caches
+        sudo apt-get clean
+        sudo rm -rf /var/lib/apt/lists/*
+        
+        # Remove Docker images if Docker is installed (not needed for CodeQL)
+        docker system prune -af || true
+        
+        # Remove pip cache
+        rm -rf ~/.cache/pip || true
+        
+        # Remove npm cache (will be recreated during checkout if needed)
+        npm cache clean --force || true
+        
+        echo ""
+        echo "Disk space after cleanup:"
+        df -h
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        config-file: ./.github/codeql/codeql-config.yml
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
+
