@@ -4,6 +4,7 @@
 
 - [Code of Conduct](#code-of-conduct)
 - [Code Organization](#code-organization)
+- [Package Management](#package-management)
 - [Setting Up the project locally](#setting-up-the-project-locally)
 - [Submitting a Pull Request](#submitting-a-pull-request)
 - [Add yourself as a contributor](#add-yourself-as-a-contributor)
@@ -43,6 +44,54 @@ access to all your CodeSandbox content!
 series
 [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
 
+## Package Management
+
+This monorepo uses a dual package management approach combining **Yarn workspaces** and **Lerna**:
+
+### Yarn Workspaces
+
+Yarn workspaces are used for the main monorepo packages that share dependencies and benefit from dependency hoisting. These packages are listed in `package.json` under `workspaces.packages`:
+
+- All packages in `packages/*` (e.g., `packages/app`, `packages/common`, `packages/components`)
+- `standalone-packages/sse-loading-screen` (added to workspaces for Node 24 compatibility)
+
+Yarn handles dependency installation and hoisting for these packages automatically.
+
+### Lerna
+
+Lerna is configured to manage packages independently from Yarn workspaces. It uses its own package discovery (`packages/*` and `standalone-packages/*`) as defined in `lerna.json`. This allows Lerna to:
+
+- Run scripts (like `install-dependencies`) across both workspace packages and standalone packages
+- Manage versioning independently for each package
+- Execute commands in parallel across all packages
+
+### Standalone Packages
+
+Some packages in `standalone-packages/` are **not** part of Yarn workspaces:
+
+- `codesandbox-browserfs`: Runs `yarn` to install dependencies
+- `sse-loading-screen`: Conditionally runs `yarn install` only if not in workspace context (checks for `../../node_modules`)
+- `vscode-extensions`: Runs `yarn decompress-extensions` to extract compressed extension files
+- `vscode-textmate`: Runs `npm install --ignore-scripts` to install dependencies without running postinstall scripts
+
+These packages have their own `install-dependencies` scripts that are run via Lerna during `yarn postinstall`. They are managed separately because:
+
+- They have different installation processes (some use npm, some have special setup scripts)
+- They may have different dependency resolution needs
+- They're built and deployed independently
+
+### Lerna Workspaces Warning
+
+When running `yarn install`, you may see a warning:
+
+```
+lerna WARN EWORKSPACES Workspaces exist in the root package.json, but Lerna is not configured to use them.
+```
+
+**This warning is expected and can be safely ignored.** It occurs because Lerna is intentionally configured to use its own package discovery (`useWorkspaces: false` in `lerna.json`) rather than delegating to Yarn workspaces. This allows Lerna to manage standalone packages that aren't part of the Yarn workspace configuration.
+
+The `postinstall` script runs `lerna run install-dependencies` to execute each package's `install-dependencies` script, ensuring all packages are properly set up regardless of whether they're in Yarn workspaces or not.
+
 ## Setting Up the project locally
 
 To install the project you need to have `yarn` and `node`
@@ -58,8 +107,8 @@ To install the project you need to have `yarn` and `node`
     cd codesandbox-client
     ```
 
-2.  Your environment needs to be running Node v. 10
-    - `.nvmrc` config exists in the repo root, specifying a v.10.x.x version
+2.  Your environment needs to be running Node v. 24
+    - `.nvmrc` config exists in the repo root, specifying a v.24.x.x version
     - you can use [fnm](https://github.com/Schniz/fnm) (`fnm use`) to change
       your current node version to the one specified in `.nvmrc`
 3.  from the root of the project: `yarn` to install all dependencies
