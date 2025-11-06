@@ -30,6 +30,6 @@
   "scripts": {
     "start": "npx parcel-bundler@1.12.5 src/index.html",
     "build": "rimraf dist && npx parcel-bundler@1.12.5 build src/index.html --no-source-maps",
-    "install-dependencies": "yarn install"
+    "install-dependencies": "test -d ../../node_modules || yarn install"
   }
 }
