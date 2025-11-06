@@ -26,7 +26,8 @@
       "packages/sse-hooks",
       "packages/template-icons",
       "packages/vue3-browser-compiler",
-      "packages/vue3-transpiler"
+      "packages/vue3-transpiler",
+      "standalone-packages/sse-loading-screen"
     ],
     "nohoist": [
       "**/react-codemirror2",
@@ -116,6 +117,6 @@
     ]
   },
   "engines": {
-    "node": "^16.0.0"
+    "node": "^24.0.0"
   }
 }

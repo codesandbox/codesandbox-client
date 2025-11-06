@@ -117,11 +117,11 @@ aliases:
 executors:
   node:
     docker:
-      - image: node:16.14.2-bullseye
+      - image: node:24-bullseye
     working_directory: ~/codesandbox-client
   node-xlarge:
     docker:
-      - image: node:16.14.2-bullseye
+      - image: node:24-bullseye
     resource_class: xlarge
     working_directory: ~/codesandbox-client
   docker_machine:
