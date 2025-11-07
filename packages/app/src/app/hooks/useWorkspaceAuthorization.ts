@@ -46,7 +46,7 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
   }
 
   /**
-   * TODO: Drop the team prefix from all these flags and replace all ocurrences
+   * TODO: Drop the team prefix from all these flags and replace all occurrences
    */
 
   const isAdmin = authorization === TeamMemberAuthorization.Admin;

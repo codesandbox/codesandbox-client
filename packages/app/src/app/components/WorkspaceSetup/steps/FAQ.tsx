@@ -159,7 +159,7 @@ const content = {
         To get out of the frozen state, you can either <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or adjust your spending limit. Otherwise, you must wait until the start of the next billing cycle for your credits to renew.`,
     },
     {
-      question: 'What is your cancelation and refund policy?',
+      question: 'What is your cancellation and refund policy?',
       answer: `If you want to stop your Pro plan, you can do this anytime through the Pro workspace settings. Please be aware that subscriptions are linked to workspaces rather than accounts. If you have multiple workspaces with subscriptions, you'll need to cancel them individually. Charges will cease after the current billing cycle once all subscriptions are canceled via the billing page of each workspace.
   
         Refunds are available for a period of 14 days after payment if you are based in the EU or Turkey. If you are based elsewhere, we won’t be able to refund your subscription. Please be aware that we will not be able to offer a refund within this period in the following circumstances:
