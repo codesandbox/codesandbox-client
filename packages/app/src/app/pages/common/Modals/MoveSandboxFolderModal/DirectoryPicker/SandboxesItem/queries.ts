@@ -29,7 +29,6 @@ export const SANDBOX_FRAGMENT = gql`
     removedAt
     privacy
     screenshotUrl
-    screenshotOutdated
 
     source {
       template

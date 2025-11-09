@@ -32,7 +32,6 @@ export const SANDBOX_FRAGMENT = gql`
     removedAt
     privacy
     screenshotUrl
-    screenshotOutdated
 
     source {
       template
@@ -62,7 +61,6 @@ const TEAM_FRAGMENT = gql`
     name
     inviteToken
     description
-    creatorId
 
     users {
       id
