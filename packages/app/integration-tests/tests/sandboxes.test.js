@@ -97,7 +97,7 @@ describe('sandboxes', () => {
             customDiffConfig: {
               threshold,
             },
-            customSnapshotIdentifier: identifier,
+            customSnapshotIdentifier: `${identifier}-snap`,
           });
         } catch (err) {
           const screenshotFilePath = path.join(
