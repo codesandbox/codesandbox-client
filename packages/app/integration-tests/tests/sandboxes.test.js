@@ -95,8 +95,10 @@ describe('sandboxes', () => {
         try {
           expect(screenshot).toMatchImageSnapshot({
             customDiffConfig: {
-              threshold,
+              threshold: 0.1, // Per-pixel threshold for pixelmatch (0-1)
             },
+            failureThreshold: threshold, // Percentage threshold for entire comparison
+            failureThresholdType: 'percent',
             customSnapshotIdentifier: `${identifier}-snap`,
           });
         } catch (err) {
