@@ -79,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const showRespositories = !state.environment.isOnPrem;
 
   const { ubbBeta } = useWorkspaceFeatureFlags();
-  const { isPrimarySpace, isTeamAdmin, isTeamEditor } = useWorkspaceAuthorization();
+  const { isPrimarySpace, hasAdminAccess, hasEditorAccess } = useWorkspaceAuthorization();
   const { isPro } = useWorkspaceSubscription();
 
   const showTemplates = state.activeTeam
@@ -158,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.getStarted(activeTeam)}
             icon="documentation"
           />
-          {isTeamAdmin && (
+          {hasAdminAccess && (
             <RowItem
               name="Upgrade"
               page="external"
@@ -225,7 +225,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 ? [{ path: newFolderPath, name: '', parent: null }]
                 : []),
             ]}
-            canEdit={isTeamEditor}
+            canEdit={hasEditorAccess}
           />
 
           {showTemplates ? (

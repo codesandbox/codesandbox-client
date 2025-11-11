@@ -33,12 +33,12 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   setNewFolderPath,
 }) => {
   const { deleteFolder } = useActions().dashboard;
-  const { isTeamEditor } = useWorkspaceAuthorization();
+  const { hasEditorAccess } = useWorkspaceAuthorization();
 
   const history = useHistory();
   const location = useLocation();
 
-  if (!visible || !folder || !isTeamEditor) {
+  if (!visible || !folder || !hasEditorAccess) {
     return null;
   };
 

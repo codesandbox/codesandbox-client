@@ -37,7 +37,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
   'data-selection-id': dataSelectionId,
   ...props
 }) => {
-  const { isTeamEditor } = useWorkspaceAuthorization();
+  const { hasEditorAccess } = useWorkspaceAuthorization();
 
   return (
   <InteractiveOverlay>
@@ -48,7 +48,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     >
       <Stack justify="space-between">
         <Icon size={20} name="folder" color="#E3FF73" />
-        {!isNewFolder && isTeamEditor ? (
+        {!isNewFolder && hasEditorAccess ? (
           <IconButton
             css={{
               marginRight: '-4px',

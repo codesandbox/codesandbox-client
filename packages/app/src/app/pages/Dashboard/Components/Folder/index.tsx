@@ -19,7 +19,7 @@ export const Folder = (folderItem: DashboardFolder) => {
   const {
     dashboard: { renameFolder },
   } = useActions();
-  const { isTeamEditor } = useWorkspaceAuthorization();
+  const { hasEditorAccess } = useWorkspaceAuthorization();
 
   const {
     name = '',
@@ -95,7 +95,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   /* Drop target logic */
 
-  const accepts = isTeamEditor ? ['sandbox'] : [];
+  const accepts = hasEditorAccess ? ['sandbox'] : [];
 
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: accepts,
@@ -114,7 +114,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   const [, dragRef, preview] = useDrag({
     item: folderItem,
-    canDrag: isTeamEditor,
+    canDrag: hasEditorAccess,
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
@@ -127,7 +127,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   const dragProps = {
     ref: dragRef,
-    onDragStart: isTeamEditor ? (event => onDragStart(event, path, 'folder')) : undefined,
+    onDragStart: hasEditorAccess ? (event => onDragStart(event, path, 'folder')) : undefined,
   };
 
   React.useEffect(() => {
@@ -188,7 +188,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     onClick,
     onDoubleClick,
     // edit mode
-    editing: isRenaming && selected && isTeamEditor,
+    editing: isRenaming && selected && hasEditorAccess,
     isNewFolder: false,
     isDragging,
     newName,

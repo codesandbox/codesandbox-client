@@ -15,10 +15,10 @@ export const FolderMenu = ({ folder, setRenaming }: FolderMenuProps) => {
   const {
     dashboard: { deleteFolder },
   } = useActions();
-  const { isTeamEditor } = useWorkspaceAuthorization();
+  const { hasEditorAccess } = useWorkspaceAuthorization();
   const { visible, setVisibility, position } = React.useContext(Context);
 
-  if (!isTeamEditor) {
+  if (!hasEditorAccess) {
     return null;
   }
 
