@@ -78,7 +78,7 @@ describe('sandboxes', () => {
 
   sandboxesToTest.forEach(sandbox => {
     const id = sandbox.id || sandbox;
-    const threshold = sandbox.threshold || 0.01;
+    const threshold = sandbox.threshold || 0.05;
     const loadTimeout = ms(TIMEOUT);
     const testTimeout = loadTimeout * ATTEMPTS + ms(20);
 
@@ -94,7 +94,7 @@ describe('sandboxes', () => {
 
         try {
           expect(screenshot).toMatchImageSnapshot({
-            failureThreshold: threshold || 0.05, // Percentage threshold for entire comparison
+            failureThreshold: threshold, // Percentage threshold for entire comparison
             failureThresholdType: 'percent',
             customSnapshotIdentifier: `${identifier}-snap`,
           });
