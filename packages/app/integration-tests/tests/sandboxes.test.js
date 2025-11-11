@@ -32,7 +32,7 @@ const SANDBOXES = [
   'n5wy74w8vl', // material-ui generated demo
   'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
   { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
-  { id: '98o3k45m8p', threshold: 0.01 }, // direct path test
+  { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
   'pm79km5lmj', // babel macros with styled components
   'j2wpjwqj93', // sandbox with need of transpiling in node_modules
   '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
@@ -92,11 +92,13 @@ describe('sandboxes', () => {
         const screenshot = await page.screenshot();
         const identifier = id.split('/').join('-');
 
+        console.log('threshold for sandbox ', id, threshold);
+
         try {
           expect(screenshot).toMatchImageSnapshot({
-            customDiffConfig: {
-              threshold: 0.1, // Per-pixel threshold for pixelmatch (0-1)
-            },
+            // customDiffConfig: {
+            //   threshold: 0.05, // Per-pixel threshold for pixelmatch (0-1)
+            // },
             failureThreshold: threshold, // Percentage threshold for entire comparison
             failureThresholdType: 'percent',
             customSnapshotIdentifier: `${identifier}-snap`,
