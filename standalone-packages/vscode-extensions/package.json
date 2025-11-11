@@ -6,7 +6,7 @@
   "scripts": {
     "install-dependencies": "yarn decompress-extensions",
     "compress-extensions": "rm vscode-extensions.tar.zst && cd out/ && tar cf - extensions | zstd -10 -T0 -o ../vscode-extensions.tar.zst",
-    "decompress-extensions": "if command -v zstd >/dev/null 2>&1; then rm -rf out/extensions && mkdir -p out/extensions && cd out/ && zstd -d -T0 -c ../vscode-extensions.tar.zst | tar xf - -C .; elif [ -d \"out/extensions\" ] && [ \"$(ls -A out/extensions 2>/dev/null)\" ]; then echo \"Warning: zstd not found, but extensions directory already exists. Skipping decompression.\"; else echo \"Warning: zstd not found and extensions directory does not exist. Skipping decompression. Extensions will not be available until zstd is installed.\"; fi",
+    "decompress-extensions": "rm -rf out/extensions && mkdir out/extensions && cd out/ && zstd -d -T0 -c ../vscode-extensions.tar.zst | tar xf - -C .",
     "clean": "rimraf out",
     "copy": "yarn clean && mkdir out && cp -R ../vscode/extensions-bundle/ ./out/ && yarn rimraf out/draft",
     "compile": "cd out/extensions/ && node ../../../codesandbox-browserfs/build/scripts/make_http_index.js > index.json"
