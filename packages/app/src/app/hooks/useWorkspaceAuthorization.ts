@@ -10,6 +10,9 @@ type WorkspaceAuthorizationReturn =
       isTeamEditor: undefined;
       isTeamViewer: undefined;
       userRole: undefined;
+      hasAdminAccess: undefined;
+      hasEditorAccess: undefined;
+      hasViewerAccess: undefined;
     }
   | {
       isAdmin: boolean;
@@ -19,6 +22,9 @@ type WorkspaceAuthorizationReturn =
       isTeamEditor: boolean;
       isTeamViewer: boolean;
       userRole: TeamMemberAuthorization;
+      hasAdminAccess: boolean;
+      hasEditorAccess: boolean;
+      hasViewerAccess: boolean;
     };
 
 export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
@@ -42,6 +48,9 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
       isTeamEditor: undefined,
       isTeamViewer: undefined,
       userRole: undefined,
+      hasAdminAccess: undefined,
+      hasEditorAccess: undefined,
+      hasViewerAccess: undefined,
     };
   }
 
@@ -52,10 +61,12 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
   const isAdmin = authorization === TeamMemberAuthorization.Admin;
 
   const isTeamAdmin = isAdmin;
+  const isTeamEditor = authorization === TeamMemberAuthorization.Write;
+  const isTeamViewer = authorization === TeamMemberAuthorization.Read;
 
-  const isTeamEditor = authorization === TeamMemberAuthorization.Write || isTeamAdmin;
-
-  const isTeamViewer = authorization === TeamMemberAuthorization.Read || isTeamEditor || isTeamAdmin;
+  const hasAdminAccess = isTeamAdmin;
+  const hasEditorAccess = isTeamEditor || isTeamAdmin;
+  const hasViewerAccess = isTeamViewer || isTeamEditor || isTeamAdmin;
 
   return {
     isBillingManager: Boolean(teamManager) || isAdmin,
@@ -65,5 +76,8 @@ export const useWorkspaceAuthorization = (): WorkspaceAuthorizationReturn => {
     isTeamEditor,
     isTeamViewer,
     userRole: authorization ?? undefined,
+    hasAdminAccess,
+    hasEditorAccess,
+    hasViewerAccess,
   };
 };
