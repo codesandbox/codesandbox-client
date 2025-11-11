@@ -22,7 +22,7 @@ export const SandboxesPage = () => {
   const items = useFilteredItems(currentPath, cleanParam, level);
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
-  const { isTeamEditor } = useWorkspaceAuthorization();
+  const { hasEditorAccess } = useWorkspaceAuthorization();
   const {
     dashboard: { allCollections },
     activeTeam,
@@ -89,7 +89,7 @@ export const SandboxesPage = () => {
       {isEmpty ? (
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledGrid>
-            {(isTeamEditor) && (
+            {hasEditorAccess && (
               <ActionCard
                 icon="plus"
                 disabled={isFrozen}

@@ -36,7 +36,7 @@ export const Header = ({
   const location = useLocation();
   const { modalOpened, dashboard: dashboardActions } = useActions();
   const { dashboard } = useAppState();
-  const { isTeamEditor } = useWorkspaceAuthorization();
+  const { hasEditorAccess } = useWorkspaceAuthorization();
 
   const repositoriesListPage =
     location.pathname.includes('/repositories') &&
@@ -70,7 +70,7 @@ export const Header = ({
         )}
       </Stack>
       <Stack gap={1} align="center">
-        {location.pathname.includes('/sandboxes') && isTeamEditor && (
+        {location.pathname.includes('/sandboxes') && hasEditorAccess && (
           <Button onClick={createNewFolder} variant="ghost" autoWidth>
             <Icon
               name="folder"
