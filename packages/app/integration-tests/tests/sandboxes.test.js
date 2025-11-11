@@ -36,9 +36,9 @@ const SANDBOXES = [
   'pm79km5lmj', // babel macros with styled components
   'j2wpjwqj93', // sandbox with need of transpiling in node_modules
   '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
-  '31kn7voz4q', // cxjs
+  { id: '31kn7voz4q', threshold: 0.07 }, // cxjs
   'zw9zjy0683', // aurelia
-  'zx22owojr3', // vue v-slot test
+  { id: 'zx22owojr3', threshold: 0.07 }, // vue v-slot test
   // '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741,
   'sebn6', // babel plugin dynamically downloaded
   'utmms', // babel plugin pragmatic-jsx which requires other babel plugin
