@@ -5,20 +5,20 @@ import fs from 'fs';
 import { loadSandboxRetry, SECOND } from './utils';
 
 const SANDBOXES = [
-  { id: 'new', threshold: 0.05 },
+  'new',
   // 'preact',
-  { id: 'vue', threshold: 0.05 },
-  { id: 'svelte', threshold: 0.05 },
-  { id: 'react-ts', threshold: 0.05 },
-  { id: 'reduxjs-redux-examples-todomvc', threshold: 0.04 },
-  { id: 'vVoQVk78', threshold: 0.05 },
+  'vue',
+  'svelte',
+  'react-ts',
+  'reduxjs-redux-examples-todomvc',
+  'vVoQVk78',
   { id: 'faceyspacey-redux-first-router-codesandbox', threshold: 0.08 },
-  { id: 'mZRjw05yp', threshold: 0.05 },
-  { id: 'o29j95wx9', threshold: 0.05 },
-  { id: 'k3q1zjjml5', threshold: 0.05 },
-  { id: 'reduxjs-redux-examples-real-world', threshold: 0.05 },
-  { id: 'CompuIves-codesandbox-presentation', threshold: 0.05 },
-  { id: 'lp5rjr0z4z', threshold: 0.05 },
+  'mZRjw05yp',
+  'o29j95wx9',
+  'k3q1zjjml5',
+  'reduxjs-redux-examples-real-world',
+  'CompuIves-codesandbox-presentation',
+  'lp5rjr0z4z',
   'nOymMxyY',
   'y26rj99yov', // react transition
   // '6w66jzw3mn', // material-design & preact
@@ -31,8 +31,8 @@ const SANDBOXES = [
   'vanilla',
   'n5wy74w8vl', // material-ui generated demo
   'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
-  { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
-  { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
+  'ymjwwrw2rj', // empty path
+  '98o3k45m8p', // direct path test
   'pm79km5lmj', // babel macros with styled components
   'j2wpjwqj93', // sandbox with need of transpiling in node_modules
   '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
@@ -92,14 +92,9 @@ describe('sandboxes', () => {
         const screenshot = await page.screenshot();
         const identifier = id.split('/').join('-');
 
-        console.log('threshold for sandbox ', id, threshold);
-
         try {
           expect(screenshot).toMatchImageSnapshot({
-            // customDiffConfig: {
-            //   threshold: 0.05, // Per-pixel threshold for pixelmatch (0-1)
-            // },
-            failureThreshold: threshold, // Percentage threshold for entire comparison
+            failureThreshold: threshold || 0.05, // Percentage threshold for entire comparison
             failureThresholdType: 'percent',
             customSnapshotIdentifier: `${identifier}-snap`,
           });
