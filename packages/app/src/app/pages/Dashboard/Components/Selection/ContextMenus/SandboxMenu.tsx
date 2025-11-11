@@ -35,7 +35,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const { visible, setVisibility, position } = React.useContext(Context);
   const history = useHistory();
   const location = useLocation();
-  const { userRole, isTeamAdmin, isTeamViewer } = useWorkspaceAuthorization();
+  const { userRole, hasAdminAccess, hasEditorAccess } = useWorkspaceAuthorization();
   const { isFrozen } = useWorkspaceLimits();
 
   const url = sandboxUrl(sandbox);
@@ -44,7 +44,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const restrictedFork = isFrozen;
 
-  const hasAccess = React.useMemo(() => {
+  const isInActiveTeam = React.useMemo(() => {
     if (item.sandbox.teamId === activeTeam) {
       return true;
     }
@@ -52,7 +52,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     return false;
   }, [item, activeTeam]);
 
-  const hasWriteAccess = hasAccess && !isTeamViewer;
+  const hasWriteAccess = isInActiveTeam && hasEditorAccess;
 
   if (location.pathname.includes('deleted') && hasWriteAccess) {
     return (
@@ -127,7 +127,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       >
         Copy link
       </MenuItem>
-      {hasAccess && location.pathname === '/dashboard/recent' ? (
+      {isInActiveTeam && location.pathname === '/dashboard/recent' ? (
         <MenuItem
           onSelect={() => {
             history.push(folderUrl, { sandboxId: sandbox.id });
@@ -278,7 +278,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </MenuItem>
       )}
 
-      {hasAccess &&
+      {isInActiveTeam &&
         (isTemplate ? (
           <MenuItem
             onSelect={() => {
@@ -303,7 +303,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
       {isPro &&
-        isTeamAdmin &&
+        hasAdminAccess &&
         (sandbox.permissions.preventSandboxLeaving ? (
           <MenuItem
             onSelect={() => {
@@ -329,7 +329,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         ))}
       {!sandbox.isV2 &&
         isPro &&
-        isTeamAdmin &&
+        hasAdminAccess &&
         (sandbox.permissions.preventSandboxExport ? (
           <MenuItem
             onSelect={() => {
