@@ -1,9 +1,9 @@
 import { dispatch } from 'codesandbox-api';
-import uuid from 'uuid';
+import { v1 as uuidv1 } from 'uuid';
 
 export async function initializeReactDevToolsLatest() {
   if (!window.opener) {
-    const uid = uuid.v1();
+    const uid = uuidv1();
 
     const wall = {
       listen(listener) {
