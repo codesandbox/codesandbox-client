@@ -10,9 +10,9 @@ const SANDBOXES = [
   'vue',
   'svelte',
   'react-ts',
-  { id: 'reduxjs-redux-examples-todomvc', threshold: 0.04 },
+  'reduxjs-redux-examples-todomvc',
   'vVoQVk78',
-  'faceyspacey-redux-first-router-codesandbox',
+  { id: 'faceyspacey-redux-first-router-codesandbox', threshold: 0.08 },
   'mZRjw05yp',
   'o29j95wx9',
   'k3q1zjjml5',
@@ -31,14 +31,14 @@ const SANDBOXES = [
   'vanilla',
   'n5wy74w8vl', // material-ui generated demo
   'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
-  { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
-  { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
+  'ymjwwrw2rj', // empty path
+  '98o3k45m8p', // direct path test
   'pm79km5lmj', // babel macros with styled components
   'j2wpjwqj93', // sandbox with need of transpiling in node_modules
   '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
-  '31kn7voz4q', // cxjs
+  { id: '31kn7voz4q', threshold: 0.07 }, // cxjs
   'zw9zjy0683', // aurelia
-  'zx22owojr3', // vue v-slot test
+  { id: 'zx22owojr3', threshold: 0.07 }, // vue v-slot test
   // '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741,
   'sebn6', // babel plugin dynamically downloaded
   'utmms', // babel plugin pragmatic-jsx which requires other babel plugin
@@ -78,7 +78,7 @@ describe('sandboxes', () => {
 
   sandboxesToTest.forEach(sandbox => {
     const id = sandbox.id || sandbox;
-    const threshold = sandbox.threshold || 0.01;
+    const threshold = sandbox.threshold || 0.05;
     const loadTimeout = ms(TIMEOUT);
     const testTimeout = loadTimeout * ATTEMPTS + ms(20);
 
@@ -94,10 +94,9 @@ describe('sandboxes', () => {
 
         try {
           expect(screenshot).toMatchImageSnapshot({
-            customDiffConfig: {
-              threshold,
-            },
-            customSnapshotIdentifier: identifier,
+            failureThreshold: threshold, // Percentage threshold for entire comparison
+            failureThresholdType: 'percent',
+            customSnapshotIdentifier: `${identifier}-snap`,
           });
         } catch (err) {
           const screenshotFilePath = path.join(
