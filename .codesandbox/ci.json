@@ -1,6 +1,0 @@
-{
-  "packages": ["./packages/notifications"],
-  "buildCommand": "build:deps",
-  "sandboxes": ["p35r38kmyj"],
-  "node": "16"
-}
