@@ -4,7 +4,7 @@ import { listen, dispatch } from 'codesandbox-api';
 import React from 'react';
 import PlusIcon from 'react-icons/lib/md/add';
 import { withTheme } from 'styled-components';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
@@ -105,7 +105,7 @@ class DevToolTerminal extends React.Component<
 
   createShell = (script?: string) => {
     const newShell = {
-      id: uuid.v4(),
+      id: uuidv4(),
       title: script ? `yarn ${script}` : '/bin/bash',
       script,
       ended: false,
