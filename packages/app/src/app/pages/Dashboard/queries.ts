@@ -81,6 +81,8 @@ const TEAM_FRAGMENT = gql`
 export const TEAMS_QUERY = gql`
   query TeamsSidebar {
     me {
+      id
+      
       teams {
         id
         name
@@ -92,6 +94,8 @@ export const TEAMS_QUERY = gql`
 export const PATHED_SANDBOXES_FOLDER_QUERY = gql`
   query PathedSandboxesFolders($teamId: ID) {
     me {
+      id
+      
       collections(teamId: $teamId) {
         ...SidebarCollection
       }
@@ -192,6 +196,8 @@ export const PERMANENTLY_DELETE_SANDBOXES_MUTATION = gql`
 export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
   query PathedSandboxes($path: String!, $teamId: ID) {
     me {
+      id
+      
       collections(teamId: $teamId) {
         ...SidebarCollection
       }
@@ -211,6 +217,8 @@ export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
 export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
   query RecentSandboxes($orderField: String!, $orderDirection: Direction!) {
     me {
+      id
+      
       sandboxes(
         limit: 20
         orderBy: { field: $orderField, direction: $orderDirection }
@@ -225,6 +233,8 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
 export const SEARCH_SANDBOXES_QUERY = gql`
   query SearchSandboxes {
     me {
+      id
+      
       sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
         ...Sandbox
       }
@@ -236,6 +246,8 @@ export const SEARCH_SANDBOXES_QUERY = gql`
 export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   query DeletedSandboxes {
     me {
+      id
+      
       sandboxes(
         showDeleted: true
         orderBy: { field: "updated_at", direction: DESC }
@@ -407,6 +419,8 @@ export function setSandboxesPrivacy(
 export const TEAM_QUERY = gql`
   query Team($id: UUID4!) {
     me {
+      id
+      
       team(id: $id) {
         ...Team
       }

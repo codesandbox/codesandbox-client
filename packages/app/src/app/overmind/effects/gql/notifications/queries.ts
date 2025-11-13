@@ -14,6 +14,8 @@ export const getEmailPreferences: Query<
 > = gql`
   query EmailPreferences {
     me {
+      id
+      
       notificationPreferences {
         emailCommentMention
         emailCommentReply
@@ -34,6 +36,8 @@ export const getRecentNotifications: Query<
 > = gql`
   query RecentNotifications($type: [String]) {
     me {
+      id
+      
       notifications(
         limit: 20
         type: $type

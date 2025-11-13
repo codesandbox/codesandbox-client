@@ -7,8 +7,8 @@ import {
   SandboxesByPathQueryVariables,
   AllTeamsQuery,
   AllTeamsQueryVariables,
-  RecentlyAccessedSandboxesQuery,
-  RecentlyAccessedSandboxesQueryVariables,
+  RecentlyAccessedSandboxesLegacyQuery,
+  RecentlyAccessedSandboxesLegacyQueryVariables,
   AllCollectionsQuery,
   AllCollectionsQueryVariables,
   _SearchTeamSandboxesQuery,
@@ -21,8 +21,8 @@ import {
   GetTeamReposQuery,
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables,
-  RecentlyAccessedBranchesQuery,
-  RecentlyAccessedBranchesQueryVariables,
+  RecentlyAccessedBranchesLegacyQuery,
+  RecentlyAccessedBranchesLegacyQueryVariables,
   ContributionBranchesQuery,
   ContributionBranchesQueryVariables,
   RepositoriesByTeamQuery,
@@ -66,6 +66,8 @@ export const deletedTeamSandboxes: Query<
 > = gql`
   query recentlyDeletedTeamSandboxes($teamId: UUID4!) {
     me {
+      id
+      
       team(id: $teamId) {
         sandboxes(
           showDeleted: true
@@ -85,6 +87,8 @@ export const sandboxesByPath: Query<
 > = gql`
   query SandboxesByPath($path: String!, $teamId: ID) {
     me {
+      id
+      
       collections(teamId: $teamId) {
         ...sidebarCollectionDashboard
       }
@@ -107,6 +111,8 @@ export const getTeamDrafts: Query<
 > = gql`
   query TeamDrafts($teamId: UUID4!, $authorId: UUID4) {
     me {
+      id
+      
       team(id: $teamId) {
         drafts(authorId: $authorId) {
           ...sandboxFragmentDashboard
@@ -123,6 +129,8 @@ export const getCollections: Query<
 > = gql`
   query AllCollections($teamId: ID) {
     me {
+      id
+      
       collections(teamId: $teamId) {
         ...sidebarCollectionDashboard
       }
@@ -137,6 +145,8 @@ export const getTeamRepos: Query<
 > = gql`
   query getTeamRepos($id: UUID4!) {
     me {
+      id
+      
       team(id: $id) {
         sandboxes(hasOriginalGit: true) {
           ...repoFragmentDashboard
@@ -153,6 +163,8 @@ export const teamTemplates: Query<
 > = gql`
   query TeamTemplates($id: UUID4!) {
     me {
+      id
+      
       team(id: $id) {
         id
         name
@@ -169,6 +181,8 @@ export const teamTemplates: Query<
 export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   query AllTeams {
     me {
+      id
+      
       primaryWorkspaceId
       workspaces {
         ...teamFragmentDashboard
@@ -184,6 +198,8 @@ export const searchTeamSandboxes: Query<
 > = gql`
   query _SearchTeamSandboxes($teamId: UUID4!) {
     me {
+      id
+      
       team(id: $teamId) {
         sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
           ...sandboxFragmentDashboard
@@ -194,12 +210,19 @@ export const searchTeamSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
+/**
+ * @deprecated This query is being replaced by Apollo queries in the Recent page.
+ * Will be removed once migration is complete.
+ * See: packages/app/src/app/pages/Dashboard/Content/routes/Recent/queries.ts
+ */
 export const recentlyAccessedSandboxes: Query<
-  RecentlyAccessedSandboxesQuery,
-  RecentlyAccessedSandboxesQueryVariables
+  RecentlyAccessedSandboxesLegacyQuery,
+  RecentlyAccessedSandboxesLegacyQueryVariables
 > = gql`
-  query RecentlyAccessedSandboxes($limit: Int!, $teamId: UUID4) {
+  query RecentlyAccessedSandboxesLegacy($limit: Int!, $teamId: UUID4) {
     me {
+      id
+      
       recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
         ...sandboxFragmentDashboard
       }
@@ -208,12 +231,19 @@ export const recentlyAccessedSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
+/**
+ * @deprecated This query is being replaced by Apollo queries in the Recent page.
+ * Will be removed once migration is complete.
+ * See: packages/app/src/app/pages/Dashboard/Content/routes/Recent/queries.ts
+ */
 export const recentlyAccessedBranches: Query<
-  RecentlyAccessedBranchesQuery,
-  RecentlyAccessedBranchesQueryVariables
+  RecentlyAccessedBranchesLegacyQuery,
+  RecentlyAccessedBranchesLegacyQueryVariables
 > = gql`
-  query RecentlyAccessedBranches($limit: Int!, $teamId: UUID4) {
+  query RecentlyAccessedBranchesLegacy($limit: Int!, $teamId: UUID4) {
     me {
+      id
+      
       recentBranches(limit: $limit, teamId: $teamId) {
         ...branch
       }
@@ -228,6 +258,8 @@ export const sharedWithmeSandboxes: Query<
 > = gql`
   query SharedWithMeSandboxes {
     me {
+      id
+      
       collaboratorSandboxes {
         ...sandboxFragmentDashboard
       }
@@ -239,6 +271,8 @@ export const sharedWithmeSandboxes: Query<
 export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
   query getTeam($teamId: UUID4!) {
     me {
+      id
+      
       team(id: $teamId) {
         ...currentTeamInfoFragment
       }
@@ -253,6 +287,8 @@ export const getContributionBranches: Query<
 > = gql`
   query ContributionBranches {
     me {
+      id
+      
       recentBranches(contribution: true, limit: 1000) {
         ...branch
       }
@@ -267,6 +303,8 @@ export const getRepositoriesByTeam: Query<
 > = gql`
   query RepositoriesByTeam($teamId: UUID4!, $syncData: Boolean) {
     me {
+      id
+      
       team(id: $teamId) {
         id
         name
@@ -408,6 +446,8 @@ export const getEligibleWorkspaces: Query<
 > = gql`
   query GetEligibleWorkspaces {
     me {
+      id
+      
       eligibleWorkspaces {
         id
         avatarUrl
