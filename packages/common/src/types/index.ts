@@ -346,7 +346,7 @@ export type NpmRegistry = {
   limitToScopes: boolean;
   registryUrl: string;
   proxyEnabled?: boolean;
-  registryAuthToken?: string;
+  registryAuthTokenConfigured?: boolean;
   registryAuthType?: string;
 };
 
