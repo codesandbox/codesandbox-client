@@ -5877,6 +5877,119 @@ export type TeamsQuery = {
   } | null;
 };
 
+export type RecentlyAccessedSandboxFragmentFragment = {
+  __typename?: 'Sandbox';
+  id: string;
+  draft: boolean;
+  isFrozen: boolean;
+  isV2: boolean;
+  lastAccessedAt: any;
+  privacy: number;
+  restricted: boolean;
+  title: string | null;
+  author: { __typename?: 'User'; username: string } | null;
+  customTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    iconUrl: string | null;
+  } | null;
+};
+
+export type RecentlyAccessedSandboxesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  teamId: InputMaybe<Scalars['UUID4']>;
+}>;
+
+export type RecentlyAccessedSandboxesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
+    recentlyAccessedSandboxes: Array<{
+      __typename?: 'Sandbox';
+      id: string;
+      draft: boolean;
+      isFrozen: boolean;
+      isV2: boolean;
+      lastAccessedAt: any;
+      privacy: number;
+      restricted: boolean;
+      title: string | null;
+      author: { __typename?: 'User'; username: string } | null;
+      customTemplate: {
+        __typename?: 'Template';
+        id: any | null;
+        iconUrl: string | null;
+      } | null;
+    }>;
+  } | null;
+};
+
+export type RecentlyAccessedBranchRepositoryFragmentFragment = {
+  __typename?: 'GitHubRepository';
+  id: number;
+  defaultBranch: string;
+  name: string;
+  owner: string;
+  private: boolean;
+};
+
+export type RecentlyAccessedBranchFragmentFragment = {
+  __typename?: 'Branch';
+  id: string;
+  contribution: boolean;
+  lastAccessedAt: string | null;
+  name: string;
+  upstream: boolean;
+  project: {
+    __typename?: 'Project';
+    id: string;
+    repository: {
+      __typename?: 'GitHubRepository';
+      id: number;
+      defaultBranch: string;
+      name: string;
+      owner: string;
+      private: boolean;
+    };
+    team: { __typename?: 'Team'; id: any } | null;
+  };
+};
+
+export type RecentlyAccessedBranchesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  teamId: InputMaybe<Scalars['UUID4']>;
+}>;
+
+export type RecentlyAccessedBranchesQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
+    recentBranches: Array<{
+      __typename?: 'Branch';
+      id: string;
+      contribution: boolean;
+      lastAccessedAt: string | null;
+      name: string;
+      upstream: boolean;
+      project: {
+        __typename?: 'Project';
+        id: string;
+        repository: {
+          __typename?: 'GitHubRepository';
+          id: number;
+          defaultBranch: string;
+          name: string;
+          owner: string;
+          private: boolean;
+        };
+        team: { __typename?: 'Team'; id: any } | null;
+      };
+    }>;
+  } | null;
+};
+
 export type SidebarCollectionFragment = {
   __typename?: 'Collection';
   id: any | null;

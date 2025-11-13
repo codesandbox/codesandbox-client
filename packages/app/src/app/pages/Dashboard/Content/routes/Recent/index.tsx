@@ -12,6 +12,7 @@ import { TopBanner } from './TopBanner';
 import { CreateBranchesRow } from './CreateBranchesRow';
 import { ItemsGrid } from './ItemsGrid';
 import { EmptyCTAs } from './EmptyCTAs';
+import { RecentItems } from './RecentItems';
 
 export const Recent = () => {
   const {
@@ -118,6 +119,8 @@ export const Recent = () => {
             trackEvent="Recent Page - Repositories - Create new branch"
           />
         )}
+
+        <RecentItems />
 
         {recentItems.length > 0 ? (
           <ItemsGrid
