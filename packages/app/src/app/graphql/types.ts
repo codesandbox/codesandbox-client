@@ -4678,6 +4678,46 @@ export type RecentlyDeletedTeamSandboxesQuery = {
   } | null;
 };
 
+export type SandboxByPathFragment = {
+  __typename?: 'Sandbox';
+  id: string;
+  alias: string | null;
+  title: string | null;
+  insertedAt: string;
+  updatedAt: string;
+  screenshotUrl: string | null;
+  isV2: boolean;
+  isFrozen: boolean;
+  privacy: number;
+  restricted: boolean;
+  draft: boolean;
+  viewCount: number;
+  teamId: any | null;
+  source: { __typename?: 'Source'; template: string | null };
+  customTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    iconUrl: string | null;
+  } | null;
+  forkedTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    color: string | null;
+    iconUrl: string | null;
+  } | null;
+  collection: {
+    __typename?: 'Collection';
+    path: string;
+    id: any | null;
+  } | null;
+  author: { __typename?: 'User'; username: string } | null;
+  permissions: {
+    __typename?: 'SandboxProtectionSettings';
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  } | null;
+};
+
 export type SandboxesByPathQueryVariables = Exact<{
   path: Scalars['String'];
   teamId: InputMaybe<Scalars['ID']>;
@@ -4703,20 +4743,15 @@ export type SandboxesByPathQuery = {
         id: string;
         alias: string | null;
         title: string | null;
-        description: string | null;
-        lastAccessedAt: any;
         insertedAt: string;
         updatedAt: string;
-        removedAt: string | null;
-        privacy: number;
-        isFrozen: boolean;
         screenshotUrl: string | null;
-        viewCount: number;
-        likeCount: number;
         isV2: boolean;
-        draft: boolean;
+        isFrozen: boolean;
+        privacy: number;
         restricted: boolean;
-        authorId: any | null;
+        draft: boolean;
+        viewCount: number;
         teamId: any | null;
         source: { __typename?: 'Source'; template: string | null };
         customTemplate: {

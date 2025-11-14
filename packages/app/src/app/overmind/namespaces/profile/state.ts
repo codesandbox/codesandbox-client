@@ -2,6 +2,7 @@ import { Profile, Sandbox, UserSandbox } from '@codesandbox/common/lib/types';
 import {
   Collection,
   SandboxFragmentDashboardFragment as CollectionSandbox,
+  SandboxByPathFragment,
 } from 'app/graphql/types';
 import { Context } from 'app/overmind';
 import { derived } from 'overmind';
@@ -11,7 +12,7 @@ export type ProfileCollection = Pick<
   Collection,
   'id' | 'path' | 'sandboxCount'
 > & {
-  sandboxes: CollectionSandbox[];
+  sandboxes: (CollectionSandbox | SandboxByPathFragment)[];
 };
 
 type State = {

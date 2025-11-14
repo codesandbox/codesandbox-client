@@ -98,6 +98,53 @@ export const deletedTeamSandboxes: Query<
   ${RECENTLY_DELETED_TEAM_SANDBOXES_FRAGMENT}
 `;
 
+const SANDBOX_BY_PATH_FRAGMENT = gql`
+  fragment sandboxByPath on Sandbox {
+    id
+    alias
+    title
+    insertedAt
+    updatedAt
+    screenshotUrl
+    isV2
+    isFrozen
+    privacy
+    restricted
+    draft
+    viewCount
+
+    source {
+      template
+    }
+
+    customTemplate {
+      id
+      iconUrl
+    }
+
+    forkedTemplate {
+      id
+      color
+      iconUrl
+    }
+
+    collection {
+      path
+      id
+    }
+
+    author {
+      username
+    }
+    teamId
+
+    permissions {
+      preventSandboxLeaving
+      preventSandboxExport
+    }
+  }
+`;
+
 export const sandboxesByPath: Query<
   SandboxesByPathQuery,
   SandboxesByPathQueryVariables
@@ -113,12 +160,12 @@ export const sandboxesByPath: Query<
         id
         path
         sandboxes {
-          ...sandboxFragmentDashboard
+          ...sandboxByPath
         }
       }
     }
   }
-  ${sandboxFragmentDashboard}
+  ${SANDBOX_BY_PATH_FRAGMENT}
   ${sidebarCollectionDashboard}
 `;
 

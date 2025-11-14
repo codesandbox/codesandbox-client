@@ -1,5 +1,6 @@
 import {
   SandboxFragmentDashboardFragment as Sandbox,
+  SandboxByPathFragment,
   RepoFragmentDashboardFragment as Repo,
   TemplateFragmentDashboardFragment as Template,
   TeamFragmentDashboardFragment,
@@ -25,7 +26,7 @@ export type DashboardSandboxStructure = {
   TEMPLATE_HOME: Template[] | null;
   SHARED: Sandbox[] | null;
   ALL: {
-    [path: string]: Sandbox[];
+    [path: string]: (Sandbox | SandboxByPathFragment)[];
   } | null;
   REPOS: {
     [path: string]: {
@@ -48,7 +49,7 @@ export type State = {
   viewMode: 'grid' | 'list';
   orderBy: OrderBy;
   getFilteredSandboxes: (
-    sandboxes: Array<Sandbox | RecentlyDeletedTeamSandboxesFragment | Repo | Template['sandbox']>
+    sandboxes: Array<Sandbox | SandboxByPathFragment | RecentlyDeletedTeamSandboxesFragment | Repo | Template['sandbox']>
   ) => Sandbox[];
   deletedSandboxesByTime: {
     week: RecentlyDeletedTeamSandboxesFragment[];

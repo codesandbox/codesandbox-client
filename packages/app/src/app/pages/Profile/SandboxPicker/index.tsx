@@ -10,6 +10,10 @@ import {
   Column,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import {
+  SandboxFragmentDashboardFragment,
+  SandboxByPathFragment,
+} from 'app/graphql/types';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { FolderCard } from './FolderCard';
 import { ProfileCollectionType } from '../constants';
@@ -53,7 +57,7 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
     .filter(collection => collection.parent === selectedPath)
     .filter(collection => collection.path !== selectedPath);
 
-  const sandboxesInPath =
+  const sandboxesInPath: (SandboxFragmentDashboardFragment | SandboxByPathFragment)[] =
     collections.find(collection => collection.path === selectedPath)
       ?.sandboxes || [];
 

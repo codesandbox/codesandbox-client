@@ -1,5 +1,8 @@
 import { Context } from 'app/overmind';
-import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
+import {
+  SandboxFragmentDashboardFragment,
+  SandboxByPathFragment,
+} from 'app/graphql/types';
 
 /**
  * Change sandbox frozen in state and returns the sandboxes that have changed in their old state
@@ -15,14 +18,14 @@ export const changeSandboxesInState = (
      * The mutation that happens on the sandbox, make sure to return a *new* sandbox here, to make sure
      * that we can still rollback easily in the future.
      */
-    sandboxMutation: <T extends SandboxFragmentDashboardFragment>(
+    sandboxMutation: <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment>(
       sandbox: T
     ) => T;
   }
 ) => {
   const changedSandboxes: Set<ReturnType<typeof sandboxMutation>> = new Set();
 
-  const doMutateSandbox = <T extends SandboxFragmentDashboardFragment>(
+  const doMutateSandbox = <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment>(
     sandbox: T
   ): T => {
     changedSandboxes.add(sandbox);
