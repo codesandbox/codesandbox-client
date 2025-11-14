@@ -5,17 +5,16 @@ export interface SandboxItemComponentProps {
   sandbox: DashboardSandbox['sandbox'] | DashboardTemplate['sandbox'];
   sandboxTitle: string;
   sandboxLocation?: string;
-  timeAgo: string;
-  viewCount: number | string;
-  TemplateIcon: React.FC<{
+  timeAgo?: string;
+  TemplateIcon?: React.ComponentType<{
     width: string;
     height: string;
     style?: React.CSSProperties;
   }>;
-  PrivacyIcon: React.FC;
-  screenshotUrl: string | null;
+  PrivacyIcon?: React.ComponentType;
+  screenshotUrl?: string;
   restricted: boolean;
-  username: string | null;
+  username?: string;
   interaction: 'button' | 'link';
   isScrolling: boolean;
   selected: boolean;

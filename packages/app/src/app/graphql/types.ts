@@ -4636,6 +4636,20 @@ export type JoinEligibleWorkspaceMutation = {
   joinEligibleWorkspace: { __typename?: 'Team'; id: any };
 };
 
+export type RecentlyDeletedTeamSandboxesFragmentFragment = {
+  __typename?: 'Sandbox';
+  id: string;
+  alias: string | null;
+  isV2: boolean;
+  removedAt: string | null;
+  title: string | null;
+  collection: {
+    __typename?: 'Collection';
+    id: any | null;
+    path: string;
+  } | null;
+};
+
 export type RecentlyDeletedTeamSandboxesQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
 }>;
@@ -4651,44 +4665,13 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         __typename?: 'Sandbox';
         id: string;
         alias: string | null;
-        title: string | null;
-        description: string | null;
-        lastAccessedAt: any;
-        insertedAt: string;
-        updatedAt: string;
-        removedAt: string | null;
-        privacy: number;
-        isFrozen: boolean;
-        screenshotUrl: string | null;
-        viewCount: number;
-        likeCount: number;
         isV2: boolean;
-        draft: boolean;
-        restricted: boolean;
-        authorId: any | null;
-        teamId: any | null;
-        source: { __typename?: 'Source'; template: string | null };
-        customTemplate: {
-          __typename?: 'Template';
-          id: any | null;
-          iconUrl: string | null;
-        } | null;
-        forkedTemplate: {
-          __typename?: 'Template';
-          id: any | null;
-          color: string | null;
-          iconUrl: string | null;
-        } | null;
+        removedAt: string | null;
+        title: string | null;
         collection: {
           __typename?: 'Collection';
-          path: string;
           id: any | null;
-        } | null;
-        author: { __typename?: 'User'; username: string } | null;
-        permissions: {
-          __typename?: 'SandboxProtectionSettings';
-          preventSandboxLeaving: boolean;
-          preventSandboxExport: boolean;
+          path: string;
         } | null;
       }>;
     } | null;

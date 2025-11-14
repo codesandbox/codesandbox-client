@@ -6,6 +6,7 @@ import {
   BranchFragment as Branch,
   ProjectFragment as Repository,
   ProjectWithBranchesFragment as RepositoryWithBranches,
+  RecentlyDeletedTeamSandboxesFragmentFragment,
 } from 'app/graphql/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
@@ -17,7 +18,7 @@ import { DELETE_ME_COLLECTION, OrderBy } from './types';
 export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
-  DELETED: Sandbox[] | null;
+  DELETED: RecentlyDeletedTeamSandboxesFragmentFragment[] | null;
   RECENT_SANDBOXES: Sandbox[] | null;
   RECENT_BRANCHES: Branch[] | null;
   SEARCH: Sandbox[] | null;
@@ -50,8 +51,8 @@ export type State = {
     sandboxes: Array<Sandbox | Repo | Template['sandbox']>
   ) => Sandbox[];
   deletedSandboxesByTime: {
-    week: Sandbox[];
-    older: Sandbox[];
+    week: RecentlyDeletedTeamSandboxesFragmentFragment[];
+    older: RecentlyDeletedTeamSandboxesFragmentFragment[];
   };
   contributions: Branch[] | null;
   /**
@@ -104,8 +105,7 @@ export const state: State = {
         week: [],
         older: [],
       };
-    const noTemplateSandboxes = deletedSandboxes.filter(s => !s.customTemplate);
-    const timeSandboxes = noTemplateSandboxes.reduce(
+    const timeSandboxes = deletedSandboxes.reduce(
       (accumulator, currentValue) => {
         if (!currentValue.removedAt) return accumulator;
         if (isSameWeek(new Date(currentValue.removedAt), new Date())) {

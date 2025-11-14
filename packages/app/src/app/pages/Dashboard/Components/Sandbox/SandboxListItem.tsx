@@ -21,7 +21,6 @@ export const SandboxListItem = ({
   sandboxLocation,
   username,
   timeAgo,
-  viewCount,
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
@@ -151,7 +150,11 @@ export const SandboxListItem = ({
         {/* Column span 0 on mobile because the Grid is bugged */}
         <Column span={[0, 2, 2]}>
           <Stack align="center">
-            <SandboxBadge sandbox={sandbox} restricted={restricted} />
+            <SandboxBadge
+              isSandboxV2={sandbox.isV2}
+              isSandboxTemplate={('customTemplate' in sandbox && !!sandbox.customTemplate)}
+              isSandboxRestricted={restricted}
+            />
           </Stack>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">

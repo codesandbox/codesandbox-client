@@ -166,7 +166,11 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           )}
           {noDrag ? null : timeAgoText}
         </Stack>
-        <SandboxBadge sandbox={sandbox} restricted={restricted} />
+        <SandboxBadge
+          isSandboxV2={sandbox.isV2}
+          isSandboxTemplate={('customTemplate' in sandbox && !!sandbox.customTemplate)}
+          isSandboxRestricted={restricted}
+        />
       </Stack>
     );
   }
@@ -297,7 +301,7 @@ export const SandboxCard = ({
           <SandboxStats
             noDrag={noDrag}
             timeAgo={timeAgo}
-            isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
+            isFrozen={('isFrozen' in sandbox && sandbox.isFrozen) && !('customTemplate' in sandbox && !!sandbox.customTemplate)}
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
             sandbox={sandbox}

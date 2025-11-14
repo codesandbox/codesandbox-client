@@ -8,7 +8,6 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
-import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
@@ -19,7 +18,7 @@ import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
 
 const PrivacyIcons = {
-  0: () => null,
+  0: null,
   1: () => <Icon name="link" size={12} />,
   2: () => <Icon name="lock" size={12} />,
 };
@@ -47,7 +46,7 @@ function getFolderName(item: GenericSandboxProps['item']): string | undefined {
   const { sandbox } = item;
 
   if (sandbox.collection) {
-    if (sandbox.collection.path === '/' && !sandbox.teamId) {
+    if (sandbox.collection.path === '/' && !('teamId' in sandbox)) {
       return undefined;
     }
 
@@ -66,26 +65,72 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
   const sandboxLocation = getFolderName(item);
-  const timeStampToUse =
-    page === 'recent' ? sandbox.lastAccessedAt : sandbox.updatedAt;
 
-  const timeAgo = formatDistanceStrict(
-    zonedTimeToUtc(timeStampToUse, 'Etc/UTC'),
-    new Date(),
-    {
+  let timeStampToUse: string | undefined;
+
+  // 'lastAccessedAt' and 'updatedAt' are irrelevant for:
+  // - deleted sandboxes
+  if (page === 'recent' && 'lastAccessedAt' in sandbox) {
+    timeStampToUse = sandbox.lastAccessedAt;
+  } else if ('updatedAt' in sandbox) {
+    timeStampToUse = sandbox.updatedAt;
+  }
+
+  let timeAgo: string | undefined;
+
+  // timeStampToUse might be undefined due to the checks above, but
+  // typescript is not smart enought to know.
+  if (timeStampToUse) {
+    const timeStampToUseDate = zonedTimeToUtc(timeStampToUse, 'Etc/UTC');
+    const now = new Date();
+
+    timeAgo = formatDistanceStrict(timeStampToUseDate, now, {
       addSuffix: true,
-    }
-  );
-
-  const viewCount = formatNumber(sandbox.viewCount);
+    });
+  }
 
   const url = sandboxUrl(sandbox);
 
-  const TemplateIcon = getTemplateIcon(sandbox);
-  const PrivacyIcon = PrivacyIcons[sandbox.privacy];
-  const restricted = sandbox.restricted && !sandbox.draft;
+  let TemplateIcon:
+    | React.ComponentType<{ width: string; height: string }>
+    | undefined;
 
-  let screenshotUrl = sandbox.screenshotUrl;
+  // 'source' is not present in:
+  // - deleted sandboxes
+  if ('source' in sandbox) {
+    TemplateIcon = getTemplateIcon(sandbox);
+  }
+
+  let PrivacyIcon: React.ComponentType | undefined;
+
+  // 'privacy' is not present in:
+  // - deleted sandboxes
+  if ('privacy' in sandbox) {
+    PrivacyIcon = PrivacyIcons[sandbox.privacy];
+  }
+
+  let restricted = false;
+
+  // 'restricted' and 'draft' are not present in:
+  // - deleted sandboxes
+  if ('restricted' in sandbox) {
+    restricted = sandbox.restricted;
+
+    if ('draft' in sandbox) {
+      restricted = sandbox.restricted && !sandbox.draft;
+    }
+  }
+
+  let screenshotUrl: string | undefined;
+
+  // 'screenshotUrl' is not present in:
+  // - deleted sandboxes
+  if ('screenshotUrl' in sandbox) {
+    screenshotUrl = sandbox.screenshotUrl;
+  }
+
+  // TODO: Check if screnshotUrl fallback below is still relevant
+
   // We set a fallback thumbnail in the API which is used for
   // both old and new dashboard, we can move this logic to the
   // backend when we deprecate the old dashboard
@@ -244,7 +289,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     sandboxTitle,
     sandboxLocation,
     timeAgo,
-    viewCount,
     sandbox,
     TemplateIcon,
     PrivacyIcon,
@@ -275,18 +319,24 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     });
   }, [preview]);
 
+  let username: string | undefined;
+
+  // 'author' is not present in:
+  // - deleted sandboxes
+  if ('author' in sandbox) {
+    username =
+      sandbox.author.username === user?.username
+        ? 'you'
+        : sandbox.author.username;
+  }
+
   return (
     <div {...dragProps} style={{ height: '100%' }}>
       <Component
         {...sandboxProps}
         {...interactionProps}
         isScrolling={isScrolling}
-        username={
-          sandboxProps.sandbox.author &&
-          sandboxProps.sandbox.author.username === user?.username
-            ? 'you'
-            : sandboxProps.sandbox.author?.username || null
-        }
+        username={username}
       />
     </div>
   );
