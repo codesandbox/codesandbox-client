@@ -48,7 +48,7 @@ export type State = {
   viewMode: 'grid' | 'list';
   orderBy: OrderBy;
   getFilteredSandboxes: (
-    sandboxes: Array<Sandbox | Repo | Template['sandbox']>
+    sandboxes: Array<Sandbox | RecentlyDeletedTeamSandboxesFragment | Repo | Template['sandbox']>
   ) => Sandbox[];
   deletedSandboxesByTime: {
     week: RecentlyDeletedTeamSandboxesFragment[];
@@ -137,7 +137,7 @@ export const state: State = {
   },
   getFilteredSandboxes: derived(
     ({ orderBy }: State) => (
-      sandboxes: Array<Sandbox | Template['sandbox']>
+      sandboxes: Array<Sandbox | RecentlyDeletedTeamSandboxesFragment | Template['sandbox']>
     ) => {
       const orderField = orderBy.field;
       const orderOrder = orderBy.order;
@@ -156,7 +156,7 @@ export const state: State = {
           return field.toLowerCase();
         }
 
-        if (orderField === 'views') {
+        if ('viewCount' in sandbox && orderField === 'views') {
           return sandbox.viewCount;
         }
 
