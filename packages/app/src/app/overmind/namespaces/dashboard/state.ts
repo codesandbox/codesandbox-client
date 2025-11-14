@@ -6,7 +6,7 @@ import {
   BranchFragment as Branch,
   ProjectFragment as Repository,
   ProjectWithBranchesFragment as RepositoryWithBranches,
-  RecentlyDeletedTeamSandboxesFragmentFragment,
+  RecentlyDeletedTeamSandboxesFragment,
 } from 'app/graphql/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
@@ -18,7 +18,7 @@ import { DELETE_ME_COLLECTION, OrderBy } from './types';
 export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
-  DELETED: RecentlyDeletedTeamSandboxesFragmentFragment[] | null;
+  DELETED: RecentlyDeletedTeamSandboxesFragment[] | null;
   RECENT_SANDBOXES: Sandbox[] | null;
   RECENT_BRANCHES: Branch[] | null;
   SEARCH: Sandbox[] | null;
@@ -51,8 +51,8 @@ export type State = {
     sandboxes: Array<Sandbox | Repo | Template['sandbox']>
   ) => Sandbox[];
   deletedSandboxesByTime: {
-    week: RecentlyDeletedTeamSandboxesFragmentFragment[];
-    older: RecentlyDeletedTeamSandboxesFragmentFragment[];
+    week: RecentlyDeletedTeamSandboxesFragment[];
+    older: RecentlyDeletedTeamSandboxesFragment[];
   };
   contributions: Branch[] | null;
   /**

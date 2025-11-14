@@ -4636,7 +4636,7 @@ export type JoinEligibleWorkspaceMutation = {
   joinEligibleWorkspace: { __typename?: 'Team'; id: any };
 };
 
-export type RecentlyDeletedTeamSandboxesFragmentFragment = {
+export type RecentlyDeletedTeamSandboxesFragment = {
   __typename?: 'Sandbox';
   id: string;
   alias: string | null;

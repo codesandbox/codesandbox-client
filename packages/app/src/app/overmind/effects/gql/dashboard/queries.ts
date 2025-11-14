@@ -61,7 +61,7 @@ import {
 } from './fragments';
 
 const RECENTLY_DELETED_TEAM_SANDBOXES_FRAGMENT = gql`
-fragment recentlyDeletedTeamSandboxesFragment on Sandbox {
+fragment recentlyDeletedTeamSandboxes on Sandbox {
   id
 
   alias
@@ -90,7 +90,7 @@ export const deletedTeamSandboxes: Query<
           showDeleted: true
           orderBy: { field: "updated_at", direction: DESC }
         ) {
-          ...recentlyDeletedTeamSandboxesFragment
+          ...recentlyDeletedTeamSandboxes
         }
       }
     }

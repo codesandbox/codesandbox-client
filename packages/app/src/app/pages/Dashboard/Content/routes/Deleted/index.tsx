@@ -6,7 +6,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
-import { RecentlyDeletedTeamSandboxesFragmentFragment } from 'app/graphql/types';
+import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { Loading } from '@codesandbox/components';
 
@@ -16,7 +16,7 @@ const DESCRIPTION =
 export const Deleted = () => {
   const {
     activeTeam,
-    dashboard: { deletedSandboxesByTime, sandboxes },
+    dashboard: { deletedSandboxesByTime, getFilteredSandboxes, sandboxes },
   } = useAppState();
   const {
     dashboard: { getPage },
@@ -29,7 +29,7 @@ export const Deleted = () => {
 
   const getSection = (
     title: string,
-    deletedSandboxes: RecentlyDeletedTeamSandboxesFragmentFragment[]
+    deletedSandboxes: SandboxFragmentDashboardFragment[]
   ): DashboardGridItem[] => {
     if (!deletedSandboxes.length) return [];
 
@@ -46,11 +46,11 @@ export const Deleted = () => {
     ? [
         ...getSection(
           'Deleted this week',
-          deletedSandboxesByTime.week
+          getFilteredSandboxes(deletedSandboxesByTime.week)
         ),
         ...getSection(
           'Deleted earlier',
-          deletedSandboxesByTime.older
+          getFilteredSandboxes(deletedSandboxesByTime.older)
         ),
       ]
     : null;
