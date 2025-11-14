@@ -30,7 +30,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     browser: { copyToClipboard },
   } = useEffects();
   const { sandbox } = item;
-  const isTemplate = !!sandbox.customTemplate;
+  const isTemplate = 'customTemplate' in sandbox && !!sandbox.customTemplate;
 
   const { visible, setVisibility, position } = React.useContext(Context);
   const history = useHistory();
@@ -45,7 +45,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const restrictedFork = isFrozen;
 
   const isInActiveTeam = React.useMemo(() => {
-    if (item.sandbox.teamId === activeTeam) {
+    if ('teamId' in item.sandbox && item.sandbox.teamId === activeTeam) {
       return true;
     }
 
@@ -82,7 +82,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   }
 
   const preventSandboxExport =
-    !hasWriteAccess || sandbox.permissions.preventSandboxExport;
+    !hasWriteAccess || ('permissions' in sandbox && sandbox.permissions.preventSandboxExport);
 
   // TODO(@CompuIves): refactor this to an array
 
@@ -147,8 +147,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               openInNewWindow: true,
               redirectAfterFork: true,
               body: {
-                privacy: sandbox.privacy as 2 | 1 | 0,
-                collectionId: sandbox.draft ? undefined : sandbox.collection.id,
+                privacy: 'privacy' in sandbox ? sandbox.privacy as 2 | 1 | 0 : undefined,
+                collectionId: 'draft' in sandbox && sandbox.draft ? undefined : 'collection' in sandbox && sandbox.collection.id,
               },
             });
           }}
@@ -164,7 +164,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.modals.moveSandboxModal.open({
               sandboxIds: [item.sandbox.id],
               preventSandboxLeaving:
-                item.sandbox.permissions.preventSandboxLeaving,
+                'permissions' in item.sandbox && item.sandbox.permissions.preventSandboxLeaving,
             });
           }}
         >
@@ -194,7 +194,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </Tooltip>
       )}
 
-      {hasWriteAccess ? (
+      {hasWriteAccess && 'privacy' in sandbox ? (
         <>
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
@@ -244,7 +244,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       )}
       {hasWriteAccess &&
         !isTemplate &&
-        (sandbox.isFrozen ? (
+        ('isFrozen' in sandbox && sandbox.isFrozen ? (
           <MenuItem
             onSelect={() => {
               actions.dashboard.changeSandboxesFrozen({
@@ -304,7 +304,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         ))}
       {isPro &&
         hasAdminAccess &&
-        (sandbox.permissions.preventSandboxLeaving ? (
+        ('permissions' in sandbox && sandbox.permissions.preventSandboxLeaving ? (
           <MenuItem
             onSelect={() => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
@@ -330,7 +330,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {!sandbox.isV2 &&
         isPro &&
         hasAdminAccess &&
-        (sandbox.permissions.preventSandboxExport ? (
+        ('permissions' in sandbox && sandbox.permissions.preventSandboxExport ? (
           <MenuItem
             onSelect={() => {
               actions.dashboard.setPreventSandboxesExport({
@@ -394,7 +394,7 @@ const getFolderUrl = (
   if (item.type === 'template') return dashboard.templates(activeTeamId);
 
   const path = item.sandbox.collection?.path;
-  if (path == null || (!item.sandbox.teamId && path === '/')) {
+  if (path == null || ('teamId' in item.sandbox && !item.sandbox.teamId && path === '/')) {
     return dashboard.drafts(activeTeamId);
   }
 

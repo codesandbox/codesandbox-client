@@ -58,7 +58,11 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const exportItems = () => {
     const ids = [
       ...sandboxes
-        .filter(sandbox => !sandbox.sandbox.permissions.preventSandboxExport)
+        .filter(
+          s =>
+            'permissions' in s.sandbox &&
+            !s.sandbox.permissions.preventSandboxExport
+        )
         .map(sandbox => sandbox.sandbox.id),
       ...templates.map(template => template.sandbox.id),
     ];
@@ -66,7 +70,8 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     actions.dashboard.downloadSandboxes(ids);
 
     const skippedSandboxes = sandboxes.filter(
-      sandbox => sandbox.sandbox.permissions.preventSandboxExport
+      s =>
+        'permissions' in s.sandbox && s.sandbox.permissions.preventSandboxExport
     );
 
     if (skippedSandboxes.length) {
@@ -97,7 +102,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
       preventSandboxLeaving: Boolean(
         [...sandboxes, ...templates].find(
-          s => s.sandbox.permissions.preventSandboxLeaving
+          s => 'permissions' in s.sandbox && s.sandbox.permissions.preventSandboxLeaving
         )
       ),
     });
@@ -149,7 +154,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const FROZEN_ITEMS = isInDrafts
     ? []
     : [
-        sandboxes.some(s => !s.sandbox.isFrozen) && {
+        sandboxes.some(s => 'isFrozen' in s.sandbox && !s.sandbox.isFrozen) && {
           label: 'Protect',
           fn: () => {
             actions.dashboard.changeSandboxesFrozen({
@@ -158,7 +163,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
             });
           },
         },
-        sandboxes.some(s => s.sandbox.isFrozen) && {
+        sandboxes.some(s => 'isFrozen' in s.sandbox && s.sandbox.isFrozen) && {
           label: 'Remove protection',
           fn: () => {
             actions.dashboard.changeSandboxesFrozen({
@@ -171,7 +176,11 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const PROTECTED_SANDBOXES_ITEMS = isAdmin
     ? [
-        sandboxes.some(s => !s.sandbox.permissions.preventSandboxLeaving) && {
+        sandboxes.some(
+          s =>
+            'permissions' in s.sandbox &&
+            s.sandbox.permissions.preventSandboxLeaving
+        ) && {
           label: 'Prevent leaving workspace',
           fn: () => {
             actions.dashboard.setPreventSandboxesLeavingWorkspace({
@@ -180,7 +189,11 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
             });
           },
         },
-        sandboxes.some(s => s.sandbox.permissions.preventSandboxLeaving) && {
+        sandboxes.some(
+          s =>
+            'permissions' in s.sandbox &&
+            s.sandbox.permissions.preventSandboxLeaving
+        ) && {
           label: 'Allow leaving workspace',
           fn: () => {
             actions.dashboard.setPreventSandboxesLeavingWorkspace({
@@ -189,7 +202,11 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
             });
           },
         },
-        sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
+        sandboxes.some(
+          s =>
+            'permissions' in s.sandbox &&
+            s.sandbox.permissions.preventSandboxExport
+        ) &&
           sandboxes.every(s => !s.sandbox.isV2) && {
             label: 'Prevent export as .zip',
             fn: () => {
@@ -199,7 +216,11 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               });
             },
           },
-        sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) &&
+        sandboxes.some(
+          s =>
+            'permissions' in s.sandbox &&
+            s.sandbox.permissions.preventSandboxExport
+        ) &&
           sandboxes.every(s => !s.sandbox.isV2) && {
             label: 'Allow export as .zip',
             fn: () => {
@@ -213,8 +234,13 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     : [];
 
   const EXPORT =
-    sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
-    sandboxes.every(s => !s.sandbox.isV2)
+    sandboxes.some(
+      s =>
+        !(
+          'permissions' in s.sandbox &&
+          s.sandbox.permissions.preventSandboxExport
+        )
+    ) && sandboxes.every(s => !s.sandbox.isV2)
       ? [{ label: 'Download', fn: exportItems }]
       : [];
 
