@@ -323,7 +323,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   // 'author' is not present in:
   // - deleted sandboxes
-  if ('author' in sandbox) {
+  if ('author' in sandbox && sandbox.author) {
     username =
       sandbox.author.username === user?.username
         ? 'you'

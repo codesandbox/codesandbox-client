@@ -73,9 +73,11 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           </form>
         ) : (
           <Stack gap={3} align="flex-start" css={{ overflow: 'hidden' }}>
-            <Element css={{ flexShrink: 0 }}>
-              <TemplateIcon width="16" height="16" />
-            </Element>
+            {TemplateIcon && (
+              <Element css={{ flexShrink: 0 }}>
+                <TemplateIcon width="16" height="16" />
+              </Element>
+            )}
 
             {interaction === 'button' ? (
               <InteractiveOverlay.Button
@@ -160,7 +162,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         className="sandbox-stats"
       >
         <Stack gap={2} align="center">
-          <PrivacyIcon />
+          {PrivacyIcon && <PrivacyIcon />}
           {isFrozen && (
             <Icon size={16} title={`Protected ${boxType}`} name="frozen" />
           )}

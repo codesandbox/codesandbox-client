@@ -114,7 +114,9 @@ export const SandboxListItem = ({
                   : null]: `url(${screenshotUrl})`,
               }}
             >
-              {screenshotUrl ? null : <TemplateIcon width="16" height="16" />}
+              {!screenshotUrl && TemplateIcon && (
+                <TemplateIcon width="16" height="16" />
+              )}
             </Stack>
             <Element css={{ overflow: 'hidden' }}>
               {editing ? (
@@ -130,7 +132,7 @@ export const SandboxListItem = ({
               ) : (
                 <Tooltip label={sandboxTitle}>
                   <Stack gap={1} align="center">
-                    <PrivacyIcon />
+                    {PrivacyIcon ? <PrivacyIcon /> : null}
                     <Text
                       size={3}
                       weight="medium"
@@ -152,7 +154,9 @@ export const SandboxListItem = ({
           <Stack align="center">
             <SandboxBadge
               isSandboxV2={sandbox.isV2}
-              isSandboxTemplate={('customTemplate' in sandbox && !!sandbox.customTemplate)}
+              isSandboxTemplate={
+                'customTemplate' in sandbox && !!sandbox.customTemplate
+              }
               isSandboxRestricted={restricted}
             />
           </Stack>
