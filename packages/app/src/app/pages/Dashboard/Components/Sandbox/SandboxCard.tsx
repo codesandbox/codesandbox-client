@@ -73,9 +73,11 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           </form>
         ) : (
           <Stack gap={3} align="flex-start" css={{ overflow: 'hidden' }}>
-            <Element css={{ flexShrink: 0 }}>
-              <TemplateIcon width="16" height="16" />
-            </Element>
+            {TemplateIcon && (
+              <Element css={{ flexShrink: 0 }}>
+                <TemplateIcon width="16" height="16" />
+              </Element>
+            )}
 
             {interaction === 'button' ? (
               <InteractiveOverlay.Button
@@ -160,13 +162,17 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         className="sandbox-stats"
       >
         <Stack gap={2} align="center">
-          <PrivacyIcon />
+          {PrivacyIcon && <PrivacyIcon />}
           {isFrozen && (
             <Icon size={16} title={`Protected ${boxType}`} name="frozen" />
           )}
           {noDrag ? null : timeAgoText}
         </Stack>
-        <SandboxBadge sandbox={sandbox} restricted={restricted} />
+        <SandboxBadge
+          isSandboxV2={sandbox.isV2}
+          isSandboxTemplate={('customTemplate' in sandbox && !!sandbox.customTemplate)}
+          isSandboxRestricted={restricted}
+        />
       </Stack>
     );
   }
@@ -297,7 +303,7 @@ export const SandboxCard = ({
           <SandboxStats
             noDrag={noDrag}
             timeAgo={timeAgo}
-            isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
+            isFrozen={('isFrozen' in sandbox && sandbox.isFrozen) && !('customTemplate' in sandbox && !!sandbox.customTemplate)}
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
             sandbox={sandbox}

@@ -76,17 +76,30 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
 
             const sandbox = dashboardEntry.sandbox;
 
-            let screenshotUrl = sandbox.screenshotUrl;
-            // We set a fallback thumbnail in the API which is used for
-            // both old and new dashboard, we can move this logic to the
-            // backend when we deprecate the old dashboard
-            if (
-              screenshotUrl === 'https://codesandbox.io/static/img/banner.png'
-            ) {
-              screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
+            let screenshotUrl;
+
+            // 'screenshotUrl' is not present in:
+            // - deleted sandboxes
+            //   TODO: Decide if we really want deleted sandboxes to be draggable.
+            if ('screenshotUrl' in sandbox) {
+              screenshotUrl = sandbox.screenshotUrl;
+              // We set a fallback thumbnail in the API which is used for
+              // both old and new dashboard, we can move this logic to the
+              // backend when we deprecate the old dashboard
+              if (
+                screenshotUrl === 'https://codesandbox.io/static/img/banner.png'
+              ) {
+                screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
+              }
             }
 
-            const TemplateIcon = getTemplateIcon(sandbox);
+            let TemplateIcon: React.ComponentType<{ width: string; height: string }> | undefined;
+            
+            // 'source' is not present in:
+            // - deleted sandboxes
+            if ('source' in sandbox) {
+              TemplateIcon = getTemplateIcon(sandbox);
+            }
 
             return {
               type: 'sandbox',

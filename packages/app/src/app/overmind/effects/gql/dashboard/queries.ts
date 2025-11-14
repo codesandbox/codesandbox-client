@@ -60,6 +60,23 @@ import {
   githubRepoFragment,
 } from './fragments';
 
+const RECENTLY_DELETED_TEAM_SANDBOXES_FRAGMENT = gql`
+fragment recentlyDeletedTeamSandboxes on Sandbox {
+  id
+
+  alias
+
+  collection {
+    id
+    path
+  }
+
+  isV2
+  removedAt
+  title
+}
+`;
+
 export const deletedTeamSandboxes: Query<
   RecentlyDeletedTeamSandboxesQuery,
   RecentlyDeletedTeamSandboxesQueryVariables
@@ -73,12 +90,12 @@ export const deletedTeamSandboxes: Query<
           showDeleted: true
           orderBy: { field: "updated_at", direction: DESC }
         ) {
-          ...sandboxFragmentDashboard
+          ...recentlyDeletedTeamSandboxes
         }
       }
     }
   }
-  ${sandboxFragmentDashboard}
+  ${RECENTLY_DELETED_TEAM_SANDBOXES_FRAGMENT}
 `;
 
 export const sandboxesByPath: Query<

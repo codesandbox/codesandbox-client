@@ -6,6 +6,7 @@ import {
   BranchFragment as Branch,
   ProjectFragment as Repository,
   ProjectWithBranchesFragment as RepositoryWithBranches,
+  RecentlyDeletedTeamSandboxesFragment,
 } from 'app/graphql/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
@@ -17,7 +18,7 @@ import { DELETE_ME_COLLECTION, OrderBy } from './types';
 export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
-  DELETED: Sandbox[] | null;
+  DELETED: RecentlyDeletedTeamSandboxesFragment[] | null;
   RECENT_SANDBOXES: Sandbox[] | null;
   RECENT_BRANCHES: Branch[] | null;
   SEARCH: Sandbox[] | null;
@@ -47,11 +48,11 @@ export type State = {
   viewMode: 'grid' | 'list';
   orderBy: OrderBy;
   getFilteredSandboxes: (
-    sandboxes: Array<Sandbox | Repo | Template['sandbox']>
+    sandboxes: Array<Sandbox | RecentlyDeletedTeamSandboxesFragment | Repo | Template['sandbox']>
   ) => Sandbox[];
   deletedSandboxesByTime: {
-    week: Sandbox[];
-    older: Sandbox[];
+    week: RecentlyDeletedTeamSandboxesFragment[];
+    older: RecentlyDeletedTeamSandboxesFragment[];
   };
   contributions: Branch[] | null;
   /**
@@ -104,8 +105,7 @@ export const state: State = {
         week: [],
         older: [],
       };
-    const noTemplateSandboxes = deletedSandboxes.filter(s => !s.customTemplate);
-    const timeSandboxes = noTemplateSandboxes.reduce(
+    const timeSandboxes = deletedSandboxes.reduce(
       (accumulator, currentValue) => {
         if (!currentValue.removedAt) return accumulator;
         if (isSameWeek(new Date(currentValue.removedAt), new Date())) {
@@ -137,7 +137,7 @@ export const state: State = {
   },
   getFilteredSandboxes: derived(
     ({ orderBy }: State) => (
-      sandboxes: Array<Sandbox | Template['sandbox']>
+      sandboxes: Array<Sandbox | RecentlyDeletedTeamSandboxesFragment | Template['sandbox']>
     ) => {
       const orderField = orderBy.field;
       const orderOrder = orderBy.order;
@@ -156,7 +156,7 @@ export const state: State = {
           return field.toLowerCase();
         }
 
-        if (orderField === 'views') {
+        if ('viewCount' in sandbox && orderField === 'views') {
           return sandbox.viewCount;
         }
 

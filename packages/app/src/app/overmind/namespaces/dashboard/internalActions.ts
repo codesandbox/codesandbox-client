@@ -151,6 +151,13 @@ export const deleteSandboxesFromState = (
             repoSandbox.sandboxes = newSandboxes;
           }
         });
+      } else if (type === 'DELETED') {
+        const newSandboxes = sandboxStructure[type].filter(
+          sandbox => !ids.includes(sandbox.id)
+        );
+        if (newSandboxes.length !== sandboxStructure[type].length) {
+          dashboard.sandboxes[type] = newSandboxes;
+        }
       } else if (type !== 'RECENT_BRANCHES') {
         const newSandboxes = sandboxStructure[type].filter(sandboxFilter);
         if (newSandboxes.length !== sandboxStructure[type].length) {

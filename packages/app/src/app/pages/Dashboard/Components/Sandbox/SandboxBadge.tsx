@@ -1,19 +1,20 @@
 import { Icon, Stack, Text } from '@codesandbox/components';
-import { SandboxFragmentDashboardFragment as Sandbox } from 'app/graphql/types';
 import React from 'react';
 
 export interface SandboxBadgeProps {
-  sandbox: Sandbox;
-  restricted: boolean;
+  isSandboxV2: boolean;
+  isSandboxTemplate: boolean;
+  isSandboxRestricted: boolean;
 }
 
 export const SandboxBadge: React.FC<SandboxBadgeProps> = ({
-  sandbox,
-  restricted,
+  isSandboxV2,
+  isSandboxTemplate,
+  isSandboxRestricted,
 }) => {
-  const isDevbox = sandbox.isV2;
-  const isRestricted = restricted;
-  const isTemplate = !!sandbox.customTemplate;
+  const isDevbox = isSandboxV2;
+  const isRestricted = isSandboxRestricted;
+  const isTemplate = isSandboxTemplate;
 
   const boxIcon = isDevbox ? 'server' : 'boxDevbox';
   let boxTypeLabel = isDevbox ? 'Devbox' : 'Sandbox';

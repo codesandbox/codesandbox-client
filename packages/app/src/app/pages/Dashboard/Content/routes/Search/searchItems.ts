@@ -13,6 +13,13 @@ type DashboardItem =
   | SandboxFragmentDashboardFragment
   | SidebarCollectionDashboardFragment;
 
+// Type guard to check if an item is a sandbox
+function isSandbox(
+  item: DashboardItem | { repository?: any; path?: string }
+): item is SandboxFragmentDashboardFragment {
+  return !('path' in item) && !('repository' in item);
+}
+
 // define which fields to search, with per-key thresholds & weights
 const SEARCH_KEYS = [
   { name: 'title', threshold: 0.2, weight: 0.4 },
@@ -99,7 +106,7 @@ export const useGetItems = ({
   query: string;
   username: string;
   getFilteredSandboxes: (
-    list: DashboardItem[]
+    list: SandboxFragmentDashboardFragment[]
   ) => SandboxFragmentDashboardFragment[];
 }) => {
   const state = useAppState();
@@ -137,7 +144,7 @@ export const useGetItems = ({
   }, [query, searchIndex]);
 
   // then the rest is just your existing filtering / mapping logic:
-  const sandboxesInSearch = foundResults.filter(s => !(s as any).path);
+  const sandboxesInSearch = foundResults.filter(isSandbox);
   const foldersInSearch = foundResults.filter(s => (s as any).path);
   const filteredSandboxes = getFilteredSandboxes(sandboxesInSearch);
   const isLoadingQuery = query && !searchIndex;
