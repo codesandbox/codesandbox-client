@@ -35,6 +35,8 @@ const TEMPLATE_FRAGMENT = gql`
 export const FETCH_TEAM_TEMPLATES = gql`
   query RecentAndWorkspaceTemplates($teamId: UUID4) {
     me {
+      id
+      
       recentlyUsedTemplates(teamId: $teamId) {
         ...Template
       }
@@ -86,6 +88,8 @@ const ORGANIZATION_FRAGMENT = gql`
 export const GET_GITHUB_ACCOUNTS = gql`
   query GetGithubAccounts {
     me {
+      id
+      
       githubProfile {
         ...Profile
       }

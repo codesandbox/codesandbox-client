@@ -3234,6 +3234,7 @@ export type RecentAndWorkspaceTemplatesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     recentlyUsedTemplates: Array<{
       __typename?: 'Template';
       id: any | null;
@@ -3327,6 +3328,7 @@ export type GetGithubAccountsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     githubProfile: {
       __typename?: 'GithubProfile';
       id: string;
@@ -4642,6 +4644,7 @@ export type RecentlyDeletedTeamSandboxesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       sandboxes: Array<{
@@ -4701,6 +4704,7 @@ export type SandboxesByPathQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     collections: Array<{
       __typename?: 'Collection';
       id: any | null;
@@ -4768,6 +4772,7 @@ export type TeamDraftsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       drafts: Array<{
@@ -4826,6 +4831,7 @@ export type AllCollectionsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     collections: Array<{
       __typename?: 'Collection';
       id: any | null;
@@ -4843,6 +4849,7 @@ export type GetTeamReposQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       sandboxes: Array<{
@@ -4918,6 +4925,7 @@ export type TeamTemplatesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       id: any;
@@ -4993,6 +5001,7 @@ export type AllTeamsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     primaryWorkspaceId: any | null;
     workspaces: Array<{
       __typename?: 'Team';
@@ -5059,6 +5068,7 @@ export type _SearchTeamSandboxesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       sandboxes: Array<{
@@ -5109,15 +5119,16 @@ export type _SearchTeamSandboxesQuery = {
   } | null;
 };
 
-export type RecentlyAccessedSandboxesQueryVariables = Exact<{
+export type RecentlyAccessedSandboxesLegacyQueryVariables = Exact<{
   limit: Scalars['Int'];
   teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type RecentlyAccessedSandboxesQuery = {
+export type RecentlyAccessedSandboxesLegacyQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     recentlyAccessedSandboxes: Array<{
       __typename?: 'Sandbox';
       id: string;
@@ -5165,15 +5176,16 @@ export type RecentlyAccessedSandboxesQuery = {
   } | null;
 };
 
-export type RecentlyAccessedBranchesQueryVariables = Exact<{
+export type RecentlyAccessedBranchesLegacyQueryVariables = Exact<{
   limit: Scalars['Int'];
   teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type RecentlyAccessedBranchesQuery = {
+export type RecentlyAccessedBranchesLegacyQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     recentBranches: Array<{
       __typename?: 'Branch';
       id: string;
@@ -5205,6 +5217,7 @@ export type SharedWithMeSandboxesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     collaboratorSandboxes: Array<{
       __typename?: 'Sandbox';
       id: string;
@@ -5260,6 +5273,7 @@ export type GetTeamQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       id: any;
@@ -5383,6 +5397,7 @@ export type ContributionBranchesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     recentBranches: Array<{
       __typename?: 'Branch';
       id: string;
@@ -5415,6 +5430,7 @@ export type RepositoriesByTeamQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       id: any;
@@ -5625,6 +5641,7 @@ export type GetEligibleWorkspacesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     eligibleWorkspaces: Array<{
       __typename?: 'TeamPreview';
       id: any;
@@ -5722,6 +5739,7 @@ export type EmailPreferencesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     notificationPreferences: {
       __typename?: 'NotificationPreferences';
       emailCommentMention: boolean;
@@ -5746,6 +5764,7 @@ export type RecentNotificationsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     notifications: Array<{
       __typename?: 'Notification';
       id: any;
@@ -5785,6 +5804,7 @@ export type TeamSidebarDataQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       syncedSandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
@@ -5852,6 +5872,7 @@ export type TeamsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     workspaces: Array<{ __typename?: 'Team'; id: any; name: string }>;
   } | null;
 };
@@ -5916,6 +5937,7 @@ export type TeamsSidebarQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     teams: Array<{ __typename?: 'Team'; id: any; name: string }>;
   } | null;
 };
@@ -5928,6 +5950,7 @@ export type PathedSandboxesFoldersQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     collections: Array<{
       __typename?: 'Collection';
       id: any | null;
@@ -6130,6 +6153,7 @@ export type PathedSandboxesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     collections: Array<{
       __typename?: 'Collection';
       id: any | null;
@@ -6177,6 +6201,7 @@ export type RecentSandboxesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     sandboxes: Array<{
       __typename?: 'Sandbox';
       id: string;
@@ -6211,6 +6236,7 @@ export type SearchSandboxesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     sandboxes: Array<{
       __typename?: 'Sandbox';
       id: string;
@@ -6245,6 +6271,7 @@ export type DeletedSandboxesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     sandboxes: Array<{
       __typename?: 'Sandbox';
       id: string;
@@ -6281,6 +6308,7 @@ export type TeamQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       id: any;

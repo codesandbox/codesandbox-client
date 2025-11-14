@@ -18,6 +18,8 @@ export const getTeamSidebarData: Query<
 > = gql`
   query TeamSidebarData($id: UUID4!) {
     me {
+      id
+      
       team(id: $id) {
         syncedSandboxes: sandboxes(hasOriginalGit: true) {
           ...sidebarSyncedSandboxFragment

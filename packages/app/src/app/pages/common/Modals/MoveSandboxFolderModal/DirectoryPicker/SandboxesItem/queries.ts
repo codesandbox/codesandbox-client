@@ -10,6 +10,8 @@ const SIDEBAR_COLLECTION_FRAGMENT = gql`
 export const PATHED_SANDBOXES_FOLDER_QUERY = gql`
   query PathedSandboxesFolders($teamId: ID) {
     me {
+      id
+      
       collections(teamId: $teamId) {
         ...SidebarCollection
       }
@@ -55,6 +57,8 @@ export const SANDBOX_FRAGMENT = gql`
 export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
   query PathedSandboxes($path: String!, $teamId: ID) {
     me {
+      id
+      
       collections(teamId: $teamId) {
         ...SidebarCollection
       }
