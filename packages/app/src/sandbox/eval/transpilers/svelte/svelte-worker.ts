@@ -8,7 +8,7 @@ const childHandler = new ChildHandler('svelte-worker');
 self.window = self;
 
 function getV3Code({ code, version, path }) {
-  self.importScripts(`https://unpkg.com/svelte@${version}/compiler.js`);
+  self.importScripts(`https://cdn.jsdelivr.net/npm/svelte@${version}/compiler.js`);
 
   // @ts-ignore
   const { js, warnings } = self.svelte.compile(code, {
@@ -38,7 +38,7 @@ function getV3Code({ code, version, path }) {
 }
 
 function getV2Code({ code, version, path }) {
-  self.importScripts(`https://unpkg.com/svelte@${version}/compiler/svelte.js`);
+  self.importScripts(`https://cdn.jsdelivr.net/npm/svelte@${version}/compiler/svelte.js`);
 
   let error = null;
   const warnings = [];
@@ -74,7 +74,7 @@ function getV2Code({ code, version, path }) {
 }
 
 function getV1Code({ code, version, path }) {
-  self.importScripts(`https://unpkg.com/svelte@${version}/compiler/svelte.js`);
+  self.importScripts(`https://cdn.jsdelivr.net/npm/svelte@${version}/compiler/svelte.js`);
 
   let error = null;
   const warnings = [];
