@@ -5,6 +5,7 @@ import {
   BranchFragment as Branch,
   ProjectFragment as Repository,
   RecentlyDeletedTeamSandboxesFragment,
+  DraftSandboxFragment,
 } from 'app/graphql/types';
 import { Context } from 'app/overmind';
 import {
@@ -27,7 +28,8 @@ export type DashboardSandbox = {
         prNumber?: number;
         originalGit?: RepoFragmentDashboardFragment['originalGit'];
       })
-    | RecentlyDeletedTeamSandboxesFragment;
+    | RecentlyDeletedTeamSandboxesFragment
+    | DraftSandboxFragment;
   noDrag?: boolean;
 };
 

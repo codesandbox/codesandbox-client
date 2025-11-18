@@ -124,7 +124,6 @@ const SANDBOX_BY_PATH_FRAGMENT = gql`
 
     forkedTemplate {
       id
-      color
       iconUrl
     }
 
@@ -169,6 +168,54 @@ export const sandboxesByPath: Query<
   ${sidebarCollectionDashboard}
 `;
 
+const DRAFT_SANDBOX_FRAGMENT = gql`
+  fragment draftSandbox on Sandbox {
+    id
+    alias
+    title
+    insertedAt
+    updatedAt
+    screenshotUrl
+    isV2
+    isFrozen
+    privacy
+    restricted
+    draft
+    viewCount
+    authorId
+    lastAccessedAt
+
+    source {
+      template
+    }
+
+    customTemplate {
+      id
+      iconUrl
+    }
+
+    forkedTemplate {
+      id
+      iconUrl
+    }
+
+    collection {
+      path
+      id
+    }
+
+    author {
+      username
+    }
+    teamId
+
+    permissions {
+      preventSandboxLeaving
+      preventSandboxExport
+    }
+  }
+`;
+
 export const getTeamDrafts: Query<
   TeamDraftsQuery,
   TeamDraftsQueryVariables
@@ -179,12 +226,12 @@ export const getTeamDrafts: Query<
       
       team(id: $teamId) {
         drafts(authorId: $authorId) {
-          ...sandboxFragmentDashboard
+          ...draftSandbox
         }
       }
     }
   }
-  ${sandboxFragmentDashboard}
+  ${DRAFT_SANDBOX_FRAGMENT}
 `;
 
 export const getCollections: Query<
