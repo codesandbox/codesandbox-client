@@ -162,7 +162,7 @@ export const SandboxListItem = ({
           </Stack>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">
-          {sandbox.removedAt ? (
+          {'removedAt' in sandbox && sandbox.removedAt ? (
             <Text
               size={3}
               variant={selected ? 'body' : 'muted'}

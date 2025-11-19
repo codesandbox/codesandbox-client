@@ -1,5 +1,7 @@
 import {
   SandboxFragmentDashboardFragment as Sandbox,
+  SandboxByPathFragment,
+  DraftSandboxFragment,
   RepoFragmentDashboardFragment as Repo,
   TemplateFragmentDashboardFragment as Template,
   TeamFragmentDashboardFragment,
@@ -16,16 +18,16 @@ import { derived } from 'overmind';
 import { DELETE_ME_COLLECTION, OrderBy } from './types';
 
 export type DashboardSandboxStructure = {
-  DRAFTS: Sandbox[] | null;
+  DRAFTS: DraftSandboxFragment[] | null;
   TEMPLATES: Template[] | null;
   DELETED: RecentlyDeletedTeamSandboxesFragment[] | null;
-  RECENT_SANDBOXES: Sandbox[] | null;
+  RECENT_SANDBOXES: (Sandbox | DraftSandboxFragment)[] | null;
   RECENT_BRANCHES: Branch[] | null;
-  SEARCH: Sandbox[] | null;
+  SEARCH: (Sandbox | DraftSandboxFragment)[] | null;
   TEMPLATE_HOME: Template[] | null;
-  SHARED: Sandbox[] | null;
+  SHARED: (Sandbox | DraftSandboxFragment)[] | null;
   ALL: {
-    [path: string]: Sandbox[];
+    [path: string]: (Sandbox | SandboxByPathFragment | DraftSandboxFragment)[];
   } | null;
   REPOS: {
     [path: string]: {
@@ -48,7 +50,7 @@ export type State = {
   viewMode: 'grid' | 'list';
   orderBy: OrderBy;
   getFilteredSandboxes: (
-    sandboxes: Array<Sandbox | RecentlyDeletedTeamSandboxesFragment | Repo | Template['sandbox']>
+    sandboxes: Array<Sandbox | SandboxByPathFragment | RecentlyDeletedTeamSandboxesFragment | Repo | Template['sandbox']>
   ) => Sandbox[];
   deletedSandboxesByTime: {
     week: RecentlyDeletedTeamSandboxesFragment[];
@@ -137,7 +139,7 @@ export const state: State = {
   },
   getFilteredSandboxes: derived(
     ({ orderBy }: State) => (
-      sandboxes: Array<Sandbox | RecentlyDeletedTeamSandboxesFragment | Template['sandbox']>
+      sandboxes: Array<Sandbox | SandboxByPathFragment | DraftSandboxFragment | RecentlyDeletedTeamSandboxesFragment | Template['sandbox']>
     ) => {
       const orderField = orderBy.field;
       const orderOrder = orderBy.order;

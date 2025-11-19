@@ -13,7 +13,10 @@ import {
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import css from '@styled-system/css';
 import { Sandbox } from '@codesandbox/common/lib/types';
-import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
+import {
+  SandboxFragmentDashboardFragment,
+  SandboxByPathFragment,
+} from 'app/graphql/types';
 import { SandboxType } from '../constants';
 
 const PrivacyIcons = {
@@ -29,7 +32,7 @@ const privacyToName = {
 };
 
 export const SandboxCard: React.FC<{
-  sandbox: Sandbox | SandboxFragmentDashboardFragment;
+  sandbox: Sandbox | SandboxFragmentDashboardFragment | SandboxByPathFragment;
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }> = ({ sandbox, onClick }) => {
   const { contextMenu } = useAppState().profile;
