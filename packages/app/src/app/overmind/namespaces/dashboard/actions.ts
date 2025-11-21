@@ -28,18 +28,18 @@ import {
   sortByLastAccessed,
 } from './utils';
 
-import { OrderBy, PageTypes, sandboxesTypes } from './types';
+import { OrderBy, PageTypes, sandboxesTypes, DashboardSandboxFragment } from './types';
 import * as internalActions from './internalActions';
 
 // Type guards to check if sandbox has specific properties
 function hasIsFrozen(
-  sandbox: SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment
+  sandbox: DashboardSandboxFragment
 ): sandbox is SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment {
   return 'isFrozen' in sandbox;
 }
 
 function hasPermissions(
-  sandbox: SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment
+  sandbox: DashboardSandboxFragment
 ): sandbox is SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment {
   return 'permissions' in sandbox;
 }
