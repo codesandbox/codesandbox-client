@@ -78,8 +78,13 @@ jobs:
         build-mode: ${{ matrix.build-mode }}
         # Use our custom config file to exclude unnecessary files
         config-file: ./.github/codeql/codeql-config.yml
-        # Use security-extended for faster PR analysis
-        queries: security-extended
+        # Override queries to use security-extended for faster PR analysis
+        # Format per GitHub docs: https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning
+        config: |
+          queries:
+            - uses: security-extended
+        # Increase RAM allocation to allow more threads (reduces "Compiling in 3 threads due to RAM limits")
+        ram: 4096
 
     - name: Initialize CodeQL (main/scheduled - security-and-quality)
       if: github.event_name != 'pull_request'
@@ -89,8 +94,12 @@ jobs:
         build-mode: ${{ matrix.build-mode }}
         # Use our custom config file to exclude unnecessary files
         config-file: ./.github/codeql/codeql-config.yml
-        # Use security-and-quality for comprehensive analysis on main branch and scheduled runs
-        queries: security-and-quality
+        # Override queries to use security-and-quality for comprehensive analysis
+        config: |
+          queries:
+            - uses: security-and-quality
+        # Increase RAM allocation to allow more threads (reduces "Compiling in 3 threads due to RAM limits")
+        ram: 4096
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
