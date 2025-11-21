@@ -9,6 +9,7 @@ import {
   DraftSandboxFragment,
   RepoFragmentDashboardFragment,
   ProjectFragment,
+  SearchTeamSandboxFragment,
 } from 'app/graphql/types';
 import {
   sandboxUrl,
@@ -751,7 +752,7 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
   try {
     const activeTeam = state.activeTeam;
 
-    let sandboxes: SandboxFragmentDashboardFragment[] = [];
+    let sandboxes: SearchTeamSandboxFragment[] = [];
     if (activeTeam) {
       const data = await effects.gql.queries.searchTeamSandboxes({
         teamId: activeTeam,
