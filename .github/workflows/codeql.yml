@@ -12,6 +12,7 @@ jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     permissions:
       # required for all workflows
       security-events: write
@@ -68,13 +69,28 @@ jobs:
       uses: actions/checkout@v4
 
     # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
+    # Use security-extended query pack for PRs (faster), security-and-quality for main/scheduled (comprehensive)
+    - name: Initialize CodeQL (PR - security-extended)
+      if: github.event_name == 'pull_request'
       uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
         # Use our custom config file to exclude unnecessary files
         config-file: ./.github/codeql/codeql-config.yml
+        # Use security-extended for faster PR analysis
+        queries: +security-extended
+
+    - name: Initialize CodeQL (main/scheduled - security-and-quality)
+      if: github.event_name != 'pull_request'
+      uses: github/codeql-action/init@v4
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+        # Use our custom config file to exclude unnecessary files
+        config-file: ./.github/codeql/codeql-config.yml
+        # Use security-and-quality for comprehensive analysis on main branch and scheduled runs
+        queries: +security-and-quality
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4

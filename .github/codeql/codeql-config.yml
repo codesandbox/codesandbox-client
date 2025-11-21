@@ -1,7 +1,7 @@
 name: "CodeQL Config"
 
-# Exclude paths to reduce disk space usage during CodeQL analysis
-# This prevents analyzing unnecessary files that consume disk space
+# Exclude paths to reduce disk space usage and improve analysis performance
+# This prevents analyzing unnecessary files that consume disk space and time
 paths-ignore:
   # Dependencies - don't analyze third-party code
   - "**/node_modules"
@@ -16,6 +16,23 @@ paths-ignore:
   - "**/www"
   - "**/release"
   
+  # Test files - exclude test code to improve performance
+  # Test files rarely contain security vulnerabilities that matter for production
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "**/*.test.js"
+  - "**/*.test.jsx"
+  - "**/*.spec.js"
+  - "**/*.spec.jsx"
+  
+  # Storybook files
+  - "**/*.stories.tsx"
+  - "**/*.stories.ts"
+  - "**/*.stories.jsx"
+  - "**/*.stories.js"
+  
   # Test fixtures and snapshots
   - "**/__mocks__"
   - "**/__image_snapshots__"
@@ -25,6 +42,16 @@ paths-ignore:
   - "**/test/**/*.jpg"
   - "**/test/**/*.svg"
   - "**/integration-tests/**/*.png"
+  
+  # Test utilities and configs
+  - "**/test-utils/**"
+  - "**/testing/**"
+  - "**/jest.config.*"
+  - "**/jest.setup.*"
+  - "**/coverage/**"
+  
+  # Generated type definition files
+  - "**/*.d.ts"
   
   # Example and playground files - not production code
   - "**/example"
