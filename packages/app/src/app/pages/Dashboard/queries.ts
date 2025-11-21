@@ -214,6 +214,37 @@ export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
   ${SIDEBAR_COLLECTION_FRAGMENT}
 `;
 
+const RECENT_SANDBOX_FRAGMENT = gql`
+  fragment RecentSandbox on Sandbox {
+    id
+    alias
+    title
+    lastAccessedAt
+    screenshotUrl
+    privacy
+
+    source {
+      template
+    }
+
+    customTemplate {
+      id
+    }
+
+    forkedTemplate {
+      id
+      color
+    }
+
+    collection {
+      path
+      teamId
+    }
+
+    teamId
+  }
+`;
+
 export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
   query RecentSandboxes($orderField: String!, $orderDirection: Direction!) {
     me {
@@ -223,11 +254,11 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
         limit: 20
         orderBy: { field: $orderField, direction: $orderDirection }
       ) {
-        ...Sandbox
+        ...RecentSandbox
       }
     }
   }
-  ${SANDBOX_FRAGMENT}
+  ${RECENT_SANDBOX_FRAGMENT}
 `;
 
 export const SEARCH_SANDBOXES_QUERY = gql`
