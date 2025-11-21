@@ -1,0 +1,87 @@
+name: "CodeQL Config - PR"
+
+# Configuration for pull requests: use security-extended for faster analysis
+disable-default-queries: true
+queries:
+  - uses: security-extended
+
+# Exclude paths to reduce disk space usage and improve analysis performance
+paths-ignore:
+  # Dependencies - don't analyze third-party code
+  - "**/node_modules"
+  - "**/yarn.lock"
+  - "**/package-lock.json"
+  
+  # Build artifacts - generated code doesn't need analysis
+  - "**/dist"
+  - "**/lib"
+  - "**/compiled"
+  - "**/build"
+  - "**/www"
+  - "**/release"
+  
+  # Test files - exclude test code to improve performance
+  # Test files rarely contain security vulnerabilities that matter for production
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "**/*.test.js"
+  - "**/*.test.jsx"
+  - "**/*.spec.js"
+  - "**/*.spec.jsx"
+  
+  # Storybook files
+  - "**/*.stories.tsx"
+  - "**/*.stories.ts"
+  - "**/*.stories.jsx"
+  - "**/*.stories.js"
+  
+  # Test fixtures and snapshots
+  - "**/__mocks__"
+  - "**/__image_snapshots__"
+  - "**/_fixtures"
+  - "**/fixture"
+  - "**/test/**/*.png"
+  - "**/test/**/*.jpg"
+  - "**/test/**/*.svg"
+  - "**/integration-tests/**/*.png"
+  
+  # Test utilities and configs
+  - "**/test-utils/**"
+  - "**/testing/**"
+  - "**/jest.config.*"
+  - "**/jest.setup.*"
+  - "**/coverage/**"
+  
+  # Generated type definition files
+  - "**/*.d.ts"
+  
+  # Example and playground files - not production code
+  - "**/example"
+  - "**/examples"
+  - "**/playground"
+  - "**/website"
+  - "**/docs"
+  
+  # Generated files
+  - "**/*.map"
+  - "**/*.min.js"
+  - "**/*.min.css"
+  
+  # Large standalone packages - exclude website and release directories
+  - "standalone-packages/monaco-editor/website"
+  - "standalone-packages/monaco-editor/release"
+  - "standalone-packages/vscode-editor/release"
+  - "standalone-packages/vscode-textmate/**/*.result"
+  - "standalone-packages/vscode-textmate/**/*.patch"
+  
+  # Static assets
+  - "**/static/fonts"
+  - "**/static/img"
+  - "**/public"
+  
+  # CI/CD files
+  - "**/Dockerfile*"
+  - "**/.circleci"
+

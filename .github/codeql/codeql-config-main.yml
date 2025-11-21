@@ -1,7 +1,11 @@
-name: "CodeQL Config"
+name: "CodeQL Config - Main"
+
+# Configuration for main branch and scheduled runs: use security-and-quality for comprehensive analysis
+disable-default-queries: true
+queries:
+  - uses: security-and-quality
 
 # Exclude paths to reduce disk space usage and improve analysis performance
-# This prevents analyzing unnecessary files that consume disk space and time
 paths-ignore:
   # Dependencies - don't analyze third-party code
   - "**/node_modules"
@@ -80,3 +84,4 @@ paths-ignore:
   # CI/CD files
   - "**/Dockerfile*"
   - "**/.circleci"
+
