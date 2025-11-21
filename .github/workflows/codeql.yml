@@ -79,7 +79,7 @@ jobs:
         # Use our custom config file to exclude unnecessary files
         config-file: ./.github/codeql/codeql-config.yml
         # Use security-extended for faster PR analysis
-        queries: +security-extended
+        queries: security-extended
 
     - name: Initialize CodeQL (main/scheduled - security-and-quality)
       if: github.event_name != 'pull_request'
@@ -90,7 +90,7 @@ jobs:
         # Use our custom config file to exclude unnecessary files
         config-file: ./.github/codeql/codeql-config.yml
         # Use security-and-quality for comprehensive analysis on main branch and scheduled runs
-        queries: +security-and-quality
+        queries: security-and-quality
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
