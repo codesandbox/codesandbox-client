@@ -6,6 +6,7 @@ import { uniq } from 'lodash-es';
 import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
+  SandboxByPathFragment,
   DraftSandboxFragment,
   RepoFragmentDashboardFragment,
   ProjectFragment,
@@ -29,6 +30,19 @@ import {
 
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
+
+// Type guards to check if sandbox has specific properties
+function hasIsFrozen(
+  sandbox: SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment
+): sandbox is SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment {
+  return 'isFrozen' in sandbox;
+}
+
+function hasPermissions(
+  sandbox: SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment
+): sandbox is SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment {
+  return 'permissions' in sandbox;
+}
 
 export const internal = internalActions;
 
@@ -981,21 +995,35 @@ export const changeSandboxesFrozen = async (
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
     sandboxIds,
-    sandboxMutation: sandbox => ({ ...sandbox, isFrozen }),
+    sandboxMutation: sandbox => {
+      // Only update isFrozen if the property exists on the sandbox type
+      if (hasIsFrozen(sandbox)) {
+        return { ...sandbox, isFrozen };
+      }
+      return sandbox;
+    },
   });
 
   try {
     await effects.gql.mutations.changeFrozen({ sandboxIds, isFrozen });
   } catch (error) {
-    changedSandboxes.forEach(oldSandbox =>
-      actions.dashboard.internal.changeSandboxesInState({
-        sandboxIds: [oldSandbox.id],
-        sandboxMutation: sandbox => ({
-          ...sandbox,
-          isFrozen: oldSandbox.isFrozen,
-        }),
-      })
-    );
+    changedSandboxes.forEach(oldSandbox => {
+      // Only rollback if the sandbox has isFrozen property
+      if (hasIsFrozen(oldSandbox)) {
+        actions.dashboard.internal.changeSandboxesInState({
+          sandboxIds: [oldSandbox.id],
+          sandboxMutation: sandbox => {
+            if (hasIsFrozen(sandbox)) {
+              return {
+                ...sandbox,
+                isFrozen: oldSandbox.isFrozen,
+              };
+            }
+            return sandbox;
+          },
+        });
+      }
+    });
 
     actions.internal.handleError({
       message:
@@ -1129,10 +1157,16 @@ export const setPreventSandboxesLeavingWorkspace = async (
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
     sandboxIds,
-    sandboxMutation: sandbox => ({
-      ...sandbox,
-      permissions: { ...sandbox.permissions, preventSandboxLeaving },
-    }),
+    sandboxMutation: sandbox => {
+      // Only update permissions if the property exists on the sandbox type
+      if (hasPermissions(sandbox) && sandbox.permissions) {
+        return {
+          ...sandbox,
+          permissions: { ...sandbox.permissions, preventSandboxLeaving },
+        };
+      }
+      return sandbox;
+    },
   });
 
   effects.analytics.track(`Dashboard - Change sandbox permissions`, {
@@ -1147,15 +1181,23 @@ export const setPreventSandboxesLeavingWorkspace = async (
 
     effects.notificationToast.success('Sandbox permissions updated.');
   } catch (error) {
-    changedSandboxes.forEach(oldSandbox =>
-      actions.dashboard.internal.changeSandboxesInState({
-        sandboxIds: [oldSandbox.id],
-        sandboxMutation: sandbox => ({
-          ...sandbox,
-          permissions: { ...oldSandbox.permissions },
-        }),
-      })
-    );
+    changedSandboxes.forEach(oldSandbox => {
+      // Only rollback if the sandbox has permissions property
+      if (hasPermissions(oldSandbox) && oldSandbox.permissions) {
+        actions.dashboard.internal.changeSandboxesInState({
+          sandboxIds: [oldSandbox.id],
+          sandboxMutation: sandbox => {
+            if (hasPermissions(sandbox) && sandbox.permissions) {
+              return {
+                ...sandbox,
+                permissions: { ...oldSandbox.permissions },
+              };
+            }
+            return sandbox;
+          },
+        });
+      }
+    });
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
     );
@@ -1177,10 +1219,16 @@ export const setPreventSandboxesExport = async (
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
     sandboxIds,
-    sandboxMutation: sandbox => ({
-      ...sandbox,
-      permissions: { ...sandbox.permissions, preventSandboxExport },
-    }),
+    sandboxMutation: sandbox => {
+      // Only update permissions if the property exists on the sandbox type
+      if (hasPermissions(sandbox) && sandbox.permissions) {
+        return {
+          ...sandbox,
+          permissions: { ...sandbox.permissions, preventSandboxExport },
+        };
+      }
+      return sandbox;
+    },
   });
 
   effects.analytics.track(`Dashboard - Change sandbox permissions`, {
@@ -1195,15 +1243,23 @@ export const setPreventSandboxesExport = async (
 
     effects.notificationToast.success('Sandbox permissions updated.');
   } catch (error) {
-    changedSandboxes.forEach(oldSandbox =>
-      actions.dashboard.internal.changeSandboxesInState({
-        sandboxIds: [oldSandbox.id],
-        sandboxMutation: sandbox => ({
-          ...sandbox,
-          permissions: { ...oldSandbox.permissions },
-        }),
-      })
-    );
+    changedSandboxes.forEach(oldSandbox => {
+      // Only rollback if the sandbox has permissions property
+      if (hasPermissions(oldSandbox) && oldSandbox.permissions) {
+        actions.dashboard.internal.changeSandboxesInState({
+          sandboxIds: [oldSandbox.id],
+          sandboxMutation: sandbox => {
+            if (hasPermissions(sandbox) && sandbox.permissions) {
+              return {
+                ...sandbox,
+                permissions: { ...oldSandbox.permissions },
+              };
+            }
+            return sandbox;
+          },
+        });
+      }
+    });
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
     );
