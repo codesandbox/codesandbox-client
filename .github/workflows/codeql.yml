@@ -69,28 +69,13 @@ jobs:
       uses: actions/checkout@v4
 
     # Initializes the CodeQL tools for scanning.
-    # Use security-extended query pack for PRs (faster), security-and-quality for main/scheduled (comprehensive)
-    - name: Initialize CodeQL (PR - security-extended)
-      if: github.event_name == 'pull_request'
+    - name: Initialize CodeQL
       uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        # Use config file for PRs: security-extended for faster analysis
-        config-file: ./.github/codeql/codeql-config-pr.yml
-        # Increase RAM allocation to allow more threads (reduces "Compiling in 3 threads due to RAM limits")
-        ram: 4096
-
-    - name: Initialize CodeQL (main/scheduled - security-and-quality)
-      if: github.event_name != 'pull_request'
-      uses: github/codeql-action/init@v4
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-        # Use config file for main/scheduled: security-and-quality for comprehensive analysis
-        config-file: ./.github/codeql/codeql-config-main.yml
-        # Increase RAM allocation to allow more threads (reduces "Compiling in 3 threads due to RAM limits")
-        ram: 4096
+        # Use our custom config file to exclude unnecessary files
+        config-file: ./.github/codeql/codeql-config.yml
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4

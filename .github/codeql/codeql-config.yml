@@ -1,9 +1,4 @@
-name: "CodeQL Config - Main"
-
-# Configuration for main branch and scheduled runs: use security-and-quality for comprehensive analysis
-disable-default-queries: true
-queries:
-  - uses: security-and-quality
+name: "CodeQL Config"
 
 # Exclude paths to reduce disk space usage and improve analysis performance
 paths-ignore:
@@ -21,7 +16,6 @@ paths-ignore:
   - "**/release"
   
   # Test files - exclude test code to improve performance
-  # Test files rarely contain security vulnerabilities that matter for production
   - "**/*.test.ts"
   - "**/*.test.tsx"
   - "**/*.spec.ts"
@@ -69,7 +63,7 @@ paths-ignore:
   - "**/*.min.js"
   - "**/*.min.css"
   
-  # Large standalone packages - exclude website and release directories
+  # Large standalone packages
   - "standalone-packages/monaco-editor/website"
   - "standalone-packages/monaco-editor/release"
   - "standalone-packages/vscode-editor/release"
