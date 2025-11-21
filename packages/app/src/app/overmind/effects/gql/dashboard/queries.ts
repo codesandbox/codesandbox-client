@@ -303,6 +303,40 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   ${teamFragmentDashboard}
 `;
 
+const SEARCH_TEAM_SANDBOX_FRAGMENT = gql`
+  fragment searchTeamSandbox on Sandbox {
+    id
+    alias
+    title
+    description
+    updatedAt
+    viewCount
+    isV2
+    draft
+    restricted
+    privacy
+    screenshotUrl
+
+    source {
+      template
+    }
+
+    customTemplate {
+      id
+      iconUrl
+    }
+
+    author {
+      username
+    }
+
+    collection {
+      path
+      id
+    }
+  }
+`;
+
 export const searchTeamSandboxes: Query<
   _SearchTeamSandboxesQuery,
   _SearchTeamSandboxesQueryVariables
@@ -313,12 +347,12 @@ export const searchTeamSandboxes: Query<
       
       team(id: $teamId) {
         sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
-          ...sandboxFragmentDashboard
+          ...searchTeamSandbox
         }
       }
     }
   }
-  ${sandboxFragmentDashboard}
+  ${SEARCH_TEAM_SANDBOX_FRAGMENT}
 `;
 
 /**

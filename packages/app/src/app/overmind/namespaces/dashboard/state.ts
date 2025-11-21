@@ -9,6 +9,7 @@ import {
   ProjectFragment as Repository,
   ProjectWithBranchesFragment as RepositoryWithBranches,
   RecentlyDeletedTeamSandboxesFragment,
+  SearchTeamSandboxFragment,
 } from 'app/graphql/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
@@ -23,7 +24,7 @@ export type DashboardSandboxStructure = {
   DELETED: RecentlyDeletedTeamSandboxesFragment[] | null;
   RECENT_SANDBOXES: (Sandbox | DraftSandboxFragment)[] | null;
   RECENT_BRANCHES: Branch[] | null;
-  SEARCH: (Sandbox | DraftSandboxFragment)[] | null;
+  SEARCH: (Sandbox | DraftSandboxFragment | SearchTeamSandboxFragment)[] | null;
   TEMPLATE_HOME: Template[] | null;
   SHARED: (Sandbox | DraftSandboxFragment)[] | null;
   ALL: {
@@ -50,7 +51,7 @@ export type State = {
   viewMode: 'grid' | 'list';
   orderBy: OrderBy;
   getFilteredSandboxes: (
-    sandboxes: Array<Sandbox | SandboxByPathFragment | RecentlyDeletedTeamSandboxesFragment | Repo | Template['sandbox']>
+    sandboxes: Array<Sandbox | SandboxByPathFragment | RecentlyDeletedTeamSandboxesFragment | Repo | Template['sandbox'] | SearchTeamSandboxFragment>
   ) => Sandbox[];
   deletedSandboxesByTime: {
     week: RecentlyDeletedTeamSandboxesFragment[];
@@ -139,7 +140,7 @@ export const state: State = {
   },
   getFilteredSandboxes: derived(
     ({ orderBy }: State) => (
-      sandboxes: Array<Sandbox | SandboxByPathFragment | DraftSandboxFragment | RecentlyDeletedTeamSandboxesFragment | Template['sandbox']>
+      sandboxes: Array<Sandbox | SandboxByPathFragment | DraftSandboxFragment | RecentlyDeletedTeamSandboxesFragment | Template['sandbox'] | SearchTeamSandboxFragment>
     ) => {
       const orderField = orderBy.field;
       const orderOrder = orderBy.order;

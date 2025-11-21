@@ -3,6 +3,7 @@ import {
   SandboxFragmentDashboardFragment,
   SandboxByPathFragment,
   DraftSandboxFragment,
+  SearchTeamSandboxFragment,
 } from 'app/graphql/types';
 
 /**
@@ -19,14 +20,14 @@ export const changeSandboxesInState = (
      * The mutation that happens on the sandbox, make sure to return a *new* sandbox here, to make sure
      * that we can still rollback easily in the future.
      */
-    sandboxMutation: <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment>(
+    sandboxMutation: <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment>(
       sandbox: T
     ) => T;
   }
 ) => {
   const changedSandboxes: Set<ReturnType<typeof sandboxMutation>> = new Set();
 
-  const doMutateSandbox = <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment>(
+  const doMutateSandbox = <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment>(
     sandbox: T
   ): T => {
     changedSandboxes.add(sandbox);
@@ -110,7 +111,7 @@ export const deleteSandboxesFromState = (
     ids: string[];
   }
 ) => {
-  const sandboxFilter = <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment>(
+  const sandboxFilter = <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment>(
     sandbox: T
   ): boolean => !ids.includes(sandbox.id);
 
@@ -165,7 +166,8 @@ export const deleteSandboxesFromState = (
       } else if (type !== 'RECENT_BRANCHES') {
         const newSandboxes = sandboxStructure[type].filter(sandboxFilter);
         if (newSandboxes.length !== sandboxStructure[type].length) {
-          dashboard.sandboxes[type] = newSandboxes;
+          // TypeScript can't narrow the union type based on the key, so we need to assert
+          (dashboard.sandboxes as any)[type] = newSandboxes;
         }
       }
     });
