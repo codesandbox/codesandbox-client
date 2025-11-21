@@ -397,6 +397,40 @@ export const recentlyAccessedBranches: Query<
   ${branchFragment}
 `;
 
+const COLLABORATOR_SANDBOX_FRAGMENT = gql`
+  fragment collaboratorSandbox on Sandbox {
+    id
+    alias
+    title
+    description
+    updatedAt
+    viewCount
+    isV2
+    draft
+    restricted
+    privacy
+    screenshotUrl
+
+    source {
+      template
+    }
+
+    customTemplate {
+      id
+      iconUrl
+    }
+
+    author {
+      username
+    }
+
+    collection {
+      path
+      id
+    }
+  }
+`;
+
 export const sharedWithmeSandboxes: Query<
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables
@@ -406,11 +440,11 @@ export const sharedWithmeSandboxes: Query<
       id
       
       collaboratorSandboxes {
-        ...sandboxFragmentDashboard
+        ...collaboratorSandbox
       }
     }
   }
-  ${sandboxFragmentDashboard}
+  ${COLLABORATOR_SANDBOX_FRAGMENT}
 `;
 
 export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`

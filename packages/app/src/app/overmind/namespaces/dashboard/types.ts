@@ -1,4 +1,18 @@
-import { SidebarCollectionDashboardFragment as Collection } from 'app/graphql/types';
+import {
+  SidebarCollectionDashboardFragment as Collection,
+  SandboxFragmentDashboardFragment,
+  SandboxByPathFragment,
+  DraftSandboxFragment,
+  SearchTeamSandboxFragment,
+  CollaboratorSandboxFragment,
+} from 'app/graphql/types';
+
+export type DashboardSandboxFragment =
+  | SandboxFragmentDashboardFragment
+  | SandboxByPathFragment
+  | DraftSandboxFragment
+  | SearchTeamSandboxFragment
+  | CollaboratorSandboxFragment;
 
 export type PageTypes =
   | 'search'

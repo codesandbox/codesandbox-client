@@ -1,10 +1,5 @@
 import { Context } from 'app/overmind';
-import {
-  SandboxFragmentDashboardFragment,
-  SandboxByPathFragment,
-  DraftSandboxFragment,
-  SearchTeamSandboxFragment,
-} from 'app/graphql/types';
+import { DashboardSandboxFragment } from './types';
 
 /**
  * Change sandbox frozen in state and returns the sandboxes that have changed in their old state
@@ -20,14 +15,14 @@ export const changeSandboxesInState = (
      * The mutation that happens on the sandbox, make sure to return a *new* sandbox here, to make sure
      * that we can still rollback easily in the future.
      */
-    sandboxMutation: <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment>(
+    sandboxMutation: <T extends DashboardSandboxFragment>(
       sandbox: T
     ) => T;
   }
 ) => {
   const changedSandboxes: Set<ReturnType<typeof sandboxMutation>> = new Set();
 
-  const doMutateSandbox = <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment>(
+  const doMutateSandbox = <T extends DashboardSandboxFragment>(
     sandbox: T
   ): T => {
     changedSandboxes.add(sandbox);
@@ -111,7 +106,7 @@ export const deleteSandboxesFromState = (
     ids: string[];
   }
 ) => {
-  const sandboxFilter = <T extends SandboxFragmentDashboardFragment | SandboxByPathFragment | DraftSandboxFragment | SearchTeamSandboxFragment>(
+  const sandboxFilter = <T extends DashboardSandboxFragment>(
     sandbox: T
   ): boolean => !ids.includes(sandbox.id);
 
