@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Link, useHistory } from 'react-router-dom';
 import { Combobox, ComboboxInput } from '@reach/combobox';
@@ -163,17 +163,38 @@ const SearchInputGroup = () => {
     new URLSearchParams(window.location.search).get('query') || ''
   );
 
+  const lastTrackedQuery = useRef<string | null>(null);
+
   const search = (queryString: string) => {
+    // Track search start when executing a new search query
+    if (lastTrackedQuery.current !== queryString && queryString.length >= 1) {
+      track('Dashboard - Topbar - Search');
+      lastTrackedQuery.current = queryString;
+    }
+    
     history.push(dashboardUrls.search(queryString, activeTeam));
   };
   const [debouncedSearch] = useDebouncedCallback(search, 200);
 
+  const onFocus = () => {
+    track('Dashboard - Topbar - Search Focus');
+  };
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    if (event.target.value.length >= 1) {
-      debouncedSearch(event.target.value);
+    const newValue = event.target.value;
+    
+    setQuery(newValue);
+    
+    // Reset tracking when query becomes empty
+    if (newValue.length === 0) {
+      lastTrackedQuery.current = null;
     }
-    if (!event.target.value) {
+    
+    if (newValue.length >= 1) {
+      debouncedSearch(newValue);
+    }
+
+    if (!newValue) {
       history.push(dashboardUrls.recent(activeTeam));
     }
   };
@@ -214,6 +235,7 @@ const SearchInputGroup = () => {
             as={Input}
             value={query}
             onChange={onChange}
+            onFocus={onFocus}
             // onKeyPress={handleEnter}
             placeholder="Search in workspace"
             icon="search"
