@@ -3938,50 +3938,7 @@ export type AddToFolderMutationVariables = Exact<{
 
 export type AddToFolderMutation = {
   __typename?: 'RootMutationType';
-  addToCollectionOrTeam: Array<{
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    lastAccessedAt: any;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    isFrozen: boolean;
-    screenshotUrl: string | null;
-    viewCount: number;
-    likeCount: number;
-    isV2: boolean;
-    draft: boolean;
-    restricted: boolean;
-    authorId: any | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      iconUrl: string | null;
-    } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-      iconUrl: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      id: any | null;
-    } | null;
-    author: { __typename?: 'User'; username: string } | null;
-    permissions: {
-      __typename?: 'SandboxProtectionSettings';
-      preventSandboxLeaving: boolean;
-      preventSandboxExport: boolean;
-    } | null;
-  } | null>;
+  addToCollectionOrTeam: Array<{ __typename?: 'Sandbox'; id: string } | null>;
 };
 
 export type MoveToTrashMutationVariables = Exact<{
@@ -3990,50 +3947,7 @@ export type MoveToTrashMutationVariables = Exact<{
 
 export type MoveToTrashMutation = {
   __typename?: 'RootMutationType';
-  deleteSandboxes: Array<{
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    lastAccessedAt: any;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    isFrozen: boolean;
-    screenshotUrl: string | null;
-    viewCount: number;
-    likeCount: number;
-    isV2: boolean;
-    draft: boolean;
-    restricted: boolean;
-    authorId: any | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      iconUrl: string | null;
-    } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-      iconUrl: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      id: any | null;
-    } | null;
-    author: { __typename?: 'User'; username: string } | null;
-    permissions: {
-      __typename?: 'SandboxProtectionSettings';
-      preventSandboxLeaving: boolean;
-      preventSandboxExport: boolean;
-    } | null;
-  }>;
+  deleteSandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
 export type ChangePrivacyMutationVariables = Exact<{
@@ -4043,50 +3957,7 @@ export type ChangePrivacyMutationVariables = Exact<{
 
 export type ChangePrivacyMutation = {
   __typename?: 'RootMutationType';
-  setSandboxesPrivacy: Array<{
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    lastAccessedAt: any;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    isFrozen: boolean;
-    screenshotUrl: string | null;
-    viewCount: number;
-    likeCount: number;
-    isV2: boolean;
-    draft: boolean;
-    restricted: boolean;
-    authorId: any | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      iconUrl: string | null;
-    } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-      iconUrl: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      id: any | null;
-    } | null;
-    author: { __typename?: 'User'; username: string } | null;
-    permissions: {
-      __typename?: 'SandboxProtectionSettings';
-      preventSandboxLeaving: boolean;
-      preventSandboxExport: boolean;
-    } | null;
-  }>;
+  setSandboxesPrivacy: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
 export type ChangeFrozenMutationVariables = Exact<{
@@ -4096,50 +3967,7 @@ export type ChangeFrozenMutationVariables = Exact<{
 
 export type ChangeFrozenMutation = {
   __typename?: 'RootMutationType';
-  setSandboxesFrozen: Array<{
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    lastAccessedAt: any;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    isFrozen: boolean;
-    screenshotUrl: string | null;
-    viewCount: number;
-    likeCount: number;
-    isV2: boolean;
-    draft: boolean;
-    restricted: boolean;
-    authorId: any | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      iconUrl: string | null;
-    } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-      iconUrl: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      id: any | null;
-    } | null;
-    author: { __typename?: 'User'; username: string } | null;
-    permissions: {
-      __typename?: 'SandboxProtectionSettings';
-      preventSandboxLeaving: boolean;
-      preventSandboxExport: boolean;
-    } | null;
-  }>;
+  setSandboxesFrozen: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
 export type _RenameSandboxMutationVariables = Exact<{
@@ -4149,50 +3977,7 @@ export type _RenameSandboxMutationVariables = Exact<{
 
 export type _RenameSandboxMutation = {
   __typename?: 'RootMutationType';
-  renameSandbox: {
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    lastAccessedAt: any;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    isFrozen: boolean;
-    screenshotUrl: string | null;
-    viewCount: number;
-    likeCount: number;
-    isV2: boolean;
-    draft: boolean;
-    restricted: boolean;
-    authorId: any | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      iconUrl: string | null;
-    } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-      iconUrl: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      id: any | null;
-    } | null;
-    author: { __typename?: 'User'; username: string } | null;
-    permissions: {
-      __typename?: 'SandboxProtectionSettings';
-      preventSandboxLeaving: boolean;
-      preventSandboxExport: boolean;
-    } | null;
-  };
+  renameSandbox: { __typename?: 'Sandbox'; id: string };
 };
 
 export type _PermanentlyDeleteSandboxesMutationVariables = Exact<{
@@ -4210,60 +3995,7 @@ export type _AcceptTeamInvitationMutationVariables = Exact<{
 
 export type _AcceptTeamInvitationMutation = {
   __typename?: 'RootMutationType';
-  acceptTeamInvitation: {
-    __typename?: 'Team';
-    id: any;
-    name: string;
-    description: string | null;
-    avatarUrl: string | null;
-    insertedAt: string;
-    settings: {
-      __typename?: 'WorkspaceSandboxSettings';
-      minimumPrivacy: number;
-    } | null;
-    userAuthorizations: Array<{
-      __typename?: 'UserAuthorization';
-      userId: any;
-      authorization: TeamMemberAuthorization;
-      teamManager: boolean;
-    }>;
-    users: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    invitees: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    subscription: {
-      __typename?: 'ProSubscription';
-      origin: SubscriptionOrigin | null;
-      type: SubscriptionType;
-      status: SubscriptionStatus;
-      paymentProvider: SubscriptionPaymentProvider | null;
-    } | null;
-    featureFlags: {
-      __typename?: 'TeamFeatureFlags';
-      ubbBeta: boolean;
-      friendOfCsb: boolean;
-    };
-    limits: {
-      __typename?: 'TeamLimits';
-      includedPublicSandboxes: number;
-      includedPrivateSandboxes: number;
-    };
-    usage: {
-      __typename?: 'TeamUsage';
-      publicSandboxesQuantity: number;
-      privateSandboxesQuantity: number;
-    };
-  };
+  acceptTeamInvitation: { __typename?: 'Team'; id: any };
 };
 
 export type _RejectTeamInvitationMutationVariables = Exact<{
@@ -4300,60 +4032,7 @@ export type _SetTeamNameMutationVariables = Exact<{
 
 export type _SetTeamNameMutation = {
   __typename?: 'RootMutationType';
-  setTeamName: {
-    __typename?: 'Team';
-    id: any;
-    name: string;
-    description: string | null;
-    avatarUrl: string | null;
-    insertedAt: string;
-    settings: {
-      __typename?: 'WorkspaceSandboxSettings';
-      minimumPrivacy: number;
-    } | null;
-    userAuthorizations: Array<{
-      __typename?: 'UserAuthorization';
-      userId: any;
-      authorization: TeamMemberAuthorization;
-      teamManager: boolean;
-    }>;
-    users: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    invitees: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    subscription: {
-      __typename?: 'ProSubscription';
-      origin: SubscriptionOrigin | null;
-      type: SubscriptionType;
-      status: SubscriptionStatus;
-      paymentProvider: SubscriptionPaymentProvider | null;
-    } | null;
-    featureFlags: {
-      __typename?: 'TeamFeatureFlags';
-      ubbBeta: boolean;
-      friendOfCsb: boolean;
-    };
-    limits: {
-      __typename?: 'TeamLimits';
-      includedPublicSandboxes: number;
-      includedPrivateSandboxes: number;
-    };
-    usage: {
-      __typename?: 'TeamUsage';
-      publicSandboxesQuantity: number;
-      privateSandboxesQuantity: number;
-    };
-  };
+  setTeamName: { __typename?: 'Team'; id: any };
 };
 
 export type DeleteWorkspaceMutationVariables = Exact<{
@@ -4571,60 +4250,7 @@ export type SetTeamMetadataMutationVariables = Exact<{
 
 export type SetTeamMetadataMutation = {
   __typename?: 'RootMutationType';
-  setTeamMetadata: {
-    __typename?: 'Team';
-    id: any;
-    name: string;
-    description: string | null;
-    avatarUrl: string | null;
-    insertedAt: string;
-    settings: {
-      __typename?: 'WorkspaceSandboxSettings';
-      minimumPrivacy: number;
-    } | null;
-    userAuthorizations: Array<{
-      __typename?: 'UserAuthorization';
-      userId: any;
-      authorization: TeamMemberAuthorization;
-      teamManager: boolean;
-    }>;
-    users: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    invitees: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    subscription: {
-      __typename?: 'ProSubscription';
-      origin: SubscriptionOrigin | null;
-      type: SubscriptionType;
-      status: SubscriptionStatus;
-      paymentProvider: SubscriptionPaymentProvider | null;
-    } | null;
-    featureFlags: {
-      __typename?: 'TeamFeatureFlags';
-      ubbBeta: boolean;
-      friendOfCsb: boolean;
-    };
-    limits: {
-      __typename?: 'TeamLimits';
-      includedPublicSandboxes: number;
-      includedPrivateSandboxes: number;
-    };
-    usage: {
-      __typename?: 'TeamUsage';
-      publicSandboxesQuantity: number;
-      privateSandboxesQuantity: number;
-    };
-  };
+  setTeamMetadata: { __typename?: 'Team'; id: any };
 };
 
 export type JoinEligibleWorkspaceMutationVariables = Exact<{
@@ -6334,27 +5960,7 @@ export type AcceptTeamInvitationMutationVariables = Exact<{
 
 export type AcceptTeamInvitationMutation = {
   __typename?: 'RootMutationType';
-  acceptTeamInvitation: {
-    __typename?: 'Team';
-    id: any;
-    name: string;
-    inviteToken: string;
-    description: string | null;
-    users: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-    invitees: Array<{
-      __typename?: 'User';
-      id: any;
-      name: string | null;
-      username: string;
-      avatarUrl: string;
-    }>;
-  };
+  acceptTeamInvitation: { __typename?: 'Team'; id: any };
 };
 
 export type RejectTeamInvitationMutationVariables = Exact<{

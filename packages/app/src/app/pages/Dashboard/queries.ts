@@ -459,10 +459,9 @@ export const TEAM_QUERY = gql`
 export const ACCEPT_TEAM_INVITATION = gql`
   mutation AcceptTeamInvitation($teamId: UUID4!) {
     acceptTeamInvitation(teamId: $teamId) {
-      ...Team
+      id
     }
   }
-  ${TEAM_FRAGMENT}
 `;
 
 export const REJECT_TEAM_INVITATION = gql`

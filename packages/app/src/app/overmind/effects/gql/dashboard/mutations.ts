@@ -73,7 +73,6 @@ import { gql, Query } from 'overmind-graphql';
 import {
   teamFragmentDashboard,
   sidebarCollectionDashboard,
-  sandboxFragmentDashboard,
 } from './fragments';
 
 export const createTeam: Query<
@@ -150,10 +149,9 @@ export const addSandboxToFolder: Query<
       teamId: $teamId
       privacy: $privacy
     ) {
-      ...sandboxFragmentDashboard
+      id
     }
   }
-  ${sandboxFragmentDashboard}
 `;
 
 export const deleteSandboxes: Query<
@@ -162,10 +160,9 @@ export const deleteSandboxes: Query<
 > = gql`
   mutation MoveToTrash($sandboxIds: [ID!]!) {
     deleteSandboxes(sandboxIds: $sandboxIds) {
-      ...sandboxFragmentDashboard
+      id
     }
   }
-  ${sandboxFragmentDashboard}
 `;
 
 export const changePrivacy: Query<
@@ -174,10 +171,9 @@ export const changePrivacy: Query<
 > = gql`
   mutation changePrivacy($sandboxIds: [ID!]!, $privacy: Int!) {
     setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
-      ...sandboxFragmentDashboard
+      id
     }
   }
-  ${sandboxFragmentDashboard}
 `;
 
 export const changeFrozen: Query<
@@ -186,10 +182,9 @@ export const changeFrozen: Query<
 > = gql`
   mutation changeFrozen($sandboxIds: [ID!]!, $isFrozen: Boolean!) {
     setSandboxesFrozen(sandboxIds: $sandboxIds, isFrozen: $isFrozen) {
-      ...sandboxFragmentDashboard
+      id
     }
   }
-  ${sandboxFragmentDashboard}
 `;
 
 export const renameSandbox: Query<
@@ -198,10 +193,9 @@ export const renameSandbox: Query<
 > = gql`
   mutation _RenameSandbox($id: ID!, $title: String!) {
     renameSandbox(id: $id, title: $title) {
-      ...sandboxFragmentDashboard
+      id
     }
   }
-  ${sandboxFragmentDashboard}
 `;
 
 export const permanentlyDeleteSandboxes: Query<
@@ -221,10 +215,9 @@ export const acceptTeamInvitation: Query<
 > = gql`
   mutation _AcceptTeamInvitation($teamId: UUID4!) {
     acceptTeamInvitation(teamId: $teamId) {
-      ...teamFragmentDashboard
+      id
     }
   }
-  ${teamFragmentDashboard}
 `;
 
 export const rejectTeamInvitation: Query<
@@ -264,10 +257,9 @@ export const setTeamName: Query<
 > = gql`
   mutation _SetTeamName($teamId: UUID4!, $name: String!) {
     setTeamName(teamId: $teamId, name: $name) {
-      ...teamFragmentDashboard
+      id
     }
   }
-  ${teamFragmentDashboard}
 `;
 
 export const deleteWorkspace: Query<
@@ -528,10 +520,9 @@ export const setTeamMetadata: Query<
 > = gql`
   mutation SetTeamMetadata($teamId: UUID4!, $useCases: [String!]!) {
     setTeamMetadata(teamId: $teamId, metadata: { useCases: $useCases }) {
-      ...teamFragmentDashboard
+      id
     }
   }
-  ${teamFragmentDashboard}
 `;
 
 export const joinEligibleWorkspace: Query<
