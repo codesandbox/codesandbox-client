@@ -5,6 +5,7 @@ import {
   DraftSandboxFragment,
   SearchTeamSandboxFragment,
   CollaboratorSandboxFragment,
+  RecentlyAccessedSandboxFragment,
 } from 'app/graphql/types';
 
 export type DashboardSandboxFragment =
@@ -12,7 +13,8 @@ export type DashboardSandboxFragment =
   | SandboxByPathFragment
   | DraftSandboxFragment
   | SearchTeamSandboxFragment
-  | CollaboratorSandboxFragment;
+  | CollaboratorSandboxFragment
+  | RecentlyAccessedSandboxFragment;
 
 export type PageTypes =
   | 'search'

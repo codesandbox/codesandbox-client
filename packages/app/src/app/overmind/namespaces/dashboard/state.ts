@@ -11,6 +11,7 @@ import {
   RecentlyDeletedTeamSandboxesFragment,
   SearchTeamSandboxFragment,
   CollaboratorSandboxFragment,
+  RecentlyAccessedSandboxFragment,
 } from 'app/graphql/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
@@ -23,7 +24,7 @@ export type DashboardSandboxStructure = {
   DRAFTS: DraftSandboxFragment[] | null;
   TEMPLATES: Template[] | null;
   DELETED: RecentlyDeletedTeamSandboxesFragment[] | null;
-  RECENT_SANDBOXES: (Sandbox | DraftSandboxFragment)[] | null;
+  RECENT_SANDBOXES: (RecentlyAccessedSandboxFragment | DraftSandboxFragment)[] | null;
   RECENT_BRANCHES: Branch[] | null;
   SEARCH: (Sandbox | DraftSandboxFragment | SearchTeamSandboxFragment)[] | null;
   TEMPLATE_HOME: Template[] | null;
