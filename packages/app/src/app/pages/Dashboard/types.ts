@@ -7,6 +7,7 @@ import {
   RecentlyDeletedTeamSandboxesFragment,
   DraftSandboxFragment,
   RecentlyAccessedSandboxFragment,
+  WorkspaceSandboxFragment,
 } from 'app/graphql/types';
 import { Context } from 'app/overmind';
 import {
@@ -31,7 +32,8 @@ export type DashboardSandbox = {
       })
     | RecentlyDeletedTeamSandboxesFragment
     | DraftSandboxFragment
-    | RecentlyAccessedSandboxFragment;
+    | RecentlyAccessedSandboxFragment
+    | WorkspaceSandboxFragment;
   noDrag?: boolean;
 };
 

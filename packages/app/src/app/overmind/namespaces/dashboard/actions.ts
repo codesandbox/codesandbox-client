@@ -790,6 +790,29 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
   }
 };
 
+export const getWorkspaceSandboxes = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+
+  if (!state.activeTeam) {
+    dashboard.sandboxes.WORKSPACE_SANDBOXES = [];
+    return;
+  }
+
+  try {
+    const data = await effects.gql.queries.getWorkspaceSandboxes({
+      teamId: state.activeTeam,
+    });
+
+    dashboard.sandboxes.WORKSPACE_SANDBOXES =
+      data?.me?.team?.sandboxes || [];
+  } catch (error) {
+    dashboard.sandboxes.WORKSPACE_SANDBOXES = [];
+    effects.notificationToast.error(
+      'There was a problem getting workspace sandboxes'
+    );
+  }
+};
+
 export const getPage = async (
   { actions, state }: Context,
   page: sandboxesTypes

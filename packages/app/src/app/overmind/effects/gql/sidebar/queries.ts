@@ -10,7 +10,6 @@ import {
   sidebarSyncedSandboxFragment,
   sidebarTemplateFragment,
 } from './fragments';
-import { sandboxFragmentDashboard } from '../dashboard/fragments';
 
 export const getTeamSidebarData: Query<
   TeamSidebarDataQuery,
@@ -21,7 +20,7 @@ export const getTeamSidebarData: Query<
       id
       
       team(id: $id) {
-        syncedSandboxes: sandboxes(hasOriginalGit: true) {
+        syncedSandboxes: sandboxes(hasOriginalGit: true, limit: 1) {
           ...sidebarSyncedSandboxFragment
         }
         templates {
@@ -30,14 +29,10 @@ export const getTeamSidebarData: Query<
         projects(syncData: false) {
           ...sidebarProjectFragment
         }
-        sandboxes(limit: 10, orderBy: { field: "updatedAt", direction: DESC }) {
-          ...sandboxFragmentDashboard
-        }
       }
     }
   }
   ${sidebarSyncedSandboxFragment}
   ${sidebarTemplateFragment}
   ${sidebarProjectFragment}
-  ${sandboxFragmentDashboard}
 `;
