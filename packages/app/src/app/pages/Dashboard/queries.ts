@@ -257,19 +257,6 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
   ${RECENT_SANDBOX_FRAGMENT}
 `;
 
-export const SEARCH_SANDBOXES_QUERY = gql`
-  query SearchSandboxes {
-    me {
-      id
-      
-      sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
-        ...Sandbox
-      }
-    }
-  }
-  ${SANDBOX_FRAGMENT}
-`;
-
 export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   query DeletedSandboxes {
     me {
@@ -380,7 +367,6 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
       'DeletedSandboxes',
       'PathedSandboxes',
       'RecentSandboxes',
-      'SearchSandboxes',
     ],
     update: cache => {
       if (collections) {

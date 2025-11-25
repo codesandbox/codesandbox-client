@@ -5851,41 +5851,6 @@ export type RecentSandboxesQuery = {
   } | null;
 };
 
-export type SearchSandboxesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type SearchSandboxesQuery = {
-  __typename?: 'RootQueryType';
-  me: {
-    __typename?: 'CurrentUser';
-    id: any;
-    sandboxes: Array<{
-      __typename?: 'Sandbox';
-      id: string;
-      alias: string | null;
-      title: string | null;
-      description: string | null;
-      insertedAt: string;
-      updatedAt: string;
-      removedAt: string | null;
-      privacy: number;
-      screenshotUrl: string | null;
-      teamId: any | null;
-      source: { __typename?: 'Source'; template: string | null };
-      customTemplate: { __typename?: 'Template'; id: any | null } | null;
-      forkedTemplate: {
-        __typename?: 'Template';
-        id: any | null;
-        color: string | null;
-      } | null;
-      collection: {
-        __typename?: 'Collection';
-        path: string;
-        teamId: any | null;
-      } | null;
-    }>;
-  } | null;
-};
-
 export type DeletedSandboxesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type DeletedSandboxesQuery = {
