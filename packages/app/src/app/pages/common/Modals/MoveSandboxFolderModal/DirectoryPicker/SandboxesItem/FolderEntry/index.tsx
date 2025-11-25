@@ -38,7 +38,6 @@ import { CreateFolderEntry } from './CreateFolderEntry';
 
 import {
   PATHED_SANDBOXES_FOLDER_QUERY,
-  PATHED_SANDBOXES_CONTENT_QUERY,
   DELETE_FOLDER_MUTATION,
   RENAME_FOLDER_MUTATION,
 } from '../queries';
@@ -180,13 +179,6 @@ class FolderEntry extends React.Component<Props, State> {
               client.mutate({
                 mutation: DELETE_FOLDER_MUTATION,
                 variables: params,
-
-                refetchQueries: [
-                  {
-                    query: PATHED_SANDBOXES_CONTENT_QUERY,
-                    variables: { path: '/', teamId },
-                  },
-                ],
                 update: (cache, { data: { deleteCollection } }) => {
                   const variables: PathedSandboxesFoldersQueryVariables = {
                     teamId,
