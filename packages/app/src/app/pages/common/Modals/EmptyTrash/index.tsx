@@ -2,11 +2,9 @@ import React, { FunctionComponent } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
-import { permanentlyDeleteSandboxes } from '../../../Dashboard/queries';
-
 export const EmptyTrash: FunctionComponent = () => {
   const { trashSandboxIds } = useAppState().dashboard;
-  const { modalClosed } = useActions();
+  const { modalClosed, dashboard } = useActions();
 
   return (
     <Alert
@@ -14,7 +12,7 @@ export const EmptyTrash: FunctionComponent = () => {
       description="Are you sure you want to permanently delete all the items in the trash?"
       onCancel={modalClosed}
       onPrimaryAction={async () => {
-        await permanentlyDeleteSandboxes(trashSandboxIds);
+        await dashboard.permanentlyDeleteSandboxes(trashSandboxIds);
 
         modalClosed();
       }}

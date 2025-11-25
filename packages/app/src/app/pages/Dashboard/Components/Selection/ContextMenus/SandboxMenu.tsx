@@ -54,7 +54,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const hasWriteAccess = isInActiveTeam && hasEditorAccess;
 
-  if (location.pathname.includes('deleted') && hasWriteAccess) {
+  // For deleted page, we can trust that sandboxes belong to the active team
+  // since they're already filtered by team in the query, so we only need hasEditorAccess
+  if (location.pathname.includes('deleted') && hasEditorAccess) {
     return (
       <Menu.ContextMenu
         visible={visible}
