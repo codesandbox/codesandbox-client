@@ -47,7 +47,6 @@ import {
 import { gql, Query } from 'overmind-graphql';
 
 import {
-  sandboxFragmentDashboard,
   sidebarCollectionDashboard,
   templateFragmentDashboard,
   repoFragmentDashboard,
@@ -355,11 +354,44 @@ export const searchTeamSandboxes: Query<
   ${SEARCH_TEAM_SANDBOX_FRAGMENT}
 `;
 
-/**
- * @deprecated This query is being replaced by Apollo queries in the Recent page.
- * Will be removed once migration is complete.
- * See: packages/app/src/app/pages/Dashboard/Content/routes/Recent/queries.ts
- */
+const RECENTLY_ACCESSED_SANDBOX_FRAGMENT = gql`
+  fragment recentlyAccessedSandbox on Sandbox {
+    id
+    alias
+    title
+    lastAccessedAt
+    privacy
+    restricted
+    draft
+    isV2
+    screenshotUrl
+
+    source {
+      template
+    }
+
+    customTemplate {
+      id
+      iconUrl
+    }
+
+    forkedTemplate {
+      id
+      color
+      iconUrl
+    }
+
+    collection {
+      path
+      id
+    }
+
+    author {
+      username
+    }
+  }
+`;
+
 export const recentlyAccessedSandboxes: Query<
   RecentlyAccessedSandboxesLegacyQuery,
   RecentlyAccessedSandboxesLegacyQueryVariables
@@ -369,18 +401,13 @@ export const recentlyAccessedSandboxes: Query<
       id
       
       recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
-        ...sandboxFragmentDashboard
+        ...recentlyAccessedSandbox
       }
     }
   }
-  ${sandboxFragmentDashboard}
+  ${RECENTLY_ACCESSED_SANDBOX_FRAGMENT}
 `;
 
-/**
- * @deprecated This query is being replaced by Apollo queries in the Recent page.
- * Will be removed once migration is complete.
- * See: packages/app/src/app/pages/Dashboard/Content/routes/Recent/queries.ts
- */
 export const recentlyAccessedBranches: Query<
   RecentlyAccessedBranchesLegacyQuery,
   RecentlyAccessedBranchesLegacyQueryVariables
