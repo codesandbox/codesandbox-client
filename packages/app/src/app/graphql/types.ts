@@ -6078,31 +6078,7 @@ export type AddToCollectionMutationVariables = Exact<{
 
 export type AddToCollectionMutation = {
   __typename?: 'RootMutationType';
-  addToCollectionOrTeam: Array<{
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    screenshotUrl: string | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: { __typename?: 'Template'; id: any | null } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      teamId: any | null;
-    } | null;
-  } | null>;
+  addToCollectionOrTeam: Array<{ __typename?: 'Sandbox'; id: string } | null>;
 };
 
 export type DeleteSandboxesMutationVariables = Exact<{
@@ -6111,31 +6087,7 @@ export type DeleteSandboxesMutationVariables = Exact<{
 
 export type DeleteSandboxesMutation = {
   __typename?: 'RootMutationType';
-  deleteSandboxes: Array<{
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    screenshotUrl: string | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: { __typename?: 'Template'; id: any | null } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      teamId: any | null;
-    } | null;
-  }>;
+  deleteSandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
 export type SetSandboxesPrivacyMutationVariables = Exact<{
@@ -6145,31 +6097,7 @@ export type SetSandboxesPrivacyMutationVariables = Exact<{
 
 export type SetSandboxesPrivacyMutation = {
   __typename?: 'RootMutationType';
-  setSandboxesPrivacy: Array<{
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    screenshotUrl: string | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: { __typename?: 'Template'; id: any | null } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      teamId: any | null;
-    } | null;
-  }>;
+  setSandboxesPrivacy: Array<{ __typename?: 'Sandbox'; id: string }>;
 };
 
 export type RenameSandboxMutationVariables = Exact<{
@@ -6179,31 +6107,7 @@ export type RenameSandboxMutationVariables = Exact<{
 
 export type RenameSandboxMutation = {
   __typename?: 'RootMutationType';
-  renameSandbox: {
-    __typename?: 'Sandbox';
-    id: string;
-    alias: string | null;
-    title: string | null;
-    description: string | null;
-    insertedAt: string;
-    updatedAt: string;
-    removedAt: string | null;
-    privacy: number;
-    screenshotUrl: string | null;
-    teamId: any | null;
-    source: { __typename?: 'Source'; template: string | null };
-    customTemplate: { __typename?: 'Template'; id: any | null } | null;
-    forkedTemplate: {
-      __typename?: 'Template';
-      id: any | null;
-      color: string | null;
-    } | null;
-    collection: {
-      __typename?: 'Collection';
-      path: string;
-      teamId: any | null;
-    } | null;
-  };
+  renameSandbox: { __typename?: 'Sandbox'; id: string };
 };
 
 export type PermanentlyDeleteSandboxesMutationVariables = Exact<{

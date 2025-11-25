@@ -152,37 +152,33 @@ export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
       sandboxIds: $sandboxIds
       teamId: $teamId
     ) {
-      ...Sandbox
+      id
     }
   }
-  ${SANDBOX_FRAGMENT}
 `;
 
 export const DELETE_SANDBOXES_MUTATION = gql`
   mutation DeleteSandboxes($sandboxIds: [ID!]!) {
     deleteSandboxes(sandboxIds: $sandboxIds) {
-      ...Sandbox
+      id
     }
   }
-  ${SANDBOX_FRAGMENT}
 `;
 
 export const SET_SANDBOXES_PRIVACY_MUTATION = gql`
   mutation SetSandboxesPrivacy($sandboxIds: [ID!]!, $privacy: Int!) {
     setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
-      ...Sandbox
+      id
     }
   }
-  ${SANDBOX_FRAGMENT}
 `;
 
 export const RENAME_SANDBOX_MUTATION = gql`
   mutation RenameSandbox($id: ID!, $title: String!) {
     renameSandbox(id: $id, title: $title) {
-      ...Sandbox
+      id
     }
   }
-  ${SANDBOX_FRAGMENT}
 `;
 
 export const PERMANENTLY_DELETE_SANDBOXES_MUTATION = gql`
