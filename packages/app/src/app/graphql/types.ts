@@ -6263,6 +6263,29 @@ export type PathedSandboxesQuery = {
   } | null;
 };
 
+export type RecentSandboxFragment = {
+  __typename?: 'Sandbox';
+  id: string;
+  alias: string | null;
+  title: string | null;
+  lastAccessedAt: any;
+  screenshotUrl: string | null;
+  privacy: number;
+  teamId: any | null;
+  source: { __typename?: 'Source'; template: string | null };
+  customTemplate: { __typename?: 'Template'; id: any | null } | null;
+  forkedTemplate: {
+    __typename?: 'Template';
+    id: any | null;
+    color: string | null;
+  } | null;
+  collection: {
+    __typename?: 'Collection';
+    path: string;
+    teamId: any | null;
+  } | null;
+};
+
 export type RecentSandboxesQueryVariables = Exact<{
   orderField: Scalars['String'];
   orderDirection: Direction;
@@ -6278,12 +6301,9 @@ export type RecentSandboxesQuery = {
       id: string;
       alias: string | null;
       title: string | null;
-      description: string | null;
-      insertedAt: string;
-      updatedAt: string;
-      removedAt: string | null;
-      privacy: number;
+      lastAccessedAt: any;
       screenshotUrl: string | null;
+      privacy: number;
       teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
       customTemplate: { __typename?: 'Template'; id: any | null } | null;
