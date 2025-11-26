@@ -11,11 +11,11 @@ export const getSidebarData = async (
   try {
     /**
      * Fetch data for the selected team
+     * Using limit: 1 for existence checks to minimize data transfer
      */
     const result = await queries.getTeamSidebarData({ id: teamId });
 
     const syncedSandboxes = result.me?.team?.syncedSandboxes || null;
-    const sandboxes = result.me?.team?.sandboxes || [];
     const templates = result.me?.team?.templates || null;
     const repositories =
       result.me?.team?.projects?.map(p => ({
@@ -24,16 +24,16 @@ export const getSidebarData = async (
         defaultBranch: p.repository.defaultBranch,
       })) || [];
 
+    // Since we're using limit: 1, we only need to check if arrays have items
     const hasSyncedSandboxes = syncedSandboxes && syncedSandboxes.length > 0;
     const hasTemplates = templates && templates.length > 0;
 
     state.sidebar[teamId] = {
       hasSyncedSandboxes,
       hasTemplates,
-      sandboxes,
       repositories,
     };
-  } catch {
+  } catch (error) {
     effects.notificationToast.error(
       `There was a problem getting your data for the sidebar.`
     );

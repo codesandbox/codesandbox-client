@@ -43,6 +43,8 @@ import {
   GetSandboxWithTemplateQueryVariables,
   GetEligibleWorkspacesQuery,
   GetEligibleWorkspacesQueryVariables,
+  GetWorkspaceSandboxesQuery,
+  GetWorkspaceSandboxesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -406,6 +408,58 @@ export const recentlyAccessedSandboxes: Query<
     }
   }
   ${RECENTLY_ACCESSED_SANDBOX_FRAGMENT}
+`;
+
+const WORKSPACE_SANDBOX_FRAGMENT = gql`
+  fragment workspaceSandbox on Sandbox {
+    id
+    alias
+    title
+    description
+    updatedAt
+    viewCount
+    isV2
+    draft
+    restricted
+    privacy
+    screenshotUrl
+
+    source {
+      template
+    }
+
+    customTemplate {
+      id
+      iconUrl
+    }
+
+    author {
+      username
+    }
+
+    collection {
+      path
+      id
+    }
+  }
+`;
+
+export const getWorkspaceSandboxes: Query<
+  GetWorkspaceSandboxesQuery,
+  GetWorkspaceSandboxesQueryVariables
+> = gql`
+  query GetWorkspaceSandboxes($teamId: UUID4!) {
+    me {
+      id
+      
+      team(id: $teamId) {
+        sandboxes(limit: 10, orderBy: { field: "updated_at", direction: DESC }) {
+          ...workspaceSandbox
+        }
+      }
+    }
+  }
+  ${WORKSPACE_SANDBOX_FRAGMENT}
 `;
 
 export const recentlyAccessedBranches: Query<

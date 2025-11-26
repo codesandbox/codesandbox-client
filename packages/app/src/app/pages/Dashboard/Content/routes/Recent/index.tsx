@@ -21,7 +21,7 @@ export const Recent = () => {
   } = useAppState();
   const { isFrozen } = useWorkspaceLimits();
   const {
-    dashboard: { getPage },
+    dashboard: { getPage, getWorkspaceSandboxes },
   } = useActions();
   const page = 'recent';
 
@@ -29,6 +29,36 @@ export const Recent = () => {
     getPage(sandboxesTypes.RECENT);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
+
+  // TODO: Replace this useEffect with Apollo query enable/disable when migrating to Apollo
+  // Fetch workspace sandboxes only when needed (when there are no recent items but there are other repos)
+  useEffect(() => {
+    if (
+      sandboxes.RECENT_SANDBOXES !== null &&
+      sandboxes.RECENT_BRANCHES !== null &&
+      activeTeam &&
+      sandboxes.WORKSPACE_SANDBOXES === null
+    ) {
+      const recentItemsCount =
+        (sandboxes.RECENT_SANDBOXES || []).length +
+        (sandboxes.RECENT_BRANCHES || []).length;
+      const hasOtherRepos =
+        (sidebar[activeTeam]?.repositories || []).length > 0;
+
+      // Only fetch if there are no recent items but there are other repos
+      // This is when we'd want to show the "Explore workspace activity" section
+      if (recentItemsCount === 0 && hasOtherRepos) {
+        getWorkspaceSandboxes();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    activeTeam,
+    sandboxes.RECENT_SANDBOXES,
+    sandboxes.RECENT_BRANCHES,
+    sandboxes.WORKSPACE_SANDBOXES,
+    sidebar,
+  ]);
 
   if (
     sandboxes.RECENT_BRANCHES === null ||
@@ -88,18 +118,22 @@ export const Recent = () => {
     wr => !recentRepos.find(r => r.owner === wr.owner && r.name === wr.name)
   );
 
-  const allWorkspaceSandboxes = [
-    ...(sidebar[activeTeam]?.sandboxes || []).map(s => ({
-      type: 'sandbox' as const,
-      sandbox: s,
-    })),
-  ];
-  const otherSandboxes = allWorkspaceSandboxes.filter(
-    s =>
-      !recentItems.find(
-        r => r.type === 'sandbox' && r.sandbox.id === s.sandbox.id
-      )
+  // Filter out sandboxes that are already in recentItems
+  const recentSandboxIds = new Set(
+    recentItems
+      .filter((item): item is DashboardSandbox => item.type === 'sandbox')
+      .map(item => item.sandbox.id)
   );
+
+  const otherSandboxes: DashboardSandbox[] = (
+    sandboxes.WORKSPACE_SANDBOXES || []
+  )
+    .filter(sandbox => !recentSandboxIds.has(sandbox.id))
+    .slice(0, 10) // Limit to 10 for display
+    .map(sandbox => ({
+      type: 'sandbox' as const,
+      sandbox,
+    }));
 
   return (
     <StyledContentWrapper>
