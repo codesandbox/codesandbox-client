@@ -50,6 +50,7 @@ import { gql, Query } from 'overmind-graphql';
 
 import {
   sidebarCollectionDashboard,
+  collectionDashboard,
   templateFragmentDashboard,
   repoFragmentDashboard,
   currentTeamInfoFragment,
@@ -154,7 +155,7 @@ export const sandboxesByPath: Query<
       id
       
       collections(teamId: $teamId) {
-        ...sidebarCollectionDashboard
+        ...collectionDashboard
       }
       collection(path: $path, teamId: $teamId) {
         id
@@ -166,7 +167,7 @@ export const sandboxesByPath: Query<
     }
   }
   ${SANDBOX_BY_PATH_FRAGMENT}
-  ${sidebarCollectionDashboard}
+  ${collectionDashboard}
 `;
 
 const DRAFT_SANDBOX_FRAGMENT = gql`

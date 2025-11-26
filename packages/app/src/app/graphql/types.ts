@@ -3466,6 +3466,12 @@ export type SidebarCollectionDashboardFragment = {
   __typename?: 'Collection';
   id: any | null;
   path: string;
+};
+
+export type CollectionDashboardFragment = {
+  __typename?: 'Collection';
+  id: any | null;
+  path: string;
   sandboxCount: number;
 };
 
@@ -4515,7 +4521,6 @@ export type AllCollectionsQuery = {
       __typename?: 'Collection';
       id: any | null;
       path: string;
-      sandboxCount: number;
     }>;
   } | null;
 };

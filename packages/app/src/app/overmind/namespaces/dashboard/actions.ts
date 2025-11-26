@@ -264,6 +264,21 @@ export const getSandboxesByPath = async (
     dashboard.sandboxes.ALL[cleanPath] = data.me.collection.sandboxes.filter(
       s => !s.customTemplate
     );
+
+    // Update sandboxCount in allCollections from the collections query result
+    // (which uses collectionDashboard fragment with sandboxCount)
+    if (dashboard.allCollections && data.me.collections) {
+      const collectionsMap = new Map(
+        data.me.collections.map((c: any) => [c.path, c.sandboxCount])
+      );
+      dashboard.allCollections = dashboard.allCollections.map(collection => {
+        const sandboxCount = collectionsMap.get(collection.path);
+        if (sandboxCount !== undefined) {
+          return { ...collection, sandboxCount };
+        }
+        return collection;
+      });
+    }
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'

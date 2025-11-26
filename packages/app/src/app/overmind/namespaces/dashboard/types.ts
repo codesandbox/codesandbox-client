@@ -40,6 +40,7 @@ export type DELETE_ME_COLLECTION = Collection & {
   name: string;
   level: number;
   parent: string;
+  sandboxCount: number;
 };
 
 export enum sandboxesTypes {
