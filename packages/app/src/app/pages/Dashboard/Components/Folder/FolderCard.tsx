@@ -6,6 +6,7 @@ import {
   Icon,
   IconButton,
   InteractiveOverlay,
+  SkeletonText,
 } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { FolderItemComponentProps } from './types';
@@ -38,6 +39,23 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
   ...props
 }) => {
   const { hasEditorAccess } = useWorkspaceAuthorization();
+
+  const renderSandboxCount = () => {
+    if (isNewFolder) {
+      return null;
+    }
+
+    if (numberOfSandboxes === undefined) {
+      return <SkeletonText css={{ width: '60px', height: '12px' }} />;
+    }
+
+    return (
+      <Text size={12} variant="muted">
+        {numberOfSandboxes}{' '}
+        {numberOfSandboxes === 1 ? 'item' : 'items'}
+      </Text>
+    );
+  };
 
   return (
   <InteractiveOverlay>
@@ -94,12 +112,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
             </Text>
           </InteractiveOverlay.Button>
         )}
-        {!isNewFolder ? (
-          <Text size={12} variant="muted">
-            {numberOfSandboxes || 0}{' '}
-            {numberOfSandboxes === 1 ? 'item' : 'items'}
-          </Text>
-        ) : null}
+        {renderSandboxCount()}
       </Stack>
     </StyledCard>
   </InteractiveOverlay>

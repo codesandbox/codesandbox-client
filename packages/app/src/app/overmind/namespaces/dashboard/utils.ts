@@ -14,7 +14,7 @@ export function getDecoratedCollection(
   return {
     path: collection.path,
     id: collection.id,
-    sandboxCount: 'sandboxCount' in collection ? collection.sandboxCount : 0,
+    sandboxCount: 'sandboxCount' in collection ? collection.sandboxCount : undefined,
     parent: split[split.length - 2] || '',
     level: split.length - 2,
     name: split[split.length - 1],
