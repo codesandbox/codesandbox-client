@@ -1,8 +1,8 @@
-'use strict';
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
-const release = process.argv.indexOf('-p') !== -1;
+
+const release = process.argv.indexOf('--mode') !== -1 && process.argv[process.argv.indexOf('--mode') + 1] === 'production';
 const outDir = path.join(__dirname, '..', 'build', 'temp', 'library', 'webpack');
 
 const outDirComponents = outDir.split(path.sep);
@@ -29,8 +29,10 @@ module.exports = {
   output: {
     path: __dirname,
     filename: '..' + path.sep + 'build' + path.sep + 'browserfs.' + (release ? 'min.js' : 'js'),
-    libraryTarget: 'umd',
-    library: 'BrowserFS',
+    library: {
+      type: 'umd',
+      name: 'BrowserFS',
+    },
     // Work around https://github.com/webpack/webpack/issues/6642 until
     // https://github.com/webpack/webpack/issues/6525 lands.
     globalObject: 'this',

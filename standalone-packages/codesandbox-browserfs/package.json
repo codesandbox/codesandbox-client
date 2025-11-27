@@ -20,7 +20,7 @@
     "url": "https://github.com/jvilk/BrowserFS/issues"
   },
   "engines": {
-    "node": ">= 0.10"
+    "node": ">= 18.0.0"
   },
   "bin": {
     "make_http_index": "./dist/scripts/make_http_index.js"
@@ -65,13 +65,13 @@
     "rollup-plugin-inject": "~2.2",
     "rollup-plugin-node-resolve": "~5.0.0",
     "rollup-plugin-sourcemaps": "~0.4.2",
-    "source-map-loader": "~0.2.3",
+    "source-map-loader": "^4.0.0",
     "tslint": "~5.11.0",
     "typedoc": "~0.11.1",
     "typescript": "^5.0.0",
-    "webpack": "~4.31.0",
-    "webpack-cli": "~3.3.2",
-    "webpack-dev-server": "~3.3.1"
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-dev-server": "^4.15.0"
   },
   "scripts": {
     "lint:old": "tslint -c src/tslint.json --project src/tsconfig.json",
@@ -83,8 +83,8 @@
     "watch:rollup": "rollup -w -c src/rollup.config.js",
     "build:webpack": "webpack  --mode development --config src/webpack.config.js",
     "watch:webpack": "webpack -w  --mode development --config src/webpack.config.js",
-    "build:webpack-release": "webpack -p --config src/webpack.config.js",
-    "watch:webpack-release": "webpack -w -p --config src/webpack.config.js",
+    "build:webpack-release": "webpack --mode production --config src/webpack.config.js",
+    "watch:webpack-release": "webpack -w --mode production --config src/webpack.config.js",
     "build": "npm-run-all --parallel build:tsc build:scripts --sequential build:rollup --parallel build:webpack build:webpack-release",
     "build:dev": "npm-run-all build script:make_dist dist:build:node",
     "watch": "npm-run-all build --parallel watch:tsc watch:scripts watch:rollup watch:webpack watch:webpack-release",
