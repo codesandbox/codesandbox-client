@@ -33,7 +33,7 @@ type State = BaseState &
   );
 
 type UseTeamTemplatesParams = {
-  teamId: string;
+  teamId: string | null;
   hasLogIn: boolean;
 };
 
@@ -42,6 +42,7 @@ export const useTeamTemplates = ({
   hasLogIn,
 }: UseTeamTemplatesParams): State => {
   const skip = !hasLogIn;
+  const skipTeamTemplates = skip || !teamId; // Skip team templates if no teamId
 
   const {
     data: recentData,
@@ -62,9 +63,9 @@ export const useTeamTemplates = ({
     TeamTemplatesForCreateQuery,
     TeamTemplatesForCreateQueryVariables
   >(FETCH_TEAM_TEMPLATES, {
-    variables: { id: teamId },
+    variables: { id: teamId! }, // Safe to use ! here since we skip when teamId is null
     fetchPolicy: 'cache-and-network',
-    skip,
+    skip: skipTeamTemplates,
   });
 
   if (skip) {
