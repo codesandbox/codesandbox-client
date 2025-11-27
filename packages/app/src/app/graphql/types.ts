@@ -3205,79 +3205,73 @@ export type TeamSubscriptionEvent = {
 
 export type TemplateFragment = {
   __typename?: 'Template';
-  id: any | null;
-  color: string | null;
   iconUrl: string | null;
-  published: boolean | null;
   sandbox: {
     __typename?: 'Sandbox';
     id: string;
     alias: string | null;
     title: string | null;
     description: string | null;
-    insertedAt: string;
-    updatedAt: string;
     isV2: boolean;
     forkCount: number;
     viewCount: number;
     team: { __typename?: 'TeamPreview'; name: string } | null;
-    author: { __typename?: 'User'; username: string } | null;
     source: { __typename?: 'Source'; template: string | null };
   } | null;
 };
 
-export type RecentAndWorkspaceTemplatesQueryVariables = Exact<{
+export type RecentTemplatesQueryVariables = Exact<{
   teamId: InputMaybe<Scalars['UUID4']>;
 }>;
 
-export type RecentAndWorkspaceTemplatesQuery = {
+export type RecentTemplatesQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
     id: any;
     recentlyUsedTemplates: Array<{
       __typename?: 'Template';
-      id: any | null;
-      color: string | null;
       iconUrl: string | null;
-      published: boolean | null;
       sandbox: {
         __typename?: 'Sandbox';
         id: string;
         alias: string | null;
         title: string | null;
         description: string | null;
-        insertedAt: string;
-        updatedAt: string;
         isV2: boolean;
         forkCount: number;
         viewCount: number;
         team: { __typename?: 'TeamPreview'; name: string } | null;
-        author: { __typename?: 'User'; username: string } | null;
         source: { __typename?: 'Source'; template: string | null };
       } | null;
     }>;
+  } | null;
+};
+
+export type TeamTemplatesForCreateQueryVariables = Exact<{
+  id: Scalars['UUID4'];
+}>;
+
+export type TeamTemplatesForCreateQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
     team: {
       __typename?: 'Team';
       templates: Array<{
         __typename?: 'Template';
-        id: any | null;
-        color: string | null;
         iconUrl: string | null;
-        published: boolean | null;
         sandbox: {
           __typename?: 'Sandbox';
           id: string;
           alias: string | null;
           title: string | null;
           description: string | null;
-          insertedAt: string;
-          updatedAt: string;
           isV2: boolean;
           forkCount: number;
           viewCount: number;
           team: { __typename?: 'TeamPreview'; name: string } | null;
-          author: { __typename?: 'User'; username: string } | null;
           source: { __typename?: 'Source'; template: string | null };
         } | null;
       }>;

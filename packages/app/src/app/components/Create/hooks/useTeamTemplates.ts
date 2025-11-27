@@ -1,9 +1,14 @@
 import { useQuery } from '@apollo/react-hooks';
 import {
-  RecentAndWorkspaceTemplatesQuery,
-  RecentAndWorkspaceTemplatesQueryVariables,
+  RecentTemplatesQuery,
+  RecentTemplatesQueryVariables,
+  TeamTemplatesForCreateQuery,
+  TeamTemplatesForCreateQueryVariables,
 } from 'app/graphql/types';
-import { FETCH_TEAM_TEMPLATES } from '../utils/queries';
+import {
+  FETCH_RECENT_TEMPLATES,
+  FETCH_TEAM_TEMPLATES,
+} from '../utils/queries';
 import { SandboxToFork } from '../utils/types';
 import { mapTemplateGQLResponseToSandboxToFork } from '../utils/api';
 
@@ -38,11 +43,26 @@ export const useTeamTemplates = ({
 }: UseTeamTemplatesParams): State => {
   const skip = !hasLogIn;
 
-  const { data, error } = useQuery<
-    RecentAndWorkspaceTemplatesQuery,
-    RecentAndWorkspaceTemplatesQueryVariables
+  const {
+    data: recentData,
+    error: recentError,
+  } = useQuery<RecentTemplatesQuery, RecentTemplatesQueryVariables>(
+    FETCH_RECENT_TEMPLATES,
+    {
+      variables: { teamId },
+      fetchPolicy: 'cache-and-network',
+      skip,
+    }
+  );
+
+  const {
+    data: teamData,
+    error: teamError,
+  } = useQuery<
+    TeamTemplatesForCreateQuery,
+    TeamTemplatesForCreateQueryVariables
   >(FETCH_TEAM_TEMPLATES, {
-    variables: { teamId },
+    variables: { id: teamId },
     fetchPolicy: 'cache-and-network',
     skip,
   });
@@ -55,19 +75,22 @@ export const useTeamTemplates = ({
     };
   }
 
-  if (error) {
+  // If either query has an error, return error state
+  if (recentError || teamError) {
     return {
       state: 'error',
       recentTemplates: [],
       teamTemplates: [],
-      error: error.message,
+      error: recentError?.message || teamError?.message || 'Unknown error',
     };
   }
 
-  // Instead of checking the loading var we check this. Apollo sets the loading
-  // var to true even if we still have cached data that we can use. We  also need to
-  // check if `data.me` isnt undefined before getting templates.
-  if (typeof data?.me === 'undefined') {
+  // Check if both queries have loaded data
+  const recentLoaded = typeof recentData?.me !== 'undefined';
+  const teamLoaded = typeof teamData?.me !== 'undefined';
+
+  // If neither has loaded yet, show loading state
+  if (!recentLoaded && !teamLoaded) {
     return {
       state: 'loading',
       recentTemplates: [],
@@ -75,13 +98,22 @@ export const useTeamTemplates = ({
     };
   }
 
+  // Return ready state with available data (partial data is okay)
+  // Apply client-side limits since schema doesn't support limit parameters
+  const recentLimit = 10; // Fetch more than 4 for better UX
+  const teamLimit = 50; // Reasonable limit for team templates
+
   return {
     state: 'ready',
-    recentTemplates: data.me.recentlyUsedTemplates.map(
-      mapTemplateGQLResponseToSandboxToFork
-    ),
-    teamTemplates: data.me.team.templates.map(
-      mapTemplateGQLResponseToSandboxToFork
-    ),
+    recentTemplates: recentData?.me?.recentlyUsedTemplates
+      ? recentData.me.recentlyUsedTemplates
+          .slice(0, recentLimit)
+          .map(mapTemplateGQLResponseToSandboxToFork)
+      : [],
+    teamTemplates: teamData?.me?.team?.templates
+      ? teamData.me.team.templates
+          .slice(0, teamLimit)
+          .map(mapTemplateGQLResponseToSandboxToFork)
+      : [],
   };
 };
