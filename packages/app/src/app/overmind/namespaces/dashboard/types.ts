@@ -1,5 +1,5 @@
 import {
-  SidebarCollectionDashboardFragment as Collection,
+  CollectionBasicFragment as Collection,
   SandboxFragmentDashboardFragment,
   SandboxByPathFragment,
   DraftSandboxFragment,

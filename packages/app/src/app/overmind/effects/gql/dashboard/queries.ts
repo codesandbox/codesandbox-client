@@ -9,8 +9,8 @@ import {
   AllTeamsQueryVariables,
   RecentlyAccessedSandboxesLegacyQuery,
   RecentlyAccessedSandboxesLegacyQueryVariables,
-  AllCollectionsQuery,
-  AllCollectionsQueryVariables,
+  SidebarCollectionsQuery,
+  SidebarCollectionsQueryVariables,
   _SearchTeamSandboxesQuery,
   _SearchTeamSandboxesQueryVariables,
   GetTeamQuery,
@@ -49,7 +49,6 @@ import {
 import { gql, Query } from 'overmind-graphql';
 
 import {
-  sidebarCollectionDashboard,
   collectionDashboard,
   templateFragmentDashboard,
   repoFragmentDashboard,
@@ -61,6 +60,7 @@ import {
   projectWithBranchesFragment,
   githubRepoFragment,
 } from './fragments';
+import { COLLECTION_BASIC } from '../common/fragments';
 
 const RECENTLY_DELETED_TEAM_SANDBOXES_FRAGMENT = gql`
 fragment recentlyDeletedTeamSandboxes on Sandbox {
@@ -236,20 +236,20 @@ export const getTeamDrafts: Query<
   ${DRAFT_SANDBOX_FRAGMENT}
 `;
 
-export const getCollections: Query<
-  AllCollectionsQuery,
-  AllCollectionsQueryVariables
+export const getSidebarCollections: Query<
+  SidebarCollectionsQuery,
+  SidebarCollectionsQueryVariables
 > = gql`
-  query AllCollections($teamId: ID) {
+  query SidebarCollections($teamId: ID) {
     me {
       id
       
       collections(teamId: $teamId) {
-        ...sidebarCollectionDashboard
+        ...collectionBasic
       }
     }
   }
-  ${sidebarCollectionDashboard}
+  ${COLLECTION_BASIC}
 `;
 
 export const getTeamRepos: Query<

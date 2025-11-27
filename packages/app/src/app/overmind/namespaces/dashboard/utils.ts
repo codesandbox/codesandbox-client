@@ -1,14 +1,14 @@
 import {
   BranchFragment,
   ProjectFragment,
-  SidebarCollectionDashboardFragment,
+  CollectionBasicFragment,
   CollectionDashboardFragment,
   BranchWithPrFragment,
 } from 'app/graphql/types';
 import { DELETE_ME_COLLECTION } from './types';
 
 export function getDecoratedCollection(
-  collection: SidebarCollectionDashboardFragment | CollectionDashboardFragment
+  collection: CollectionBasicFragment | CollectionDashboardFragment
 ): DELETE_ME_COLLECTION {
   const split = collection.path.split('/');
   return {

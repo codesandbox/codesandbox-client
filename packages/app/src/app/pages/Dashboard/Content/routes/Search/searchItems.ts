@@ -1,7 +1,7 @@
 import {
   Collection,
   SandboxFragmentDashboardFragment,
-  SidebarCollectionDashboardFragment,
+  CollectionBasicFragment,
   ProjectFragment as Repository,
 } from 'app/graphql/types';
 import { useAppState, useActions } from 'app/overmind';
@@ -11,7 +11,7 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 
 type DashboardItem =
   | SandboxFragmentDashboardFragment
-  | SidebarCollectionDashboardFragment;
+  | CollectionBasicFragment;
 
 // Type guard to check if an item is a sandbox
 function isSandbox(

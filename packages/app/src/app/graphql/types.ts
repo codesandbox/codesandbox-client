@@ -3355,6 +3355,12 @@ export type RepositoryTeamsQuery = {
   }>;
 };
 
+export type CollectionBasicFragment = {
+  __typename?: 'Collection';
+  id: any | null;
+  path: string;
+};
+
 export type SandboxFragmentDashboardFragment = {
   __typename?: 'Sandbox';
   id: string;
@@ -3460,12 +3466,6 @@ export type RepoFragmentDashboardFragment = {
     preventSandboxLeaving: boolean;
     preventSandboxExport: boolean;
   } | null;
-};
-
-export type SidebarCollectionDashboardFragment = {
-  __typename?: 'Collection';
-  id: any | null;
-  path: string;
 };
 
 export type CollectionDashboardFragment = {
@@ -4508,11 +4508,11 @@ export type TeamDraftsQuery = {
   } | null;
 };
 
-export type AllCollectionsQueryVariables = Exact<{
+export type SidebarCollectionsQueryVariables = Exact<{
   teamId: InputMaybe<Scalars['ID']>;
 }>;
 
-export type AllCollectionsQuery = {
+export type SidebarCollectionsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
@@ -5563,6 +5563,23 @@ export type RecentNotificationsQuery = {
   } | null;
 };
 
+export type ProfileCollectionsQueryVariables = Exact<{
+  teamId: InputMaybe<Scalars['ID']>;
+}>;
+
+export type ProfileCollectionsQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
+    collections: Array<{
+      __typename?: 'Collection';
+      id: any | null;
+      path: string;
+    }>;
+  } | null;
+};
+
 export type SidebarSyncedSandboxFragmentFragment = {
   __typename?: 'Sandbox';
   id: string;
@@ -5618,12 +5635,6 @@ export type TeamsQuery = {
     id: any;
     workspaces: Array<{ __typename?: 'Team'; id: any; name: string }>;
   } | null;
-};
-
-export type SidebarCollectionFragment = {
-  __typename?: 'Collection';
-  id: any | null;
-  path: string;
 };
 
 export type TeamFragment = {

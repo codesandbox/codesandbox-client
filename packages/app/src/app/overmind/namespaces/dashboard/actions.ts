@@ -148,7 +148,7 @@ export const getTeams = async ({ state, effects }: Context) => {
 
 export const getAllFolders = async ({ state, effects }: Context) => {
   try {
-    const data = await effects.gql.queries.getCollections({
+    const data = await effects.gql.queries.getSidebarCollections({
       teamId: state.activeTeam,
     });
     if (!data || !data.me || !data.me.collections) {
@@ -888,7 +888,7 @@ export const addSandboxesToFolder = async (
     f => f.path === collectionPath
   );
   if (existingCollection) {
-    existingCollection.sandboxCount += sandboxIds.length;
+    existingCollection.sandboxCount = (existingCollection.sandboxCount ?? 0) + sandboxIds.length;
   }
 
   if (teamId !== state.activeTeam) {
