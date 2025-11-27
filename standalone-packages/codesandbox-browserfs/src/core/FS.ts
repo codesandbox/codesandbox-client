@@ -6,6 +6,7 @@ import { FileSystem, BFSOneArgCallback, BFSCallback, BFSThreeArgCallback } from 
 import { FileFlag } from './file_flag';
 import Stats, { FileType } from './node_fs_stats';
 import setImmediate from '../generic/setImmediate';
+import {BufferEncoding} from 'buffer';
 
 // Typing info only.
 import { FileWatcher } from './file_watcher';
@@ -853,7 +854,7 @@ export default class FS {
           cb = typeof arg4 === 'function' ? arg4 : typeof arg5 === 'function' ? arg5 : cb;
           return cb(new ApiError(ErrorCode.EINVAL, 'Invalid arguments.'));
       }
-      buffer = Buffer.from(arg2, encoding);
+      buffer = Buffer.from(arg2, encoding as BufferEncoding);
       offset = 0;
       length = buffer.length;
     } else {
@@ -899,7 +900,7 @@ export default class FS {
       position = typeof arg3 === 'number' ? arg3 : null;
       const encoding = typeof arg4 === 'string' ? arg4 : 'utf8';
       offset = 0;
-      buffer = Buffer.from(arg2, encoding);
+      buffer = Buffer.from(arg2, encoding as BufferEncoding);
       length = buffer.length;
     } else {
       // Signature 2: (fd, buffer, offset, length, position?)
@@ -948,7 +949,7 @@ export default class FS {
         if (err) {
           return (<Function> cb)(err);
         }
-        (<BFSThreeArgCallback<string, number>> cb)(err, buf!.toString(encoding), bytesRead!);
+        (<BFSThreeArgCallback<string, number>> cb)(err, buf!.toString(encoding as BufferEncoding), bytesRead!);
       }, 3);
     } else {
       buffer = arg2;
@@ -1009,7 +1010,7 @@ export default class FS {
     if (!shenanigans) {
       return rv;
     }
-    return [buffer.toString(encoding), rv];
+    return [buffer.toString(encoding as BufferEncoding), rv];
 
   }
 

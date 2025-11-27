@@ -4,6 +4,7 @@ import {File} from './file';
 import {FileFlag, ActionType} from './file_flag';
 import * as path from 'path';
 import {fail} from './util';
+import {BufferEncoding} from 'buffer';
 
 export type BFSOneArgCallback = (e?: ApiError | null) => any;
 export type BFSCallback<T> = (e: ApiError | null | undefined, rv?: T) => any;
@@ -661,7 +662,7 @@ export class BaseFileSystem {
             return cb(err, buf);
           }
           try {
-            cb(null, buf.toString(encoding));
+            cb(null, buf.toString(encoding as BufferEncoding));
           } catch (e) {
             cb(e);
           }
@@ -681,7 +682,7 @@ export class BaseFileSystem {
       if (encoding === null) {
         return buf;
       }
-      return buf.toString(encoding);
+      return buf.toString(encoding as BufferEncoding);
     } finally {
       fd.closeSync();
     }
@@ -702,7 +703,7 @@ export class BaseFileSystem {
 
       try {
         if (typeof data === 'string') {
-          data = Buffer.from(data, encoding!);
+          data = Buffer.from(data, encoding! as BufferEncoding);
         }
       } catch (e) {
         return cb(e);

@@ -7,6 +7,7 @@ import {NoSyncFile} from '../generic/preload_file';
 import {Arrayish, arrayish2Buffer, copyingSlice, bufferValidator} from '../core/util';
 import ExtendedASCII from '../generic/extended_ascii';
 import setImmediate from '../generic/setImmediate';
+import {BufferEncoding} from 'buffer';
 /**
  * @hidden
  */
@@ -788,7 +789,7 @@ export default class ZipFS extends SynchronousFileSystem implements FileSystem {
       if (encoding === null) {
         return copyingSlice(fdBuff);
       }
-      return fdBuff.toString(encoding);
+      return fdBuff.toString(encoding as BufferEncoding);
     } finally {
       fd.closeSync();
     }

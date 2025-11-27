@@ -2,6 +2,7 @@ import {BFSCallback, FileSystemOptions} from '../core/file_system';
 import {SyncKeyValueStore, SimpleSyncStore, SyncKeyValueFileSystem, SimpleSyncRWTransaction, SyncKeyValueRWTransaction} from '../generic/key_value_filesystem';
 import {ApiError, ErrorCode} from '../core/api_error';
 import global from '../core/global';
+import {BufferEncoding} from 'buffer';
 
 /**
  * Some versions of FF and all versions of IE do not support the full range of
@@ -46,7 +47,7 @@ export class LocalStorageStore implements SyncKeyValueStore, SimpleSyncStore {
     try {
       const data = global.localStorage.getItem(key);
       if (data !== null) {
-        return Buffer.from(data, binaryEncoding);
+        return Buffer.from(data, binaryEncoding as BufferEncoding);
       }
     } catch (e) {
       // Do nothing.
@@ -61,7 +62,7 @@ export class LocalStorageStore implements SyncKeyValueStore, SimpleSyncStore {
         // Don't want to overwrite the key!
         return false;
       }
-      global.localStorage.setItem(key, data.toString(binaryEncoding));
+      global.localStorage.setItem(key, data.toString(binaryEncoding as BufferEncoding));
       return true;
     } catch (e) {
       throw new ApiError(ErrorCode.ENOSPC, "LocalStorage is full.");
