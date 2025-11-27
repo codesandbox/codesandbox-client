@@ -5600,11 +5600,11 @@ export type SidebarProjectFragmentFragment = {
   };
 };
 
-export type TeamSidebarDataQueryVariables = Exact<{
+export type TeamSidebarFlagsQueryVariables = Exact<{
   id: Scalars['UUID4'];
 }>;
 
-export type TeamSidebarDataQuery = {
+export type TeamSidebarFlagsQuery = {
   __typename?: 'RootQueryType';
   me: {
     __typename?: 'CurrentUser';
@@ -5613,6 +5613,21 @@ export type TeamSidebarDataQuery = {
       __typename?: 'Team';
       syncedSandboxes: Array<{ __typename?: 'Sandbox'; id: string }>;
       templates: Array<{ __typename?: 'Template'; id: any | null }>;
+    } | null;
+  } | null;
+};
+
+export type TeamSidebarProjectsQueryVariables = Exact<{
+  id: Scalars['UUID4'];
+}>;
+
+export type TeamSidebarProjectsQuery = {
+  __typename?: 'RootQueryType';
+  me: {
+    __typename?: 'CurrentUser';
+    id: any;
+    team: {
+      __typename?: 'Team';
       projects: Array<{
         __typename?: 'Project';
         repository: {

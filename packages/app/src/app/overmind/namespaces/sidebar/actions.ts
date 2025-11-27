@@ -10,21 +10,25 @@ export const getSidebarData = async (
 
   try {
     /**
-     * Fetch data for the selected team
-     * Using limit: 1 for existence checks to minimize data transfer
+     * Fetch data for the selected team using split queries to reduce complexity
+     * - Flags query: lightweight check for syncedSandboxes and templates flags
+     * - Projects query: fetches all projects separately
      */
-    const result = await queries.getTeamSidebarData({ id: teamId });
+    const [flagsResult, projectsResult] = await Promise.all([
+      queries.getTeamSidebarFlags({ id: teamId }),
+      queries.getTeamSidebarProjects({ id: teamId }),
+    ]);
 
-    const syncedSandboxes = result.me?.team?.syncedSandboxes || null;
-    const templates = result.me?.team?.templates || null;
+    const syncedSandboxes = flagsResult.me?.team?.syncedSandboxes || null;
+    const templates = flagsResult.me?.team?.templates || null;
     const repositories =
-      result.me?.team?.projects?.map(p => ({
+      projectsResult.me?.team?.projects?.map(p => ({
         owner: p.repository.owner,
         name: p.repository.name,
         defaultBranch: p.repository.defaultBranch,
       })) || [];
 
-    // Since we're using limit: 1, we only need to check if arrays have items
+    // Since we're using limit: 1 for syncedSandboxes, we only need to check if arrays have items
     const hasSyncedSandboxes = syncedSandboxes && syncedSandboxes.length > 0;
     const hasTemplates = templates && templates.length > 0;
 

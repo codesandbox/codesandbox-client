@@ -1,38 +1,53 @@
 import { gql, Query } from 'overmind-graphql';
 
 import {
-  TeamSidebarDataQuery,
-  TeamSidebarDataQueryVariables,
+  TeamSidebarFlagsQuery,
+  TeamSidebarFlagsQueryVariables,
+  TeamSidebarProjectsQuery,
+  TeamSidebarProjectsQueryVariables,
 } from 'app/graphql/types';
 
 import {
   sidebarProjectFragment,
-  sidebarSyncedSandboxFragment,
-  sidebarTemplateFragment,
 } from './fragments';
 
-export const getTeamSidebarData: Query<
-  TeamSidebarDataQuery,
-  TeamSidebarDataQueryVariables
+// Lightweight query for checking sidebar flags (hasSyncedSandboxes, hasTemplates)
+// Uses inline fields instead of fragments to minimize GraphQL overhead
+export const getTeamSidebarFlags: Query<
+  TeamSidebarFlagsQuery,
+  TeamSidebarFlagsQueryVariables
 > = gql`
-  query TeamSidebarData($id: UUID4!) {
+  query TeamSidebarFlags($id: UUID4!) {
     me {
       id
       
       team(id: $id) {
         syncedSandboxes: sandboxes(hasOriginalGit: true, limit: 1) {
-          ...sidebarSyncedSandboxFragment
+          id
         }
         templates {
-          ...sidebarTemplateFragment
+          id
         }
+      }
+    }
+  }
+`;
+
+// Separate query for projects to reduce query complexity
+export const getTeamSidebarProjects: Query<
+  TeamSidebarProjectsQuery,
+  TeamSidebarProjectsQueryVariables
+> = gql`
+  query TeamSidebarProjects($id: UUID4!) {
+    me {
+      id
+      
+      team(id: $id) {
         projects(syncData: false) {
           ...sidebarProjectFragment
         }
       }
     }
   }
-  ${sidebarSyncedSandboxFragment}
-  ${sidebarTemplateFragment}
   ${sidebarProjectFragment}
 `;
