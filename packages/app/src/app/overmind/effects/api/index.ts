@@ -162,7 +162,7 @@ export default {
     return api.delete(`/users/current_user/integrations/github`);
   },
   preloadTeamTemplates(teamId: string) {
-    client.query({ query: FETCH_TEAM_TEMPLATES, variables: { teamId } });
+    client.query({ query: FETCH_TEAM_TEMPLATES, variables: { id: teamId } });
   },
   deleteTemplate(
     sandboxId: string,
