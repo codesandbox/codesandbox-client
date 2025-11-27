@@ -8,7 +8,6 @@ import {NoSyncFile} from '../generic/preload_file';
 import {xhrIsAvailable, asyncDownloadFile, syncDownloadFile, getFileSizeAsync, getFileSizeSync} from '../generic/xhr';
 import {fetchIsAvailable, fetchFileAsync, fetchFileSizeAsync} from '../generic/fetch';
 import {FileIndex, isFileInode, isDirInode} from '../generic/file_index';
-import {BufferEncoding} from 'buffer';
 
 /**
  * Try to convert the given buffer into a string, and pass it to the callback.
@@ -18,7 +17,7 @@ import {BufferEncoding} from 'buffer';
  */
 function tryToString(buff: Buffer, encoding: string, cb: BFSCallback<string>) {
   try {
-    cb(null, buff.toString(encoding as BufferEncoding));
+    cb(null, buff.toString(encoding as NodeJS.BufferEncoding));
   } catch (e) {
     cb(e);
   }
@@ -400,7 +399,7 @@ export default class HTTPRequest extends BaseFileSystem implements FileSystem {
       if (encoding === null) {
         return copyingSlice(fdBuff);
       }
-      return fdBuff.toString(encoding as BufferEncoding);
+      return fdBuff.toString(encoding as NodeJS.BufferEncoding);
     } finally {
       fd.closeSync();
     }

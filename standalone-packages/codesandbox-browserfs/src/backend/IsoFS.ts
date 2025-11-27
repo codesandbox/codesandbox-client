@@ -6,7 +6,6 @@ import {FileFlag, ActionType} from '../core/file_flag';
 import {NoSyncFile} from '../generic/preload_file';
 import {copyingSlice, bufferValidator} from '../core/util';
 import * as path from 'path';
-import {BufferEncoding} from 'buffer';
 
 /**
  * @hidden
@@ -1316,7 +1315,7 @@ export default class IsoFS extends SynchronousFileSystem implements FileSystem {
       if (encoding === null) {
         return copyingSlice(fdBuff);
       }
-      return fdBuff.toString(encoding as BufferEncoding);
+      return fdBuff.toString(encoding as NodeJS.BufferEncoding);
     } finally {
       fd.closeSync();
     }

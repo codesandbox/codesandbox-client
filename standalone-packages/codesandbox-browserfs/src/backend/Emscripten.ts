@@ -5,7 +5,6 @@ import {BaseFile, File} from '../core/file';
 import {uint8Array2Buffer, buffer2Uint8array} from '../core/util';
 import {ApiError, ErrorCode, ErrorStrings} from '../core/api_error';
 import {EmscriptenFSNode} from '../generic/emscripten_fs';
-import {BufferEncoding} from 'buffer';
 
 /**
  * @hidden
@@ -310,7 +309,7 @@ export default class EmscriptenFileSystem extends SynchronousFileSystem {
       const data: Uint8Array = this._FS.readFile(p, { flags: flag.getFlagString() });
       const buff = uint8Array2Buffer(data);
       if (encoding) {
-        return buff.toString(encoding as BufferEncoding);
+        return buff.toString(encoding as NodeJS.BufferEncoding);
       } else {
         return buff;
       }
@@ -322,7 +321,7 @@ export default class EmscriptenFileSystem extends SynchronousFileSystem {
   public writeFileSync(p: string, data: any, encoding: string, flag: FileFlag, mode: number): void {
     try {
       if (encoding) {
-        data = Buffer.from(data, encoding as BufferEncoding);
+        data = Buffer.from(data, encoding as NodeJS.BufferEncoding);
       }
       const u8 = buffer2Uint8array(data);
       this._FS.writeFile(p, u8, { flags: flag.getFlagString(), encoding: 'binary' });

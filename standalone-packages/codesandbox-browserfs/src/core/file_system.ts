@@ -4,7 +4,6 @@ import {File} from './file';
 import {FileFlag, ActionType} from './file_flag';
 import * as path from 'path';
 import {fail} from './util';
-import {BufferEncoding} from 'buffer';
 
 export type BFSOneArgCallback = (e?: ApiError | null) => any;
 export type BFSCallback<T> = (e: ApiError | null | undefined, rv?: T) => any;
@@ -662,7 +661,7 @@ export class BaseFileSystem {
             return cb(err, buf);
           }
           try {
-            cb(null, buf.toString(encoding as BufferEncoding));
+            cb(null, buf.toString(encoding as NodeJS.BufferEncoding));
           } catch (e) {
             cb(e);
           }
@@ -682,7 +681,7 @@ export class BaseFileSystem {
       if (encoding === null) {
         return buf;
       }
-      return buf.toString(encoding as BufferEncoding);
+      return buf.toString(encoding as NodeJS.BufferEncoding);
     } finally {
       fd.closeSync();
     }
@@ -703,7 +702,7 @@ export class BaseFileSystem {
 
       try {
         if (typeof data === 'string') {
-          data = Buffer.from(data, encoding! as BufferEncoding);
+          data = Buffer.from(data, encoding! as NodeJS.BufferEncoding);
         }
       } catch (e) {
         return cb(e);
@@ -717,7 +716,7 @@ export class BaseFileSystem {
     const fd = this.openSync(fname, flag, mode);
     try {
       if (typeof data === 'string') {
-        data = Buffer.from(data, encoding!);
+        data = Buffer.from(data, encoding! as NodeJS.BufferEncoding);
       }
       // Write into file.
       fd.writeSync(data, 0, data.length, 0);
@@ -738,7 +737,7 @@ export class BaseFileSystem {
         });
       };
       if (typeof data === 'string') {
-        data = Buffer.from(data, encoding!);
+        data = Buffer.from(data, encoding! as NodeJS.BufferEncoding);
       }
       fd!.write(data, 0, data.length, null, cb);
     });
@@ -747,7 +746,7 @@ export class BaseFileSystem {
     const fd = this.openSync(fname, flag, mode);
     try {
       if (typeof data === 'string') {
-        data = Buffer.from(data, encoding!);
+        data = Buffer.from(data, encoding! as NodeJS.BufferEncoding);
       }
       fd.writeSync(data, 0, data.length, null);
     } finally {

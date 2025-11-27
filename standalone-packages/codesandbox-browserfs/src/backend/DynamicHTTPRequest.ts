@@ -7,7 +7,6 @@ import Stats from '../core/node_fs_stats';
 import {NoSyncFile} from '../generic/preload_file';
 import {xhrIsAvailable, asyncDownloadFile, syncDownloadFile} from '../generic/xhr';
 import {fetchIsAvailable, fetchFileAsync} from '../generic/fetch';
-import {BufferEncoding} from 'buffer';
 
 /**
  * Try to convert the given buffer into a string, and pass it to the callback.
@@ -17,7 +16,7 @@ import {BufferEncoding} from 'buffer';
  */
 function tryToString(buff: Buffer, encoding: string, cb: BFSCallback<string>) {
   try {
-    cb(null, buff.toString(encoding as BufferEncoding));
+    cb(null, buff.toString(encoding as NodeJS.BufferEncoding));
   } catch (e) {
     cb(e);
   }
@@ -288,7 +287,7 @@ export default class DynamicHTTPRequest extends BaseFileSystem implements FileSy
       if (encoding === null) {
         return copyingSlice(fdBuff);
       }
-      return fdBuff.toString(encoding as BufferEncoding);
+      return fdBuff.toString(encoding as NodeJS.BufferEncoding);
     } finally {
       fd.closeSync();
     }

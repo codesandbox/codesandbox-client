@@ -45,6 +45,11 @@ module.exports = {
       'path': require.resolve('bfs-path'),
       'process': require.resolve('bfs-process'),
       'BFSBuffer': require.resolve('../build/temp/library/webpack/BFSBuffer.js')
+    },
+    // Webpack 5 no longer polyfills Node.js core modules automatically.
+    // Provide polyfills for modules needed by dependencies.
+    fallback: {
+      'stream': require.resolve('stream-browserify')
     }
   },
   plugins: [
