@@ -2,27 +2,18 @@ import gql from 'graphql-tag';
 
 const TEMPLATE_FRAGMENT = gql`
   fragment Template on Template {
-    id
-    color
     iconUrl
-    published
     sandbox {
       id
       alias
       title
       description
-      insertedAt
-      updatedAt
       isV2
       forkCount
       viewCount
 
       team {
         name
-      }
-
-      author {
-        username
       }
 
       source {
@@ -32,16 +23,26 @@ const TEMPLATE_FRAGMENT = gql`
   }
 `;
 
-export const FETCH_TEAM_TEMPLATES = gql`
-  query RecentAndWorkspaceTemplates($teamId: UUID4) {
+export const FETCH_RECENT_TEMPLATES = gql`
+  query RecentTemplates($teamId: UUID4) {
     me {
       id
       
       recentlyUsedTemplates(teamId: $teamId) {
         ...Template
       }
+    }
+  }
 
-      team(id: $teamId) {
+  ${TEMPLATE_FRAGMENT}
+`;
+
+export const FETCH_TEAM_TEMPLATES = gql`
+  query TeamTemplatesForCreate($id: UUID4!) {
+    me {
+      id
+      
+      team(id: $id) {
         templates {
           ...Template
         }
