@@ -50,11 +50,7 @@ module.exports = {
   plugins: [
     new webpack.ProvidePlugin({ process: 'process', Buffer: 'BFSBuffer' })
   ],
-  node: {
-    process: false,
-    Buffer: false,
-    setImmediate: false
-  },
+  node: false,
   target: 'web',
   module: {
     rules: [

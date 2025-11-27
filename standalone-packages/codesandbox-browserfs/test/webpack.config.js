@@ -45,11 +45,7 @@ module.exports = {
       }
     })
   ],
-  node: {
-    process: false,
-    Buffer: false,
-    setImmediate: false
-  },
+  node: false,
   target: 'web',
   module: {
     rules: [
