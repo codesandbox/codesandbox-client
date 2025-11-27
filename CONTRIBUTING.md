@@ -58,8 +58,8 @@ To install the project you need to have `yarn` and `node`
     cd codesandbox-client
     ```
 
-2.  Your environment needs to be running Node v. 10
-    - `.nvmrc` config exists in the repo root, specifying a v.10.x.x version
+2.  Your environment needs to be running Node v. 18
+    - `.nvmrc` config exists in the repo root, specifying a v.18.x.x version
     - you can use [fnm](https://github.com/Schniz/fnm) (`fnm use`) to change
       your current node version to the one specified in `.nvmrc`
 3.  from the root of the project: `yarn` to install all dependencies

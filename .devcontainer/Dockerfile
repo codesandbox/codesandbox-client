@@ -1,3 +1,3 @@
-FROM node:16-bullseye
+FROM node:18-bullseye
 
 RUN apt update -y && apt install -y zstd
