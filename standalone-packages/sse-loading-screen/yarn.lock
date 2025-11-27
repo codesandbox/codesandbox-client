@@ -260,10 +260,8 @@
     styled-components "^5.2.0"
     typeface-inter "^3.10.0"
 
-"@codesandbox/components@^0.0.7":
+"@codesandbox/components@^0.0.7", "@codesandbox/components@file:../../packages/components":
   version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@codesandbox/components/-/components-0.0.7.tgz#a1628824a868c4d7b121708579b5eccacccce3c4"
-  integrity sha512-qNf1nF3RhyKOa8GDTGXM99fFW7M6PzEY0YhySSlJZauxnrf7TpJLuC96RmaZtINYCpDdziiHEUjfW24CE4+bAQ==
   dependencies:
     "@reach/auto-id" "0.10.3"
     "@reach/menu-button" "0.10.3"
