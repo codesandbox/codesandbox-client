@@ -148,7 +148,7 @@ export const getTeams = async ({ state, effects }: Context) => {
 
 export const getAllFolders = async ({ state, effects }: Context) => {
   try {
-    const data = await effects.gql.queries.getCollections({
+    const data = await effects.gql.queries.getSidebarCollections({
       teamId: state.activeTeam,
     });
     if (!data || !data.me || !data.me.collections) {
@@ -264,6 +264,21 @@ export const getSandboxesByPath = async (
     dashboard.sandboxes.ALL[cleanPath] = data.me.collection.sandboxes.filter(
       s => !s.customTemplate
     );
+
+    // Update sandboxCount in allCollections from the collections query result
+    // (which uses collectionDashboard fragment with sandboxCount)
+    if (dashboard.allCollections && data.me.collections) {
+      const collectionsMap = new Map(
+        data.me.collections.map((c: any) => [c.path, c.sandboxCount])
+      );
+      dashboard.allCollections = dashboard.allCollections.map(collection => {
+        const sandboxCount = collectionsMap.get(collection.path);
+        if (sandboxCount !== undefined) {
+          return { ...collection, sandboxCount };
+        }
+        return collection;
+      });
+    }
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -873,7 +888,7 @@ export const addSandboxesToFolder = async (
     f => f.path === collectionPath
   );
   if (existingCollection) {
-    existingCollection.sandboxCount += sandboxIds.length;
+    existingCollection.sandboxCount = (existingCollection.sandboxCount ?? 0) + sandboxIds.length;
   }
 
   if (teamId !== state.activeTeam) {

@@ -8,6 +8,7 @@ import {
   IconButton,
   Grid,
   Column,
+  SkeletonText,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { FolderItemComponentProps } from './types';
@@ -41,6 +42,23 @@ export const FolderListItem = ({
   } else if (showDropStyles) {
     backgroundColor = 'list.hoverBackground';
   }
+
+  const renderSandboxCount = () => {
+    if (isNewFolder) {
+      return null;
+    }
+
+    if (numberOfSandboxes === undefined) {
+      return <SkeletonText css={{ width: '60px', height: '16px' }} />;
+    }
+    
+    return (
+      <Text size={3} block variant={selected ? 'body' : 'muted'}>
+        {numberOfSandboxes}{' '}
+        {numberOfSandboxes === 1 ? 'item' : 'items'}
+      </Text>
+    );
+  };
 
   return (
     <ListAction
@@ -106,12 +124,7 @@ export const FolderListItem = ({
           </Stack>
         </Column>
         <Column span={[0, 2, 3]} as={Stack} align="center">
-          {!isNewFolder ? (
-            <Text size={3} block variant={selected ? 'body' : 'muted'}>
-              {numberOfSandboxes || 0}{' '}
-              {numberOfSandboxes === 1 ? 'item' : 'items'}
-            </Text>
-          ) : null}
+          {renderSandboxCount()}
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">
           {/* empty column to align with sandbox list items */}

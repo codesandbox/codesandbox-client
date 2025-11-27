@@ -1,19 +1,20 @@
 import {
   BranchFragment,
   ProjectFragment,
-  SidebarCollectionDashboardFragment as Collection,
+  CollectionBasicFragment,
+  CollectionDashboardFragment,
   BranchWithPrFragment,
 } from 'app/graphql/types';
 import { DELETE_ME_COLLECTION } from './types';
 
 export function getDecoratedCollection(
-  collection: Collection
+  collection: CollectionBasicFragment | CollectionDashboardFragment
 ): DELETE_ME_COLLECTION {
   const split = collection.path.split('/');
   return {
     path: collection.path,
     id: collection.id,
-    sandboxCount: collection.sandboxCount,
+    sandboxCount: 'sandboxCount' in collection ? collection.sandboxCount : undefined,
     parent: split[split.length - 2] || '',
     level: split.length - 2,
     name: split[split.length - 1],

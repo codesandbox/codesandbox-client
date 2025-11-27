@@ -554,7 +554,7 @@ export const fetchCollections = async ({ state, effects }: Context) => {
   if (!state.profile.current) return;
 
   try {
-    const data = await effects.gql.queries.getCollections({
+    const data = await effects.gql.queries.getProfileCollections({
       teamId: state.profile.current.personalWorkspaceId,
     });
     if (!data || !data.me || !data.me.collections) {

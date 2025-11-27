@@ -24,7 +24,7 @@ export const Folder = (folderItem: DashboardFolder) => {
   const {
     name = '',
     path = null,
-    sandboxCount = 0,
+    sandboxCount,
     type,
     ...props
   } = folderItem;

@@ -10,12 +10,15 @@ import * as sidebarQueries from './sidebar/queries';
 import * as notificationsQueries from './notifications/queries';
 import * as notificationsMutations from './notifications/mutations';
 
+import * as profileQueries from './profile/queries';
+
 export default graphql({
   queries: {
     ...teamsQueries,
     ...dashboardQueries,
     ...sidebarQueries,
     ...notificationsQueries,
+    ...profileQueries,
   },
   mutations: {
     ...dashboardMutations,

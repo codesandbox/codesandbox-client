@@ -72,7 +72,7 @@ import { gql, Query } from 'overmind-graphql';
 
 import {
   teamFragmentDashboard,
-  sidebarCollectionDashboard,
+  collectionDashboard,
 } from './fragments';
 
 export const createTeam: Query<
@@ -93,10 +93,10 @@ export const createFolder: Query<
 > = gql`
   mutation createFolder($path: String!, $teamId: UUID4) {
     createCollection(path: $path, teamId: $teamId) {
-      ...sidebarCollectionDashboard
+      ...collectionDashboard
     }
   }
-  ${sidebarCollectionDashboard}
+  ${collectionDashboard}
 `;
 
 export const deleteFolder: Query<
@@ -105,10 +105,10 @@ export const deleteFolder: Query<
 > = gql`
   mutation deleteFolder($path: String!, $teamId: UUID4) {
     deleteCollection(path: $path, teamId: $teamId) {
-      ...sidebarCollectionDashboard
+      ...collectionDashboard
     }
   }
-  ${sidebarCollectionDashboard}
+  ${collectionDashboard}
 `;
 
 export const renameFolder: Query<
@@ -127,10 +127,10 @@ export const renameFolder: Query<
       teamId: $teamId
       newTeamId: $newTeamId
     ) {
-      ...sidebarCollectionDashboard
+      ...collectionDashboard
     }
   }
-  ${sidebarCollectionDashboard}
+  ${collectionDashboard}
 `;
 
 export const addSandboxToFolder: Query<

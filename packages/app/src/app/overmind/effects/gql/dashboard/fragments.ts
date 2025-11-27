@@ -75,8 +75,12 @@ export const repoFragmentDashboard = gql`
   ${sandboxFragmentDashboard}
 `;
 
-export const sidebarCollectionDashboard = gql`
-  fragment sidebarCollectionDashboard on Collection {
+/**
+ * Fragment for general collection queries (content area, mutations, etc.)
+ * Includes sandboxCount for display in content area
+ */
+export const collectionDashboard = gql`
+  fragment collectionDashboard on Collection {
     id
     path
     sandboxCount
