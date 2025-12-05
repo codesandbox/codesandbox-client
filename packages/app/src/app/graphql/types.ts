@@ -4269,6 +4269,7 @@ export type RecentlyDeletedTeamSandboxesFragment = {
   isV2: boolean;
   removedAt: string | null;
   title: string | null;
+  teamId: any | null;
   collection: {
     __typename?: 'Collection';
     id: any | null;
@@ -4751,6 +4752,7 @@ export type SearchTeamSandboxFragment = {
   restricted: boolean;
   privacy: number;
   screenshotUrl: string | null;
+  teamId: any | null;
   source: { __typename?: 'Source'; template: string | null };
   customTemplate: {
     __typename?: 'Template';
@@ -4817,6 +4819,7 @@ export type RecentlyAccessedSandboxFragment = {
   draft: boolean;
   isV2: boolean;
   screenshotUrl: string | null;
+  teamId: any | null;
   source: { __typename?: 'Source'; template: string | null };
   customTemplate: {
     __typename?: 'Template';
@@ -4893,6 +4896,7 @@ export type WorkspaceSandboxFragment = {
   restricted: boolean;
   privacy: number;
   screenshotUrl: string | null;
+  teamId: any | null;
   source: { __typename?: 'Source'; template: string | null };
   customTemplate: {
     __typename?: 'Template';
@@ -4994,6 +4998,7 @@ export type CollaboratorSandboxFragment = {
   restricted: boolean;
   privacy: number;
   screenshotUrl: string | null;
+  teamId: any | null;
   source: { __typename?: 'Source'; template: string | null };
   customTemplate: {
     __typename?: 'Template';
