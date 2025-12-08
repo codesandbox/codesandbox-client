@@ -4295,6 +4295,7 @@ export type RecentlyDeletedTeamSandboxesQuery = {
         isV2: boolean;
         removedAt: string | null;
         title: string | null;
+        teamId: any | null;
         collection: {
           __typename?: 'Collection';
           id: any | null;
@@ -4791,6 +4792,7 @@ export type _SearchTeamSandboxesQuery = {
         restricted: boolean;
         privacy: number;
         screenshotUrl: string | null;
+        teamId: any | null;
         source: { __typename?: 'Source'; template: string | null };
         customTemplate: {
           __typename?: 'Template';
@@ -4861,6 +4863,7 @@ export type RecentlyAccessedSandboxesLegacyQuery = {
       draft: boolean;
       isV2: boolean;
       screenshotUrl: string | null;
+      teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
       customTemplate: {
         __typename?: 'Template';
@@ -4935,6 +4938,7 @@ export type GetWorkspaceSandboxesQuery = {
         restricted: boolean;
         privacy: number;
         screenshotUrl: string | null;
+        teamId: any | null;
         source: { __typename?: 'Source'; template: string | null };
         customTemplate: {
           __typename?: 'Template';
@@ -5035,6 +5039,7 @@ export type SharedWithMeSandboxesQuery = {
       restricted: boolean;
       privacy: number;
       screenshotUrl: string | null;
+      teamId: any | null;
       source: { __typename?: 'Source'; template: string | null };
       customTemplate: {
         __typename?: 'Template';
