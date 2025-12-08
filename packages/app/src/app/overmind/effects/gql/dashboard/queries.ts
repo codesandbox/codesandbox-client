@@ -76,6 +76,7 @@ fragment recentlyDeletedTeamSandboxes on Sandbox {
   isV2
   removedAt
   title
+  teamId
 }
 `;
 
@@ -336,6 +337,7 @@ const SEARCH_TEAM_SANDBOX_FRAGMENT = gql`
       path
       id
     }
+    teamId
   }
 `;
 
@@ -392,6 +394,7 @@ const RECENTLY_ACCESSED_SANDBOX_FRAGMENT = gql`
     author {
       username
     }
+    teamId
   }
 `;
 
@@ -442,6 +445,7 @@ const WORKSPACE_SANDBOX_FRAGMENT = gql`
       path
       id
     }
+    teamId
   }
 `;
 
@@ -510,6 +514,7 @@ const COLLABORATOR_SANDBOX_FRAGMENT = gql`
       path
       id
     }
+    teamId
   }
 `;
 
