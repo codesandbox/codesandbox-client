@@ -7,6 +7,7 @@ import { useAppState } from 'app/overmind';
 import { FreeUpgradeBanner } from './Banners/FreeUpgradeBanner';
 import { UBBWelcomeBanner } from './Banners/UBBWelcomeBanner';
 import { LegacyProConvertBanner } from './Banners/LegacyProConvertBanner';
+import { SDKWorkspaceBanner } from './Banners/SDKWorkspaceBanner';
 
 export const TopBanner = () => {
   const { ubbBeta } = useWorkspaceFeatureFlags();
@@ -16,6 +17,11 @@ export const TopBanner = () => {
   const workspaceCreatedBeforeUBBRelease =
     activeTeamInfo?.insertedAt &&
     new Date(activeTeamInfo.insertedAt) < new Date('2024-02-01');
+
+  const [
+    sdkWorkspaceBannerDismissed,
+    dismissSDKWorkspaceBanner,
+  ] = useDismissible(`${activeTeam}_SDK_WORKSPACE_BANNER`);
 
   const [welcomeBannerDismissed, dismissWelcomeBanner] = useDismissible(
     `${activeTeam}_UBB_WELCOME`
@@ -28,6 +34,13 @@ export const TopBanner = () => {
   const [upsellProBannerDismissed, dismissUpsellProBanner] = useDismissible(
     `${activeTeam}_UPSELL_PRO_BANNER`
   );
+
+  // TODO
+  const isSDKWorkspace = true;
+
+  if (isSDKWorkspace && !sdkWorkspaceBannerDismissed) {
+    return <SDKWorkspaceBanner onDismiss={dismissSDKWorkspaceBanner} />;
+  }
 
   if (!ubbBeta) {
     // Legacy case for seat-based Pro accounts
