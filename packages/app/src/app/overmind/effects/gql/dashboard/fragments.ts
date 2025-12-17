@@ -186,6 +186,7 @@ export const currentTeamInfoFragment = gql`
     avatarUrl
     frozen
     insertedAt
+    sdkWorkspace
     users {
       id
       avatarUrl

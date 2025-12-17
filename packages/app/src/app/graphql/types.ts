@@ -3596,6 +3596,7 @@ export type CurrentTeamInfoFragmentFragment = {
   avatarUrl: string | null;
   frozen: boolean;
   insertedAt: string;
+  sdkWorkspace: boolean;
   users: Array<{
     __typename?: 'User';
     id: any;
@@ -5075,6 +5076,7 @@ export type GetTeamQuery = {
       avatarUrl: string | null;
       frozen: boolean;
       insertedAt: string;
+      sdkWorkspace: boolean;
       users: Array<{
         __typename?: 'User';
         id: any;
