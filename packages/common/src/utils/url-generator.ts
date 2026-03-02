@@ -216,14 +216,16 @@ export const frameUrl = (
 export const forkSandboxUrl = (sandbox: Sandbox) =>
   `${sandboxUrl(sandbox)}/fork`;
 
-export const signInPageUrl = (redirectTo?: string) => {
-  let url = `/signin`;
+export const isSafeRedirectPath = (url: string): boolean =>
+  url.startsWith('/') && !url.startsWith('//') && !url.includes('://');
 
-  if (redirectTo) {
-    url += '?continue=' + redirectTo;
+export const signInPageUrl = (redirectTo?: string) => {
+  if (!redirectTo) {
+    return '/signin';
   }
 
-  return url;
+  const params = new URLSearchParams({ continue: redirectTo });
+  return `/signin?${params.toString()}`;
 };
 
 export const signInUrl = (extraScopes: boolean = false) =>
