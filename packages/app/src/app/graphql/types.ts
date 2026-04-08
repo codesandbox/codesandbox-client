@@ -504,6 +504,7 @@ export enum Direction {
 
 export type TeamFeatureFlags = {
   __typename?: 'TeamFeatureFlags';
+  blockRepoImport: Scalars['Boolean'];
   friendOfCsb: Scalars['Boolean'];
   ubbBeta: Scalars['Boolean'];
 };
@@ -3571,6 +3572,7 @@ export type TeamFragmentDashboardFragment = {
   } | null;
   featureFlags: {
     __typename?: 'TeamFeatureFlags';
+    blockRepoImport: boolean;
     ubbBeta: boolean;
     friendOfCsb: boolean;
   };
@@ -3693,6 +3695,7 @@ export type CurrentTeamInfoFragmentFragment = {
   };
   featureFlags: {
     __typename?: 'TeamFeatureFlags';
+    blockRepoImport: boolean;
     ubbBeta: boolean;
     friendOfCsb: boolean;
   };
@@ -3866,6 +3869,7 @@ export type _CreateTeamMutation = {
     } | null;
     featureFlags: {
       __typename?: 'TeamFeatureFlags';
+      blockRepoImport: boolean;
       ubbBeta: boolean;
       friendOfCsb: boolean;
     };
@@ -4723,6 +4727,7 @@ export type AllTeamsQuery = {
       } | null;
       featureFlags: {
         __typename?: 'TeamFeatureFlags';
+        blockRepoImport: boolean;
         ubbBeta: boolean;
         friendOfCsb: boolean;
       };
@@ -5172,6 +5177,7 @@ export type GetTeamQuery = {
       };
       featureFlags: {
         __typename?: 'TeamFeatureFlags';
+        blockRepoImport: boolean;
         ubbBeta: boolean;
         friendOfCsb: boolean;
       };

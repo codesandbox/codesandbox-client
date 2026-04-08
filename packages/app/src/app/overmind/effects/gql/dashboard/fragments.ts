@@ -160,6 +160,7 @@ export const teamFragmentDashboard = gql`
     }
 
     featureFlags {
+      blockRepoImport
       ubbBeta
       friendOfCsb
     }
@@ -277,6 +278,7 @@ export const currentTeamInfoFragment = gql`
     }
 
     featureFlags {
+      blockRepoImport
       ubbBeta
       friendOfCsb
     }

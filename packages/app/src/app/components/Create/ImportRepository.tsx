@@ -12,6 +12,7 @@ import { ModalContentProps } from 'app/pages/common/Modals';
 import { SignIn } from 'app/pages/SignIn/SignIn';
 import { useAppState, useEffects } from 'app/overmind';
 import { useGitHubPermissions } from 'app/hooks/useGitHubPermissions';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useGithubAccounts } from 'app/hooks/useGithubOrganizations';
 import {
@@ -43,6 +44,7 @@ export const ImportRepository: React.FC<
 > = ({ preSelectedRepo }) => {
   const { hasLogIn } = useAppState();
   const effects = useEffects();
+  const { blockRepoImport } = useWorkspaceFeatureFlags();
   const {
     restrictsPublicRepos,
     restrictsPrivateRepos,
@@ -139,6 +141,37 @@ export const ImportRepository: React.FC<
   };
 
   const forkMode = selectedRepo?.authorization === GithubRepoAuthorization.Read;
+
+  if (blockRepoImport) {
+    return (
+      <ThemeProvider>
+        <Container>
+          <ModalBody>
+            <Stack
+              direction="vertical"
+              gap={4}
+              align="center"
+              justify="center"
+              css={{ width: '100%', padding: '24px', textAlign: 'center' }}
+            >
+              <Text size={4}>Repository import is deprecated</Text>
+              <Text size={3} css={{ color: '#999', maxWidth: '400px' }}>
+                Importing repositories is no longer supported.{' '}
+                <a
+                  href="https://codesandbox.io/docs/learn/repositories/migration-guide"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  style={{ color: '#E4FC82' }}
+                >
+                  Learn more in our documentation.
+                </a>
+              </Text>
+            </Stack>
+          </ModalBody>
+        </Container>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider>
