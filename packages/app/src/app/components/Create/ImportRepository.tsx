@@ -154,16 +154,16 @@ export const ImportRepository: React.FC<
               justify="center"
               css={{ width: '100%', padding: '24px', textAlign: 'center' }}
             >
-              <Text size={4}>Repository import is deprecated</Text>
+              <Text size={4}>Repository import is no longer available</Text>
               <Text size={3} css={{ color: '#999', maxWidth: '400px' }}>
-                Importing repositories is no longer supported.{' '}
+                This feature has been retired.{' '}
                 <a
                   href="https://codesandbox.io/docs/learn/repositories/migration-guide"
                   target="_blank"
                   rel="noreferrer noopener"
                   style={{ color: '#E4FC82' }}
                 >
-                  Learn more in our documentation.
+                  Visit our documentation for migration options.
                 </a>
               </Text>
             </Stack>
