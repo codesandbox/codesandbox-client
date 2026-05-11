@@ -73,7 +73,7 @@
     "if-env": "^1.0.4",
     "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.0",
-    "simple-git": "^2.17.0",
+    "simple-git": "^3.32.3",
     "storybook-addon-styled-component-theme": "^2.0.0",
     "typescript": "^5.2.2"
   },
