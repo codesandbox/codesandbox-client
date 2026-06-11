@@ -15,9 +15,9 @@ export const CreateBranchesRow: React.FC<{
 }> = ({ title, repos, isFrozen, trackEvent }) => {
   const { activeTeam } = useAppState();
   const actions = useActions();
-  const { disableBranchCreation } = useWorkspaceFeatureFlags();
+  const { blockBranchCreation } = useWorkspaceFeatureFlags();
 
-  if (disableBranchCreation) {
+  if (blockBranchCreation) {
     return null;
   }
 

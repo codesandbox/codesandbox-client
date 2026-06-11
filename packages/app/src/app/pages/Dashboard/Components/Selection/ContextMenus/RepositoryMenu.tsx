@@ -31,7 +31,7 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   const state = useAppState();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
-  const { disableBranchCreation } = useWorkspaceFeatureFlags();
+  const { blockBranchCreation } = useWorkspaceFeatureFlags();
 
   const [experimentalMode] = useState(() => {
     return window.localStorage.getItem('CSB_DEBUG') === 'ENABLED';
@@ -80,7 +80,7 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
 
       <Menu.Divider />
 
-      {!disableBranchCreation && (
+      {!blockBranchCreation && (
         <MenuItem
           onSelect={() => {
             actions.dashboard.createDraftBranch({

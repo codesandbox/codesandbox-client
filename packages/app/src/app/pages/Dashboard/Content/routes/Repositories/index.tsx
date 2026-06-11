@@ -25,7 +25,7 @@ export const RepositoriesPage = () => {
   const [dismissedPermissionsBanner, dismissPermissionsBanner] = useDismissible(
     'DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER'
   );
-  const { disableBranchCreation } = useWorkspaceFeatureFlags();
+  const { blockBranchCreation } = useWorkspaceFeatureFlags();
 
   const teamRepos = repositoriesByTeamId[activeTeam] || undefined;
 
@@ -103,7 +103,7 @@ export const RepositoriesPage = () => {
         title="All repositories"
       />
 
-      {disableBranchCreation && (
+      {blockBranchCreation && (
         <Element paddingX={4} paddingBottom={4}>
           <RepositoryDeprecationStripe />
         </Element>

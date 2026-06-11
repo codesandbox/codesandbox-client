@@ -38,7 +38,7 @@ export const Header = ({
   const { modalOpened, dashboard: dashboardActions } = useActions();
   const { dashboard } = useAppState();
   const { hasEditorAccess } = useWorkspaceAuthorization();
-  const { disableBranchCreation } = useWorkspaceFeatureFlags();
+  const { blockBranchCreation } = useWorkspaceFeatureFlags();
 
   const repositoriesListPage =
     location.pathname.includes('/repositories') &&
@@ -100,7 +100,7 @@ export const Header = ({
           </Button>
         )}
 
-        {repositoryBranchesPage && selectedRepo && !disableBranchCreation && (
+        {repositoryBranchesPage && selectedRepo && !blockBranchCreation && (
           <Button
             onClick={() => {
               dashboardActions.createDraftBranch({

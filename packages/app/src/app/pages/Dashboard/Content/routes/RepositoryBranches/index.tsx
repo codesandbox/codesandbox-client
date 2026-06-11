@@ -26,7 +26,7 @@ type MappedBranches = {
 
 export const RepositoryBranchesPage = () => {
   const { isFrozen } = useWorkspaceLimits();
-  const { disableBranchCreation } = useWorkspaceFeatureFlags();
+  const { blockBranchCreation } = useWorkspaceFeatureFlags();
   const params = useParams<{ path: string }>();
   const path = params.path || '';
   const [, owner, name] = path.split('/');
@@ -131,7 +131,7 @@ export const RepositoryBranchesPage = () => {
         readOnly={isFrozen}
       />
 
-      {disableBranchCreation && (
+      {blockBranchCreation && (
         <Element paddingX={4} paddingBottom={4}>
           <RepositoryDeprecationStripe />
         </Element>
