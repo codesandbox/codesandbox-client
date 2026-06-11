@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
@@ -37,6 +38,7 @@ export const Header = ({
   const { modalOpened, dashboard: dashboardActions } = useActions();
   const { dashboard } = useAppState();
   const { hasEditorAccess } = useWorkspaceAuthorization();
+  const { disableBranchCreation } = useWorkspaceFeatureFlags();
 
   const repositoriesListPage =
     location.pathname.includes('/repositories') &&
@@ -98,7 +100,7 @@ export const Header = ({
           </Button>
         )}
 
-        {repositoryBranchesPage && selectedRepo && (
+        {repositoryBranchesPage && selectedRepo && !disableBranchCreation && (
           <Button
             onClick={() => {
               dashboardActions.createDraftBranch({

@@ -10,6 +10,7 @@ import { useActions, useAppState } from 'app/overmind';
 import { quotes } from 'app/utils/quotes';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { Context, MenuItem } from '../ContextMenu';
 
 type RepositoryMenuProps = {
@@ -30,6 +31,7 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   const state = useAppState();
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
+  const { disableBranchCreation } = useWorkspaceFeatureFlags();
 
   const [experimentalMode] = useState(() => {
     return window.localStorage.getItem('CSB_DEBUG') === 'ENABLED';
@@ -78,18 +80,20 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
 
       <Menu.Divider />
 
-      <MenuItem
-        onSelect={() => {
-          actions.dashboard.createDraftBranch({
-            owner: repository.owner,
-            name: repository.name,
-            teamId: assignedTeam?.id,
-          });
-        }}
-        disabled={isFrozen}
-      >
-        Create branch
-      </MenuItem>
+      {!disableBranchCreation && (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.createDraftBranch({
+              owner: repository.owner,
+              name: repository.name,
+              teamId: assignedTeam?.id,
+            });
+          }}
+          disabled={isFrozen}
+        >
+          Create branch
+        </MenuItem>
+      )}
       <MenuItem onSelect={() => history.push(repositoryUrl)}>
         See all branches
       </MenuItem>

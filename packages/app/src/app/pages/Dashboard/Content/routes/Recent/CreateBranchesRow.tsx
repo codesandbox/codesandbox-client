@@ -4,6 +4,7 @@ import { Stack, Text } from '@codesandbox/components';
 import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
 import { useActions, useAppState } from 'app/overmind';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { RepoInfo } from 'app/overmind/namespaces/sidebar/types';
 
 export const CreateBranchesRow: React.FC<{
@@ -14,6 +15,11 @@ export const CreateBranchesRow: React.FC<{
 }> = ({ title, repos, isFrozen, trackEvent }) => {
   const { activeTeam } = useAppState();
   const actions = useActions();
+  const { disableBranchCreation } = useWorkspaceFeatureFlags();
+
+  if (disableBranchCreation) {
+    return null;
+  }
 
   const items = repos
     .map(repo => {
