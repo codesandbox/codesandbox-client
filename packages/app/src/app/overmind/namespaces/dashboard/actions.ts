@@ -1804,7 +1804,10 @@ export const createDraftBranch = async (
   } catch (error) {
     state.dashboard.creatingBranch = false;
     notificationState.addNotification({
-      message: JSON.stringify(error),
+      message:
+        error.response?.errors?.[0]?.message ||
+        error.message ||
+        'Something went wrong while creating the branch.',
       title: 'Failed to create branch',
       status: NotificationStatus.ERROR,
     });
