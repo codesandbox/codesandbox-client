@@ -21,6 +21,7 @@ import { AccountDeletionModal } from './AccountDeletion';
 import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
 import { UndoAccountDeletionModal } from './UndoAccountDeletion';
 import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/UndoDeletedConfirmation';
+import { BranchCreationDeprecatedModal } from './BranchCreationDeprecatedModal';
 
 const modals = {
   preferences: {
@@ -90,6 +91,10 @@ const modals = {
   },
   undoDeleteConfirmation: {
     Component: UndoAccountDeletionConfirmationModal,
+    width: 450,
+  },
+  branchCreationDeprecated: {
+    Component: BranchCreationDeprecatedModal,
     width: 450,
   },
 };

@@ -159,7 +159,8 @@ type ModalName =
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'import'
-  | 'create';
+  | 'create'
+  | 'branchCreationDeprecated';
 
 export const modalOpened = (
   { state, effects }: Context,
