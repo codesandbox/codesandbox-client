@@ -1767,6 +1767,16 @@ export const createDraftBranch = async (
     return;
   }
 
+  if (state.activeTeamInfo?.featureFlags.blockBranchCreation) {
+    notificationState.addNotification({
+      message:
+        'Branch creation has been deprecated. Please commit and push any work on your branches before July 15th.',
+      title: 'Branch creation is disabled',
+      status: NotificationStatus.WARNING,
+    });
+    return;
+  }
+
   try {
     state.dashboard.creatingBranch = true;
 
