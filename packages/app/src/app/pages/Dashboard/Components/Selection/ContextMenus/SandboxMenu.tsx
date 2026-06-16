@@ -102,6 +102,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               sandboxId: sandbox.id,
               openInNewWindow: true,
               redirectAfterFork: true,
+              body: {
+                v2: sandbox.isV2,
+              },
             });
           }}
         >
@@ -149,6 +152,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               openInNewWindow: true,
               redirectAfterFork: true,
               body: {
+                v2: sandbox.isV2,
                 privacy: 'privacy' in sandbox ? sandbox.privacy as 2 | 1 | 0 : undefined,
                 collectionId: 'draft' in sandbox && sandbox.draft ? undefined : 'collection' in sandbox && sandbox.collection.id,
               },

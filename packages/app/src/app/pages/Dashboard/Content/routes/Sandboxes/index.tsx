@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
+import { Element } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
@@ -9,8 +10,10 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { ActionCard } from 'app/pages/Dashboard/Components/shared/ActionCard';
+import { DevboxDeprecationStripe } from 'app/pages/Dashboard/Components/shared/DevboxDeprecationStripe';
 import { useFilteredItems } from './useFilteredItems';
 
 export const SandboxesPage = () => {
@@ -22,6 +25,7 @@ export const SandboxesPage = () => {
   const items = useFilteredItems(currentPath, cleanParam, level);
   const actions = useActions();
   const { isFrozen } = useWorkspaceLimits();
+  const { blockDevboxCreation } = useWorkspaceFeatureFlags();
   const { hasEditorAccess } = useWorkspaceAuthorization();
   const {
     dashboard: { allCollections },
@@ -85,6 +89,12 @@ export const SandboxesPage = () => {
         showViewOptions={!isEmpty}
         showSortOptions={!isEmpty && Boolean(currentPath)}
       />
+
+      {blockDevboxCreation && (
+        <Element paddingX={4} paddingBottom={4}>
+          <DevboxDeprecationStripe />
+        </Element>
+      )}
 
       {isEmpty ? (
         <EmptyPage.StyledWrapper>

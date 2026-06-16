@@ -1868,6 +1868,13 @@ export const forkSandbox = async (
     };
   }
 ) => {
+  // Devboxes (v2) are being deprecated. Block creating and forking them and
+  // surface the deprecation modal instead, mirroring the banner content.
+  if (body?.v2 && state.activeTeamInfo?.featureFlags.blockDevboxCreation) {
+    actions.modalOpened({ modal: 'devboxCreationDeprecated' });
+    return undefined;
+  }
+
   effects.analytics.track('Fork Sandbox', { type: 'external', sandboxId });
 
   const usedBody: ForkSandboxBody = body || {};

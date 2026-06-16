@@ -22,6 +22,7 @@ import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfi
 import { UndoAccountDeletionModal } from './UndoAccountDeletion';
 import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/UndoDeletedConfirmation';
 import { BranchCreationDeprecatedModal } from './BranchCreationDeprecatedModal';
+import { DevboxCreationDeprecatedModal } from './DevboxCreationDeprecatedModal';
 
 const modals = {
   preferences: {
@@ -95,6 +96,10 @@ const modals = {
   },
   branchCreationDeprecated: {
     Component: BranchCreationDeprecatedModal,
+    width: 450,
+  },
+  devboxCreationDeprecated: {
+    Component: DevboxCreationDeprecatedModal,
     width: 450,
   },
 };

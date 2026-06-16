@@ -162,6 +162,7 @@ export const teamFragmentDashboard = gql`
     featureFlags {
       blockRepoImport
       blockBranchCreation
+      blockDevboxCreation
       ubbBeta
       friendOfCsb
     }
@@ -281,6 +282,7 @@ export const currentTeamInfoFragment = gql`
     featureFlags {
       blockRepoImport
       blockBranchCreation
+      blockDevboxCreation
       ubbBeta
       friendOfCsb
     }

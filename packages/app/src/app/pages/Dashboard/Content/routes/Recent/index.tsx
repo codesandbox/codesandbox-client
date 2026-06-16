@@ -3,11 +3,13 @@ import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Helmet } from 'react-helmet';
 import { DashboardBranch, DashboardSandbox } from 'app/pages/Dashboard/types';
-import { Loading, Stack } from '@codesandbox/components';
+import { Element, Loading, Stack } from '@codesandbox/components';
 import { RepoInfo } from 'app/overmind/namespaces/sidebar/types';
 import { StyledContentWrapper } from 'app/pages/Dashboard/Components/shared/elements';
 import { ContentSection } from 'app/pages/Dashboard/Components/shared/ContentSection';
+import { DevboxDeprecationStripe } from 'app/pages/Dashboard/Components/shared/DevboxDeprecationStripe';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 import { TopBanner } from './TopBanner';
 import { CreateBranchesRow } from './CreateBranchesRow';
 import { ItemsGrid } from './ItemsGrid';
@@ -20,6 +22,7 @@ export const Recent = () => {
     dashboard: { sandboxes },
   } = useAppState();
   const { isFrozen } = useWorkspaceLimits();
+  const { blockDevboxCreation } = useWorkspaceFeatureFlags();
   const {
     dashboard: { getPage, getWorkspaceSandboxes },
   } = useActions();
@@ -142,6 +145,12 @@ export const Recent = () => {
       </Helmet>
 
       <TopBanner />
+
+      {blockDevboxCreation && (
+        <Element paddingX={4} paddingBottom={4}>
+          <DevboxDeprecationStripe />
+        </Element>
+      )}
 
       <ContentSection title="Recent">
         {recentRepos.length > 0 && (
