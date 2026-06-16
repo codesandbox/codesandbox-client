@@ -13,7 +13,9 @@ import {
 } from 'app/overmind/namespaces/dashboard/utils';
 import { BranchWithPrFragment } from 'app/graphql/types';
 import { InstallGHAppStripe } from 'app/pages/Dashboard/Components/shared/InstallGHAppStripe';
+import { RepositoryDeprecationStripe } from 'app/pages/Dashboard/Components/shared/RepositoryDeprecationStripe';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
 
 type MappedBranches = {
   defaultBranch: BranchWithPrFragment | null;
@@ -24,6 +26,7 @@ type MappedBranches = {
 
 export const RepositoryBranchesPage = () => {
   const { isFrozen } = useWorkspaceLimits();
+  const { blockBranchCreation } = useWorkspaceFeatureFlags();
   const params = useParams<{ path: string }>();
   const path = params.path || '';
   const [, owner, name] = path.split('/');
@@ -127,6 +130,12 @@ export const RepositoryBranchesPage = () => {
         }}
         readOnly={isFrozen}
       />
+
+      {blockBranchCreation && (
+        <Element paddingX={4} paddingBottom={4}>
+          <RepositoryDeprecationStripe />
+        </Element>
+      )}
 
       {repositoryProject?.appInstalled === false && (
         <Element paddingX={4} paddingBottom={4}>

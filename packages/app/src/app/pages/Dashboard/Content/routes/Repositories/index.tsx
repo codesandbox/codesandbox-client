@@ -11,6 +11,8 @@ import { RestrictedPublicReposImport } from 'app/pages/Dashboard/Components/shar
 import { useDismissible } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { RepositoryDeprecationStripe } from 'app/pages/Dashboard/Components/shared/RepositoryDeprecationStripe';
 import { EmptyRepositories } from './EmptyRepositories';
 
 export const RepositoriesPage = () => {
@@ -23,6 +25,7 @@ export const RepositoriesPage = () => {
   const [dismissedPermissionsBanner, dismissPermissionsBanner] = useDismissible(
     'DASHBOARD_REPOSITORIES_PERMISSIONS_BANNER'
   );
+  const { blockBranchCreation } = useWorkspaceFeatureFlags();
 
   const teamRepos = repositoriesByTeamId[activeTeam] || undefined;
 
@@ -99,6 +102,12 @@ export const RepositoriesPage = () => {
         showViewOptions={!isEmpty}
         title="All repositories"
       />
+
+      {blockBranchCreation && (
+        <Element paddingX={4} paddingBottom={4}>
+          <RepositoryDeprecationStripe />
+        </Element>
+      )}
 
       {messageStripe && (
         <Element paddingX={4} paddingBottom={4}>

@@ -1755,7 +1755,7 @@ export const forkGitHubRepository = async (
 };
 
 export const createDraftBranch = async (
-  { state, effects }: Context,
+  { state, actions, effects }: Context,
   {
     owner,
     name,
@@ -1764,6 +1764,11 @@ export const createDraftBranch = async (
   }: { owner: string; name: string; teamId: string; openInNewTab?: boolean }
 ) => {
   if (state.dashboard.creatingBranch) {
+    return;
+  }
+
+  if (state.activeTeamInfo?.featureFlags.blockBranchCreation) {
+    actions.modalOpened({ modal: 'branchCreationDeprecated' });
     return;
   }
 
@@ -1793,8 +1798,23 @@ export const createDraftBranch = async (
     }
   } catch (error) {
     state.dashboard.creatingBranch = false;
+
+    // The server blocks branch creation while the product is being
+    // deprecated. Surface the same deprecation modal instead of a
+    // generic error toast.
+    if (
+      error.response?.errors?.[0]?.extensions?.code ===
+      'BRANCH_CREATION_DISABLED'
+    ) {
+      actions.modalOpened({ modal: 'branchCreationDeprecated' });
+      return;
+    }
+
     notificationState.addNotification({
-      message: JSON.stringify(error),
+      message:
+        error.response?.errors?.[0]?.message ||
+        error.message ||
+        'Something went wrong while creating the branch.',
       title: 'Failed to create branch',
       status: NotificationStatus.ERROR,
     });
