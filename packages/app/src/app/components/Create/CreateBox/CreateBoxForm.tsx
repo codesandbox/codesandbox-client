@@ -11,6 +11,8 @@ import {
 } from '@codesandbox/components';
 
 import { useActions, useAppState, useEffects } from 'app/overmind';
+import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
+import { DevboxDeprecationStripe } from 'app/pages/Dashboard/Components/shared/DevboxDeprecationStripe';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { PATHED_SANDBOXES_FOLDER_QUERY } from 'app/pages/Dashboard/queries';
@@ -53,9 +55,14 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const label = runtime === 'browser' ? 'Sandbox' : 'Devbox';
 
+  // Devboxes are being deprecated. When the team has the flag set, block
+  // creating one and surface the deprecation banner instead.
+  const devboxDeprecated = runtime === 'vm' && blockDevboxCreation;
+
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
   const { highestAllowedVMTier, isFrozen } = useWorkspaceLimits();
+  const { blockDevboxCreation } = useWorkspaceFeatureFlags();
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -310,6 +317,8 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           </Stack>
         </Stack>
 
+        {devboxDeprecated && <DevboxDeprecationStripe />}
+
         {runtime === 'vm' && (
           <>
             <Stack direction="vertical" gap={2}>
@@ -377,7 +386,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             <Button
               type="submit"
               variant="primary"
-              disabled={isFrozen && runtime === 'vm'}
+              disabled={(isFrozen && runtime === 'vm') || devboxDeprecated}
               autoWidth
               loading={loading}
             >
