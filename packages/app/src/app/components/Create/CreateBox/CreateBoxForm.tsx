@@ -55,14 +55,14 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
 
   const label = runtime === 'browser' ? 'Sandbox' : 'Devbox';
 
-  // Devboxes are being deprecated. When the team has the flag set, block
-  // creating one and surface the deprecation banner instead.
-  const devboxDeprecated = runtime === 'vm' && blockDevboxCreation;
-
   const { activeTeamInfo, activeTeam, hasLogIn } = useAppState();
   const { signInClicked } = useActions();
   const { highestAllowedVMTier, isFrozen } = useWorkspaceLimits();
   const { blockDevboxCreation } = useWorkspaceFeatureFlags();
+
+  // Devboxes are being deprecated. When the team has the flag set, block
+  // creating one and surface the deprecation banner instead.
+  const devboxDeprecated = runtime === 'vm' && blockDevboxCreation;
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
