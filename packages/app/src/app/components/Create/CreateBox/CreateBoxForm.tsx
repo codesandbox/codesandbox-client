@@ -60,9 +60,10 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
   const { highestAllowedVMTier, isFrozen } = useWorkspaceLimits();
   const { blockDevboxCreation } = useWorkspaceFeatureFlags();
 
-  // Devboxes are being deprecated. When the team has the flag set, block
-  // creating one and surface the deprecation banner instead.
-  const devboxDeprecated = runtime === 'vm' && blockDevboxCreation;
+  // Devboxes are being deprecated. When the team has the flag set, surface the
+  // deprecation banner, disable the Devbox runtime option, and block creating
+  // one (relevant for Devbox-only templates that can't fall back to Sandbox).
+  const devboxBlocked = runtime === 'vm' && blockDevboxCreation;
   const [name, setName] = useState<string>();
   const effects = useEffects();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -157,6 +158,22 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
         >
           Configure
         </Text>
+
+        {blockDevboxCreation && (
+          <MessageStripe justify="space-between" variant="warning">
+            Devboxes are being deprecated and will be removed soon. Make sure to
+            export or migrate any work you want to keep before then.
+            <MessageStripe.Action
+              as="a"
+              href="https://codesandbox.io/docs"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Learn more
+            </MessageStripe.Action>
+          </MessageStripe>
+        )}
+
         <Stack direction="vertical" gap={2}>
           <Text size={3} as="label">
             Name
@@ -275,7 +292,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
               type="button"
               data-selected={runtime === 'vm'}
               onClick={() => setRuntime('vm')}
-              disabled={!runsOnVM}
+              disabled={!runsOnVM || blockDevboxCreation}
             >
               <Stack direction="vertical" gap={2}>
                 <Stack gap={1}>
@@ -291,6 +308,12 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
                 {!runsOnVM && (
                   <Text size={3} css={{ color: '#F7CC66' }}>
                     Not available for this template.
+                  </Text>
+                )}
+
+                {blockDevboxCreation && (
+                  <Text size={3} css={{ color: '#F7CC66' }}>
+                    Devboxes are being deprecated.
                   </Text>
                 )}
 
@@ -316,21 +339,6 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             </CardButton>
           </Stack>
         </Stack>
-
-        {devboxDeprecated && (
-          <MessageStripe justify="space-between" variant="warning">
-            Devboxes are being deprecated and will be removed soon. Make sure to
-            export or migrate any work you want to keep before then.
-            <MessageStripe.Action
-              as="a"
-              href="https://codesandbox.io/docs"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              Learn more
-            </MessageStripe.Action>
-          </MessageStripe>
-        )}
 
         {runtime === 'vm' && (
           <>
@@ -399,7 +407,7 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
             <Button
               type="submit"
               variant="primary"
-              disabled={(isFrozen && runtime === 'vm') || devboxDeprecated}
+              disabled={(isFrozen && runtime === 'vm') || devboxBlocked}
               autoWidth
               loading={loading}
             >
