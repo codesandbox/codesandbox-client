@@ -8,11 +8,11 @@ import {
   Input,
   Icon,
   Select,
+  MessageStripe,
 } from '@codesandbox/components';
 
 import { useActions, useAppState, useEffects } from 'app/overmind';
 import { useWorkspaceFeatureFlags } from 'app/hooks/useWorkspaceFeatureFlags';
-import { DevboxDeprecationStripe } from 'app/pages/Dashboard/Components/shared/DevboxDeprecationStripe';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useGlobalPersistedState } from 'app/hooks/usePersistedState';
 import { PATHED_SANDBOXES_FOLDER_QUERY } from 'app/pages/Dashboard/queries';
@@ -317,7 +317,20 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           </Stack>
         </Stack>
 
-        {devboxDeprecated && <DevboxDeprecationStripe />}
+        {devboxDeprecated && (
+          <MessageStripe justify="space-between" variant="warning">
+            Devboxes are being deprecated and will be removed soon. Make sure to
+            export or migrate any work you want to keep before then.
+            <MessageStripe.Action
+              as="a"
+              href="https://codesandbox.io/docs"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Learn more
+            </MessageStripe.Action>
+          </MessageStripe>
+        )}
 
         {runtime === 'vm' && (
           <>
