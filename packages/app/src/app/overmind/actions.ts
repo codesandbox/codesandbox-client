@@ -160,7 +160,8 @@ type ModalName =
   | 'minimumPrivacy'
   | 'import'
   | 'create'
-  | 'branchCreationDeprecated';
+  | 'branchCreationDeprecated'
+  | 'devboxCreationDeprecated';
 
 export const modalOpened = (
   { state, effects }: Context,
