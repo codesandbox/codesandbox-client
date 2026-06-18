@@ -1,4 +1,3 @@
-import styled, { keyframes } from 'styled-components';
 import {
   Text,
   Stack,
@@ -25,7 +24,6 @@ import {
 import { TemplateList } from './TemplateList';
 import { useTeamTemplates } from './hooks/useTeamTemplates';
 import { CreateParams, SandboxToFork } from './utils/types';
-import { SearchBox } from './SearchBox';
 import { CreateBoxForm } from './CreateBox/CreateBoxForm';
 import { TemplateInfo } from './CreateBox/TemplateInfo';
 import {
@@ -34,7 +32,6 @@ import {
 } from './utils/api';
 import { WorkspaceSelect } from '../WorkspaceSelect';
 import { FEATURED_IDS } from './utils/constants';
-import { TemplateFilter } from './TemplateFilter';
 
 type CreateBoxProps = ModalContentProps & {
   collectionId?: string;
@@ -58,61 +55,29 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
 
   const [viewState, setViewState] = useState<ViewState>('select');
   const [selectedTemplate, setSelectedTemplate] = useState<SandboxToFork>();
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [filters, setFilters] = useState<string[]>([]);
 
-  const { teamTemplates, recentTemplates } = useTeamTemplates({
+  const { recentTemplates } = useTeamTemplates({
     teamId: activeTeam,
     hasLogIn,
   });
 
-  const recentlyUsedTemplates = recentTemplates.slice(0, 4);
+  // Devboxes have been removed, so we only show templates that can run as a
+  // browser Sandbox and filter out any devbox-only templates.
+  const runsInBrowser = (template?: SandboxToFork) =>
+    Boolean(
+      template && (template.type === 'sandbox' || template.browserSandboxId)
+    );
+
+  const recentlyUsedTemplates = recentTemplates
+    .filter(runsInBrowser)
+    .slice(0, 4);
   const hasRecentlyUsedTemplates = recentlyUsedTemplates.length > 0;
 
   const featuredTemplates = FEATURED_IDS.map(id =>
     officialTemplates.find(t => t.id === id)
   )
-    .filter(Boolean)
+    .filter(runsInBrowser)
     .slice(0, hasRecentlyUsedTemplates ? 8 : 12);
-
-  let filteredTemplates = officialTemplates.concat(teamTemplates);
-
-  if (searchQuery) {
-    filteredTemplates = filteredTemplates.filter(template => {
-      return (
-        template.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        template.tags.some(tag =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
-    });
-  }
-
-  if (filters.length > 0) {
-    filteredTemplates = filteredTemplates.filter(template => {
-      return filters
-        .map(item => item.toUpperCase())
-        .every(
-          item =>
-            template.tags
-              .map(tag => tag.toUpperCase().replace('-', ' '))
-              .includes(item) || // by tag
-            template.title?.toUpperCase().split(' ').includes(item) // by keyword in title
-        );
-    });
-  }
-
-  const gatherTags = filteredTemplates
-    .map(t => t.tags)
-    .flat()
-    .reduce((acc, tag) => {
-      acc[tag] = (acc[tag] || 0) + 1;
-
-      return acc;
-    }, {});
-  const additionalTags = Object.keys(gatherTags).filter(
-    key => gatherTags[key] > 1
-  );
 
   useEffect(() => {
     if (!sandboxIdToFork) {
@@ -224,66 +189,26 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
               flexDirection: 'column',
             }}
           >
-            <Stack
-              direction="horizontal"
-              gap={2}
-              justify="space-between"
-              css={{ marginBottom: 16 }}
-            >
-              <ScrollView>
-                <div className="sticky begin">
-                  <div />
-                </div>
-                <TemplateFilter
-                  onChange={setFilters}
-                  additionalTags={additionalTags}
-                />
-                <div className="sticky end">
-                  <div />
-                </div>
-              </ScrollView>
-
-              <SearchBox
-                value={searchQuery}
-                onChange={e => {
-                  const query = e.target.value;
-
-                  setSearchQuery(query);
-                }}
-              />
-            </Stack>
             <div style={{ overflow: 'auto' }}>
               <Stack direction="vertical" gap={2}>
-                {filters.length === 0 && searchQuery === '' ? (
-                  <>
-                    {hasRecentlyUsedTemplates && (
-                      <TemplateList
-                        searchQuery={searchQuery}
-                        title="Recently used"
-                        key="Recently used"
-                        templates={recentlyUsedTemplates}
-                        onSelectTemplate={selectTemplate}
-                        onOpenTemplate={openTemplate}
-                      />
-                    )}
-                    <TemplateList
-                      title="Popular"
-                      key="Popular"
-                      searchQuery={searchQuery}
-                      templates={featuredTemplates}
-                      onSelectTemplate={selectTemplate}
-                      onOpenTemplate={openTemplate}
-                    />
-                  </>
-                ) : (
+                {hasRecentlyUsedTemplates && (
                   <TemplateList
-                    key={filters.join()}
-                    searchQuery={searchQuery}
-                    templates={filteredTemplates}
+                    searchQuery=""
+                    title="Recently used"
+                    key="Recently used"
+                    templates={recentlyUsedTemplates}
                     onSelectTemplate={selectTemplate}
                     onOpenTemplate={openTemplate}
                   />
                 )}
+                <TemplateList
+                  title="Popular"
+                  key="Popular"
+                  searchQuery=""
+                  templates={featuredTemplates}
+                  onSelectTemplate={selectTemplate}
+                  onOpenTemplate={openTemplate}
+                />
               </Stack>
             </div>
           </ModalContent>
@@ -292,59 +217,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
     </ThemeProvider>
   );
 };
-
-const ScrollView = styled.div`
-  flex: 1;
-  overflow: auto;
-  padding-bottom: 8px;
-  white-space: nowrap;
-  position: relative;
-  display: flex;
-
-  .sticky {
-    position: sticky;
-    z-index: 9;
-    width: 0;
-    pointer-events: none;
-
-    --scroll-buffer: 2rem;
-    opacity: 0;
-    animation: ${keyframes`
-    to {
-      opacity: 1;
-    }
-    `} both linear;
-    animation-timeline: scroll(x);
-
-    > div {
-      position: absolute;
-      top: 0;
-      min-width: 20px;
-      height: 100%;
-    }
-  }
-
-  .begin {
-    animation-range: 0 var(--scroll-buffer);
-    left: 0;
-
-    > div {
-      left: 0;
-      background: linear-gradient(270deg, rgba(0, 0, 0, 0) 0%, #151515 100%);
-    }
-  }
-
-  .end {
-    animation-range: calc(100% - var(--scroll-buffer)) 100%;
-    animation-direction: reverse;
-    right: -1px;
-
-    > div {
-      right: 0;
-      background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, #151515 100%);
-    }
-  }
-`;
 
 const CreateBoxConfig: React.FC<{
   selectedTemplate: SandboxToFork;
