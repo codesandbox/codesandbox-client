@@ -19,16 +19,6 @@ export const EmptyCTAs: React.FC<{ isFrozen: boolean }> = ({ isFrozen }) => {
         >
           Explore templates
         </Button>
-        <Button
-          onClick={() => {
-            actions.modalOpened({ modal: 'import' });
-          }}
-          disabled={isFrozen}
-          variant="secondary"
-          autoWidth
-        >
-          Import repository
-        </Button>
       </Stack>
     </Stack>
   );

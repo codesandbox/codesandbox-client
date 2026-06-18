@@ -11,7 +11,6 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { SkeletonTextBlock } from 'app/components/Skeleton/elements';
@@ -24,7 +23,6 @@ export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const history = useHistory();
     const actions = useActions();
-    const { isFrozen } = useWorkspaceLimits();
     const {
       activeWorkspaceAuthorization,
       hasLogIn,
@@ -96,19 +94,6 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
         <Stack align="center" gap={2}>
           <SearchInputGroup />
-          <Button
-            variant="secondary"
-            disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
-            onClick={() => {
-              track('Dashboard - Topbar - Import');
-              actions.modalOpened({ modal: 'import' });
-            }}
-            autoWidth
-          >
-            <Icon name="github" size={16} css={{ marginRight: '4px' }} />
-            Import
-          </Button>
-
           <Button
             variant="primary"
             disabled={activeWorkspaceAuthorization === 'READ'}
