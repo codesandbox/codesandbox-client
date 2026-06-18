@@ -221,8 +221,9 @@ export const getDrafts = async ({ state, effects }: Context) => {
       sandboxes = data.me.team.drafts;
     }
 
+    // Devboxes have been removed from the dashboard, so we filter them out (isV2).
     dashboard.sandboxes[sandboxesTypes.DRAFTS] = sandboxes.filter(
-      s => !s.customTemplate
+      s => !s.customTemplate && !s.isV2
     );
   } catch (error) {
     effects.notificationToast.error(
@@ -261,8 +262,9 @@ export const getSandboxesByPath = async (
       dashboard.sandboxes.ALL = {};
     }
 
+    // Devboxes have been removed from the dashboard, so we filter them out (isV2).
     dashboard.sandboxes.ALL[cleanPath] = data.me.collection.sandboxes.filter(
-      s => !s.customTemplate
+      s => !s.customTemplate && !s.isV2
     );
 
     // Update sandboxCount in allCollections from the collections query result
@@ -365,7 +367,10 @@ export const getDeletedSandboxes = async ({ state, effects }: Context) => {
       return;
     }
 
-    dashboard.sandboxes[sandboxesTypes.DELETED] = data?.me?.team?.sandboxes;
+    // Devboxes have been removed from the dashboard, so we filter them out (isV2).
+    dashboard.sandboxes[sandboxesTypes.DELETED] = (
+      data?.me?.team?.sandboxes || []
+    ).filter(s => !s.isV2);
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your deleted Sandboxes'
@@ -411,8 +416,14 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
       teamId: state.activeTeam,
     });
 
-    dashboard.sandboxes.RECENT_SANDBOXES =
+    const recentSandboxes =
       sandboxesResult?.me?.recentlyAccessedSandboxes || [];
+
+    // Devboxes have been removed from the dashboard. Track whether the user
+    // recently used any so we can surface the removal banner, then filter them
+    // out (isV2) from the data we render.
+    dashboard.hasDevboxes = recentSandboxes.some(s => s.isV2);
+    dashboard.sandboxes.RECENT_SANDBOXES = recentSandboxes.filter(s => !s.isV2);
     dashboard.sandboxes.RECENT_BRANCHES =
       branchesResult?.me?.recentBranches || [];
   } catch (error) {
@@ -793,9 +804,10 @@ export const getSearchSandboxes = async ({ state, effects }: Context) => {
       sandboxes = data.me.team.sandboxes;
     }
 
+    // Devboxes have been removed from the dashboard, so we filter them out (isV2).
     const sandboxesToShow = state.dashboard
       .getFilteredSandboxes(sandboxes)
-      .filter(x => !x.customTemplate);
+      .filter(x => !x.customTemplate && !x.isV2);
 
     dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
   } catch (error) {
@@ -818,8 +830,10 @@ export const getWorkspaceSandboxes = async ({ state, effects }: Context) => {
       teamId: state.activeTeam,
     });
 
-    dashboard.sandboxes.WORKSPACE_SANDBOXES =
-      data?.me?.team?.sandboxes || [];
+    // Devboxes have been removed from the dashboard, so we filter them out (isV2).
+    dashboard.sandboxes.WORKSPACE_SANDBOXES = (
+      data?.me?.team?.sandboxes || []
+    ).filter(s => !s.isV2);
   } catch (error) {
     dashboard.sandboxes.WORKSPACE_SANDBOXES = [];
     effects.notificationToast.error(
@@ -1345,7 +1359,10 @@ export const getSharedSandboxes = async ({ state, effects }: Context) => {
       return;
     }
 
-    dashboard.sandboxes[sandboxesTypes.SHARED] = data.me?.collaboratorSandboxes;
+    // Devboxes have been removed from the dashboard, so we filter them out (isV2).
+    dashboard.sandboxes[sandboxesTypes.SHARED] = (
+      data.me?.collaboratorSandboxes || []
+    ).filter(s => !s.isV2);
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you'

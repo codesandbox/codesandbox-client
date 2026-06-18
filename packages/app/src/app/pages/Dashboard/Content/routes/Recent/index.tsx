@@ -7,6 +7,7 @@ import { Loading, Stack } from '@codesandbox/components';
 import { RepoInfo } from 'app/overmind/namespaces/sidebar/types';
 import { StyledContentWrapper } from 'app/pages/Dashboard/Components/shared/elements';
 import { ContentSection } from 'app/pages/Dashboard/Components/shared/ContentSection';
+import { DevboxesRemovedStripe } from 'app/pages/Dashboard/Components/shared/DevboxesRemovedStripe';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TopBanner } from './TopBanner';
 import { CreateBranchesRow } from './CreateBranchesRow';
@@ -17,7 +18,7 @@ export const Recent = () => {
   const {
     activeTeam,
     sidebar,
-    dashboard: { sandboxes },
+    dashboard: { sandboxes, hasDevboxes },
   } = useAppState();
   const { isFrozen } = useWorkspaceLimits();
   const {
@@ -142,6 +143,8 @@ export const Recent = () => {
       </Helmet>
 
       <TopBanner />
+
+      {hasDevboxes && <DevboxesRemovedStripe />}
 
       <ContentSection title="Recent">
         {recentRepos.length > 0 && (

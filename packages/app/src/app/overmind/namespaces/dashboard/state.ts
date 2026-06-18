@@ -85,6 +85,12 @@ export type State = {
   removingRepository: { owner: string; name: string } | null;
   removingBranch: { id: string } | null;
   creatingBranch: boolean;
+  /**
+   * Devboxes have been removed from the dashboard. This tracks whether the
+   * active team still has (recently used) devboxes so we can surface a
+   * removal banner to those users.
+   */
+  hasDevboxes: boolean;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -185,4 +191,5 @@ export const state: State = {
   removingRepository: null,
   removingBranch: null,
   creatingBranch: false,
+  hasDevboxes: false,
 };
