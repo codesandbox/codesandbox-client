@@ -8,7 +8,7 @@ export const DevboxDeprecationStripe: React.FC = () => {
       export or migrate any work you want to keep before then.
       <MessageStripe.Action
         as="a"
-        href="https://codesandbox.io/docs"
+        href="https://codesandbox.io/docs/learn/vm-sandboxes/overview"
         target="_blank"
         rel="noreferrer noopener"
       >

@@ -14,7 +14,7 @@ export const DevboxCreationDeprecatedModal: FunctionComponent = () => {
           soon. Make sure to export or migrate any work you want to keep before
           then.{' '}
           <a
-            href="https://codesandbox.io/docs"
+            href="https://codesandbox.io/docs/learn/vm-sandboxes/overview"
             target="_blank"
             rel="noreferrer noopener"
             style={{ color: '#E4FC82' }}
