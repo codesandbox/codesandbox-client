@@ -202,7 +202,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   />
                 )}
                 <TemplateList
-                  title="Popular"
                   key="Popular"
                   searchQuery=""
                   templates={featuredTemplates}

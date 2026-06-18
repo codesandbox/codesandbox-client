@@ -22,20 +22,22 @@ export const TemplateList = ({
 }: TemplateListProps) => {
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={3}>
-      <Stack align="center" gap={2}>
-        <Text
-          as="h2"
-          size={3}
-          variant="muted"
-          css={{
-            fontWeight: 500,
-            lineHeight: '24px',
-            margin: 0,
-          }}
-        >
-          {templates.length === 0 ? 'No results' : title}
-        </Text>
-      </Stack>
+      {(title || templates.length === 0) && (
+        <Stack align="center" gap={2}>
+          <Text
+            as="h2"
+            size={3}
+            variant="muted"
+            css={{
+              fontWeight: 500,
+              lineHeight: '24px',
+              margin: 0,
+            }}
+          >
+            {templates.length === 0 ? 'No results' : title}
+          </Text>
+        </Stack>
+      )}
 
       {templates.length > 0 && (
         <TemplateGrid>
