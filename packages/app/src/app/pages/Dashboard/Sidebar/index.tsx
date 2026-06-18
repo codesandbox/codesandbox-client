@@ -76,7 +76,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setNewFolderPath,
   };
 
-  const showRespositories = !state.environment.isOnPrem;
+  // Repositories have been removed from the dashboard (deprecated July 15th).
+  const showRespositories = false;
 
   const { ubbBeta } = useWorkspaceFeatureFlags();
   const { isPrimarySpace, hasAdminAccess, hasEditorAccess } = useWorkspaceAuthorization();

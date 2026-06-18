@@ -2,14 +2,13 @@ import React, { useEffect } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Helmet } from 'react-helmet';
-import { DashboardBranch, DashboardSandbox } from 'app/pages/Dashboard/types';
+import { DashboardSandbox } from 'app/pages/Dashboard/types';
 import { Loading, Stack } from '@codesandbox/components';
-import { RepoInfo } from 'app/overmind/namespaces/sidebar/types';
 import { StyledContentWrapper } from 'app/pages/Dashboard/Components/shared/elements';
 import { ContentSection } from 'app/pages/Dashboard/Components/shared/ContentSection';
+import { RepositoriesRemovedStripe } from 'app/pages/Dashboard/Components/shared/RepositoriesRemovedStripe';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TopBanner } from './TopBanner';
-import { CreateBranchesRow } from './CreateBranchesRow';
 import { ItemsGrid } from './ItemsGrid';
 import { EmptyCTAs } from './EmptyCTAs';
 
@@ -71,59 +70,27 @@ export const Recent = () => {
     );
   }
 
-  const recentItems: (DashboardSandbox | DashboardBranch)[] = [
-    ...(sandboxes.RECENT_SANDBOXES || []).map(sandbox => ({
+  // Repositories have been removed from the dashboard (deprecated July 15th),
+  // so "Pick up where you left off" only shows sandboxes/devboxes and excludes
+  // any repository branches.
+  const recentItems: DashboardSandbox[] = (sandboxes.RECENT_SANDBOXES || [])
+    .map(sandbox => ({
       type: 'sandbox' as const,
       sandbox,
-    })),
-    ...(sandboxes.RECENT_BRANCHES || []).map(branch => ({
-      type: 'branch' as const,
-      branch,
-    })),
-  ]
-    .sort((a, b) => {
-      const dateA =
-        a.type === 'branch'
-          ? a.branch.lastAccessedAt
-          : a.sandbox.lastAccessedAt;
-      const dateB =
-        b.type === 'branch'
-          ? b.branch.lastAccessedAt
-          : b.sandbox.lastAccessedAt;
-
-      return new Date(dateA) < new Date(dateB) ? 1 : -1;
-      // Merge the two data sources and show only the first 18 most recent entries
-    })
+    }))
+    .sort((a, b) =>
+      new Date(a.sandbox.lastAccessedAt) < new Date(b.sandbox.lastAccessedAt)
+        ? 1
+        : -1
+    )
+    // Show only the first 18 most recent entries
     .slice(0, 18);
 
-  const recentBranches = recentItems.filter(
-    item => item.type === 'branch'
-  ) as DashboardBranch[];
-
-  const recentRepos: RepoInfo[] = recentBranches
-    .map(br => ({
-      owner: br.branch.project.repository.owner,
-      name: br.branch.project.repository.name,
-      defaultBranch: br.branch.project.repository.defaultBranch,
-    }))
-    .reduce((acc, repo) => {
-      if (!acc.some(r => r.owner === repo.owner && r.name === repo.name)) {
-        acc.push(repo);
-      }
-      return acc;
-    }, []);
-
-  const allWorkspaceRepos = sidebar[activeTeam]?.repositories || [];
-  const otherRepos = allWorkspaceRepos.filter(
-    wr => !recentRepos.find(r => r.owner === wr.owner && r.name === wr.name)
-  );
+  // Used to surface the removal banner to anyone who still has imported repos.
+  const hasRepositories = (sidebar[activeTeam]?.repositories || []).length > 0;
 
   // Filter out sandboxes that are already in recentItems
-  const recentSandboxIds = new Set(
-    recentItems
-      .filter((item): item is DashboardSandbox => item.type === 'sandbox')
-      .map(item => item.sandbox.id)
-  );
+  const recentSandboxIds = new Set(recentItems.map(item => item.sandbox.id));
 
   const otherSandboxes: DashboardSandbox[] = (
     sandboxes.WORKSPACE_SANDBOXES || []
@@ -143,16 +110,9 @@ export const Recent = () => {
 
       <TopBanner />
 
-      <ContentSection title="Recent">
-        {recentRepos.length > 0 && (
-          <CreateBranchesRow
-            title="Create a new branch"
-            isFrozen={isFrozen}
-            repos={recentRepos}
-            trackEvent="Recent Page - Repositories - Create new branch"
-          />
-        )}
+      {hasRepositories && <RepositoriesRemovedStripe />}
 
+      <ContentSection title="Recent">
         {recentItems.length > 0 ? (
           <ItemsGrid
             title="Pick up where you left off"
@@ -166,18 +126,9 @@ export const Recent = () => {
       </ContentSection>
 
       {recentItems.length === 0 &&
-        otherRepos.length > 0 &&
+        hasRepositories &&
         otherSandboxes.length > 0 && (
           <ContentSection title="Explore workspace activity">
-            {otherRepos.length > 0 && (
-              <CreateBranchesRow
-                title="Create a branch from a workspace repository"
-                repos={otherRepos}
-                isFrozen={isFrozen}
-                trackEvent="Recent Page - Explore workspace - Create new branch"
-              />
-            )}
-
             {otherSandboxes.length > 0 && (
               <ItemsGrid
                 title="Open a workspace Sandbox or Devbox"
