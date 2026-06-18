@@ -5,7 +5,6 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { useAppState } from 'app/overmind';
 import { FreeUpgradeBanner } from './Banners/FreeUpgradeBanner';
-import { UBBWelcomeBanner } from './Banners/UBBWelcomeBanner';
 import { LegacyProConvertBanner } from './Banners/LegacyProConvertBanner';
 
 export const TopBanner = () => {
@@ -16,10 +15,6 @@ export const TopBanner = () => {
   const workspaceCreatedBeforeUBBRelease =
     activeTeamInfo?.insertedAt &&
     new Date(activeTeamInfo.insertedAt) < new Date('2024-02-01');
-
-  const [welcomeBannerDismissed, dismissWelcomeBanner] = useDismissible(
-    `${activeTeam}_UBB_WELCOME`
-  );
 
   const [legacyProBannerDismissed, dismissLegacyProBanner] = useDismissible(
     `${activeTeam}_LEGACY_PRO_CONVERT_BANNER`
@@ -38,13 +33,8 @@ export const TopBanner = () => {
     return null;
   }
 
-  // Workspaces created before the ubb release see the welcome banner
-  if (workspaceCreatedBeforeUBBRelease && !welcomeBannerDismissed) {
-    return <UBBWelcomeBanner onDismiss={dismissWelcomeBanner} />;
-  }
-
-  // Workspaces created after the release don't see the welcome banner
-  // However, free workspaces see the upsell to pro banner after the first visit
+  // Free workspaces created after the ubb release see the upsell to pro
+  // banner after the first visit
   if (
     !workspaceCreatedBeforeUBBRelease &&
     isFree &&
