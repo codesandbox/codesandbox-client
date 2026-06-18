@@ -38,8 +38,8 @@ export const TopBanner = () => {
     return null;
   }
 
-  // Workspaces created before the ubb release see the welcome banner
-  if (workspaceCreatedBeforeUBBRelease && !welcomeBannerDismissed) {
+  // Pro workspaces created before the ubb release see the welcome banner
+  if (isPro && workspaceCreatedBeforeUBBRelease && !welcomeBannerDismissed) {
     return <UBBWelcomeBanner onDismiss={dismissWelcomeBanner} />;
   }
 
