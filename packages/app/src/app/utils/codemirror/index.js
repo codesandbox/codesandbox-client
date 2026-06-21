@@ -5,6 +5,7 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/dialog/dialog.css';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/tern/tern.css';
+import 'codemirror/mode/css/css';
 import 'codemirror/mode/jsx/jsx';
 import 'codemirror/keymap/sublime';
 import 'codemirror/addon/fold/xml-fold'; // Needed to match JSX
