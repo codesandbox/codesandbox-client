@@ -12,6 +12,7 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useActiveTeamInfo } from 'app/hooks/useActiveTeamInfo';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { SkeletonTextBlock } from 'app/components/Skeleton/elements';
@@ -25,6 +26,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
     const history = useHistory();
     const actions = useActions();
     const { isFrozen } = useWorkspaceLimits();
+    const { sdkWorkspace } = useActiveTeamInfo();
     const {
       activeWorkspaceAuthorization,
       hasLogIn,
@@ -96,31 +98,35 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
         <Stack align="center" gap={2}>
           <SearchInputGroup />
-          <Button
-            variant="secondary"
-            disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
-            onClick={() => {
-              track('Dashboard - Topbar - Import');
-              actions.modalOpened({ modal: 'import' });
-            }}
-            autoWidth
-          >
-            <Icon name="github" size={16} css={{ marginRight: '4px' }} />
-            Import
-          </Button>
+          {!sdkWorkspace && (
+            <>
+              <Button
+                variant="secondary"
+                disabled={activeWorkspaceAuthorization === 'READ' || isFrozen}
+                onClick={() => {
+                  track('Dashboard - Topbar - Import');
+                  actions.modalOpened({ modal: 'import' });
+                }}
+                autoWidth
+              >
+                <Icon name="github" size={16} css={{ marginRight: '4px' }} />
+                Import
+              </Button>
 
-          <Button
-            variant="primary"
-            disabled={activeWorkspaceAuthorization === 'READ'}
-            onClick={() => {
-              track('Dashboard - Topbar - Create');
-              actions.modalOpened({ modal: 'create' });
-            }}
-            autoWidth
-          >
-            <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
-            Create
-          </Button>
+              <Button
+                variant="primary"
+                disabled={activeWorkspaceAuthorization === 'READ'}
+                onClick={() => {
+                  track('Dashboard - Topbar - Create');
+                  actions.modalOpened({ modal: 'create' });
+                }}
+                autoWidth
+              >
+                <Icon name="plus" size={12} css={{ marginRight: '4px' }} />
+                Create
+              </Button>
+            </>
+          )}
 
           {hasLogIn && <Notifications dashboard />}
 
