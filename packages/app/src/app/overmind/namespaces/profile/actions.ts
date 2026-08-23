@@ -496,37 +496,6 @@ export const changeSandboxPrivacy = async (
   }
 };
 
-export const fetchAllSandboxes = async ({ effects, state }: Context) => {
-  if (!state.profile.current) return;
-
-  const { username } = state.profile.current;
-  const page = 'all';
-
-  if (!state.profile.sandboxes[username]) {
-    state.profile.sandboxes[username] = {};
-  }
-
-  if (state.profile.sandboxes[username][page]) return;
-
-  state.profile.isLoadingSandboxes = true;
-  const data = await effects.api.getUserSandboxes(username, page);
-  state.profile.sandboxes[username][page] = data.sandboxes;
-  state.profile.isLoadingSandboxes = false;
-};
-
-export const searchQueryChanged = async (
-  { state, actions, effects }: Context,
-  query: string
-) => {
-  state.profile.searchQuery = query;
-
-  // Search works on all sandboxes
-  // We check for isLoading to avoid multiple requests
-  if (!state.profile.isLoadingSandboxes) {
-    await actions.profile.fetchAllSandboxes();
-  }
-};
-
 export const openContextMenu = (
   { state }: Context,
   {

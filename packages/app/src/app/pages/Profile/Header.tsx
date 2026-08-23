@@ -1,25 +1,15 @@
 import React from 'react';
 import { useAppState, useActions } from 'app/overmind';
-import { useHistory, useLocation } from 'react-router-dom';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
-import { Stack, Input, Button, Link, Icon } from '@codesandbox/components';
+import { Stack, Button, Link, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 import { Notifications } from 'app/components/Notifications';
 
 export const Header: React.FC = () => {
-  const {
-    modalOpened,
-    profile: { searchQueryChanged },
-  } = useActions();
-  const {
-    user,
-    profile: { searchQuery },
-  } = useAppState();
-  const history = useHistory();
-  const location = useLocation();
-  if (!location.search) searchQueryChanged('');
+  const { modalOpened } = useActions();
+  const { user } = useAppState();
 
   return (
     <Stack
@@ -45,42 +35,6 @@ export const Header: React.FC = () => {
           height={18}
         />
       </Link>
-
-      <Stack align="center" css={css({ display: ['none', 'flex', 'flex'] })}>
-        <Icon
-          name="search"
-          size={12}
-          css={css({
-            marginRight: '-20px !important',
-            zIndex: 2,
-            color: 'grays.300',
-          })}
-        />
-        <Input
-          type="text"
-          placeholder="Search"
-          css={css({
-            paddingLeft: 7,
-            width: [0, 280, 280],
-          })}
-          value={searchQuery}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            const query = event.target.value;
-            searchQueryChanged(query);
-
-            if (!query.length) {
-              history.push('');
-              return;
-            }
-
-            if (history.location.pathname === '/search') {
-              history.replace('/search?query=' + query);
-            } else {
-              history.push('/search?query=' + query);
-            }
-          }}
-        />
-      </Stack>
 
       <Stack align="center" gap={2}>
         <Button

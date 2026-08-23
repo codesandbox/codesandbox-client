@@ -12,7 +12,6 @@ import { ProfileCard } from './ProfileCard';
 import { ShowcaseSandbox } from './ShowcaseSandbox';
 import { PinnedSandboxes } from './PinnedSandboxes';
 import { AllSandboxes } from './AllSandboxes';
-import { SearchedSandboxes } from './SearchedSandboxes';
 import { LikedSandboxes } from './LikedSandboxes';
 
 import { ContextMenu } from './ContextMenu';
@@ -69,9 +68,6 @@ export const Profile: React.FunctionComponent<RouteComponentProps<{
             <Switch>
               <Route path={`/u/${user.username}/likes`}>
                 <LikedSandboxes />
-              </Route>
-              <Route path={`/u/${user.username}/search`}>
-                <SearchedSandboxes />
               </Route>
               <Route path={`/u/${user.username}`}>
                 <DndProvider backend={Backend}>
