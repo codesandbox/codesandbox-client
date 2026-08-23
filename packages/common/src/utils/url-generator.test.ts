@@ -1,5 +1,9 @@
 import { sandboxUrl } from '../../lib/utils/url-generator';
-import { gitHubRepoPattern, gitHubToSandboxUrl } from './url-generator';
+import {
+  gitHubRepoPattern,
+  gitHubToSandboxUrl,
+} from './url-generator';
+import * as urlGenerator from './url-generator';
 
 const invalidUrls = [
   'github.com/',
@@ -61,6 +65,12 @@ describe('url-generator', () => {
       expect(
         sandboxUrl({ id: 'sandbox-id', isV2: true, query: { welcome: 'true' } })
       ).toBe('/p/devbox/sandbox-id?welcome=true');
+    });
+  });
+
+  describe('searchUrl', () => {
+    test('is not exported (public Algolia search removed)', () => {
+      expect(urlGenerator).not.toHaveProperty('searchUrl');
     });
   });
 });

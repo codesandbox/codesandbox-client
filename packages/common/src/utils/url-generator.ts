@@ -274,8 +274,6 @@ export const gitHubToSandboxUrl = (githubUrl: string) =>
 export const gitHubToProjectsUrl = (githubUrl: string) =>
   githubUrl.replace(gitHubPrefix, '/p/github').replace(dotGit, '');
 
-export const searchUrl = (query?: string) =>
-  `/search${query ? `?query=${query}` : ''}`;
 export const csbSite = () =>
   [STATIC_SITE_PROTOCOL, STATIC_SITE_DOMAIN].join('/');
 export const tosUrl = () => `${csbSite()}/legal/terms`;
