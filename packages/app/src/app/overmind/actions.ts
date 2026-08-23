@@ -87,8 +87,6 @@ export const appUnmounted = async ({ effects, actions }: Context) => {
 
 export const sandboxPageMounted = withLoadApp();
 
-export const searchMounted = withLoadApp();
-
 export const codesadboxMounted = withLoadApp();
 
 export const genericPageMounted = withLoadApp();

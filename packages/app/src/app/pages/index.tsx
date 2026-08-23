@@ -74,11 +74,6 @@ const Profile = Loadable(() =>
     default: module.Profile,
   }))
 );
-const Search = Loadable(() =>
-  import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
-    default: module.Search,
-  }))
-);
 const CLI = Loadable(() =>
   import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
     default: module.CLI,
@@ -188,7 +183,6 @@ const RoutesComponent: React.FC = () => {
             <Route path="/signin/:jwt?" component={SignInAuth} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/u2/:username" component={Profile} />
-            <Route path="/search" component={Search} />
 
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={MobileAuth} />
