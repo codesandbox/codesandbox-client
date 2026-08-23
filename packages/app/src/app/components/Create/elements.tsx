@@ -188,36 +188,6 @@ export const UnstyledButtonLink = styled.button`
   cursor: pointer;
 `;
 
-export const DevboxAlternative = ({
-  searchQuery,
-  onClick,
-}: {
-  searchQuery?: string;
-  onClick: () => void;
-}) => {
-  return (
-    <>
-      Browse more than 3 million community-made templates{' '}
-      <a
-        onClick={onClick}
-        style={{ color: '#E4FC82', textDecoration: 'none' }}
-        href={
-          searchQuery
-            ? `https://codesandbox.io/search?query=${encodeURIComponent(
-                searchQuery
-              )}`
-            : 'https://codesandbox.io/search'
-        }
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        on our Discover page
-      </a>
-      .
-    </>
-  );
-};
-
 export const SandboxAlternative = ({ onClick }: { onClick: () => void }) => {
   return (
     <>

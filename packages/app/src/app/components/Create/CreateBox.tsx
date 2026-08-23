@@ -258,7 +258,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                   <>
                     {hasRecentlyUsedTemplates && (
                       <TemplateList
-                        searchQuery={searchQuery}
                         title="Recently used"
                         key="Recently used"
                         templates={recentlyUsedTemplates}
@@ -269,7 +268,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                     <TemplateList
                       title="Popular"
                       key="Popular"
-                      searchQuery={searchQuery}
                       templates={featuredTemplates}
                       onSelectTemplate={selectTemplate}
                       onOpenTemplate={openTemplate}
@@ -278,7 +276,6 @@ export const CreateBox: React.FC<CreateBoxProps> = ({
                 ) : (
                   <TemplateList
                     key={filters.join()}
-                    searchQuery={searchQuery}
                     templates={filteredTemplates}
                     onSelectTemplate={selectTemplate}
                     onOpenTemplate={openTemplate}
