@@ -2,7 +2,7 @@ import { useAppState } from 'app/overmind';
 import { useWorkspaceSubscription } from './useWorkspaceSubscription';
 import { useWorkspaceFeatureFlags } from './useWorkspaceFeatureFlags';
 
-const OUT_OF_CREDITS_TRESHOLD = 50; // 50 credits left from the free plan included credits
+const OUT_OF_CREDITS_TRESHOLD = 50; // Warn when fewer than 50 included credits remain
 const SPENDING_LIMIT_WARNING = 0.9; // 90% of the included + ondemand credits used
 
 export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
@@ -31,6 +31,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     applyUbbRestrictions &&
     isFree === true &&
     !frozen &&
+    limits.includedCredits > 0 &&
     limits.includedCredits - usage.credits < OUT_OF_CREDITS_TRESHOLD;
   const isAtSpendingLimit = applyUbbRestrictions && isPro === true && frozen;
 

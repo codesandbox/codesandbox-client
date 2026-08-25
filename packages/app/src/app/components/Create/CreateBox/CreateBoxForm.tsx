@@ -360,7 +360,9 @@ export const CreateBoxForm: React.FC<CreateBoxFormProps> = ({
           <Stack css={{ flex: 1 }}>
             {isFrozen && runtime === 'vm' && (
               <Text size={3} css={{ color: '#F7CC66' }}>
-                You have run our of credits.
+                {isFree
+                  ? 'Free workspaces do not include VM credits.'
+                  : 'You have reached your spending limit.'}
               </Text>
             )}
           </Stack>

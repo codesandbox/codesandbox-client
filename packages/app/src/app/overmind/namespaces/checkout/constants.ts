@@ -8,13 +8,9 @@ export const FREE_PLAN: PricingPlan = {
   name: 'Build',
   priceMonthly: 0,
   priceYearly: 0,
-  credits: 400,
+  credits: 0,
   storage: 20,
-  usage: [
-    'Up to 40 hours of monthly VM credits',
-    'Unlimited Sandboxes & Devboxes',
-    '5 members',
-  ],
+  usage: ['Unlimited Sandboxes & Devboxes', '5 members'],
   features: [
     'CodeSandbox SDK lite',
     'Private Sandboxes, Devboxes & repos',

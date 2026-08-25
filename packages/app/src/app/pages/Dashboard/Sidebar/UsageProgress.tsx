@@ -23,11 +23,12 @@ export const UsageProgress: React.FC<{
     });
   }, []);
 
-  const creditsLeft = maxCredits - usedCredits;
+  const creditsLeft = Math.max(0, maxCredits - usedCredits);
   const lowestTier = allVmTiers.find(tier => tier.tier === 1);
-  const hoursLeft = lowestTier
-    ? Math.ceil(creditsLeft / lowestTier.creditBasis)
-    : 0;
+  const hoursLeft =
+    lowestTier && lowestTier.creditBasis > 0
+      ? Math.ceil(creditsLeft / lowestTier.creditBasis)
+      : 0;
 
   return (
     <Stack direction="vertical" gap={2} paddingX={7}>
@@ -66,7 +67,10 @@ export const UsageProgress: React.FC<{
                 top: 0,
                 left: 0,
                 bottom: 0,
-                width: (usedCredits / maxCredits) * 100 + '%',
+                width:
+                  maxCredits > 0
+                    ? (usedCredits / maxCredits) * 100 + '%'
+                    : '0%',
                 borderRadius: 4,
                 transition: 'width 0.3s ease-in-out',
               }}

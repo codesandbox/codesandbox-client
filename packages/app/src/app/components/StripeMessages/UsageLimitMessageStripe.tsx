@@ -26,7 +26,7 @@ export const UsageLimitMessageStripe: React.FC = () => {
           <Icon name="circleBang" />
           <Text>
             <Text weight="500">
-              You have run out of credits on the Free plan.
+              Free workspaces do not include VM credits.
             </Text>{' '}
             Your Devboxes have been frozen.{' '}
             {isAdmin

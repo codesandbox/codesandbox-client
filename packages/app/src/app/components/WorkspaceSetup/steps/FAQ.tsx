@@ -153,10 +153,10 @@ const content = {
     {
       question: 'My Sandbox is frozen. What does that mean?',
       answer: `In VM Sandboxes and repositories, the VM will become frozen if the workspace does not have enough available credits to run a VM. You may encounter a frozen state if:
-            - you are on a Free workspace and have run out of credits;
-            - you are on a Pro workspace but your credit spend has hit the spending limit.
+            - you are on a Free workspace, which does not include VM credits;
+            - you are on a Pro or Scale workspace but your credit spend has hit the spending limit.
         
-        To get out of the frozen state, you can either <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or adjust your spending limit. Otherwise, you must wait until the start of the next billing cycle for your credits to renew.`,
+        To get out of the frozen state, you can <a href=/upgrade>upgrade</a> to Pro (if you are on Free) or adjust your spending limit.`,
     },
     {
       question: 'What is your cancelation and refund policy?',
@@ -164,7 +164,7 @@ const content = {
   
         Refunds are available for a period of 14 days after payment if you are based in the EU or Turkey. If you are based elsewhere, we won’t be able to refund your subscription. Please be aware that we will not be able to offer a refund within this period in the following circumstances:
               - If your workspace has used Small, Medium, Large or XLarge VMs.
-              - If your workspace has used more than the free allowance of 400 credits.
+              - If your workspace has used more than the previous allowance of 400 credits.
               - If your workspace has purchased a credit add-on.
               - If your workspace has, or has had more than 5 members in the current billing cycle.
         
