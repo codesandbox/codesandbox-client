@@ -1,9 +1,7 @@
 import { sandboxUrl } from '../../lib/utils/url-generator';
-import {
-  gitHubRepoPattern,
-  gitHubToSandboxUrl,
-} from './url-generator';
 import * as urlGenerator from './url-generator';
+
+const { gitHubRepoPattern, gitHubToSandboxUrl } = urlGenerator;
 
 const invalidUrls = [
   'github.com/',
