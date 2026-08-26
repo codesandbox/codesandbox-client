@@ -88,7 +88,7 @@ class ReasonTranspiler extends Transpiler {
         'https://cdn.jsdelivr.net/gh/jaredly/reason-react@more-docs/docs/bucklescript.js'
       );
       await addScript('https://reason.surge.sh/bucklescript-deps.js');
-      await addScript('https://unpkg.com/reason@3.3.4/refmt.js');
+      await addScript('https://cdn.jsdelivr.net/npm/reason@3.3.4/refmt.js');
     }
 
     const reasonModules = loaderContext

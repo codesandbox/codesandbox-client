@@ -39,7 +39,7 @@ const resolveVersionFromUnpkg = (
   version: string
 ): Promise<string> => {
   return fetchWithRetries(
-    `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
+    `https://cdn.jsdelivr.net/npm/${dep}@${encodeURIComponent(version)}/package.json`
   ).then(x => x.version);
 };
 
